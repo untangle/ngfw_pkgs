@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-exim4-config
 Architecture: all
-Depends: exim4
+Depends: ${misc:Depends}, exim4
 Description: Untangle Exim4 wrapper package
  The Untangle Exim4 config
 

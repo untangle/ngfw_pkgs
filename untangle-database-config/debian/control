@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-database-config
 Architecture: any
-Depends: untangle-postgresql-config [!armel !armhf], sqlite3 [armel armhf], python-sqlite [armel armhf]
+Depends: ${misc:Depends}, untangle-postgresql-config [!armel !armhf], sqlite3 [armel armhf], python-sqlite [armel armhf]
 Description: Untangle Database config
  The Untangle database config
 

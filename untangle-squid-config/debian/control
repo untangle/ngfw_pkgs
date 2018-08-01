@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-squid-config
 Architecture: all
-Depends: squid, bc
+Depends: ${misc:Depends}, squid, bc
 Conflicts: squid3
 Description: The Untangle Squid config
  The Untangle Squid config.

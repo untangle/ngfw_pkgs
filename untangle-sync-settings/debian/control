@@ -11,7 +11,7 @@ Architecture: all
 Conflicts: untangle-netd
 Replaces: untangle-netd
 Provides: untangle-netd
-Depends: bridge-utils,
+Depends: ${misc:Depends}, bridge-utils,
          crda,
          dash,
          isc-dhcp-client,

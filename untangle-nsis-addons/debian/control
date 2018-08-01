@@ -8,6 +8,6 @@ Standards-Version: 3.9.8
 
 Package: untangle-nsis-addons
 Architecture: all
-Depends: nsis (>= 2.06-6) | oracle-java8-jdk
+Depends: ${misc:Depends}, nsis (>= 2.06-6) | oracle-java8-jdk
 Description: Packages to complete the NSIS installation generator utility
  Addons for the Untangle NSIS installation.

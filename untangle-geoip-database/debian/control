@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-geoip-database
 Architecture: all
-Depends: gzip, wget
+Depends: ${misc:Depends}, gzip, wget
 Description: The Untangle Geography Manager database
  The Untangle Geography Manager database and update script.
 

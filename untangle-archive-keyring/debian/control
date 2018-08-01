@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-archive-keyring
 Architecture: all
-Depends: gnupg (>= 1.0.6-4)
+Depends: ${misc:Depends}, gnupg (>= 1.0.6-4)
 Provides: untangle-keyring
 Replaces: untangle-keyring
 Conflicts: untangle-keyring

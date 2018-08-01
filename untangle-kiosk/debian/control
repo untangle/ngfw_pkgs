@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-kiosk
 Architecture: all
-Depends: acpi-support-base,
+Depends: ${misc:Depends}, acpi-support-base,
          adduser,
          chromium,
 	 fbpanel,
