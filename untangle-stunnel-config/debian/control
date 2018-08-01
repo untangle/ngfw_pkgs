@@ -9,6 +9,6 @@ Standards-Version: 3.9.8
 Package: untangle-stunnel-config
 Architecture: all
 Depends: ${misc:Depends}, systemd, stunnel4, bc, xinetd, update-inetd, libfile-copy-recursive-perl
-Description: The Untangle stunnel configuration
+Description: Untangle stunnel configuration
  The Untangle stunnel configuration.
 

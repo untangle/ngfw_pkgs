@@ -12,6 +12,6 @@ Depends: ${misc:Depends}, systemd, snort (>= 2.9.7.0), libdaq0
 Conflicts: untangle-snort-rules
 Replaces: untangle-snort-rules
 Provides: untangle-snort-rules
-Description: Initial versions of Snort configuration and rules
+Description: Snort configuration and rules
  Initial versions of Snort configuration and rules.
 

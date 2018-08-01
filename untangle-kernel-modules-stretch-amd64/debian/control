@@ -11,6 +11,6 @@ Architecture: amd64
 Depends: ${misc:Depends}, linux-image-4.9.0-6-untangle-amd64, firmware-bnx2, firmware-bnx2x
 Provides: untangle-kernel-modules-stretch
 Pre-Depends: untangle-debconf-manager
-Description: The Untangle kernel modules for amd64
+Description: Untangle kernel modules for amd64
  The Untangle kernel modules for amd64.
 
