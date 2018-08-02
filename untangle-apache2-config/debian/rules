@@ -4,7 +4,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-DEST_DIR := $(CURDIR)/debian/$(dh_listpackages)
+DESTDIR := $(CURDIR)/debian/$(shell dh_listpackages)
 
 %:
 	dh $@ 
@@ -13,9 +13,10 @@ override_dh_gencontrol:
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 
 override_dh_install:
+	echo $(DESTDIR)
 	if [ -f Makefile ] ; then \
 	  dh_install ; \
 	else \
-	  mkdir -p $(DEST_DIR) ; \
-	  cp -ra files/* $(DEST_DIR) ; \
+	  mkdir -p $(DESTDIR) ; \
+	  cp -ra files/* $(DESTDIR) ; \
 	fi
