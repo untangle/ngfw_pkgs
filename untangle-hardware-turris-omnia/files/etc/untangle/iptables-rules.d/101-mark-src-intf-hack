@@ -1,3 +1,5 @@
+#! /bin/bash
+
 # hack to work around issue NGFW-10208
 
 ${IPTABLES} -t mangle -D mark-src-intf -m mark --mark 0/0x00FF -p udp --dport 67 -j MARK --set-mark 0x0002/0x00FF -m comment --comment "set mark of stuff coming in the bridge as internal if unsure" >/dev/null 2>&1
