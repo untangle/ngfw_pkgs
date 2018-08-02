@@ -4,7 +4,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-DEST_DIR := $(CURDIR)/debian/$(dh_listpackages)
+DEST_DIR := $(CURDIR)/debian/$(shell dh_listpackages)
 
 %:
 	dh $@ 

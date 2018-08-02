@@ -1,3 +1,5 @@
+DESTDIR ?= /
+
 install: copy locales
 
 copy:
