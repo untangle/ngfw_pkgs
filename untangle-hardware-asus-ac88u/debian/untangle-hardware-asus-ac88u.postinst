@@ -1,15 +1,15 @@
 #!/bin/sh
 
-systemctl restart untangle-firmware-common
+deb-systemd-invoke restart untangle-firmware-common
 
 # disable rsyslog by default on linksys
-systemctl disable rsyslog
+deb-systemd-helper disable rsyslog
 
 # remove old 12.1 conf
 rm -rf /etc/untangle/hardware/asus
 
 # remove old 12.1 startup file
-systemctl disable untangle-hardware-asus-ac88u
+deb-systemd-helper disable untangle-hardware-asus-ac88u
 rm -f /etc/init.d/untangle-hardware-asus-ac88u
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}

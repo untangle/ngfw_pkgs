@@ -2,12 +2,12 @@
 
 DEFAULT_FILE="/etc/default/snmpd"
 
-systemctl disable snmpd
+deb-systemd-helper disable snmpd
 
 # Only for first time installation.
 if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then
    # Disable by default (enabled by setting snmp settings in UI)
-   systemctl stop snmpd
+   deb-systemd-invoke stop snmpd
    sed -i "s/^SNMPDRUN=.*/SNMPDRUN=no/" $DEFAULT_FILE
    sed -i "s/^TRAPDRUN=.*/TRAPDRUN=no/" $DEFAULT_FILE
 fi
