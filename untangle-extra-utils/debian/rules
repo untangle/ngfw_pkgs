@@ -1,45 +1,17 @@
 #!/usr/bin/make -f
 
-build:
-	dh_testdir
+export DEB_BUILD_MAINT_OPTIONS = hardening=+all
+DPKG_EXPORT_BUILDFLAGS = 1
+include /usr/share/dpkg/default.mk
 
-clean:
-	dh_testdir
-	dh_testroot
-	dh_clean
+DEST_DIR := $(CURDIR)/debian/$(dh_listpackages)
 
-binary-indep: build
-	dh_testdir  
-	dh_testroot   
-#	dh_movefiles 
-#	dh_installdebconf   
-#	dh_shlibdeps  
-#	dh_installdocs -n   
-#	dh_installexamples   
-#	dh_installmenu   
-#	dh_installlogrotate   
-#	dh_installemacsen   
-#	dh_installpam   
-#	dh_installmime   
-#	dh_installinit
-#	dh_installcron   
-#	dh_installman   
-#	dh_installinfo   
-#	dh_undocumented   
-	dh_installchangelogs    
-#	dh_strip  
-#	dh_link   
-	dh_compress   
-#	dh_fixperms   
-	dh_installdeb  
-#	dh_perl     
+%:
+	dh $@ 
+
+override_dh_gencontrol:
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
-	dh_md5sums     
-	dh_builddeb 
 
-binary-arch:
-# nothing to do
-
-binary: binary-indep binary-arch
-
-.PHONY: build clean binary-indep binary install
+override_dh_install:
+	mkdir -p $(DEST_DIR)
+	[ ! -d files ] || cp -ra files/* $(DEST_DIR)
