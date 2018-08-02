@@ -1,0 +1,14 @@
+Source: untangle-hardware-amazon-payg
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <seb@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>> 3.0.0)
+Standards-Version: 3.8.0
+
+Package: untangle-hardware-amazon-payg
+Architecture: all
+Depends: systemd, untangle-hardware-config, untangle-snort-config, untangle-system-config
+Description: The Untangle Amazon PAYG config
+ Configuration specific to Amazon PAYG.
+
