@@ -15,7 +15,7 @@ override_dh_gencontrol:
 override_dh_install:
 	if [ -f Makefile ] ; then \
 	  dh_install ; \
-	else ; \
+	else \
 	  mkdir -p $(DEST_DIR) ; \
 	  cp -ra files/* $(DEST_DIR) ; \
 	fi
