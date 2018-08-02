@@ -1,5 +1,0 @@
-/etc/init.d
-/etc/logrotate.d
-/etc/snort
-/etc/rsyslog.d
-/usr/share/untangle-snort-config
