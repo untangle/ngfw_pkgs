@@ -1,5 +1,7 @@
 DESTDIR ?= /
 
+build:
+
 install: copy locales
 
 copy:
@@ -14,4 +16,4 @@ locales:
 	  msgfmt -o $${dir}/untangle-apache2-config.mo $${f} ; \
 	done
 
-.PHONY: install copy locales
+.PHONY: build install copy locales
