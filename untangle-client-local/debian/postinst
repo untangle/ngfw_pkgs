@@ -1,5 +1,5 @@
 #! /bin/bash
 
-[ -x /usr/bin/update-menus ] && update-menus
+which update-menus > /dev/null && update-menus
 
 exit 0
