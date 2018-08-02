@@ -13,8 +13,7 @@ override_dh_gencontrol:
 	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
 
 override_dh_install:
-	echo $(DESTDIR)
-	if [ -f Makefile ] ; then \
+	if [ -f Makefile ] || [ ! -d files ]; then \
 	  dh_install ; \
 	else \
 	  mkdir -p $(DESTDIR) ; \
