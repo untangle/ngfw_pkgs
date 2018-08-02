@@ -57,7 +57,7 @@ if [ ! -e $PEMFILE ]; then
     export RANDFILE=/dev/urandom
     openssl req -batch -subj "/CN=$ALIAS" -new -newkey rsa:2048 -x509 -nodes -out $PEMFILE -keyout $PEMFILE
     chmod 600 $PEMFILE
-    ln -sf $PEMFILE /etc/apache2/ssl/`/usr/bin/openssl x509 -noout -hash < $PEMFILE`.0
+    ln -sf $PEMFILE /etc/apache2/ssl/`openssl x509 -noout -hash < $PEMFILE`.0
 fi
 
 if ! grep "Listen 443" /etc/apache2/ports.conf >/dev/null; then
@@ -73,25 +73,25 @@ if ! grep -q "PythonOption mod_python.session.cookie_name" /etc/apache2/mods-ava
 fi
 
 # enable these modules
-/usr/sbin/a2enmod jk
-/usr/sbin/a2enmod ssl
-/usr/sbin/a2enmod python
-/usr/sbin/a2enmod deflate
-/usr/sbin/a2enmod rewrite
+a2enmod jk
+a2enmod ssl
+a2enmod python
+a2enmod deflate
+a2enmod rewrite
 
 # disable these modules for "PCI scan" issues
 A2DISMOD_OPTS="-m -f"
-/usr/sbin/a2dismod $A2DISMOD_OPTS autoindex
-/usr/sbin/a2dismod $A2DISMOD_OPTS userdir
+a2dismod $A2DISMOD_OPTS autoindex
+a2dismod $A2DISMOD_OPTS userdir
 
 # enable UVM site
-/usr/sbin/a2dissite default >/dev/null 2>&1 # wheezy
-/usr/sbin/a2dissite 000-default >/dev/null 2>&1 # jessie
-/usr/sbin/a2dissite default-ssl >/dev/null 2>&1 # jessie
-/usr/sbin/a2ensite uvm
+a2dissite default >/dev/null 2>&1 # wheezy
+a2dissite 000-default >/dev/null 2>&1 # jessie
+a2dissite default-ssl >/dev/null 2>&1 # jessie
+a2ensite uvm
 
 # disable these confs
-/usr/sbin/a2disconf -q other-vhosts-access-log # do not log separate vhosts
+a2disconf -q other-vhosts-access-log # do not log separate vhosts
 
 # disable Trace and Server Signatures for PCI compliance
 perl -i -pe 's/^ServerTokens.*/ServerTokens Prod/ ; s/^ServerSignature.*/ServerSignature Off/' /etc/apache2/conf-available/security.conf

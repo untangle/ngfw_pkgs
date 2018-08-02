@@ -60,9 +60,7 @@ if [ -f /etc/dhcp/dhclient-exit-hooks.d/ddclient  ] ; then
 fi
 
 # Build certs list
-if [ -x /usr/sbin/update-ca-certificates ] ; then
-    /usr/sbin/update-ca-certificates    
-fi
+which update-ca-certificates > /dev/null && update-ca-certificates    
 
 # Disable irqbalance spamming (https://bugs.launchpad.net/ubuntu/+source/irqbalance/+bug/1321425)
 if [ -f /etc/default/irqbalance ] ; then
