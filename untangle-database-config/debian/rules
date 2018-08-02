@@ -4,7 +4,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 DPKG_EXPORT_BUILDFLAGS = 1
 include /usr/share/dpkg/default.mk
 
-DEST_DIR := $(CURDIR)/debian/$(dpkg-parsechangelog -S Source)
+DEST_DIR := $(CURDIR)/debian/$(dh_listpackages)
 
 %:
 	dh $@ 
@@ -14,4 +14,4 @@ override_dh_gencontrol:
 
 override_dh_install:
 	mkdir -p $(DEST_DIR)
-	[ ! -d files ] || cp -ra files/* $(DEST_DIR)
+	if [ -d files ] ; then cp -ra files/* $(DEST_DIR) ; else dh_install ; fi
