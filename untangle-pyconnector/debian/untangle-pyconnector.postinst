@@ -1,6 +1,6 @@
 #!/bin/sh
 
-systemctl disable untangle-pyconnector
+deb-systemd-helper disable untangle-pyconnector
 
 # 14.0 remove old log files
 rm -f /var/log/uvm/pyconnector.log*

@@ -27,8 +27,8 @@ setOption MaxScanSize 100M
 setOption StreamMaxLength 100M
 
 # disable clamav at startup (apps start as necessary)
-systemctl disable clamav-daemon
-systemctl disable clamav-freshclam
+deb-systemd-helper disable clamav-daemon
+deb-systemd-helper disable clamav-freshclam
 
 # fix clamav.conf from broken security update (Bug #13073)
 sed -e '/AllowSupplementaryGroups/d' -i $CLAMAV_CONF_FILE

@@ -10,8 +10,8 @@ fi
 
 OLD_UNTANGLE_SNORT_INIT=/etc/init.d/snort-untangle
 if [ -f ${OLD_UNTANGLE_SNORT_INIT} ] ; then
-    systemctl stop snort-untangle
-    systemctl disable snort-untangle > /dev/null 2>&1
+    deb-systemd-invoke stop snort-untangle
+    deb-systemd-helper disable snort-untangle > /dev/null 2>&1
     rm -f ${OLD_UNTANGLE_SNORT_INIT}
 fi
 

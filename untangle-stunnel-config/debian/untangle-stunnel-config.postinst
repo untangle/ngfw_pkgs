@@ -4,6 +4,6 @@
 update-rc.d xinetd enable
 
 # make sure it gets started or restarted
-systemctl restart xinetd
+deb-systemd-invoke restart xinetd
 
 exit 0

@@ -10,26 +10,26 @@ perl -i -pe 's/(?<=BRIDGE_HOTPLUG=).*/no/' /etc/default/bridge-utils
 
 # disable hostapd
 # It will be started via the post-network scripts if needed
-systemctl disable hostapd
+deb-systemd-helper disable hostapd
 
 # disable keepalived
 # It will be started via the post-network scripts if needed
-systemctl disable keepalived
+deb-systemd-helper disable keepalived
 
 # disable miniupnpd
 # It will be started via the post-network scripts if needed
-systemctl disable miniupnpd
+deb-systemd-helper disable miniupnpd
 
 # disable ddclient
 # It will be started via the post-network scripts if needed
-systemctl disable ddclient
+deb-systemd-helper disable ddclient
 
 # disable dynamic routing daemons
 # It will be started via the post-network scripts if needed
-systemctl disable zebra
-systemctl disable ospfd
-systemctl disable ospf6d
-systemctl disable bgpd
+deb-systemd-helper disable zebra
+deb-systemd-helper disable ospfd
+deb-systemd-helper disable ospf6d
+deb-systemd-helper disable bgpd
 
 # disable 0000usepeerdns pppoe script, we will handle usepeerdns option
 # bug #11185

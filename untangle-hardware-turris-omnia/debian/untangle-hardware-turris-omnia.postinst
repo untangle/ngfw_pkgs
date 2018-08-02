@@ -1,9 +1,9 @@
 #! /bin/bash
 
-systemctl restart untangle-firmware-common
+deb-systemd-invoke restart untangle-firmware-common
 
 # disable rsyslog by default
-systemctl disable rsyslog
+deb-systemd-helper disable rsyslog
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 

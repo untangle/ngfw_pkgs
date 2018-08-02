@@ -2,11 +2,11 @@
 
 DEFAULT_FILE="/etc/default/softflowd"
 
-systemctl disable softflowd
+deb-systemd-helper disable softflowd
 
 # Only for first time installation.
 if [ -z "$2" ] ; then
-    systemctl stop softflowd
+    deb-systemd-invoke stop softflowd
 fi
 
 exit 0
