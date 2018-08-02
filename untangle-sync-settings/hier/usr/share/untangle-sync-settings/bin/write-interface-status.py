@@ -55,8 +55,8 @@ class ArgumentParser(object):
             for opt in optlist:
                 handlers[opt[0]](opt[1])
             return args
-        except getopt.GetoptError, exc:
-            print exc
+        except getopt.GetoptError as exc:
+            print(exc)
             printUsage()
             exit(1)
 
@@ -94,7 +94,7 @@ if fileName == None or dev == None or interfaceId == None:
     printUsage()
     sys.exit(1)
 
-if verbosity > 0: print "Writing %s status to %s." % (dev, fileName)
+if verbosity > 0: print("Writing %s status to %s." % (dev, fileName))
 
 obj = {"javaClass":"com.untangle.uvm.network.InterfaceStatus", "interfaceId":interfaceId}
 
@@ -105,14 +105,14 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
 
         segments = line.split()
         if len( segments ) < 2:
-            print "ERROR: invalid ip addr show output: \"%s\"" % line
+            print("ERROR: invalid ip addr show output: \"%s\"" % line)
             continue
 
         addrStr = segments[1].split("/")
         if len( addrStr ) == 1:
             addrStr.append( "32" )
         if len( addrStr ) != 2:
-            print "ERROR: invalid ip addr show address format: \"%s\"" % addrStr
+            print("ERROR: invalid ip addr show address format: \"%s\"" % addrStr)
             continue
 
         try:
@@ -120,8 +120,8 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
                 obj['v4Address'] = addrStr[0]
             obj['v4PrefixLength'] = int( addrStr[1] )
             obj['v4Netmask'] = ipv4_cidr_to_netmask( obj['v4PrefixLength'] )
-        except Exception,e:
-            print "ERROR: invalid ip addr show address format: \"%s\"" % addrStr
+        except Exception as e:
+            print("ERROR: invalid ip addr show address format: \"%s\"" % addrStr)
             traceback.print_exc(e)
             continue
 
@@ -131,19 +131,19 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
 
         segments = line.split()
         if len( segments ) < 2:
-            print "ERROR: invalid ip addr show output: \"%s\"" % line
+            print("ERROR: invalid ip addr show output: \"%s\"" % line)
             continue
 
         addrStr = segments[1].split("/")
         if len( addrStr ) != 2:
-            print "ERROR: invalid ip addr show address format: \"%s\"" % addrStr
+            print("ERROR: invalid ip addr show address format: \"%s\"" % addrStr)
             continue
 
         try:
             obj['v6Address'] = addrStr[0]
             obj['v6PrefixLength'] = int( addrStr[1] )
-        except Exception,e:
-            print "ERROR: invalid ip addr show address format: \"%s\"" % addrStr
+        except Exception as e:
+            print("ERROR: invalid ip addr show address format: \"%s\"" % addrStr)
             traceback.print_exc(e)
             continue
 
@@ -153,7 +153,7 @@ for line in subprocess.Popen(("ip route show table uplink.%i" % interfaceId).spl
 
         segments = line.split()
         if len( segments ) < 3:
-            print "ERROR: invalid ip route show output: \"%s\"" % line
+            print("ERROR: invalid ip route show output: \"%s\"" % line)
             continue
         
         if ( re.match( ipRegex, segments[2] ) ):
@@ -166,7 +166,7 @@ for line in subprocess.Popen(("ip -6 route show table main").split(), stdout=sub
 
         segments = line.split()
         if len( segments ) < 3:
-            print "ERROR: invalid ip route show output: \"%s\"" % line
+            print("ERROR: invalid ip route show output: \"%s\"" % line)
             continue
         
         obj['v6Gateway'] = segments[2]
@@ -178,12 +178,12 @@ for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq
     if re.search(r'server=.*\suplink.%i\s*$' % interfaceId, line):
 
         if count > 2:
-            print "ERROR: too many DNS entries for uplink.%i: %s " % (interfaceId, line)
+            print("ERROR: too many DNS entries for uplink.%i: %s " % (interfaceId, line))
             continue
 
         segments = re.split(r'[\s=]',line)
         if len( segments ) < 2:
-            print "ERROR: invalid dnsmasq.conf output: \"%s\"" % line
+            print("ERROR: invalid dnsmasq.conf output: \"%s\"" % line)
             continue
         
         if ( re.match( ipRegex, segments[1] ) ):
@@ -195,9 +195,9 @@ try:
     file = open(fileName, 'w')
     json.dump(obj, file)
     file.write("\n")
-    if verbosity > 0: print "Wrote: %s" % str(obj)
-except Exception,e:
-    print "ERROR: writing file: \"%s\"" % fileName
+    if verbosity > 0: print("Wrote: %s" % str(obj))
+except Exception as e:
+    print("ERROR: writing file: \"%s\"" % fileName)
     traceback.print_exc(e)
 finally:
     file.flush()
