@@ -1,30 +1,31 @@
-#!/bin/sh
+#!/bin/bash
+
+UDEV_FILE="/etc/udev/rules.d/70-persistent-net.rules"
 
 systemctl restart untangle-hardware-config
 
-swapNic() {
-    udev_file='/etc/udev/rules.d/70-persistent-net.rules';
-    echo "Moving interface ${1} to ${2}"
-    perl -i -pe "s/NAME\=\"${1}\"/NAME\=\"new_${2}\"/g" $udev_file
+getMacForInterface() {
+  ip link show $1 | awk '/ether/ {print $2}'
 }
 
-swapNicFinish() {
-    # then remove all the "new_".  We do the intermeidate step to avoid renaming collisions
-    udev_file='/etc/udev/rules.d/70-persistent-net.rules';
-    perl -i -pe "s/new_//g" $udev_file 
+generateUdevRule() {
+  echo 'SUBSYSTEM=="net", ACTION=="add", DRIVERS=="?*", ATTR{address}=="'$1'", ATTR{dev_id}=="0x0", ATTR{type}=="1", KERNEL=="eth*", NAME="'$2'"'
 }
 
-# Swap eth1 and eth2 so order is correct on faceplate
-# Do this only on new install of this package
+moveNic() {
+  mac=$(getMacForInterface $1)
+  echo "Moving interface $1 ($mac) to $2"
+  generateUdevRule $mac $2 >> $UDEV_FILE
+}
+
+# Assign the following (only on new install of this package):
+# eth1 -> eth3
+# eth2 -> eth1
+# eth3 -> eth2
 if [ -z "$2" ] ; then
-    swapNic eth1 eth2
-    swapNic eth2 eth1
-    swapNicFinish
-    swapNic eth2 eth3
-    swapNic eth3 eth2
-    swapNicFinish
+    moveNic eth1 eth3
+    moveNic eth2 eth1
+    moveNic eth3 eth2
 fi
-
-rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 exit 0
