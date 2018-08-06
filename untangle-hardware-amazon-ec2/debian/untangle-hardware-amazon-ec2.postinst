@@ -28,11 +28,5 @@ if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
 EOF
 fi
 
-echo "Debugging output:"
-ls -l /usr/share/untangle/conf
-echo
-cat /usr/share/untangle/conf/wizard.js
-echo
-
 exit 0
 
