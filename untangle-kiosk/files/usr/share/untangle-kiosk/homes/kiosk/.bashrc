@@ -57,9 +57,9 @@ launch_x() {
 ## Main
 
 # wait for the uvm to start before we continue
-clear
-echo -n "Waiting for UVM to boot."
 if [ -x /etc/init.d/untangle-vm ] ; then
+    clear
+    echo -n "Waiting for UVM to boot."
     for i in $(seq 300) ; do
         if grep -q running /var/run/uvm.status 2>/dev/null ; then
             break
@@ -67,8 +67,8 @@ if [ -x /etc/init.d/untangle-vm ] ; then
         sleep 1
         echo -n "."
     done
+    echo
 fi
-echo
 
 if [ $(tty) = "/dev/tty1" ] ; then
     if grep -q text-administration /proc/cmdline 2>/dev/null ; then
