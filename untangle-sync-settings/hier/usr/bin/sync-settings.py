@@ -310,7 +310,7 @@ def copy_files(tmpdir):
     """
     Copy the files from tmpdir into the root filesystem
     """
-    cmd = "/bin/cp -ar --remove-destination " + tmpdir+"/*" + " /"
+    cmd = "/bin/cp -r --preserve=mode,timestamps --remove-destination " + tmpdir+"/*" + " /"
     result = run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
