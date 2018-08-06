@@ -58,7 +58,10 @@ launch_x() {
 
 # wait for the uvm to start before we continue
 if [ -x /etc/init.d/untangle-vm ] ; then
-    while ! grep -q running /var/run/uvm.status 2>/dev/null ; do
+    for i in $(seq 300) ; do
+        if grep -q running /var/run/uvm.status 2>/dev/null ; then
+            break
+        fi
 	    sleep 1
     done
 fi
