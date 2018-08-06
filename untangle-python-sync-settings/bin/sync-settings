@@ -196,7 +196,7 @@ def copy_files(tmpdir):
         # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
         cmd = "find " + tmpdir + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + tmpdir + "/$dir /$dir ; fi ; done"
         result = run_cmd(cmd)
-        cmd = "find " + tmpdir + " -type f -printf '%P\\n' | while read file ; do cp -a --remove-destination " + tmpdir + "/$file /$file ; done"
+        cmd = "find " + tmpdir + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + tmpdir + "/$file /$file ; done"
         result += run_cmd(cmd)
     else:
         # OpenWRT does not support printf in find, so go back to cp
