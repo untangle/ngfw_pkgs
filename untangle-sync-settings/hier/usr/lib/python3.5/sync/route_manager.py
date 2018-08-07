@@ -114,7 +114,7 @@ current_ip_route_rules()
         file.write(r"""
 flush_ip_route_rules()
 {
-t    local t_priority
+    local t_priority
     for t_priority in `ip rule show | awk "/^%s[0-9][0-9][0-9]:/ { sub( \":\", \"\", \\$1 ) ; print \\$1 }"`; do
         ip rule del priority ${t_priority}
     done
