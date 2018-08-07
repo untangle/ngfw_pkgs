@@ -8,6 +8,16 @@ sed -e 's/\(.*log_warning_msg.*\)/#\1/' -i /etc/network/if-up.d/mountnfs
 # (NGFW-11669)
 perl -i -pe 's/(?<=BRIDGE_HOTPLUG=).*/no/' /etc/default/bridge-utils
 
+# Disable the networking service from killing children services
+# If any interface fails then the whole networking service fails
+# If KillMode is the default setting, it kills all children of the ifup process
+# which kills critical processes like pppd.
+# Setting KillMode=none is a safety check that allows things to continue to partially
+# work even when one specific interface fails.
+if ! grep 'KillMode' /lib/systemd/system/networking.service ; then
+    echo 'KillMode=none' >> /lib/systemd/system/networking.service
+fi
+
 # disable hostapd
 # It will be started via the post-network scripts if needed
 deb-systemd-helper disable hostapd
