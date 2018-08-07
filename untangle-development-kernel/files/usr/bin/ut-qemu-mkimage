@@ -54,7 +54,7 @@ if [[ -n "$UVM" ]] ; then
       CUSTOMIZE=(--customize install-uvm.sh)
       PACKAGES+=(--package sysvinit-core) ;;
     stretch)
-      KERNEL_VERSION="4.9.0-6"
+      KERNEL_VERSION="4.9.0-7"
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
