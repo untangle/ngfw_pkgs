@@ -242,7 +242,7 @@ def calculate_changed_files(tmpdir):
     Compares the contents of tmpdir with the existing filesystem
     Returns a list of files that have changed (using root path)
     """
-    cmd = "diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
+    cmd = "LC_ALL=C diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
     process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
     out,err = process.communicate()
     
