@@ -84,7 +84,7 @@ class InterfacesManager:
 
         # load 8021q
         if interface_settings.get('isVlanInterface'):
-            self.interfaces_file.write("\tpre-up modprobe -q 8021q\n") 
+            self.interfaces_file.write("\tpre-up modprobe -q 8021q || true\n") 
 
         # handle static stuff
         if interface_settings.get('v4ConfigType') == 'STATIC':
@@ -116,20 +116,20 @@ class InterfacesManager:
         if interface_settings.get('v4ConfigType') == 'PPPOE':
             if interface_settings.get('v4PPPoERootDev') != None:
                 if interface_settings.get('isVlanInterface'):
-                    self.interfaces_file.write("\tpre-up env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-pre-up.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
-                self.interfaces_file.write("\tpre-up /sbin/ifconfig %s up\n" % interface_settings.get('v4PPPoERootDev'))
-                self.interfaces_file.write("\tpost-down /sbin/ifconfig %s down\n" % interface_settings.get('v4PPPoERootDev'))
+                    self.interfaces_file.write("\tpre-up env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-pre-up.d/vlan || true\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+                self.interfaces_file.write("\tpre-up /sbin/ifconfig %s up || true\n" % interface_settings.get('v4PPPoERootDev'))
+                self.interfaces_file.write("\tpost-down /sbin/ifconfig %s down || true\n" % interface_settings.get('v4PPPoERootDev'))
                 if interface_settings.get('isVlanInterface'):
-                    self.interfaces_file.write("\tpost-down env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
+                    self.interfaces_file.write("\tpost-down env IF_VLAN_RAW_DEVICE=%s IFACE=%s /etc/network/if-post-down.d/vlan || true\n" % (interface_settings.get('physicalDev'),interface_settings.get('v4PPPoERootDev')))
             self.interfaces_file.write("\tprovider %s\n" % ("connection.intf" + str(interface_settings.get('interfaceId')))) 
             # sleep to give PPPoE time to get address (bug #11431)
-            self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/pppoe-wait-for-address.sh %s 60\n" % devName ) 
+            self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/pppoe-wait-for-address.sh %s 60 || true\n" % devName ) 
 
         # write VRRP source routes
         if interface_settings.get('isWan') and interface_settings.get('configType') == 'ADDRESSED' and interface_settings.get('vrrpEnabled'):
             if interface_settings.get('vrrpAliases') != None:
                 for alias in interface_settings.get('vrrpAliases'):
-                    self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
+                    self.interfaces_file.write("\tpost-up /usr/share/untangle-sync-settings/bin/add-source-route.sh %s \"uplink.%i\" -4 || true\n" % (alias.get('staticAddress'), interface_settings.get('interfaceId'))) 
             
         if interface_settings.get('isWirelessInterface'):
             if interface_settings.get('wirelessMode') == 'AP' or interface_settings.get('wirelessMode') == None:
@@ -152,8 +152,8 @@ class InterfacesManager:
         self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         if interface_settings.get('v6ConfigType') == 'STATIC':
-            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/autoconf || true" + "\n")
             if interface_settings.get('v6StaticAddress') != None:
                 self.interfaces_file.write("\tuntangle_v6_address %s\n" % interface_settings.get('v6StaticAddress'))
             if interface_settings.get('v6StaticPrefixLength') != None:
@@ -161,19 +161,19 @@ class InterfacesManager:
             if interface_settings.get('isWan'):
                 if interface_settings.get('v6StaticGateway') != None:
                     self.interfaces_file.write("\tuntangle_v6_gateway %s\n" % interface_settings.get('v6StaticGateway'))
-                    self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                    self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra || true" + "\n")
                 else: # no gateway specified, use RAs
-                    self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                    self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra || true" + "\n")
         elif interface_settings.get('v6ConfigType') == 'AUTO':
-            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf" + "\n")
+            self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
+            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/autoconf || true" + "\n")
             self.interfaces_file.write("\tuntangle_v6_address %s\n" % "auto")
             if interface_settings.get('isWan'):
-                self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra || true" + "\n")
             else:
-                self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra" + "\n")
+                self.interfaces_file.write("\tpre-up echo 0 > /proc/sys/net/ipv6/conf/$IFACE/accept_ra || true" + "\n")
         elif interface_settings.get('v6ConfigType') == 'DISABLED':
-            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
+            self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
 
         self.interfaces_file.write("\n\n");
 
@@ -182,8 +182,8 @@ class InterfacesManager:
         self.interfaces_file.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId') )
         self.interfaces_file.write("auto %s\n" % devName)
         self.interfaces_file.write("iface %s inet manual\n" % devName )
-        self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6" + "\n")
-        self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+        self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
+        self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up || true\n" % devName )
         self.interfaces_file.write("\n\n");
 
     def write_interface_blank( self, interface_settings, interfaces ):
@@ -196,7 +196,7 @@ class InterfacesManager:
             self.interfaces_file.write("## Interface %i (BRIDGE PORT)\n" % interface_settings.get('interfaceId') )
             self.interfaces_file.write("auto %s\n" % devName)
             self.interfaces_file.write("iface %s inet manual\n" % devName )
-            self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up\n" % devName )
+            self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up || true\n" % devName )
             if interface_settings.get('wirelessMode') == 'AP' or interface_settings.get('wirelessMode') == None:
                 self.interfaces_file.write("\thostapd /etc/hostapd/hostapd.conf-%s\n" % devName);
             elif interface_settings.get('wirelessMode') == 'CLIENT':
@@ -268,8 +268,8 @@ class InterfacesManager:
         self.interfaces_file.write("auto networking_pre_restart_hook\n");
         self.interfaces_file.write("iface networking_pre_restart_hook inet manual\n");
         if settings.get('blockDuringRestarts') != None and settings.get('blockDuringRestarts'):
-            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
-            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" || true\n");
+            self.interfaces_file.write("\tpre-up /sbin/iptables -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" || true\n");
         self.interfaces_file.write("\n\n");
 
         self.interfaces_file.write("auto lo\n");
