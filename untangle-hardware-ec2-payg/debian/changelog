@@ -1,4 +1,4 @@
-untangle-hardware-amazon-payg (11.0.0-1) stable; urgency=low
+untangle-hardware-ec2-payg (11.0.0-1) stable; urgency=low
 
   * Initial release
 
