@@ -1,4 +1,4 @@
-untangle-hardware-amazon-ec2 (11.0.0-1) stable; urgency=low
+untangle-hardware-ec2-byol (11.0.0-1) stable; urgency=low
 
   * Initial release
 
