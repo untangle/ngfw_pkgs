@@ -9,9 +9,6 @@ DESTDIR := $(CURDIR)/debian/$(shell dh_listpackages)
 %:
 	dh $@ 
 
-override_dh_gencontrol:
-	if [ -f debian/version ] ; then dh_gencontrol -- -v"`cat debian/version`" ; else dh_gencontrol ; fi
-
 override_dh_install:
 	if [ -f Makefile ] || [ ! -d files ]; then \
 	  dh_install ; \
