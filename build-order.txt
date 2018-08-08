@@ -3,7 +3,7 @@ untangle-development-kernel		stretch
 untangle-root				stretch
 untangle-hardware-linksys-wrt3200acm	stretch
 untangle-hardware-ec2-byol		stretch
-untangle-hardware-amazon-payg		stretch
+untangle-hardware-ec2-payg		stretch
 untangle-database-config		stretch
 untangle-lxc-client			stretch
 untangle-hardware-turris-omnia		stretch
