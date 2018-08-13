@@ -48,4 +48,22 @@ def get_wireless_macaddr(idx):
     if board_name == "armada-385-linksys-shelby":
         return increment_mac(get_eth0_mac_addr(), idx + 1)
 
+linksys_switch = [{"name":"switch0",
+                   "ports":[{"id":"0","pvid":"1","cpu_port":False},
+                            {"id":"1","pvid":"1","cpu_port":False},
+                            {"id":"2","pvid":"1","cpu_port":False},
+                            {"id":"3","pvid":"1","cpu_port":False},
+                            {"id":"4","pvid":"2","cpu_port":False},
+                            {"id":"5","pvid":"1","cpu_port":True},
+                            {"id":"6","pvid":"2","cpu_port":True}],
+                   "vlans":[{"id":"1"},
+                            {"id":"2"}],
+                 }]
+
+def get_switch_settings():
+    board_name = get_board_name()
+    return {
+            "armada-385-linksys-shelby": linksys_switch,
+            "armada-385-linksys-rango": linksys_switch,
+    }.get(board_name, [])
     return ""

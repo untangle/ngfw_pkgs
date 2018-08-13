@@ -6,7 +6,6 @@ import datetime
 import traceback
 from sync import registrar
 from sync import network_util
-from sync import switch_util
 from sync import board_util
 
 # This class is responsible for writing /etc/config/network
@@ -26,6 +25,7 @@ class NetworkManager:
 
         self.create_settings_devices(settings, prefix, delete_list, verbosity)
         self.create_settings_interfaces(settings, prefix, delete_list, verbosity)
+        self.create_settings_switches(settings, prefix, delete_list, verbosity)
         
     def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         self.write_network_file(settings, prefix, verbosity)
@@ -85,7 +85,7 @@ class NetworkManager:
                 self.write_interface_v4(intf, settings)
                 self.write_interface_v6(intf, settings)
 
-        switches = switch_util.get_switches()
+        switches = settings['network']['switches']
         for swi in switches:
             self.write_switch(swi, settings)
         
@@ -100,16 +100,23 @@ class NetworkManager:
 
         file.write("\n");
         file.write("config switch\n");
-        file.write("\toption name '%s'\n" % swi);
+        file.write("\toption name '%s'\n" % swi['name']);
         file.write("\toption reset '1'\n");
         file.write("\toption enable_vlan '1'\n");
         file.write("\n");
-        vlan_list = switch_util.get_switch_vlans(swi)
+        vlan_list = swi['vlans']
         for vlan in vlan_list:
             file.write("config switch_vlan\n");
-            file.write("\toption device '%s'\n" % swi);
-            file.write("\toption vlan '%s'\n" % vlan);
-            file.write("\toption ports '%s'\n" % ' '.join(switch_util.get_switch_vlan_ports(swi, vlan)));
+            file.write("\toption device '%s'\n" % swi['name']);
+            file.write("\toption vlan '%s'\n" % vlan['id']);
+            vlan_ports = []
+            for port in swi['ports']:
+                if port['pvid'] == vlan['id']:
+                    if port['cpu_port'] == True:
+                        vlan_ports.append("%st" % port['id']);
+                    else:
+                        vlan_ports.append("%s" % port['id']);
+            file.write("\toption ports '%s'\n" % " ".join(vlan_ports));
             file.write("\n");
 
         return
@@ -324,6 +331,9 @@ class NetworkManager:
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
                 
+    def create_settings_switches(self, settings, prefix, delete_list, verbosity=0):
+        settings['network']['switches'] = board_util.get_switch_settings()
+
 def get_devices():
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
