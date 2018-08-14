@@ -3,6 +3,7 @@ from . import nftables_manager
 from . import network_manager
 from . import firewall_manager
 from . import wireless_manager
+from . import dhcp_manager
 
 from . import settings_manager
 from . import operations
