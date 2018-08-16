@@ -11,6 +11,7 @@ def get_external_device_name():
     return {
             "armada-385-linksys-shelby": "eth1.2",
             "armada-385-linksys-rango": "eth1.2",
+            "armada-385-turris-omnia": "eth2",
     }.get(board_name, "eth1")
 
 def get_internal_device_name():
@@ -18,6 +19,7 @@ def get_internal_device_name():
     return {
             "armada-385-linksys-shelby": "eth0.1",
             "armada-385-linksys-rango": "eth0.1",
+            "armada-385-turris-omnia": "lan0",
     }.get(board_name, "eth0")
 
 def get_country_code():
