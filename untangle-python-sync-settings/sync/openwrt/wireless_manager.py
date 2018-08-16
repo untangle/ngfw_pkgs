@@ -120,6 +120,8 @@ class WirelessManager:
                 file.write("\toption device 'radio%d'\n" % devidx)
                 if intf.get('configType') == 'BRIDGED':
                     file.write("\toption network '%s'\n" % self.get_bridge_name(settings, intf))
+                elif intf.get('configType') == 'ADDRESSED':
+                    file.write("\toption network '%s'\n" % (intf.get('name')+"4"))
                 if intf.get('wirelessMode') == 'AP':
                     file.write("\toption mode 'ap'\n")
                 else:
