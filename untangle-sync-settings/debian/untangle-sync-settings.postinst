@@ -45,6 +45,10 @@ deb-systemd-helper disable bgpd
 # bug #11185
 if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usepeerdns /etc/ppp/ip-up.d/0000usepeerdns.disabled ; fi
 
+# Fix debian stretch bridge-utils issue
+# NGFW-12055
+/bin/sed -e 's/grep -q "/grep -q -F "/g' -i /lib/bridge-utils/bridge-utils.sh
+
 #
 # 14.0 conversion
 #
