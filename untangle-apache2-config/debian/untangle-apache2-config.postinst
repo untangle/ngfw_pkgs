@@ -84,6 +84,11 @@ A2DISMOD_OPTS="-m -f"
 a2dismod $A2DISMOD_OPTS autoindex
 a2dismod $A2DISMOD_OPTS userdir
 
+# Use mpm_worker (works with mod_python)
+/usr/sbin/a2dismod $A2DISMOD_OPTS mpm_event
+/usr/sbin/a2dismod $A2DISMOD_OPTS mpm_prefork
+/usr/sbin/a2enmod mpm_worker
+
 # enable UVM site
 a2dissite default >/dev/null 2>&1 # wheezy
 a2dissite 000-default >/dev/null 2>&1 # jessie
