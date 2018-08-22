@@ -72,7 +72,7 @@ class InterfacesManager:
                 if intf.get('physicalDev') != None and settings.get('devices') != None and settings.get('devices').get('list') != None:
                     for devSettings in settings.get('devices').get('list'):
                         if devSettings.get('deviceName') != None and devSettings.get('deviceName') == intf.get('physicalDev'):
-                            if devSettings.get('mtu') != None:
+                            if devSettings.get('mtu') != None and devSettings.get('mtu') != 0:
                                 # mtu found
                                 if bridgeMinMtu == None:
                                     bridgeMinMtu = int(devSettings.get('mtu'))
