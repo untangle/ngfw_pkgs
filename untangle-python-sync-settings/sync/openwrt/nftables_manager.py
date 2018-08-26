@@ -38,11 +38,48 @@ nft flush ruleset
 # prerouting skeleton
 nft add table inet prerouting
 nft add table ip   prerouting
+nft add table ip6  prerouting
 nft add chain inet prerouting prerouting-set-marks "{ type filter hook prerouting priority -150 ; }"
-# nft add chain inet prerouting packetd-queue "{ type nat hook prerouting priority -145 ; }"
+nft add chain inet prerouting prerouting-packetd "{ type filter hook prerouting priority -145 ; }"
 nft add chain inet prerouting prerouting-qos "{ type filter hook prerouting priority -140 ; }"
 nft add chain inet prerouting prerouting-route "{ type filter hook prerouting priority -135 ; }"
 nft add chain ip   prerouting prerouting-nat "{ type nat hook prerouting priority -100 ; }"
+nft add chain ip6  prerouting prerouting-nat "{ type nat hook prerouting priority -100 ; }"
+
+nft add chain inet prerouting restore-interface-marks
+nft add chain inet prerouting restore-priority-mark
+nft add chain inet prerouting mark-src-interface
+nft add chain inet prerouting check-interface-marks
+nft add rule inet prerouting prerouting-set-marks jump restore-interface-marks
+nft add rule inet prerouting prerouting-set-marks jump restore-priority-mark
+nft add rule inet prerouting prerouting-set-marks jump mark-src-interface
+nft add rule inet prerouting prerouting-set-marks jump check-interface-marks
+
+nft add chain inet prerouting prioritization-qos
+nft add chain inet prerouting qos-imq
+nft add rule inet prerouting prerouting-qos jump prioritization-qos
+nft add rule inet prerouting prerouting-qos jump qos-imq
+
+nft add chain ip  prerouting port-forward-rules
+nft add chain ip6 prerouting port-forward-rules
+nft add chain ip  prerouting upnp-rules
+nft add chain ip6 prerouting upnp-rules
+nft add chain ip  prerouting web-filter-rules-sys
+nft add chain ip6 prerouting web-filter-rules-sys
+nft add chain ip  prerouting web-filter-rules
+nft add chain ip6 prerouting web-filter-rules
+nft add chain ip  prerouting captive-portal-rules
+nft add chain ip6 prerouting captive-portal-rules
+nft add rule ip  prerouting prerouting-nat jump port-forward-rules
+nft add rule ip6 prerouting prerouting-nat jump port-forward-rules
+nft add rule ip  prerouting prerouting-nat jump upnp-rules
+nft add rule ip6 prerouting prerouting-nat jump upnp-rules
+nft add rule ip  prerouting prerouting-nat jump web-filter-rules-sys
+nft add rule ip6 prerouting prerouting-nat jump web-filter-rules-sys
+nft add rule ip  prerouting prerouting-nat jump web-filter-rules
+nft add rule ip6 prerouting prerouting-nat jump web-filter-rules
+nft add rule ip  prerouting prerouting-nat jump captive-portal-rules
+nft add rule ip6 prerouting prerouting-nat jump captive-portal-rules
 
 # postrouting skeleton
 nft add table inet postrouting
@@ -50,6 +87,17 @@ nft add table ip   postrouting
 nft add chain ip   postrouting postrouting-nat "{ type nat hook postrouting priority 100 ; }"
 nft add chain inet postrouting postrouting-set-marks "{ type filter hook postrouting priority 110 ; }"
 nft add chain inet postrouting postrouting-qos "{ type filter hook postrouting priority 120 ; }"
+
+nft add chain ip  postrouting nat-rules-sys
+nft add chain ip  postrouting nat-rules
+nft add chain inet postrouting restore-priority-mark
+nft add chain inet postrouting mark-dst-interface
+nft add chain inet postrouting prioritization-rules
+nft add rule ip  postrouting postrouting-nat jump nat-rules-sys
+nft add rule ip  postrouting postrouting-nat jump nat-rules
+nft add rule inet postrouting postrouting-set-marks jump restore-priority-mark
+nft add rule inet postrouting postrouting-set-marks jump mark-dst-interface
+nft add rule inet postrouting postrouting-qos jump prioritization-rules
 
 # forward skeleton
 nft add table inet forward
@@ -71,7 +119,7 @@ nft add rule inet forward forward-filter jump filter-rules-all
 
 # input skeleton
 nft add table inet input
-# nft add chain inet input packetd-input "{ type filter hook input priority -150 ; }"
+nft add chain inet input input-packetd "{ type filter hook input priority -150 ; }"
 nft add chain inet input input-filter "{ type filter hook input priority 0 ; }"
 nft add chain inet input access-rules-sys
 nft add chain inet input access-rules
@@ -82,9 +130,15 @@ nft add rule inet input input-filter jump access-rules
 nft add table inet output
 nft add table ip   output
 nft add table ip6  output
-# nft add chain inet output packetd-output "{ type filter hook output priority -150 ; }"
+nft add chain inet output output-packetd "{ type filter hook output priority -150 ; }"
 nft add chain ip   output output-route "{ type route hook output priority -150 ; }"
 nft add chain ip6  output output-route "{ type route hook output priority -150 ; }"
+
+nft add chain ip  output route-vote-rules
+nft add chain ip6 output route-vote-rules
+nft add rule ip  output output-route jump route-vote-rules
+nft add rule ip6 output output-route jump route-vote-rules
+
 
 exit 0
         """)
