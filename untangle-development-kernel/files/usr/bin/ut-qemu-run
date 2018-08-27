@@ -43,7 +43,6 @@ while getopts ua:f:k:i:m:b:c:t: option ; do
     m) MEMORY="$OPTARG" ;;
     b) BRIDGE="$OPTARG" ;;
     c) BRIDGE_INT="$OPTARG" ;;
-    u) UVM=1 ;;
     t) case $OPTARG in
 	 g|graphic) MODE="-monitor stdio" ;;
 	 t|terminal) MODE="-nographic -serial stdio -monitor none" ;;
@@ -59,23 +58,22 @@ done
 
 ##################
 # check CLI args
-[[ -z "$ARCH" ]] && ARCH="amd64"
-{ [[ -z "$IMAGE" ]] ; } && usage
-
-if [[ -n "$UVM" ]] ; then
+[[ -z "$IMAGE" ]] && usage
+# if an internal bridge is specified, require external bridge option
+if [[ -n "$BRIDGE_INT" ]] ; then
   # require additional parameters
-  { [[ -z "$BRIDGE" ]] || [[ -z "$BRIDGE_INT" ]] ; } && usage
-  # default RAM to 2G
-  [[ -z "$MEMORY" ]] && MEMORY="2G"
-else
-  [[ -z "$MEMORY" ]] && MEMORY="1G"
+  [[ -z "$BRIDGE" ]] && usage
 fi
+
+# defaults
+[[ -z "$ARCH" ]] && ARCH="amd64"
+[[ -z "$MEMORY" ]] && MEMORY="2G"
 
 # external network
 NETWORK_OPTIONS="-netdev bridge,id=external0,br=$BRIDGE \
     -device virtio-net-pci,netdev=external0,mac=$(generateMAC "$IMAGE")"
 
-if [[ -n "$UVM" ]] ; then # setup the "internal" network
+if [[ ! -z "$BRIDGE_INT" ]] ; then # setup the "internal" network
   # create the internal bridge if necessary
   if ! ip link ls ${BRIDGE_INT} > /dev/null 2>&1 ; then
     ip link add $BRIDGE_INT type bridge
