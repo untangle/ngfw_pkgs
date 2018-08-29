@@ -4,7 +4,10 @@ import subprocess
 import string
 
 def get_board_name():
+    try:
         return subprocess.check_output("cat /tmp/sysinfo/board_name", shell=True).decode('ascii').rstrip()
+    except:
+        return "unknown"
 
 def get_external_device_name():
     board_name = get_board_name()
@@ -25,7 +28,11 @@ def get_internal_device_name():
 def get_country_code():
     board_name = get_board_name()
     if board_name == "armada-385-linksys-shelby":
-        sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True).decode('ascii').rstrip()
+        sku = None
+        try:
+            sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True).decode('ascii').rstrip()
+        except:
+            pass
         return {
                 "AP": "CN",
                 "AU": "AU",
@@ -36,7 +43,10 @@ def get_country_code():
     return ""
 
 def get_eth0_mac_addr():
-    return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True).decode('ascii').rstrip()
+    try:
+        return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True).decode('ascii').rstrip()
+    except:
+        return None
 
 def increment_mac(mac, idx):
     eth_mac = mac.split(':')

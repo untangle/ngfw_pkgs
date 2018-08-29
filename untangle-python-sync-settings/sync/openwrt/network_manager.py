@@ -79,7 +79,6 @@ class NetworkManager:
 
         for intf in interfaces:
             intf['netfilterDev'] = intf['device']
-            intf['symbolicDev'] = intf['device']
             if intf.get('configType') != "DISABLED":
                 self.write_interface_bridge(intf, settings)
                 self.write_interface_v4(intf, settings)
@@ -196,9 +195,12 @@ class NetworkManager:
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use PPPOE on non-WAN interfaces')
             file.write("\toption proto 'pppoe'\n")
-            # intf['netfilterDev'] = ppp0
-            # intf['symbolicDev'] = XXX
             # FIXME
+            # If its PPPoE the "netfilterDev" is the actual device that netfilter rules should match on
+            # In this case we need to set 'netfilterDev' to 'pppX' so subsequent modules know the proper
+            # netfilter device to use
+            # intf['netfilterDev'] = ppp0
+
         elif intf.get('v4ConfigType') == "DISABLED":
             # This needs to be written for addressless bridges
             file.write("\toption proto 'none'\n")
