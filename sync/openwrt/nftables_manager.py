@@ -9,10 +9,10 @@ from sync import registrar
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
 class NftablesManager:
-    filename = "/etc/config/nftables-rules.d/010-initialize"
+    filename = "/etc/config/nftables-rules.d/001-skeleton"
 
     def initialize(self):
-        registrar.register_file(self.filename, "restart-networking", self)
+        registrar.register_file(self.filename, "restart-nftables-rules", self)
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
