@@ -142,6 +142,14 @@ nft add rule ip6 output output-route jump route-vote-rules
 
 exit 0
         """)
+
+        file.write("\n");
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        if verbosity > 0: print("NftablesManager: Wrote %s" % filename)
+        return
         
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         self.write_file(settings, prefix, verbosity)
