@@ -283,8 +283,12 @@ class NetworkManager:
 
     def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
         device_list = get_devices()
-        internal_device_name = board_util.get_internal_device_name()
-        external_device_name = board_util.get_external_device_name()
+        if len(device_list) == 1:
+            internal_device_name = "None"
+            external_device_name = device_list[0]
+        else:
+            internal_device_name = board_util.get_internal_device_name()
+            external_device_name = board_util.get_external_device_name()
 
         # Move wan to top of list, in OpenWRT eth1 is the WAN
         if external_device_name in device_list:
