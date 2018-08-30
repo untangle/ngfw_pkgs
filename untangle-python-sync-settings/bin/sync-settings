@@ -96,6 +96,7 @@ def print_usage():
     -c          : create settings file if non-existant
     -n          : do not run restart commands (just copy files onto filesystem)
     -s          : do not copy or run restart commands (test run)
+    -o          : specify OS manually (debian/openwrt)
 """ % sys.argv[0] )
 
 def fixup_settings(json):
