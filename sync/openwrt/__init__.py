@@ -5,6 +5,7 @@ from . import firewall_manager
 from . import wireless_manager
 from . import dhcp_manager
 from . import nat_manager
+from . import filter_rules_manager
 
 from . import settings_manager
 from . import operations
