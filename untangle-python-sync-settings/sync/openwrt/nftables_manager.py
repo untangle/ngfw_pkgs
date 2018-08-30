@@ -101,8 +101,8 @@ nft add rule inet postrouting postrouting-qos jump prioritization-rules
 
 # forward skeleton
 nft add table inet forward
-nft add chain inet forward forward-set-marks "{ type filter hook postrouting priority -150 ; }"
-nft add chain inet forward forward-filter "{ type filter hook postrouting priority 0 ; }"
+nft add chain inet forward forward-set-marks "{ type filter hook forward priority -150 ; }"
+nft add chain inet forward forward-filter "{ type filter hook forward priority 0 ; }"
 
 # FIXME - these should be moved to default settings in forward-filter
 # Leaving them here for now
