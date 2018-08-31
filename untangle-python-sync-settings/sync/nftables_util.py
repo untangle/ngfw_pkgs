@@ -29,7 +29,7 @@ def condition_ip_protocol_expression(value, op):
     else:
         return "ip protocol " + op_str + "\"{" + value + "}\""
 
-def condition_interface_expression(mark_exp, wan_mark, intf_mark, value, op):
+def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op):
     if "any" in value:
         return ""
 
@@ -69,17 +69,36 @@ def condition_interface_expression(mark_exp, wan_mark, intf_mark, value, op):
         except ValueError as e:
             raise Exception("Invalid interface condition value: " + value)
 
-def condition_source_interface_expression(value, op):
-    return condition_interface_expression("mark", "0x01000000", "0x000000ff", value, op)
+def condition_interface_name_expression(name_str, value, op):
+    if "any" in value:
+        return ""
 
-def condition_destination_interface_expression(value, op):
-    return condition_interface_expression("mark", "0x02000000", "0x0000ff00", value, op)
+    if op != "IS" and op != "IS_NOT":
+        raise Exception("Unsupported operation " + str(op))
+    if op == "IS":
+        op_str = ""
+    elif op == "IS_NOT":
+        op_str = "!= "
 
-def condition_client_interface_expression(value, op):
-    return condition_interface_expression("ct mark", "0x01000000", "0x000000ff", value, op)
+    return name_str + " " + op_str + value 
 
-def condition_server_interface_expression(value, op):
-    return condition_interface_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
+def condition_source_interface_name_expression(value, op):
+    return condition_interface_name_expression("iifname", value, op)
+
+def condition_destination_interface_name_expression(value, op):
+    return condition_interface_name_expression("oifname", value, op)
+
+def condition_source_interface_zone_expression(value, op):
+    return condition_interface_zone_expression("mark", "0x01000000", "0x000000ff", value, op)
+
+def condition_destination_interface_zone_expression(value, op):
+    return condition_interface_zone_expression("mark", "0x02000000", "0x0000ff00", value, op)
+
+def condition_client_interface_zone_expression(value, op):
+    return condition_interface_zone_expression("ct mark", "0x01000000", "0x000000ff", value, op)
+
+def condition_server_interface_zone_expression(value, op):
+    return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
 
 def condition_address_expression(addr_str, value, op):
     if "any" in value:
@@ -208,14 +227,18 @@ def condition_expression(condition, ip_protocol=None):
 
     if type == "IP_PROTOCOL":
         return condition_ip_protocol_expression(value, op)
-    elif type == "SOURCE_INTERFACE":
-        return condition_source_interface_expression(value, op)
-    elif type == "DESTINATION_INTERFACE":
-        return condition_destination_interface_expression(value, op)
-    elif type == "CLIENT_INTERFACE":
-        return condition_client_interface_expression(value, op)
-    elif type == "SERVER_INTERFACE":
-        return condition_server_interface_expression(value, op)
+    elif type == "SOURCE_INTERFACE_ZONE":
+        return condition_source_interface_zone_expression(value, op)
+    elif type == "DESTINATION_INTERFACE_ZONE":
+        return condition_destination_interface_zone_expression(value, op)
+    elif type == "CLIENT_INTERFACE_ZONE":
+        return condition_client_interface_zone_expression(value, op)
+    elif type == "SERVER_INTERFACE_ZONE":
+        return condition_server_interface_zone_expression(value, op)
+    elif type == "SOURCE_INTERFACE_NAME":
+        return condition_source_interface_name_expression(value, op)
+    elif type == "DESTINATION_INTERFACE_NAME":
+        return condition_destination_interface_name_expression(value, op)
     elif type == "SOURCE_ADDRESS":
         return condition_source_address_expression(value, op)
     elif type == "DESTINATION_ADDRESS":
