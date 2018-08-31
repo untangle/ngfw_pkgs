@@ -287,3 +287,68 @@ def conditions_expression(conditions, comment=None):
 
     return str.strip()
 
+# This method takes an method json object and provides the nft expression as a string
+def action_expression(json_action):
+    if json_action == None:
+        raise Exception("Invalid action: null")
+    type = json_action.get('type')
+
+    if type == "REJECT":
+        return "reject"
+    if type == "ACCEPT":
+        return "accept"
+    elif type == "JUMP":
+        chain = json_action.get('chain')
+        if chain == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + type)
+        return "jump " + chain
+    elif type == "GOTO":
+        chain = json_action.get('chain')
+        if chain == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + type)
+        return "goto " + chain
+
+def rule_expression(json_rule):
+    if json_rule is None:
+        raise Exception("Invalid rule: null")
+    rule_id = json_rule.get('ruleId')
+    action = json_rule.get('action')
+    if rule_id == None:
+        raise Exception("Missing ruleId: " + str(json_rule))
+    if action is None:
+        raise Exception("Invalid action (null) in rule " + str(rule_id))
+
+    rule_exp = ""
+
+    conditions = json_rule.get('conditions')
+    if conditions != None:
+        for condition in conditions:
+            cond_exp = condition_expression(condition)
+            rule_exp = rule_exp + " " + cond_exp
+
+    action_exp = action_expression(action)
+    rule_exp = rule_exp + " " + action_exp
+
+    return rule_exp[1:]
+
+# This method takes a rule json object and provides the nft command
+def rule_cmd(json_rule, family, table, chain):
+    if json_rule is None:
+        raise Exception("Invalid rule: null")
+    rule_id = json_rule.get('ruleId')
+    if rule_id == None:
+        raise Exception("Missing ruleId: " + str(json_rule))
+    if family is None:
+        raise Exception("Invalid family (null) in rule " + str(rule_id))
+    if table is None:
+        raise Exception("Invalid table (null) in rule " + str(rule_id))
+    if chain is None:
+        raise Exception("Invalid chain (null) in rule " + str(rule_id))
+    if family not in ['ip','ip6','inet','arp','bridge','netdev']:
+        raise Exception("Invalid family (" + family + ") in rule " + str(rule_id))
+    if not json_rule.get('enabled'):
+        return None
+
+    rule_cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule)
+    return rule_cmd
+
