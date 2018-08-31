@@ -136,7 +136,6 @@ nft add chain ip6 output route-vote-rules
 nft add rule ip  output output-route jump route-vote-rules
 nft add rule ip6 output output-route jump route-vote-rules
 
-
 exit 0
         """)
 
