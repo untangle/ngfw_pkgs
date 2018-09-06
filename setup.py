@@ -12,11 +12,11 @@ if isdir("../.git"): # debian source tarballs don't contain .git
 else:
   version = "undefined"
 
-setup(name='untangle-python-sync-settings',
+setup(name='sync-settings',
       version = version,
-      description = 'Untangle Python Sync Settings.',
+      description = 'Sync Settings.',
       long_description = '''Takes the network settings JSON file and syncs it to the operating system
-                            It reads through the settings and writes the appropriate operating system files.''',
+                            It reads through the settings and writes the appropriate operating system configuration files.''',
       author = 'Dirk Morris & Untangle.',
       author_email = 'dmorris@untangle.com',
       url = 'https://untangle.com',
