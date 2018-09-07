@@ -52,7 +52,7 @@ class RulesManager:
             return
 
         i = 0
-        for table_name, table in settings.get('firewall').get('tables').items():
+        for table_name, table in sorted(settings.get('firewall').get('tables').items()):
             if table.get('name') == None:
                 raise Exception('Invalid table: Missing name')
             if table.get('family') == None:

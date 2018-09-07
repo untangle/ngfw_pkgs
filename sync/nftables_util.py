@@ -404,7 +404,7 @@ def table_all_cmds(json_table):
     family = json_table.get('family')
     cmds.append(table_create_cmd(json_table))
     cmds.append(table_flush_cmd(json_table))
-    for chain_name, chain in json_table.get('chains').items():
+    for chain_name, chain in sorted(json_table.get('chains').items()):
         cmds.append(chain_create_cmd(chain,family,name))
     return '\n'.join(cmds)
 
