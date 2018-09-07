@@ -42,9 +42,6 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# 14.0 conversion: migrate from 9.4 to 9.6 (NGFW-11582)
-/usr/share/untangle/bin/postgresql-upgrade-cluster.sh 9.4 $PG_VERSION
-
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql
 
@@ -84,6 +81,11 @@ sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_facto
 sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $PG_CONF
 # ... increase max_lock_per_transaction (NGFW-10691)
 sed -i -e "s/.*max_locks_per_transaction.*=.*/max_locks_per_transaction = 128/" $PG_CONF
+
+# if the unsafe flag is set, disable fsync
+if [ -f /usr/share/untangle/conf/unsafe-postgres-flag ] ; then
+    sed -i -e "s/.*fsync.*=.*/fsync = off/" $PG_CONF
+fi
 
 # configure hw parameters
 if [ -x /etc/untangle/startup.d/10postgres ] ; then
