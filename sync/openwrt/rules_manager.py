@@ -5,10 +5,11 @@ import subprocess
 import datetime
 import traceback
 from sync import registrar
+from sync import nftables_util
 
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
-class FilterRulesManager:
+class RulesManager:
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
     def initialize( self ):
@@ -34,6 +35,8 @@ class FilterRulesManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         file.write("\n\n");
 
+        file.write(nftables_util.table_all_cmds(table_settings) + "\n")
+
         # IMPLEMENT ME
         
         file.write("\n");
@@ -41,7 +44,7 @@ class FilterRulesManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("FilterRulesManager: Wrote %s" % filename)
+        if verbosity > 0: print("RulesManager: Wrote %s" % filename)
         return
 
     def write_files(self, settings, prefix, verbosity):
@@ -67,7 +70,7 @@ class FilterRulesManager:
         self.write_files(settings, prefix, verbosity)
         pass
     
-registrar.register_manager(FilterRulesManager())
+registrar.register_manager(RulesManager())
 
 def default_filter_rules_table():
     return {

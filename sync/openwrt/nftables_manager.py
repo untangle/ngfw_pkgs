@@ -5,6 +5,7 @@ import subprocess
 import datetime
 import traceback
 from sync import registrar
+from sync import nftables_util
 
 # This class is responsible for writing /etc/config/nftables-rules.d/001-skeleton
 # based on the settings object passed from sync-settings
