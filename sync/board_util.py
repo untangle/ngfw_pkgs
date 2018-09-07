@@ -5,7 +5,7 @@ import string
 
 def get_board_name():
     try:
-        return subprocess.check_output("cat /tmp/sysinfo/board_name", shell=True).decode('ascii').rstrip()
+        return subprocess.check_output("cat /tmp/sysinfo/board_name", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
     except:
         return "unknown"
 
@@ -30,7 +30,7 @@ def get_country_code():
     if board_name == "armada-385-linksys-shelby":
         sku = None
         try:
-            sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True).decode('ascii').rstrip()
+            sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
         except:
             pass
         return {
@@ -44,7 +44,7 @@ def get_country_code():
 
 def get_eth0_mac_addr():
     try:
-        return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True).decode('ascii').rstrip()
+        return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
     except:
         return None
 
