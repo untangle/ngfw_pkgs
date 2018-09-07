@@ -36,6 +36,10 @@ class NatManager:
         
         try:
             file.write(r"""
+nft add table ip nat-rules-sys
+nft flush table ip nat-rules-sys
+nft add chain ip nat-rules-sys nat-rules-sys "{ type nat hook postrouting priority 95 ; }"
+
 # Do not NAT loopback traffic
 nft add rule ip nat nat-rules-sys oifname lo accept
 nft add rule ip nat nat-rules-sys iifname lo accept
@@ -47,12 +51,12 @@ nft add rule ip nat nat-rules-sys iifname lo accept
                     # FIXME - this should be a rule based on mark instead of netfilterDev
                     # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                     file.write("# NAT Egress traffic to interface %i\n" % intf.get('interfaceId'))
-                    file.write("nft add rule ip postrouting nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
+                    file.write("nft add rule ip nat nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
                 if intf.get('natIngress'):
                     # FIXME - this should be a rule based on mark instead of netfilterDev
                     # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                     file.write("# NAT Ingress traffic from interface %i\n" % intf.get('interfaceId'))
-                    file.write("nft add rule ip postrouting nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
+                    file.write("nft add rule ip nat nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
                     
             file.write("\n");
         except:

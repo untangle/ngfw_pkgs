@@ -122,11 +122,6 @@ nft flush table inet filter-rules-sys 2>/dev/null || true
 nft add table inet filter-rules-sys
 nft add chain inet filter-rules-sys filter-rules-nat "{ type filter hook forward priority -5 ; }"
 
-# TODO - nat-rules-sys table should be managed in nat_manager
-nft flush table ip nat-rules-sys 2>/dev/null || true
-nft add table ip nat-rules-sys
-nft add chain ip nat-rules-sys nat-rules-sys "{ type nat hook postrouting priority 95 ; }"
-
 # TODO - nat-rules table should be created/managed in elsewhere - it is a user table
 nft flush table ip nat-rules 2>/dev/null || true
 nft add table ip nat-rules
