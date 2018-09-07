@@ -40,6 +40,9 @@ nft add table ip nat-rules-sys
 nft flush table ip nat-rules-sys
 nft add chain ip nat-rules-sys nat-rules-sys "{ type nat hook postrouting priority 95 ; }"
 
+# FIXME - must have one empty chain in prerouting
+nft add chain ip nat-rules-sys nat-rules-sys "{ type nat hook prerouting priority -95 ; }"
+
 # Do not NAT loopback traffic
 nft add rule ip nat-rules-sys nat-rules-sys oifname lo accept
 nft add rule ip nat-rules-sys nat-rules-sys iifname lo accept
