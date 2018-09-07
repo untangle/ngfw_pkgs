@@ -18,33 +18,16 @@ class FilterRulesManager:
     def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
         print("%s: Initializing settings" % self.__class__.__name__)
         forward_inet_table = {
-            "name": "forward",
+            "name": "filter-rules",
             "family": "inet",
             "chains": [{
-                "name": "forward-filter",
-                "bas": True,
+                "name": "filter-rules",
+                "description": "The base filter-rules chain",
+                "base": True,
                 "type": "filter",
                 "hook": "forward",
                 "priority": 0,
                 "rules": [{
-                    "enabled": True,
-                    "description": "Call system filter rules",
-                    "ruleId": 1,
-                    "conditions": [],
-                    "action": {
-                        "action": "JUMP",
-                        "chain": "forward-filter-sys"
-                    }
-                },{
-                    "enabled": True,
-                    "description": "Call NAT filter rules",
-                    "ruleId": 2,
-                    "conditions": [],
-                    "action": {
-                        "action": "JUMP",
-                        "chain": "forward-filter-nat"
-                    }
-                },{
                     "enabled": True,
                     "description": "Call new session filter rules",
                     "ruleId": 2,
@@ -74,21 +57,17 @@ class FilterRulesManager:
                 }],
                 "editable": False
             },{
-                "name": "filter-rules-sys",
-                "rules": [],
-                "editable": False
-            },{
-                "name": "filter-rules-nat",
-                "rules": [],
-                "editable": False
-            },{
                 "name": "filter-rules-new",
+                "description": "The chain to process the first packet of each session (new sessions)",
+                "default": True,
                 "rules": []
             },{
                 "name": "filter-rules-early",
+                "description": "The chain to process the first few packets of each session (early in session)",
                 "rules": []
             },{
                 "name": "filter-rules-all",
+                "description": "The chain to process the all packets",
                 "rules": []
             }]
         }
