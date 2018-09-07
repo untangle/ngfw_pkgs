@@ -398,12 +398,16 @@ def table_flush_cmd(json_table):
     cmd = table_create_cmd(json_table)
     return cmd.replace(" add "," flush ")
 
+def table_delete_cmd(json_table):
+    cmd = table_create_cmd(json_table)
+    return cmd.replace(" add "," delete ") + " 2>/dev/null || true"
+
 def table_all_cmds(json_table):
     cmds = []
     name = json_table.get('name')
     family = json_table.get('family')
+    cmds.append(table_delete_cmd(json_table))
     cmds.append(table_create_cmd(json_table))
-    cmds.append(table_flush_cmd(json_table))
     for chain in json_table.get('chains'):
         cmds.append(chain_create_cmd(chain,family,name))
     return '\n'.join(cmds)
