@@ -34,21 +34,27 @@ class NatManager:
         
         try:
             file.write(r"""
-nft add table ip nat
-nft flush table ip nat
-nft add chain ip nat nat-postrouting "{ type nat hook postrouting priority 100 ; }"
-nft add chain ip nat nat-prerouting  "{ type nat hook prerouting priority -50 ; }"
+nft delete table ip  nat 2>/dev/null || true
+nft delete table ip6 nat 2>/dev/null || true
+nft add table ip  nat
+nft add table ip6 nat
+
+nft add chain ip nat postrouting-nat "{ type nat hook postrouting priority 100 ; }"
+nft add chain ip nat prerouting-nat  "{ type nat hook prerouting priority -50 ; }"
+nft add chain ip6 nat postrouting-nat "{ type nat hook postrouting priority 100 ; }"
+nft add chain ip6 nat prerouting-nat  "{ type nat hook prerouting priority -50 ; }"
+
 
 nft add chain ip nat port-forward-rules-sys
 nft add chain ip nat miniupnpd
 nft add chain ip nat nat-rules-sys
 
-nft add rule ip nat nat-postrouting oifname lo accept
-nft add rule ip nat nat-postrouting iifname lo accept
-nft add rule ip nat nat-postrouting jump nat-rules-sys
+nft add rule ip nat postrouting-nat oifname lo accept
+nft add rule ip nat postrouting-nat iifname lo accept
+nft add rule ip nat postrouting-nat jump nat-rules-sys
 
-nft add rule ip nat nat-prerouting jump miniupnpd
-nft add rule ip nat nat-prerouting jump port-forward-rule-sys
+nft add rule ip nat prerouting-nat jump miniupnpd
+nft add rule ip nat prerouting-nat jump port-forward-rules-sys
 
 """)
 
