@@ -140,6 +140,7 @@ global_defs {
         file.write(r"""
 if [ ! -z "`pidof keepalived`" ] ; then
     killall keepalived
+    killall -9 keepalived
 fi
 """)
         file.write("\n\n");
