@@ -19,7 +19,7 @@ class FirewallManager:
             {"key": "HTTP_PORT", "value": "80"},
             {"key": "HTTPS_PORT", "value": "443"}
         ]
-        settings['firewall']['tables'] = []
+        settings['firewall']['tables'] = {}
         
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         pass

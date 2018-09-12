@@ -5,6 +5,7 @@ import subprocess
 import datetime
 import traceback
 from sync import registrar
+from sync import nftables_util
 
 # This class is responsible for writing /etc/config/nftables-rules.d/001-skeleton
 # based on the settings object passed from sync-settings
@@ -34,7 +35,7 @@ class NftablesManager:
         
         file.write(r"""
 # TODO marks table should be managed in an interface_manager
-nft flush table inet marks 2>/dev/null || true
+nft delete table inet marks 2>/dev/null || true
 nft add table inet marks
 nft add chain inet marks prerouting-set-marks "{ type filter hook prerouting priority -150 ; }"
 nft add chain inet marks forward-set-marks "{ type filter hook forward priority -150 ; }"
@@ -57,41 +58,27 @@ nft add rule inet marks output-set-marks jump restore-interface-marks
 nft add rule inet marks output-set-marks jump restore-priority-mark
 
 # TODO qos table should be managed in qos_manager
-nft flush table inet qos 2>/dev/null || true
+nft delete table inet qos 2>/dev/null || true
 nft add table inet qos
 nft add chain inet qos qos-imq "{ type filter hook prerouting priority -130 ; }"
 
-# TODO upnp table should be managed in upnp_manager
-nft flush table ip upnp 2>/dev/null || true
-nft add table ip upnp
-nft add chain ip upnp prerouting-upnp "{ type nat hook prerouting priority -100 ; }"
-
 # TODO port-forwards tables should be created/managed elsewhere - it is a user table
-nft flush table ip   port-forwards 2>/dev/null || true
-nft flush table ip6  port-forwards 2>/dev/null || true
-nft add table ip  port-forwards
-nft add table ip6 port-forwards
-nft add chain ip  port-forwards port-forward-rules "{ type nat hook prerouting priority -105 ; }"
-nft add chain ip6 port-forwards port-forward-rules "{ type nat hook prerouting priority -105 ; }"
+nft delete table inet port-forwards 2>/dev/null || true
+nft add table inet port-forwards
+nft add chain inet port-forwards port-forward-rules "{ type filter hook prerouting priority -105 ; }"
 
 # TODO web-filter table should be created/managed elsewhere - it is a user table
-nft flush table ip  web-filter 2>/dev/null || true
-nft flush table ip6 web-filter 2>/dev/null || true
-nft add table ip  web-filter
-nft add table ip6 web-filter
-nft add chain ip  web-filter web-filter-rules "{ type nat hook prerouting priority -95  ; }"
-nft add chain ip6 web-filter web-filter-rules "{ type nat hook prerouting priority -95  ; }"
+nft delete table inet web-filter 2>/dev/null || true
+nft add table inet web-filter
+nft add chain inet web-filter web-filter-rules "{ type filter hook prerouting priority -95  ; }"
 
 # TODO captive-portal table should be created/managerd elsewhere - it is a user table
-nft flush table ip  captive-portal 2>/dev/null || true
-nft flush table ip6 captive-portal 2>/dev/null || true
-nft add table ip  captive-portal
-nft add table ip6 captive-portal
-nft add chain ip  captive-portal captive-portal-rules "{ type nat hook prerouting priority -90  ; }"
-nft add chain ip6 captive-portal captive-portal-rules "{ type nat hook prerouting priority -90  ; }"
+nft delete table inet captive-portal 2>/dev/null || true
+nft add table inet captive-portal
+nft add chain inet captive-portal captive-portal-rules "{ type filter hook prerouting priority -90  ; }"
 
 # TODO shaping table should be created/managed elsewhere - it is a user table
-nft flush table inet shaping 2>/dev/null || true
+nft delete table inet shaping 2>/dev/null || true
 nft add table inet shaping
 nft add chain inet shaping prerouting-shaping-rules "{ type filter hook prerouting priority -140 ; }"
 nft add chain inet shaping output-shaping-rules "{ type filter hook output priority -130 ; }"
@@ -100,9 +87,9 @@ nft add rule inet shaping prerouting-shaping-rules jump shaping-rules
 nft add rule inet shaping output-shaping-rules jump shaping-rules
 
 # TODO vote table should be created/managed elsewhere - it is a user table
-nft flush table inet vote 2>/dev/null || true
-nft flush table ip   vote 2>/dev/null || true
-nft flush table ip6  vote 2>/dev/null || true
+nft delete table inet vote 2>/dev/null || true
+nft delete table ip   vote 2>/dev/null || true
+nft delete table ip6  vote 2>/dev/null || true
 nft add table inet vote
 nft add table ip   vote
 nft add table ip6  vote
@@ -117,38 +104,22 @@ nft add rule ip  vote output-route-vote-rules jump route-vote-rules
 nft add rule ip6 vote output-route-vote-rules jump route-vote-rules
 
 # TODO filter-rules-sys should be managed in filter_rule_manager
-nft flush table inet filter-rules-sys 2>/dev/null || true
+nft delete table inet filter-rules-sys 2>/dev/null || true
 nft add table inet filter-rules-sys
-nft add chain inet filter-rules-sys filter-rules-nat "{ type filter hook forward priority -5 ; }"
-
-# TODO - filter-rules table should be created/managed elsewhere - it is a user table
-nft flush table inet filter-rules 2>/dev/null || true
-nft add table inet filter-rules
-nft add chain inet filter-rules filter-rules "{ type filter hook forward priority 0 ; }"
-nft add chain inet filter-rules filter-rules-new
-nft add chain inet filter-rules filter-rules-early
-nft add chain inet filter-rules filter-rules-all
-nft add rule inet filter-rules filter-rules ct state new jump filter-rules-new 
-nft add rule inet filter-rules filter-rules jump filter-rules-early
-nft add rule inet filter-rules filter-rules jump filter-rules-all
-
-# TODO - nat-rules-sys table should be managed in nat_manager
-nft flush table ip nat-rules-sys 2>/dev/null || true
-nft add table ip nat-rules-sys
-nft add chain ip nat-rules-sys nat-rules-sys "{ type nat hook postrouting priority 95 ; }"
+nft add chain inet filter-rules-sys filter-rules-sys "{ type filter hook forward priority -5 ; }"
 
 # TODO - nat-rules table should be created/managed in elsewhere - it is a user table
-nft flush table ip nat-rules 2>/dev/null || true
-nft add table ip nat-rules
-nft add chain ip nat-rules nat-rules "{ type nat hook postrouting priority 100 ; }"
+nft delete table inet nat-rules 2>/dev/null || true
+nft add table inet nat-rules
+nft add chain inet nat-rules nat-rules "{ type filter hook postrouting priority 100 ; }"
 
 # TODO access-rules table should be created in access_rule_manager
-nft flush table inet access-rules-sys 2>/dev/null || true
+nft delete table inet access-rules-sys 2>/dev/null || true
 nft add table inet access-rules-sys
 nft add chain inet access-rules-sys access-rules-sys "{ type filter hook input priority -5 ; }"
 
 # TODO access-rules table should be created/managed elsewhere - it is a user table
-nft flush table inet access-rules 2>/dev/null || true
+nft delete table inet access-rules 2>/dev/null || true
 nft add table inet access-rules
 nft add chain inet access-rules access-rules "{ type filter hook input priority 0 ; }"
 

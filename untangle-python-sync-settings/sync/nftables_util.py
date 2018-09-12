@@ -352,3 +352,68 @@ def rule_cmd(json_rule, family, table, chain):
     rule_cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule)
     return rule_cmd
 
+def chain_create_cmd(json_chain, family, table):
+    if json_chain is None:
+        raise Exception("Invalid chain: null")
+    name = json_chain.get('name')
+    rules = json_chain.get('rules')
+    if name is None or not legal_nft_name(name):
+        raise Exception("Invalid name (%s) for chain" % name)
+    if rules is None:
+        raise Exception("Invalid rules (null) in chain %s" % name)
+    if family is None or family not in ['ip','ip6','inet','arp','bridge','netdev']:
+        raise Exception("Invalid family (%s) for chain %s" % (family,name))
+    if table is None or not legal_nft_name(table):
+        raise Exception("Invalid table (%s) in chain %s" % (table,name))
+
+    if json_chain.get('base'):
+        type = json_chain.get('type')
+        hook = json_chain.get('hook')
+        priority = json_chain.get('priority')
+        if type == None or type not in ["filter","route","nat"]:
+            raise Exception("Invalid type (%s) for chain %s" % (type, name))
+        if hook == None or hook not in ["prerouting","input","forward","output","postrouting","ingress"]:
+            raise Exception("Invalid hook (%s) for chain %s" % (hook, name))
+        if priority == None or priority < -500 or priority > 500:
+            raise Exception("Invalid priority (%d) for chain %s" % (priority, name))
+        return "nft add chain %s %s %s \"{ type %s hook %s priority %d ; }\"" % (family, table, name, type, hook, priority)
+    else:
+        return "nft add chain %s %s %s" % (family, table, name)
+
+def table_create_cmd(json_table):
+    if json_table is None:
+        raise Exception("Invalid table: null")
+    name = json_table.get('name')
+    family = json_table.get('family')
+    chains = json_table.get('chains')
+    if name is None or not legal_nft_name(name):
+        raise Exception("Invalid name (%s) in table" % name)
+    if family is None or family not in ['ip','ip6','inet','arp','bridge','netdev']:
+        raise Exception("Invalid family (%s) for table %s" % (family,name))
+    if chains is None:
+        raise Exception("Invalid chains (null) for table %s" % name)
+    return "nft add table %s %s" % (family, name)
+
+def table_flush_cmd(json_table):
+    cmd = table_create_cmd(json_table)
+    return cmd.replace(" add "," flush ")
+
+def table_delete_cmd(json_table):
+    cmd = table_create_cmd(json_table)
+    return cmd.replace(" add "," delete ") + " 2>/dev/null || true"
+
+def table_all_cmds(json_table):
+    cmds = []
+    name = json_table.get('name')
+    family = json_table.get('family')
+    cmds.append(table_delete_cmd(json_table))
+    cmds.append(table_create_cmd(json_table))
+    for chain in json_table.get('chains'):
+        cmds.append(chain_create_cmd(chain,family,name))
+    return '\n'.join(cmds)
+
+def legal_nft_name(name):
+    if name is None:
+        return False
+    match = re.match("[a-z-]+", name)
+    return match is not None
