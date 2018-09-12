@@ -6,7 +6,7 @@ SUBTREES = { 'untangle-python-sync-settings': 'git@github.com:untangle/sync-sett
 
 for directory, repository in SUBTREES.items():
   # FIXME: handle release branch as wwell
-  cmd = f'git subtree pull --prefix={directory} {repository} master'
+  cmd = 'git subtree pull --prefix={} {} master'.format(directory, repository)
 
-  print(f'Updating {directory} from {repository}')
+  print('Updating {} from {}'.format(directory, repository))
   subprocess.call(cmd, shell=True)
