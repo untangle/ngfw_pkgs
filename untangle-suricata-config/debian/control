@@ -1,0 +1,17 @@
+Source: untangle-suricata-config
+Section: admin
+Priority: optional
+Maintainer: Chris Blaise <cblaise@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-suricata-config
+Architecture: all
+Depends: ${misc:Depends}, systemd, suricata
+Conflicts: untangle-snort-config
+Replaces: untangle-snort-config
+Provides: untangle-snort-config
+Description: Suricata configuration
+ Initial versions of Suricata configuration.
+
