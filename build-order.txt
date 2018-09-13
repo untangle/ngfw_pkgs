@@ -52,7 +52,6 @@ untangle-linux-config                   stretch
 untangle-exim4-config                   stretch
 untangle-softflowd-config               stretch
 untangle-snmpd-config                   stretch
-untangle-snort-config                   stretch
 untangle-spamassassin-update            stretch
 untangle-system-config                  stretch
 untangle-apache2-config                 stretch
