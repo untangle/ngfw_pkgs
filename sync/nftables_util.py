@@ -7,33 +7,63 @@ import string
 import re
 from sync.network_util import NetworkUtil
 
-# This class is a utility class with utility functions providing
-# useful tools for dealing with nftables rules
-def condition_ip_protocol_expression(value, op):
-    if value == None:
-        raise Exception("Invalid value " + str(value))
-    value = value.lower()
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
+# Utility function to check that op is in array
+def check_operation(op, array):
+    if op not in array:
         raise Exception("Unsupported operation " + str(op))
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
 
-    protos = value.split(",")
-    if len(protos) == 1:
-        return "ip protocol " + op_str + value
+# Returns a command-line safe version of the operation
+# Appends spaces to the beginning and end
+def op_str(op):
+    if op == "==":
+        return " "
+    elif op == "!=":
+        return " != "
+    elif op == "<":
+        return " \"<\" "
+    elif op == ">":
+        return " \">\" "
+    elif op == "<=":
+        return " \"<=\" "
+    elif op == ">=":
+        return " \">=\" "
+
+# Returns a nft formatted value
+# If the string contains a comma, it separates into nft list
+def value_str(value):
+    if len(value.split(",")) < 2:
+        return "'" + value + "'"
     else:
-        return "ip protocol " + op_str + "\"{" + value + "}\""
+        return "'{" + value + "}'"
 
+# A generic helper funciton to build a basic nftables dict expression
+def condition_dict_expression(table, key, field, type, op, value):
+    if table == None:
+        raise Exception("Invalid table: " + str(table))
+    if key == None:
+        raise Exception("Invalid key: " + str(key))
+    if field == None:
+        raise Exception("Invalid field: " + str(field))
+    if type in ["long_string","bool"] and op != "==" and op != "!=":
+        raise Exception("Unsupported operation " + str(op) + " for type " + type)
+
+    return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + type.strip() + op_str(op) + value_str(value)
+
+# A generic helper funciton to build a basic nftables dict address ipv4/ipv6 expressions
+# This is only different than condition_dict_expression is that it determines if the value is ipv4 or ipv6
+def condition_dict_address_expression(table, key, field, op, value):
+    contains_period = "." in value
+    contains_colon = ":" in value
+    if contains_period and contains_colon:
+        raise Exception("Can not mix IPv4 and IPv6 address is same rule/condition.")
+    if contains_colon:
+        return condition_dict_expression(table, key, field, "ipv6_addr", op, value)
+    else:
+        return condition_dict_expression(table, key, field, "ipv4_addr", op, value)
+
+# A generic helper for generating zone expressions
 def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op):
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
+    if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
     intfs = value.split(",")
     if "wan" in intfs and len(intfs) != 1:
@@ -46,215 +76,114 @@ def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op
         raise Exception("\"non_wan\" interface condition value can not be used with other values")
 
     if "wan" in intfs:
-        if op == "IS":
-            return mark_exp + " and " + wan_mark + " != 0"
+        if op == "==":
+            return mark_exp + " and " + wan_mark + " != '0'"
         else:
-            return mark_exp + "  and " + wan_mark + " == 0"
+            return mark_exp + "  and " + wan_mark + " == '0'"
     elif "non_wan" in intfs:
-        if op == "IS":
-            return mark_exp + " and " + wan_mark + " == 0"
+        if op == "==":
+            return mark_exp + " and " + wan_mark + " == '0'"
         else:
-            return mark_exp + " and " + wan_mark + " != 0"
+            return mark_exp + " and " + wan_mark + " != '0'"
     else:
         try:
             intf_indexs = [ int(x) for x in intfs ]
-            if len(intf_indexs) == 1:
-                value_str = str(intf_indexs[0])
+            if op == "==":
+                return mark_exp + " and " + intf_mark + " " + value_str(value)
             else:
-                value_str = "\"{" + value + "}\""
-            if op == "IS":
-                return mark_exp + " and " + intf_mark + " " + value_str
-            else:
-                return mark_exp + " and " + intf_mark + " != " + value_str
+                return mark_exp + " and " + intf_mark + " != " + value_str(value)
         except ValueError as e:
             raise Exception("Invalid interface condition value: " + value)
 
-def condition_interface_name_expression(name_str, value, op):
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
-        raise Exception("Unsupported operation " + str(op))
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
-
-    return name_str + " " + op_str + value 
-
-def condition_source_interface_name_expression(value, op):
-    return condition_interface_name_expression("iifname", value, op)
-
-def condition_destination_interface_name_expression(value, op):
-    return condition_interface_name_expression("oifname", value, op)
-
-def condition_source_interface_zone_expression(value, op):
-    return condition_interface_zone_expression("mark", "0x01000000", "0x000000ff", value, op)
-
-def condition_destination_interface_zone_expression(value, op):
-    return condition_interface_zone_expression("mark", "0x02000000", "0x0000ff00", value, op)
-
-def condition_client_interface_zone_expression(value, op):
-    return condition_interface_zone_expression("ct mark", "0x01000000", "0x000000ff", value, op)
-
-def condition_server_interface_zone_expression(value, op):
-    return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
-
+# Generic helper for making address expressions
 def condition_address_expression(addr_str, value, op):
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
-        raise Exception("Unsupported operation " + str(op))
     if "." in value and ":" in value:
         raise Exception("Can not mix IPv4 and IPv6 address is same rule/condition.")
     exp = "ip " + addr_str
     if ":" in value:
         exp = "ip6 " + addr_str
 
-    addrs = value.split(",")
+    return exp + op_str(op) + value_str(value)
 
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
-
-    if len(addrs) == 1:
-        return exp + " " + op_str + value
-    else:
-        return exp + " " + op_str + "\"{" + value + "}\""
-
-
-def condition_source_address_expression(value, op):
-    return condition_address_expression("saddr", value, op)
-
-def condition_destination_address_expression(value, op):
-    return condition_address_expression("daddr", value, op)
-
-def condition_dict_address_expression(addr_str, value, op):
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
-        raise Exception("Unsupported operation " + str(op))
-    if "." in value and ":" in value:
-        raise Exception("Can not mix IPv4 and IPv6 address is same rule/condition.")
-    exp = "dict session ct id " + addr_str + " ipv4_addr"
-    if ":" in value:
-        exp = "dict session ct id " + addr_str + " ipv6_addr"
-
-    addrs = value.split(",")
-
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
-
-    if len(addrs) == 1:
-        return exp + " " + op_str + value
-    else:
-        return exp + " " + op_str + "\"{" + value + "}\""
-
-def condition_client_address_expression(value, op):
-    return condition_dict_address_expression("client_address",value, op)
-
-def condition_server_address_expression(value, op):
-    return condition_dict_address_expression("server_address",value, op)
-
+# Generic helper for making port expressions
 def condition_port_expression(port_str, ip_protocol, value, op):
-    if "any" in value:
-        return ""
-
     if ip_protocol == None:
         raise Exception("Undefined protocol with port condition")
-    if op != "IS" and op != "IS_NOT":
-        raise Exception("Unsupported operation " + str(op))
     exp = ip_protocol + " " + port_str
-    addrs = value.split(",")
 
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
+    return exp + op_str(op) + value_str(value)
 
-    if len(addrs) == 1:
-        return exp + " " + op_str + value
-    else:
-        return exp + " " + op_str + "\"{" + value + "}\""
 
-def condition_source_port_expression(value, op, ip_protocol):
-    return condition_port_expression("sport", ip_protocol, value, op)
-
-def condition_destination_port_expression(value, op, ip_protocol):
-    return condition_port_expression("dport", ip_protocol, value, op)
-
-def condition_dict_port_expression(port_str, value, op):
-    if "any" in value:
-        return ""
-
-    if op != "IS" and op != "IS_NOT":
-        raise Exception("Unsupported operation " + str(op))
-    exp = "dict session ct id " + port_str + " integer"
-    addrs = value.split(",")
-
-    if op == "IS":
-        op_str = ""
-    elif op == "IS_NOT":
-        op_str = "!= "
-
-    if len(addrs) == 1:
-        return exp + " " + op_str + value
-    else:
-        return exp + " " + op_str + "\"{" + value + "}\""
-
-def condition_client_port_expression(value, op):
-    return condition_dict_port_expression("client_port", value, op)
-
-def condition_server_port_expression(value, op):
-    return condition_dict_port_expression("server_port", value, op)
-
+# Build nft expressions from the JSON condition object
 def condition_expression(condition, ip_protocol=None):
     type = condition.get('type')
     op = condition.get('op')
     value = condition.get('value')
 
-    if type == None or value == None:
-        raise Exception("Rule missing required fields " + str(condition.get('ruleId')))
-
-    # if op is missing, assume "IS"
+    if type == None:
+        raise Exception("Rule missing type: " + str(condition.get('ruleId')))
+    if value == None:
+        raise Exception("Rule missing value: " + str(condition.get('ruleId')))
     if op == None:
-        op = "IS"
-
+        raise Exception("Rule missing op: " + str(condition.get('ruleId')))
+        
     if type == "IP_PROTOCOL":
-        return condition_ip_protocol_expression(value, op)
+        check_operation(op,["==","!="])
+        return "ip protocol" + op_str(op) + value_str(value.lower())
     elif type == "SOURCE_INTERFACE_ZONE":
-        return condition_source_interface_zone_expression(value, op)
+        return condition_interface_zone_expression("mark", "0x01000000", "0x000000ff", value, op)
     elif type == "DESTINATION_INTERFACE_ZONE":
-        return condition_destination_interface_zone_expression(value, op)
-    elif type == "CLIENT_INTERFACE_ZONE":
-        return condition_client_interface_zone_expression(value, op)
-    elif type == "SERVER_INTERFACE_ZONE":
-        return condition_server_interface_zone_expression(value, op)
+        return condition_interface_zone_expression("mark", "0x02000000", "0x0000ff00", value, op)
     elif type == "SOURCE_INTERFACE_NAME":
-        return condition_source_interface_name_expression(value, op)
+        check_operation(op,["==","!="])
+        return "iifname" + op_str(op) + value_str(value)
     elif type == "DESTINATION_INTERFACE_NAME":
-        return condition_destination_interface_name_expression(value, op)
+        check_operation(op,["==","!="])
+        return "oifname" + op_str(op) + value_str(value)
     elif type == "SOURCE_ADDRESS":
-        return condition_source_address_expression(value, op)
+        return condition_address_expression("saddr", value, op)
     elif type == "DESTINATION_ADDRESS":
-        return condition_destination_address_expression(value, op)
-    elif type == "CLIENT_ADDRESS":
-        return condition_client_address_expression(value, op)
-    elif type == "SERVER_ADDRESS":
-        return condition_server_address_expression(value, op)
+        return condition_address_expression("daddr", value, op)
     elif type == "SOURCE_PORT":
-        return condition_source_port_expression(value, op, ip_protocol)
+        return condition_port_expression("sport", ip_protocol, value, op)
     elif type == "DESTINATION_PORT":
-        return condition_destination_port_expression(value, op, ip_protocol)
+        return condition_port_expression("dport", ip_protocol, value, op)
+    elif type == "CLIENT_INTERFACE_ZONE":
+        return condition_interface_zone_expression("ct mark", "0x01000000", "0x000000ff", value, op)
+    elif type == "SERVER_INTERFACE_ZONE":
+        return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
+    elif type == "CLIENT_ADDRESS":
+        return condition_dict_address_expression("session","ct id","client_address",op,value)
+    elif type == "SERVER_ADDRESS":
+        return condition_dict_address_expression("session","ct id","server_address",op,value)
+    elif type == "LOCAL_ADDRESS":
+        return condition_dict_address_expression("session","ct id","local_address",op,value)
+    elif type == "REMOTE_ADDRESS":
+        return condition_dict_address_expression("session","ct id","remote_address",op,value)
     elif type == "CLIENT_PORT":
-        return condition_client_port_expression(value, op)
+        return condition_dict_expression("session","ct id","client_port","integer",op,value)
     elif type == "SERVER_PORT":
-        return condition_server_port_expression(value, op)
+        return condition_dict_expression("session","ct id","server_port","integer",op,value)
+    elif type == "LOCAL_PORT":
+        return condition_dict_expression("session","ct id","local_port","integer",op,value)
+    elif type == "REMOTE_PORT":
+        return condition_dict_expression("session","ct id","remote_port","integer",op,value)
+    elif type == "CLIENT_HOSTNAME":
+        return condition_dict_expression("session","ct id","client_hostname","long_string",op,value)
+    elif type == "SERVER_HOSTNAME":
+        return condition_dict_expression("session","ct id","server_hostname","long_string",op,value)
+    elif type == "LOCAL_HOSTNAME":
+        return condition_dict_expression("session","ct id","local_hostname","long_string",op,value)
+    elif type == "REMOTE_HOSTNAME":
+        return condition_dict_expression("session","ct id","remote_hostname","long_string",op,value)
+    elif type == "CLIENT_USERNAME":
+        return condition_dict_expression("session","ct id","client_username","long_string",op,value)
+    elif type == "SERVER_USERNAME":
+        return condition_dict_expression("session","ct id","server_username","long_string",op,value)
+    elif type == "LOCAL_USERNAME":
+        return condition_dict_expression("session","ct id","local_username","long_string",op,value)
+    elif type == "REMOTE_USERNAME":
+        return condition_dict_expression("session","ct id","remote_username","long_string",op,value)
     
     raise Exception("Unsupported condition type " + type + " " + str(condition.get('ruleId')))
 
@@ -267,15 +196,11 @@ def conditions_expression(conditions, comment=None):
     if conditions is None:
         return "";
 
-    # FIXME
-    # if comment != None:
-    #        current_strings = [ current + (" -m comment --comment \"%s\" " % comment)  for current in current_strings ]
-
     # set has_protocol_condition to True if this rule as an "IP_PROTOCOL" condition        
     has_protocol_condition = False
     ip_protocol = None
     for condition in conditions:
-        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == 'IS' and condition.get('value') != None and "," not in condition.get('value'):
+        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in condition.get('value'):
             has_protocol_condition = True
             ip_protocol=condition.get('value')
 
@@ -308,6 +233,7 @@ def action_expression(json_action):
             raise Exception("Invalid action: Missing required parameter for action type " + type)
         return "goto " + chain
 
+# Builds an nft rule from the JSON rule object
 def rule_expression(json_rule):
     if json_rule is None:
         raise Exception("Invalid rule: null")

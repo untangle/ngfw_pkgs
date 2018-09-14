@@ -122,15 +122,15 @@ def default_filter_rules_table():
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
-                    "op": "IS",
+                    "op": "==",
                     "value": "tcp"
                 },{
                     "type": "SERVER_ADDRESS",
-                    "op": "IS",
+                    "op": "==",
                     "value": "1.2.3.4"
                 },{
                     "type": "SERVER_PORT",
-                    "op": "IS",
+                    "op": "==",
                     "value": "1234"
                 }],
                 "action": {
@@ -142,15 +142,15 @@ def default_filter_rules_table():
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
-                    "op": "IS",
+                    "op": "==",
                     "value": "tcp"
                 },{
                     "type": "CLIENT_ADDRESS",
-                    "op": "IS",
+                    "op": "==",
                     "value": "192.168.1.100"
                 },{
                     "type": "SERVER_PORT",
-                    "op": "IS",
+                    "op": "==",
                     "value": "21"
                 }],
                 "action": {
