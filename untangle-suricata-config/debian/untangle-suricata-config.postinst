@@ -1,0 +1,7 @@
+#!/bin/bash
+
+DIRECTORY=/usr/share/untangle-suricata-config/
+
+if [ ! -d ${DIRECTORY}/current/rules ] ; then
+    tar -xzf ${DIRECTORY}/suricatarules.tar.gz -C /usr/share/untangle-suricata-config/current 
+fi
