@@ -308,6 +308,9 @@ class NetworkManager:
             else:
                 interface['hidden'] = False
 
+            interface['downloadKbps'] = 0
+            interface['uploadKbps'] = 0
+
             if dev.get('name') == internal_device_name:
                 interface['name'] = 'internal'
                 interface['type'] = 'NIC'

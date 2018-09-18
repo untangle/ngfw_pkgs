@@ -294,6 +294,12 @@ def action_expression(json_action, family):
         if chain == None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         return "goto " + chain
+    elif type == "SET_PRIORITY":
+        priority = json_action.get('priority')
+        if priority == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
+        priority_int = int(priority) & 0xff
+        return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
     else:
         raise Exception("Unknown action type: " + str(json_action))
     

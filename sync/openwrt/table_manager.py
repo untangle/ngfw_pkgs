@@ -27,6 +27,7 @@ class TableManager:
         tables['access-rules'] = default_access_rules_table()
         tables['web-filter'] = default_web_filter_table()
         tables['captive-portal'] = default_captive_portal_table()
+        tables['shaping-rules'] = default_shaping_rules_table()
         
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
@@ -399,5 +400,141 @@ def default_captive_portal_table():
             "hook": "prerouting",
             "priority": -110,
             "rules": []
+        }]
+    }
+
+def default_shaping_rules_table():
+    return {
+        "name": "shaping",
+        "family": "inet",
+        "chains": [{
+            "name": "shaping-rules",
+            "description": "The base shaping-rules chain",
+            "base": True,
+            "type": "filter",
+            "hook": "postrouting",
+            "priority": 5,
+            "rules": [{
+                "enabled": True,
+                "description": "Call prioritization-rules",
+                "ruleId": 1,
+                "conditions": [],
+                "action": {
+                    "type": "JUMP",
+                    "chain": "prioritization-rules"
+                }
+            },{
+                "enabled": True,
+                "description": "Call limiting-rules",
+                "ruleId": 2,
+                "conditions": [],
+                "action": {
+                    "type": "JUMP",
+                    "chain": "limiting-rules"
+                }
+            }],
+        },{
+            "name": "prioritization-rules",
+            "description": "The main prioritization rules chain",
+            "default": True,
+            "rules": [{
+                "enabled": False,
+                "description": "VoIP (SIP) Traffic",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "tcp"
+                },{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "{5060,5061}"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 1
+                }
+            },{
+                "enabled": False,
+                "description": "VoIP (IAX) Traffic",
+                "ruleId": 2,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "tcp"
+                },{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "4569"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 1
+                }
+            },{
+                "enabled": True,
+                "description": "Ping Priority",
+                "ruleId": 3,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "icmp"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 1
+                }
+            },{
+                "enabled": True,
+                "description": "DNS Priority",
+                "ruleId": 4,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "udp"
+                },{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "53"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 1
+                }
+            },{
+                "enabled": True,
+                "description": "SSH Priority",
+                "ruleId": 5,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "tcp"
+                },{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "22"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 2
+                }
+            },{
+                "enabled": True,
+                "description": "Openvpn Priority",
+                "ruleId": 6,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "tcp"
+                },{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "1194"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 3
+                }
+            }]
         }]
     }

@@ -4,6 +4,7 @@ sync.registrar.register_operation( "restart-networking", [""], ["/etc/init.d/net
 sync.registrar.register_operation( "restart-nftables-rules", [""], ["/etc/init.d/nftables-rules restart"], 9, None )
 sync.registrar.register_operation( "restart-wireless", [""], ["/sbin/wifi"], 10, None )
 sync.registrar.register_operation( "restart-dhcp", [""], ["/etc/init.d/dnsmasq restart"], 10, None )
+sync.registrar.register_operation( "restart-qos", [""], ["/etc/config/nftables-rules.d/300-qos-rules-sys"], 10, "restart-nftables-rules" )
 
 def verify_settings(settings):
     """
