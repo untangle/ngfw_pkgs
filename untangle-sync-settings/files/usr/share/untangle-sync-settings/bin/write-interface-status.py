@@ -192,6 +192,8 @@ for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq
 
 
 try:
+    if not os.path.exists(os.path.dirname(fileName)):
+        os.makedirs(os.path.dirname(fileName))
     file = open(fileName, 'w')
     json.dump(obj, file)
     file.write("\n")
