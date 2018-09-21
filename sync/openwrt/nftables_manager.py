@@ -17,6 +17,9 @@ class NftablesManager:
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+        print("%s: Initializing settings" % self.__class__.__name__)
+        settings['firewall'] = {}
+        settings['firewall']['tables'] = {}
         pass
 
     def write_file(self, settings, prefix, verbosity):
