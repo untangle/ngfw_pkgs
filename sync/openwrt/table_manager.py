@@ -7,9 +7,9 @@ import traceback
 from sync import registrar
 from sync import nftables_util
 
-# This class is responsible for writing FIXME
-# based on the settings object passed from sync-settings
-class RulesManager:
+# This class is responsible for writing all of the tables
+# from settings/firewall/tables
+class TableManager:
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
     def initialize( self ):
@@ -18,8 +18,10 @@ class RulesManager:
 
     def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
         print("%s: Initializing settings" % self.__class__.__name__)
-        tables = settings['firewall']['tables']
+        tables = {}
         tables['filter-rules'] = default_filter_rules_table()
+        tables['port-forward'] = default_port_forward_table()
+        settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
     def write_file(self, filename, table_settings, prefix, verbosity):
@@ -37,14 +39,12 @@ class RulesManager:
 
         file.write(nftables_util.table_all_cmds(table_settings) + "\n")
 
-        # IMPLEMENT ME
-        
         file.write("\n");
         file.flush()
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("RulesManager: Wrote %s" % filename)
+        if verbosity > 0: print("TableManager: Wrote %s" % filename)
         return
 
     def write_files(self, settings, prefix, verbosity):
@@ -70,7 +70,7 @@ class RulesManager:
         self.write_files(settings, prefix, verbosity)
         pass
     
-registrar.register_manager(RulesManager())
+registrar.register_manager(TableManager())
 
 def default_filter_rules_table():
     return {
@@ -86,10 +86,10 @@ def default_filter_rules_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call new session filter rules",
-                "ruleId": 2,
+                "ruleId": 1,
                 "conditions": [],
                 "action": {
-                    "action": "JUMP",
+                    "type": "JUMP",
                     "chain": "filter-rules-new"
                 }
             },{
@@ -98,16 +98,16 @@ def default_filter_rules_table():
                 "ruleId": 2,
                 "conditions": [],
                 "action": {
-                    "action": "JUMP",
+                    "type": "JUMP",
                     "chain": "filter-rules-early"
                 }
             },{
                 "enabled": True,
                 "description": "Call deep-session (all packets) session filter rules",
-                "ruleId": 2,
+                "ruleId": 3,
                 "conditions": [],
                 "action": {
-                    "action": "JUMP",
+                    "type": "JUMP",
                     "chain": "filter-rules-all"
                 }
             }],
@@ -118,7 +118,7 @@ def default_filter_rules_table():
             "default": True,
             "rules": [{
                 "ruleId": 1,
-                "description": "An example rule of blocking TCP sessions to 1.2.3.4 port 1234",
+                "description": "Example: A rule of blocking TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -138,7 +138,7 @@ def default_filter_rules_table():
                 }
             },{
                 "ruleId": 2,
-                "description": "An example rule of blocking TCP port 21 (FTP) from 192.168.1.100",
+                "description": "Example: A rule of blocking TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -165,5 +165,34 @@ def default_filter_rules_table():
             "name": "filter-rules-all",
             "description": "The chain to process the all packets",
             "rules": []
+        }]
+    }
+
+def default_port_forward_table():
+    return {
+        "name": "port-forward",
+        "family": "ip,ip6",
+        "chains": [{
+            "name": "port-forward-rules",
+            "description": "The base port-forwards chain",
+            "base": True,
+            "type": "nat",
+            "hook": "prerouting",
+            "priority": 100,
+            "rules": [{
+                "enabled": False,
+                "description": "Example: Forward 1.2.3.4 to 1.2.3.5",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "DESTINATION_ADDRESS",
+                    "op": "==",
+                    "value": "1.2.3.4"
+                }],
+                "action": {
+                    "type": "DNAT",
+                    "dnat_address": "1.2.3.5"
+                }
+            }],
+            "editable": False
         }]
     }

@@ -5,7 +5,19 @@ import datetime
 import traceback
 import string
 import re
+import copy
+
 from sync.network_util import NetworkUtil
+
+# This exception is thrown when creating a rule command of a non-sensical rule
+# Unlike, other exceptions this exception will just mean the rule gets dropped
+# but no error is throw
+# This is used in cases like a user wants to create a rule to block when
+# dns_prediction == netflix.com and source_address == 192.168.1.100
+# In this case we'll add this rule to both the ip and ip6 tables, but in the ip6 table
+# this makes no sense and we just want this rule silently ignored without an error.
+class NonsensicalRuleException(Exception):
+    pass
 
 # Utility function to check that op is in array
 def check_operation(op, array):
@@ -49,18 +61,6 @@ def condition_dict_expression(table, key, field, type, op, value):
 
     return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + type.strip() + op_str(op) + value_str(value)
 
-# A generic helper funciton to build a basic nftables dict address ipv4/ipv6 expressions
-# This is only different than condition_dict_expression is that it determines if the value is ipv4 or ipv6
-def condition_dict_address_expression(table, key, field, op, value):
-    contains_period = "." in value
-    contains_colon = ":" in value
-    if contains_period and contains_colon:
-        raise Exception("Can not mix IPv4 and IPv6 address is same rule/condition.")
-    if contains_colon:
-        return condition_dict_expression(table, key, field, "ipv6_addr", op, value)
-    else:
-        return condition_dict_expression(table, key, field, "ipv4_addr", op, value)
-
 # A generic helper for generating zone expressions
 def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op):
     if op != "==" and op != "!=":
@@ -93,15 +93,25 @@ def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op
             else:
                 return mark_exp + " and " + intf_mark + " != " + value_str(value)
         except ValueError as e:
-            raise Exception("Invalid interface condition value: " + value)
+            raise Exception("Invalid interface condition value: " + str(value))
 
 # Generic helper for making address expressions
-def condition_address_expression(addr_str, value, op):
-    if "." in value and ":" in value:
-        raise Exception("Can not mix IPv4 and IPv6 address is same rule/condition.")
-    exp = "ip " + addr_str
+def condition_v4address_expression(addr_str, value, op, family):
+    if family not in ['ip','inet']:
+        raise NonsensicalRuleException("Invalid IPv4 family: %s" % family) 
     if ":" in value:
-        exp = "ip6 " + addr_str
+        raise Exception("Invalid IPv4 value: " + str(value))
+    exp = "ip " + addr_str
+
+    return exp + op_str(op) + value_str(value)
+
+# Generic helper for making address expressions
+def condition_v6address_expression(addr_str, value, op, family):
+    if family not in ['ip6','inet']:
+        raise NonsensicalRuleException("Invalid IPv6 family: %s" % family) 
+    if "." in value:
+        raise Exception("Invalid IPv6 value: " + str(value))
+    exp = "ip6 " + addr_str
 
     return exp + op_str(op) + value_str(value)
 
@@ -115,17 +125,17 @@ def condition_port_expression(port_str, ip_protocol, value, op):
 
 
 # Build nft expressions from the JSON condition object
-def condition_expression(condition, ip_protocol=None):
+def condition_expression(condition, family, ip_protocol=None):
     type = condition.get('type')
     op = condition.get('op')
     value = condition.get('value')
 
     if type == None:
-        raise Exception("Rule missing type: " + str(condition.get('ruleId')))
+        raise Exception("Condition missing type: " + str(condition.get('ruleId')))
     if value == None:
-        raise Exception("Rule missing value: " + str(condition.get('ruleId')))
+        raise Exception("Condition missing value: " + str(condition.get('ruleId')))
     if op == None:
-        raise Exception("Rule missing op: " + str(condition.get('ruleId')))
+        raise Exception("Condition missing op: " + str(condition.get('ruleId')))
         
     if type == "IP_PROTOCOL":
         check_operation(op,["==","!="])
@@ -141,9 +151,13 @@ def condition_expression(condition, ip_protocol=None):
         check_operation(op,["==","!="])
         return "oifname" + op_str(op) + value_str(value)
     elif type == "SOURCE_ADDRESS":
-        return condition_address_expression("saddr", value, op)
+        return condition_v4address_expression("saddr", value, op, family)
     elif type == "DESTINATION_ADDRESS":
-        return condition_address_expression("daddr", value, op)
+        return condition_v4address_expression("daddr", value, op, family)
+    elif type == "SOURCE_ADDRESS_V6":
+        return condition_v6address_expression("saddr", value, op, family)
+    elif type == "DESTINATION_ADDRESS_V6":
+        return condition_v6address_expression("daddr", value, op, family)
     elif type == "SOURCE_PORT":
         return condition_port_expression("sport", ip_protocol, value, op)
     elif type == "DESTINATION_PORT":
@@ -153,13 +167,21 @@ def condition_expression(condition, ip_protocol=None):
     elif type == "SERVER_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
     elif type == "CLIENT_ADDRESS":
-        return condition_dict_address_expression("session","ct id","client_address",op,value)
+        return condition_dict_expression("session", "ct id", "client_address", "ipv4_addr", op, value)
     elif type == "SERVER_ADDRESS":
-        return condition_dict_address_expression("session","ct id","server_address",op,value)
+        return condition_dict_expression("session", "ct id", "server_address", "ipv4_addr", op, value)
     elif type == "LOCAL_ADDRESS":
-        return condition_dict_address_expression("session","ct id","local_address",op,value)
+        return condition_dict_expression("session", "ct id", "local_address", "ipv4_addr", op, value)
     elif type == "REMOTE_ADDRESS":
-        return condition_dict_address_expression("session","ct id","remote_address",op,value)
+        return condition_dict_expression("session", "ct id", "remote_address", "ipv4_addr", op, value)
+    elif type == "CLIENT_ADDRESS_V6":
+        return condition_dict_expression("session", "ct id", "client_address", "ipv6_addr", op, value)
+    elif type == "SERVER_ADDRESS_V6":
+        return condition_dict_expression("session", "ct id", "server_address", "ipv6_addr", op, value)
+    elif type == "LOCAL_ADDRESS_V6":
+        return condition_dict_expression("session", "ct id", "local_address", "ipv6_addr", op, value)
+    elif type == "REMOTE_ADDRESS_V6":
+        return condition_dict_expression("session", "ct id", "remote_address", "ipv6_addr", op, value)
     elif type == "CLIENT_PORT":
         return condition_dict_expression("session","ct id","client_port","integer",op,value)
     elif type == "SERVER_PORT":
@@ -192,7 +214,7 @@ def condition_expression(condition, ip_protocol=None):
 # It returns a list of strings, because some set of conditions require multiple nftables rules
 # Example input: ['type':'SOURCE_INTERFACE', 'value':'1'] -> "ct mark and 0xff == 0x01"
 # Example input: ['type':'DESTINATION_PORT', 'value':'123'] -> "tcp dport 123"
-def conditions_expression(conditions, comment=None):
+def conditions_expression(conditions, family):
     if conditions is None:
         return "";
 
@@ -206,35 +228,48 @@ def conditions_expression(conditions, comment=None):
 
     str = ""
     for condition in conditions:
-        add_str = condition_expression(condition, ip_protocol=ip_protocol)
+        add_str = condition_expression(condition, family, ip_protocol=ip_protocol)
         if add_str != "":
             str = str + " " + add_str
 
     return str.strip()
 
 # This method takes an method json object and provides the nft expression as a string
-def action_expression(json_action):
+def action_expression(json_action, family):
     if json_action == None:
         raise Exception("Invalid action: null")
     type = json_action.get('type')
 
     if type == "REJECT":
         return "reject"
-    if type == "ACCEPT":
+    elif type == "DROP":
+        return "drop"
+    elif type == "ACCEPT":
         return "accept"
+    elif type == "DNAT":
+        addr = json_action.get('dnat_address')
+        if addr == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
+        if family == "ip" and ":" in addr:
+            raise NonsensicalRuleException("Invalid IPv4 for ip DNAT: %s" % family) 
+        if family == "ip6" and "." in addr:
+            raise NonsensicalRuleException("Invalid IPv4 for ip DNAT: %s" % family) 
+        return "dnat to " + addr
     elif type == "JUMP":
         chain = json_action.get('chain')
         if chain == None:
-            raise Exception("Invalid action: Missing required parameter for action type " + type)
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         return "jump " + chain
     elif type == "GOTO":
         chain = json_action.get('chain')
         if chain == None:
-            raise Exception("Invalid action: Missing required parameter for action type " + type)
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         return "goto " + chain
-
+    else:
+        raise Exception("Unknown action type: " + str(json_action))
+    
 # Builds an nft rule from the JSON rule object
-def rule_expression(json_rule):
+def rule_expression(json_rule, family):
     if json_rule is None:
         raise Exception("Invalid rule: null")
     rule_id = json_rule.get('ruleId')
@@ -248,11 +283,9 @@ def rule_expression(json_rule):
 
     conditions = json_rule.get('conditions')
     if conditions != None:
-        for condition in conditions:
-            cond_exp = condition_expression(condition)
-            rule_exp = rule_exp + " " + cond_exp
+        rule_exp = rule_exp + " " + conditions_expression(conditions, family)
 
-    action_exp = action_expression(action)
+    action_exp = action_expression(action, family)
     rule_exp = rule_exp + " " + action_exp
 
     return rule_exp[1:]
@@ -275,8 +308,13 @@ def rule_cmd(json_rule, family, table, chain):
     if not json_rule.get('enabled'):
         return None
 
-    rule_cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule)
-    return rule_cmd
+    try:
+        rule_cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
+        return rule_cmd
+    except NonsensicalRuleException as e:
+        return None
+    except:
+        raise
 
 def chain_create_cmd(json_chain, family, table):
     if json_chain is None:
@@ -332,10 +370,21 @@ def table_all_cmds(json_table):
     cmds = []
     name = json_table.get('name')
     family = json_table.get('family')
+    if family == "ip,ip6":
+        # make shallow copies and create two separate tables
+        json_table_ip = copy.copy(json_table)
+        json_table_ip['family'] = 'ip'
+        json_table_ip6 = copy.copy(json_table)
+        json_table_ip6['family'] = 'ip6'
+        return table_all_cmds(json_table_ip) + "\n\n" + table_all_cmds(json_table_ip6)
     cmds.append(table_delete_cmd(json_table))
     cmds.append(table_create_cmd(json_table))
     for chain in json_table.get('chains'):
         cmds.append(chain_create_cmd(chain,family,name))
+        for rule in chain['rules']:
+            rule_cmd_str = rule_cmd(rule, family, name, chain['name'])
+            if rule_cmd_str != None:
+                cmds.append(rule_cmd_str)
     return '\n'.join(cmds)
 
 def legal_nft_name(name):

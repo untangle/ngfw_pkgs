@@ -7,6 +7,8 @@ import traceback
 from sync import registrar
 from sync import nftables_util
 
+# FIXME This manager is temporary and should be removed once all the rules have found a home
+# 
 # This class is responsible for writing /etc/config/nftables-rules.d/001-skeleton
 # based on the settings object passed from sync-settings
 class NftablesManager:
@@ -18,8 +20,6 @@ class NftablesManager:
 
     def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['firewall'] = {}
-        settings['firewall']['tables'] = {}
         pass
 
     def write_file(self, settings, prefix, verbosity):
@@ -60,34 +60,15 @@ nft add rule inet marks postrouting-set-marks jump check-dst-interface-mark
 nft add rule inet marks output-set-marks jump restore-interface-marks
 nft add rule inet marks output-set-marks jump restore-priority-mark
 
-# TODO qos table should be managed in qos_manager
-nft delete table inet qos 2>/dev/null || true
-nft add table inet qos
-nft add chain inet qos qos-imq "{ type filter hook prerouting priority -130 ; }"
-
-# TODO port-forwards tables should be created/managed elsewhere - it is a user table
-nft delete table inet port-forwards 2>/dev/null || true
-nft add table inet port-forwards
-nft add chain inet port-forwards port-forward-rules "{ type filter hook prerouting priority -105 ; }"
-
 # TODO web-filter table should be created/managed elsewhere - it is a user table
-nft delete table inet web-filter 2>/dev/null || true
-nft add table inet web-filter
-nft add chain inet web-filter web-filter-rules "{ type filter hook prerouting priority -95  ; }"
+# nft delete table inet web-filter 2>/dev/null || true
+# nft add table inet web-filter
+# nft add chain inet web-filter web-filter-rules "{ type nat hook prerouting priority -105  ; }"
 
 # TODO captive-portal table should be created/managerd elsewhere - it is a user table
-nft delete table inet captive-portal 2>/dev/null || true
-nft add table inet captive-portal
-nft add chain inet captive-portal captive-portal-rules "{ type filter hook prerouting priority -90  ; }"
-
-# TODO shaping table should be created/managed elsewhere - it is a user table
-nft delete table inet shaping 2>/dev/null || true
-nft add table inet shaping
-nft add chain inet shaping prerouting-shaping-rules "{ type filter hook prerouting priority -140 ; }"
-nft add chain inet shaping output-shaping-rules "{ type filter hook output priority -130 ; }"
-nft add chain inet shaping shaping-rules
-nft add rule inet shaping prerouting-shaping-rules jump shaping-rules
-nft add rule inet shaping output-shaping-rules jump shaping-rules
+# nft delete table inet captive-portal 2>/dev/null || true
+# nft add table inet captive-portal
+# nft add chain inet captive-portal captive-portal-rules "{ type filter hook prerouting priority -110  ; }"
 
 # TODO vote table should be created/managed elsewhere - it is a user table
 nft delete table inet vote 2>/dev/null || true
@@ -114,7 +95,7 @@ nft add chain inet filter-rules-sys filter-rules-sys "{ type filter hook forward
 # TODO - nat-rules table should be created/managed in elsewhere - it is a user table
 nft delete table inet nat-rules 2>/dev/null || true
 nft add table inet nat-rules
-nft add chain inet nat-rules nat-rules "{ type filter hook postrouting priority 100 ; }"
+nft add chain inet nat-rules nat-rules "{ type filter hook postrouting priority 95 ; }"
 
 # TODO access-rules table should be created in access_rule_manager
 nft delete table inet access-rules-sys 2>/dev/null || true
