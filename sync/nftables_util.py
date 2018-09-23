@@ -123,6 +123,16 @@ def condition_port_expression(port_str, ip_protocol, value, op):
 
     return exp + op_str(op) + value_str(value)
 
+# Generic helper for making port expressions
+def condition_ct_state_expression(value, op):
+    if "," in value:
+        for v in value.split(","):
+            if v not in ["established","related","new","invalid"]:
+                raise Exception("Invalid ct state value: %s" % v)
+    else:
+        if value not in ["established","related","new","invalid"]:
+            raise Exception("Invalid ct state value: %s" % v)
+    return "ct state " + value
 
 # Build nft expressions from the JSON condition object
 def condition_expression(condition, family, ip_protocol=None):
@@ -206,6 +216,8 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("session","ct id","local_username","long_string",op,value)
     elif type == "REMOTE_USERNAME":
         return condition_dict_expression("session","ct id","remote_username","long_string",op,value)
+    elif type == "CT_STATE":
+        return condition_ct_state_expression(value, op)
     
     raise Exception("Unsupported condition type " + type + " " + str(condition.get('ruleId')))
 
@@ -261,6 +273,17 @@ def action_expression(json_action, family):
             return "dnat to %s:%i" % (addr,port_int)
         else:
             return "dnat to %s" % (addr)
+    elif type == "SNAT":
+        addr = json_action.get('snat_address')
+        if addr == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
+        if family == "ip" and ":" in addr:
+            raise NonsensicalException("Ignore IPv6 for IPv4 SNAT: %s" % family) 
+        if family == "ip6" and "." in addr:
+            raise NonsensicalException("Ignore IPv4 for IPv6 SNAT: %s" % family)
+        return "snat to %s" % (addr)
+    elif type == "MASQUERADE":
+        return "masquerade"
     elif type == "JUMP":
         chain = json_action.get('chain')
         if chain == None:

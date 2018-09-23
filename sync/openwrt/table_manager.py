@@ -18,10 +18,16 @@ class TableManager:
 
     def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
         print("%s: Initializing settings" % self.__class__.__name__)
+
         tables = {}
         tables['filter-rules'] = default_filter_rules_table()
         tables['port-forward'] = default_port_forward_table()
         tables['vote'] = default_vote_table()
+        tables['nat-rules'] = default_nat_rules_table()
+        tables['access-rules'] = default_access_rules_table()
+        tables['web-filter'] = default_web_filter_table()
+        tables['captive-portal'] = default_captive_portal_table()
+        
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
@@ -180,6 +186,7 @@ def default_port_forward_table():
             "type": "nat",
             "hook": "prerouting",
             "priority": 100,
+            "default": True,
             "rules": [{
                 "enabled": False,
                 "description": "Example: Forward 1.2.3.4 to 1.2.3.5",
@@ -238,6 +245,135 @@ def default_vote_table():
         },{
             "name": "route-vote-rules",
             "description": "The main route vote rules chain",
+            "default": True,
+            "rules": []
+        }]
+    }
+
+def default_nat_rules_table():
+    return {
+        "name": "nat-rules",
+        "family": "ip,ip6",
+        "chains": [{
+            "name": "nat-rules",
+            "description": "The nat-rules chain",
+            "base": True,
+            "type": "nat",
+            "hook": "postrouting",
+            "priority": 95,
+            "rules": [{
+                "enabled": True,
+                "description": "Example: NAT TCP port 25 to 1.2.3.4",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "tcp"
+                },{
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "1234"
+                }],
+                "action": {
+                    "type": "SNAT",
+                    "snat_address": "1.2.3.4"
+                }
+            },{
+                "enabled": True,
+                "description": "Example: NAT client 192.168.1.100 to 1.2.3.4",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "SOURCE_ADDRESS",
+                    "op": "==",
+                    "value": "192.168.1.100"
+                }],
+                "action": {
+                    "type": "SNAT",
+                    "snat_address": "1.2.3.4"
+                }
+            },{
+                "enabled": True,
+                "description": "Example: NAT client 192.168.1.200 to Auto",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "SOURCE_ADDRESS",
+                    "op": "==",
+                    "value": "192.168.1.200"
+                }],
+                "action": {
+                    "type": "MASQUERADE"
+                }
+            }],
+        }]
+    }
+
+
+def default_access_rules_table():
+    return {
+        "name": "access-rules",
+        "family": "inet",
+        "chains": [{
+            "name": "access-rules",
+            "description": "The base access-rules chain",
+            "base": True,
+            "type": "filter",
+            "hook": "input",
+            "priority": 0,
+            "rules": [{
+                "enabled": True,
+                "description": "Allow established sessions",
+                "ruleId": 1,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "established"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            },{
+                "enabled": True,
+                "description": "Allow related sessions",
+                "ruleId": 2,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "related"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }]
+        }]
+    }
+
+
+def default_web_filter_table():
+    return {
+        "name": "web-filter",
+        "family": "ip,ip6",
+        "chains": [{
+            "name": "web-filter-rules",
+            "description": "The base web-filter-rules chain",
+            "base": True,
+            "type": "nat",
+            "hook": "prerouting",
+            "priority": -105,
+            "rules": []
+        }]
+    }
+
+def default_captive_portal_table():
+    return {
+        "name": "captive-portal",
+        "family": "ip,ip6",
+        "chains": [{
+            "name": "captive-portal-rules",
+            "description": "The base captive-portal-rules chain",
+            "base": True,
+            "type": "nat",
+            "hook": "prerouting",
+            "priority": -110,
             "rules": []
         }]
     }

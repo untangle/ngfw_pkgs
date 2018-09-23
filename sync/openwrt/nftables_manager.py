@@ -60,35 +60,15 @@ nft add rule inet marks postrouting-set-marks jump check-dst-interface-mark
 nft add rule inet marks output-set-marks jump restore-interface-marks
 nft add rule inet marks output-set-marks jump restore-priority-mark
 
-# TODO web-filter table should be created/managed elsewhere - it is a user table
-# nft delete table inet web-filter 2>/dev/null || true
-# nft add table inet web-filter
-# nft add chain inet web-filter web-filter-rules "{ type nat hook prerouting priority -105  ; }"
-
-# TODO captive-portal table should be created/managerd elsewhere - it is a user table
-# nft delete table inet captive-portal 2>/dev/null || true
-# nft add table inet captive-portal
-# nft add chain inet captive-portal captive-portal-rules "{ type filter hook prerouting priority -110  ; }"
-
 # TODO filter-rules-sys should be managed in filter_rule_manager
 nft delete table inet filter-rules-sys 2>/dev/null || true
 nft add table inet filter-rules-sys
 nft add chain inet filter-rules-sys filter-rules-sys "{ type filter hook forward priority -5 ; }"
 
-# TODO - nat-rules table should be created/managed in elsewhere - it is a user table
-nft delete table inet nat-rules 2>/dev/null || true
-nft add table inet nat-rules
-nft add chain inet nat-rules nat-rules "{ type filter hook postrouting priority 95 ; }"
-
 # TODO access-rules table should be created in access_rule_manager
 nft delete table inet access-rules-sys 2>/dev/null || true
 nft add table inet access-rules-sys
 nft add chain inet access-rules-sys access-rules-sys "{ type filter hook input priority -5 ; }"
-
-# TODO access-rules table should be created/managed elsewhere - it is a user table
-nft delete table inet access-rules 2>/dev/null || true
-nft add table inet access-rules
-nft add chain inet access-rules access-rules "{ type filter hook input priority 0 ; }"
 
 exit 0
         """)
