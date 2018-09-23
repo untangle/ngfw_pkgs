@@ -70,23 +70,6 @@ nft add rule inet marks output-set-marks jump restore-priority-mark
 # nft add table inet captive-portal
 # nft add chain inet captive-portal captive-portal-rules "{ type filter hook prerouting priority -110  ; }"
 
-# TODO vote table should be created/managed elsewhere - it is a user table
-nft delete table inet vote 2>/dev/null || true
-nft delete table ip   vote 2>/dev/null || true
-nft delete table ip6  vote 2>/dev/null || true
-nft add table inet vote
-nft add table ip   vote
-nft add table ip6  vote
-nft add chain inet vote prerouting-route-vote-rules "{ type filter hook prerouting priority -130 ; }"
-nft add chain ip   vote output-route-vote-rules  "{ type route hook output priority -140 ; }"
-nft add chain ip6  vote output-route-vote-rules  "{ type route hook output priority -140 ; }"
-nft add chain inet vote route-vote-rules
-nft add chain ip   vote route-vote-rules
-nft add chain ip6  vote route-vote-rules
-nft add rule inet vote prerouting-route-vote-rules jump route-vote-rules
-nft add rule ip  vote output-route-vote-rules jump route-vote-rules
-nft add rule ip6 vote output-route-vote-rules jump route-vote-rules
-
 # TODO filter-rules-sys should be managed in filter_rule_manager
 nft delete table inet filter-rules-sys 2>/dev/null || true
 nft add table inet filter-rules-sys

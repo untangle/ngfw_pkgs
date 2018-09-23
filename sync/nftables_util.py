@@ -16,7 +16,7 @@ from sync.network_util import NetworkUtil
 # dns_prediction == netflix.com and source_address == 192.168.1.100
 # In this case we'll add this rule to both the ip and ip6 tables, but in the ip6 table
 # this makes no sense and we just want this rule silently ignored without an error.
-class NonsensicalRuleException(Exception):
+class NonsensicalException(Exception):
     pass
 
 # Utility function to check that op is in array
@@ -98,7 +98,7 @@ def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op
 # Generic helper for making address expressions
 def condition_v4address_expression(addr_str, value, op, family):
     if family not in ['ip','inet']:
-        raise NonsensicalRuleException("Invalid IPv4 family: %s" % family) 
+        raise NonsensicalException("Ignore IPv4 family: %s" % family) 
     if ":" in value:
         raise Exception("Invalid IPv4 value: " + str(value))
     exp = "ip " + addr_str
@@ -108,7 +108,7 @@ def condition_v4address_expression(addr_str, value, op, family):
 # Generic helper for making address expressions
 def condition_v6address_expression(addr_str, value, op, family):
     if family not in ['ip6','inet']:
-        raise NonsensicalRuleException("Invalid IPv6 family: %s" % family) 
+        raise NonsensicalException("Ignore IPv6 family: %s" % family) 
     if "." in value:
         raise Exception("Invalid IPv6 value: " + str(value))
     exp = "ip6 " + addr_str
@@ -236,8 +236,7 @@ def conditions_expression(conditions, family):
 
 # This method takes an method json object and provides the nft expression as a string
 def action_expression(json_action, family):
-    if json_action == None:
-        raise Exception("Invalid action: null")
+    check_action(json_action)
     type = json_action.get('type')
 
     if type == "REJECT":
@@ -248,13 +247,20 @@ def action_expression(json_action, family):
         return "accept"
     elif type == "DNAT":
         addr = json_action.get('dnat_address')
+        port = json_action.get('dnat_port')
         if addr == None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         if family == "ip" and ":" in addr:
-            raise NonsensicalRuleException("Invalid IPv4 for ip DNAT: %s" % family) 
+            raise NonsensicalException("Ignore IPv6 for IPv4 DNAT: %s" % family) 
         if family == "ip6" and "." in addr:
-            raise NonsensicalRuleException("Invalid IPv4 for ip DNAT: %s" % family) 
-        return "dnat to " + addr
+            raise NonsensicalException("Ignore IPv4 for IPv6 DNAT: %s" % family)
+        port_int = None
+        if port != None:
+            port_int = int(port)
+        if port_int != None:
+            return "dnat to %s:%i" % (addr,port_int)
+        else:
+            return "dnat to %s" % (addr)
     elif type == "JUMP":
         chain = json_action.get('chain')
         if chain == None:
@@ -270,66 +276,44 @@ def action_expression(json_action, family):
     
 # Builds an nft rule from the JSON rule object
 def rule_expression(json_rule, family):
-    if json_rule is None:
-        raise Exception("Invalid rule: null")
-    rule_id = json_rule.get('ruleId')
-    action = json_rule.get('action')
-    if rule_id == None:
-        raise Exception("Missing ruleId: " + str(json_rule))
-    if action is None:
-        raise Exception("Invalid action (null) in rule " + str(rule_id))
+    check_rule(json_rule)
 
     rule_exp = ""
-
     conditions = json_rule.get('conditions')
     if conditions != None:
         rule_exp = rule_exp + " " + conditions_expression(conditions, family)
 
-    action_exp = action_expression(action, family)
+    action_exp = action_expression(json_rule.get('action'), family)
     rule_exp = rule_exp + " " + action_exp
 
     return rule_exp[1:]
 
 # This method takes a rule json object and provides the nft command
 def rule_cmd(json_rule, family, table, chain):
-    if json_rule is None:
-        raise Exception("Invalid rule: null")
-    rule_id = json_rule.get('ruleId')
-    if rule_id == None:
-        raise Exception("Missing ruleId: " + str(json_rule))
-    if family is None:
-        raise Exception("Invalid family (null) in rule " + str(rule_id))
-    if table is None:
-        raise Exception("Invalid table (null) in rule " + str(rule_id))
-    if chain is None:
-        raise Exception("Invalid chain (null) in rule " + str(rule_id))
-    if family not in ['ip','ip6','inet','arp','bridge','netdev']:
-        raise Exception("Invalid family (" + family + ") in rule " + str(rule_id))
+    check_rule(json_rule)
+
     if not json_rule.get('enabled'):
         return None
 
     try:
         rule_cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
         return rule_cmd
-    except NonsensicalRuleException as e:
+    except NonsensicalException as e:
         return None
     except:
         raise
 
+# Return the nft command to create this chain
 def chain_create_cmd(json_chain, family, table):
-    if json_chain is None:
-        raise Exception("Invalid chain: null")
+    check_chain(json_chain)
+    check_family(family)
+    
     name = json_chain.get('name')
-    rules = json_chain.get('rules')
-    if name is None or not legal_nft_name(name):
-        raise Exception("Invalid name (%s) for chain" % name)
-    if rules is None:
-        raise Exception("Invalid rules (null) in chain %s" % name)
-    if family is None or family not in ['ip','ip6','inet','arp','bridge','netdev']:
-        raise Exception("Invalid family (%s) for chain %s" % (family,name))
-    if table is None or not legal_nft_name(table):
-        raise Exception("Invalid table (%s) in chain %s" % (table,name))
 
+    # vote is only valid in the ip, ip6 familyt, but the vote table is ip,ip6,inet just ignore inet
+    if json_chain.get('base') and json_chain.get('type') == "route" and family == "inet":
+        raise NonsensicalException("Ignore inet/route chains") 
+    
     if json_chain.get('base'):
         type = json_chain.get('type')
         hook = json_chain.get('hook')
@@ -344,7 +328,91 @@ def chain_create_cmd(json_chain, family, table):
     else:
         return "nft add chain %s %s %s" % (family, table, name)
 
+# Return all the commands to create and populate this chain
+def chain_rules_cmds(json_chain, family, table):
+    check_chain(json_chain)
+
+    # vote is only valid in the ip, ip6 familyt, but the vote table is ip,ip6,inet just ignore inet
+    if json_chain.get('base') and json_chain.get('type') == "route" and family == "inet":
+        raise NonsensicalException("Ignore inet/route chains") 
+    
+    cmds = []
+    for rule in json_chain['rules']:
+        rule_cmd_str = rule_cmd(rule, family, table, json_chain['name'])
+        if rule_cmd_str != None:
+            cmds.append(rule_cmd_str)
+    return '\n'.join(cmds)
+
+# Return the nft command to create this table
 def table_create_cmd(json_table):
+    check_table(json_table)
+    return "nft add table %s %s" % (json_table.get('family'), json_table.get('name'))
+
+# Return the nft command to flush this table
+def table_flush_cmd(json_table):
+    cmd = table_create_cmd(json_table).replace(" add "," flush ")
+    return cmd.replace(" add "," flush ")
+
+# Return the nft command to delete this table
+def table_delete_cmd(json_table):
+    cmd = table_create_cmd(json_table)
+    return cmd.replace(" add "," delete ") + " 2>/dev/null || true"
+
+# Return all the commands to create, flush, and populate this table
+def table_all_cmds(json_table):
+    check_table(json_table, allow_multiple_families=True)
+    
+    cmds = []
+    name = json_table.get('name')
+    family = json_table.get('family')
+    if "," in family:
+        families = family.split(",")
+        str = ""
+        for fam in families:
+            # make shallow copies and create separate tables
+            json_table_fam = copy.copy(json_table)
+            json_table_fam['family'] = fam
+            str += table_all_cmds(json_table_fam) + "\n"
+        return str
+
+    cmds.append(table_delete_cmd(json_table))
+    cmds.append(table_create_cmd(json_table))
+    for json_chain in json_table.get('chains'):
+        try:
+            cmds.append(chain_create_cmd(json_chain, family, name))
+        except NonsensicalException as e:
+            pass
+    for json_chain in json_table.get('chains'):
+        try:
+            cmds.append(chain_rules_cmds(json_chain, family, name))
+        except NonsensicalException as e:
+            pass
+    return '\n'.join(cmds)
+
+
+
+# Check the provided chain has the required attributes, throw exception if not
+def check_chain(json_chain):
+    if json_chain is None:
+        raise Exception("Invalid chain: null")
+    name = json_chain.get('name')
+    rules = json_chain.get('rules')
+    if name is None or not legal_nft_name(name):
+        raise Exception("Invalid name (%s) for chain" % name)
+    if rules is None:
+        raise Exception("Invalid rules (null) in chain %s" % name)
+    return
+
+# Check the provided rule has the required attributes, throw exception if not
+def check_rule(json_rule):
+    if json_rule is None:
+        raise Exception("Invalid rule: null")
+    rule_id = json_rule.get('ruleId')
+    if rule_id == None:
+        raise Exception("Missing ruleId: " + str(json_rule))
+
+# Check the provided table has the required attributes, throw exception if not
+def check_table(json_table, allow_multiple_families=False):
     if json_table is None:
         raise Exception("Invalid table: null")
     name = json_table.get('name')
@@ -352,41 +420,32 @@ def table_create_cmd(json_table):
     chains = json_table.get('chains')
     if name is None or not legal_nft_name(name):
         raise Exception("Invalid name (%s) in table" % name)
-    if family is None or family not in ['ip','ip6','inet','arp','bridge','netdev']:
-        raise Exception("Invalid family (%s) for table %s" % (family,name))
+    if allow_multiple_families:
+        for fam in family.split(","):
+            if fam is None or fam not in ['ip','ip6','inet','arp','bridge','netdev']:
+                raise Exception("Invalid family (%s) for table %s" % (fam,name))
+    else:
+        if family is None or family not in ['ip','ip6','inet','arp','bridge','netdev']:
+            raise Exception("Invalid family (%s) for table %s" % (family,name))
     if chains is None:
         raise Exception("Invalid chains (null) for table %s" % name)
-    return "nft add table %s %s" % (family, name)
 
-def table_flush_cmd(json_table):
-    cmd = table_create_cmd(json_table)
-    return cmd.replace(" add "," flush ")
+# Check the provided action has the required attributes, throw exception if not
+def check_action(json_action):
+    if json_action == None:
+        raise Exception("Invalid action: null")
+    type = json_action.get('type')
+    if type == None:
+        raise Exception("Invalid action type: null")
 
-def table_delete_cmd(json_table):
-    cmd = table_create_cmd(json_table)
-    return cmd.replace(" add "," delete ") + " 2>/dev/null || true"
+# Check the provided string is a valid family - throw exception if not
+def check_family(family):
+    if family is None:
+        raise Exception("Invalid family: null")
+    if family not in ['ip','ip6','inet','arp','bridge','netdev']:
+        raise Exception("Invalid family (" + family + ") in rule " + str(rule_id))
 
-def table_all_cmds(json_table):
-    cmds = []
-    name = json_table.get('name')
-    family = json_table.get('family')
-    if family == "ip,ip6":
-        # make shallow copies and create two separate tables
-        json_table_ip = copy.copy(json_table)
-        json_table_ip['family'] = 'ip'
-        json_table_ip6 = copy.copy(json_table)
-        json_table_ip6['family'] = 'ip6'
-        return table_all_cmds(json_table_ip) + "\n\n" + table_all_cmds(json_table_ip6)
-    cmds.append(table_delete_cmd(json_table))
-    cmds.append(table_create_cmd(json_table))
-    for chain in json_table.get('chains'):
-        cmds.append(chain_create_cmd(chain,family,name))
-        for rule in chain['rules']:
-            rule_cmd_str = rule_cmd(rule, family, name, chain['name'])
-            if rule_cmd_str != None:
-                cmds.append(rule_cmd_str)
-    return '\n'.join(cmds)
-
+# Return true if a legal nft name, Fales otherwise
 def legal_nft_name(name):
     if name is None:
         return False

@@ -21,6 +21,7 @@ class TableManager:
         tables = {}
         tables['filter-rules'] = default_filter_rules_table()
         tables['port-forward'] = default_port_forward_table()
+        tables['vote'] = default_vote_table()
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
@@ -62,6 +63,7 @@ class TableManager:
                 
             filename = prefix + self.filename_prefix + ("%02d-%s" % (i, table.get('name')))
             self.write_file(filename, table, prefix, verbosity)
+            i=i+1
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         # FIXME need to delete previous 2.* files when syncing because those tables may have been remove from settings
@@ -110,8 +112,7 @@ def default_filter_rules_table():
                     "type": "JUMP",
                     "chain": "filter-rules-all"
                 }
-            }],
-            "editable": False
+            }]
         },{
             "name": "filter-rules-new",
             "description": "The chain to process the first packet of each session (new sessions)",
@@ -192,7 +193,51 @@ def default_port_forward_table():
                     "type": "DNAT",
                     "dnat_address": "1.2.3.5"
                 }
+            }]
+        }]
+    }
+
+def default_vote_table():
+    return {
+        "name": "vote",
+        "family": "ip,ip6,inet",
+        "chains": [{
+            "name": "prerouting-route-vote-rules",
+            "description": "The prerouting route vote rules",
+            "base": True,
+            "type": "filter",
+            "hook": "prerouting",
+            "priority": -130,
+            "rules": [{
+                "enabled": True,
+                "description": "Call route-vote-rules",
+                "ruleId": 1,
+                "conditions": [],
+                "action": {
+                    "type": "JUMP",
+                    "chain": "route-vote-rules"
+                }
             }],
-            "editable": False
+        },{
+            "name": "output-route-vote-rules",
+            "description": "The prerouting route vote rules",
+            "base": True,
+            "type": "route",
+            "hook": "output",
+            "priority": -140,
+            "rules": [{
+                "enabled": True,
+                "description": "Call route-vote-rules",
+                "ruleId": 1,
+                "conditions": [],
+                "action": {
+                    "type": "JUMP",
+                    "chain": "route-vote-rules"
+                }
+            }],
+        },{
+            "name": "route-vote-rules",
+            "description": "The main route vote rules chain",
+            "rules": []
         }]
     }
