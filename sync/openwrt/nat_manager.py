@@ -9,7 +9,7 @@ from sync import registrar
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
 class NatManager:
-    nat_rules_sys_filename = "/etc/config/nftables-rules.d/010-nat-rules-sys"
+    nat_rules_sys_filename = "/etc/config/nftables-rules.d/100-nat"
 
     def initialize(self):
         registrar.register_file(self.nat_rules_sys_filename, "restart-nftables-rules", self)
@@ -52,6 +52,10 @@ nft add rule ip nat postrouting-nat iifname lo accept
 nft add rule ip nat postrouting-nat jump nat-rules-sys
 
 nft add rule ip nat prerouting-nat jump miniupnpd
+
+nft delete table inet filter-rules-nat 2>/dev/null || true
+nft add table inet filter-rules-nat
+nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward priority -5 ; }"
 
 
 """)

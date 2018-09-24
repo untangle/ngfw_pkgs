@@ -343,6 +343,18 @@ def default_access_rules_table():
                 "action": {
                     "type": "ACCEPT"
                 }
+            },{
+                "enabled": True,
+                "description": "Block invalid packets",
+                "ruleId": 2,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "invalid"
+                }],
+                "action": {
+                    "type": "DROP"
+                }
             }]
         }]
     }
