@@ -57,7 +57,12 @@ nft add rule inet interface-marks output-interface-marks jump restore-interface-
 nft add rule inet interface-marks output-interface-marks jump restore-priority-mark
 """)
 
-            # FIXME write rules to set marks
+            interfaces = settings.get('network').get('interfaces')
+            for intf in interfaces:
+                if intf.get('configType') == 'DISABLED':
+                    continue
+                file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0xff\"\n" % (intf.get('netfilterDev'),intf.get('interfaceId')))
+                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff\"\n" % (intf.get('netfilterDev'),(intf.get('interfaceId')<<8)))
             
             file.write("\n");
         except:
