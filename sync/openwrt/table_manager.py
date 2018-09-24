@@ -54,7 +54,7 @@ class TableManager:
         if verbosity > 0: print("TableManager: Wrote %s" % filename)
         return
 
-    def write_files(self, settings, prefix, verbosity):
+    def write_files(self, settings, prefix, delete_list, verbosity):
         if settings.get('firewall') == None or settings.get('firewall').get('tables') == None:
             return
 
@@ -66,16 +66,28 @@ class TableManager:
                 raise Exception('Invalid table %s: Missing family' % table.get('name'))
             if table.get('chains') == None:
                 raise Exception('Invalid table %s: Missing chains' % table.get('name'))
-                
-            filename = prefix + self.filename_prefix + ("%02d-%s" % (i, table.get('name')))
+
+            filename_noprefix = self.filename_prefix + ("%02d-%s" % (i, table.get('name')))
+            filename = prefix + filename_noprefix
+            try:
+                delete_list.remove(filename_noprefix)
+            except:
+                pass
             self.write_file(filename, table, prefix, verbosity)
             i=i+1
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        # FIXME need to delete previous 2.* files when syncing because those tables may have been remove from settings
-        # delete_list.append("/etc/config/nftables-rules.d/2.*")
-        # We should probably append all existing 2.* files to the delete_list and remove them when written
-        self.write_files(settings, prefix, verbosity)
+        # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
+        # Remove all the files that we write later
+        # This ensures that all the existing /etc/config/nftables-rules.d/2* that we don't
+        # write get removed
+        for (dirpath, dirnames, filenames) in os.walk("/etc/config/nftables-rules.d/"):
+            for filename in filenames:
+                if filename.startswith("2"):
+                    full_name = dirpath + filename
+                    delete_list.append(full_name)
+        # Write all the /etc/config/nftables-rules.d/2.* files
+        self.write_files(settings, prefix, delete_list, verbosity)
         pass
     
 registrar.register_manager(TableManager())
