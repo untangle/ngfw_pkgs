@@ -1,5 +1,4 @@
 {
-    "defaultsVersion": 1,
     "suricataSettings":{
         "default-rule-path": "/etc/suricata",
         "rule-files": [
