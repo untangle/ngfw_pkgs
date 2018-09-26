@@ -38,23 +38,20 @@ nft delete table inet interface-marks 2>/dev/null || true
 nft add table inet interface-marks
 nft add chain inet interface-marks prerouting-interface-marks "{ type filter hook prerouting priority -150 ; }"
 nft add chain inet interface-marks forward-interface-marks "{ type filter hook forward priority -150 ; }"
-nft add chain inet interface-marks postrouting-interface-marks "{ type filter hook postrouting priority 110 ; }"
-nft add chain inet interface-marks output-interface-marks "{ type filter hook output priority 110 ; }"
+nft add chain inet interface-marks postrouting-interface-marks "{ type filter hook postrouting priority 0 ; }"
+# nft add chain inet interface-marks output-interface-marks "{ type filter hook output priority 110 ; }"
 nft add chain inet interface-marks restore-interface-marks
-nft add chain inet interface-marks restore-priority-mark
 nft add chain inet interface-marks mark-src-interface
 nft add chain inet interface-marks mark-dst-interface
 nft add chain inet interface-marks check-src-interface-mark
 nft add chain inet interface-marks check-dst-interface-mark
 nft add rule inet interface-marks prerouting-interface-marks jump restore-interface-marks
-nft add rule inet interface-marks prerouting-interface-marks jump restore-priority-mark
 nft add rule inet interface-marks prerouting-interface-marks ct state new jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks jump check-src-interface-mark
 nft add rule inet interface-marks forward-interface-marks ct state new jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
-nft add rule inet interface-marks output-interface-marks jump restore-interface-marks
-nft add rule inet interface-marks output-interface-marks jump restore-priority-mark
+#nft add rule inet interface-marks output-interface-marks jump restore-interface-marks
 """)
 
             interfaces = settings.get('network').get('interfaces')
