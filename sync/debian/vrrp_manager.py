@@ -80,19 +80,7 @@ global_defs {
         file.write("\n\n");
 
         for intf in vrrp_interfaces:
-            address_list = intf.get('vrrpAliases')
-
-            main_list = []
-            supp_list = []
-            if len(address_list) <= 18:
-                main_list = address_list
-            else:
-                # virtual_ipaddress only support 20 address.
-                # If its large break into two.
-                # sort it so it will be the same on both sides regardless of order
-                address_list.sort()
-                main_list = address_list[:18]
-                supp_list = address_list[18:]
+            main_list = intf.get('vrrpAliases')
 
             file.write("vrrp_instance VI_" + str(intf.get('interfaceId')) + " {" + "\n")
             file.write("\tstate MASTER" + "\n")
@@ -107,12 +95,6 @@ global_defs {
             for alias in main_list:
                 file.write("\t\t%s/%s" % (str(alias.get('staticAddress')),str(alias.get('staticPrefix')))  + "\n")
             file.write("\t}" + "\n")
-
-            if len(supp_list) > 0:
-                file.write("\tvirtual_ipaddress_excluded {" + "\n")
-                for alias in supp_list:
-                    file.write("\t\t%s/%s" % (str(alias.get('staticAddress')),str(alias.get('staticPrefix')))  + "\n")
-                file.write("\t}" + "\n")
 
             file.write("}" + "\n")
             file.write("\n\n");
