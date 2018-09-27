@@ -4,6 +4,10 @@
         "rule-files": [
             "ngfw.rules"
         ],
+        "nfq": {
+            "mode": "accept",
+            "fail-open": True
+        },
         "outputs": {
             "eve-log": {
                 "enabled": False
