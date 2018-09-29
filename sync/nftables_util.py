@@ -300,6 +300,15 @@ def action_expression(json_action, family):
             raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         priority_int = int(priority) & 0xff
         return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
+    elif type == "LIMIT_RATE":
+        rate = json_action.get('rate')
+        if rate == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
+        unit = json_action.get('rate_unit')
+        if unit == None:
+            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
+        rate_int = int(rate)
+        return "limit rate over %d%s drop" % (rate_int,get_limit_rate_unit_string(unit))
     else:
         raise Exception("Unknown action type: " + str(json_action))
     
@@ -480,3 +489,15 @@ def legal_nft_name(name):
         return False
     match = re.match("[a-z-]+", name)
     return match is not None
+
+def get_limit_rate_unit_string(unit):
+    return {
+            "PACKETS_PER_SECOND": "/second",
+            "PACKETS_PER_MINUTE": "/minute",
+            "PACKETS_PER_HOUR": "/hour",
+            "PACKETS_PER_DAY": "/day",
+            "PACKETS_PER_WEEK": "/week",
+            "BYTES_PER_SECOND": " bytes/second",
+            "KBYTES_PER_SECOND": " kbytes/second",
+            "MBYTES_PER_SECOND": " mbytes/second",
+    }.get(unit, "/second")

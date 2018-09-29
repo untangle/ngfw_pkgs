@@ -536,5 +536,10 @@ def default_shaping_rules_table():
                     "priority": 3
                 }
             }]
+        },{
+            "name": "limiting-rules",
+            "description": "The main limiting rules chain",
+            "default": True,
+            "rules": []
         }]
     }
