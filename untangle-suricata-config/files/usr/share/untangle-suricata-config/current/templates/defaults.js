@@ -66,8 +66,8 @@
                 "list":[{
                     "javaClass":"com.untangle.app.intrusion_prevention.IntrusionPreventionRuleCondition",
                     "type":"SYSTEM_MEMORY",
-                    "comparator":"<",
-                    "value":"2147483648"
+                    "comparator":">=",
+                    "value":"1610612736"
                 },{
                     "javaClass":"com.untangle.app.intrusion_prevention.IntrusionPreventionRuleCondition",
                     "type":"CLASSTYPE",
