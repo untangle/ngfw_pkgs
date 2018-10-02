@@ -134,11 +134,22 @@ def condition_ct_state_expression(value, op):
             raise Exception("Invalid ct state value: %s" % v)
     return "ct state " + value
 
+# Generic helper for limit rate expressions
+def condition_limit_rate_expression(value, op, rate_unit):
+    if rate_unit == None:
+        raise Exception("Limit rate expressions require rate_unit")
+    rate_int = int(value)
+    if op == "<":
+        return "limit rate %d%s" % (rate_int,get_limit_rate_unit_string(rate_unit))
+    else:
+        return "limit rate over %d%s" % (rate_int,get_limit_rate_unit_string(rate_unit))
+
 # Build nft expressions from the JSON condition object
 def condition_expression(condition, family, ip_protocol=None):
     type = condition.get('type')
     op = condition.get('op')
     value = condition.get('value')
+    unit = condition.get('rate_unit')
 
     if type == None:
         raise Exception("Condition missing type: " + str(condition.get('ruleId')))
@@ -218,6 +229,9 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("session","ct id","remote_username","long_string",op,value)
     elif type == "CT_STATE":
         return condition_ct_state_expression(value, op)
+    elif type == "LIMIT_RATE":
+        check_operation(op,[">","<"])
+        return condition_limit_rate_expression(value, op, unit)
     
     raise Exception("Unsupported condition type " + type + " " + str(condition.get('ruleId')))
 
