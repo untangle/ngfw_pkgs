@@ -321,8 +321,7 @@ def action_expression(json_action, family):
         unit = json_action.get('rate_unit')
         if unit == None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(type))
-        rate_int = int(rate)
-        return "limit rate over %d%s drop" % (rate_int,get_limit_rate_unit_string(unit))
+        return "%s drop" % (condition_limit_rate_expression(rate, ">", unit))
     else:
         raise Exception("Unknown action type: " + str(json_action))
     
