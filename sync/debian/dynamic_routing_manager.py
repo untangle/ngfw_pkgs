@@ -63,7 +63,7 @@ class DynamicRoutingManager:
     def bits_to_address(self, bits, prefix):
         bits = '{message:{fill}{align}{width}}'.format(message=bits,fill='0',align='<',width=32)
         chunks = len(bits)
-        chunk_size = chunks/4
+        chunk_size = int(chunks/4)
         return '.'.join([ '{0}'.format(int(bits[i:i+chunk_size], 2)) for i in range(0, chunks, chunk_size)])
 
     def get_interfaces_from_networks(self, settings, want_daemon=None):
