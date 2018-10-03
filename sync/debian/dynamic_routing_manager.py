@@ -36,10 +36,11 @@ class DynamicRoutingManager:
 
     def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
         if settings.get('dynamicRoutingSettings') is not None:
-            self.write_daemons_conf( settings, prefix, verbosity )
-            self.write_zebra_conf( settings, prefix, verbosity )
-            self.write_bgpd_conf( settings, prefix, verbosity )
-            self.write_ospfd_conf( settings, prefix, verbosity )
+            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
+                self.write_daemons_conf( settings, prefix, verbosity )
+                self.write_zebra_conf( settings, prefix, verbosity )
+                self.write_bgpd_conf( settings, prefix, verbosity )
+                self.write_ospfd_conf( settings, prefix, verbosity )
             self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
         return
 
@@ -508,7 +509,7 @@ systemctl --no-block stop {0}
 {0}_PID="`pidof {1}`"
 
 # Restart quagga if it isnt found
-# Or if zebra.conf orhas been written since quagga was started
+# Or if zebra.conf or has been written since quagga was started
 if [ -z "${0}_PID" ] ; then
     systemctl --no-block restart {1}
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
