@@ -317,10 +317,13 @@ def call_without_permissions(func, *args, **kw):
     if pid == 0:
         drop_permissions()
         result = func(*args, **kw)
+        sys.stdout.flush()
+        sys.stderr.flush()
         os._exit(result)
     else:
+        # os.close(write_pipe)
         (xpid, result) = os.waitpid(pid, 0)
-        return result
+        return result >> 8
 
 def make_tmpdirs():
     """
@@ -527,5 +530,3 @@ elif commands_ret != 0:
 else:
     print("\nDone.")
     cleanup(0)
-
-
