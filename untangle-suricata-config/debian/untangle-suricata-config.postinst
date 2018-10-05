@@ -5,3 +5,14 @@ DIRECTORY=/usr/share/untangle-suricata-config/
 if [ ! -d ${DIRECTORY}/current/rules ] ; then
     tar -xzf ${DIRECTORY}/suricatarules.tar.gz -C /usr/share/untangle-suricata-config/current 
 fi
+
+#
+# Debian Suricata package attempts to restart Suricata in its postinst via
+# the init.d script.
+# Since we control the daemon, ensure the script won't run.  Suricata doesn't appear
+# to change the permisions on the file.
+#
+SURICATA_INIT=/etc/init.d/suricata
+if [ -e ${SURICATA_INIT} ] ; then
+   chmod 660 ${SURICATA_INIT}
+fi
