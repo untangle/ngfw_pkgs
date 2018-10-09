@@ -260,8 +260,8 @@ refresh_routes()
 
 run_post_networking_hook()
 {
-    if [ "`/sbin/runlevel | cut -d " " -f 2`" != "2" ] ; then 
-        # if the runlevel is not 2, we are either in bootup or shutdown
+    if [ "`/sbin/runlevel | cut -d " " -f 2`" -gte "2" ] ; then 
+        # if the runlevel is not 5, we are either in bootup or shutdown
         $DEBUG "Skipping post-network-hook.d hooks - still booting."
     elif pgrep -f 'run-parts.*post-network-hook.d' >/dev/null 2>&1 ; then
         # if we already see post-network-hook.d running, do not run it again
