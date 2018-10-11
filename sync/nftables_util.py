@@ -48,6 +48,37 @@ def value_str(value):
     else:
         return "'{" + value + "}'"
 
+# A generic helper function to build a basic nftables selector expression
+def selector_expression(type, family, ip_protocol=None):
+    if type == "IP_PROTOCOL":
+        return "ip protocol"
+    elif type == "SOURCE_ADDRESS":
+        if family not in ['ip','inet']:
+            raise NonsensicalException("Ignore IPv4 family: %s" % family)
+        return "ip saddr"
+    elif type == "DESTINATION_ADDRESS":
+        if family not in ['ip','inet']:
+            raise NonsensicalException("Ignore IPv4 family: %s" % family)
+        return "ip daddr"
+    elif type == "SOURCE_ADDRESS_V6":
+        if family not in ['ip6','inet']:
+            raise NonsensicalException("Ignore IPv6 family: %s" % family)
+        return "ip6 saddr"
+    elif type == "DESTINATION_ADDRESS_V6":
+        if family not in ['ip6','inet']:
+            raise NonsensicalException("Ignore IPv6 family: %s" % family)
+        return "ip6 daddr"
+    elif type == "SOURCE_PORT":
+        if ip_protocol == None:
+            raise Exception("Undefined protocol with port condition")
+        return ip_protocol + " sport"
+    elif type == "DESTINATION_PORT":
+        if ip_protocol == None:
+            raise Exception("Undefined protocol with port condition")
+        return ip_protocol + " dport"
+
+    raise Exception("Unsupported selector type " + type + " " + str(condition.get('ruleId')))
+
 # A generic helper funciton to build a basic nftables dict expression
 def condition_dict_expression(table, key, field, type, op, value):
     if table == None:
@@ -254,9 +285,18 @@ def conditions_expression(conditions, family):
 
     str = ""
     for condition in conditions:
+
+        group_selector = condition.get('group_selector')
+        if group_selector != None:
+            conditions_expression.meter_id = getattr(conditions_expression, 'meter_id', 0) + 1
+            str = str + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family, ip_protocol=ip_protocol))
+
         add_str = condition_expression(condition, family, ip_protocol=ip_protocol)
         if add_str != "":
             str = str + " " + add_str
+
+        if group_selector != None:
+            str = str + " }"
 
     return str.strip()
 
