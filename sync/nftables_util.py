@@ -354,14 +354,6 @@ def action_expression(json_action, family):
             raise Exception("Invalid action: Missing required parameter for action type " + str(type))
         priority_int = int(priority) & 0xff
         return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
-    elif type == "LIMIT_RATE":
-        rate = json_action.get('rate')
-        if rate == None:
-            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
-        unit = json_action.get('rate_unit')
-        if unit == None:
-            raise Exception("Invalid action: Missing required parameter for action type " + str(type))
-        return "%s drop" % (condition_limit_rate_expression(rate, ">", unit))
     else:
         raise Exception("Unknown action type: " + str(json_action))
     
