@@ -62,6 +62,8 @@ nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward
 
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
+                if intf.get('configType') == 'DISABLED':
+                    continue
                 if intf.get('natEgress'):
                     # FIXME - this should be a rule based on mark instead of netfilterDev
                     # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
