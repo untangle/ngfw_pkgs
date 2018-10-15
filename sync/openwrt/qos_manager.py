@@ -64,6 +64,8 @@ class QosManager:
 
                 interfaces = settings.get('network').get('interfaces')
                 for intf in interfaces:
+                    if intf.get('configType') == 'DISABLED':
+                        continue
                     if intf.get('wan'):
                         file.write("# qos for %i\n" % intf.get('interfaceId'))
                         file.write("\n")
