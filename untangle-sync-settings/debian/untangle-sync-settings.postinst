@@ -60,5 +60,8 @@ if [ -f /etc/ppp/ip-up.d/0000usepeerdns ] ; then mv -f /etc/ppp/ip-up.d/0000usep
 rm -f /var/log/uvm/dhcp.log*
 rm -f /var/log/uvm/pppoe.log*
 rm -f /var/log/uvm/iptables.log*
+if [ -f /etc/untangle/post-network-hook.d/200-vrrp ] ; then
+    sed -e 's/^\s*killall keepalive.*$/\tkillall keepalived ; sleep 5/' -i /etc/untangle/post-network-hook.d/200-vrrp
+fi
 
 exit 0
