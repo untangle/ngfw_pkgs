@@ -122,7 +122,7 @@ global_defs {
         file.write(r"""
 if [ ! -z "`pidof keepalived`" ] ; then
     killall keepalived
-    sleep 1
+    sleep 5
     killall -9 keepalived
 fi
 """)
