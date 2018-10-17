@@ -1,3 +1,4 @@
+untangle-hardware-azure-byol		stretch
 untangle-suricata-config		stretch
 untangle-python-sync-settings		stretch
 untangle-pyconnector			stretch
