@@ -1,0 +1,17 @@
+Source: untangle-hardware-azure-payg
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-hardware-azure-payg
+Architecture: all
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-suricata-config, untangle-system-config
+Provides: untangle-hardware-microsoft-azure
+Conflicts: untangle-hardware-microsoft-azure
+Replaces: untangle-hardware-microsoft-azure
+Description: The Untangle Microsoft Azure config
+ Configuration specific to Microsoft Azure.
+
