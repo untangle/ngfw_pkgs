@@ -6,3 +6,7 @@ if [ ! -d ${DIRECTORY}/current/rules ] ; then
     tar -xzf ${DIRECTORY}/suricatarules.tar.gz -C /usr/share/untangle-suricata-config/current 
 fi
 
+# the intrusion-prevention app will start suricata
+# stop it and disable it so it is not started automatically
+systemctl --no-block stop suricata || true
+deb-systemd-helper disable suricata
