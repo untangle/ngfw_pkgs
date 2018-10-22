@@ -187,6 +187,7 @@ class NetworkManager:
             file.write("\toption proto 'dhcp'\n")
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
+            file.write("\toption force_link '0'\n")
             file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
             file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
             if intf.get('wan') and intf.get('v4StaticGateway') != None:
