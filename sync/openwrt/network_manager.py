@@ -333,6 +333,7 @@ class NetworkManager:
 
             interface['downloadKbps'] = 0
             interface['uploadKbps'] = 0
+            interface['wanWeight'] = 0
 
             if dev.get('name') == internal_device_name:
                 interface['name'] = 'internal'
