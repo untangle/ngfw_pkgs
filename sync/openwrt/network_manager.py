@@ -87,12 +87,31 @@ class NetworkManager:
         switches = settings['network']['switches']
         for swi in switches:
             self.write_switch(swi, settings)
+
+        self.write_route_rules(settings)
         
         file.flush()
         file.close()
         
         if verbosity > 0:
             print("%s: Wrote %s" % (self.__class__.__name__,filename))
+
+    def write_route_rules(self, settings):
+        priority = 70000
+        file = self.network_file
+        file.write("\n");
+
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if intf.get('wan') and intf.get('configType') != "DISABLED" and intf.get('v4ConfigType') != "DISABLED":
+                file.write("config rule\n");
+                file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'));
+                file.write("\toption priority '%d'\n" % priority);
+                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'));
+                file.write("\n");
+                priority = priority + 1
+
+        return
 
     def write_switch(self, swi, settings):
         file = self.network_file
