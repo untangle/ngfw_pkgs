@@ -206,6 +206,9 @@ class NetworkManager:
             # This needs to be written for addressless bridges
             file.write("\toption proto 'none'\n")
             file.write("\toption auto '1'\n")
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
             
         return
 
