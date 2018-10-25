@@ -195,6 +195,8 @@ class RouteManager:
         file.write("\n")
         file.write(". /lib/functions/network.sh\n")
         file.write("\n")
+        file.write("INTERFACE=$1\n")
+        file.write("\n")
         file.write("build_balance_table()\n")
         file.write("{\n")
         file.write("\tROUTE_STR=\"\"\n")
