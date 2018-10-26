@@ -9,6 +9,8 @@ from sync import nftables_util
 
 # This class is responsible for writing all of the tables
 # from settings/firewall/tables
+
+
 class TableManager:
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
@@ -21,7 +23,7 @@ class TableManager:
 
     def validate_settings(self, settings):
         pass
-    
+
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
 
@@ -34,7 +36,7 @@ class TableManager:
         tables['web-filter'] = default_web_filter_table()
         tables['captive-portal'] = default_captive_portal_table()
         tables['shaping-rules'] = default_shaping_rules_table()
-        
+
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
@@ -44,16 +46,16 @@ class TableManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write(nftables_util.table_all_cmds(table_settings) + "\n")
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
 
@@ -81,7 +83,7 @@ class TableManager:
             except:
                 pass
             self.write_file(filename, table, prefix)
-            i=i+1
+            i = i+1
 
     def sync_settings(self, settings, prefix, delete_list):
         # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
@@ -96,8 +98,10 @@ class TableManager:
         # Write all the /etc/config/nftables-rules.d/2.* files
         self.write_files(settings, prefix, delete_list)
         pass
-    
+
+
 registrar.register_manager(TableManager())
+
 
 def default_filter_rules_table():
     return {
@@ -119,7 +123,7 @@ def default_filter_rules_table():
                     "type": "JUMP",
                     "chain": "filter-rules-new"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Call early-session session filter rules",
                 "ruleId": 2,
@@ -128,7 +132,7 @@ def default_filter_rules_table():
                     "type": "JUMP",
                     "chain": "filter-rules-early"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Call deep-session (all packets) session filter rules",
                 "ruleId": 3,
@@ -138,7 +142,7 @@ def default_filter_rules_table():
                     "chain": "filter-rules-all"
                 }
             }]
-        },{
+        }, {
             "name": "filter-rules-new",
             "description": "The chain to process the first packet of each session (new sessions)",
             "default": True,
@@ -150,11 +154,11 @@ def default_filter_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "SERVER_ADDRESS",
                     "op": "==",
                     "value": "1.2.3.4"
-                },{
+                }, {
                     "type": "SERVER_PORT",
                     "op": "==",
                     "value": "1234"
@@ -162,7 +166,7 @@ def default_filter_rules_table():
                 "action": {
                     "type": "REJECT"
                 }
-            },{
+            }, {
                 "ruleId": 2,
                 "description": "Example: A rule of blocking TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
@@ -170,11 +174,11 @@ def default_filter_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "CLIENT_ADDRESS",
                     "op": "==",
                     "value": "192.168.1.100"
-                },{
+                }, {
                     "type": "SERVER_PORT",
                     "op": "==",
                     "value": "21"
@@ -183,16 +187,17 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }]
-        },{
+        }, {
             "name": "filter-rules-early",
             "description": "The chain to process the first few packets of each session (early in session)",
             "rules": []
-        },{
+        }, {
             "name": "filter-rules-all",
             "description": "The chain to process the all packets",
             "rules": []
         }]
     }
+
 
 def default_port_forward_table():
     return {
@@ -223,6 +228,7 @@ def default_port_forward_table():
         }]
     }
 
+
 def default_vote_table():
     return {
         "name": "vote",
@@ -244,7 +250,7 @@ def default_vote_table():
                     "chain": "route-vote-rules"
                 }
             }],
-        },{
+        }, {
             "name": "output-route-vote-rules",
             "description": "The prerouting route vote rules",
             "base": True,
@@ -261,13 +267,14 @@ def default_vote_table():
                     "chain": "route-vote-rules"
                 }
             }],
-        },{
+        }, {
             "name": "route-vote-rules",
             "description": "The main route vote rules chain",
             "default": True,
             "rules": []
         }]
     }
+
 
 def default_nat_rules_table():
     return {
@@ -288,7 +295,7 @@ def default_nat_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "SERVER_PORT",
                     "op": "==",
                     "value": "1234"
@@ -297,7 +304,7 @@ def default_nat_rules_table():
                     "type": "SNAT",
                     "snat_address": "1.2.3.4"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.100 to 1.2.3.4",
                 "ruleId": 1,
@@ -310,7 +317,7 @@ def default_nat_rules_table():
                     "type": "SNAT",
                     "snat_address": "1.2.3.4"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.200 to Auto",
                 "ruleId": 1,
@@ -350,7 +357,7 @@ def default_access_rules_table():
                 "action": {
                     "type": "ACCEPT"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Allow related sessions",
                 "ruleId": 2,
@@ -362,7 +369,7 @@ def default_access_rules_table():
                 "action": {
                     "type": "ACCEPT"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Block invalid packets",
                 "ruleId": 2,
@@ -394,6 +401,7 @@ def default_web_filter_table():
         }]
     }
 
+
 def default_captive_portal_table():
     return {
         "name": "captive-portal",
@@ -408,6 +416,7 @@ def default_captive_portal_table():
             "rules": []
         }]
     }
+
 
 def default_shaping_rules_table():
     return {
@@ -429,7 +438,7 @@ def default_shaping_rules_table():
                     "type": "JUMP",
                     "chain": "prioritization-rules"
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Call limiting-rules",
                 "ruleId": 2,
@@ -439,7 +448,7 @@ def default_shaping_rules_table():
                     "chain": "limiting-rules"
                 }
             }],
-        },{
+        }, {
             "name": "prioritization-rules",
             "description": "The main prioritization rules chain",
             "default": True,
@@ -451,7 +460,7 @@ def default_shaping_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "{5060,5061}"
@@ -460,7 +469,7 @@ def default_shaping_rules_table():
                     "type": "SET_PRIORITY",
                     "priority": 1
                 }
-            },{
+            }, {
                 "enabled": False,
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 2,
@@ -468,7 +477,7 @@ def default_shaping_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "4569"
@@ -477,7 +486,7 @@ def default_shaping_rules_table():
                     "type": "SET_PRIORITY",
                     "priority": 1
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Ping Priority",
                 "ruleId": 3,
@@ -490,7 +499,7 @@ def default_shaping_rules_table():
                     "type": "SET_PRIORITY",
                     "priority": 1
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "DNS Priority",
                 "ruleId": 4,
@@ -498,7 +507,7 @@ def default_shaping_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "udp"
-                },{
+                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "53"
@@ -507,7 +516,7 @@ def default_shaping_rules_table():
                     "type": "SET_PRIORITY",
                     "priority": 1
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "SSH Priority",
                 "ruleId": 5,
@@ -515,7 +524,7 @@ def default_shaping_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "22"
@@ -524,7 +533,7 @@ def default_shaping_rules_table():
                     "type": "SET_PRIORITY",
                     "priority": 2
                 }
-            },{
+            }, {
                 "enabled": True,
                 "description": "Openvpn Priority",
                 "ruleId": 6,
@@ -532,7 +541,7 @@ def default_shaping_rules_table():
                     "type": "IP_PROTOCOL",
                     "op": "==",
                     "value": "tcp"
-                },{
+                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "1194"
@@ -542,7 +551,7 @@ def default_shaping_rules_table():
                     "priority": 3
                 }
             }]
-        },{
+        }, {
             "name": "limiting-rules",
             "description": "The main limiting rules chain",
             "default": True,

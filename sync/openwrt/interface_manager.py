@@ -8,13 +8,15 @@ from sync import registrar
 
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
+
+
 class InterfaceManager:
     interface_marks_filename = "/etc/config/nftables-rules.d/101-interface-marks"
 
     def initialize(self):
         registrar.register_file(self.interface_marks_filename, "restart-nftables-rules", self)
         pass
-    
+
     def preprocess_settings(self, settings):
         pass
 
@@ -31,13 +33,13 @@ class InterfaceManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-        
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
         try:
             file.write(r"""
 nft delete table inet interface-marks 2>/dev/null || true
@@ -64,10 +66,10 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
             for intf in interfaces:
                 if intf.get('configType') == 'DISABLED':
                     continue
-                file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'),intf.get('interfaceId')))
-                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'),(intf.get('interfaceId')<<8)))
-            
-            file.write("\n");
+                file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
+                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+
+            file.write("\n")
         except:
             print("ERROR:")
             traceback.print_exception()
@@ -82,5 +84,6 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
     def sync_settings(self, settings, prefix, delete_list):
         self.write_interface_marks_file(settings, prefix)
         pass
-    
+
+
 registrar.register_manager(InterfaceManager())

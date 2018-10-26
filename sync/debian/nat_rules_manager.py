@@ -9,6 +9,8 @@ from sync import registrar
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings
+
+
 class NatRulesManager:
     interfaces_mark_mask = 0x0000FFFF
     lxc_mark_mask = 0x04000000
@@ -27,7 +29,7 @@ class NatRulesManager:
         pass
 
     def sync_settings(self, settings, prefix, delete_list):
-        self.write_nat_rules_file( settings, prefix)
+        self.write_nat_rules_file(settings, prefix)
 
     def write_nat_rule(self, nat_rule):
 
@@ -47,9 +49,9 @@ class NatRulesManager:
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( nat_rule['conditions'], description)
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( nat_rule['conditions'], description)
-        commands += [ "${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions ]
+        commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description)
+        commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
 
         self.file.write("# %s\n" % description)
         for cmd in commands:
@@ -60,20 +62,20 @@ class NatRulesManager:
 
     def interfaces_in_same_bridge_group(self, intf1, intf2):
         if intf2['configType'] == 'BRIDGED' and intf2['bridgedTo'] == intf1['interfaceId']:
-            return True;
+            return True
         if intf1['configType'] == 'BRIDGED' and intf1['bridgedTo'] == intf2['interfaceId']:
-            return True;
-        if intf1['configType'] == 'BRIDGED' and intf2['configType'] == 'BRIDGED' and intf1['bridgedTo']  == intf2['bridgedTo']:
-            return True;
-        return False;
+            return True
+        if intf1['configType'] == 'BRIDGED' and intf2['configType'] == 'BRIDGED' and intf1['bridgedTo'] == intf2['bridgedTo']:
+            return True
+        return False
 
     def write_nat_rules(self, settings):
 
         if settings == None or 'natRules' not in settings:
             print("ERROR: Missing NAT Rules")
             return
-        
-        nat_rules = settings['natRules'];
+
+        nat_rules = settings['natRules']
 
         for nat_rule in nat_rules:
             try:
@@ -87,31 +89,30 @@ class NatRulesManager:
 
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
-                continue;
+                continue
             # skip interfaces in same zone
-            if self.interfaces_in_same_bridge_group( intf, other_intf):
-                continue;
-            
+            if self.interfaces_in_same_bridge_group(intf, other_intf):
+                continue
+
             self.file.write("# NAT ingress traffic coming from interface %s" % str(intf['interfaceId']) + "\n")
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" % 
-                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
-                              intf['interfaceId'],
-                              other_intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (ingress setting)\" -j MASQUERADE" %
+                            (((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                             intf['interfaceId'],
+                             other_intf['interfaceId']))
             self.file.write("\n\n")
 
             self.file.write("# block traffic to NATd interface %i" % intf['interfaceId'] + "\n")
             # write a log rule before each block rule so we log every drop
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j NFLOG --nflog-prefix 'nat_blocked'" % 
-                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
-                              other_intf['interfaceId'],
-                              intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j NFLOG --nflog-prefix 'nat_blocked'" %
+                            (((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                             other_intf['interfaceId'],
+                             intf['interfaceId']))
             self.file.write("\n")
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" % 
-                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
-                              other_intf['interfaceId'],
-                              intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (ingress setting)\" -j REJECT" %
+                            (((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                             other_intf['interfaceId'],
+                             intf['interfaceId']))
             self.file.write("\n\n")
-
 
         return
 
@@ -121,28 +122,28 @@ class NatRulesManager:
 
             # skip self
             if other_intf['interfaceId'] == intf['interfaceId']:
-                continue;
+                continue
             # skip interfaces in same zone
-            if self.interfaces_in_same_bridge_group( intf, other_intf):
-                continue;
-            
+            if self.interfaces_in_same_bridge_group(intf, other_intf):
+                continue
+
             self.file.write("# NAT egress traffic exiting interface %s" % str(intf['interfaceId']) + "\n")
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" % 
-                            ( ((intf['interfaceId'] << 8) + other_intf['interfaceId']),
-                              other_intf['interfaceId'],
-                              intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"NAT traffic, %i -> %i (egress setting)\" -j MASQUERADE" %
+                            (((intf['interfaceId'] << 8) + other_intf['interfaceId']),
+                             other_intf['interfaceId'],
+                             intf['interfaceId']))
             self.file.write("\n\n")
 
             self.file.write("# block traffic from NATd interface %s" % intf['interfaceId'] + "\n")
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j NFLOG --nflog-prefix 'filter_blocked: ' " % 
-                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
-                              intf['interfaceId'],
-                              other_intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j NFLOG --nflog-prefix 'filter_blocked: ' " %
+                            (((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                             intf['interfaceId'],
+                             other_intf['interfaceId']))
             self.file.write("\n")
-            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" % 
-                            ( ((other_intf['interfaceId'] << 8) + intf['interfaceId']),
-                              intf['interfaceId'],
-                              other_intf['interfaceId'] ))
+            self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m connmark --mark 0x%0.4X/0xffff -m comment --comment \"Block traffic to NATd interace, %i -> %i (egress setting)\" -j REJECT" %
+                            (((other_intf['interfaceId'] << 8) + intf['interfaceId']),
+                             intf['interfaceId'],
+                             other_intf['interfaceId']))
             self.file.write("\n\n")
 
         return
@@ -181,7 +182,7 @@ class NatRulesManager:
     def write_implicit_nat_rules(self, settings):
         self.file.write("# Implicit NAT Rule (hairpin for port forwards)" + "\n")
         for intfId in NetworkUtil.interface_list():
-            self.file.write("${IPTABLES} -t nat -A nat-rules -m conntrack --ctstate DNAT -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all port forwards (hairpin) (interface %s)\"" % ( (intfId+(intfId<<8)), self.interfaces_mark_mask, str(intfId)) + "\n")
+            self.file.write("${IPTABLES} -t nat -A nat-rules -m conntrack --ctstate DNAT -m connmark --mark 0x%X/0x%X -j MASQUERADE -m comment --comment \"NAT all port forwards (hairpin) (interface %s)\"" % ((intfId+(intfId << 8)), self.interfaces_mark_mask, str(intfId)) + "\n")
         self.file.write("\n")
 
     def write_lxc_nat_rules(self, settings):
@@ -230,7 +231,7 @@ class NatRulesManager:
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN >/dev/null 2>&1" + "\n")
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate RELATED -m comment --comment \"Allow RELATED traffic\" -j RETURN" + "\n")
         self.file.write("\n")
-        
+
         self.file.write("# Call nat-reverse-filter chain from FORWARD chain to block traffic to NATd interface from \"outside\" " + "\n")
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN >/dev/null 2>&1" + "\n")
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN" + "\n")
@@ -245,7 +246,8 @@ class NatRulesManager:
         self.file.close()
 
         print("NatRulesManager: Wrote %s" % self.filename)
-            
+
         return
+
 
 registrar.register_manager(NatRulesManager())

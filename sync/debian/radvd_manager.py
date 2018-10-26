@@ -11,14 +11,16 @@ from sync import registrar
 # This class is responsible for writing:
 # /etc/radvd.conf
 # based on the settings object passed from sync-settings
+
+
 class RadvdManager:
     config_filename = "/etc/radvd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
 
-    def initialize(self ):
-        registrar.register_file(self.config_filename, "restart-radvd", self )
-        registrar.register_file(self.restart_hook_filename, "restart-networking", self )
-        
+    def initialize(self):
+        registrar.register_file(self.config_filename, "restart-radvd", self)
+        registrar.register_file(self.restart_hook_filename, "restart-networking", self)
+
     def preprocess_settings(self, settings):
         pass
 
@@ -26,16 +28,16 @@ class RadvdManager:
         pass
 
     def sync_settings(self, settings, prefix, delete_list):
-        self.write_config_file( settings, prefix)
-        self.write_restart_radvd_hook( settings, prefix)
+        self.write_config_file(settings, prefix)
+        self.write_restart_radvd_hook(settings, prefix)
 
     def write_config_file(self, settings, prefix=""):
         filename = prefix + self.config_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
 
         for intf in settings.get('interfaces'):
             if not intf.get('raEnabled'):
@@ -58,7 +60,7 @@ class RadvdManager:
             file.write("        AdvRouterAddr on;" + "\n")
             file.write("    };" + "\n")
             file.write("};" + "\n")
-            
+
         file.flush()
         file.close()
 
@@ -66,17 +68,17 @@ class RadvdManager:
 
     def write_restart_radvd_hook(self, settings, prefix=""):
         filename = prefix + self.restart_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n")
 
         file.write(r"""
 RADVD_PID="`pidof radvd`"
@@ -94,12 +96,13 @@ elif [ ! -z "$RADVD_PID" ] && [ ! -s /etc/radvd.conf ] ; then
 fi
 """)
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
-    
+
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("RadvdManager: Wrote %s" % filename)
         return
+
 
 registrar.register_manager(RadvdManager())

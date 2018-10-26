@@ -9,6 +9,7 @@
 # This script should be called after changing the settings file to "sync" the settings to the OS.
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
+# For running in git/dev, prefer loading from git instead of system
 import sys
 import getopt
 import json
@@ -22,9 +23,7 @@ import tempfile
 import time
 import traceback
 import collections
-import time
 
-# For running in git/dev, prefer loading from git instead of system
 if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
 
@@ -61,11 +60,11 @@ class ArgumentParser(object):
 
     def parse_args(self):
         handlers = {
-            '-f' : self.set_filename,
-            '-o' : self.set_os,
-            '-n' : self.set_norestart,
-            '-s' : self.set_test_run,
-            '-c' : self.set_create_settings,
+            '-f': self.set_filename,
+            '-o': self.set_os,
+            '-n': self.set_norestart,
+            '-s': self.set_test_run,
+            '-c': self.set_create_settings,
         }
 
         try:
@@ -78,9 +77,11 @@ class ArgumentParser(object):
             print_usage()
             exit(1)
 
+
 def cleanup(code):
     cleanup_tmpdirs()
     exit(code)
+
 
 def print_usage():
     sys.stderr.write("""\
@@ -92,6 +93,7 @@ def print_usage():
     -s          : do not copy or run restart commands (test run)
     -o          : specify OS manually (debian/openwrt)
 """ % sys.argv[0])
+
 
 def fixup_settings(json):
     """
@@ -113,6 +115,7 @@ def fixup_settings(json):
     elif isinstance(json, list):
         for i in range(len(json)):
             fixup_settings(json[i])
+
 
 def calculate_changed_files(tmpdir):
     """
@@ -152,6 +155,7 @@ def calculate_changed_files(tmpdir):
 
     return changes
 
+
 def calculate_deleted_files(tmpdir_delete):
     """
     Calculate the list of files to be deleted by looking in the tmpdir
@@ -169,6 +173,7 @@ def calculate_deleted_files(tmpdir_delete):
 
     return deleted_files
 
+
 def run_cmd(cmd):
     """
     Run the specified command and print the ouput and return the result
@@ -181,6 +186,7 @@ def run_cmd(cmd):
         print(line.decode('ascii').strip())
     p.wait()
     return p.returncode
+
 
 def copy_files(tmpdir):
     """
@@ -204,6 +210,7 @@ def copy_files(tmpdir):
     run_cmd("/bin/sync")
     return 0
 
+
 def delete_files(delete_list):
     """
     Delete the files in the list
@@ -223,6 +230,7 @@ def delete_files(delete_list):
             print("Error deleting file: " + f, e)
 
     return sum
+
 
 def run_commands(ops, key):
     """
@@ -245,11 +253,12 @@ def run_commands(ops, key):
             t1 = time.time()
             result = run_cmd(command)
             t2 = time.time()
-            print("[" + op + "]: " + command + " done. [" + ("%.2f"%(t2-t1)) + "s]")
+            print("[" + op + "]: " + command + " done. [" + ("%.2f" % (t2-t1)) + "s]")
             if result != 0:
                 print("Error[" + str(result) + "]: " + command)
             ret += result
     return ret
+
 
 def tee_stdout_log():
     """
@@ -259,12 +268,14 @@ def tee_stdout_log():
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
+
 def drop_permissions():
     """
     Set this process permissions to nobody (drop root permissions)
     """
-    os.setegid(65534) # nogroup
-    os.seteuid(65534) # nobody
+    os.setegid(65534)  # nogroup
+    os.seteuid(65534)  # nobody
+
 
 def call_without_permissions(func, *args, **kw):
     """
@@ -282,6 +293,7 @@ def call_without_permissions(func, *args, **kw):
         (xpid, result) = os.waitpid(pid, 0)
         return result >> 8
 
+
 def make_tmpdirs():
     """
     Make required tmp directories
@@ -293,9 +305,10 @@ def make_tmpdirs():
         tmpdir_delete = tempfile.mkdtemp()
         os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
     except Exception as e:
-        print("Error creating tmp directory.",e)
+        print("Error creating tmp directory.", e)
         traceback.print_exc()
         cleanup(1)
+
 
 def cleanup_tmpdirs():
     global tmpdir, tmpdir_delete
@@ -303,7 +316,8 @@ def cleanup_tmpdirs():
         shutil.rmtree(tmpdir)
     if tmpdir_delete != None:
         shutil.rmtree(tmpdir_delete)
-        
+
+
 def read_settings():
     """
     Read and parse the settings file
@@ -315,8 +329,9 @@ def read_settings():
         settings_file.close()
         settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
     except IOError as e:
-        print("Unable to read settings file: ",e)
+        print("Unable to read settings file: ", e)
         cleanup(1)
+
 
 def preprocess_settings():
     """
@@ -326,13 +341,15 @@ def preprocess_settings():
     global settings
     print("FIXME preprocess_settings()")
 
+
 def validate_settings():
     """
     validate the settings
     """
     global settings
     print("FIXME validate_settings()")
-    
+
+
 def create_settings():
     """
     Create settings from scratch
@@ -369,9 +386,9 @@ tmpdir_delete = None
 parser.parse_args()
 
 if parser.os == 'debian':
-    from   sync.debian import *
+    from sync.debian import *
 elif parser.os == 'openwrt':
-    from   sync.openwrt import *
+    from sync.openwrt import *
 else:
     print("\nUnknown OS: " + parser.os)
     cleanup(1)
@@ -394,7 +411,7 @@ preprocess_settings()
 validate_settings()
 
 try:
-    fixup_settings(settings) # FIXME move this to module to ngfw preprocess
+    fixup_settings(settings)  # FIXME move this to module to ngfw preprocess
     if sync.registrar.settings_verify_function != None:
         sync.registrar.settings_verify_function(settings)
     if sync.registrar.settings_cleanup_function != None:
@@ -485,7 +502,7 @@ if copy_ret != 0:
     cleanup(1)
 elif commands_ret != 0:
     print("\nDone. (with non-critical errors)")
-    cleanup(0) # exit 0 for non-critical errors
+    cleanup(0)  # exit 0 for non-critical errors
 else:
     print("\nDone.")
     cleanup(0)

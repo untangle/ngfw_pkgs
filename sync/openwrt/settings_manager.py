@@ -9,6 +9,8 @@ from sync import registrar
 
 # This class is responsible for writing /etc/config/network
 # based on the settings object passed from sync-settings
+
+
 class SettingsManager:
 
     def initialize(self):
@@ -37,10 +39,11 @@ class SettingsManager:
         file.write("\n")
         file.flush()
         file.close()
-        
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
-            
+
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
     def sync_settings(self, settings, prefix, delete_list):
         pass
-        
+
+
 registrar.register_manager(SettingsManager())

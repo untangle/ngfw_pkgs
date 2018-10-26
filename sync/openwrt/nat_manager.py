@@ -8,6 +8,8 @@ from sync import registrar
 
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
+
+
 class NatManager:
     nat_rules_sys_filename = "/etc/config/nftables-rules.d/100-nat"
 
@@ -20,7 +22,7 @@ class NatManager:
 
     def validate_settings(self, settings):
         pass
-    
+
     def create_settings(self, settings, prefix, delete_list, filename):
         pass
 
@@ -31,13 +33,13 @@ class NatManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-        
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
         try:
             file.write(r"""
 nft delete table ip  nat 2>/dev/null || true
@@ -80,8 +82,8 @@ nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward
                     # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                     file.write("# NAT Ingress traffic from interface %i\n" % intf.get('interfaceId'))
                     file.write("nft add rule ip nat nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
-                    
-            file.write("\n");
+
+            file.write("\n")
         except:
             print("ERROR:")
             traceback.print_exception()
@@ -96,5 +98,6 @@ nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward
     def sync_settings(self, settings, prefix, delete_list):
         self.write_nat_rules_sys_file(settings, prefix)
         pass
-    
+
+
 registrar.register_manager(NatManager())

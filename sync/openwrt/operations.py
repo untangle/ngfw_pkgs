@@ -8,12 +8,14 @@ sync.registrar.register_operation("restart-qos", [""], ["/etc/config/nftables-ru
 sync.registrar.register_operation("restart-default-route", [""], ["/etc/config/ifdown.d/10-default-route"], 10, "restart-networking")
 sync.registrar.register_operation("restart-wan-balancer", [""], ["/etc/config/ifup.d/20-wan-balancer"], 10, "restart-networking")
 
+
 def verify_settings(settings):
     """
     Sanity check the settings
     """
     if settings is None:
         raise Exception("Invalid Settings: null")
+
 
 def cleanup_settings(settings):
     """
@@ -27,6 +29,7 @@ def cleanup_settings(settings):
     This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
     """
     return
-    
+
+
 sync.registrar.settings_verify_function = verify_settings
 sync.registrar.settings_cleanup_function = cleanup_settings

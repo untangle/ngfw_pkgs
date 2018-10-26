@@ -11,6 +11,8 @@ from sync import network_util
 
 # This class is responsible for writing /etc/config/dhcp
 # based on the settings object passed from sync-settings
+
+
 class DhcpManager:
     dhcp_filename = "/etc/config/dhcp"
 
@@ -22,7 +24,7 @@ class DhcpManager:
 
     def validate_settings(self, settings):
         pass
-        
+
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['dns'] = {}
@@ -32,7 +34,7 @@ class DhcpManager:
         settings['dhcp'] = {}
         settings['dhcp']['dhcpAuthoritative'] = True
         settings['dhcp']['staticDhcpEntries'] = []
-        
+
     def sync_settings(self, settings, prefix, delete_list):
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_dhcp_file(settings, prefix)
@@ -111,7 +113,7 @@ class DhcpManager:
                 if intf.get('dhcpEnabled') == True:
                     file.write("\toption interface '%s'\n" % interface_name)
                     file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
-                                                                                intf.get('dhcpRangeStart')))
+                                                                               intf.get('dhcpRangeStart')))
                     file.write("\toption limit '%d'\n" % calc_dhcp_range_limit(intf.get('dhcpRangeStart'), intf.get('dhcpRangeEnd')))
 
                     if intf.get('dhcpLeaseDuration') != None and intf.get('dhcpLeaseDuration') != 0:
@@ -180,7 +182,8 @@ class DhcpManager:
         file.flush()
         file.close()
 
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
 
 def calc_dhcp_range_start(ip, prefix, start):
     ip_int = int(ipaddress.IPv4Address(ip))
@@ -188,9 +191,11 @@ def calc_dhcp_range_start(ip, prefix, start):
     start_int = int(ipaddress.IPv4Address(start))
     return start_int - (ip_int & netmask_int)
 
+
 def calc_dhcp_range_limit(start, end):
     start_int = int(ipaddress.IPv4Address(start))
     end_int = int(ipaddress.IPv4Address(end))
     return end_int - start_int + 1
+
 
 registrar.register_manager(DhcpManager())

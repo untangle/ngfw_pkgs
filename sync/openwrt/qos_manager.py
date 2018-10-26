@@ -8,6 +8,8 @@ from sync import registrar
 
 # This class is responsible for writing FIXME
 # based on the settings object passed from sync-settings
+
+
 class QosManager:
     qos_rules_sys_filename = "/etc/config/nftables-rules.d/300-qos-rules-sys"
 
@@ -20,7 +22,7 @@ class QosManager:
 
     def validate_settings(self, settings):
         pass
-    
+
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['qos'] = {}
@@ -35,7 +37,7 @@ class QosManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh");
+        file.write("#!/bin/sh")
         file.write("\n\n")
 
         file.write("## Auto Generated\n")
@@ -84,7 +86,7 @@ class QosManager:
 
                         file.write("# egress %i\n" % intf.get('interfaceId'))
                         file.write("tc qdisc del dev %s root 2> /dev/null\n" % intf.get('device'))
-                        file.write("tc qdisc add dev %s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'),intf.get('uploadKbps')))
+                        file.write("tc qdisc add dev %s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('uploadKbps')))
                         file.write("\n")
 
                         file.write("# ingress %i\n" % intf.get('interfaceId'))
@@ -93,7 +95,7 @@ class QosManager:
                         file.write("\n")
 
                         file.write("tc qdisc del dev ifb4%s root 2> /dev/null\n" % intf.get('device'))
-                        file.write("tc qdisc add dev ifb4%s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'),intf.get('downloadKbps')))
+                        file.write("tc qdisc add dev ifb4%s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('downloadKbps')))
                         file.write("\n")
 
                         file.write("# bring up ifb device %i\n" % intf.get('interfaceId'))
@@ -101,11 +103,11 @@ class QosManager:
                         file.write("\n")
 
                         file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'),intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'),intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'),intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'),intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'),intf.get('device')))
+                        file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                        file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                        file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                        file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                        file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
                         file.write("\n")
 
         except:
@@ -124,5 +126,6 @@ class QosManager:
     def sync_settings(self, settings, prefix, delete_list):
         self.write_qos_rules_sys_file(settings, prefix)
         pass
-    
+
+
 registrar.register_manager(QosManager())

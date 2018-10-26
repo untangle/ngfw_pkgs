@@ -1,15 +1,16 @@
 import sync.registrar
 
-sync.registrar.register_operation( "update-hostname",    None, ["hostname -F /etc/hostname"],          1, "restart-networking" )
-sync.registrar.register_operation( "restart-networking", ["ifdown -a -v --exclude=lo"], ["ifup -a -v --exclude=lo","/usr/bin/systemctl-wait"], 10, None )
-sync.registrar.register_operation( "restart-dnsmasq",    None, ["/etc/untangle/post-network-hook.d/990-restart-dnsmasq","/usr/bin/systemctl-wait"],   20, "restart-networking" )
-sync.registrar.register_operation( "restart-miniupnpd",  None, ["/etc/untangle/post-network-hook.d/990-restart-upnp","/usr/bin/systemctl-wait"],      21, "restart-networking" )
-sync.registrar.register_operation( "restart-radvd",      None, ["/etc/untangle/post-network-hook.d/990-restart-radvd","/usr/bin/systemctl-wait"],     22, "restart-networking" )
-sync.registrar.register_operation( "restart-ddclient",   None, ["/etc/untangle/post-network-hook.d/990-restart-ddclient","/usr/bin/systemctl-wait"],  23, "restart-networking" )
-sync.registrar.register_operation( "restart-softflowd",  None, ["/etc/untangle/post-network-hook.d/990-restart-softflowd","/usr/bin/systemctl-wait"], 25, "restart-networking" )
-sync.registrar.register_operation( "restart-quagga",     None, ["/etc/untangle/post-network-hook.d/990-restart-quagga","/usr/bin/systemctl-wait"],    26, "restart-networking" )
-sync.registrar.register_operation( "restart-keepalived", None, ["/etc/untangle/post-network-hook.d/200-vrrp","/usr/bin/systemctl-wait"],              30, "restart-networking" )
-sync.registrar.register_operation( "restart-iptables",   None, ["/etc/untangle/post-network-hook.d/960-iptables","/usr/bin/systemctl-wait"],          50, "restart-networking" )
+sync.registrar.register_operation("update-hostname",    None, ["hostname -F /etc/hostname"],          1, "restart-networking")
+sync.registrar.register_operation("restart-networking", ["ifdown -a -v --exclude=lo"], ["ifup -a -v --exclude=lo", "/usr/bin/systemctl-wait"], 10, None)
+sync.registrar.register_operation("restart-dnsmasq",    None, ["/etc/untangle/post-network-hook.d/990-restart-dnsmasq", "/usr/bin/systemctl-wait"],   20, "restart-networking")
+sync.registrar.register_operation("restart-miniupnpd",  None, ["/etc/untangle/post-network-hook.d/990-restart-upnp", "/usr/bin/systemctl-wait"],      21, "restart-networking")
+sync.registrar.register_operation("restart-radvd",      None, ["/etc/untangle/post-network-hook.d/990-restart-radvd", "/usr/bin/systemctl-wait"],     22, "restart-networking")
+sync.registrar.register_operation("restart-ddclient",   None, ["/etc/untangle/post-network-hook.d/990-restart-ddclient", "/usr/bin/systemctl-wait"],  23, "restart-networking")
+sync.registrar.register_operation("restart-softflowd",  None, ["/etc/untangle/post-network-hook.d/990-restart-softflowd", "/usr/bin/systemctl-wait"], 25, "restart-networking")
+sync.registrar.register_operation("restart-quagga",     None, ["/etc/untangle/post-network-hook.d/990-restart-quagga", "/usr/bin/systemctl-wait"],    26, "restart-networking")
+sync.registrar.register_operation("restart-keepalived", None, ["/etc/untangle/post-network-hook.d/200-vrrp", "/usr/bin/systemctl-wait"],              30, "restart-networking")
+sync.registrar.register_operation("restart-iptables",   None, ["/etc/untangle/post-network-hook.d/960-iptables", "/usr/bin/systemctl-wait"],          50, "restart-networking")
+
 
 def verify_settings(settings):
     """
@@ -34,7 +35,8 @@ def verify_settings(settings):
             if key not in intf:
                 raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
 
-def cleanup_settings( settings ):
+
+def cleanup_settings(settings):
     """
     This removes/disable hidden fields in the interface settings so we are certain they don't apply
     We do these operations here because we don't want to actually modify the settings
@@ -50,18 +52,18 @@ def cleanup_settings( settings ):
 
     # Remove disabled interfaces from regular interfaces list
     # Save them in another field in case anyone needs them
-    disabled_interfaces = [ intf for intf in interfaces if intf.get('configType') == 'DISABLED' ]
-    new_interfaces = [ intf for intf in interfaces if intf.get('configType') != 'DISABLED' ]
-    new_interfaces = sorted( new_interfaces, key=lambda x:x.get('interfaceId') )
+    disabled_interfaces = [intf for intf in interfaces if intf.get('configType') == 'DISABLED']
+    new_interfaces = [intf for intf in interfaces if intf.get('configType') != 'DISABLED']
+    new_interfaces = sorted(new_interfaces, key=lambda x: x.get('interfaceId'))
     settings['interfaces'] = new_interfaces
     settings['disabledInterfaces'] = disabled_interfaces
 
-    disabled_virtual_interfaces = [ ]
-    new_virtual_interfaces = [ intf for intf in virtualInterfaces ]
-    new_virtual_interfaces = sorted( new_virtual_interfaces, key=lambda x:x.get('interfaceId') )
+    disabled_virtual_interfaces = []
+    new_virtual_interfaces = [intf for intf in virtualInterfaces]
+    new_virtual_interfaces = sorted(new_virtual_interfaces, key=lambda x: x.get('interfaceId'))
     settings['virtualInterfaces'] = new_virtual_interfaces
     settings['disabledVirtualInterfaces'] = disabled_virtual_interfaces
-    
+
     # Disable DHCP if if its a WAN or bridged to another interface
     for intf in interfaces:
         if intf['isWan'] or intf['configType'] == 'BRIDGED':
@@ -72,22 +74,28 @@ def cleanup_settings( settings ):
     # Disable NAT options on bridged interfaces
     for intf in interfaces:
         if intf['configType'] == 'BRIDGED':
-            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
-            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
+            if 'v4NatEgressTraffic' in intf:
+                del intf['v4NatEgressTraffic']
+            if 'v4NatIngressTraffic' in intf:
+                del intf['v4NatIngressTraffic']
 
     # Disable Gateway for non-WANs
     for intf in interfaces:
         if intf.get('isWan') != True:
-            if 'v4StaticGateway' in intf: del intf['v4StaticGateway']
-            if 'v6StaticGateway' in intf: del intf['v6StaticGateway']
+            if 'v4StaticGateway' in intf:
+                del intf['v4StaticGateway']
+            if 'v6StaticGateway' in intf:
+                del intf['v6StaticGateway']
 
     # Disable egress NAT on non-WANs
     # Disable ingress NAT on WANs
     for intf in interfaces:
         if intf['isWan']:
-            if 'v4NatIngressTraffic' in intf: del intf['v4NatIngressTraffic']
+            if 'v4NatIngressTraffic' in intf:
+                del intf['v4NatIngressTraffic']
         if not intf['isWan']:
-            if 'v4NatEgressTraffic' in intf: del intf['v4NatEgressTraffic']
+            if 'v4NatEgressTraffic' in intf:
+                del intf['v4NatEgressTraffic']
 
     # Remove PPPoE settings if not PPPoE intf
     for intf in interfaces:
@@ -113,7 +121,8 @@ def cleanup_settings( settings ):
     # Remove bridgedTo settings if not bridged
     for intf in interfaces:
         if intf['configType'] != 'BRIDGED':
-            if 'bridgedTo' in intf: del intf['bridgedTo']
+            if 'bridgedTo' in intf:
+                del intf['bridgedTo']
 
     # In 13.1 we renamed inputFilterRules to accessRules
     # Check for safety NGFW-10791
@@ -128,8 +137,9 @@ def cleanup_settings( settings ):
     if settings.get('forwardFilterRules') != None and settings.get('filterRules') == None:
         print("WARNING: filterRules missing - using forwardFilterRules")
         settings['filterRules'] = settings.get('forwardFilterRules')
-        
+
     return
-            
+
+
 sync.registrar.settings_verify_function = verify_settings
 sync.registrar.settings_cleanup_function = cleanup_settings

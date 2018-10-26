@@ -10,14 +10,16 @@ from sync import registrar
 
 # This class is responsible for writing /etc/iproute2/rt_tables and /etc/hotplug.d/iface/*
 # based on the settings object passed from sync-settings
+
+
 class RouteManager:
     rt_tables_filename = "/etc/iproute2/rt_tables"
     ifup_routes_filename = "/etc/config/ifup.d/10-default-route"
     ifdown_routes_filename = "/etc/config/ifdown.d/10-default-route"
     ifup_wan_balancer_filename = "/etc/config/ifup.d/20-wan-balancer"
     ifdown_wan_balancer_filename = "/etc/config/ifdown.d/20-wan-balancer"
-    IP_RULE_DEFAULT_RULE_PRIORITY="1000000"
-    IP_RULE_BALANCE_RULE_PRIORITY="900000"
+    IP_RULE_DEFAULT_RULE_PRIORITY = "1000000"
+    IP_RULE_BALANCE_RULE_PRIORITY = "900000"
 
     def initialize(self):
         registrar.register_file(self.ifup_routes_filename, "restart-default-route", self)
@@ -31,7 +33,7 @@ class RouteManager:
 
     def validate_settings(self, settings):
         pass
-        
+
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
 
@@ -52,26 +54,26 @@ class RouteManager:
         self.rt_tables_file = open(filename, "w+")
         file = self.rt_tables_file
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
-        file.write("#\n");
-        file.write("# reserved values\n");
-        file.write("#\n");
-        file.write("128\tprelocal\n");
-        file.write("255\tlocal\n");
-        file.write("254\tmain\n");
-        file.write("253\tdefault\n");
-        file.write("0\tunspec\n");
-        file.write("#\n");
-        file.write("# local\n");
-        file.write("#\n");
-        file.write("#1\tinr.ruhep\n");
-        file.write("\n\n");
-        file.write("#\n");
-        file.write("# WAN tables\n");
-        file.write("#\n");
+        file.write("#\n")
+        file.write("# reserved values\n")
+        file.write("#\n")
+        file.write("128\tprelocal\n")
+        file.write("255\tlocal\n")
+        file.write("254\tmain\n")
+        file.write("253\tdefault\n")
+        file.write("0\tunspec\n")
+        file.write("#\n")
+        file.write("# local\n")
+        file.write("#\n")
+        file.write("#1\tinr.ruhep\n")
+        file.write("\n\n")
+        file.write("#\n")
+        file.write("# WAN tables\n")
+        file.write("#\n")
 
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
@@ -79,18 +81,18 @@ class RouteManager:
                 continue
             if intf.get('wan'):
                 interface_id = intf.get('interfaceId')
-                file.write("%d\twan.%d\n" % (interface_id, interface_id));
+                file.write("%d\twan.%d\n" % (interface_id, interface_id))
 
-        file.write("\n\n");
-        file.write("#\n");
-        file.write("# special tables\n");
-        file.write("#\n");
-        file.write("500\tbalance\n");
+        file.write("\n\n")
+        file.write("#\n")
+        file.write("# special tables\n")
+        file.write("#\n")
+        file.write("500\tbalance\n")
 
         file.flush()
         file.close()
 
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_ifup_routes_file(self, settings, prefix=""):
         filename = prefix + self.ifup_routes_filename
@@ -100,8 +102,8 @@ class RouteManager:
 
         self.ifup_route_file = open(filename, "w+")
         file = self.ifup_route_file
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n")
@@ -128,7 +130,7 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_ifdown_routes_file(self, settings, prefix=""):
         filename = prefix + self.ifdown_routes_filename
@@ -138,8 +140,8 @@ class RouteManager:
 
         self.ifdown_route_file = open(filename, "w+")
         file = self.ifdown_route_file
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n")
@@ -182,7 +184,7 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_wan_balancer_file(self, fname, settings, prefix=""):
         filename = prefix + fname
@@ -192,8 +194,8 @@ class RouteManager:
 
         self.wan_balancer_file = open(filename, "w+")
         file = self.wan_balancer_file
-        file.write("#!/bin/sh");
-        file.write("\n\n");
+        file.write("#!/bin/sh")
+        file.write("\n\n")
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n")
@@ -235,7 +237,6 @@ class RouteManager:
                 file.write("}\n")
                 file.write("\n")
 
-
         file.write("[ -z \"$INTERFACE\" ] && {\n")
         file.write("\tbuild_balance_table\n")
         file.write("}\n")
@@ -245,6 +246,7 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
 
 registrar.register_manager(RouteManager())

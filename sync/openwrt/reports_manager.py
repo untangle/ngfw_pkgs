@@ -8,6 +8,8 @@ from sync import registrar
 from sync import nftables_util
 
 # This class is responsible for managing the reports settings
+
+
 class ReportsManager:
     def initialize(self):
         pass
@@ -25,6 +27,7 @@ class ReportsManager:
 
     def sync_settings(self, settings, prefix, delete_list):
         pass
+
 
 registrar.register_manager(ReportsManager())
 
