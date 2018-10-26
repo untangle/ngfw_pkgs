@@ -28,8 +28,10 @@ if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
 import sync
 
-class ArgumentParser(object):
-    """ArgumentParser parses the command line arguments"""
+opts = None
+
+class Options(object):
+    """Options parses the command line arguments"""
 
     def __init__(self):
         if os.path.isfile('/etc/debian_version'):
@@ -43,6 +45,8 @@ class ArgumentParser(object):
         self.restart_services = True
         self.test_run = False
         self.create_settings = False
+        self.tmpdir = None
+        self.tmpdir_delete = None
 
     def set_filename(self, arg):
         """Set filename argument"""
@@ -52,15 +56,15 @@ class ArgumentParser(object):
         """Set os_name argument"""
         self.os_name = arg
 
-    def set_norestart(self, arg):
+    def set_norestart(self, dummy):
         """Disable restart_services flag"""
         self.restart_services = False
 
-    def set_test_run(self, arg):
+    def set_test_run(self, dummy):
         """Set test_run flag"""
         self.test_run = True
 
-    def set_create_settings(self, arg):
+    def set_create_settings(self, dummy):
         """Set create_settings flag"""
         self.create_settings = True
 
@@ -103,14 +107,14 @@ def print_usage():
 """ % sys.argv[0])
 
 
-def calculate_changed_files(tmpdir):
+def calculate_changed_files(dirname):
     """
-    Compares the contents of tmpdir with the existing filesystem
+    Compares the contents of dirname with the existing filesystem
     Returns a list of files that have changed (using root path)
     """
-    cmd = "LC_ALL=C diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
+    cmd = "LC_ALL=C diff -rq / " + dirname + " | grep -v '^Only in' | awk '{print $2}'"
     process = subprocess.Popen(["sh", "-c", cmd], stdout=subprocess.PIPE)
-    out, err = process.communicate()
+    out, _ = process.communicate()
 
     changed_files = []
 
@@ -118,20 +122,20 @@ def calculate_changed_files(tmpdir):
         if line.strip() != '':
             changed_files.append(line.strip())
     new_files = []
-    for root, dirs, files in os.walk(tmpdir):
+    for root, _, files in os.walk(dirname):
         for file in files:
-            rootpath = os.path.join(root, file).replace(tmpdir, "")
+            rootpath = os.path.join(root, file).replace(dirname, "")
             if not os.path.lexists(rootpath):
                 new_files.append(rootpath)
 
     if len(changed_files) > 0:
         print("Changed files:")
-        for f in changed_files:
-            print(f)
+        for filex in changed_files:
+            print(filex)
     if len(new_files) > 0:
         print("New files:")
-        for f in new_files:
-            print(f)
+        for filex in new_files:
+            print(filex)
 
     changes = []
     changes.extend(changed_files)
@@ -142,20 +146,20 @@ def calculate_changed_files(tmpdir):
     return changes
 
 
-def calculate_deleted_files(tmpdir_delete):
+def calculate_deleted_files(dirname_delete):
     """
-    Calculate the list of files to be deleted by looking in the tmpdir
+    Calculate the list of files to be deleted by looking in the dir
     """
     deleted_files = []
-    for root, dirs, files in os.walk(tmpdir_delete):
+    for root, _, files in os.walk(dirname_delete):
         for file in files:
-            rootpath = os.path.join(root, file).replace(tmpdir_delete, "")
+            rootpath = os.path.join(root, file).replace(dirname_delete, "")
             if os.path.lexists(rootpath):
                 deleted_files.append(rootpath)
     if len(deleted_files) > 0:
         print("Deleted files:")
-        for f in deleted_files:
-            print(f)
+        for filex in deleted_files:
+            print(filex)
 
     return deleted_files
 
@@ -165,30 +169,31 @@ def run_cmd(cmd):
     Run the specified command and print the ouput and return the result
     """
     stdin = open(os.devnull, 'rb')
-    p = subprocess.Popen(["sh", "-c", "%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin)
-    for line in iter(p.stdout.readline, ''):
+    proc = subprocess.Popen(["sh", "-c", "%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin)
+    for line in iter(proc.stdout.readline, ''):
         if line == b'':
             break
         print(line.decode('ascii').strip())
-    p.wait()
-    return p.returncode
+    proc.wait()
+    return proc.returncode
 
 
-def copy_files(tmpdir):
+def copy_files(dirname):
     """
-    Copy the files from tmpdir into the root filesystem
+    Copy the files from dirname into the root filesystem
     """
-    if parser.os_name == 'debian':
+    global opts
+    if opts.os_name == 'debian':
         # First copy all the directories that do not exist
         # then copy remaining files
         # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
-        cmd = "find " + tmpdir + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + tmpdir + "/$dir /$dir ; fi ; done"
+        cmd = "find " + dirname + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + dirname + "/$dir /$dir ; fi ; done"
         result = run_cmd(cmd)
-        cmd = "find " + tmpdir + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + tmpdir + "/$file /$file ; done"
+        cmd = "find " + dirname + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + dirname + "/$file /$file ; done"
         result += run_cmd(cmd)
     else:
         # OpenWRT does not support printf in find, so go back to cp
-        cmd = "/bin/cp -ar " + tmpdir+"/*" + " /"
+        cmd = "/bin/cp -ar " + dirname+"/*" + " /"
         result = run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
@@ -202,44 +207,48 @@ def delete_files(delete_list):
     Delete the files in the list
     """
     print("Deleting files...")
-    sum = 0
-    if delete_list == None:
+    result_sum = 0
+    if delete_list is None:
         return
-    for f in delete_list:
+    for filex in delete_list:
         try:
-            cmd = "/bin/rm -f " + f
+            cmd = "/bin/rm -f " + filex
             result = run_cmd(cmd)
             if result != 0:
                 print("Failed to delete: " + str(result))
-                sum += result
-        except Exception as e:
-            print("Error deleting file: " + f, e)
+                result_sum += result
+        except Exception as exc:
+            print("Error deleting file: " + filex, exc)
 
-    return sum
+    return result_sum
 
 
 def run_commands(ops, key):
     """
     Run all the commands for the specified operations
     """
-    if not parser.restart_services:
+    global opts
+    if not opts.restart_services:
         print("Skipping operations " + key + "...")
         return 0
     print("Running operations " + key + "...")
     ret = 0
-    for op in ops:
-        o = sync.registrar.operations.get(op)
-        commands = o.get(key)
-        if commands == None:
+    for operation in ops:
+        oper = sync.registrar.operations.get(operation)
+        if oper is None:
+            print("Missing operation %s" % str(operation))
+            continue
+        commands = oper.get(key)
+        if commands is None:
             continue
         for command in commands:
-            if command == None:
+            if command is None:
                 continue
-            print("[" + op + "]: " + command)
-            t1 = time.time()
+            print("[" + operation + "]: " + command)
+            time1 = time.time()
             result = run_cmd(command)
-            t2 = time.time()
-            print("[" + op + "]: " + command + " done. [" + ("%.2f" % (t2-t1)) + "s]")
+            time2 = time.time()
+            print("[" + operation + "]: " + command + " done. [" + ("%.2f" % (time2-time1)) + "s]")
             if result != 0:
                 print("Error[" + str(result) + "]: " + command)
             ret += result
@@ -276,7 +285,7 @@ def call_without_permissions(func, *args, **kw):
         os._exit(result)
     else:
         # os.close(write_pipe)
-        (xpid, result) = os.waitpid(pid, 0)
+        (_, result) = os.waitpid(pid, 0)
         return result >> 8
 
 
@@ -284,206 +293,213 @@ def make_tmpdirs():
     """
     Make required tmp directories
     """
-    global tmpdir, tmpdir_delete
     try:
-        tmpdir = tempfile.mkdtemp()
-        os.chmod(tmpdir, os.stat(tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-        tmpdir_delete = tempfile.mkdtemp()
-        os.chmod(tmpdir_delete, os.stat(tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-    except Exception as e:
-        print("Error creating tmp directory.", e)
+        global opts
+        opts.tmpdir = tempfile.mkdtemp()
+        os.chmod(opts.tmpdir, os.stat(opts.tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+        opts.tmpdir_delete = tempfile.mkdtemp()
+        os.chmod(opts.tmpdir_delete, os.stat(opts.tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+    except Exception as exc:
+        print("Error creating tmp directory.", exc)
         traceback.print_exc()
         cleanup(1)
 
 
 def cleanup_tmpdirs():
-    global tmpdir, tmpdir_delete
-    if tmpdir != None:
-        shutil.rmtree(tmpdir)
-    if tmpdir_delete != None:
-        shutil.rmtree(tmpdir_delete)
+    """
+    Delete the tmp directories
+    """
+    global opts
+    if opts.tmpdir != None:
+        shutil.rmtree(opts.tmpdir)
+    if opts.tmpdir_delete != None:
+        shutil.rmtree(opts.tmpdir_delete)
 
 
 def read_settings():
     """
     Read and parse the settings file
     """
+    global opts
     try:
-        settings_file = open(parser.filename, 'r')
+        settings_file = open(opts.filename, 'r')
         settings_data = settings_file.read()
         settings_file.close()
         settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
         return settings
-    except IOError as e:
-        print("Unable to read settings file: ", e)
+    except IOError as exc:
+        print("Unable to read settings file: ", exc)
         cleanup(1)
 
 def save_settings(settings):
     """
     Save the specified settings to the settings file
     """
+    global opts
     try:
-        settings_file = open(parser.filename + ".tmp", 'w')
+        settings_file = open(opts.filename + ".tmp", 'w')
         json.dump(settings, settings_file)
         settings_file.flush()
         settings_file.close()
-        os.system("python -m json.tool %s.tmp > %s ; rm %s.tmp " % (parser.filename, parser.filename, parser.filename))
-    except IOError as e:
-        print("Unable to save settings file: ", e)
+        os.system("python -m json.tool %s.tmp > %s ; rm %s.tmp " % (opts.filename, opts.filename, opts.filename))
+    except IOError as exc:
+        print("Unable to save settings file: ", exc)
         cleanup(1)
-        
+
 def create_settings():
     """
     Create settings from scratch
     """
-    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, parser.filename, tmpdir, tmpdir_delete)
+    global opts
+    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, opts.filename, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
         print("\nError during sync process. Abort.")
         cleanup(result)
 
-    deleted_files = calculate_deleted_files(tmpdir_delete)
+    deleted_files = calculate_deleted_files(opts.tmpdir_delete)
     if len(deleted_files) > 0:
         delete_files(deleted_files)
-    copy_files(tmpdir)
+    copy_files(opts.tmpdir)
 
     # Cleanup and make new tmpdirs
     cleanup_tmpdirs()
     make_tmpdirs()
 
-# Main
+def sync_to_system(settings):
+    """
+    Synchronize these settings to the system
+    These settings should have been sanitized and verified before calling this function
+    """
+    result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, opts.tmpdir, opts.tmpdir_delete)
+    if result != 0:
+        print("\nError during sync process. Abort.")
+        cleanup(result)
 
+    # Check that all new files in the tmpdir are registered in the registrar
+    if sync.registrar.check_registrar_files(opts.tmpdir) != 0:
+        print("File missing in registrar: " + opts.filename)
+        cleanup(1)
 
-# Duplicate all stdout to log
-tee_stdout_log()
+    # Calculate the changed files and the needed operations
+    changed_files = calculate_changed_files(opts.tmpdir)
+    deleted_files = calculate_deleted_files(opts.tmpdir_delete)
+    operations = sync.registrar.calculate_required_operations(changed_files)
+    operations = sync.registrar.reduce_operations(operations)
 
-# argument parser
-parser = ArgumentParser()
-# The JSON settings object
-settings = None
-# tmpdir stores all files to be copied to the filesystem
-tmpdir = None
-# tmpdir_delete contains all the files to be delete (the content is irrelevent)
-tmpdir_delete = None
+    # Check that all operations are registered
+    if sync.registrar.check_registrar_operations(operations) != 0:
+        print("Operation missing from registrar")
+        cleanup(1)
 
-parser.parse_args()
+    print("")
+    if opts.test_run:
+        print("Test run complete.")
+        # exit without cleanup
+        exit(0)
 
-if parser.os_name == 'debian':
-    import sync.debian
-elif parser.os_name == 'openwrt':
-    import sync.openwrt
-else:
-    print("\nUnknown OS: " + parser.os_name)
-    cleanup(1)
+    # Copy in the files and delete any required files
+    if len(deleted_files) > 0:
+        delete_files(deleted_files)
+    if len(operations) < 1:
+        print("Copying files...")
+        copy_files(opts.tmpdir)
+        print("Done.")
+        cleanup(0)
 
-make_tmpdirs()
+    copy_ret = 0
+    commands_ret = 0
 
-# Initialize all managers
-result = sync.managers.managers_init()
-if result != 0:
-    print("\nError during init process. Abort.")
-    cleanup(result)
+    # Run all pre commands
+    try:
+        commands_ret += run_commands(operations, 'pre_commands')
+    except Exception:
+        traceback.print_exc()
 
-if parser.create_settings:
-    create_settings()
+    # Copy files to / filesystem
+    try:
+        print("Copying files...")
+        copy_ret = copy_files(opts.tmpdir)
+    except Exception:
+        traceback.print_exc()
 
-settings = read_settings()
+    # Run all post commands
+    try:
+        commands_ret += run_commands(operations, 'post_commands')
+    except Exception:
+        traceback.print_exc()
 
-orig_settings = copy.deepcopy(settings)
-sync.managers.sanitize_settings(settings)
-if json.dumps(orig_settings) != json.dumps(settings):
-    print("Sanitization changed settings. Saving new settings...")
-    save_settings(settings)
-    
-try:
-    sync.managers.validate_settings(settings)
-except Exception as e:
-    print("\nSettings verification failed!\n")
-    traceback.print_exc()
-    cleanup(1)
+    if copy_ret != 0:
+        print("\nDone. (with critical errors)")
+        cleanup(1)
+    elif commands_ret != 0:
+        print("\nDone. (with non-critical errors)")
+        cleanup(0)  # exit 0 for non-critical errors
+    else:
+        print("\nDone.")
+        cleanup(0)
 
-# Write the sanitized file for debugging
-# sanitized_filename = (os.path.dirname(parser.filename) + "/network-sanitized.js")
-# print("Writing sanitized settings: %s " % sanitized_filename)
-# sanitized_file = open(sanitized_filename + ".tmp" , 'w')
-# json.dump(settings, sanitized_file)
-# sanitized_file.flush()
-# sanitized_file.close()
-# os.system("python -m simplejson.tool %s.tmp > %s ; rm %s.tmp " % (sanitized_filename, sanitized_filename, sanitized_filename))
+def main():
+    """
+    main()
+    """
+    global opts
 
-sync.NetworkUtil.settings = settings
+    # Duplicate all stdout to log
+    tee_stdout_log()
 
-print("")
+    # options argument parser
+    opts = Options()
+    # The JSON settings object
+    settings = None
 
-# Call all the managers to "sync" settings to tmpdir
-# We drop root permissions to call these functions so that
-# the managers can't access the / filesystem directly
-print("Syncing to system...")
-result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, tmpdir, tmpdir_delete)
-if result != 0:
-    print("\nError during sync process. Abort.")
-    cleanup(result)
+    opts.parse_args()
 
-print("")
+    if opts.os_name == 'debian':
+        import sync.debian as _
+    elif opts.os_name == 'openwrt':
+        import sync.openwrt as _
+    else:
+        print("\nUnknown OS: " + opts.os_name)
+        cleanup(1)
 
-# Check that all new files in the tmpdir are registered in the registrar
-if sync.registrar.check_registrar_files(tmpdir) != 0:
-    print("File missing in registrar: " + parser.filename)
-    cleanup(1)
+    make_tmpdirs()
 
-# Calculate the changed files and the needed operations
-changed_files = calculate_changed_files(tmpdir)
-deleted_files = calculate_deleted_files(tmpdir_delete)
-operations = sync.registrar.calculate_required_operations(changed_files)
-operations = sync.registrar.reduce_operations(operations)
+    # Initialize all managers
+    result = sync.managers.managers_init()
+    if result != 0:
+        print("\nError during init process. Abort.")
+        cleanup(result)
 
-# Check that all operations are registered
-if sync.registrar.check_registrar_operations(operations) != 0:
-    print("Operation missing from registrar")
-    cleanup(1)
+    # Create settings if necessary
+    if opts.create_settings:
+        create_settings()
 
-print("")
-if parser.test_run:
-    print("Test run complete.")
-    # exit without cleanup
+    # Read settings
+    settings = read_settings()
+
+    # Sanitize settings. If they changed, save the new version
+    orig_settings = copy.deepcopy(settings)
+    sync.managers.sanitize_settings(settings)
+    if json.dumps(orig_settings) != json.dumps(settings):
+        print("Sanitization changed settings. Saving new settings...")
+        save_settings(settings)
+
+    # Validate settings
+    try:
+        sync.managers.validate_settings(settings)
+    except Exception:
+        print("\nSettings verification failed!\n")
+        traceback.print_exc()
+        cleanup(1)
+
+    sync.NetworkUtil.settings = settings
+
+    # Call all the managers to "sync" settings to tmpdir
+    # We drop root permissions to call these functions so that
+    # the managers can't access the / filesystem directly
+    print("Syncing to system...")
+    sync_to_system(settings)
+
     exit(0)
 
-# Copy in the files and delete any required files
-if len(deleted_files) > 0:
-    delete_files(deleted_files)
-if len(operations) < 1:
-    print("Copying files...")
-    copy_files(tmpdir)
-    print("Done.")
-    cleanup(0)
-
-copy_ret = 0
-commands_ret = 0
-
-# Run all pre commands
-try:
-    commands_ret += run_commands(operations, 'pre_commands')
-except Exception as e:
-    traceback.print_exc()
-
-# Copy files to / filesystem
-try:
-    print("Copying files...")
-    copy_ret = copy_files(tmpdir)
-except Exception as e:
-    traceback.print_exc()
-
-# Run all post commands
-try:
-    commands_ret += run_commands(operations, 'post_commands')
-except Exception as e:
-    traceback.print_exc()
-
-if copy_ret != 0:
-    print("\nDone. (with critical errors)")
-    cleanup(1)
-elif commands_ret != 0:
-    print("\nDone. (with non-critical errors)")
-    cleanup(0)  # exit 0 for non-critical errors
-else:
-    print("\nDone.")
-    cleanup(0)
+main()
