@@ -13,10 +13,10 @@ from sync import network_util
 # based on the settings object passed from sync-settings
 class DhcpManager:
     dhcp_filename = "/etc/config/dhcp"
-    def initialize( self ):
+    def initialize(self):
         registrar.register_file(self.dhcp_filename, "restart-dhcp", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['dns'] = {}
         settings['dns']['localServers'] = []
@@ -26,7 +26,7 @@ class DhcpManager:
         settings['dhcp']['dhcpAuthoritative'] = True
         settings['dhcp']['staticDhcpEntries'] = []
         
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_dhcp_file(settings, prefix, verbosity)
 
@@ -36,9 +36,9 @@ class DhcpManager:
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        system = settings['system']
-        dns = settings['dns']
-        dhcp = settings['dhcp']
+        system = settings.get('system')
+        dns = settings.get('dns')
+        dhcp = settings.get('dhcp')
 
         self.network_file = open(filename, "w+")
         file = self.network_file

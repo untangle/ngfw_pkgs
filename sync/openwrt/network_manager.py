@@ -17,7 +17,7 @@ class NetworkManager:
     def initialize(self):
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
@@ -84,9 +84,10 @@ class NetworkManager:
                 self.write_interface_v4(intf, settings)
                 self.write_interface_v6(intf, settings)
 
-        switches = settings['network']['switches']
-        for swi in switches:
-            self.write_switch(swi, settings)
+        switches = settings['network'].get('switches')
+        if switches != None:
+            for swi in switches:
+                self.write_switch(swi, settings)
 
         self.write_route_rules(settings)
         

@@ -18,17 +18,17 @@ class RouteManager:
     ifdown_wan_balancer_filename = "/etc/config/ifdown.d/20-wan-balancer"
     IP_RULE_DEFAULT_RULE_PRIORITY="1000000"
     IP_RULE_BALANCE_RULE_PRIORITY="900000"
-    def initialize( self ):
+    def initialize(self):
         registrar.register_file(self.ifup_routes_filename, "restart-default-route", self)
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
         registrar.register_file(self.ifup_wan_balancer_filename, "restart-wan-balancer", self)
         registrar.register_file(self.ifdown_wan_balancer_filename, "restart-wan-balancer", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_rt_tables_file(settings, prefix, verbosity)
         self.write_ifup_routes_file(settings, prefix, verbosity)

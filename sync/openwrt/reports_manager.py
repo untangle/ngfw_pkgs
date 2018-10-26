@@ -17,7 +17,7 @@ class ReportsManager:
         settings['reports'] = default_reports_settings()
         pass
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         pass
 
 registrar.register_manager(ReportsManager())

@@ -20,11 +20,11 @@ class InterfaceManager:
 
     def write_interface_marks_file(self, settings, prefix, verbosity):
         filename = prefix + self.interface_marks_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
         file.write("#!/bin/sh");
         file.write("\n\n");
 
@@ -73,7 +73,7 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
         if verbosity > 0: print("InterfaceManager: Wrote %s" % filename)
         return
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         self.write_interface_marks_file(settings, prefix, verbosity)
         pass
     

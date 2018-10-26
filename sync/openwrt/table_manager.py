@@ -12,11 +12,11 @@ from sync import nftables_util
 class TableManager:
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
-    def initialize( self ):
+    def initialize(self):
         registrar.register_file(self.filename_prefix + ".*", "restart-nftables-rules", self)
         pass
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
 
         tables = {}
@@ -33,11 +33,11 @@ class TableManager:
         settings['firewall']['tables'] = tables
 
     def write_file(self, filename, table_settings, prefix, verbosity):
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
         file.write("#!/bin/sh");
         file.write("\n\n");
 
@@ -77,7 +77,7 @@ class TableManager:
             self.write_file(filename, table, prefix, verbosity)
             i=i+1
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
         # Remove all the files that we write later
         # This ensures that all the existing /etc/config/nftables-rules.d/2* that we don't

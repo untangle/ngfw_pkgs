@@ -20,11 +20,11 @@ class NatManager:
 
     def write_nat_rules_sys_file(self, settings, prefix, verbosity):
         filename = prefix + self.nat_rules_sys_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
         file.write("#!/bin/sh");
         file.write("\n\n");
 
@@ -87,7 +87,7 @@ nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward
         if verbosity > 0: print("NatManager: Wrote %s" % filename)
         return
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         self.write_nat_rules_sys_file(settings, prefix, verbosity)
         pass
     

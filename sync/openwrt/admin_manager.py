@@ -21,7 +21,7 @@ class AdminManager:
         }]
         pass
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         # FIXME write /etc/shadow
         pass
 

@@ -2,11 +2,6 @@
 
 # Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
 # It reads through the settings and writes the appropriate operating system files such as
-# /etc/network/interfaces
-# /etc/untangle/iptables-rules.d/010-flush
-# /etc/untangle/iptables-rules.d/200-nat-rules
-# /etc/untangle/iptables-rules.d/210-port-forward-rules
-# /etc/untangle/iptables-rules.d/220-bypass-rules
 # /etc/dnsmasq.conf
 # /etc/hosts
 # etc etc
@@ -264,7 +259,7 @@ def tee_stdout_log():
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
-def init_managers():
+def managers_init():
     """
     Call init() on all managers
     """
@@ -276,9 +271,9 @@ def init_managers():
             print("Abort. (errors)")
             cleanup(1)
 
-def sync_to_tmpdirs(tmpdir, tmpdir_delete):
+def managers_sync_to_tmpdirs(tmpdir, tmpdir_delete):
     """
-    Call sync_settings on all manager
+    Call sync_settings() on all managers
     """
     print("Syncing %s to system..." % parser.filename)
 
@@ -301,6 +296,7 @@ def sync_to_tmpdirs(tmpdir, tmpdir_delete):
         file.close()
 
     return 0
+
 
 def drop_permissions():
     """
@@ -361,7 +357,7 @@ def read_settings():
         print("Unable to read settings file: ",e)
         cleanup(1)
 
-def create_settings_in_tmpdir(tmpdir, tmpdir_delete):
+def managers_create_settings_in_tmpdir(tmpdir, tmpdir_delete):
     new_settings = {}
     delete_list=[]
 
@@ -388,7 +384,7 @@ def create_settings():
     """
     Create settings from scratch
     """
-    result = call_without_permissions(create_settings_in_tmpdir, tmpdir, tmpdir_delete)
+    result = call_without_permissions(managers_create_settings_in_tmpdir, tmpdir, tmpdir_delete)
     if result != 0:
         print("\nError during sync process. Abort.")
         cleanup(result)
@@ -401,7 +397,11 @@ def create_settings():
     # Cleanup and make new tmpdirs
     cleanup_tmpdirs()
     make_tmpdirs()
-        
+
+# Main
+
+
+
 # Duplicate all stdout to log
 tee_stdout_log()
 
@@ -427,7 +427,7 @@ else:
 make_tmpdirs()
 
 # Initialize all managers
-init_managers()
+managers_init()
 
 if parser.create_settings:
     create_settings()
@@ -460,7 +460,7 @@ print("")
 # Call all the managers to "sync" settings to tmpdir
 # We drop root permissions to call these functions so that
 # the managers can't access the / filesystem directly
-result = call_without_permissions(sync_to_tmpdirs,tmpdir,tmpdir_delete)
+result = call_without_permissions(managers_sync_to_tmpdirs,tmpdir,tmpdir_delete)
 if result != 0:
     print("\nError during sync process. Abort.")
     cleanup(result)

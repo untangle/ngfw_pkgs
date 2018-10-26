@@ -12,10 +12,10 @@ from sync import board_util
 # based on the settings object passed from sync-settings
 class WirelessManager:
     wireless_filename = "/etc/config/wireless"
-    def initialize( self ):
+    def initialize(self):
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
@@ -30,7 +30,7 @@ class WirelessManager:
                 intf['wirelessPassword'] = '12345678'
                 intf['wirelessSsid'] = 'Untangle'
         
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_wireless_file(settings, prefix, verbosity)
 
