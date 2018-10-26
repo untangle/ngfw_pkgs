@@ -17,17 +17,23 @@ class VrrpManager:
     iptables_hook_filename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_keepalivd_conf( settings, prefix, verbosity )
-        self.write_post_network_hook( settings, prefix, verbosity )
-        self.write_iptables_hook( settings, prefix, verbosity )
-
-    def initialize( self ):
-        registrar.register_file( self.keepalived_conf_filename, "restart-keepalived", self )
-        registrar.register_file( self.post_network_hook_filename, "restart-networking", self )
-        registrar.register_file( self.iptables_hook_filename, "restart-iptables", self )
+    def initialize(self ):
+        registrar.register_file(self.keepalived_conf_filename, "restart-keepalived", self )
+        registrar.register_file(self.post_network_hook_filename, "restart-networking", self )
+        registrar.register_file(self.iptables_hook_filename, "restart-iptables", self )
         
-    def get_vrrp_interfaces( self, settings ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_keepalivd_conf( settings, prefix)
+        self.write_post_network_hook( settings, prefix)
+        self.write_iptables_hook( settings, prefix)
+
+    def get_vrrp_interfaces(self, settings):
         vrrp_interfaces = []
         for interface_settings in settings['interfaces']:
             if interface_settings.get('vrrpEnabled'):
@@ -46,7 +52,7 @@ class VrrpManager:
 
         return vrrp_interfaces
 
-    def write_keepalivd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_keepalivd_conf(self, settings, prefix=""):
         filename = prefix + self.keepalived_conf_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -62,7 +68,7 @@ class VrrpManager:
         if len(vrrp_interfaces) < 1:
             file.flush()
             file.close()
-            if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
+            print("VrrpManager: Wrote %s" % filename)
             return
 
         file.write(r"""
@@ -102,10 +108,10 @@ global_defs {
 
         file.flush()
         file.close()
-        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
+        print("VrrpManager: Wrote %s" % filename)
         return
         
-    def write_post_network_hook( self, settings, prefix="", verbosity=0 ):
+    def write_post_network_hook(self, settings, prefix=""):
         filename = prefix + self.post_network_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -159,11 +165,11 @@ fi
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
+        print("VrrpManager: Wrote %s" % filename)
 
         return
 
-    def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
+    def write_iptables_hook(self, settings, prefix=""):
         filename = prefix + self.iptables_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -184,7 +190,7 @@ fi
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("VrrpManager: Wrote %s" % filename)
+        print("VrrpManager: Wrote %s" % filename)
 
         return
 

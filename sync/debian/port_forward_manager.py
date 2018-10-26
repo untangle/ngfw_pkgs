@@ -15,15 +15,21 @@ class PortForwardManager:
     filename = iptables_filename
     file = None
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_port_forwards( settings, prefix, verbosity);
-        self.write_admin_port_rules( settings, prefix, verbosity);
-
-    def initialize( self ):
-        registrar.register_file( self.iptables_filename, "restart-iptables", self )
-        registrar.register_file( self.admin_filename, "restart-iptables", self )
+    def initialize(self ):
+        registrar.register_file(self.iptables_filename, "restart-iptables", self )
+        registrar.register_file(self.admin_filename, "restart-iptables", self )
         
-    def write_port_forward_rule( self, port_forward_rule, verbosity=0 ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_port_forwards( settings, prefix);
+        self.write_admin_port_rules( settings, prefix);
+
+    def write_port_forward_rule(self, port_forward_rule):
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:
             return
         if 'conditions' not in port_forward_rule:
@@ -40,8 +46,8 @@ class PortForwardManager:
             return
 
         description = "Port Forward Rule #%i" % int(port_forward_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( port_forward_rule['conditions'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( port_forward_rule['conditions'], description);
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( port_forward_rule['conditions'], description);
         commands += [ "${IPTABLES} -t nat -A port-forward-rules " + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -51,7 +57,7 @@ class PortForwardManager:
 
         return
 
-    def write_port_forward_rules( self, settings, verbosity=0 ):
+    def write_port_forward_rules(self, settings):
         if settings == None or 'portForwardRules' not in settings:
             print("ERROR: Missing Port Forward Rules")
             return
@@ -60,17 +66,17 @@ class PortForwardManager:
 
         for port_forward_rule in port_forward_rules:
             try:
-                self.write_port_forward_rule( port_forward_rule, verbosity );
+                self.write_port_forward_rule( port_forward_rule);
             except Exception as e:
                 traceback.print_exc()
 
-    def write_port_forwards( self, settings, prefix="", verbosity=0):
+    def write_port_forwards(self, settings, prefix=""):
         self.filename = prefix + self.iptables_filename
-        self.file_dir = os.path.dirname( self.filename )
-        if not os.path.exists( self.file_dir ):
-            os.makedirs( self.file_dir )
+        self.file_dir = os.path.dirname(self.filename )
+        if not os.path.exists(self.file_dir ):
+            os.makedirs(self.file_dir )
 
-        self.file = open( self.filename, "w+" )
+        self.file = open(self.filename, "w+" )
         self.file.write("## Auto Generated\n");
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
@@ -86,21 +92,20 @@ class PortForwardManager:
         self.file.write("${IPTABLES} -t nat -D PREROUTING -m comment --comment \"Port Forward rules\" -j port-forward-rules >/dev/null 2>&1" + "\n");
         self.file.write("${IPTABLES} -t nat -A PREROUTING -m comment --comment \"Port Forward rules\" -j port-forward-rules" + "\n" + "\n");
 
-        self.write_port_forward_rules( settings, verbosity );
+        self.write_port_forward_rules( settings);
 
         self.file.flush();
         self.file.close();
 
-        if verbosity > 0:
-            print("PortForwardManager: Wrote %s" % self.filename)
+        print("PortForwardManager: Wrote %s" % self.filename)
 
-    def write_admin_port_rules( self, settings, prefix="", verbosity=0):
+    def write_admin_port_rules(self, settings, prefix=""):
         self.filename = prefix + self.admin_filename
-        self.file_dir = os.path.dirname( self.filename )
-        if not os.path.exists( self.file_dir ):
-            os.makedirs( self.file_dir )
+        self.file_dir = os.path.dirname(self.filename )
+        if not os.path.exists(self.file_dir ):
+            os.makedirs(self.file_dir )
 
-        self.file = open( self.filename, "w+" )
+        self.file = open(self.filename, "w+" )
         self.file.write("## Auto Generated\n");
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
@@ -164,7 +169,6 @@ class PortForwardManager:
         self.file.flush();
         self.file.close();
 
-        if verbosity > 0:
-            print("PortForwardManager: Wrote %s" % self.filename)
+        print("PortForwardManager: Wrote %s" % self.filename)
 
 registrar.register_manager(PortForwardManager())

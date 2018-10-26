@@ -17,14 +17,20 @@ class QosManager:
     src_interface_mark_mask = 0x00ff
     file = None
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_qos_hook( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.qos_filename, "restart-iptables", self )
+    
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_qos_hook( settings, prefix)
         return
 
-    def initialize( self ):
-        registrar.register_file( self.qos_filename, "restart-iptables", self )
-    
-    def find_priority( self, qosPriorities, priorityId ):
+    def find_priority(self, qosPriorities, priorityId):
         for qosPriority in qosPriorities:
             if qosPriority.get('priorityId') == priorityId:
                 return qosPriority
@@ -32,7 +38,7 @@ class QosManager:
 
     # Returns true if the interface is QoS eligible
     # QoS is run on WAN interfaces ( excluding VLANs )
-    def qosed_interface( self, intfSettings ):
+    def qosed_interface(self, intfSettings):
         if ( intfSettings == None ):
             return False
         if ( intfSettings.get('configType') == None or intfSettings.get('configType') != 'ADDRESSED' ):
@@ -43,7 +49,7 @@ class QosManager:
         #     return False;
         return True
 
-    def write_qos_rule( self, qos_rule, verbosity=0 ):
+    def write_qos_rule(self, qos_rule):
         if 'enabled' in qos_rule and not qos_rule['enabled']:
             return
         if 'conditions' not in qos_rule:
@@ -58,8 +64,8 @@ class QosManager:
             return
 
         description = "QoS Custom Rule #%i" % int(qos_rule['ruleId'])
-        commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions'], description, verbosity );
+        commands = IptablesUtil.conditions_to_prep_commands( qos_rule['conditions'], description);
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( qos_rule['conditions'], description);
         commands += [ "${IPTABLES} -t mangle -A qos-rules -m mark --mark 0x%X/0x%X " % (self.bypass_mark_mask,self.bypass_mark_mask) + ipt + target for ipt in iptables_conditions ]
 
         self.file.write("# %s\n" % description);
@@ -69,7 +75,7 @@ class QosManager:
 
         return
 
-    def write_qos_custom_rules( self, settings, verbosity=0 ):
+    def write_qos_custom_rules(self, settings):
         if 'qosRules' not in settings:
             print("ERROR: Missing QoS Custom Rules")
             return
@@ -78,33 +84,33 @@ class QosManager:
 
         for qos_rule in qos_rules:
             try:
-                self.write_qos_rule( qos_rule, verbosity );
+                self.write_qos_rule( qos_rule);
             except Exception as e:
                 traceback.print_exc()
 
-    def qos_priorities( self, qos_settings ):
+    def qos_priorities(self, qos_settings):
         return [1,2,3,4,5,6,7]
 
-    def qos_priority_field( self, qos_settings, intf, priorityId, base, field ):
+    def qos_priority_field(self, qos_settings, intf, priorityId, base, field):
         for prio in qos_settings.get('qosPriorities'):
             if prio.get('priorityId') == priorityId:
                 return intf.get(base) * (prio.get(field)/100.0)
         debug("Unable to find %s for priority %i" % (field, priorityId))
         return None
 
-    def qos_priority_upload_reserved( self, qos_settings, intf, priorityId ):
+    def qos_priority_upload_reserved(self, qos_settings, intf, priorityId):
         return self.qos_priority_field( qos_settings, intf, priorityId, 'uploadBandwidthKbps', 'uploadReservation')
 
-    def qos_priority_upload_limit( self, qos_settings, intf, priorityId ):
+    def qos_priority_upload_limit(self, qos_settings, intf, priorityId):
         return self.qos_priority_field( qos_settings, intf, priorityId, 'uploadBandwidthKbps', 'uploadLimit')
 
-    def qos_priority_download_reserved( self, qos_settings, intf, priorityId ):
+    def qos_priority_download_reserved(self, qos_settings, intf, priorityId):
         return self.qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadReservation')
 
-    def qos_priority_download_limit( self, qos_settings, intf, priorityId ):
+    def qos_priority_download_limit(self, qos_settings, intf, priorityId):
         return self.qos_priority_field( qos_settings, intf, priorityId, 'downloadBandwidthKbps', 'downloadLimit')
 
-    def get_queue_discipline_str( self, qos_settings ):
+    def get_queue_discipline_str(self, qos_settings):
         queue_discipline = qos_settings.get('queueDiscipline')
         if queue_discipline == "pfifo":
             queue_discipline_str = "pfifo"
@@ -116,7 +122,7 @@ class QosManager:
             queue_discipline_str = "fq_codel" # default if null
         return queue_discipline_str
 
-    def add_htb_rules( self, file, qos_settings, wan_intf ):
+    def add_htb_rules(self, file, qos_settings, wan_intf):
         wan_dev = wan_intf.get('systemDev')
         imq_dev = wan_intf.get('imqDev')
         default_class = qos_settings.get('defaultPriority')
@@ -229,7 +235,7 @@ class QosManager:
         # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys src\n" % (wan_dev) )
         # file.write("tc filter add dev %s pref 1 parent 1: protocol ip handle 1 flow hash keys dst\n" % (imq_dev) )
 
-    def write_qos_hook( self, settings, prefix, verbosity ):
+    def write_qos_hook(self, settings, prefix):
         if settings.get('qosSettings') == None:
             return;
         qos_settings = settings.get('qosSettings')
@@ -292,7 +298,7 @@ class QosManager:
             file.flush()
             file.close()
             os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-            if verbosity > 0: print("QosManager: Wrote %s" % filename)
+            print("QosManager: Wrote %s" % filename)
             return
 
         file.write("# Start QoS \n")
@@ -405,7 +411,7 @@ fi
             file.write("${IPTABLES} -t mangle -A qos-rules -p tcp --dport 1194 -g qos-class%i -m comment --comment \"set openvpn priority\"" % qos_settings['openvpnPriority'] + "\n")
             file.write("\n");
 
-        self.write_qos_custom_rules( qos_settings, verbosity)
+        self.write_qos_custom_rules( qos_settings)
 
         if qos_settings['defaultPriority'] != None and qos_settings['defaultPriority'] != 0:
             file.write("# Default Priority " + "\n")
@@ -416,7 +422,7 @@ fi
         file.flush()
         file.close()
 
-        if verbosity > 0: print("QosManager: Wrote %s" % filename)
+        print("QosManager: Wrote %s" % filename)
 
         return
 

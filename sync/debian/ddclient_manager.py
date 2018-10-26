@@ -15,20 +15,23 @@ class DdclientManager:
     default_filename = "/etc/default/ddclient"
     restart_filename = "/etc/untangle/post-network-hook.d/990-restart-ddclient"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        
-        self.write_config_file( settings, prefix, verbosity )
-        self.write_default_file( settings, prefix, verbosity )
-        self.write_restart_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.config_filename, "restart-ddclient", self )
+        registrar.register_file(self.default_filename, "restart-ddclient", self )
+        registrar.register_file(self.restart_filename, "restart-networking", self )
 
-        return
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_config_file( settings, prefix)
+        self.write_default_file( settings, prefix)
+        self.write_restart_file( settings, prefix)
     
-    def initialize( self ):
-        registrar.register_file( self.config_filename, "restart-ddclient", self )
-        registrar.register_file( self.default_filename, "restart-ddclient", self )
-        registrar.register_file( self.restart_filename, "restart-networking", self )
-
-    def write_config_file( self, settings, prefix="", verbosity=0 ):
+    def write_config_file(self, settings, prefix=""):
         filename = prefix + self.config_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -101,11 +104,11 @@ class DdclientManager:
             file.close()
 
             os.chmod(filename, 600)
-            if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
+            print("DdclientManager: Wrote %s" % filename)
             
             return
 
-    def write_default_file( self, settings, prefix="", verbosity=0 ):
+    def write_default_file(self, settings, prefix=""):
         filename = prefix + self.default_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -129,11 +132,11 @@ class DdclientManager:
             file.close()
 
             os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-            if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
+            print("DdclientManager: Wrote %s" % filename)
             
             return
 
-    def write_restart_file( self, settings, prefix="", verbosity=0 ):
+    def write_restart_file(self, settings, prefix=""):
         """
         Create network process extension to restart or stop daemon
         """
@@ -185,7 +188,7 @@ fi
         file.close()
     
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DdclientManager: Wrote %s" % filename)
+        print("DdclientManager: Wrote %s" % filename)
         return
 
 registrar.register_manager(DdclientManager())

@@ -12,7 +12,13 @@ class AdminManager:
     def initialize(self):
         pass
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+    
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['admin'] = {}
         settings['admin']['credentials'] = [{
@@ -21,7 +27,7 @@ class AdminManager:
         }]
         pass
 
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         # FIXME write /etc/shadow
         pass
 

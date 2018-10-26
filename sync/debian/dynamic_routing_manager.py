@@ -31,32 +31,38 @@ class DynamicRoutingManager:
 
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-quagga"
     ip_dev_regex = re.compile(r'\s+dev\s+([^\s]+)')
-    # ?? supprt inet6?
+    # XXX supprt inet6?
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if settings.get('dynamicRoutingSettings') is not None:
-            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
-                self.write_daemons_conf( settings, prefix, verbosity )
-                self.write_zebra_conf( settings, prefix, verbosity )
-                self.write_bgpd_conf( settings, prefix, verbosity )
-                self.write_ospfd_conf( settings, prefix, verbosity )
-            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
-        return
-
-    def initialize( self ):
+    def initialize(self ):
         try:
-            file_uid=pwd.getpwnam("quagga").pw_uid
-            file_gid=grp.getgrnam("quagga").gr_gid
+            self.file_uid=pwd.getpwnam("quagga").pw_uid
+            self.file_gid=grp.getgrnam("quagga").gr_gid
         except Exception as exc:
             print("quagga user/group missing!")
             #traceback.print_exc()
             
-        registrar.register_file( self.daemons_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.zebra_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.bgpd_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.ospfd_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.restart_hook_filename, "restart-quagga", self )
+        registrar.register_file(self.daemons_conf_filename, "restart-quagga", self )
+        registrar.register_file(self.zebra_conf_filename, "restart-quagga", self )
+        registrar.register_file(self.bgpd_conf_filename, "restart-quagga", self )
+        registrar.register_file(self.ospfd_conf_filename, "restart-quagga", self )
+        registrar.register_file(self.restart_hook_filename, "restart-quagga", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        if settings.get('dynamicRoutingSettings') is not None:
+            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
+                self.write_daemons_conf( settings, prefix)
+                self.write_zebra_conf( settings, prefix)
+                self.write_bgpd_conf( settings, prefix)
+                self.write_ospfd_conf( settings, prefix)
+            self.write_restart_quagga_daemons_hook( settings, prefix)
+        return
 
     def address_to_bits(self, address):
         return ''.join('{:08b}'.format(int(x)) for x in address.split('.'))
@@ -162,7 +168,7 @@ class DynamicRoutingManager:
             if network["found"] is False:
                 # Look in system
                 for route in subprocess.Popen("ip route show {0}".format(network["network"]), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
-                    match_dev = re.search( self.ip_dev_regex, route )
+                    match_dev = re.search(self.ip_dev_regex, route )
                     if match_dev:
                         dev = match_dev.group(1)
                         if dev not in interfaces_routes_to_add:
@@ -172,7 +178,7 @@ class DynamicRoutingManager:
 
                 for dev in list(interfaces_routes_to_add.keys()):
                     for addr in subprocess.Popen("ip addr show dev {0}".format(dev), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
-                        match_addr = re.search( self.ip_addr_regex, addr )
+                        match_addr = re.search(self.ip_addr_regex, addr )
                         if match_addr:
                             dev_address, dev_prefix = match_addr.group(1).split('/')
                             dev_prefix = int(dev_prefix)
@@ -207,7 +213,7 @@ class DynamicRoutingManager:
 
         return enables
 
-    def write_daemons_conf( self, settings, prefix="", verbosity=0 ):
+    def write_daemons_conf(self, settings, prefix=""):
         """
         Create Quagga daemon configuration file.
         """
@@ -233,9 +239,9 @@ class DynamicRoutingManager:
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_zebra_conf( self, settings, prefix="", verbosity=0 ):
+    def write_zebra_conf(self, settings, prefix=""):
         """
         Create Quagga zebra daemon configuration file.
         """
@@ -274,9 +280,9 @@ line vty
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_bgpd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_bgpd_conf(self, settings, prefix=""):
         """
         Create Quagga bgp daemon configuration file.
         """
@@ -329,9 +335,9 @@ route-map set-nexthop permit 10
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_ospfd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_ospfd_conf(self, settings, prefix=""):
         """
         Create Quagga ospf daemon configuration file.
         """
@@ -464,9 +470,9 @@ route-map set-nexthop permit 10
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_restart_quagga_daemons_hook( self, settings, prefix="", verbosity=0 ):
+    def write_restart_quagga_daemons_hook(self, settings, prefix=""):
         """
         Create network process extension to restart or stop daemon
         """
@@ -523,7 +529,7 @@ fi
         file.close()
     
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
         return
 
 registrar.register_manager(DynamicRoutingManager())

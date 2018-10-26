@@ -13,10 +13,17 @@ from sync import network_util
 # based on the settings object passed from sync-settings
 class DhcpManager:
     dhcp_filename = "/etc/config/dhcp"
+
     def initialize(self):
         registrar.register_file(self.dhcp_filename, "restart-dhcp", self)
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+        
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['dns'] = {}
         settings['dns']['localServers'] = []
@@ -26,11 +33,11 @@ class DhcpManager:
         settings['dhcp']['dhcpAuthoritative'] = True
         settings['dhcp']['staticDhcpEntries'] = []
         
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_dhcp_file(settings, prefix, verbosity)
+        self.write_dhcp_file(settings, prefix)
 
-    def write_dhcp_file(self, settings, prefix="", verbosity=0):
+    def write_dhcp_file(self, settings, prefix=""):
         filename = prefix + self.dhcp_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -173,8 +180,7 @@ class DhcpManager:
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
 def calc_dhcp_range_start(ip, prefix, start):
     ip_int = int(ipaddress.IPv4Address(ip))

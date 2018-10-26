@@ -5,8 +5,8 @@ import subprocess
 import datetime
 import traceback
 import re
-from sync.network_util import NetworkUtil
 from sync import registrar
+from sync.network_util import NetworkUtil
 
 # This class is responsible for writing PPPoE related conf files
 # based on the settings object passed from sync-settings
@@ -18,22 +18,28 @@ class PPPoEManager:
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/040-pppoe"
     ppp_ip_up_filename = "/etc/ppp/ip-up.d/99-untangle"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_pppoe_connection_files( settings, delete_list, prefix, verbosity )
-        self.write_secret_files( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
-        self.write_ppp_ipup_hook( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.pap_secrets_filename, "restart-networking", self )
+        registrar.register_file(self.chap_secrets_filename, "restart-networking", self ) # FIXME
+        registrar.register_file(self.peers_directory+".*", "restart-networking", self )
+        registrar.register_file(self.pre_network_hook_filename, "restart-networking", self )
+        registrar.register_file(self.ppp_ip_up_filename, "restart-networking", self )
+        
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_pppoe_connection_files( settings, delete_list, prefix)
+        self.write_secret_files( settings, prefix)
+        self.write_pre_network_hook( settings, prefix)
+        self.write_ppp_ipup_hook( settings, prefix)
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/ppp/ip-up.d/99-netd")
         
-    def initialize( self ):
-        registrar.register_file( self.pap_secrets_filename, "restart-networking", self )
-        registrar.register_file( self.chap_secrets_filename, "restart-networking", self ) # FIXME
-        registrar.register_file( self.peers_directory+".*", "restart-networking", self )
-        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
-        registrar.register_file( self.ppp_ip_up_filename, "restart-networking", self )
-        
-    def write_pppoe_connection_files( self, settings, delete_list, prefix="", verbosity=0 ):
+    def write_pppoe_connection_files(self, settings, delete_list, prefix=""):
         for interface_settings in settings.get('interfaces'):
             if "PPPOE" == interface_settings.get('v4ConfigType'):
                 # open this pppoe config file for this connection
@@ -77,8 +83,7 @@ maxfail 0
                 conffile.flush()
                 conffile.close()
 
-                if verbosity > 0:
-                    print("PPPoEManager: Wrote %s" % filename)
+                print("PPPoEManager: Wrote %s" % filename)
             else:
                 # interface is not PPPoE, remove any existing peer file
                 filename = self.peers_directory + self.connection_base_name + str(interface_settings.get('interfaceId'))
@@ -87,7 +92,7 @@ maxfail 0
 
         return
 
-    def write_secret_files( self, settings, prefix="", verbosity=0 ):
+    def write_secret_files(self, settings, prefix=""):
         secrets = ""
         secrets += "## Auto Generated\n"
         secrets += "## DO NOT EDIT. Changes will be overwritten.\n"
@@ -111,8 +116,7 @@ maxfail 0
         pap_secrets_file.write(secrets)
         pap_secrets_file.flush();
         pap_secrets_file.close();
-        if verbosity > 0:
-            print("PPPoEManager: Wrote %s" % self.pap_secrets_filename)
+        print("PPPoEManager: Wrote %s" % self.pap_secrets_filename)
 
         filename = prefix + self.chap_secrets_filename
         file_dir = os.path.dirname( filename )
@@ -123,12 +127,11 @@ maxfail 0
         chap_secrets_file.write(secrets)
         chap_secrets_file.flush();
         chap_secrets_file.close();
-        if verbosity > 0:
-            print("PPPoEManager: Wrote %s" % self.chap_secrets_filename)
+        print("PPPoEManager: Wrote %s" % self.chap_secrets_filename)
 
         return
 
-    def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
+    def write_pre_network_hook(self, settings, prefix=""):
         filename = prefix + self.pre_network_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -155,10 +158,10 @@ maxfail 0
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
+        print("PPPoEManager: Wrote %s" % filename)
 
 
-    def write_ppp_ipup_hook( self, settings, prefix="", verbosity=0 ):
+    def write_ppp_ipup_hook(self, settings, prefix=""):
         filename = prefix + self.ppp_ip_up_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -276,6 +279,6 @@ true
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0: print("PPPoEManager: Wrote %s" % filename)
+        print("PPPoEManager: Wrote %s" % filename)
 
 registrar.register_manager(PPPoEManager())

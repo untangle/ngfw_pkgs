@@ -19,24 +19,30 @@ class DhcpManager:
     dhcp_conf_filename = "/etc/dhcp/dhclient.conf"
     ddclient_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_exit_hook( settings, prefix, verbosity )
-        self.write_enter_hook( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
-        self.write_dhcp_ddclient_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.enter_hook_filename, "restart-networking", self )
+        registrar.register_file(self.exit_hook_filename, "restart-networking", self )
+        registrar.register_file(self.pre_network_hook_filename, "restart-networking", self )
+        registrar.register_file(self.dhcp_conf_filename, "restart-networking", self )
+        registrar.register_file(self.ddclient_hook_filename, "restart-networking", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+    
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_exit_hook( settings, prefix)
+        self.write_enter_hook( settings, prefix)
+        self.write_pre_network_hook( settings, prefix)
+        self.write_dhcp_ddclient_file( settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook")
         delete_list.append("/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook")
             
-    def initialize( self ):
-        registrar.register_file( self.enter_hook_filename, "restart-networking", self )
-        registrar.register_file( self.exit_hook_filename, "restart-networking", self )
-        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
-        registrar.register_file( self.dhcp_conf_filename, "restart-networking", self )
-        registrar.register_file( self.ddclient_hook_filename, "restart-networking", self )
-        
-    def write_enter_hook( self, settings, prefix="", verbosity=0 ):
+    def write_enter_hook(self, settings, prefix=""):
         filename = prefix + self.enter_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -212,11 +218,11 @@ ${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook EXIT  [ reason: \"
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
         return
 
-    def write_exit_hook( self, settings, prefix="", verbosity=0 ):
+    def write_exit_hook(self, settings, prefix=""):
 
         filename = prefix + self.exit_hook_filename
         file_dir = os.path.dirname( filename )
@@ -377,11 +383,11 @@ true
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
         return
 
-    def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
+    def write_pre_network_hook(self, settings, prefix=""):
         filename = prefix + self.pre_network_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -408,9 +414,9 @@ true
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
-    def write_dhcp_conf_file( self, settings, prefix="", verbosity=0 ):
+    def write_dhcp_conf_file(self, settings, prefix=""):
         filename = prefix + self.dhcp_conf_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -430,9 +436,9 @@ true
 
         file.flush()
         file.close()
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
-    def write_dhcp_ddclient_file( self, settings, prefix="", verbosity=0 ):
+    def write_dhcp_ddclient_file(self, settings, prefix=""):
         filename = prefix + self.ddclient_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -451,7 +457,7 @@ true
                    
         file.flush()
         file.close()
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
         
 registrar.register_manager(DhcpManager())
 

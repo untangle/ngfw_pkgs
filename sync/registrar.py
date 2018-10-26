@@ -51,7 +51,6 @@ def register_file( filepath, operation, owner ):
         
     files[filepath] = { "filepath": filepath, "operation": operation, "owner": owner}
 
-
 def operation_subset_of( parent, child ):
     """
     Returns true if the child operation is a child or x-grandchild of parent
@@ -157,6 +156,7 @@ def check_registrar_files(tmpdir):
             rootpath = os.path.join(root,filename).replace(tmpdir,"")
             result = registrar_check_file(rootpath)
             if not result:
+                print("Unregistered file: %s" % rootpath)
                 return 1
     return 0
 
@@ -176,7 +176,4 @@ def check_registrar_operations(ops):
         if o == None:
             return 1
     return 0
-
-
-
 

@@ -15,10 +15,16 @@ class InterfaceManager:
         registrar.register_file(self.interface_marks_filename, "restart-nftables-rules", self)
         pass
     
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
         pass
 
-    def write_interface_marks_file(self, settings, prefix, verbosity):
+    def validate_settings(self, settings):
+        pass
+
+    def create_settings(self, settings, prefix, delete_list, filename):
+        pass
+
+    def write_interface_marks_file(self, settings, prefix):
         filename = prefix + self.interface_marks_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -70,11 +76,11 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
             file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("InterfaceManager: Wrote %s" % filename)
+        print("InterfaceManager: Wrote %s" % filename)
         return
 
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
-        self.write_interface_marks_file(settings, prefix, verbosity)
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_interface_marks_file(settings, prefix)
         pass
     
 registrar.register_manager(InterfaceManager())

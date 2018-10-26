@@ -12,19 +12,25 @@ class EbtablesManager:
     filename = iptables_filename
     file = None
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.iptables_filename, "restart-iptables", self )
 
-    def initialize( self ):
-        registrar.register_file( self.iptables_filename, "restart-iptables", self )
-        
-    def write_file( self, settings, prefix="", verbosity=0 ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_file( settings, prefix)
+
+    def write_file(self, settings, prefix=""):
         self.filename = prefix + self.iptables_filename
-        self.file_dir = os.path.dirname( self.filename )
-        if not os.path.exists( self.file_dir ):
-            os.makedirs( self.file_dir )
+        self.file_dir = os.path.dirname(self.filename )
+        if not os.path.exists(self.file_dir ):
+            os.makedirs(self.file_dir )
 
-        self.file = open( self.filename, "w+" )
+        self.file = open(self.filename, "w+" )
         self.file.write("## Auto Generated\n");
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n\n");
@@ -52,8 +58,7 @@ class EbtablesManager:
         self.file.flush();
         self.file.close();
 
-        if verbosity > 0:
-            print("EbtablesManager: Wrote %s" % self.filename)
+        print("EbtablesManager: Wrote %s" % self.filename)
 
         return
 

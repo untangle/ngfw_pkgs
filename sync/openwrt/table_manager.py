@@ -16,7 +16,13 @@ class TableManager:
         registrar.register_file(self.filename_prefix + ".*", "restart-nftables-rules", self)
         pass
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+    
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
 
         tables = {}
@@ -32,7 +38,7 @@ class TableManager:
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
-    def write_file(self, filename, table_settings, prefix, verbosity):
+    def write_file(self, filename, table_settings, prefix):
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
@@ -52,10 +58,10 @@ class TableManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("TableManager: Wrote %s" % filename)
+        print("TableManager: Wrote %s" % filename)
         return
 
-    def write_files(self, settings, prefix, delete_list, verbosity):
+    def write_files(self, settings, prefix, delete_list):
         if settings.get('firewall') == None or settings.get('firewall').get('tables') == None:
             return
 
@@ -74,10 +80,10 @@ class TableManager:
                 delete_list.remove(filename_noprefix)
             except:
                 pass
-            self.write_file(filename, table, prefix, verbosity)
+            self.write_file(filename, table, prefix)
             i=i+1
 
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
         # Remove all the files that we write later
         # This ensures that all the existing /etc/config/nftables-rules.d/2* that we don't
@@ -88,7 +94,7 @@ class TableManager:
                     full_name = dirpath + filename
                     delete_list.append(full_name)
         # Write all the /etc/config/nftables-rules.d/2.* files
-        self.write_files(settings, prefix, delete_list, verbosity)
+        self.write_files(settings, prefix, delete_list)
         pass
     
 registrar.register_manager(TableManager())

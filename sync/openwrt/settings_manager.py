@@ -14,7 +14,13 @@ class SettingsManager:
     def initialize(self):
         pass
 
-    def create_settings(self, settings, prefix, delete_list, filepath, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def create_settings(self, settings, prefix, delete_list, filepath):
         print("%s: Initializing settings" % self.__class__.__name__)
 
         settings['version'] = 1
@@ -32,10 +38,9 @@ class SettingsManager:
         file.flush()
         file.close()
         
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
-        
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
+            
+    def sync_settings(self, settings, prefix, delete_list):
         pass
         
 registrar.register_manager(SettingsManager())

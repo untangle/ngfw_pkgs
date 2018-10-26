@@ -10,11 +10,6 @@
 # Afterwards it will be necessary to restart certain services so the new settings will take effect
 
 import sys
-
-# For running in git/dev, prefer loading from git instead of system
-if sys.path[0] != "/usr/bin":
-    sys.path.insert(0, sys.path[0] + "/../")
-
 import getopt
 import json
 import os
@@ -29,8 +24,12 @@ import traceback
 import collections
 import time
 
+# For running in git/dev, prefer loading from git instead of system
+if sys.path[0] != "/usr/bin":
+    sys.path.insert(0, sys.path[0] + "/../")
+
 import sync
-    
+
 class ArgumentParser(object):
     def __init__(self):
         if os.path.isfile('/etc/debian_version'):
@@ -45,22 +44,22 @@ class ArgumentParser(object):
         self.test_run = False
         self.create_settings = False
 
-    def set_filename( self, arg ):
+    def set_filename(self, arg):
         self.filename = arg
 
-    def set_os( self, arg ):
+    def set_os(self, arg):
         self.os = arg
-        
-    def set_norestart( self, arg ):
+
+    def set_norestart(self, arg):
         self.restart_services = False
 
-    def set_test_run( self, arg ):
+    def set_test_run(self, arg):
         self.test_run = True
 
-    def set_create_settings( self, arg ):
+    def set_create_settings(self, arg):
         self.create_settings = True
-        
-    def parse_args( self ):
+
+    def parse_args(self):
         handlers = {
             '-f' : self.set_filename,
             '-o' : self.set_os,
@@ -84,7 +83,7 @@ def cleanup(code):
     exit(code)
 
 def print_usage():
-    sys.stderr.write( """\
+    sys.stderr.write("""\
 %s Usage:
   optional args:
     -f <file>   : settings filename to sync to OS
@@ -92,7 +91,7 @@ def print_usage():
     -n          : do not run restart commands (just copy files onto filesystem)
     -s          : do not copy or run restart commands (test run)
     -o          : specify OS manually (debian/openwrt)
-""" % sys.argv[0] )
+""" % sys.argv[0])
 
 def fixup_settings(json):
     """
@@ -121,17 +120,18 @@ def calculate_changed_files(tmpdir):
     Returns a list of files that have changed (using root path)
     """
     cmd = "LC_ALL=C diff -rq / " + tmpdir + " | grep -v '^Only in' | awk '{print $2}'"
-    process = subprocess.Popen(["sh","-c",cmd], stdout=subprocess.PIPE);
-    out,err = process.communicate()
-    
+    process = subprocess.Popen(["sh", "-c", cmd], stdout=subprocess.PIPE)
+    out, err = process.communicate()
+
     changed_files = []
+
     for line in out.decode('ascii').split():
         if line.strip() != '':
             changed_files.append(line.strip())
     new_files = []
     for root, dirs, files in os.walk(tmpdir):
         for file in files:
-            rootpath = os.path.join(root,file).replace(tmpdir,"")
+            rootpath = os.path.join(root, file).replace(tmpdir, "")
             if not os.path.lexists(rootpath):
                 new_files.append(rootpath)
 
@@ -159,26 +159,26 @@ def calculate_deleted_files(tmpdir_delete):
     deleted_files = []
     for root, dirs, files in os.walk(tmpdir_delete):
         for file in files:
-            rootpath = os.path.join(root,file).replace(tmpdir_delete,"")
+            rootpath = os.path.join(root, file).replace(tmpdir_delete, "")
             if os.path.lexists(rootpath):
                 deleted_files.append(rootpath)
     if len(deleted_files) > 0:
         print("Deleted files:")
         for f in deleted_files:
             print(f)
-        
+
     return deleted_files
 
 def run_cmd(cmd):
     """
     Run the specified command and print the ouput and return the result
     """
-    stdin=open(os.devnull, 'rb')
-    p = subprocess.Popen(["sh","-c","%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin )
+    stdin = open(os.devnull, 'rb')
+    p = subprocess.Popen(["sh", "-c", "%s 2>&1" % (cmd)], stdout=subprocess.PIPE, stdin=stdin)
     for line in iter(p.stdout.readline, ''):
         if line == b'':
             break
-        print( line.decode('ascii').strip() )
+        print(line.decode('ascii').strip())
     p.wait()
     return p.returncode
 
@@ -209,7 +209,7 @@ def delete_files(delete_list):
     Delete the files in the list
     """
     print("Deleting files...")
-    sum = 0;
+    sum = 0
     if delete_list == None:
         return
     for f in delete_list:
@@ -220,7 +220,7 @@ def delete_files(delete_list):
                 print("Failed to delete: " + str(result))
                 sum += result
         except Exception as e:
-            print("Error deleting file: " + f,e)
+            print("Error deleting file: " + f, e)
 
     return sum
 
@@ -258,45 +258,6 @@ def tee_stdout_log():
     tee = subprocess.Popen(["tee", "-a", "/var/log/sync.log"], stdin=subprocess.PIPE)
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
-
-def managers_init():
-    """
-    Call init() on all managers
-    """
-    for manager in sync.registrar.managers:
-        try:
-            manager.initialize()
-        except Exception as e:
-            traceback.print_exc()
-            print("Abort. (errors)")
-            cleanup(1)
-
-def managers_sync_to_tmpdirs(tmpdir, tmpdir_delete):
-    """
-    Call sync_settings() on all managers
-    """
-    print("Syncing %s to system..." % parser.filename)
-
-    delete_list=[]
-    for manager in sync.registrar.managers:
-        try:
-            manager.sync_settings( settings, tmpdir, delete_list, verbosity=2 )
-        except Exception as e:
-            traceback.print_exc()
-            return 1
-
-    for filename in delete_list:
-        path = tmpdir_delete + filename
-        file_dir = os.path.dirname( path )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
-        file = open( path, "w+" )
-        file.write("\n\n");
-        file.flush()
-        file.close()
-
-    return 0
-
 
 def drop_permissions():
     """
@@ -357,34 +318,26 @@ def read_settings():
         print("Unable to read settings file: ",e)
         cleanup(1)
 
-def managers_create_settings_in_tmpdir(tmpdir, tmpdir_delete):
-    new_settings = {}
-    delete_list=[]
+def preprocess_settings():
+    """
+    Run the modules preprocessor on the settings
+    If the settings change, save them
+    """
+    global settings
+    print("FIXME preprocess_settings()")
 
-    for manager in sync.registrar.managers:
-        try:
-            manager.create_settings(new_settings, tmpdir, delete_list, parser.filename, verbosity=2)
-        except Exception as e:
-            traceback.print_exc()
-            return 1
-
-    for filename in delete_list:
-        path = tmpdir_delete + filename
-        file_dir = os.path.dirname( path )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
-        file = open( path, "w+" )
-        file.write("\n\n");
-        file.flush()
-        file.close()
-        
-    return 0
+def validate_settings():
+    """
+    validate the settings
+    """
+    global settings
+    print("FIXME validate_settings()")
     
 def create_settings():
     """
     Create settings from scratch
     """
-    result = call_without_permissions(managers_create_settings_in_tmpdir, tmpdir, tmpdir_delete)
+    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, parser.filename, tmpdir, tmpdir_delete)
     if result != 0:
         print("\nError during sync process. Abort.")
         cleanup(result)
@@ -399,7 +352,6 @@ def create_settings():
     make_tmpdirs()
 
 # Main
-
 
 
 # Duplicate all stdout to log
@@ -427,15 +379,22 @@ else:
 make_tmpdirs()
 
 # Initialize all managers
-managers_init()
+result = sync.managers.managers_init()
+if result != 0:
+    print("\nError during init process. Abort.")
+    cleanup(result)
 
 if parser.create_settings:
     create_settings()
 
 read_settings()
 
+preprocess_settings()
+
+validate_settings()
+
 try:
-    fixup_settings(settings)
+    fixup_settings(settings) # FIXME move this to module to ngfw preprocess
     if sync.registrar.settings_verify_function != None:
         sync.registrar.settings_verify_function(settings)
     if sync.registrar.settings_cleanup_function != None:
@@ -447,7 +406,7 @@ except Exception as e:
 # Write the sanitized file for debugging
 # sanitized_filename = (os.path.dirname(parser.filename) + "/network-sanitized.js")
 # print("Writing sanitized settings: %s " % sanitized_filename)
-# sanitized_file = open( sanitized_filename + ".tmp" , 'w' )
+# sanitized_file = open(sanitized_filename + ".tmp" , 'w')
 # json.dump(settings, sanitized_file)
 # sanitized_file.flush()
 # sanitized_file.close()
@@ -460,7 +419,8 @@ print("")
 # Call all the managers to "sync" settings to tmpdir
 # We drop root permissions to call these functions so that
 # the managers can't access the / filesystem directly
-result = call_without_permissions(managers_sync_to_tmpdirs,tmpdir,tmpdir_delete)
+print("Syncing to system...")
+result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, tmpdir, tmpdir_delete)
 if result != 0:
     print("\nError during sync process. Abort.")
     cleanup(result)
@@ -469,9 +429,8 @@ print("")
 
 # Check that all new files in the tmpdir are registered in the registrar
 if sync.registrar.check_registrar_files(tmpdir) != 0:
-    print("File missing in registrar: " + filename)
+    print("File missing in registrar: " + parser.filename)
     cleanup(1)
-
 
 # Calculate the changed files and the needed operations
 changed_files = calculate_changed_files(tmpdir)

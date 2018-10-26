@@ -17,20 +17,26 @@ class NetworkManager:
     def initialize(self):
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+        
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
         settings['network'] = network
 
-        self.create_settings_devices(settings, prefix, delete_list, verbosity)
-        self.create_settings_interfaces(settings, prefix, delete_list, verbosity)
-        self.create_settings_switches(settings, prefix, delete_list, verbosity)
+        self.create_settings_devices(settings, prefix, delete_list)
+        self.create_settings_interfaces(settings, prefix, delete_list)
+        self.create_settings_switches(settings, prefix, delete_list)
         
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
-        self.write_network_file(settings, prefix, verbosity)
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_network_file(settings, prefix)
         
-    def write_network_file(self, settings, prefix="", verbosity=0):
+    def write_network_file(self, settings, prefix=""):
         filename = prefix + self.network_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -94,8 +100,7 @@ class NetworkManager:
         file.flush()
         file.close()
         
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
     def write_route_rules(self, settings):
         priority = 70000
@@ -299,13 +304,13 @@ class NetworkManager:
         file.write("\toption ip6addr '%s'\n" % alias.get('v6Address'))
         file.write("\toption ip6prefix '%s'\n" % alias.get('v6Prefix'))
 
-    def create_settings_devices(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings_devices(self, settings, prefix, delete_list):
         device_list = get_devices()
         settings['network']['devices'] = []
         for dev in device_list:
             settings['network']['devices'].append(new_device_settings(dev))
 
-    def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings_interfaces(self, settings, prefix, delete_list):
         device_list = get_devices()
         if len(device_list) == 1:
             internal_device_name = "None"
@@ -371,7 +376,7 @@ class NetworkManager:
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
                 
-    def create_settings_switches(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings_switches(self, settings, prefix, delete_list):
         settings['network']['switches'] = board_util.get_switch_settings()
 
 def get_devices():

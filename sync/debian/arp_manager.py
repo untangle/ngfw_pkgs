@@ -11,14 +11,20 @@ from sync import registrar
 class ArpManager:
     filename = "/etc/untangle/post-network-hook.d/025-arp"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_arp( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.filename, "restart-networking", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_arp( settings, prefix)
         return
 
-    def initialize( self ):
-        registrar.register_file( self.filename, "restart-networking", self )
-    
-    def write_arp( self, settings, prefix, verbosity ):
+    def write_arp(self, settings, prefix):
         filename = prefix + self.filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -52,7 +58,7 @@ class ArpManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("ArpManager: Wrote %s" % filename)
+        print("ArpManager: Wrote %s" % filename)
 
         return
 

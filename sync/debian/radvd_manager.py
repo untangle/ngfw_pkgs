@@ -15,15 +15,21 @@ class RadvdManager:
     config_filename = "/etc/radvd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-radvd"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_config_file( settings, prefix, verbosity )
-        self.write_restart_radvd_hook( settings, prefix, verbosity )
-
-    def initialize( self ):
-        registrar.register_file( self.config_filename, "restart-radvd", self )
-        registrar.register_file( self.restart_hook_filename, "restart-networking", self )
+    def initialize(self ):
+        registrar.register_file(self.config_filename, "restart-radvd", self )
+        registrar.register_file(self.restart_hook_filename, "restart-networking", self )
         
-    def write_config_file( self, settings, prefix="", verbosity=0 ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_config_file( settings, prefix)
+        self.write_restart_radvd_hook( settings, prefix)
+
+    def write_config_file(self, settings, prefix=""):
         filename = prefix + self.config_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -56,9 +62,9 @@ class RadvdManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
+        print("RadvdManager: Wrote %s" % filename)
 
-    def write_restart_radvd_hook( self, settings, prefix="", verbosity=0 ):
+    def write_restart_radvd_hook(self, settings, prefix=""):
         filename = prefix + self.restart_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -93,7 +99,7 @@ fi
         file.close()
     
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("RadvdManager: Wrote %s" % filename)
+        print("RadvdManager: Wrote %s" % filename)
         return
 
 registrar.register_manager(RadvdManager())

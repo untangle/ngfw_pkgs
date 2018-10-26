@@ -18,20 +18,26 @@ class IptablesManager:
     helpers_filename = "/etc/untangle/iptables-rules.d/011-helpers"
     post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_flush_file( settings, prefix, verbosity )
-        self.write_helpers_file( settings, prefix, verbosity )
-        self.write_post_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.flush_filename, "restart-iptables", self )
+        registrar.register_file(self.helpers_filename, "restart-iptables", self )
+        registrar.register_file(self.post_network_filename, "restart-networking", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_flush_file( settings, prefix)
+        self.write_helpers_file( settings, prefix)
+        self.write_post_file( settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/untangle/iptables-rules.d/825-classd")
 
-    def initialize( self ):
-        registrar.register_file( self.flush_filename, "restart-iptables", self )
-        registrar.register_file( self.helpers_filename, "restart-iptables", self )
-        registrar.register_file( self.post_network_filename, "restart-networking", self )
-
-    def write_post_file( self, settings, prefix, verbosity ):
+    def write_post_file(self, settings, prefix):
         filename = prefix + self.post_network_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -195,11 +201,10 @@ done
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
+        print("IptablesManager: Wrote %s" % filename)
         
             
-    def write_flush_file( self, settings, prefix, verbosity ):
+    def write_flush_file(self, settings, prefix):
         filename = prefix + self.flush_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -279,11 +284,9 @@ done
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
+        print("IptablesManager: Wrote %s" % filename)
 
-
-    def write_helpers_file( self, settings, prefix, verbosity ):
+    def write_helpers_file(self, settings, prefix):
 
         filename = prefix + self.helpers_filename
         file_dir = os.path.dirname( filename )
@@ -362,7 +365,6 @@ done
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
+        print("IptablesManager: Wrote %s" % filename)
 
 registrar.register_manager(IptablesManager())

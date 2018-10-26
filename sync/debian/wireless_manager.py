@@ -15,7 +15,18 @@ class WirelessManager:
     hostapd_conf_filename = "/etc/hostapd/hostapd.conf"
     crda_default_filename = "/etc/default/crda"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+    def initialize(self):
+        registrar.register_file(self.wpasupplicant_conf_filename+".*", "restart-networking", self)
+        registrar.register_file(self.hostapd_conf_filename+".*", "restart-networking", self)
+        registrar.register_file(self.crda_default_filename, "restart-networking", self)
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
 
         # on Asus AC88U, find each disabled wifi interface, and remove
         # its corresponding hostapd configuration file if it
@@ -28,35 +39,30 @@ class WirelessManager:
             if os.path.exists(filename):
                 delete_list.append(filename)
 
-        self.write_wpasupplicant_conf( settings, prefix, verbosity )
-        self.write_hostapd_conf( settings, prefix, verbosity )
-        self.write_crda_file( settings, prefix, verbosity )
+        self.write_wpasupplicant_conf( settings, prefix)
+        self.write_hostapd_conf( settings, prefix)
+        self.write_crda_file( settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/untangle/pre-network-hook.d/990-restart-hostapd")
-
-    def initialize( self ):
-        registrar.register_file( self.wpasupplicant_conf_filename+".*", "restart-networking", self )
-        registrar.register_file( self.hostapd_conf_filename+".*", "restart-networking", self )
-        registrar.register_file( self.crda_default_filename, "restart-networking", self )
 
     # Much of the ht_capab and vht_capab logic shamelessly copied from openwrt:
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/netifd/wireless/mac80211.sh
     # https://dev.openwrt.org/browser/trunk/package/kernel/mac80211/files/lib/wifi/mac80211.sh
 
-    def get_iw_info( self, phy_dev ):
+    def get_iw_info(self, phy_dev):
         output = subprocess.Popen(("iw phy %s info" % phy_dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0]
         str = output.decode('ascii').split('\n')
         return str
 
-    def set_hw_mode( self, conf, channel ):
+    def set_hw_mode(self, conf, channel):
         if channel > 11 or channel == -2:
             conf['hw_mode'] = 'a'
         else:
             conf['hw_mode'] = 'g'
         return
 
-    def set_fallback_ht_capab( self, conf, channel ):
+    def set_fallback_ht_capab(self, conf, channel):
         ht_capabs=[]
         if channel > 11 or channel == -2:
             if ((channel // 4) % 2) == 0:
@@ -76,7 +82,7 @@ class WirelessManager:
         conf['ht_capab'] = "".join(map(str,ht_capabs))
 
 
-    def set_ht_capab( self, conf, iw_info, channel, wlan_dev ):
+    def set_ht_capab(self, conf, iw_info, channel, wlan_dev):
         capab_line = None
         for line in iw_info:
             if re.search(r'\s*Capabilities:\s.*', line):
@@ -133,19 +139,19 @@ class WirelessManager:
         conf['ht_capab'] = "".join(map(str,ht_capabs))
         return
 
-    def set_80211n( self, conf ):
+    def set_80211n(self, conf):
         conf['ieee80211n'] = 1
         conf['wmm_enabled'] = 1
 
-    def set_80211ac( self, conf ):
+    def set_80211ac(self, conf):
         conf['ieee80211ac'] = 1
 
-    def set_vht( self, conf ):
+    def set_vht(self, conf):
         # assume VHT40h
         # need some user options for VHT80
         conf['vht_oper_chwidth'] = 0
 
-    def set_vht_capab( self, conf, iw_info, channel, wlan_dev ):
+    def set_vht_capab(self, conf, iw_info, channel, wlan_dev):
         capab_line = None
         for line in iw_info:
             if re.search(r'\s*VHT Capabilities\s.*', line):
@@ -206,13 +212,13 @@ class WirelessManager:
         conf['vht_capab'] = "".join(map(str,ht_capabs))
         return
 
-    def find_string( self, iw_info, regex ):
+    def find_string(self, iw_info, regex):
         for line in iw_info:
             if re.search(regex, line):
                 return True
         return False
 
-    def supports_80211ac( self, channel, iw_info ):
+    def supports_80211ac(self, channel, iw_info):
         # if a 2.4 channel is chosen - then its 2.4 which does not support AC
         if channel > 0 and channel <= 11:
             return False
@@ -225,7 +231,7 @@ class WirelessManager:
             return False
         return True
 
-    def get_wificard_config( self, wlan_dev, channel ):
+    def get_wificard_config(self, wlan_dev, channel):
         try:
             conf = {}
             phy_dev = open('/sys/class/net/%s/phy80211/name'%wlan_dev, 'r').read()
@@ -247,7 +253,7 @@ class WirelessManager:
             return None
 
 
-    def write_hostapd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_hostapd_conf(self, settings, prefix=""):
 
         configFilename = prefix + self.hostapd_conf_filename
         for filename in [ configFilename ]:
@@ -316,10 +322,9 @@ class WirelessManager:
                 self.hostapdConfFile.flush()
                 self.hostapdConfFile.close()
 
-                if verbosity > 0:
-                    print("WirelessManager: Wrote " + filename)
+                print("WirelessManager: Wrote " + filename)
 
-    def write_wpasupplicant_conf( self, settings, prefix="", verbosity=0 ):
+    def write_wpasupplicant_conf(self, settings, prefix=""):
 
         configFilename = prefix + self.wpasupplicant_conf_filename
         for filename in [ configFilename ]:
@@ -375,10 +380,9 @@ class WirelessManager:
                 self.wpasupplicantConfFile.flush()
                 self.wpasupplicantConfFile.close()
 
-                if verbosity > 0:
-                    print("WirelessManager: Wrote " + filename)
+                print("WirelessManager: Wrote " + filename)
 
-    def write_crda_file( self, settings, prefix="", verbosity=0 ):
+    def write_crda_file(self, settings, prefix=""):
         crdaFilename = prefix + self.crda_default_filename
         for filename in [ crdaFilename ]:
             file_dir = os.path.dirname( filename )
@@ -393,8 +397,7 @@ class WirelessManager:
         self.crdaDefaultFile.flush()
         self.crdaDefaultFile.close()
 
-        if verbosity > 0:
-            print("WirelessManager: Wrote " + crdaFilename)
+        print("WirelessManager: Wrote " + crdaFilename)
 
         return
 

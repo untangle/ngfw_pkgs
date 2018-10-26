@@ -17,22 +17,28 @@ class HostsManager:
     resolv_filename = "/etc/resolv.conf"
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/001-sethostname"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_hostname_file( settings, prefix, verbosity )
-        self.write_hosts_file( settings, prefix, verbosity )
-        self.write_resolve_file( settings, prefix, verbosity )
-        self.write_mailname_file( settings, prefix, verbosity )
-        self.write_pre_network_hook_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.hosts_filename, None, self )
+        registrar.register_file(self.hostname_filename, "update-hostname", self )
+        registrar.register_file(self.mailname_filename, None, self )
+        registrar.register_file(self.resolv_filename, None, self )
+        registrar.register_file(self.pre_network_hook_filename, "restart-networking", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_hostname_file( settings, prefix)
+        self.write_hosts_file( settings, prefix)
+        self.write_resolve_file( settings, prefix)
+        self.write_mailname_file( settings, prefix)
+        self.write_pre_network_hook_file( settings, prefix)
         return
 
-    def initialize( self ):
-        registrar.register_file( self.hosts_filename, None, self )
-        registrar.register_file( self.hostname_filename, "update-hostname", self )
-        registrar.register_file( self.mailname_filename, None, self )
-        registrar.register_file( self.resolv_filename, None, self )
-        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
-    
-    def write_hosts_file( self, settings, prefix, verbosity ):
+    def write_hosts_file(self, settings, prefix):
 
         filename = prefix + self.hosts_filename
         file_dir = os.path.dirname( filename )
@@ -79,10 +85,10 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        print("HostsManager: Wrote %s" % filename)
         return
 
-    def write_hostname_file( self, settings, prefix, verbosity ):
+    def write_hostname_file(self, settings, prefix):
         if 'hostName' not in settings:
             print("ERROR: Missing hostname setting")
             return
@@ -101,10 +107,10 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        print("HostsManager: Wrote %s" % filename)
         return
 
-    def write_pre_network_hook_file( self, settings, prefix, verbosity ):
+    def write_pre_network_hook_file(self, settings, prefix):
         if 'hostName' not in settings:
             print("ERROR: Missing hostname setting")
             return
@@ -133,10 +139,10 @@ ff02::3 ip6-allhosts
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        print("HostsManager: Wrote %s" % filename)
         return
     
-    def write_mailname_file( self, settings, prefix, verbosity ):
+    def write_mailname_file(self, settings, prefix):
 
         if 'domainName' not in settings:
             print("ERROR: Missing domainName setting")
@@ -153,10 +159,10 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        print("HostsManager: Wrote %s" % filename)
         return
 
-    def write_resolve_file( self, settings, prefix, verbosity ):
+    def write_resolve_file(self, settings, prefix):
 
         if 'hostName' not in settings:
             print("ERROR: Missing hostname setting")
@@ -180,7 +186,7 @@ ff02::3 ip6-allhosts
         file.flush()
         file.close()
 
-        if verbosity > 0: print("HostsManager: Wrote %s" % filename)
+        print("HostsManager: Wrote %s" % filename)
         return
 
 registrar.register_manager(HostsManager())

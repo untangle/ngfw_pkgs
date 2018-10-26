@@ -16,13 +16,19 @@ class FilterRulesManager:
     filename = iptables_filename
     file = None
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_filter_rules_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.iptables_filename, "restart-iptables", self )
 
-    def initialize( self ):
-        registrar.register_file( self.iptables_filename, "restart-iptables", self )
-        
-    def write_filter_rule( self, table_name, filter_rule, drop_target, verbosity=0 ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_filter_rules_file( settings, prefix)
+
+    def write_filter_rule(self, table_name, filter_rule, drop_target):
 
         if filter_rule.get('enabled') == None or filter_rule.get('enabled') == False:
             return
@@ -37,8 +43,8 @@ class FilterRulesManager:
             target = ' -j RETURN '
 
         description = "Rule #%i" % int(filter_rule['ruleId'])
-        prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions'], description, verbosity );
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions'], description, verbosity );
+        prep_commands = IptablesUtil.conditions_to_prep_commands( filter_rule['conditions'], description);
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string( filter_rule['conditions'], description);
 
         iptables_log_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + " -j NFLOG --nflog-prefix 'filter_blocked' " for ipt in iptables_conditions ]
         iptables_commands = [ ("${IPTABLES} -t filter -A %s " % table_name) + ipt + target for ipt in iptables_conditions ]
@@ -70,7 +76,7 @@ class FilterRulesManager:
 
         return
 
-    def write_access_rules( self, settings, verbosity=0 ):
+    def write_access_rules(self, settings):
 
         if settings == None or settings.get('accessRules') == None:
             print("ERROR: Missing input filter Rules")
@@ -80,12 +86,12 @@ class FilterRulesManager:
 
         for filter_rule in access_rules:
             try:
-                self.write_filter_rule( "access-rules", filter_rule, "DROP", verbosity );
+                self.write_filter_rule( "access-rules", filter_rule, "DROP");
             except Exception as e:
                 traceback.print_exc()
         return
 
-    def write_filter_rules( self, settings, verbosity=0 ):
+    def write_filter_rules(self, settings):
 
         if settings == None or settings.get('filterRules') == None:
             print("ERROR: Missing forward filter Rules")
@@ -95,18 +101,18 @@ class FilterRulesManager:
 
         for filter_rule in filter_rules:
             try:
-                self.write_filter_rule( "filter-rules", filter_rule, "REJECT", verbosity );
+                self.write_filter_rule( "filter-rules", filter_rule, "REJECT");
             except Exception as e:
                 traceback.print_exc()
         return
 
-    def write_filter_rules_file( self, settings, prefix="", verbosity=0 ):
+    def write_filter_rules_file(self, settings, prefix=""):
         self.filename = prefix + self.iptables_filename
-        self.file_dir = os.path.dirname( self.filename )
-        if not os.path.exists( self.file_dir ):
-            os.makedirs( self.file_dir )
+        self.file_dir = os.path.dirname(self.filename )
+        if not os.path.exists(self.file_dir ):
+            os.makedirs(self.file_dir )
 
-        self.file = open( self.filename, "w+" )
+        self.file = open(self.filename, "w+" )
         self.file.write("## Auto Generated\n");
         self.file.write("## DO NOT EDIT. Changes will be overwritten.\n");
         self.file.write("\n");
@@ -244,8 +250,8 @@ class FilterRulesManager:
             self.file.write("\n");
             # no need for ipv6 - this is only for ICSA compliance
 
-        self.write_access_rules( settings, verbosity );
-        self.write_filter_rules( settings, verbosity );
+        self.write_access_rules( settings);
+        self.write_filter_rules( settings);
 
         self.file.write("\n");
         self.file.write("${IPTABLES} -t filter -D FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\" >/dev/null 2>&1\n");
@@ -268,8 +274,7 @@ class FilterRulesManager:
         self.file.flush();
         self.file.close();
 
-        if verbosity > 0:
-            print("FilterRulesManager: Wrote %s" % self.filename)
+        print("FilterRulesManager: Wrote %s" % self.filename)
 
         return
 

@@ -14,11 +14,17 @@ class NatManager:
     def initialize(self):
         registrar.register_file(self.nat_rules_sys_filename, "restart-nftables-rules", self)
         pass
-    
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+
+    def preprocess_settings(self, settings):
         pass
 
-    def write_nat_rules_sys_file(self, settings, prefix, verbosity):
+    def validate_settings(self, settings):
+        pass
+    
+    def create_settings(self, settings, prefix, delete_list, filename):
+        pass
+
+    def write_nat_rules_sys_file(self, settings, prefix):
         filename = prefix + self.nat_rules_sys_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -84,11 +90,11 @@ nft add chain inet filter-rules-nat filter-rules-nat "{ type filter hook forward
             file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("NatManager: Wrote %s" % filename)
+        print("NatManager: Wrote %s" % filename)
         return
 
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
-        self.write_nat_rules_sys_file(settings, prefix, verbosity)
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_nat_rules_sys_file(settings, prefix)
         pass
     
 registrar.register_manager(NatManager())

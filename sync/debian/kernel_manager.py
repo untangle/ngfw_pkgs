@@ -14,13 +14,19 @@ from sync import registrar
 class KernelManager:
     kernel_hook_filename = "/etc/untangle/post-network-hook.d/011-kernel"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_file( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.kernel_hook_filename, "restart-networking", self )
 
-    def initialize( self ):
-        registrar.register_file( self.kernel_hook_filename, "restart-networking", self )
-        
-    def write_file( self, settings, prefix, verbosity ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_file( settings, prefix)
+
+    def write_file(self, settings, prefix):
         filename = prefix + self.kernel_hook_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -108,6 +114,6 @@ class KernelManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("KernelManager: Wrote %s" % filename)
+        print("KernelManager: Wrote %s" % filename)
 
 registrar.register_manager(KernelManager())

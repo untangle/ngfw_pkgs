@@ -15,7 +15,13 @@ class WirelessManager:
     def initialize(self):
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+        
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
@@ -30,9 +36,9 @@ class WirelessManager:
                 intf['wirelessPassword'] = '12345678'
                 intf['wirelessSsid'] = 'Untangle'
         
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_wireless_file(settings, prefix, verbosity)
+        self.write_wireless_file(settings, prefix)
 
     def get_phy_name(self, interface):
         return subprocess.check_output("cat /sys/class/net/%s/phy80211/name" % interface['device'], shell=True).decode('ascii').rstrip()
@@ -87,7 +93,7 @@ class WirelessManager:
         if macaddr != "":
             file.write("\toption macaddr '%s'\n" % macaddr)
 
-    def write_wireless_file(self, settings, prefix="", verbosity=0):
+    def write_wireless_file(self, settings, prefix=""):
         filename = prefix + self.wireless_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -145,7 +151,6 @@ class WirelessManager:
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
 registrar.register_manager(WirelessManager())

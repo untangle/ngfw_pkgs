@@ -12,13 +12,19 @@ class SystemManager:
     def initialize(self):
         pass
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+    
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['system'] = {}
         settings['system']['hostName'] = 'mfw'
         settings['system']['domainName'] = 'example.com'
         
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         pass
         
 registrar.register_manager(SystemManager())

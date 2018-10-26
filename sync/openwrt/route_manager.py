@@ -18,6 +18,7 @@ class RouteManager:
     ifdown_wan_balancer_filename = "/etc/config/ifdown.d/20-wan-balancer"
     IP_RULE_DEFAULT_RULE_PRIORITY="1000000"
     IP_RULE_BALANCE_RULE_PRIORITY="900000"
+
     def initialize(self):
         registrar.register_file(self.ifup_routes_filename, "restart-default-route", self)
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
@@ -25,18 +26,24 @@ class RouteManager:
         registrar.register_file(self.ifdown_wan_balancer_filename, "restart-wan-balancer", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
 
-    def create_settings(self, settings, prefix, delete_list, filename, verbosity=0):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+        
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
 
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
+    def sync_settings(self, settings, prefix, delete_list):
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_rt_tables_file(settings, prefix, verbosity)
-        self.write_ifup_routes_file(settings, prefix, verbosity)
-        self.write_ifdown_routes_file(settings, prefix, verbosity)
-        self.write_wan_balancer_file(self.ifup_wan_balancer_filename, settings, prefix, verbosity)
-        self.write_wan_balancer_file(self.ifdown_wan_balancer_filename, settings, prefix, verbosity)
+        self.write_rt_tables_file(settings, prefix)
+        self.write_ifup_routes_file(settings, prefix)
+        self.write_ifdown_routes_file(settings, prefix)
+        self.write_wan_balancer_file(self.ifup_wan_balancer_filename, settings, prefix)
+        self.write_wan_balancer_file(self.ifdown_wan_balancer_filename, settings, prefix)
 
-    def write_rt_tables_file(self, settings, prefix="", verbosity=0):
+    def write_rt_tables_file(self, settings, prefix=""):
         filename = prefix + self.rt_tables_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -83,10 +90,9 @@ class RouteManager:
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
-    def write_ifup_routes_file(self, settings, prefix="", verbosity=0):
+    def write_ifup_routes_file(self, settings, prefix=""):
         filename = prefix + self.ifup_routes_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -122,10 +128,9 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
-    def write_ifdown_routes_file(self, settings, prefix="", verbosity=0):
+    def write_ifdown_routes_file(self, settings, prefix=""):
         filename = prefix + self.ifdown_routes_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -177,10 +182,9 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
-    def write_wan_balancer_file(self, fname, settings, prefix="", verbosity=0):
+    def write_wan_balancer_file(self, fname, settings, prefix=""):
         filename = prefix + fname
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -241,7 +245,6 @@ class RouteManager:
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__,filename))
 
 registrar.register_manager(RouteManager())

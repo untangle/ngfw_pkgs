@@ -15,15 +15,21 @@ class NetflowManager:
     softflow_daemon_conf_filename = "/etc/default/softflowd"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_softflow_daemon_conf( settings, prefix, verbosity )
-        self.write_restart_softflow_daemon_hook( settings, prefix, verbosity )
-
-    def initialize( self ):
-        registrar.register_file( self.softflow_daemon_conf_filename, "restart-softflowd", self )
-        registrar.register_file( self.restart_hook_filename, "restart-softflowd", self )
+    def initialize(self ):
+        registrar.register_file(self.softflow_daemon_conf_filename, "restart-softflowd", self )
+        registrar.register_file(self.restart_hook_filename, "restart-softflowd", self )
         
-    def write_softflow_daemon_conf( self, settings, prefix="", verbosity=0 ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_softflow_daemon_conf( settings, prefix)
+        self.write_restart_softflow_daemon_hook( settings, prefix)
+
+    def write_softflow_daemon_conf(self, settings, prefix=""):
         """
         Create softflow configuration file
         """
@@ -50,10 +56,10 @@ class NetflowManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print("NetflowManager: Wrote %s" % filename)
+        print("NetflowManager: Wrote %s" % filename)
         return
 
-    def write_restart_softflow_daemon_hook( self, settings, prefix="", verbosity=0 ):
+    def write_restart_softflow_daemon_hook(self, settings, prefix=""):
         """
         Create network process extension to restart or stop daemon
         """
@@ -98,7 +104,7 @@ fi
         file.close()
     
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("NetflowManager: Wrote %s" % filename)
+        print("NetflowManager: Wrote %s" % filename)
         return
 
 registrar.register_manager(NetflowManager())

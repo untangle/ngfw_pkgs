@@ -18,20 +18,26 @@ class InterfacesManager:
     both_interfaces_mark_mask = 0xffff
     interfaces_file = None
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_interfaces_file( settings, prefix, verbosity )
-        self.write_interface_marks( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
+    def initialize(self ):
+        registrar.register_file(self.interfaces_filename, "restart-networking", self )
+        registrar.register_file(self.interfaces_marks_filename, "restart-iptables", self )
+        registrar.register_file(self.pre_network_hook_filename, "restart-networking", self )
+
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_interfaces_file( settings, prefix)
+        self.write_interface_marks( settings, prefix)
+        self.write_pre_network_hook( settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/network/if-up.d/netd")
         
-    def initialize( self ):
-        registrar.register_file( self.interfaces_filename, "restart-networking", self )
-        registrar.register_file( self.interfaces_marks_filename, "restart-iptables", self )
-        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
-        
-    def write_interface_v4( self, interface_settings, interfaces, settings ):
+    def write_interface_v4(self, interface_settings, interfaces, settings):
 
         # find interfaces bridged to this interface
         is_bridge = False
@@ -139,7 +145,7 @@ class InterfacesManager:
 
         self.interfaces_file.write("\n\n");
 
-    def write_interface_v6( self, interface_settings, interfaces ):
+    def write_interface_v6(self, interface_settings, interfaces):
 
         # If it is static without an address it is disabled
         if interface_settings.get('v6ConfigType') == 'STATIC' and interface_settings.get('v6StaticAddress') == None:
@@ -177,7 +183,7 @@ class InterfacesManager:
 
         self.interfaces_file.write("\n\n");
 
-    def write_interface_disabled( self, interface_settings, interfaces ):
+    def write_interface_disabled(self, interface_settings, interfaces):
         devName = interface_settings.get('symbolicDev')
         self.interfaces_file.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId') )
         self.interfaces_file.write("auto %s\n" % devName)
@@ -186,7 +192,7 @@ class InterfacesManager:
         self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up || true\n" % devName )
         self.interfaces_file.write("\n\n");
 
-    def write_interface_blank( self, interface_settings, interfaces ):
+    def write_interface_blank(self, interface_settings, interfaces):
         # This is not necessary as the bridge-utils scripts bring up any sub-interfaces automatically
         # in /etc/network/if-**.d/bridge
         # However, we may want to control how and when those interfaces are brought up and down
@@ -203,7 +209,7 @@ class InterfacesManager:
                 self.interfaces_file.write("\twpa-conf /etc/wpa_supplicant/wpa_supplicant.conf-%s\n" % devName);
             self.interfaces_file.write("\n\n");
         
-    def write_interface_aliases( self, interface_settings, interfaces ):
+    def write_interface_aliases(self, interface_settings, interfaces):
         # determine the proper interface to put the aliases "on"
         if interface_settings.get('v4ConfigType') != 'PPPOE':
             intf_str = interface_settings.get('symbolicDev')
@@ -237,7 +243,7 @@ class InterfacesManager:
                 self.interfaces_file.write("\n");
                 count = count+1
 
-    def check_interface_settings( self, interface_settings):
+    def check_interface_settings(self, interface_settings):
         if interface_settings.get('systemDev') == None:
             print("ERROR: Missisg symbolic dev!")
             return False
@@ -252,7 +258,7 @@ class InterfacesManager:
             return False
         return True
 
-    def write_interfaces_file( self, settings, prefix="", verbosity=0 ):
+    def write_interfaces_file(self, settings, prefix=""):
         filename = prefix + self.interfaces_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -319,10 +325,9 @@ class InterfacesManager:
         self.interfaces_file.flush()
         self.interfaces_file.close()
 
-        if verbosity > 0:
-            print("InterfacesManager: Wrote %s" % filename)
+        print("InterfacesManager: Wrote %s" % filename)
 
-    def write_restore_interface_marks( self, file, interfaces, prefix, verbosity ):
+    def write_restore_interface_marks(self, file, interfaces, prefix):
 
         file.write("\n\n");
         file.write("#\n");
@@ -361,7 +366,7 @@ class InterfacesManager:
             file.write("${IPTABLES} -t mangle -A restore-interface-marks -m connmark --mark 0x%04X/0x%04X -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark from connmark for intf %i\"" % (id << 8, self.dst_interface_mark_mask, id, self.src_interface_mark_mask, id) + "\n");
         file.write("\n");
 
-    def write_mark_src_intf( self, file, interfaces, prefix, verbosity ):
+    def write_mark_src_intf(self, file, interfaces, prefix):
 
         file.write("\n\n");
         file.write("#\n");
@@ -411,7 +416,7 @@ class InterfacesManager:
 
         file.write("\n");
 
-    def write_mark_src_lxc_intf( self, file, settings, interfaces, prefix, verbosity ):
+    def write_mark_src_lxc_intf(self, file, settings, interfaces, prefix):
 
         file.write("\n\n");
         file.write("#\n");
@@ -435,7 +440,7 @@ class InterfacesManager:
 
         file.write("\n");
 
-    def write_mark_dst_intf( self, file, settings, interfaces, prefix, verbosity ):
+    def write_mark_dst_intf(self, file, settings, interfaces, prefix):
 
         file.write("\n\n");
         file.write("#\n");
@@ -471,7 +476,7 @@ class InterfacesManager:
             file.write("${IPTABLES} -t mangle -A mark-dst-intf -o veth+  -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark lxc\"" % ((lxcInterfaceId<<8), self.dst_interface_mark_mask) + "\n")
             file.write("\n");
         
-    def write_save_dst_intf_mark( self, file, interfaces, prefix, verbosity ):
+    def write_save_dst_intf_mark(self, file, interfaces, prefix):
 
         file.write("\n\n");
         file.write("#\n");
@@ -484,7 +489,7 @@ class InterfacesManager:
         file.write("\n");
 
 
-    def write_interface_marks( self, settings, prefix, verbosity ):
+    def write_interface_marks(self, settings, prefix):
         interfaces = settings['interfaces']
 
         filename = prefix + self.interfaces_marks_filename
@@ -534,25 +539,24 @@ class InterfacesManager:
         file.write("# ${IPTABLES} -t mangle -A output-set-marks -m comment --comment \"Set dst intf mark (0xff00)\" -j mark-dst-intf" + "\n");
         file.write("\n");
 
-        self.write_restore_interface_marks( file, interfaces, prefix, verbosity );
+        self.write_restore_interface_marks( file, interfaces, prefix);
 
-        self.write_mark_src_intf( file, interfaces, prefix, verbosity );
+        self.write_mark_src_intf( file, interfaces, prefix);
 
-        self.write_mark_dst_intf( file, settings, interfaces, prefix, verbosity );
+        self.write_mark_dst_intf( file, settings, interfaces, prefix);
 
-        self.write_save_dst_intf_mark( file, interfaces, prefix, verbosity );
+        self.write_save_dst_intf_mark( file, interfaces, prefix);
 
-        self.write_mark_src_lxc_intf( file, settings, interfaces, prefix, verbosity );
+        self.write_mark_src_lxc_intf( file, settings, interfaces, prefix);
 
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("InterfacesManager: Wrote %s" % filename)
-
+        print("InterfacesManager: Wrote %s" % filename)
+            
         return
 
-    def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
+    def write_pre_network_hook(self, settings, prefix=""):
 
         filename = prefix + self.pre_network_hook_filename
         file_dir = os.path.dirname( filename )
@@ -625,9 +629,9 @@ rm -f /var/lib/interface-status/interface*status.js
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
-        if verbosity > 0: print("InterfacesManager: Wrote %s" % filename)
+        print("InterfacesManager: Wrote %s" % filename)
 
-    def get_lxc_interface_id( self, settings ):
+    def get_lxc_interface_id(self, settings):
 
         lxcInterfaceId = settings.get('lxcInterfaceId')
         if lxcInterfaceId == 0 or lxcInterfaceId == None:

@@ -20,24 +20,30 @@ class RouteManager:
     DST_INTERFACE_SHIFT=8
     DST_INTERFACE_MASK=0xFF00
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_rt_table( settings, prefix, verbosity )
-        self.write_routes( settings, prefix, verbosity )
-        self.write_routes_pre_hook( settings, prefix, verbosity )
-
-    def initialize( self ):
-        registrar.register_file( self.rt_table_filename, "restart-networking", self )
-        registrar.register_file( self.routes_filename, "restart-networking", self )
-        registrar.register_file( self.pre_routes_filename, "restart-networking", self )
+    def initialize(self ):
+        registrar.register_file(self.rt_table_filename, "restart-networking", self )
+        registrar.register_file(self.routes_filename, "restart-networking", self )
+        registrar.register_file(self.pre_routes_filename, "restart-networking", self )
     
-    def string_is_int( self, s ):
+    def preprocess_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_rt_table( settings, prefix)
+        self.write_routes( settings, prefix)
+        self.write_routes_pre_hook( settings, prefix)
+
+    def string_is_int(self, s):
         try:
             int(s)
             return True
         except ValueError:
             return False
 
-    def write_rt_table( self, settings, prefix, verbosity ):
+    def write_rt_table(self, settings, prefix):
         filename = prefix + self.rt_table_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -79,10 +85,10 @@ class RouteManager:
         file.flush()
         file.close()
 
-        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
+        print("RouteManager: Wrote %s" % filename)
         return
 
-    def write_routes( self, settings, prefix, verbosity ):
+    def write_routes(self, settings, prefix):
         filename = prefix + self.routes_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -125,7 +131,7 @@ flush_ip_route_rules()
         file.write("insert_ip_route_rules()" + "\n")
         file.write("{" + "\n")
         for intfId in NetworkUtil.wan_list():
-            file.write("    ip rule add priority %s%03d fwmark %#x/%#x lookup uplink.%i\n" % ( self.IP_RULE_PRIORITY, intfId, intfId << self.DST_INTERFACE_SHIFT, self.DST_INTERFACE_MASK, intfId))
+            file.write("    ip rule add priority %s%03d fwmark %#x/%#x lookup uplink.%i\n" % (self.IP_RULE_PRIORITY, intfId, intfId << self.DST_INTERFACE_SHIFT, self.DST_INTERFACE_MASK, intfId))
         file.write("}" + "\n")
 
         file.write(r"""
@@ -170,11 +176,11 @@ fi
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
+        print("RouteManager: Wrote %s" % filename)
 
         return
 
-    def write_routes_pre_hook( self, settings, prefix, verbosity ):
+    def write_routes_pre_hook(self, settings, prefix):
         filename = prefix + self.pre_routes_filename
         file_dir = os.path.dirname( filename )
         if not os.path.exists( file_dir ):
@@ -209,7 +215,7 @@ fi
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("RouteManager: Wrote %s" % filename)
+        print("RouteManager: Wrote %s" % filename)
 
         return
 
