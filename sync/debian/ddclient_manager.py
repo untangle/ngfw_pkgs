@@ -22,7 +22,7 @@ class DdclientManager:
         registrar.register_file(self.default_filename, "restart-ddclient", self)
         registrar.register_file(self.restart_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

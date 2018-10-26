@@ -16,7 +16,7 @@ class SettingsManager:
     def initialize(self):
         pass
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

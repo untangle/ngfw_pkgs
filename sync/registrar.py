@@ -26,12 +26,6 @@ files = {}
 # managers are responsible for serializing the settings to disk
 managers = []
 
-# settings verification function
-settings_verify_function = None
-
-# settings cleanup function
-settings_cleanup_function = None
-
 def register_manager( manager ):
     global managers
     managers.append(manager)

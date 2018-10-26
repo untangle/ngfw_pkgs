@@ -22,7 +22,7 @@ class WirelessManager:
         registrar.register_file(self.hostapd_conf_filename+".*", "restart-networking", self)
         registrar.register_file(self.crda_default_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

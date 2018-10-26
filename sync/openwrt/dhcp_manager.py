@@ -19,7 +19,7 @@ class DhcpManager:
     def initialize(self):
         registrar.register_file(self.dhcp_filename, "restart-dhcp", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

@@ -17,7 +17,7 @@ class EthernetManager:
     def initialize(self):
         registrar.register_file(self.ethernet_media_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

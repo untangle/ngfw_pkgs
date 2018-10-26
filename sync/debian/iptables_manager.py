@@ -25,7 +25,7 @@ class IptablesManager:
         registrar.register_file(self.helpers_filename, "restart-iptables", self)
         registrar.register_file(self.post_network_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

@@ -27,7 +27,7 @@ class RouteManager:
         registrar.register_file(self.routes_filename, "restart-networking", self)
         registrar.register_file(self.pre_routes_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

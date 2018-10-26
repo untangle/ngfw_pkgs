@@ -21,7 +21,7 @@ class RadvdManager:
         registrar.register_file(self.config_filename, "restart-radvd", self)
         registrar.register_file(self.restart_hook_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

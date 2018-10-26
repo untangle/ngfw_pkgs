@@ -18,7 +18,7 @@ class WirelessManager:
     def initialize(self):
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

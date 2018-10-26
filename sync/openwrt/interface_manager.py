@@ -17,7 +17,7 @@ class InterfaceManager:
         registrar.register_file(self.interface_marks_filename, "restart-nftables-rules", self)
         pass
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

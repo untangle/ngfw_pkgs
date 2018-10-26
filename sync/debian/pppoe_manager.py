@@ -27,7 +27,7 @@ class PPPoEManager:
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
         registrar.register_file(self.ppp_ip_up_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

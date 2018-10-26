@@ -1,22 +1,21 @@
 #!/usr/bin/env python3
+"""
+Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
+It reads through the settings and writes the appropriate operating system files such as
+/etc/dnsmasq.conf
+/etc/hosts
+etc etc
 
-# Sync Settings is takes the netork settings JSON file and "syncs" it to the operating system
-# It reads through the settings and writes the appropriate operating system files such as
-# /etc/dnsmasq.conf
-# /etc/hosts
-# etc etc
-#
-# This script should be called after changing the settings file to "sync" the settings to the OS.
-# Afterwards it will be necessary to restart certain services so the new settings will take effect
+This script should be called after changing the settings file to "sync" the settings to the OS.
+Afterwards it will be necessary to restart certain services so the new settings will take effect
+"""
 
-# For running in git/dev, prefer loading from git instead of system
 import sys
 import getopt
 import json
+import copy
 import os
-import re
 import shutil
-import signal
 import stat
 import subprocess
 import tempfile
@@ -24,18 +23,20 @@ import time
 import traceback
 import collections
 
+# For running in git/dev, prefer loading from git instead of system
 if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
-
 import sync
 
 class ArgumentParser(object):
+    """ArgumentParser parses the command line arguments"""
+
     def __init__(self):
         if os.path.isfile('/etc/debian_version'):
-            self.os = 'debian'
+            self.os_name = 'debian'
         elif os.path.isfile('/etc/openwrt_version'):
-            self.os = 'openwrt'
-        if self.os == 'openwrt':
+            self.os_name = 'openwrt'
+        if self.os_name == 'openwrt':
             self.filename = '/etc/config/settings.json'
         else:
             self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
@@ -44,21 +45,27 @@ class ArgumentParser(object):
         self.create_settings = False
 
     def set_filename(self, arg):
+        """Set filename argument"""
         self.filename = arg
 
     def set_os(self, arg):
-        self.os = arg
+        """Set os_name argument"""
+        self.os_name = arg
 
     def set_norestart(self, arg):
+        """Disable restart_services flag"""
         self.restart_services = False
 
     def set_test_run(self, arg):
+        """Set test_run flag"""
         self.test_run = True
 
     def set_create_settings(self, arg):
+        """Set create_settings flag"""
         self.create_settings = True
 
     def parse_args(self):
+        """Parse command line arguments"""
         handlers = {
             '-f': self.set_filename,
             '-o': self.set_os,
@@ -79,11 +86,12 @@ class ArgumentParser(object):
 
 
 def cleanup(code):
+    """Cleanup tmpdirs and exit with specified code"""
     cleanup_tmpdirs()
     exit(code)
 
-
 def print_usage():
+    """Print usage"""
     sys.stderr.write("""\
 %s Usage:
   optional args:
@@ -93,28 +101,6 @@ def print_usage():
     -s          : do not copy or run restart commands (test run)
     -o          : specify OS manually (debian/openwrt)
 """ % sys.argv[0])
-
-
-def fixup_settings(json):
-    """
-    Fixes JSON serialization oddities in the JSON object
-    """
-    if isinstance(json, dict):
-        for key in list(json.keys()):
-            value = json.get(key)
-            if isinstance(value, dict):
-                if value.get('list') != None and value.get('javaClass') != None and "List" in value.get('javaClass'):
-                    # Java serializes list objects as:
-                    # "foo": { "javaClass": "java.util.LinkedList", "list": [] },
-                    # This will change it to this for simplicity:
-                    # "foo": []
-                    new_value = value.get('list')
-                    value = new_value
-                    json[key] = new_value
-            fixup_settings(json.get(key))
-    elif isinstance(json, list):
-        for i in range(len(json)):
-            fixup_settings(json[i])
 
 
 def calculate_changed_files(tmpdir):
@@ -192,7 +178,7 @@ def copy_files(tmpdir):
     """
     Copy the files from tmpdir into the root filesystem
     """
-    if parser.os == 'debian':
+    if parser.os_name == 'debian':
         # First copy all the directories that do not exist
         # then copy remaining files
         # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
@@ -322,34 +308,30 @@ def read_settings():
     """
     Read and parse the settings file
     """
-    global settings
     try:
         settings_file = open(parser.filename, 'r')
         settings_data = settings_file.read()
         settings_file.close()
         settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
+        return settings
     except IOError as e:
         print("Unable to read settings file: ", e)
         cleanup(1)
 
-
-def preprocess_settings():
+def save_settings(settings):
     """
-    Run the modules preprocessor on the settings
-    If the settings change, save them
+    Save the specified settings to the settings file
     """
-    global settings
-    print("FIXME preprocess_settings()")
-
-
-def validate_settings():
-    """
-    validate the settings
-    """
-    global settings
-    print("FIXME validate_settings()")
-
-
+    try:
+        settings_file = open(parser.filename + ".tmp", 'w')
+        json.dump(settings, settings_file)
+        settings_file.flush()
+        settings_file.close()
+        os.system("python -m json.tool %s.tmp > %s ; rm %s.tmp " % (parser.filename, parser.filename, parser.filename))
+    except IOError as e:
+        print("Unable to save settings file: ", e)
+        cleanup(1)
+        
 def create_settings():
     """
     Create settings from scratch
@@ -385,12 +367,12 @@ tmpdir_delete = None
 
 parser.parse_args()
 
-if parser.os == 'debian':
-    from sync.debian import *
-elif parser.os == 'openwrt':
-    from sync.openwrt import *
+if parser.os_name == 'debian':
+    import sync.debian
+elif parser.os_name == 'openwrt':
+    import sync.openwrt
 else:
-    print("\nUnknown OS: " + parser.os)
+    print("\nUnknown OS: " + parser.os_name)
     cleanup(1)
 
 make_tmpdirs()
@@ -404,19 +386,18 @@ if result != 0:
 if parser.create_settings:
     create_settings()
 
-read_settings()
+settings = read_settings()
 
-preprocess_settings()
-
-validate_settings()
-
+orig_settings = copy.deepcopy(settings)
+sync.managers.sanitize_settings(settings)
+if json.dumps(orig_settings) != json.dumps(settings):
+    print("Sanitization changed settings. Saving new settings...")
+    save_settings(settings)
+    
 try:
-    fixup_settings(settings)  # FIXME move this to module to ngfw preprocess
-    if sync.registrar.settings_verify_function != None:
-        sync.registrar.settings_verify_function(settings)
-    if sync.registrar.settings_cleanup_function != None:
-        sync.registrar.settings_cleanup_function(settings)
+    sync.managers.validate_settings(settings)
 except Exception as e:
+    print("\nSettings verification failed!\n")
     traceback.print_exc()
     cleanup(1)
 
@@ -457,7 +438,7 @@ operations = sync.registrar.reduce_operations(operations)
 
 # Check that all operations are registered
 if sync.registrar.check_registrar_operations(operations) != 0:
-    print("Operation missing from registrar: " + op)
+    print("Operation missing from registrar")
     cleanup(1)
 
 print("")

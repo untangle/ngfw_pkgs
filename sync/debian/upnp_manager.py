@@ -29,7 +29,7 @@ class UpnpManager:
         registrar.register_file(self.iptables_init_filename, "restart-miniupnpd", self)
         registrar.register_file(self.ip6tables_init_filename, "restart-miniupnpd", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

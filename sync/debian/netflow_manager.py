@@ -21,7 +21,7 @@ class NetflowManager:
         registrar.register_file(self.softflow_daemon_conf_filename, "restart-softflowd", self)
         registrar.register_file(self.restart_hook_filename, "restart-softflowd", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

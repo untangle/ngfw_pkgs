@@ -25,12 +25,30 @@ class InterfacesManager:
         registrar.register_file(self.interfaces_marks_filename, "restart-iptables", self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):
-        pass
+        if settings is None:
+            raise Exception("Invalid Settings: null")
 
+        if 'interfaces' not in settings:
+            raise Exception("Invalid Settings: missing interfaces")
+        interfaces = settings['interfaces']
+        for intf in interfaces:
+            for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
+                if key not in intf:
+                    raise Exception("Invalid Interface Settings: missing key %s" % key)
+
+        if 'virtualInterfaces' not in settings:
+            raise Exception("Invalid Settings: missing virtualInterfaces")
+        virtualInterfaces = settings['virtualInterfaces']
+        for intf in virtualInterfaces:
+            for key in ['interfaceId', 'name']:
+                if key not in intf:
+                    raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
+        return
+    
     def sync_settings(self, settings, prefix, delete_list):
         self.write_interfaces_file(settings, prefix)
         self.write_interface_marks(settings, prefix)

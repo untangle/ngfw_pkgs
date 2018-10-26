@@ -22,7 +22,7 @@ class BypassRuleManager:
     def initialize(self):
         registrar.register_file(self.bypass_rules_filename, "restart-iptables", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

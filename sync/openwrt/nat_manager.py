@@ -17,7 +17,7 @@ class NatManager:
         registrar.register_file(self.nat_rules_sys_filename, "restart-nftables-rules", self)
         pass
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

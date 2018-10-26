@@ -26,7 +26,7 @@ class HostsManager:
         registrar.register_file(self.resolv_filename, None, self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

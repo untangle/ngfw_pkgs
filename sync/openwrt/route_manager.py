@@ -28,7 +28,7 @@ class RouteManager:
         registrar.register_file(self.ifdown_wan_balancer_filename, "restart-wan-balancer", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):

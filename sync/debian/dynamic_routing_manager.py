@@ -50,7 +50,7 @@ class DynamicRoutingManager:
         registrar.register_file(self.ospfd_conf_filename, "restart-quagga", self)
         registrar.register_file(self.restart_hook_filename, "restart-quagga", self)
 
-    def preprocess_settings(self, settings):
+    def sanitize_settings(self, settings):
         pass
 
     def validate_settings(self, settings):
