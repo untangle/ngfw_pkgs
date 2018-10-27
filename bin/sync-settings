@@ -338,10 +338,9 @@ def save_settings(settings):
     global opts
     try:
         settings_file = open(opts.filename + ".tmp", 'w')
-        json.dump(settings, settings_file)
+        json.dump(settings, settings_file, indent=True, separators=(',', ': '))
         settings_file.flush()
         settings_file.close()
-        os.system("python -m json.tool %s.tmp > %s ; rm %s.tmp " % (opts.filename, opts.filename, opts.filename))
     except IOError as exc:
         print("Unable to save settings file: ", exc)
         cleanup(1)

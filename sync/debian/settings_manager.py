@@ -17,7 +17,6 @@ class SettingsManager:
         pass
     
     def sanitize_settings(self, settings):
-        settings['httpPort'] = 81
         pass
 
     def validate_settings(self, settings):
