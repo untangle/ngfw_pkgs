@@ -9,8 +9,10 @@ from shutil import move
 from sync.network_util import NetworkUtil
 from sync import registrar
 
-# This class is responsible for writing 
+# This class is responsible for writing
 # based on the settings object passed from sync-settings
+
+
 class UpnpManager:
     upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
@@ -20,42 +22,48 @@ class UpnpManager:
 
     iptables_chain = "upnp-rules"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_upnp_daemon_conf( settings, prefix, verbosity )
-        self.write_restart_upnp_daemon_hook( settings, prefix, verbosity )
-        self.write_iptables_hook( settings, prefix, verbosity )
-        self.write_iptables_init_files( settings, prefix, verbosity )
+    def initialize(self):
+        registrar.register_file(self.upnp_daemon_conf_filename, "restart-miniupnpd", self)
+        registrar.register_file(self.restart_hook_filename, "restart-miniupnpd", self)
+        registrar.register_file(self.iptables_filename, "restart-iptables", self)
+        registrar.register_file(self.iptables_init_filename, "restart-miniupnpd", self)
+        registrar.register_file(self.ip6tables_init_filename, "restart-miniupnpd", self)
 
-    def initialize( self ):
-        registrar.register_file( self.upnp_daemon_conf_filename, "restart-miniupnpd", self )
-        registrar.register_file( self.restart_hook_filename, "restart-miniupnpd", self )
-        registrar.register_file( self.iptables_filename, "restart-iptables", self )
-        registrar.register_file( self.iptables_init_filename, "restart-miniupnpd", self )
-        registrar.register_file( self.ip6tables_init_filename, "restart-miniupnpd", self )
+    def sanitize_settings(self, settings):
+        pass
 
-    def write_upnp_daemon_conf( self, settings, prefix="", verbosity=0 ):
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_upnp_daemon_conf(settings, prefix)
+        self.write_restart_upnp_daemon_hook(settings, prefix)
+        self.write_iptables_hook(settings, prefix)
+        self.write_iptables_init_files(settings, prefix)
+
+    def write_upnp_daemon_conf(self, settings, prefix=""):
         """
         Create UPnP configuration file
         """
         filename = prefix + self.upnp_daemon_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file = open(filename, "w+")
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
         wan_interfaces = []
         lan_interfaces = []
         for intf in settings['interfaces']:
-        	if intf.get('disabled'):
-        		continue
-        	if intf.get('isWan'):
-        		wan_interfaces.append(intf.get('symbolicDev'))
-        	else:
-        		lan_interfaces.append(intf.get('symbolicDev'))
-        file.write("# Server options\n");
+            if intf.get('disabled'):
+                continue
+            if intf.get('isWan'):
+                wan_interfaces.append(intf.get('symbolicDev'))
+            else:
+                lan_interfaces.append(intf.get('symbolicDev'))
+        file.write("# Server options\n")
         # WAN interface
         for intf in wan_interfaces:
             file.write("ext_ifname=%s\n" % intf)
@@ -69,7 +77,7 @@ class UpnpManager:
             file.flush()
             file.close()
             os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-            if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+            print("UpnpManager: Wrote %s" % filename)
             return
 
         file.write("port=%d\n" % settings['upnpSettings'].get('listenPort'))
@@ -83,12 +91,12 @@ class UpnpManager:
         file.write("upnp_forward_chain=%s\n" % (self.iptables_chain))
         file.write("upnp_nat_chain=%s\n" % (self.iptables_chain))
 
-        file.write("\n# Client notifications\n");
+        file.write("\n# Client notifications\n")
         file.write("uuid=b014febc-1170-4421-9f04-852de5742a80\n")
         file.write("serial=12345678\n")
         file.write("model_number=1\n")
 
-        file.write("\n# Rules\n");
+        file.write("\n# Rules\n")
         # Rules
         for rule in settings['upnpSettings']['upnpRules']:
             if rule.get('enabled') is False:
@@ -105,37 +113,37 @@ class UpnpManager:
                 elif condition.get('conditionType') == "SRC_PORT":
                     upnp_rule_internal_ports = condition.get('value')
             upnp_rule = " ".join([upnp_rule_action, upnp_rule_external_ports, upnp_rule_internal_address, upnp_rule_internal_ports])
-            file.write("%s\n" % upnp_rule )
+            file.write("%s\n" % upnp_rule)
 
         # Write custom advanced options
         if settings['upnpSettings'].get('cystomOptions') != None:
-            file.write("\# Custom  options\n");
-            file.write("%s\b" % ( settings['upnpSettings'].get('cystomOptions') ) )
-            file.write("\n");
+            file.write("\# Custom  options\n")
+            file.write("%s\b" % (settings['upnpSettings'].get('cystomOptions')))
+            file.write("\n")
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
 
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        print("UpnpManager: Wrote %s" % filename)
         return
 
-    def write_restart_upnp_daemon_hook( self, settings, prefix="", verbosity=0 ):
+    def write_restart_upnp_daemon_hook(self, settings, prefix=""):
         """
         Create network process extension to restart or stop daemon
         """
         filename = prefix + self.restart_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n")
 
         if settings.get('upnpSettings') == None or settings['upnpSettings'].get('upnpEnabled') is False:
             file.write(r"""
@@ -161,30 +169,30 @@ elif [ ! /etc/miniupnpd/miniupnpd.conf -ot /proc/$UPNPD_PID ] ; then
 fi
 """)
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
-    
+
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        print("UpnpManager: Wrote %s" % filename)
         return
 
-    def write_iptables_hook( self, settings, prefix="", verbosity=0 ):
+    def write_iptables_hook(self, settings, prefix=""):
         """
         Create iptables configuraton for daemon
         """
         filename = prefix + self.iptables_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n")
 
         file.write(r"""
 IPTABLES=${IPTABLES:-iptables}
@@ -222,44 +230,44 @@ insert_upnp_iptables_rules
 
 """ % (self.iptables_chain))
 
-
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
-    
+
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        print("UpnpManager: Wrote %s" % filename)
         return
 
-    def write_iptables_init_files( self, settings, prefix="", verbosity=0 ):
+    def write_iptables_init_files(self, settings, prefix=""):
         """
         Overwrite miniupnpd package scripts
         The miniupnp packaging calls these scripts in the postinst
         We must overwrite them so they don't fail with an error
         """
         filename = prefix + self.iptables_init_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
-        file = open( filename, "w+" )
-        file.write("#!/bin/sh\n");
-        file.write("exit 0\n");
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        file = open(filename, "w+")
+        file.write("#!/bin/sh\n")
+        file.write("exit 0\n")
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        print("UpnpManager: Wrote %s" % filename)
 
         filename = prefix + self.ip6tables_init_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
-        file = open( filename, "w+" )
-        file.write("#!/bin/sh\n");
-        file.write("exit 0\n");
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        file = open(filename, "w+")
+        file.write("#!/bin/sh\n")
+        file.write("exit 0\n")
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("UpnpManager: Wrote %s" % filename)
+        print("UpnpManager: Wrote %s" % filename)
         return
+
 
 registrar.register_manager(UpnpManager())

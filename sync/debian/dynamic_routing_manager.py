@@ -10,62 +10,70 @@ from shutil import move
 from sync.network_util import NetworkUtil
 from sync import registrar
 
-# This class is responsible for writing 
+# This class is responsible for writing
 # based on the settings object passed from sync-settings
+
+
 class DynamicRoutingManager:
-    conf_path="/etc/quagga"
-    daemons_conf_filename=conf_path + "/daemons"
-    zebra_conf_filename=conf_path + "/zebra.conf"
-    bgpd_conf_filename=conf_path + "/bgpd.conf"
-    ospfd_conf_filename=conf_path + "/ospfd.conf"
-    file_uid=65534 #nobody
-    file_gid=65534 #nobody
+    conf_path = "/etc/quagga"
+    daemons_conf_filename = conf_path + "/daemons"
+    zebra_conf_filename = conf_path + "/zebra.conf"
+    bgpd_conf_filename = conf_path + "/bgpd.conf"
+    ospfd_conf_filename = conf_path + "/ospfd.conf"
+    file_uid = 65534  # nobody
+    file_gid = 65534  # nobody
 
-    auto_generated_comment="Auto Generated"
-    do_not_edit_comment="DO NOT EDIT. Changes will be overwritten"
+    auto_generated_comment = "Auto Generated"
+    do_not_edit_comment = "DO NOT EDIT. Changes will be overwritten"
 
-    hostname="Router"
-    password="zebra"
+    hostname = "Router"
+    password = "zebra"
 
     allowed_daemons = ["bgp", "ospf"]
 
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-quagga"
     ip_dev_regex = re.compile(r'\s+dev\s+([^\s]+)')
-    # ?? supprt inet6?
+    # XXX supprt inet6?
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        if settings.get('dynamicRoutingSettings') is not None:
-            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
-                self.write_daemons_conf( settings, prefix, verbosity )
-                self.write_zebra_conf( settings, prefix, verbosity )
-                self.write_bgpd_conf( settings, prefix, verbosity )
-                self.write_ospfd_conf( settings, prefix, verbosity )
-            self.write_restart_quagga_daemons_hook( settings, prefix, verbosity )
-        return
-
-    def initialize( self ):
+    def initialize(self):
         try:
-            file_uid=pwd.getpwnam("quagga").pw_uid
-            file_gid=grp.getgrnam("quagga").gr_gid
+            self.file_uid = pwd.getpwnam("quagga").pw_uid
+            self.file_gid = grp.getgrnam("quagga").gr_gid
         except Exception as exc:
             print("quagga user/group missing!")
-            #traceback.print_exc()
-            
-        registrar.register_file( self.daemons_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.zebra_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.bgpd_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.ospfd_conf_filename, "restart-quagga", self )
-        registrar.register_file( self.restart_hook_filename, "restart-quagga", self )
+            # traceback.print_exc()
+
+        registrar.register_file(self.daemons_conf_filename, "restart-quagga", self)
+        registrar.register_file(self.zebra_conf_filename, "restart-quagga", self)
+        registrar.register_file(self.bgpd_conf_filename, "restart-quagga", self)
+        registrar.register_file(self.ospfd_conf_filename, "restart-quagga", self)
+        registrar.register_file(self.restart_hook_filename, "restart-quagga", self)
+
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        if settings.get('dynamicRoutingSettings') is not None:
+            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
+                self.write_daemons_conf(settings, prefix)
+                self.write_zebra_conf(settings, prefix)
+                self.write_bgpd_conf(settings, prefix)
+                self.write_ospfd_conf(settings, prefix)
+            self.write_restart_quagga_daemons_hook(settings, prefix)
+        return
 
     def address_to_bits(self, address):
         return ''.join('{:08b}'.format(int(x)) for x in address.split('.'))
 
     def bits_to_address(self, bits, prefix):
-        bits = '{message:{fill}{align}{width}}'.format(message=bits,fill='0',align='<',width=32)
+        bits = '{message:{fill}{align}{width}}'.format(message=bits, fill='0', align='<', width=32)
         chunks = len(bits)
         chunk_size = int(chunks/4)
-        return '.'.join([ '{0}'.format(int(bits[i:i+chunk_size], 2)) for i in range(0, chunks, chunk_size)])
+        return '.'.join(['{0}'.format(int(bits[i:i+chunk_size], 2)) for i in range(0, chunks, chunk_size)])
 
     def get_interfaces_from_networks(self, settings, want_daemon=None):
         interfaces = []
@@ -85,8 +93,8 @@ class DynamicRoutingManager:
                 continue
 
             if "dynamicRoutingSettings" in settings:
-                if ( daemon+"Enabled" in settings["dynamicRoutingSettings"] and 
-                     daemon+"Networks" in settings["dynamicRoutingSettings"] ):
+                if (daemon+"Enabled" in settings["dynamicRoutingSettings"] and
+                        daemon+"Networks" in settings["dynamicRoutingSettings"]):
                     for networkSetting in settings["dynamicRoutingSettings"][daemon+"Networks"]:
                         if networkSetting["enabled"]:
                             network = networkSetting["network"] + "/" + str(networkSetting["prefix"])
@@ -134,7 +142,7 @@ class DynamicRoutingManager:
                                 alias_network = self.bits_to_address(self.address_to_bits(alias["staticAddress"]), alias_prefix)
                                 if alias_network not in interfaces_routes_to_add[interface["interfaceId"]]:
                                     interfaces_routes_to_add[interface["interfaceId"]].append(alias_network)
-                                
+
                                 network["found"] = True
                                 if not dev_object in interfaces:
                                     interfaces.append(dev_object)
@@ -145,7 +153,7 @@ class DynamicRoutingManager:
                     if interface["configType"] == "ADDRESSED" and interface["v4ConfigType"] == "STATIC":
                         interface_prefix = int(interface["v4StaticPrefix"])
                         interface_network_bits = self.address_to_bits(interface["v4StaticAddress"])
-                        if (interface["interfaceId"] in list(interfaces_routes_to_add.keys())) or ( dynamic_prefix <= interface_prefix and dynamic_network_bits[:interface_prefix] == interface_network_bits[:interface_prefix]):
+                        if (interface["interfaceId"] in list(interfaces_routes_to_add.keys())) or (dynamic_prefix <= interface_prefix and dynamic_network_bits[:interface_prefix] == interface_network_bits[:interface_prefix]):
                             dev_object = {
                                 'interfaceId': interface["interfaceId"],
                                 'dev': interface["symbolicDev"],
@@ -162,7 +170,7 @@ class DynamicRoutingManager:
             if network["found"] is False:
                 # Look in system
                 for route in subprocess.Popen("ip route show {0}".format(network["network"]), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
-                    match_dev = re.search( self.ip_dev_regex, route )
+                    match_dev = re.search(self.ip_dev_regex, route)
                     if match_dev:
                         dev = match_dev.group(1)
                         if dev not in interfaces_routes_to_add:
@@ -172,7 +180,7 @@ class DynamicRoutingManager:
 
                 for dev in list(interfaces_routes_to_add.keys()):
                     for addr in subprocess.Popen("ip addr show dev {0}".format(dev), shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
-                        match_addr = re.search( self.ip_addr_regex, addr )
+                        match_addr = re.search(self.ip_addr_regex, addr)
                         if match_addr:
                             dev_address, dev_prefix = match_addr.group(1).split('/')
                             dev_prefix = int(dev_prefix)
@@ -183,7 +191,7 @@ class DynamicRoutingManager:
                                 'network': self.bits_to_address(self.address_to_bits(dev_address)[:dev_prefix], dev_prefix),
                             }
                             if not dev_object in interfaces:
-                                interfaces.append( dev_object )
+                                interfaces.append(dev_object)
                             break
 
         for interface in interfaces:
@@ -202,29 +210,29 @@ class DynamicRoutingManager:
         }
         enables['zebra'] = False if settings.get('dynamicRoutingSettings') == None or settings.get('dynamicRoutingSettings') is False else settings.get('dynamicRoutingSettings').get('enabled')
         if enables['zebra']:
-            enables['bgpd']= settings['dynamicRoutingSettings']['bgpEnabled']
+            enables['bgpd'] = settings['dynamicRoutingSettings']['bgpEnabled']
             enables['ospfd'] = settings['dynamicRoutingSettings']['ospfEnabled']
 
         return enables
 
-    def write_daemons_conf( self, settings, prefix="", verbosity=0 ):
+    def write_daemons_conf(self, settings, prefix=""):
         """
         Create Quagga daemon configuration file.
         """
         filename = prefix + self.daemons_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
         # Daemon file is supplied by package, so "modify" by reading live instead of overwriting.
         daemons_contents = []
-        enables = self.get_enabled_daemons( settings )
-        for daemon in ['zebra','bgpd','ospfd']:
+        enables = self.get_enabled_daemons(settings)
+        for daemon in ['zebra', 'bgpd', 'ospfd']:
             daemons_contents.append("{0}={1}".format(daemon, 'yes' if enables[daemon] is True else 'no'))
 
-        file = open( filename, "w+" )
-        file.write("## {0}{1}".format(self.auto_generated_comment, "\n"));
-        file.write("## {0}{1}".format(self.do_not_edit_comment, "\n"));
+        file = open(filename, "w+")
+        file.write("## {0}{1}".format(self.auto_generated_comment, "\n"))
+        file.write("## {0}{1}".format(self.do_not_edit_comment, "\n"))
 
         for line in daemons_contents:
             file.write(line + "\n")
@@ -233,9 +241,9 @@ class DynamicRoutingManager:
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_zebra_conf( self, settings, prefix="", verbosity=0 ):
+    def write_zebra_conf(self, settings, prefix=""):
         """
         Create Quagga zebra daemon configuration file.
         """
@@ -244,9 +252,9 @@ class DynamicRoutingManager:
             return
 
         filename = prefix + self.zebra_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
         zebra_interfaces = []
         for interface in self.get_interfaces_from_networks(settings):
@@ -255,7 +263,7 @@ interface {0}
  ip address {1}/{2}
  ipv6 nd suppress-ra""".format(interface["dev"], interface["address"], interface["prefix"]))
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
         file.write(r"""
 ! {0}
 ! {1}
@@ -267,16 +275,16 @@ enable password {3}
 
 ip forwarding
 line vty
-""".format(self.auto_generated_comment, self.do_not_edit_comment, self.hostname, self.password, "\n".join(zebra_interfaces) ))
+""".format(self.auto_generated_comment, self.do_not_edit_comment, self.hostname, self.password, "\n".join(zebra_interfaces)))
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_bgpd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_bgpd_conf(self, settings, prefix=""):
         """
         Create Quagga bgp daemon configuration file.
         """
@@ -285,15 +293,15 @@ line vty
             return
 
         filename = prefix + self.bgpd_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
         bgp_networks = []
         if settings['dynamicRoutingSettings'].get('bgpNetworks') is not None and settings['dynamicRoutingSettings']['bgpNetworks']:
             for network in settings['dynamicRoutingSettings']['bgpNetworks']:
                 if network["enabled"] is True:
-                    bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]) )
+                    bgp_networks.append("network {0}/{1}".format(network["network"], network["prefix"]))
 
         bgp_neighbors = []
         if settings['dynamicRoutingSettings'].get('bgpNeighbors') is not None and settings['dynamicRoutingSettings']['bgpNeighbors']:
@@ -304,9 +312,9 @@ neighbor {0} remote-as {1}
 neighbor {0} route-map set-nexthop out
 neighbor {0} ebgp-multihop
 neighbor {0} next-hop-self
-""".format(neighbor["ipAddress"], neighbor["as"]) )
+""".format(neighbor["ipAddress"], neighbor["as"]))
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
         file.write(r"""
 ! {0}
 ! {1}
@@ -322,16 +330,16 @@ bgp router-id {4}
 {6}
 
 route-map set-nexthop permit 10
-""".format(self.auto_generated_comment, self.do_not_edit_comment, self.password, settings['dynamicRoutingSettings']['bgpRouterAs'], settings['dynamicRoutingSettings']['bgpRouterId'], "\n".join(bgp_networks), "\n".join(bgp_neighbors) ))
+""".format(self.auto_generated_comment, self.do_not_edit_comment, self.password, settings['dynamicRoutingSettings']['bgpRouterAs'], settings['dynamicRoutingSettings']['bgpRouterId'], "\n".join(bgp_networks), "\n".join(bgp_neighbors)))
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_ospfd_conf( self, settings, prefix="", verbosity=0 ):
+    def write_ospfd_conf(self, settings, prefix=""):
         """
         Create Quagga ospf daemon configuration file.
         """
@@ -340,9 +348,9 @@ route-map set-nexthop permit 10
             return
 
         filename = prefix + self.ospfd_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
         interfaces_from_networks = self.get_interfaces_from_networks(settings, "ospf")
 
@@ -350,24 +358,24 @@ route-map set-nexthop permit 10
 
         ospf_interfaces = []
         for interface in interfaces_from_networks:
-            ospf_interfaces.append("interface {0}".format(interface["dev"]) )
+            ospf_interfaces.append("interface {0}".format(interface["dev"]))
 
             if "ospfInterfaces" in settings['dynamicRoutingSettings']:
                 for ospf_interface in settings['dynamicRoutingSettings']['ospfInterfaces']:
                     if ospf_interface["dev"] == interface["dev"] and ospf_interface["enabled"] is True:
                         if ospf_interface["authentication"] != 0:
                             if ospf_interface["authentication"] == 1:
-                                ospf_interfaces.append(" ip ospf authentication-key {0}".format( ospf_interface["authenticationPassword"]));
+                                ospf_interfaces.append(" ip ospf authentication-key {0}".format(ospf_interface["authenticationPassword"]))
                             if ospf_interface["authentication"] == 2:
                                 ospf_interfaces.append(" ip ospf authentication message-digest")
-                                ospf_interfaces.append(" ip ospf message-digest-key {0} md5 {1}".format( ospf_interface["authenticationKeyId"], ospf_interface["authenticationKey"]));
+                                ospf_interfaces.append(" ip ospf message-digest-key {0} md5 {1}".format(ospf_interface["authenticationKeyId"], ospf_interface["authenticationKey"]))
                         ospf_interfaces.append("""\
  ip ospf hello-interval {0}
  ip ospf dead-interval {1}
  ip ospf retransmit-interval {2}
  ip ospf transmit-delay {3}
  ip ospf priority {4}
- """.format(str(ospf_interface["helloInterval"]), str(ospf_interface["deadInterval"]),str(ospf_interface["retransmitInterval"]), str(ospf_interface["transmitDelay"]),str(ospf_interface["routerPriority"]) ))
+ """.format(str(ospf_interface["helloInterval"]), str(ospf_interface["deadInterval"]), str(ospf_interface["retransmitInterval"]), str(ospf_interface["transmitDelay"]), str(ospf_interface["routerPriority"])))
                         if ospf_interface["autoInterfaceCost"] is False:
                             ospf_interfaces.append(" ip ospf cost {0}".format(str(ospf_interface["interfaceCost"])))
                         else:
@@ -400,7 +408,7 @@ route-map set-nexthop permit 10
 
         ospf_options = []
         if 'ospfRouterId' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfRouterId"] != "":
-            ospf_options.append( " ospf router-id {0}".format(settings['dynamicRoutingSettings']['ospfRouterId']))
+            ospf_options.append(" ospf router-id {0}".format(settings['dynamicRoutingSettings']['ospfRouterId']))
         if 'ospfAbrType' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfAbrType"] > 0:
             if settings['dynamicRoutingSettings']["ospfAbrType"] == 1:
                 abr_type = 'cisco'
@@ -410,35 +418,34 @@ route-map set-nexthop permit 10
                 abr_type = 'shortcut'
             else:
                 abr_type = 'standard'
-            ospf_options.append( " ospf abr-type {0}".format( abr_type) )
+            ospf_options.append(" ospf abr-type {0}".format(abr_type))
         if 'ospfUseDefaultMetricEnabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfUseDefaultMetricEnabled"] is True and "ospfDefaultMetric" in settings['dynamicRoutingSettings']:
-            ospf_options.append( " default-metric {0}".format( str(settings['dynamicRoutingSettings']['ospfDefaultMetric']) ))
+            ospf_options.append(" default-metric {0}".format(str(settings['dynamicRoutingSettings']['ospfDefaultMetric'])))
         if 'ospfAutoCost' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfAutoCost"] > 0:
-            ospf_options.append( " auto-cost reference-bandwidth {0}".format( str(settings['dynamicRoutingSettings']['ospfAutoCost']) ))
+            ospf_options.append(" auto-cost reference-bandwidth {0}".format(str(settings['dynamicRoutingSettings']['ospfAutoCost'])))
         if 'ospfDefaultInformationOriginateType' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateType"] > 0:
             if settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateType"] == 1:
                 otype = ""
             else:
                 otype = "always"
-            ospf_options.append( " default-information originate {0} metric {1} metric-type {2}".format( otype, settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateMetric"], settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateExternalType"]))
+            ospf_options.append(" default-information originate {0} metric {1} metric-type {2}".format(otype, settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateMetric"], settings['dynamicRoutingSettings']["ospfDefaultInformationOriginateExternalType"]))
         if 'ospfRedistConnectedEnabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfRedistConnectedEnabled"] is True:
-            ospf_options.append( " redistribute connected metric-type {0} metric {1}".format( settings['dynamicRoutingSettings']["ospfRedistConnectedExternalType"], settings['dynamicRoutingSettings']["ospfRedistConnectedMetric"]))
+            ospf_options.append(" redistribute connected metric-type {0} metric {1}".format(settings['dynamicRoutingSettings']["ospfRedistConnectedExternalType"], settings['dynamicRoutingSettings']["ospfRedistConnectedMetric"]))
         if 'ospfRedistStaticEnabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfRedistStaticEnabled"] is True:
-            ospf_options.append( " redistribute static metric-type {0} metric {1}".format( settings['dynamicRoutingSettings']["ospfRedistStaticExternalType"], settings['dynamicRoutingSettings']["ospfRedistStaticMetric"]))
+            ospf_options.append(" redistribute static metric-type {0} metric {1}".format(settings['dynamicRoutingSettings']["ospfRedistStaticExternalType"], settings['dynamicRoutingSettings']["ospfRedistStaticMetric"]))
         if settings['dynamicRoutingSettings']['bgpEnabled'] is True and 'ospfRedistBgpEnabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']["ospfRedistBgpEnabled"] is True:
-            ospf_options.append( " redistribute bgp metric-type {0} metric {1}".format( settings['dynamicRoutingSettings']["ospfRedistBgpExternalType"], settings['dynamicRoutingSettings']["ospfRedistBgpMetric"]))
-
+            ospf_options.append(" redistribute bgp metric-type {0} metric {1}".format(settings['dynamicRoutingSettings']["ospfRedistBgpExternalType"], settings['dynamicRoutingSettings']["ospfRedistBgpMetric"]))
 
         ospf_networks = []
         if 'ospfNetworks' in settings['dynamicRoutingSettings']:
             for network in settings['dynamicRoutingSettings']['ospfNetworks']:
                 if network["enabled"] is True:
-                    ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_ids_areas[network["area"]]) )
+                    ospf_networks.append(" network {0}/{1} area {2}".format(network["network"], network["prefix"], ospf_ids_areas[network["area"]]))
                     for interface in interfaces_from_networks:
                         if "routes" in interface and network["network"] + '/' + str(network["prefix"]) in interface['routes']:
-                            ospf_networks.append(" network {0}/{1} area {2}".format(interface["network"], interface["prefix"], ospf_ids_areas[network["area"]]) )
+                            ospf_networks.append(" network {0}/{1} area {2}".format(interface["network"], interface["prefix"], ospf_ids_areas[network["area"]]))
 
-        file = open( filename, "w+" )
+        file = open(filename, "w+")
 # passive-interface {6}
         file.write(r"""
 ! {0}
@@ -457,29 +464,29 @@ router ospf
 {6}
 
 route-map set-nexthop permit 10
-""".format(self.auto_generated_comment, self.do_not_edit_comment, self.password, "\n".join(ospf_interfaces), "\n".join(ospf_options),  "\n".join(ospf_networks), "\n".join(ospf_areas) ))
+""".format(self.auto_generated_comment, self.do_not_edit_comment, self.password, "\n".join(ospf_interfaces), "\n".join(ospf_options),  "\n".join(ospf_networks), "\n".join(ospf_areas)))
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
         os.chown(filename, self.file_uid, self.file_gid)
 
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
 
-    def write_restart_quagga_daemons_hook( self, settings, prefix="", verbosity=0 ):
+    def write_restart_quagga_daemons_hook(self, settings, prefix=""):
         """
         Create network process extension to restart or stop daemon
         """
         filename = prefix + self.restart_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        daemon_enableds = self.get_enabled_daemons(settings);
+        daemon_enableds = self.get_enabled_daemons(settings)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
         file.write("""
 ## {0}
@@ -489,7 +496,7 @@ route-map set-nexthop permit 10
 
         # if settings.get('dynamicRoutingSettings') == None or not settings.get('dynamicRoutingSettings').get('enabled'):
         if daemon_enableds['zebra'] is False:
-            for daemon in ['zebra','bgpd','ospfd']:
+            for daemon in ['zebra', 'bgpd', 'ospfd']:
                 file.write(r"""
 {0}_PID="`pidof {1}`"
 
@@ -499,7 +506,7 @@ if [ ! -z "${0}_PID" ] ; then
 fi
 """.format(daemon.upper(), daemon))
         else:
-            for daemon in ['zebra','bgpd','ospfd']:
+            for daemon in ['zebra', 'bgpd', 'ospfd']:
                 if daemon_enableds[daemon] is False:
                     file.write(r"""
 systemctl --no-block stop {0}
@@ -518,12 +525,13 @@ elif [ ! {2} -ot /proc/${0}_PID ] ; then
 fi
 """.format(daemon.upper(), daemon, self.daemons_conf_filename))
 
-        file.write("\n");
+        file.write("\n")
         file.flush()
         file.close()
-    
+
         os.system("chmod a+x %s" % filename)
-        if verbosity > 0: print("DynamicRoutingManager: Wrote %s" % filename)
+        print("DynamicRoutingManager: Wrote %s" % filename)
         return
+
 
 registrar.register_manager(DynamicRoutingManager())

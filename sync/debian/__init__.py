@@ -1,3 +1,4 @@
+from . import settings_manager
 from . import hosts_manager
 from . import interfaces_manager
 from . import wireless_manager

@@ -8,31 +8,39 @@ from sync import registrar
 
 # This class is responsible for writing /etc/untangle/pre-network-hook.d/015-ethernet-media
 # based on the settings object passed from sync-settings
+
+
 class EthernetManager:
     ethernet_media_filename = "/etc/untangle/pre-network-hook.d/015-ethernet-media"
     set_link_media_script = "/usr/share/untangle-sync-settings/bin/set-link-media.sh"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_ethernet_media( settings, prefix, verbosity )
+    def initialize(self):
+        registrar.register_file(self.ethernet_media_filename, "restart-networking", self)
+
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_ethernet_media(settings, prefix)
         return
 
-    def initialize( self ):
-        registrar.register_file( self.ethernet_media_filename, "restart-networking", self )
-    
-    def write_ethernet_media( self, settings, prefix, verbosity ):
+    def write_ethernet_media(self, settings, prefix):
         filename = prefix + self.ethernet_media_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-        
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
         if settings.get('devices') != None:
             for deviceSettings in settings.get('devices'):
                 if deviceSettings.get('mtu') != None:
@@ -64,8 +72,9 @@ class EthernetManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("EthernetManager: Wrote %s" % filename)
+        print("EthernetManager: Wrote %s" % filename)
 
         return
+
 
 registrar.register_manager(EthernetManager())

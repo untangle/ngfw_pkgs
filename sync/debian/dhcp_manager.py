@@ -12,6 +12,8 @@ from sync import registrar
 # /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
 # /etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
 # based on the settings object passed from sync-settings
+
+
 class DhcpManager:
     enter_hook_filename = "/etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook"
     exit_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook"
@@ -19,36 +21,42 @@ class DhcpManager:
     dhcp_conf_filename = "/etc/dhcp/dhclient.conf"
     ddclient_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_exit_hook( settings, prefix, verbosity )
-        self.write_enter_hook( settings, prefix, verbosity )
-        self.write_pre_network_hook( settings, prefix, verbosity )
-        self.write_dhcp_ddclient_file( settings, prefix, verbosity )
+    def initialize(self):
+        registrar.register_file(self.enter_hook_filename, "restart-networking", self)
+        registrar.register_file(self.exit_hook_filename, "restart-networking", self)
+        registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
+        registrar.register_file(self.dhcp_conf_filename, "restart-networking", self)
+        registrar.register_file(self.ddclient_hook_filename, "restart-networking", self)
+
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_exit_hook(settings, prefix)
+        self.write_enter_hook(settings, prefix)
+        self.write_pre_network_hook(settings, prefix)
+        self.write_dhcp_ddclient_file(settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook")
         delete_list.append("/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook")
-            
-    def initialize( self ):
-        registrar.register_file( self.enter_hook_filename, "restart-networking", self )
-        registrar.register_file( self.exit_hook_filename, "restart-networking", self )
-        registrar.register_file( self.pre_network_hook_filename, "restart-networking", self )
-        registrar.register_file( self.dhcp_conf_filename, "restart-networking", self )
-        registrar.register_file( self.ddclient_hook_filename, "restart-networking", self )
-        
-    def write_enter_hook( self, settings, prefix="", verbosity=0 ):
+
+    def write_enter_hook(self, settings, prefix=""):
         filename = prefix + self.enter_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write(r"""
 
@@ -57,7 +65,7 @@ class DhcpManager:
         for interface_settings in settings['interfaces']:
             if interface_settings['configType'] == 'ADDRESSED' and interface_settings['v4ConfigType'] == 'AUTO':
 
-                file.write("if [ \"$interface\" = \"%s\" ] || [ \"$interface\" = \"%s\" ] ; then" % (interface_settings['systemDev'],interface_settings['symbolicDev']) + "\n")
+                file.write("if [ \"$interface\" = \"%s\" ] || [ \"$interface\" = \"%s\" ] ; then" % (interface_settings['systemDev'], interface_settings['symbolicDev']) + "\n")
                 file.write("    DHCP_INTERFACE_INDEX=%s" % interface_settings['interfaceId'] + "\n")
 
                 if 'v4AutoAddressOverride' in interface_settings and interface_settings['v4AutoAddressOverride'] != None and interface_settings['v4AutoAddressOverride'].strip() != "":
@@ -76,7 +84,7 @@ class DhcpManager:
                     file.write("    DHCP_DNS_OVERRIDES=\"${DHCP_DNS_OVERRIDES} %s\"" % interface_settings['v4AutoDns2Override'] + "\n")
 
                 file.write("fi " + "\n")
-                file.write("\n");
+                file.write("\n")
 
         file.write(r"""
 ## Debug function
@@ -212,24 +220,24 @@ ${DEBUG} "dhclient-enter-hooks.d/untangle-dhclient-enter-hook EXIT  [ reason: \"
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
         return
 
-    def write_exit_hook( self, settings, prefix="", verbosity=0 ):
+    def write_exit_hook(self, settings, prefix=""):
 
         filename = prefix + self.exit_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write(r"""
 
@@ -372,86 +380,86 @@ ${DEBUG} "dhclient-exit-hooks.d/untangle-dhclient-exit-hook EXIT  [ reason: \"$r
 true
 
 """)
-        
+
         file.flush()
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
         return
 
-    def write_pre_network_hook( self, settings, prefix="", verbosity=0 ):
+    def write_pre_network_hook(self, settings, prefix=""):
         filename = prefix + self.pre_network_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write("# Kill any running dhcp client" + "\n")
         file.write("pkill -QUIT '(dhclient|dhclient3|pump)' && { sleep 1 ; pkill '(dhclient|dhclient3|pump)'; }")
-        file.write("\n\n");
+        file.write("\n\n")
 
         file.write("# Delete old DHCP dns servers (this will be recreated)" + "\n")
         file.write("rm -f /etc/dnsmasq.d/dhcp-upstream-dns-servers" + "\n")
-        file.write("\n\n");
+        file.write("\n\n")
 
         file.write("true" + "\n")
-        
+
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
-    def write_dhcp_conf_file( self, settings, prefix="", verbosity=0 ):
+    def write_dhcp_conf_file(self, settings, prefix=""):
         filename = prefix + self.dhcp_conf_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write("timeout 40;" + "\n")
         file.write("retry 15;" + "\n")
-        file.write("\n\n");
+        file.write("\n\n")
         hostname = settings.get('hostName')
         if hostname != None:
             file.write("send host-name \"%s\";" % hostname + "\n")
 
         file.flush()
         file.close()
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
+        print("DhcpManager: Wrote %s" % filename)
 
-    def write_dhcp_ddclient_file( self, settings, prefix="", verbosity=0 ):
+    def write_dhcp_ddclient_file(self, settings, prefix=""):
         filename = prefix + self.ddclient_hook_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/sh");
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n\n")
         file.write("# The dhcp exit hook packaged with ddclient has syntax error" + "\n")
         file.write("# Since the DHCP hooks are sources, syntax erros break DHCP" + "\n")
         file.write("# This blank script is written to replace it" + "\n")
-                   
+
         file.flush()
         file.close()
-        if verbosity > 0: print("DhcpManager: Wrote %s" % filename)
-        
-registrar.register_manager(DhcpManager())
+        print("DhcpManager: Wrote %s" % filename)
 
+
+registrar.register_manager(DhcpManager())

@@ -9,6 +9,14 @@ def get_board_name():
     except:
         return "unknown"
 
+def get_hidden_interfaces():
+    board_name = get_board_name()
+    return {
+            "armada-385-linksys-shelby": ["eth0", "eth1"],
+            "armada-385-linksys-rango": ["eth0", "eth1"],
+            "armada-385-turris-omnia": ["eth0", "eth1"],
+    }.get(board_name, [])
+
 def get_external_device_name():
     board_name = get_board_name()
     return {

@@ -10,27 +10,35 @@ from sync import board_util
 
 # This class is responsible for writing /etc/config/network
 # based on the settings object passed from sync-settings
+
+
 class NetworkManager:
     network_filename = "/etc/config/network"
-    GREEK_NAMES = ["alpha","beta","gamma","delta","epsilon","zeta","eta","theta","iota","kappa","lambda","mu"];
+    GREEK_NAMES = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu"]
 
     def initialize(self):
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
         settings['network'] = network
 
-        self.create_settings_devices(settings, prefix, delete_list, verbosity)
-        self.create_settings_interfaces(settings, prefix, delete_list, verbosity)
-        self.create_settings_switches(settings, prefix, delete_list, verbosity)
-        
-    def sync_settings(self, settings, prefix, delete_list, verbosity=0):
-        self.write_network_file(settings, prefix, verbosity)
-        
-    def write_network_file(self, settings, prefix="", verbosity=0):
+        self.create_settings_devices(settings, prefix, delete_list)
+        self.create_settings_interfaces(settings, prefix, delete_list)
+        self.create_settings_switches(settings, prefix, delete_list)
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_network_file(settings, prefix)
+
+    def write_network_file(self, settings, prefix=""):
         filename = prefix + self.network_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -38,19 +46,19 @@ class NetworkManager:
 
         self.network_file = open(filename, "w+")
         file = self.network_file
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
-        file.write("\n");
-        file.write("config interface 'loopback'\n");
-        file.write("\t" + "option ifname 'lo'\n");
-        file.write("\t" + "option proto 'static'\n");
-        file.write("\t" + "option ipaddr '127.0.0.1'\n");
-        file.write("\t" + "option netmask '255.0.0.0'\n");
+        file.write("\n")
+        file.write("config interface 'loopback'\n")
+        file.write("\t" + "option ifname 'lo'\n")
+        file.write("\t" + "option proto 'static'\n")
+        file.write("\t" + "option ipaddr '127.0.0.1'\n")
+        file.write("\t" + "option netmask '255.0.0.0'\n")
 
-        file.write("\n");
-        file.write("config globals 'globals'" + "\n");
-        file.write("\t" + "option ula_prefix 'fdf1:ab86:f5ab::/48'" + "\n");
+        file.write("\n")
+        file.write("config globals 'globals'" + "\n")
+        file.write("\t" + "option ula_prefix 'fdf1:ab86:f5ab::/48'" + "\n")
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
@@ -63,8 +71,8 @@ class NetworkManager:
                     bridged_interfaces.append(intf2)
             if len(bridged_interfaces) > 0:
                 is_bridge = True
-                bridged_interfaces_str.insert(0, intf.get('device')) # include yourself in bridge at front
-                bridged_interfaces.insert(0, intf) # include yourself in bridge at front
+                bridged_interfaces_str.insert(0, intf.get('device'))  # include yourself in bridge at front
+                bridged_interfaces.insert(0, intf)  # include yourself in bridge at front
             intf['is_bridge'] = is_bridge
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
@@ -84,39 +92,58 @@ class NetworkManager:
                 self.write_interface_v4(intf, settings)
                 self.write_interface_v6(intf, settings)
 
-        switches = settings['network']['switches']
-        for swi in switches:
-            self.write_switch(swi, settings)
-        
+        switches = settings['network'].get('switches')
+        if switches != None:
+            for swi in switches:
+                self.write_switch(swi, settings)
+
+        self.write_route_rules(settings)
+
         file.flush()
         file.close()
-        
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def write_route_rules(self, settings):
+        priority = 70000
+        file = self.network_file
+        file.write("\n")
+
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if intf.get('wan') and intf.get('configType') != "DISABLED" and intf.get('v4ConfigType') != "DISABLED":
+                file.write("config rule\n")
+                file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
+                file.write("\toption priority '%d'\n" % priority)
+                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+                file.write("\n")
+                priority = priority + 1
+
+        return
 
     def write_switch(self, swi, settings):
         file = self.network_file
 
-        file.write("\n");
-        file.write("config switch\n");
-        file.write("\toption name '%s'\n" % swi['name']);
-        file.write("\toption reset '1'\n");
-        file.write("\toption enable_vlan '1'\n");
-        file.write("\n");
+        file.write("\n")
+        file.write("config switch\n")
+        file.write("\toption name '%s'\n" % swi['name'])
+        file.write("\toption reset '1'\n")
+        file.write("\toption enable_vlan '1'\n")
+        file.write("\n")
         vlan_list = swi['vlans']
         for vlan in vlan_list:
-            file.write("config switch_vlan\n");
-            file.write("\toption device '%s'\n" % swi['name']);
-            file.write("\toption vlan '%s'\n" % vlan['id']);
+            file.write("config switch_vlan\n")
+            file.write("\toption device '%s'\n" % swi['name'])
+            file.write("\toption vlan '%s'\n" % vlan['id'])
             vlan_ports = []
             for port in swi['ports']:
                 if port['pvid'] == vlan['id']:
                     if port['cpu_port'] == True:
-                        vlan_ports.append("%st" % port['id']);
+                        vlan_ports.append("%st" % port['id'])
                     else:
-                        vlan_ports.append("%s" % port['id']);
-            file.write("\toption ports '%s'\n" % " ".join(vlan_ports));
-            file.write("\n");
+                        vlan_ports.append("%s" % port['id'])
+            file.write("\toption ports '%s'\n" % " ".join(vlan_ports))
+            file.write("\n")
 
         return
 
@@ -128,9 +155,9 @@ class NetworkManager:
         # find interfaces bridged to this interface
         file = self.network_file
 
-        file.write("\n");
-        file.write("config interface '%s'\n" % intf['logical_name']);
-        file.write("\toption type 'bridge'\n");
+        file.write("\n")
+        file.write("config interface '%s'\n" % intf['logical_name'])
+        file.write("\toption type 'bridge'\n")
         file.write("\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str')))
         # In some cases netifd handles it better if the ipv4 config is written under the main
         # bridge interface instead of the first alias
@@ -150,16 +177,16 @@ class NetworkManager:
         if intf.get('v4ConfigType') == "DISABLED":
             return
         # If this interface is a bridge-master
-        # the IPv4 config would have been written in the bridge interface 
+        # the IPv4 config would have been written in the bridge interface
         # This is commented out for now to see if treating bridges normally works
         # If so, this should be removed
         # if intf.get('is_bridge'):
         #     return
 
         file = self.network_file
-        
-        file.write("\n");
-        file.write("config interface '%s'\n" % (intf['logical_name']+"4"));
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
         if intf.get('is_bridge'):
             # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
             # documentation says to use "br-" plus logical name
@@ -169,8 +196,8 @@ class NetworkManager:
         self.write_interface_v4_config(intf, settings)
 
         if intf.get('v4Aliases') != None and intf.get('v4ConfigType') == "STATIC":
-            for idx,alias in enumerate(intf.get('v4Aliases')):
-                self.write_interface_v4_alias(intf,alias,(idx+1),settings)
+            for idx, alias in enumerate(intf.get('v4Aliases')):
+                self.write_interface_v4_alias(intf, alias, (idx+1), settings)
 
         return
 
@@ -187,6 +214,7 @@ class NetworkManager:
             file.write("\toption proto 'dhcp'\n")
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
+            file.write("\toption force_link '0'\n")
             file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
             file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
             if intf.get('wan') and intf.get('v4StaticGateway') != None:
@@ -205,7 +233,10 @@ class NetworkManager:
             # This needs to be written for addressless bridges
             file.write("\toption proto 'none'\n")
             file.write("\toption auto '1'\n")
-            
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+
         return
 
     def write_interface_v4_alias(self, intf, alias, count, settings):
@@ -213,9 +244,9 @@ class NetworkManager:
         Write an IPv4 alias interface
         """
         file = self.network_file
-        
-        file.write("\n");
-        file.write("config interface '%s'\n" % (intf['logical_name']+"4"+"_"+str(count)));
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"4"+"_"+str(count)))
         if intf.get('is_bridge'):
             # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
             # documentation says to use "br-" plus logical name
@@ -225,7 +256,7 @@ class NetworkManager:
         file.write("\toption proto 'static'\n")
         file.write("\toption ipaddr '%s'\n" % alias.get('v4Address'))
         file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(alias.get('v4Prefix')))
-    
+
     def write_interface_v6(self, intf, settings):
         """
         Writes a new logical interface containing the IPv6 configuration
@@ -235,14 +266,14 @@ class NetworkManager:
         if intf.get('v6ConfigType') == "DISABLED":
             return
         file = self.network_file
-        file.write("\n");
-        file.write("config interface '%s'\n" % (intf['logical_name']+"6"));
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
         file.write("\toption ifname '%s'\n" % intf['ifname'])
 
         if intf.get('v6ConfigType') == "DHCP":
             file.write("\toption proto 'dhcpv6'\n")
         elif intf.get('v6ConfigType') == "SLAAC":
-            #FIXME
+            # FIXME
             pass
         elif intf.get('v6ConfigType') == "ASSIGN":
             file.write("\toption proto 'static'\n")
@@ -257,8 +288,8 @@ class NetworkManager:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
 
         if intf.get('v6Aliases') != None and intf.get('v6ConfigType') == "STATIC":
-            for idx,alias in enumerate(intf.get('v6Aliases')):
-                self.write_interface_v6_alias(intf,alias,(idx+1),settings)
+            for idx, alias in enumerate(intf.get('v6Aliases')):
+                self.write_interface_v6_alias(intf, alias, (idx+1), settings)
 
         return
 
@@ -268,20 +299,20 @@ class NetworkManager:
         """
         file = self.network_file
 
-        file.write("\n");
-        file.write("config interface '%s'\n" % (intf['logical_name']+"6"+"_"+str(count)));
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"6"+"_"+str(count)))
         file.write("\toption ifname '%s'\n" % intf['ifname'])
         file.write("\toption proto 'static'\n")
         file.write("\toption ip6addr '%s'\n" % alias.get('v6Address'))
         file.write("\toption ip6prefix '%s'\n" % alias.get('v6Prefix'))
 
-    def create_settings_devices(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings_devices(self, settings, prefix, delete_list):
         device_list = get_devices()
         settings['network']['devices'] = []
         for dev in device_list:
             settings['network']['devices'].append(new_device_settings(dev))
 
-    def create_settings_interfaces(self, settings, prefix, delete_list, verbosity=0):
+    def create_settings_interfaces(self, settings, prefix, delete_list):
         device_list = get_devices()
         if len(device_list) == 1:
             internal_device_name = "None"
@@ -293,7 +324,7 @@ class NetworkManager:
         # Move wan to top of list, in OpenWRT eth1 is the WAN
         if external_device_name in device_list:
             device_list.remove(external_device_name)
-            device_list.insert(0,external_device_name)
+            device_list.insert(0, external_device_name)
         settings['network']['interfaces'] = []
         interface_list = []
         intf_id = 0
@@ -302,6 +333,16 @@ class NetworkManager:
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
+
+            if interface['device'] in board_util.get_hidden_interfaces():
+                interface['hidden'] = True
+            else:
+                interface['hidden'] = False
+
+            interface['downloadKbps'] = 0
+            interface['uploadKbps'] = 0
+            interface['wanWeight'] = 0
+
             if dev.get('name') == internal_device_name:
                 interface['name'] = 'internal'
                 interface['type'] = 'NIC'
@@ -332,13 +373,14 @@ class NetworkManager:
                 try:
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 except:
-                    interface['name'] = "intf%i"%intf_id
+                    interface['name'] = "intf%i" % intf_id
 
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
-                
-    def create_settings_switches(self, settings, prefix, delete_list, verbosity=0):
+
+    def create_settings_switches(self, settings, prefix, delete_list):
         settings['network']['switches'] = board_util.get_switch_settings()
+
 
 def get_devices():
     device_list = []
@@ -347,19 +389,22 @@ def get_devices():
     device_list.extend(get_devices_matching_glob("wlan*"))
     return device_list
 
+
 def get_devices_matching_glob(glob):
     device_list = []
-    devices = subprocess.check_output("find /sys/class/net -type l -name '%s' | sed -e 's|/sys/class/net/||' | sort"%glob, shell=True).decode('ascii')
+    devices = subprocess.check_output("find /sys/class/net -type l -name '%s' | sed -e 's|/sys/class/net/||' | sort" % glob, shell=True).decode('ascii')
     for dev in devices.splitlines():
         if dev:
             device_list.append(dev)
     return device_list
-    
+
+
 def new_device_settings(devname):
     return {
         "name": devname,
         "duplex": "AUTO",
         "mtu": None
     }
+
 
 registrar.register_manager(NetworkManager())
