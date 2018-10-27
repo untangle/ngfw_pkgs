@@ -26,12 +26,6 @@ files = {}
 # managers are responsible for serializing the settings to disk
 managers = []
 
-# settings verification function
-settings_verify_function = None
-
-# settings cleanup function
-settings_cleanup_function = None
-
 def register_manager( manager ):
     global managers
     managers.append(manager)
@@ -50,7 +44,6 @@ def register_file( filepath, operation, owner ):
             raise ValueError("Unknown operation: " + operation)
         
     files[filepath] = { "filepath": filepath, "operation": operation, "owner": owner}
-
 
 def operation_subset_of( parent, child ):
     """
@@ -157,6 +150,7 @@ def check_registrar_files(tmpdir):
             rootpath = os.path.join(root,filename).replace(tmpdir,"")
             result = registrar_check_file(rootpath)
             if not result:
+                print("Unregistered file: %s" % rootpath)
                 return 1
     return 0
 
@@ -176,7 +170,4 @@ def check_registrar_operations(ops):
         if o == None:
             return 1
     return 0
-
-
-
 

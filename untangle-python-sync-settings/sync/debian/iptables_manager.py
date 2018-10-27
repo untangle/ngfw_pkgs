@@ -13,37 +13,45 @@ from sync import registrar
 #
 # based on the settings object passed from sync-settings
 #
+
+
 class IptablesManager:
     flush_filename = "/etc/untangle/iptables-rules.d/010-flush"
     helpers_filename = "/etc/untangle/iptables-rules.d/011-helpers"
     post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
-        self.write_flush_file( settings, prefix, verbosity )
-        self.write_helpers_file( settings, prefix, verbosity )
-        self.write_post_file( settings, prefix, verbosity )
+    def initialize(self):
+        registrar.register_file(self.flush_filename, "restart-iptables", self)
+        registrar.register_file(self.helpers_filename, "restart-iptables", self)
+        registrar.register_file(self.post_network_filename, "restart-networking", self)
+
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def sync_settings(self, settings, prefix, delete_list):
+        self.write_flush_file(settings, prefix)
+        self.write_helpers_file(settings, prefix)
+        self.write_post_file(settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/untangle/iptables-rules.d/825-classd")
 
-    def initialize( self ):
-        registrar.register_file( self.flush_filename, "restart-iptables", self )
-        registrar.register_file( self.helpers_filename, "restart-iptables", self )
-        registrar.register_file( self.post_network_filename, "restart-networking", self )
-
-    def write_post_file( self, settings, prefix, verbosity ):
+    def write_post_file(self, settings, prefix):
         filename = prefix + self.post_network_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("#!/bin/dash");
-        file.write("\n\n");
+        file = open(filename, "w+")
+        file.write("#!/bin/dash")
+        file.write("\n\n")
 
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
 
         file.write(r"""
 
@@ -190,120 +198,116 @@ done
 
 
 """)
-        
+
         file.flush()
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
-        
-            
-    def write_flush_file( self, settings, prefix, verbosity ):
+        print("IptablesManager: Wrote %s" % filename)
+
+    def write_flush_file(self, settings, prefix):
         filename = prefix + self.flush_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-        
+        file = open(filename, "w+")
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
         file.write("## Flush all iptables rules\n")
-        file.write("${IPTABLES} -t raw -F" + "\n");
-        file.write("${IPTABLES} -t tune -F" + "\n");
-        file.write("${IPTABLES} -t nat -F" + "\n");
-        file.write("${IPTABLES} -t mangle -F" + "\n");
-        file.write("${IPTABLES} -t filter -F" + "\n");
+        file.write("${IPTABLES} -t raw -F" + "\n")
+        file.write("${IPTABLES} -t tune -F" + "\n")
+        file.write("${IPTABLES} -t nat -F" + "\n")
+        file.write("${IPTABLES} -t mangle -F" + "\n")
+        file.write("${IPTABLES} -t filter -F" + "\n")
         if settings.get('blockDuringRestarts') != None and settings.get('blockDuringRestarts'):
-            file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
-            file.write("${IPTABLES} -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n");
+            file.write("${IPTABLES} -t filter -I FORWARD -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n")
+            file.write("${IPTABLES} -t filter -I INPUT   -m conntrack --ctstate NEW -j DROP -m comment --comment \"drop sessions during restart\"\n")
 
-        file.write("\n");
+        file.write("\n")
 
         file.write("## Flush all etables rules. (the only rules exist in the broute table)\n")
         file.write("${EBTABLES} -t broute -F" + "\n" + "\n")
 
-        file.write("\n");
-        file.write("\n");
+        file.write("\n")
+        file.write("\n")
 
         file.write("## Create and flush all chains.\n")
         file.write("## We create and insert rules to call all chains here so the order is always the same no matter the order the scripts are called in.\n")
         file.write("## The scripts are responsible for filling in the chains with the appropriate rules.\n")
-        
-        file.write("${IPTABLES} -t mangle -N prerouting-set-marks 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F prerouting-set-marks" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-set-marks" + "\n");
 
-        file.write("${IPTABLES} -t mangle -N forward-set-marks 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F forward-set-marks" + "\n");
-        file.write("${IPTABLES} -t mangle -A FORWARD -j forward-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -N prerouting-set-marks 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F prerouting-set-marks" + "\n")
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-set-marks" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N output-set-marks 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F output-set-marks" + "\n");
-        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -N forward-set-marks 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F forward-set-marks" + "\n")
+        file.write("${IPTABLES} -t mangle -A FORWARD -j forward-set-marks" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N output-untangle-vm 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F output-untangle-vm" + "\n");
-        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-untangle-vm" + "\n");
+        file.write("${IPTABLES} -t mangle -N output-set-marks 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F output-set-marks" + "\n")
+        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-set-marks" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N input-set-marks 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F input-set-marks" + "\n");
-        file.write("${IPTABLES} -t mangle -A INPUT -j input-set-marks" + "\n");
+        file.write("${IPTABLES} -t mangle -N output-untangle-vm 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F output-untangle-vm" + "\n")
+        file.write("${IPTABLES} -t mangle -A OUTPUT -j output-untangle-vm" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N input-untangle-vm 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F input-untangle-vm" + "\n");
-        file.write("${IPTABLES} -t mangle -A INPUT -j input-untangle-vm" + "\n");
-        
-        file.write("${IPTABLES} -t mangle -N prerouting-untangle-vm 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F prerouting-untangle-vm" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-untangle-vm" + "\n");
-        
-        file.write("${IPTABLES} -t mangle -N prerouting-qos 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F prerouting-qos" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-qos" + "\n");
+        file.write("${IPTABLES} -t mangle -N input-set-marks 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F input-set-marks" + "\n")
+        file.write("${IPTABLES} -t mangle -A INPUT -j input-set-marks" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N postrouting-qos 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F postrouting-qos" + "\n");
-        file.write("${IPTABLES} -t mangle -A POSTROUTING -j postrouting-qos" + "\n");
-        
-        file.write("${IPTABLES} -t mangle -N prerouting-tunnel-vpn 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F prerouting-tunnel-vpn" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-tunnel-vpn" + "\n");
+        file.write("${IPTABLES} -t mangle -N input-untangle-vm 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F input-untangle-vm" + "\n")
+        file.write("${IPTABLES} -t mangle -A INPUT -j input-untangle-vm" + "\n")
 
-        file.write("${IPTABLES} -t mangle -N prerouting-wan-balancer 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t mangle -F prerouting-wan-balancer" + "\n");
-        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-wan-balancer" + "\n");
-        
+        file.write("${IPTABLES} -t mangle -N prerouting-untangle-vm 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F prerouting-untangle-vm" + "\n")
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-untangle-vm" + "\n")
+
+        file.write("${IPTABLES} -t mangle -N prerouting-qos 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F prerouting-qos" + "\n")
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-qos" + "\n")
+
+        file.write("${IPTABLES} -t mangle -N postrouting-qos 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F postrouting-qos" + "\n")
+        file.write("${IPTABLES} -t mangle -A POSTROUTING -j postrouting-qos" + "\n")
+
+        file.write("${IPTABLES} -t mangle -N prerouting-tunnel-vpn 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F prerouting-tunnel-vpn" + "\n")
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-tunnel-vpn" + "\n")
+
+        file.write("${IPTABLES} -t mangle -N prerouting-wan-balancer 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F prerouting-wan-balancer" + "\n")
+        file.write("${IPTABLES} -t mangle -A PREROUTING -j prerouting-wan-balancer" + "\n")
+
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
+        print("IptablesManager: Wrote %s" % filename)
 
-
-    def write_helpers_file( self, settings, prefix, verbosity ):
+    def write_helpers_file(self, settings, prefix):
 
         filename = prefix + self.helpers_filename
-        file_dir = os.path.dirname( filename )
-        if not os.path.exists( file_dir ):
-            os.makedirs( file_dir )
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
 
-        file = open( filename, "w+" )
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
-        file.write("\n\n");
-        
+        file = open(filename, "w+")
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
         file.write("## Create all helper rules.\n")
-        
-        file.write("${IPTABLES} -t raw -N helpers 2>/dev/null" + "\n");
-        file.write("${IPTABLES} -t raw -F helpers" + "\n");
-        file.write("\n");
 
-        file.write("${IPTABLES} -t raw -D PREROUTING -j helpers >/dev/null 2>&1" + "\n");
-        file.write("${IPTABLES} -t raw -I PREROUTING -j helpers" + "\n");
-        file.write("\n");
+        file.write("${IPTABLES} -t raw -N helpers 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t raw -F helpers" + "\n")
+        file.write("\n")
+
+        file.write("${IPTABLES} -t raw -D PREROUTING -j helpers >/dev/null 2>&1" + "\n")
+        file.write("${IPTABLES} -t raw -I PREROUTING -j helpers" + "\n")
+        file.write("\n")
 
         # NGFW-11705
         # Newer kernel have non-automatic conntrack helper assignment
@@ -312,8 +316,8 @@ done
         # When assigned manually it seems that the FTP helper tries to help in addition
         # to the userspace helper. Whereas the automatic helper does not do this for some reason
         # As such, we're force to just set the proc setting to get the old automatic behavior
-        
-        file.write("if [ -f /proc/sys/net/netfilter/nf_conntrack_helper ] ; then echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper ; fi");
+
+        file.write("if [ -f /proc/sys/net/netfilter/nf_conntrack_helper ] ; then echo 1 > /proc/sys/net/netfilter/nf_conntrack_helper ; fi")
 
         # file.write("uname -r | grep -q '^4'" + "\n");
         # file.write("KERN_4_X=$?" + "\n");
@@ -332,7 +336,7 @@ done
         #     file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 5061 -j CT --helper sip" + "\n");
         #     file.write("\t${IPTABLES} -t raw -A helpers -p udp --dport 5061 -j CT --helper sip" + "\n");
         #     file.write("\n");
-        
+
         # # file.write("\t# only process bypassed sessions, the ftp-casing will handle scanned sessions" + "\n")
         # # file.write("\t${IPTABLES} -t raw -A helpers -m connmark --mark 0x01000000/0x01000000 -p tcp --dport 21 -j CT --helper ftp" + "\n");
         # file.write("\t${IPTABLES} -t raw -A helpers -p tcp --dport 21 -j CT --helper ftp" + "\n");
@@ -362,7 +366,7 @@ done
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("IptablesManager: Wrote %s" % filename)
+        print("IptablesManager: Wrote %s" % filename)
+
 
 registrar.register_manager(IptablesManager())
