@@ -10,12 +10,21 @@ from sync import board_util
 
 # This class is responsible for writing /etc/config/wireless
 # based on the settings object passed from sync-settings
+
+
 class WirelessManager:
     wireless_filename = "/etc/config/wireless"
-    def initialize( self ):
+
+    def initialize(self):
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
-    def create_settings( self, settings, prefix, delete_list, filename, verbosity=0 ):
+    def sanitize_settings(self, settings):
+        pass
+
+    def validate_settings(self, settings):
+        pass
+
+    def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
@@ -29,14 +38,14 @@ class WirelessManager:
                 intf['wirelessEncryption'] = 'WPA2'
                 intf['wirelessPassword'] = '12345678'
                 intf['wirelessSsid'] = 'Untangle'
-        
-    def sync_settings( self, settings, prefix, delete_list, verbosity=0 ):
+
+    def sync_settings(self, settings, prefix, delete_list):
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_wireless_file(settings, prefix, verbosity)
+        self.write_wireless_file(settings, prefix)
 
     def get_phy_name(self, interface):
         return subprocess.check_output("cat /sys/class/net/%s/phy80211/name" % interface['device'], shell=True).decode('ascii').rstrip()
-        
+
     def get_phy_path(self, interface):
         path = subprocess.check_output("readlink -f /sys/class/ieee80211/%s/device" % self.get_phy_name(interface), shell=True).decode('ascii').rstrip()
         path = os.path.relpath(path, '/sys/devices')
@@ -63,7 +72,7 @@ class WirelessManager:
             return "11g"
 
     def get_htmode(self, interface):
-        htmode=""
+        htmode = ""
         if (0 == subprocess.call("iw phy %s info | grep -q 'Capabilities:'" % self.get_phy_name(interface), shell=True)):
             htmode = "\toption htmode 'HT20'\n"
         if self.is_5ghz(interface):
@@ -87,7 +96,7 @@ class WirelessManager:
         if macaddr != "":
             file.write("\toption macaddr '%s'\n" % macaddr)
 
-    def write_wireless_file(self, settings, prefix="", verbosity=0):
+    def write_wireless_file(self, settings, prefix=""):
         filename = prefix + self.wireless_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -95,13 +104,13 @@ class WirelessManager:
 
         self.network_file = open(filename, "w+")
         file = self.network_file
-        file.write("## Auto Generated\n");
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n");
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
-        file.write("\n");
+        file.write("\n")
 
         interfaces = settings['network']['interfaces']
-        devidx=0
+        devidx = 0
         for intf in interfaces:
             if intf.get('wireless'):
                 file.write("config wifi-device 'radio%d'\n" % devidx)
@@ -145,7 +154,7 @@ class WirelessManager:
         file.flush()
         file.close()
 
-        if verbosity > 0:
-            print("%s: Wrote %s" % (self.__class__.__name__,filename))
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
 
 registrar.register_manager(WirelessManager())

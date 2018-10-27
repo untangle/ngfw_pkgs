@@ -5,12 +5,12 @@ import subprocess
 import datetime
 import traceback
 from sync import registrar
+from sync import nftables_util
 
-# This class is responsible for writing FIXME
-# based on the settings object passed from sync-settings
+# This class is responsible for managing the "admin" (credentials) settings
 
 
-class SystemManager:
+class AdminManager:
     def initialize(self):
         pass
 
@@ -22,12 +22,16 @@ class SystemManager:
 
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['system'] = {}
-        settings['system']['hostName'] = 'mfw'
-        settings['system']['domainName'] = 'example.com'
+        settings['admin'] = {}
+        settings['admin']['credentials'] = [{
+            "username": "admin",
+            "passwordCleartext": "passwd"
+        }]
+        pass
 
     def sync_settings(self, settings, prefix, delete_list):
+        # FIXME write /etc/shadow
         pass
 
 
-registrar.register_manager(SystemManager())
+registrar.register_manager(AdminManager())
