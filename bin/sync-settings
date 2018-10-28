@@ -337,8 +337,8 @@ def save_settings(settings):
     """
     global opts
     try:
-        settings_file = open(opts.filename + ".tmp", 'w')
-        json.dump(settings, settings_file, indent=True, separators=(',', ': '))
+        settings_file = open(opts.filename, 'w')
+        json.dump(settings, settings_file, indent=4, separators=(',', ': '))
         settings_file.flush()
         settings_file.close()
     except IOError as exc:
@@ -480,7 +480,7 @@ def main():
     orig_settings = copy.deepcopy(settings)
     sync.managers.sanitize_settings(settings)
     if json.dumps(orig_settings) != json.dumps(settings):
-        print("Sanitization changed settings. Saving new settings...")
+        print("Sanitization changed settings. Saving new settings...\n")
         save_settings(settings)
 
     # Validate settings
