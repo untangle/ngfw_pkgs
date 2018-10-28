@@ -60,6 +60,8 @@ class AdminManager:
         # prefer "root" user for root password
         # if "root" doesn't exist use "admin"
         # if neither exist, don't set root password
+        # In OpenWRT we must write the password in MD5 unfortunately
+        # https://forum.openwrt.org/t/passwd-a-sha256-sha512-less-secure-than-default/13117
         for cred in creds:
             if cred["username"] == "root":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
