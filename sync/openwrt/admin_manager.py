@@ -84,11 +84,18 @@ class AdminManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
 
-        file.write('/bin/sed -i /etc/shadow -e \'s|^\\(root:\\)[^:]*\\(:.*\\)$|\\1')
+        file.write('TMPFILE=`mktemp --tmpdir shadow.XXXXX`\n')
+        file.write('/bin/sed -e \'s|^\\(root:\\)[^:]*\\(:.*\\)$|\\1')
         file.write(phash.replace("$","\$"))
-        file.write('\\2|\'\n')
+        file.write('\\2|\' /etc/shadow > $TMPFILE\n')
+        file.write('\n')
 
-        file.write("\n")
+        file.write('if ! diff /etc/shadow $TMPFILE >/dev/null 2>&1 ; then cp $TMPFILE /etc/shadow ; fi\n')
+        file.write('\n')
+
+        file.write('rm -f $TMPFILE')
+        file.write('\n')
+
         file.flush()
         file.close()
 
