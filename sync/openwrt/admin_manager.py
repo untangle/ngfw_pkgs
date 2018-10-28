@@ -84,7 +84,7 @@ class AdminManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
 
-        file.write('TMPFILE=`mktemp --tmpdir shadow.XXXXX`\n')
+        file.write('TMPFILE="/tmp/shadow"\n')
         file.write('/bin/sed -e \'s|^\\(root:\\)[^:]*\\(:.*\\)$|\\1')
         file.write(phash.replace("$","\$"))
         file.write('\\2|\' /etc/shadow > $TMPFILE\n')
