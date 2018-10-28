@@ -32,7 +32,9 @@ class AdminManager:
             # Remove the cleartext password. We don't want to save this.
             del cred['passwordCleartext']
             # Replace with the hashed versions of the password
-            cred['passwordShadowHash'] = crypt.crypt(cleartext_password, crypt.mksalt(crypt.METHOD_SHA512))
+            cred['passwordHashMD5'] = crypt.crypt(cleartext_password, crypt.mksalt(crypt.METHOD_MD5))
+            cred['passwordHashSHA512'] = crypt.crypt(cleartext_password, crypt.mksalt(crypt.METHOD_SHA512))
+            cred['passwordHashSHA256'] = crypt.crypt(cleartext_password, crypt.mksalt(crypt.METHOD_SHA256))
         return
 
     def validate_settings(self, settings):
@@ -60,11 +62,11 @@ class AdminManager:
         # if neither exist, don't set root password
         for cred in creds:
             if cred["username"] == "root":
-                self.write_password_setter(cred["passwordShadowHash"], prefix)
+                self.write_password_setter(cred["passwordHashMD5"], prefix)
                 return
         for cred in creds:
             if cred["username"] == "admin":
-                self.write_password_setter(cred["passwordShadowHash"], prefix)
+                self.write_password_setter(cred["passwordHashMD5"], prefix)
                 return
         # if not found, delete any previous password script
         delete_list.append(password_setter_filename)
