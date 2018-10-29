@@ -56,17 +56,20 @@ def get_eth0_mac_addr():
     except:
         return None
 
-def increment_mac(mac, idx):
+def increment_mac(mac, inc):
     eth_mac = mac.split(':')
     nic = int("".join([eth_mac[3], eth_mac[4], eth_mac[5]]), 16)
-    nic += idx
+    nic += inc
     new_nic = "%6x" % nic
     return ":".join([eth_mac[0], eth_mac[1], eth_mac[2], new_nic[0:2], new_nic[2:4], new_nic[4:6]]) 
 
-def get_wireless_macaddr(idx):
+def get_interface_macaddr(ifname):
     board_name = get_board_name()
     if board_name == "armada-385-linksys-shelby":
-        return increment_mac(get_eth0_mac_addr(), idx + 1)
+        return {
+                "wlan0": increment_mac(get_eth0_mac_addr(), 1),
+                "wlan1": increment_mac(get_eth0_mac_addr(), 2),
+        }.get(ifname, "")
     return ""
 
 def get_switch_settings():
