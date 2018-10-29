@@ -20,7 +20,7 @@ def get_hidden_interfaces():
 def get_external_device_name():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": "eth1.2",
+            "armada-385-linksys-shelby": "wan",
             "armada-385-linksys-rango": "wan",
             "armada-385-turris-omnia": "eth2",
     }.get(board_name, "eth1")
@@ -28,7 +28,7 @@ def get_external_device_name():
 def get_internal_device_name():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": "eth0.1",
+            "armada-385-linksys-shelby": "lan1",
             "armada-385-linksys-rango": "lan1",
             "armada-385-turris-omnia": "lan0",
     }.get(board_name, "eth0")
@@ -69,21 +69,8 @@ def get_wireless_macaddr(idx):
         return increment_mac(get_eth0_mac_addr(), idx + 1)
     return ""
 
-linksys_switch = [{"name":"switch0",
-                   "ports":[{"id":"0","pvid":"1","cpu_port":False},
-                            {"id":"1","pvid":"1","cpu_port":False},
-                            {"id":"2","pvid":"1","cpu_port":False},
-                            {"id":"3","pvid":"1","cpu_port":False},
-                            {"id":"4","pvid":"2","cpu_port":False},
-                            {"id":"5","pvid":"1","cpu_port":True},
-                            {"id":"6","pvid":"2","cpu_port":True}],
-                   "vlans":[{"id":"1"},
-                            {"id":"2"}],
-                 }]
-
 def get_switch_settings():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": linksys_switch,
     }.get(board_name, [])
     return ""
