@@ -50,9 +50,9 @@ def get_country_code():
 
     return ""
 
-def get_eth0_mac_addr():
+def get_device_macaddr(ifname):
     try:
-        return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
+        return subprocess.check_output("cat /sys/class/net/%s/address" % ifname, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
     except:
         return None
 
@@ -67,8 +67,8 @@ def get_interface_macaddr(ifname):
     board_name = get_board_name()
     if board_name == "armada-385-linksys-shelby":
         return {
-                "wlan0": increment_mac(get_eth0_mac_addr(), 1),
-                "wlan1": increment_mac(get_eth0_mac_addr(), 2),
+                "wlan0": increment_mac(get_device_macaddr("eth0"), 1),
+                "wlan1": increment_mac(get_device_macaddr("eth0"), 2),
         }.get(ifname, "")
     return ""
 
