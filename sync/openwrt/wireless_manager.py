@@ -91,8 +91,7 @@ class WirelessManager:
         if country_code != "":
             file.write("\toption country '%s'\n" % country_code)
 
-    def write_macaddr(self, file, ifname):
-        macaddr = board_util.get_interface_macaddr(ifname)
+    def write_macaddr(self, file, macaddr):
         if macaddr != "":
             file.write("\toption macaddr '%s'\n" % macaddr)
 
@@ -147,7 +146,7 @@ class WirelessManager:
                 else:
                     file.write("\toption encryption 'psk2'\n")
                     file.write("\toption key '%s'\n" % intf.get('wirelessPassword'))
-                self.write_macaddr(file, intf.get('device'))
+                self.write_macaddr(file, intf.get('macaddr'))
                 file.write("\n")
                 devidx += 1
 
