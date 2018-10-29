@@ -69,6 +69,11 @@ def get_interface_macaddr(ifname):
         return {
                 "wlan0": increment_mac(get_device_macaddr("eth0"), 1),
                 "wlan1": increment_mac(get_device_macaddr("eth0"), 2),
+                "lan1": get_device_macaddr("eth1"),
+                "lan2": get_device_macaddr("eth1"),
+                "lan3": get_device_macaddr("eth1"),
+                "lan4": get_device_macaddr("eth1"),
+                "wan": get_device_macaddr("eth1"),
         }.get(ifname, "")
     elif board_name == "armada-385-linksys-rango":
         return {
