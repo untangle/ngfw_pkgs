@@ -21,7 +21,7 @@ def get_external_device_name():
     board_name = get_board_name()
     return {
             "armada-385-linksys-shelby": "eth1.2",
-            "armada-385-linksys-rango": "eth1.2",
+            "armada-385-linksys-rango": "wan",
             "armada-385-turris-omnia": "eth2",
     }.get(board_name, "eth1")
 
@@ -29,7 +29,7 @@ def get_internal_device_name():
     board_name = get_board_name()
     return {
             "armada-385-linksys-shelby": "eth0.1",
-            "armada-385-linksys-rango": "eth0.1",
+            "armada-385-linksys-rango": "lan1",
             "armada-385-turris-omnia": "lan0",
     }.get(board_name, "eth0")
 
@@ -85,6 +85,5 @@ def get_switch_settings():
     board_name = get_board_name()
     return {
             "armada-385-linksys-shelby": linksys_switch,
-            "armada-385-linksys-rango": linksys_switch,
     }.get(board_name, [])
     return ""
