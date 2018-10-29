@@ -386,6 +386,7 @@ def get_devices():
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
     device_list.extend(get_devices_matching_glob("lan*"))
+    device_list.extend(get_devices_matching_glob("wan*"))
     device_list.extend(get_devices_matching_glob("wlan*"))
     return device_list
 
