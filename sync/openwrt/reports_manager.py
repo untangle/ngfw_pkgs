@@ -34,18 +34,5 @@ registrar.register_manager(ReportsManager())
 
 def default_reports_settings():
     return {
-        "entries": [{
-            "uniqueId": "12341234",
-            "name": "Example Report",
-            "category": "Category",
-            "description": "Report long description Report long description Report long description.",
-            "displayOrder": 100,
-            "readOnly": True,
-            "type": "CHART",
-            "rendering": {
-                "units": "hits",
-                "pieNumSlices": 10,
-                "pieStyle": "PIE"
-            }
-        }]
+        "entries": [{}]
     }
