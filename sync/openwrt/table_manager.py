@@ -28,14 +28,14 @@ class TableManager:
         print("%s: Initializing settings" % self.__class__.__name__)
 
         tables = {}
-        tables['filter-rules'] = default_filter_rules_table()
+        tables['filter'] = default_filter_rules_table()
         tables['port-forward'] = default_port_forward_table()
         tables['vote'] = default_vote_table()
-        tables['nat-rules'] = default_nat_rules_table()
-        tables['access-rules'] = default_access_rules_table()
+        tables['nat'] = default_nat_rules_table()
+        tables['access'] = default_access_rules_table()
         tables['web-filter'] = default_web_filter_table()
         tables['captive-portal'] = default_captive_portal_table()
-        tables['shaping-rules'] = default_shaping_rules_table()
+        tables['shaping'] = default_shaping_rules_table()
 
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
@@ -105,7 +105,7 @@ registrar.register_manager(TableManager())
 
 def default_filter_rules_table():
     return {
-        "name": "filter-rules",
+        "name": "filter",
         "family": "inet",
         "chains": [{
             "name": "filter-rules",
@@ -278,7 +278,7 @@ def default_vote_table():
 
 def default_nat_rules_table():
     return {
-        "name": "nat-rules",
+        "name": "nat",
         "family": "ip,ip6",
         "chains": [{
             "name": "nat-rules",
@@ -336,7 +336,7 @@ def default_nat_rules_table():
 
 def default_access_rules_table():
     return {
-        "name": "access-rules",
+        "name": "access",
         "family": "inet",
         "chains": [{
             "name": "access-rules",
