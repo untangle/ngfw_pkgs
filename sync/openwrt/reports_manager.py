@@ -34,5 +34,5 @@ registrar.register_manager(ReportsManager())
 
 def default_reports_settings():
     return {
-        "entries": [{}]
+        "entries": []
     }
