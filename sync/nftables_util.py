@@ -311,6 +311,8 @@ def action_expression(json_action, family):
         return "drop"
     elif type == "ACCEPT":
         return "accept"
+    elif type == "RETURN":
+        return "return"
     elif type == "DNAT":
         addr = json_action.get('dnat_address')
         port = json_action.get('dnat_port')
