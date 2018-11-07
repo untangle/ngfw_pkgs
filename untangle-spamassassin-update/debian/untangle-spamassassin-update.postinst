@@ -58,4 +58,8 @@ deb-systemd-helper disable spamassassin
 # 13.0 - 13.1 remove line
 sed -i -e '/^test -f \/var\/run\/spamd.pid.*/d' /etc/cron.daily/spamassassin
 
+# do not leave gpg-agent processes running; our builders don't like
+# that
+pkill -f "gpg-agent.*/var/lib/spamassassin/sa-update-keys"
+
 exit 0
