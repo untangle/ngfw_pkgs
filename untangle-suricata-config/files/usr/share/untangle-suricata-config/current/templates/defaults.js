@@ -6,29 +6,29 @@
         ],
         "nfq": {
             "mode": "accept",
-            "fail-open": True
+            "fail-open": true
         },
         "outputs": {
             "eve-log": {
-                "enabled": False
+                "enabled": false
             },
             "fast": {
-                "enabled": False
+                "enabled": false
             },
             "unified2-alert": {
-                "enabled": True
+                "enabled": true
             },
             "stats": {
-                "enabled": False
+                "enabled": false
             }
         },
         "logging": {
             "outputs": {
                 "file": {
-                    "enabled": False
+                    "enabled": false
                 },
                 "syslog":{
-                    "enabled": True
+                    "enabled": true
                 }
             }
         }
