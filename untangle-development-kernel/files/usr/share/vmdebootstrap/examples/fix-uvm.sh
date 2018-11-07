@@ -3,9 +3,6 @@
 CHROOT=$1
 IMAGE=$2
 
-# kill leftover processes (gpg-agent for instance)
-kill $(lsof $CHROOT | awk '{print $2}' | sort -u)  2> /dev/null
-
 # on jessie & stretch, the initrd produced by dracut causes systemd to
 # choke during the switch-root service startup, for no apparent
 # reason.
