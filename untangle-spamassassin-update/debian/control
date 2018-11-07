@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-spamassassin-update
 Architecture: all
-Depends: ${misc:Depends}, systemd, spamassassin (>= 3.1.7), libnet-dns-perl, libmailtools-perl, libhtml-format-perl, libwww-perl, libarchive-tar-perl, libio-zlib-perl, libmail-spf-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, libhtml-parser-perl,  libdigest-sha-perl, re2c, adduser, untangle-hardware-config
+Depends: ${misc:Depends}, systemd, spamassassin (>= 3.1.7), libnet-dns-perl, libmailtools-perl, libhtml-format-perl, libwww-perl, libarchive-tar-perl, libio-zlib-perl, libmail-spf-perl, libnet-ident-perl, razor, libsys-hostname-long-perl, libhtml-parser-perl,  libdigest-sha-perl, re2c, adduser, untangle-hardware-config, procps
 Conflicts: fuzzyocr
 Recommends: libsys-syslog-perl, libmail-dkim-perl
 Description: The Untangle Spamassassin update utilities
