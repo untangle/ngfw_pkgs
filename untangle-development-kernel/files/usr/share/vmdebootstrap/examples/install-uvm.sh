@@ -28,9 +28,6 @@ rm ${CHROOT}/usr/sbin/policy-rc.d
 # force vda1 in /etc/fstab
 perl -i -pe 's|.*\s/\s|/dev/vda1 / |' /etc/fstab
 
-# kill leftover processes (gpg-agent for instance)
-kill $(lsof $CHROOT | awk '{print $2}' | sort -u)  2> /dev/null
-
 # on jessie & stretch, the initrd produced by dracut causes systemd to
 # choke during the switch-root service startup, for no apparent
 # reason.
