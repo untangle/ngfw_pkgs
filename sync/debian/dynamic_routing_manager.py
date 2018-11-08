@@ -144,6 +144,13 @@ class DynamicRoutingManager:
                                     interfaces_routes_to_add[interface["interfaceId"]].append(alias_network)
 
                                 network["found"] = True
+                                dev_object = {
+                                    'interfaceId': interface["interfaceId"],
+                                    'dev': interface["symbolicDev"],
+                                    'address': alias["staticAddress"],
+                                    'prefix': alias_prefix,
+                                    'network': self.bits_to_address(self.address_to_bits(alias["staticAddress"])[:alias_prefix], alias_prefix)
+                                }
                                 if not dev_object in interfaces:
                                     interfaces.append(dev_object)
 
