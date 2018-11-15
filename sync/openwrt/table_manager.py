@@ -29,7 +29,6 @@ class TableManager:
         tables = {}
         tables['filter'] = default_filter_rules_table()
         tables['port-forward'] = default_port_forward_table()
-        tables['vote'] = default_vote_table()
         tables['nat'] = default_nat_rules_table()
         tables['access'] = default_access_rules_table()
         tables['web-filter'] = default_web_filter_table()
@@ -228,54 +227,6 @@ def default_port_forward_table():
                     "dnat_address": "1.2.3.5"
                 }
             }]
-        }]
-    }
-
-
-def default_vote_table():
-    """default vote table"""
-    return {
-        "name": "vote",
-        "family": "ip,ip6,inet",
-        "chains": [{
-            "name": "prerouting-route-vote-rules",
-            "description": "The prerouting route vote rules",
-            "base": True,
-            "type": "filter",
-            "hook": "prerouting",
-            "priority": -130,
-            "rules": [{
-                "enabled": True,
-                "description": "Call route-vote-rules",
-                "ruleId": 1,
-                "conditions": [],
-                "action": {
-                    "type": "JUMP",
-                    "chain": "route-vote-rules"
-                }
-            }],
-        }, {
-            "name": "output-route-vote-rules",
-            "description": "The prerouting route vote rules",
-            "base": True,
-            "type": "route",
-            "hook": "output",
-            "priority": -140,
-            "rules": [{
-                "enabled": True,
-                "description": "Call route-vote-rules",
-                "ruleId": 2,
-                "conditions": [],
-                "action": {
-                    "type": "JUMP",
-                    "chain": "route-vote-rules"
-                }
-            }],
-        }, {
-            "name": "route-vote-rules",
-            "description": "The main route vote rules chain",
-            "default": True,
-            "rules": []
         }]
     }
 
