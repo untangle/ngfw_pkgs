@@ -4,15 +4,9 @@ deb-systemd-invoke restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
-rm -f /usr/share/untangle-snort-config/snortrules.tar.gz
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-deleted.rules
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-current_events.rules
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-activex.rules
-
-rm -f /usr/share/untangle-snort-config/snortrules.tar.gz
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-deleted.rules
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-current_events.rules
-rm -f /usr/share/untangle-snort-config/current/rules/emerging-activex.rules
+rm -f /usr/share/untangle-suricata-config/suricatarules.tar.gz
+rm -f /usr/share/untangle-suricata-config/current/rules/emerging-deleted.rules
+rm -f /usr/share/untangle-suricata-config/current/rules/emerging-activex.rules
 
 # Make specific wizard settings for AWS
 # For AWS the password is required to get to the setup wizard the first time
