@@ -62,7 +62,6 @@ nft add chain inet interface-marks restore-interface-marks-original
 nft add chain inet interface-marks restore-interface-marks-reply
 nft add rule inet interface-marks restore-interface-marks ct direction original jump restore-interface-marks-original
 nft add rule inet interface-marks restore-interface-marks ct direction reply jump restore-interface-marks-reply
-nft add chain inet interface-marks save-interface-marks
 nft add chain inet interface-marks mark-src-interface
 nft add chain inet interface-marks mark-dst-interface
 nft add chain inet interface-marks check-src-interface-mark
@@ -73,7 +72,6 @@ nft add rule inet interface-marks prerouting-interface-marks jump check-src-inte
 nft add rule inet interface-marks forward-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
-nft add rule inet interface-marks postrouting-interface-marks jump save-interface-marks
 #nft add rule inet interface-marks output-interface-marks jump restore-interface-marks
 nft delete table netdev interface-marks 2>/dev/null || true
 nft add table netdev interface-marks
@@ -92,13 +90,13 @@ nft add table netdev interface-marks
                         have_bridge = True
                 else:
                     file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
+                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
                 file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
                 file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x000000ff == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
                 file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x000000ff == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), intf.get('interfaceId')))
-                file.write("nft add rule inet interface-marks save-interface-marks mark and 0x000000ff == 0x%x ct mark set ct mark and 0xffffff00 or 0x%x\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                file.write("nft add rule inet interface-marks save-interface-marks mark and 0x0000ff00 == 0x%x ct mark set ct mark and 0xffff00ff or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), ((intf.get('interfaceId') << 8) & 0xff00)))
 
             file.write("nft add rule inet interface-marks check-dst-interface-mark oifname == \"br-*\" return comment \\\"TODO: Figure out how to mark destination interface for bridged traffic\\\"\n")
             file.write("nft add rule inet interface-marks check-dst-interface-mark mark and 0x0000ff00 == 0 oifname != \"lo\" log prefix \\\"WARNING: Unknown dst intf: \\\"\n")
