@@ -29,8 +29,6 @@ class InterfaceManager:
     def bridged_interface(self, settings, interface):
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            if interface.get('configType') == "BRIDGED":
-                return True
             if intf.get('configType') == "BRIDGED" and intf.get('bridgedTo') == interface.get('interfaceId'):
                 return True
         return False
@@ -73,32 +71,30 @@ nft add rule inet interface-marks forward-interface-marks mark and 0x0000ff00 ==
 nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
 #nft add rule inet interface-marks output-interface-marks jump restore-interface-marks
-nft delete table netdev interface-marks 2>/dev/null || true
-nft add table netdev interface-marks
 """)
 
             interfaces = settings.get('network').get('interfaces')
-            have_bridge = False
             for intf in interfaces:
                 if intf.get('configType') == 'DISABLED':
                     continue
+                if intf.get('configType') == 'BRIDGED':
+                    continue
                 if self.bridged_interface(settings, intf):
-                    file.write("nft add chain netdev interface-marks mark-src-interface-%s \"{ type filter hook ingress device %s priority 0 ; }\"\n" % (intf.get('netfilterDev'), intf.get('netfilterDev')))
-                    file.write("nft add rule netdev interface-marks mark-src-interface-%s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
-                    if have_bridge == False:
-                        file.write("nft add rule inet interface-marks mark-src-interface iifname \"br-*\" return comment \\\"Source marks for bridged interfaces are set in netdev interface-marks table\\\"\n")
-                        have_bridge = True
+                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % ("br-b_" + intf.get('name'), intf.get('interfaceId')))
+                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % ("br-b_" + intf.get('name'), intf.get('interfaceId')))
+                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % ("br-b_" + intf.get('name'), (intf.get('interfaceId') << 8)))
+                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % ("br-b_" + intf.get('name'), (intf.get('interfaceId') << 8)))
                 else:
                     file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
                     file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
-                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
-                file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+
                 file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x000000ff == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
                 file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x000000ff == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), intf.get('interfaceId')))
 
-            file.write("nft add rule inet interface-marks check-dst-interface-mark oifname == \"br-*\" return comment \\\"TODO: Figure out how to mark destination interface for bridged traffic\\\"\n")
             file.write("nft add rule inet interface-marks check-dst-interface-mark mark and 0x0000ff00 == 0 oifname != \"lo\" log prefix \\\"WARNING: Unknown dst intf: \\\"\n")
             file.write("nft add rule inet interface-marks check-src-interface-mark mark and 0x000000ff == 0 iifname != \"lo\" log prefix \\\"WARNING: Unknown src intf: \\\"\n")
 
