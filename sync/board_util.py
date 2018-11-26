@@ -20,16 +20,16 @@ def get_hidden_interfaces():
 def get_external_device_name():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": "eth1.2",
-            "armada-385-linksys-rango": "eth1.2",
+            "armada-385-linksys-shelby": "wan",
+            "armada-385-linksys-rango": "wan",
             "armada-385-turris-omnia": "eth2",
     }.get(board_name, "eth1")
 
 def get_internal_device_name():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": "eth0.1",
-            "armada-385-linksys-rango": "eth0.1",
+            "armada-385-linksys-shelby": "lan1",
+            "armada-385-linksys-rango": "lan1",
             "armada-385-turris-omnia": "lan0",
     }.get(board_name, "eth0")
 
@@ -50,41 +50,43 @@ def get_country_code():
 
     return ""
 
-def get_eth0_mac_addr():
+def get_device_macaddr(ifname):
     try:
-        return subprocess.check_output("cat /sys/class/net/eth0/address", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
+        return subprocess.check_output("cat /sys/class/net/%s/address" % ifname, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
     except:
         return None
 
-def increment_mac(mac, idx):
+def increment_mac(mac, inc):
     eth_mac = mac.split(':')
     nic = int("".join([eth_mac[3], eth_mac[4], eth_mac[5]]), 16)
-    nic += idx
+    nic += inc
     new_nic = "%6x" % nic
     return ":".join([eth_mac[0], eth_mac[1], eth_mac[2], new_nic[0:2], new_nic[2:4], new_nic[4:6]]) 
 
-def get_wireless_macaddr(idx):
+def get_interface_macaddr(ifname):
     board_name = get_board_name()
     if board_name == "armada-385-linksys-shelby":
-        return increment_mac(get_eth0_mac_addr(), idx + 1)
+        return {
+                "wlan0": increment_mac(get_device_macaddr("eth0"), 1),
+                "wlan1": increment_mac(get_device_macaddr("eth0"), 2),
+                "lan1": get_device_macaddr("eth1"),
+                "lan2": get_device_macaddr("eth1"),
+                "lan3": get_device_macaddr("eth1"),
+                "lan4": get_device_macaddr("eth1"),
+                "wan": get_device_macaddr("eth1"),
+        }.get(ifname, "")
+    elif board_name == "armada-385-linksys-rango":
+        return {
+                "lan1": get_device_macaddr("eth1"),
+                "lan2": get_device_macaddr("eth1"),
+                "lan3": get_device_macaddr("eth1"),
+                "lan4": get_device_macaddr("eth1"),
+                "wan": get_device_macaddr("eth1"),
+        }.get(ifname, "")
     return ""
-
-linksys_switch = [{"name":"switch0",
-                   "ports":[{"id":"0","pvid":"1","cpu_port":False},
-                            {"id":"1","pvid":"1","cpu_port":False},
-                            {"id":"2","pvid":"1","cpu_port":False},
-                            {"id":"3","pvid":"1","cpu_port":False},
-                            {"id":"4","pvid":"2","cpu_port":False},
-                            {"id":"5","pvid":"1","cpu_port":True},
-                            {"id":"6","pvid":"2","cpu_port":True}],
-                   "vlans":[{"id":"1"},
-                            {"id":"2"}],
-                 }]
 
 def get_switch_settings():
     board_name = get_board_name()
     return {
-            "armada-385-linksys-shelby": linksys_switch,
-            "armada-385-linksys-rango": linksys_switch,
     }.get(board_name, [])
     return ""

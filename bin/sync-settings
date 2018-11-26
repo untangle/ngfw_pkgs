@@ -94,6 +94,7 @@ def cleanup(code):
     cleanup_tmpdirs()
     exit(code)
 
+    
 def print_usage():
     """Print usage"""
     sys.stderr.write("""\
@@ -331,20 +332,22 @@ def read_settings():
         print("Unable to read settings file: ", exc)
         cleanup(1)
 
+
 def save_settings(settings):
     """
     Save the specified settings to the settings file
     """
     global opts
     try:
-        settings_file = open(opts.filename + ".tmp", 'w')
-        json.dump(settings, settings_file, indent=True, separators=(',', ': '))
+        settings_file = open(opts.filename, 'w')
+        json.dump(settings, settings_file, indent=4, separators=(',', ': '))
         settings_file.flush()
         settings_file.close()
     except IOError as exc:
         print("Unable to save settings file: ", exc)
         cleanup(1)
 
+        
 def create_settings():
     """
     Create settings from scratch
@@ -363,6 +366,7 @@ def create_settings():
     # Cleanup and make new tmpdirs
     cleanup_tmpdirs()
     make_tmpdirs()
+
 
 def sync_to_system(settings):
     """
@@ -437,6 +441,7 @@ def sync_to_system(settings):
         print("\nDone.")
         cleanup(0)
 
+
 def main():
     """
     main()
@@ -480,7 +485,7 @@ def main():
     orig_settings = copy.deepcopy(settings)
     sync.managers.sanitize_settings(settings)
     if json.dumps(orig_settings) != json.dumps(settings):
-        print("Sanitization changed settings. Saving new settings...")
+        print("Sanitization changed settings. Saving new settings...\n")
         save_settings(settings)
 
     # Validate settings
@@ -500,5 +505,6 @@ def main():
     sync_to_system(settings)
 
     exit(0)
+
 
 main()
