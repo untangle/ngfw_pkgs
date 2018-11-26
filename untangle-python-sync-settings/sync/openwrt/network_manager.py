@@ -193,6 +193,7 @@ class NetworkManager:
             file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
         else:
             file.write("\toption ifname '%s'\n" % intf['ifname'])
+        self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
         if intf.get('v4Aliases') != None and intf.get('v4ConfigType') == "STATIC":
@@ -269,6 +270,7 @@ class NetworkManager:
         file.write("\n")
         file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
         file.write("\toption ifname '%s'\n" % intf['ifname'])
+        self.write_macaddr(file, intf.get('macaddr'))
 
         if intf.get('v6ConfigType') == "DHCP":
             file.write("\toption proto 'dhcpv6'\n")
@@ -342,6 +344,7 @@ class NetworkManager:
             interface['downloadKbps'] = 0
             interface['uploadKbps'] = 0
             interface['wanWeight'] = 0
+            interface['macaddr'] = board_util.get_interface_macaddr(interface['device'])
 
             if dev.get('name') == internal_device_name:
                 interface['name'] = 'internal'
@@ -378,6 +381,10 @@ class NetworkManager:
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
 
+    def write_macaddr(self, file, macaddr):
+        if macaddr != "":
+            file.write("\toption macaddr '%s'\n" % macaddr)
+
     def create_settings_switches(self, settings, prefix, delete_list):
         settings['network']['switches'] = board_util.get_switch_settings()
 
@@ -386,6 +393,7 @@ def get_devices():
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
     device_list.extend(get_devices_matching_glob("lan*"))
+    device_list.extend(get_devices_matching_glob("wan*"))
     device_list.extend(get_devices_matching_glob("wlan*"))
     return device_list
 
