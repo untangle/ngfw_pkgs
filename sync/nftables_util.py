@@ -2,13 +2,6 @@
 import re
 import copy
 
-# This exception is thrown when creating a rule command of a non-sensical rule
-# Unlike, other exceptions this exception will just mean the rule gets dropped
-# but no error is throw
-# This is used in cases like a user wants to create a rule to block when
-# dns_prediction == netflix.com and source_address == 192.168.1.100
-# In this case we'll add this rule to both the ip and ip6 tables, but in the ip6 table
-# this makes no sense and we just want this rule silently ignored without an error.
 class NonsensicalException(Exception):
     """
     This exception is thrown when creating a rule command of a non-sensical rule
