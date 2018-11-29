@@ -23,6 +23,17 @@ import time
 import traceback
 import collections
 
+# modify sys.path before import
+# pylint: disable=wrong-import-position
+# need os._exit
+# pylint: disable=protected-access
+# not globals
+# pylint: disable=global-variable-not-assigned
+# not globals
+# pylint: disable=global-statement
+# broad except used to call modules
+# pylint: disable=broad-except
+
 # For running in git/dev, prefer loading from git instead of system
 if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
@@ -94,7 +105,7 @@ def cleanup(code):
     cleanup_tmpdirs()
     exit(code)
 
-    
+
 def print_usage():
     """Print usage"""
     sys.stderr.write("""\
@@ -347,7 +358,7 @@ def save_settings(settings):
         print("Unable to save settings file: ", exc)
         cleanup(1)
 
-        
+
 def create_settings():
     """
     Create settings from scratch

@@ -2,6 +2,9 @@
 import re
 import copy
 
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-return-statements
+
 class NonsensicalException(Exception):
     """
     This exception is thrown when creating a rule command of a non-sensical rule
