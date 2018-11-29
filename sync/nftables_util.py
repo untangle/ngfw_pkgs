@@ -2,8 +2,12 @@
 import re
 import copy
 
+# long functions (case statements etc)
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-return-statements
+# pylint: disable=too-many-statements
+# long argument lists
+# pylint: disable=too-many-arguments
 
 class NonsensicalException(Exception):
     """
