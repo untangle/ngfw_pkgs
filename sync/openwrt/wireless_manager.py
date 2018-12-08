@@ -50,7 +50,11 @@ class WirelessManager:
         path = subprocess.check_output("readlink -f /sys/class/ieee80211/%s/device" % self.get_phy_name(interface), shell=True).decode('ascii').rstrip()
         path = os.path.relpath(path, '/sys/devices')
         if bool(re.search('platform.*/pci*', path)):
-            path = os.path.relpath(path, '/platform')
+            # path = os.path.relpath(path, '/platform')
+            # since /platform doesn't exist it defaults to os.curdir
+            # MFW-153
+            # i'm changing to this for now until a proper fix can be done later
+            path = path.replace('platform/','')
         return path
 
     def get_phy_mac(self, interface):
