@@ -388,13 +388,20 @@ class NetworkManager:
     def create_settings_switches(self, settings, prefix, delete_list):
         settings['network']['switches'] = board_util.get_switch_settings()
 
+def get_wireless_devices():
+    device_list = []
+    devices = subprocess.check_output("find /sys/class/ieee80211 -type l -name 'phy*' | sed -e 's|/sys/class/ieee80211/||' | sort", shell=True).decode('ascii')
+    for dev in devices.splitlines():
+        if dev:
+            device_list.append(dev.replace("phy", "wlan"))
+    return device_list
 
 def get_devices():
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
     device_list.extend(get_devices_matching_glob("lan*"))
     device_list.extend(get_devices_matching_glob("wan*"))
-    device_list.extend(get_devices_matching_glob("wlan*"))
+    device_list.extend(get_wireless_devices())
     return device_list
 
 
