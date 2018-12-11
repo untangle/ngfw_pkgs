@@ -153,8 +153,8 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
         file.write("# restore original direction interface marks\n")
         file.write("nft add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
 
-        file.write("nft add rule inet interface-marks check-dst-interface-mark mark and 0x%x == 0 oifname != lo log prefix \\\"WARNING: Unknown dst intf: \\\"\n" % (self.SRC_INTERFACE_MASK))
-        file.write("nft add rule inet interface-marks check-src-interface-mark mark and 0x%x == 0 iifname != lo log prefix \\\"WARNING: Unknown src intf: \\\"\n" % (self.DST_INTERFACE_MASK))
+        file.write("nft add rule inet interface-marks check-src-interface-mark mark and 0x%x == 0 iifname != lo log prefix \\\"WARNING: Unknown src intf: \\\"\n" % (self.SRC_INTERFACE_MASK))
+        file.write("nft add rule inet interface-marks check-dst-interface-mark mark and 0x%x == 0 oifname != lo log prefix \\\"WARNING: Unknown dst intf: \\\"\n" % (self.DST_INTERFACE_MASK))
 
         # We could just have static rules in restore-interface-marks-reply that just apply the original marks but shifted around a bit
         # However This would require something like:
