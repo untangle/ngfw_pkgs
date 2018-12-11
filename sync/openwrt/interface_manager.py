@@ -1,40 +1,62 @@
+"""This class is responsible for writing interface-marks chains"""
+# pylint: disable=unused-argument
 import os
 import stat
-import sys
-import subprocess
-import datetime
-import traceback
 from sync import registrar
 
-# This class is responsible for writing FIXME
-# based on the settings object passed from sync-settings
-
-
 class InterfaceManager:
-    interface_marks_filename = "/etc/config/nftables-rules.d/101-interface-marks"
+    """InterfaceManager writes /etc/config/nftables-rules.d/101-interface-marks"""
+    INTERFACE_MARKS_FILENAME = "/etc/config/nftables-rules.d/101-interface-marks"
+
+    SRC_INTERFACE_MASK = 0x000000ff
+    SRC_INTERFACE_MASK_INVERSE = 0xffffff00
+    SRC_INTERFACE_SHIFT = 0
+    DST_INTERFACE_MASK = 0x0000ff00
+    DST_INTERFACE_MASK_INVERSE = 0xffff00ff
+    DST_INTERFACE_SHIFT = 8
+    CLIENT_INTERFACE_MASK = 0x000000ff
+    CLIENT_INTERFACE_MASK_INVERSE = 0xffffff00
+    CLIENT_INTERFACE_SHIFT = 0
+    SERVER_INTERFACE_MASK = 0x0000ff00
+    SERVER_INTERFACE_MASK_INVERSE = 0xffff00ff
+    SERVER_INTERFACE_SHIFT = 8
+    SRC_TYPE_MASK = 0x03000000
+    SRC_TYPE_MASK_INVERSE = 0xfcffffff
+    SRC_TYPE_SHIFT = 24
+    DST_TYPE_MASK = 0x0c000000
+    DST_TYPE_MASK_INVERSE = 0xf3ffffff
+    DST_TYPE_SHIFT = 26
+    CLIENT_TYPE_MASK = 0x03000000
+    CLIENT_TYPE_MASK_INVERSE = 0xfcffffff
+    CLIENT_TYPE_SHIFT = 24
+    SERVER_TYPE_MASK = 0x0c000000
+    SERVER_TYPE_MASK_INVERSE = 0xf3ffffff
+    SERVER_TYPE_SHIFT = 26
+    ALL_MASK = 0x0f00ffff
 
     def initialize(self):
-        registrar.register_file(self.interface_marks_filename, "restart-nftables-rules", self)
-        pass
+        """initialize this module"""
+        registrar.register_file(self.INTERFACE_MARKS_FILENAME, "restart-nftables-rules", self)
 
     def sanitize_settings(self, settings):
+        """sanitizes settings"""
         pass
 
     def validate_settings(self, settings):
+        """validates settings"""
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         pass
 
-    def bridged_interface(self, settings, interface):
-        interfaces = settings.get('network').get('interfaces')
-        for intf in interfaces:
-            if intf.get('configType') == "BRIDGED" and intf.get('bridgedTo') == interface.get('interfaceId'):
-                return True
-        return False
+    def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
+        self.write_interface_marks_file(settings, prefix)
 
     def write_interface_marks_file(self, settings, prefix):
-        filename = prefix + self.interface_marks_filename
+        """write_interface_marks_file writes /etc/config/nftables-rules.d/101-interface-marks"""
+        filename = prefix + self.INTERFACE_MARKS_FILENAME
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
@@ -47,14 +69,12 @@ class InterfaceManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
 
-        try:
-            file.write(r"""
+        file.write(r"""
 nft delete table inet interface-marks 2>/dev/null || true
 nft add table inet interface-marks
 nft add chain inet interface-marks prerouting-interface-marks "{ type filter hook prerouting priority -150 ; }"
 nft add chain inet interface-marks forward-interface-marks "{ type filter hook forward priority -150 ; }"
 nft add chain inet interface-marks postrouting-interface-marks "{ type filter hook postrouting priority 0 ; }"
-# nft add chain inet interface-marks output-interface-marks "{ type filter hook output priority 110 ; }"
 nft add chain inet interface-marks restore-interface-marks
 nft add chain inet interface-marks restore-interface-marks-original
 nft add chain inet interface-marks restore-interface-marks-reply
@@ -70,49 +90,85 @@ nft add rule inet interface-marks prerouting-interface-marks jump check-src-inte
 nft add rule inet interface-marks forward-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
-#nft add rule inet interface-marks output-interface-marks jump restore-interface-marks
 """)
+        # We don't set/restore marks in output because there is no src/client mark
+        # and the dst/server mark is handled in postrouting
 
-            interfaces = settings.get('network').get('interfaces')
-            for intf in interfaces:
-                if intf.get('configType') == 'DISABLED':
-                    continue
-                if intf.get('configType') == 'BRIDGED':
-                    continue
-                if self.bridged_interface(settings, intf):
-                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % ("br-b_" + intf.get('name'), intf.get('interfaceId')))
-                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % ("br-b_" + intf.get('name'), intf.get('interfaceId')))
-                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % ("br-b_" + intf.get('name'), (intf.get('interfaceId') << 8)))
-                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % ("br-b_" + intf.get('name'), (intf.get('interfaceId') << 8)))
-                else:
-                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
-                    file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark&0xffffff00\" or \"0x%x&0x00ff\"\n" % (intf.get('netfilterDev'), intf.get('interfaceId')))
-                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
-                    file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark&0xffff00ff\" or \"0x%x&0xff00\"\n" % (intf.get('netfilterDev'), (intf.get('interfaceId') << 8)))
+        interfaces = settings.get('network').get('interfaces')
+        for intf in interfaces:
+            if intf.get('configType') == 'DISABLED':
+                continue
+            if intf.get('configType') == 'BRIDGED':
+                continue
 
-                file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x000000ff == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                file.write("nft add rule inet interface-marks restore-interface-marks-original ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), ((intf.get('interfaceId') << 8) & 0xff00)))
-                file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x000000ff == 0x%x mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
-                file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x0000ff00 == 0x%x mark set mark and 0xffffff00 or 0x%x\n" % (((intf.get('interfaceId') << 8) & 0xff00), intf.get('interfaceId')))
+            # just use the normal interface name
+            # unless its a bridge and then use the bridge zone interface name
+            interface_name = intf.get('netfilterDev')
+            if is_bridge_interface(settings, intf):
+                interface_name = "br-b_" + intf.get('name')
+            interface_type = 2 # lan
+            if intf.get('wan'):
+                interface_type = 1 # wan
+            interface_id = intf.get('interfaceId')
 
-            file.write("nft add rule inet interface-marks check-dst-interface-mark mark and 0x0000ff00 == 0 oifname != \"lo\" log prefix \\\"WARNING: Unknown dst intf: \\\"\n")
-            file.write("nft add rule inet interface-marks check-src-interface-mark mark and 0x000000ff == 0 iifname != \"lo\" log prefix \\\"WARNING: Unknown src intf: \\\"\n")
+            file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.SRC_INTERFACE_MASK_INVERSE, (interface_id << self.SRC_INTERFACE_SHIFT) & self.SRC_INTERFACE_MASK, "set source interface mark"))
+            file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.SRC_INTERFACE_MASK_INVERSE, (interface_id << self.SRC_INTERFACE_SHIFT) & self.SRC_INTERFACE_MASK, "set client interface mark"))
+            file.write("nft add rule inet interface-marks mark-src-interface iifname %s mark set \"mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.SRC_TYPE_MASK_INVERSE, (interface_type << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK, "set source interface type"))
+            file.write("nft add rule inet interface-marks mark-src-interface iifname %s ct mark set \"ct mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.SRC_TYPE_MASK_INVERSE, (interface_type << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK, "set client interface type"))
 
-            file.write("\n")
-        except:
-            print("ERROR:")
-            traceback.print_exception()
-        finally:
-            file.flush()
-            file.close()
+            file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.DST_INTERFACE_MASK_INVERSE, (interface_id << self.DST_INTERFACE_SHIFT) & self.DST_INTERFACE_MASK, "set destination interface mark"))
+            file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.DST_INTERFACE_MASK_INVERSE, (interface_id << self.DST_INTERFACE_SHIFT) & self.DST_INTERFACE_MASK, "set server interface mark"))
+            file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set \"mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.DST_TYPE_MASK_INVERSE, (interface_type << self.DST_TYPE_SHIFT) & self.DST_TYPE_MASK, "set destination interface type"))
+            file.write("nft add rule inet interface-marks mark-dst-interface oifname %s ct mark set \"ct mark & 0x%x\" or \"0x%x\" comment \"%s\"\n" %
+                       (interface_name, self.DST_TYPE_MASK_INVERSE, (interface_type << self.DST_TYPE_SHIFT) & self.DST_TYPE_MASK, "set server interface type"))
+
+            file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x comment \"%s\"\n" %
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK, interface_id << self.CLIENT_INTERFACE_SHIFT,
+                        "if ct mark server interface is X then set the mark client interface to X"))
+            file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x comment \"%s\"\n" %
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK, interface_type << self.CLIENT_TYPE_SHIFT,
+                        "if ct mark server interface is X then set the mark client type to Xs type"))
+            file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x comment \"%s\"\n" %
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK, interface_id << self.SERVER_INTERFACE_SHIFT,
+                        "if ct mark client interface is X then set the mark server interface to X"))
+            file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x comment \"%s\"\n" %
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK, interface_type << self.SERVER_TYPE_SHIFT,
+                        "if ct mark client interface is X then set the mark server type to Xs type"))
+
+        file.write("nft add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x comment \"%s\"\n" %
+                   (self.ALL_MASK, "restore original direction interface marks"))
+
+        # We could just have static rules in restore-interface-marks-reply that just apply the original marks but shifted around a bit
+        # However This would require something like:
+        # mark set mark | ct mark & 0xff << 8
+        # However nft won't let you do this:
+        # Error: Right hand side of binary operation (|) must be constant
+        # So we have to use a ton of rules to do the same thing above
+
+        file.write("\n")
+        file.flush()
+        file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("InterfaceManager: Wrote %s" % filename)
         return
 
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_interface_marks_file(settings, prefix)
-        pass
-
+def is_bridge_interface(settings, interface):
+    """
+    returns true if interface has any other interfaces bridged to it
+    If it does this interface is definitionally a "bridge group"
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get('configType') == "BRIDGED" and intf.get('bridgedTo') == interface.get('interfaceId'):
+            return True
+    return False
 
 registrar.register_manager(InterfaceManager())

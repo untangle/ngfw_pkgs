@@ -1,11 +1,9 @@
-"""nat_manager manages the nat tables and settings"""
+"""This class is responsible for writing the nat-sys chain"""
 # pylint: disable=unused-argument
 import os
 import stat
 from sync import registrar
 
-# This class is responsible for writing FIXME
-# based on the settings object passed from sync-settings
 
 
 class NatManager:
