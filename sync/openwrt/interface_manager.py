@@ -139,16 +139,16 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
 
             file.write("# if ct mark server interface is X then set the mark client interface to X\n")
             file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK, interface_id << self.CLIENT_INTERFACE_SHIFT))
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, interface_id << self.CLIENT_INTERFACE_SHIFT))
             file.write("# if ct mark server interface is X then set the mark client type to Xs type\n")
             file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK, interface_type << self.CLIENT_TYPE_SHIFT))
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK_INVERSE, interface_type << self.CLIENT_TYPE_SHIFT))
             file.write("# if ct mark client interface is X then set the mark server interface to X\n")
             file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK, interface_id << self.SERVER_INTERFACE_SHIFT))
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, interface_id << self.SERVER_INTERFACE_SHIFT))
             file.write("# if ct mark client interface is X then set the mark server type to Xs type\n")
             file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK, interface_type << self.SERVER_TYPE_SHIFT))
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
 
         file.write("# restore original direction interface marks\n")
         file.write("nft add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
