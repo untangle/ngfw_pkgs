@@ -136,9 +136,15 @@ def condition_v4address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv4 family: %s" % family)
     if ":" in value:
         raise Exception("Invalid IPv4 value: " + str(value))
-    exp = "ip " + addr_str
+    return "ip " + addr_str + op_str(op) + value_str(value)
 
-    return exp + op_str(op) + value_str(value)
+def condition_address_type_expression(addr_str, value, op, family):
+    """Generic helper for making destination_type expressions"""
+    if family not in ['ip', 'ip6', 'inet']:
+        raise NonsensicalException("Ignore family: %s" % family)
+    if value not in ['unspec', 'unicast', 'local', 'broadcast', 'anycast', 'multicast', 'blackhole', 'unreachable', 'prohibit']:
+        raise Exception("Invalid address type value: " + str(value))
+    return "fib " + addr_str + " type" + op_str(op) + value_str(value)
 
 def condition_v6address_expression(addr_str, value, op, family):
     """Generic helper for making address expressions"""
@@ -146,17 +152,13 @@ def condition_v6address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv6 family: %s" % family)
     if "." in value:
         raise Exception("Invalid IPv6 value: " + str(value))
-    exp = "ip6 " + addr_str
-
-    return exp + op_str(op) + value_str(value)
+    return "ip6 " + addr_str + op_str(op) + value_str(value)
 
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
         raise Exception("Undefined protocol with port condition")
-    exp = ip_protocol + " " + port_str
-
-    return exp + op_str(op) + value_str(value)
+    return ip_protocol + " " + port_str + op_str(op) + value_str(value)
 
 def condition_ct_state_expression(value, op):
     """Generic helper for making port expressions"""
@@ -208,8 +210,12 @@ def condition_expression(condition, family, ip_protocol=None):
         return "oifname" + op_str(op) + value_str(value)
     elif typ == "SOURCE_ADDRESS":
         return condition_v4address_expression("saddr", value, op, family)
+    elif typ == "SOURCE_ADDRESS_TYPE":
+        return condition_address_type_expression("saddr", value, op, family)
     elif typ == "DESTINATION_ADDRESS":
         return condition_v4address_expression("daddr", value, op, family)
+    elif typ == "DESTINATION_ADDRESS_TYPE":
+        return condition_address_type_expression("daddr", value, op, family)
     elif typ == "SOURCE_ADDRESS_V6":
         return condition_v6address_expression("saddr", value, op, family)
     elif typ == "DESTINATION_ADDRESS_V6":

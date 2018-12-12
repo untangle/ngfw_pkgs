@@ -1,5 +1,7 @@
 """This class is responsible for writing interface-marks chains"""
 # pylint: disable=unused-argument
+# pylint: disable=too-many-statements
+
 import os
 import stat
 from sync import registrar
