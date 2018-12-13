@@ -153,7 +153,7 @@ def default_filter_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "SERVER_ADDRESS",
                     "op": "==",
@@ -173,7 +173,7 @@ def default_filter_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "CLIENT_ADDRESS",
                     "op": "==",
@@ -294,7 +294,7 @@ def default_nat_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "SERVER_PORT",
                     "op": "==",
@@ -459,7 +459,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -476,7 +476,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -523,7 +523,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -540,7 +540,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
