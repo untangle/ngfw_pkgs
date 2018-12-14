@@ -4,8 +4,6 @@ import os
 import stat
 from sync import registrar
 
-
-
 class NatManager:
     """NatManager manages the nat tables and settings"""
     nat_rules_sys_filename = "/etc/config/nftables-rules.d/100-nat"
