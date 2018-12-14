@@ -43,6 +43,18 @@ def op_str(op):
     elif op == ">=":
         return " \">=\" "
 
+def ip_protocol_number_to_str(ip_protocol):
+    """
+    Changes 6,"6","tcp" to "tcp"
+    Changes 17,"17","udp" to "udp"
+    All other values unchanged
+    """
+    if ip_protocol == "6" or ip_protocol == 6:
+        return "tcp"
+    if ip_protocol == "17" or ip_protocol == 17:
+        return "udp"
+    return ip_protocol
+
 def value_str(value):
     """
     Returns a nft formatted value
@@ -76,11 +88,11 @@ def selector_expression(typ, family, ip_protocol=None):
     elif typ == "SOURCE_PORT":
         if ip_protocol is None:
             raise Exception("Undefined protocol with port condition")
-        return ip_protocol + " sport"
+        return ip_protocol_number_to_str(ip_protocol) + " sport"
     elif typ == "DESTINATION_PORT":
         if ip_protocol is None:
             raise Exception("Undefined protocol with port condition")
-        return ip_protocol + " dport"
+        return ip_protocol_number_to_str(ip_protocol) + " dport"
 
     raise Exception("Unsupported selector type " + typ)
 
@@ -158,7 +170,7 @@ def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
         raise Exception("Undefined protocol with port condition")
-    return ip_protocol + " " + port_str + op_str(op) + value_str(value)
+    return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + value_str(value)
 
 def condition_ct_state_expression(value, op):
     """Generic helper for making port expressions"""
@@ -194,6 +206,11 @@ def condition_expression(condition, family, ip_protocol=None):
         raise Exception("Condition missing value: " + str(condition.get('ruleId')))
     if op is None:
         raise Exception("Condition missing op: " + str(condition.get('ruleId')))
+
+    typ = str(typ) # change all types to string
+    op = str(op) # change all types to string
+    value = str(value) # change all types to string
+    unit = str(unit) # change all types to string
 
     if typ == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
@@ -288,7 +305,7 @@ def conditions_expression(conditions, family):
     # set has_protocol_condition to True if this rule as an "IP_PROTOCOL" condition
     ip_protocol = None
     for condition in conditions:
-        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in condition.get('value'):
+        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in str(condition.get('value')):
             ip_protocol = condition.get('value')
 
     strcat = ""
