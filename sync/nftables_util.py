@@ -20,6 +20,28 @@ class NonsensicalException(Exception):
     """
     pass
 
+def sanitize_condition(condition):
+    """
+    Sanitize a condition by correcting the types
+    """
+    condtype = condition.get('type')
+    op = condition.get('op')
+    value = condition.get('value')
+    unit = condition.get('rate_unit')
+
+    if condtype is None:
+        raise Exception("Condition missing type: " + str(condition.get('ruleId')))
+    if value is None:
+        raise Exception("Condition missing value: " + str(condition.get('ruleId')))
+    if op is None:
+        raise Exception("Condition missing op: " + str(condition.get('ruleId')))
+
+    condition['type'] = str(condtype) # change all types to string
+    condition['op'] = str(op) # change all types to string
+    condition['value'] = str(value) # change all types to string
+    condition['unit'] = str(unit) # change all types to string
+    return condition
+
 def check_operation(op, array):
     """Utility function to check that op is in array"""
     if op not in array:
@@ -195,102 +217,91 @@ def condition_limit_rate_expression(value, op, rate_unit):
 
 def condition_expression(condition, family, ip_protocol=None):
     """Build nft expressions from the JSON condition object"""
-    typ = condition.get('type')
+    condition = sanitize_condition(condition)
+    condtype = condition.get('type')
     op = condition.get('op')
     value = condition.get('value')
     unit = condition.get('rate_unit')
 
-    if typ is None:
-        raise Exception("Condition missing type: " + str(condition.get('ruleId')))
-    if value is None:
-        raise Exception("Condition missing value: " + str(condition.get('ruleId')))
-    if op is None:
-        raise Exception("Condition missing op: " + str(condition.get('ruleId')))
-
-    typ = str(typ) # change all types to string
-    op = str(op) # change all types to string
-    value = str(value) # change all types to string
-    unit = str(unit) # change all types to string
-
-    if typ == "IP_PROTOCOL":
+    if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
         return "ip protocol" + op_str(op) + value_str(value.lower())
-    elif typ == "SOURCE_INTERFACE_ZONE":
+    elif condtype == "SOURCE_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x01000000", "0x000000ff", value, op)
-    elif typ == "DESTINATION_INTERFACE_ZONE":
+    elif condtype == "DESTINATION_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x02000000", "0x0000ff00", value, op)
-    elif typ == "SOURCE_INTERFACE_NAME":
+    elif condtype == "SOURCE_INTERFACE_NAME":
         check_operation(op, ["==", "!="])
         return "iifname" + op_str(op) + value_str(value)
-    elif typ == "DESTINATION_INTERFACE_NAME":
+    elif condtype == "DESTINATION_INTERFACE_NAME":
         check_operation(op, ["==", "!="])
         return "oifname" + op_str(op) + value_str(value)
-    elif typ == "SOURCE_ADDRESS":
+    elif condtype == "SOURCE_ADDRESS":
         return condition_v4address_expression("saddr", value, op, family)
-    elif typ == "SOURCE_ADDRESS_TYPE":
+    elif condtype == "SOURCE_ADDRESS_TYPE":
         return condition_address_type_expression("saddr", value, op, family)
-    elif typ == "DESTINATION_ADDRESS":
+    elif condtype == "DESTINATION_ADDRESS":
         return condition_v4address_expression("daddr", value, op, family)
-    elif typ == "DESTINATION_ADDRESS_TYPE":
+    elif condtype == "DESTINATION_ADDRESS_TYPE":
         return condition_address_type_expression("daddr", value, op, family)
-    elif typ == "SOURCE_ADDRESS_V6":
+    elif condtype == "SOURCE_ADDRESS_V6":
         return condition_v6address_expression("saddr", value, op, family)
-    elif typ == "DESTINATION_ADDRESS_V6":
+    elif condtype == "DESTINATION_ADDRESS_V6":
         return condition_v6address_expression("daddr", value, op, family)
-    elif typ == "SOURCE_PORT":
+    elif condtype == "SOURCE_PORT":
         return condition_port_expression("sport", ip_protocol, value, op)
-    elif typ == "DESTINATION_PORT":
+    elif condtype == "DESTINATION_PORT":
         return condition_port_expression("dport", ip_protocol, value, op)
-    elif typ == "CLIENT_INTERFACE_ZONE":
+    elif condtype == "CLIENT_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x01000000", "0x000000ff", value, op)
-    elif typ == "SERVER_INTERFACE_ZONE":
+    elif condtype == "SERVER_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
-    elif typ == "CLIENT_ADDRESS":
+    elif condtype == "CLIENT_ADDRESS":
         return condition_dict_expression("session", "ct id", "client_address", "ipv4_addr", op, value)
-    elif typ == "SERVER_ADDRESS":
+    elif condtype == "SERVER_ADDRESS":
         return condition_dict_expression("session", "ct id", "server_address", "ipv4_addr", op, value)
-    elif typ == "LOCAL_ADDRESS":
+    elif condtype == "LOCAL_ADDRESS":
         return condition_dict_expression("session", "ct id", "local_address", "ipv4_addr", op, value)
-    elif typ == "REMOTE_ADDRESS":
+    elif condtype == "REMOTE_ADDRESS":
         return condition_dict_expression("session", "ct id", "remote_address", "ipv4_addr", op, value)
-    elif typ == "CLIENT_ADDRESS_V6":
+    elif condtype == "CLIENT_ADDRESS_V6":
         return condition_dict_expression("session", "ct id", "client_address", "ipv6_addr", op, value)
-    elif typ == "SERVER_ADDRESS_V6":
+    elif condtype == "SERVER_ADDRESS_V6":
         return condition_dict_expression("session", "ct id", "server_address", "ipv6_addr", op, value)
-    elif typ == "LOCAL_ADDRESS_V6":
+    elif condtype == "LOCAL_ADDRESS_V6":
         return condition_dict_expression("session", "ct id", "local_address", "ipv6_addr", op, value)
-    elif typ == "REMOTE_ADDRESS_V6":
+    elif condtype == "REMOTE_ADDRESS_V6":
         return condition_dict_expression("session", "ct id", "remote_address", "ipv6_addr", op, value)
-    elif typ == "CLIENT_PORT":
+    elif condtype == "CLIENT_PORT":
         return condition_dict_expression("session", "ct id", "client_port", "integer", op, value)
-    elif typ == "SERVER_PORT":
+    elif condtype == "SERVER_PORT":
         return condition_dict_expression("session", "ct id", "server_port", "integer", op, value)
-    elif typ == "LOCAL_PORT":
+    elif condtype == "LOCAL_PORT":
         return condition_dict_expression("session", "ct id", "local_port", "integer", op, value)
-    elif typ == "REMOTE_PORT":
+    elif condtype == "REMOTE_PORT":
         return condition_dict_expression("session", "ct id", "remote_port", "integer", op, value)
-    elif typ == "CLIENT_HOSTNAME":
+    elif condtype == "CLIENT_HOSTNAME":
         return condition_dict_expression("session", "ct id", "client_hostname", "long_string", op, value)
-    elif typ == "SERVER_HOSTNAME":
+    elif condtype == "SERVER_HOSTNAME":
         return condition_dict_expression("session", "ct id", "server_hostname", "long_string", op, value)
-    elif typ == "LOCAL_HOSTNAME":
+    elif condtype == "LOCAL_HOSTNAME":
         return condition_dict_expression("session", "ct id", "local_hostname", "long_string", op, value)
-    elif typ == "REMOTE_HOSTNAME":
+    elif condtype == "REMOTE_HOSTNAME":
         return condition_dict_expression("session", "ct id", "remote_hostname", "long_string", op, value)
-    elif typ == "CLIENT_USERNAME":
+    elif condtype == "CLIENT_USERNAME":
         return condition_dict_expression("session", "ct id", "client_username", "long_string", op, value)
-    elif typ == "SERVER_USERNAME":
+    elif condtype == "SERVER_USERNAME":
         return condition_dict_expression("session", "ct id", "server_username", "long_string", op, value)
-    elif typ == "LOCAL_USERNAME":
+    elif condtype == "LOCAL_USERNAME":
         return condition_dict_expression("session", "ct id", "local_username", "long_string", op, value)
-    elif typ == "REMOTE_USERNAME":
+    elif condtype == "REMOTE_USERNAME":
         return condition_dict_expression("session", "ct id", "remote_username", "long_string", op, value)
-    elif typ == "CT_STATE":
+    elif condtype == "CT_STATE":
         return condition_ct_state_expression(value, op)
-    elif typ == "LIMIT_RATE":
+    elif condtype == "LIMIT_RATE":
         check_operation(op, [">", "<"])
         return condition_limit_rate_expression(value, op, unit)
-    raise Exception("Unsupported condition type " + typ + " " + str(condition.get('ruleId')))
+    raise Exception("Unsupported condition type " + condtype + " " + str(condition.get('ruleId')))
 
 def conditions_expression(conditions, family):
     """
@@ -305,7 +316,8 @@ def conditions_expression(conditions, family):
     # set has_protocol_condition to True if this rule as an "IP_PROTOCOL" condition
     ip_protocol = None
     for condition in conditions:
-        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in str(condition.get('value')):
+        condition = sanitize_condition(condition)
+        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in condition.get('value'):
             ip_protocol = condition.get('value')
 
     strcat = ""
