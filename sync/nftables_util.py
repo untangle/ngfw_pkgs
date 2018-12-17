@@ -273,13 +273,13 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "REMOTE_ADDRESS_V6":
         return condition_dict_expression("session", "ct id", "remote_address", "ipv6_addr", op, value)
     elif condtype == "CLIENT_PORT":
-        return condition_dict_expression("session", "ct id", "client_port", "integer", op, value)
+        return condition_dict_expression("session", "ct id", "client_port", "int", op, value)
     elif condtype == "SERVER_PORT":
-        return condition_dict_expression("session", "ct id", "server_port", "integer", op, value)
+        return condition_dict_expression("session", "ct id", "server_port", "int", op, value)
     elif condtype == "LOCAL_PORT":
-        return condition_dict_expression("session", "ct id", "local_port", "integer", op, value)
+        return condition_dict_expression("session", "ct id", "local_port", "int", op, value)
     elif condtype == "REMOTE_PORT":
-        return condition_dict_expression("session", "ct id", "remote_port", "integer", op, value)
+        return condition_dict_expression("session", "ct id", "remote_port", "int", op, value)
     elif condtype == "CLIENT_HOSTNAME":
         return condition_dict_expression("session", "ct id", "client_hostname", "long_string", op, value)
     elif condtype == "SERVER_HOSTNAME":
