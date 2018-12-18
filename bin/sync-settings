@@ -349,7 +349,8 @@ def read_settings():
         settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
         return settings
     except IOError as exc:
-        print("Unable to read settings file: ", exc)
+        print("Unable to read settings file.", exc)
+        traceback.print_exc()
         cleanup(1)
 
 
@@ -364,7 +365,8 @@ def save_settings(settings):
         settings_file.flush()
         settings_file.close()
     except IOError as exc:
-        print("Unable to save settings file: ", exc)
+        print("Unable to save settings file.", exc)
+        traceback.print_exc()
         cleanup(1)
 
 
@@ -373,10 +375,9 @@ def create_settings():
     Create settings from scratch
     """
     global opts
-    result = call_without_permissions(
-        sync.managers.create_settings_in_tmpdir, opts.filename, opts.tmpdir, opts.tmpdir_delete)
+    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, opts.filename, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
-        print("\nError during sync process. Abort.")
+        print("Failed to create settings.")
         cleanup(result)
 
     deleted_files = calculate_deleted_files(opts.tmpdir_delete)
@@ -394,10 +395,9 @@ def sync_to_system(settings):
     Synchronize these settings to the system
     These settings should have been sanitized and verified before calling this function
     """
-    result = call_without_permissions(
-        sync.managers.sync_to_tmpdirs, settings, opts.tmpdir, opts.tmpdir_delete)
+    result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
-        print("\nError during sync process. Abort.")
+        print("Failed to sync settings.")
         cleanup(result)
 
     # Check that all new files in the tmpdir are registered in the registrar
@@ -504,17 +504,23 @@ def main():
     settings = read_settings()
 
     # Sanitize settings. If they changed, save the new version
-    orig_settings = copy.deepcopy(settings)
-    sync.managers.sanitize_settings(settings)
-    if json.dumps(orig_settings) != json.dumps(settings):
-        print("Sanitization changed settings. Saving new settings...\n")
-        save_settings(settings)
+    try:
+        orig_settings = copy.deepcopy(settings)
+        sync.managers.sanitize_settings(settings)
+        if json.dumps(orig_settings) != json.dumps(settings):
+            print("Sanitization changed settings. Saving new settings...")
+            print()
+            save_settings(settings)
+    except Exception:
+        print("Settings sanitization failed!")
+        traceback.print_exc()
+        cleanup(1)
 
     # Validate settings
     try:
         sync.managers.validate_settings(settings)
     except Exception:
-        print("\nSettings verification failed!\n")
+        print("Settings verification failed!")
         traceback.print_exc()
         cleanup(1)
 
