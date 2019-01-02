@@ -17,6 +17,7 @@ sed -e 's/SSLProtocol all.*/SSLProtocol all -SSLv2 -SSLv3 -TLSv1/' -i /etc/apach
 # remove directive not supported in apache 2.4
 perl -i -pe 's/^SSLMutex/#SSLMutex/' -i /etc/apache2/mods-available/ssl.conf
 
+# Override existing jk conf with our conf
 cat >/etc/apache2/mods-available/jk.conf <<EOF
 <IfModule mod_jk.c>
 
