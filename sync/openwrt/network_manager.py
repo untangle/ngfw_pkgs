@@ -269,7 +269,12 @@ class NetworkManager:
         file = self.network_file
         file.write("\n")
         file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
-        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        if intf.get('is_bridge'):
+            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
+            # documentation says to use "br-" plus logical name
+            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
+        else:
+            file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
 
         if intf.get('v6ConfigType') == "DHCP":
