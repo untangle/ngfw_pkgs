@@ -372,7 +372,7 @@ class NetworkManager:
                 interface['wan'] = True
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'DHCP'
-                interface['v6ConfigType'] = 'DISABLED'
+                interface['v6ConfigType'] = 'DHCP'
                 interface['natEgress'] = True
             else:
                 interface['type'] = 'NIC'
