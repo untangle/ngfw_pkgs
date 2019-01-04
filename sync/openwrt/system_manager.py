@@ -25,6 +25,7 @@ class SystemManager:
         settings['system'] = {}
         settings['system']['hostName'] = 'mfw'
         settings['system']['domainName'] = 'example.com'
+        settings['system']['setupWizard'] = {"completed": False}
 
     def sync_settings(self, settings, prefix, delete_list):
         pass
