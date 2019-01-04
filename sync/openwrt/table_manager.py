@@ -347,7 +347,7 @@ def default_access_rules_table():
             "priority": 0,
             "rules": [{
                 "enabled": True,
-                "description": "Allow established sessions",
+                "description": "Accept established sessions",
                 "ruleId": 1,
                 "conditions": [{
                     "type": "CT_STATE",
@@ -359,7 +359,7 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Allow related sessions",
+                "description": "Accept related sessions",
                 "ruleId": 2,
                 "conditions": [{
                     "type": "CT_STATE",
@@ -371,8 +371,8 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Block invalid packets",
-                "ruleId": 2,
+                "description": "Drop invalid packets",
+                "ruleId": 3,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -380,6 +380,86 @@ def default_access_rules_table():
                 }],
                 "action": {
                     "type": "DROP"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept HTTP (TCP/80)",
+                "ruleId": 4,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "80"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DNS on LANs (TCP/53)",
+                "ruleId": 5,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "53"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DNS on LANs (UDP/53)",
+                "ruleId": 6,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "53"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH (TCP/22)",
+                "ruleId": 7,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "53"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Drop All",
+                "ruleId": 8,
+                "conditions": [],
+                "action": {
+                    "type": "Drop"
                 }
             }]
         }]

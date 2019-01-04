@@ -340,11 +340,7 @@ class NetworkManager:
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
-
-            if interface['device'] in board_util.get_hidden_interfaces():
-                interface['hidden'] = True
-            else:
-                interface['hidden'] = False
+            interface['hidden'] = (interface['device'] in board_util.get_hidden_interfaces())
 
             interface['downloadKbps'] = 0
             interface['uploadKbps'] = 0
