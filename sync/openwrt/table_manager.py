@@ -348,20 +348,8 @@ def default_access_rules_table():
             "priority": 0,
             "rules": [{
                 "enabled": True,
-                "description": "Accept loopback",
-                "ruleId": 1,
-                "conditions": [{
-                    "type": "SOURCE_INTERFACE_NAME",
-                    "op": "==",
-                    "value": "lo"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "enabled": True,
                 "description": "Accept established",
-                "ruleId": 2,
+                "ruleId": 1,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -372,8 +360,8 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept related sessions",
-                "ruleId": 3,
+                "description": "Accept related",
+                "ruleId": 2,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -384,8 +372,8 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Drop invalid packets",
-                "ruleId": 4,
+                "description": "Drop invalid",
+                "ruleId": 3,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -396,12 +384,12 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept ICMP",
-                "ruleId": 5,
+                "description": "Accept loopback",
+                "ruleId": 4,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
+                    "type": "SOURCE_INTERFACE_NAME",
                     "op": "==",
-                    "value": "1"
+                    "value": "lo"
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -409,7 +397,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept HTTP on LANs (TCP/80)",
-                "ruleId": 6,
+                "ruleId": 5,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -429,7 +417,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept HTTP on WANs (TCP/80)",
-                "ruleId": 7,
+                "ruleId": 6,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -449,7 +437,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept SSH on LANs (TCP/22)",
-                "ruleId": 8,
+                "ruleId": 7,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -469,7 +457,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept SSH on WANs (TCP/22)",
-                "ruleId": 9,
+                "ruleId": 8,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -489,7 +477,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (TCP/53)",
-                "ruleId": 10,
+                "ruleId": 9,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -509,7 +497,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (UDP/53)",
-                "ruleId": 11,
+                "ruleId": 10,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -528,8 +516,32 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept DHCP on LANs (UDP/67)",
+                "description": "Accept ICMP",
+                "ruleId": 11,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "58"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept ICMPv6",
                 "ruleId": 12,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "1"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DHCP on LANs (UDP/67)",
+                "ruleId": 13,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -549,7 +561,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DHCPv6 on LANs (UDP/547)",
-                "ruleId": 13,
+                "ruleId": 14,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -569,7 +581,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Drop All",
-                "ruleId": 14,
+                "ruleId": 15,
                 "conditions": [],
                 "action": {
                     "type": "DROP"
