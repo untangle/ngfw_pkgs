@@ -547,6 +547,26 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
+                "description": "Accept DHCPv6 on LANs (UDP/547)",
+                "ruleId": 0,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "547"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
                 "description": "Drop All",
                 "ruleId": 0,
                 "conditions": [],
