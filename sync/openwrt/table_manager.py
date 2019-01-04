@@ -105,6 +105,7 @@ def write_file(filename, table_settings, prefix):
 
 
 def default_filter_rules_table():
+    """default filter rules table"""
     return {
         "name": "filter",
         "family": "inet",
@@ -201,6 +202,7 @@ def default_filter_rules_table():
 
 
 def default_port_forward_table():
+    """default port forward table"""
     return {
         "name": "port-forward",
         "family": "ip,ip6",
@@ -231,6 +233,7 @@ def default_port_forward_table():
 
 
 def default_vote_table():
+    """default vote table"""
     return {
         "name": "vote",
         "family": "ip,ip6,inet",
@@ -278,6 +281,7 @@ def default_vote_table():
 
 
 def default_nat_rules_table():
+    """default nat rules table"""
     return {
         "name": "nat",
         "family": "ip,ip6",
@@ -336,6 +340,7 @@ def default_nat_rules_table():
 
 
 def default_access_rules_table():
+    """default access rules table"""
     return {
         "name": "access",
         "family": "inet",
@@ -580,8 +585,24 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Drop All",
+                "description": "Accept DHCPv6 Replies (UDP/546)",
                 "ruleId": 15,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "546"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Drop All",
+                "ruleId": 16,
                 "conditions": [],
                 "action": {
                     "type": "DROP"
@@ -592,6 +613,7 @@ def default_access_rules_table():
 
 
 def default_web_filter_table():
+    """default web filter table"""
     return {
         "name": "web-filter",
         "family": "ip,ip6",
@@ -608,6 +630,7 @@ def default_web_filter_table():
 
 
 def default_captive_portal_table():
+    """default captive portal table"""
     return {
         "name": "captive-portal",
         "family": "ip,ip6",
@@ -624,6 +647,7 @@ def default_captive_portal_table():
 
 
 def default_shaping_rules_table():
+    """default shaping rules table"""
     return {
         "name": "shaping",
         "family": "inet",
