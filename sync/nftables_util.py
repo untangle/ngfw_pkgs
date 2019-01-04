@@ -90,7 +90,7 @@ def value_str(value):
 def selector_expression(typ, family, ip_protocol=None):
     """generic helper function to build a basic nftables selector expression"""
     if typ == "IP_PROTOCOL":
-        return "ip protocol"
+        return "meta l4proto"
     elif typ == "SOURCE_ADDRESS":
         if family not in ['ip', 'inet']:
             raise NonsensicalException("Ignore IPv4 family: %s" % family)
@@ -225,7 +225,7 @@ def condition_expression(condition, family, ip_protocol=None):
 
     if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
-        return "ip protocol" + op_str(op) + value_str(value.lower())
+        return "meta l4proto" + op_str(op) + value_str(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x03000000", 24, "0x000000ff", value, op)
     elif condtype == "DESTINATION_INTERFACE_ZONE":
