@@ -390,7 +390,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "80"
                 }, {
@@ -410,7 +410,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "80"
                 }, {
@@ -430,7 +430,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "22"
                 }, {
@@ -450,7 +450,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "22"
                 }, {
@@ -470,7 +470,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "53"
                 }, {
@@ -490,7 +490,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "17"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "53"
                 }, {
