@@ -383,7 +383,7 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept HTTP (TCP/80)",
+                "description": "Accept HTTP on LANs (TCP/80)",
                 "ruleId": 4,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -393,6 +393,70 @@ def default_access_rules_table():
                     "type": "SERVER_PORT",
                     "op": "==",
                     "value": "80"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept HTTP on WANs (TCP/80)",
+                "ruleId": 5,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "80"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "wan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH on LANs (TCP/22)",
+                "ruleId": 6,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "22"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH on WANs (TCP/22)",
+                "ruleId": 7,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "22"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "wan"
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -400,7 +464,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (TCP/53)",
-                "ruleId": 5,
+                "ruleId": 8,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -420,7 +484,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (UDP/53)",
-                "ruleId": 6,
+                "ruleId": 9,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -439,27 +503,11 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept SSH (TCP/22)",
-                "ruleId": 7,
-                "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
-                    "type": "SERVER_PORT",
-                    "op": "==",
-                    "value": "53"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "enabled": True,
                 "description": "Drop All",
-                "ruleId": 8,
+                "ruleId": 10,
                 "conditions": [],
                 "action": {
-                    "type": "Drop"
+                    "type": "DROP"
                 }
             }]
         }]
