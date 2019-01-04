@@ -521,7 +521,7 @@ def default_access_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "58"
+                    "value": "1"
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -533,7 +533,7 @@ def default_access_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "1"
+                    "value": "58"
                 }],
                 "action": {
                     "type": "ACCEPT"
