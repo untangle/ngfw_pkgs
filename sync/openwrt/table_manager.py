@@ -527,6 +527,26 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
+                "description": "Accept DHCP on LANs (UDP/67)",
+                "ruleId": 0,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "67"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
                 "description": "Drop All",
                 "ruleId": 0,
                 "conditions": [],
