@@ -131,7 +131,7 @@ def condition_dict_expression(table, key, field, typ, op, value):
 
     return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + typ.strip() + op_str(op) + value_str(value)
 
-def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op):
+def condition_interface_zone_expression(mark_exp, intf_type_mask, intf_type_shift, intf_mask, value, op):
     """A generic helper for generating zone expressions"""
     if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
@@ -140,27 +140,27 @@ def condition_interface_zone_expression(mark_exp, wan_mark, intf_mark, value, op
         # Because wan isn't a specific interface we can't use sets
         # We have no ability to check that mark and logical OR that with checking another mark
         raise Exception("\"wan\" interface condition value can not be used with other values")
-    if "non_wan" in intfs and len(intfs) != 1:
-        # Because non_wan isn't a specific interface we can't use sets
+    if "lan" in intfs and len(intfs) != 1:
+        # Because lan isn't a specific interface we can't use sets
         # We have no ability to check that mark and logical OR that with checking another mark
-        raise Exception("\"non_wan\" interface condition value can not be used with other values")
+        raise Exception("\"lan\" interface condition value can not be used with other values")
 
     if "wan" in intfs:
         if op == "==":
-            return mark_exp + " and " + wan_mark + " != '0'"
+            return mark_exp + " and " + intf_type_mask + " " + format((1<<intf_type_shift), '#010x')
         else:
-            return mark_exp + "  and " + wan_mark + " == '0'"
-    elif "non_wan" in intfs:
+            return mark_exp + " and " + intf_type_mask + " != " + format((1<<intf_type_shift), '#010x')
+    elif "lan" in intfs:
         if op == "==":
-            return mark_exp + " and " + wan_mark + " == '0'"
+            return mark_exp + " and " + intf_type_mask + " " + format((2<<intf_type_shift), '#010x')
         else:
-            return mark_exp + " and " + wan_mark + " != '0'"
+            return mark_exp + " and " + intf_type_mask + " != " + format((2<<intf_type_shift), '#010x')
     else:
         try:
             if op == "==":
-                return mark_exp + " and " + intf_mark + " " + value_str(value)
+                return mark_exp + " and " + intf_mask + " " + value_str(value)
             else:
-                return mark_exp + " and " + intf_mark + " != " + value_str(value)
+                return mark_exp + " and " + intf_mask + " != " + value_str(value)
         except ValueError:
             raise Exception("Invalid interface condition value: " + str(value))
 
@@ -227,9 +227,9 @@ def condition_expression(condition, family, ip_protocol=None):
         check_operation(op, ["==", "!="])
         return "ip protocol" + op_str(op) + value_str(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
-        return condition_interface_zone_expression("mark", "0x01000000", "0x000000ff", value, op)
+        return condition_interface_zone_expression("mark", "0x03000000", 24, "0x000000ff", value, op)
     elif condtype == "DESTINATION_INTERFACE_ZONE":
-        return condition_interface_zone_expression("mark", "0x02000000", "0x0000ff00", value, op)
+        return condition_interface_zone_expression("mark", "0x0c000000", 26, "0x0000ff00", value, op)
     elif condtype == "SOURCE_INTERFACE_NAME":
         check_operation(op, ["==", "!="])
         return "iifname" + op_str(op) + value_str(value)
@@ -253,9 +253,9 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "DESTINATION_PORT":
         return condition_port_expression("dport", ip_protocol, value, op)
     elif condtype == "CLIENT_INTERFACE_ZONE":
-        return condition_interface_zone_expression("ct mark", "0x01000000", "0x000000ff", value, op)
+        return condition_interface_zone_expression("ct mark", "0x03000000", 24, "0x000000ff", value, op)
     elif condtype == "SERVER_INTERFACE_ZONE":
-        return condition_interface_zone_expression("ct mark", "0x02000000", "0x0000ff00", value, op)
+        return condition_interface_zone_expression("ct mark", "0x0c000000", 26, "0x0000ff00", value, op)
     elif condtype == "CLIENT_ADDRESS":
         return condition_dict_expression("session", "ct id", "client_address", "ipv4_addr", op, value)
     elif condtype == "SERVER_ADDRESS":
