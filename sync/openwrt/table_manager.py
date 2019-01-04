@@ -117,7 +117,7 @@ def default_filter_rules_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call new session filter rules",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -126,7 +126,7 @@ def default_filter_rules_table():
             }, {
                 "enabled": True,
                 "description": "Call early-session session filter rules",
-                "ruleId": 2,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -135,7 +135,7 @@ def default_filter_rules_table():
             }, {
                 "enabled": True,
                 "description": "Call deep-session (all packets) session filter rules",
-                "ruleId": 3,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -147,7 +147,7 @@ def default_filter_rules_table():
             "description": "The chain to process the first packet of each session (new sessions)",
             "default": True,
             "rules": [{
-                "ruleId": 1,
+                "ruleId": 0,
                 "description": "Example: A rule of blocking TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
@@ -167,7 +167,7 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }, {
-                "ruleId": 2,
+                "ruleId": 0,
                 "description": "Example: A rule of blocking TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{
@@ -214,7 +214,7 @@ def default_port_forward_table():
             "rules": [{
                 "enabled": False,
                 "description": "Example: Forward 1.2.3.4 to 1.2.3.5",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "DESTINATION_ADDRESS",
                     "op": "==",
@@ -243,7 +243,7 @@ def default_vote_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call route-vote-rules",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -260,7 +260,7 @@ def default_vote_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call route-vote-rules",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -290,7 +290,7 @@ def default_nat_rules_table():
             "rules": [{
                 "enabled": True,
                 "description": "Example: NAT TCP port 25 to 1.2.3.4",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -307,7 +307,7 @@ def default_nat_rules_table():
             }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.100 to 1.2.3.4",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "SOURCE_ADDRESS",
                     "op": "==",
@@ -320,7 +320,7 @@ def default_nat_rules_table():
             }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.200 to Auto",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "SOURCE_ADDRESS",
                     "op": "==",
@@ -348,7 +348,7 @@ def default_access_rules_table():
             "rules": [{
                 "enabled": True,
                 "description": "Accept established sessions",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -360,7 +360,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept related sessions",
-                "ruleId": 2,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -372,7 +372,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Drop invalid packets",
-                "ruleId": 3,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
@@ -383,8 +383,20 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
+                "description": "Accept ICMP",
+                "ruleId": 0,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "1"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
                 "description": "Accept HTTP on LANs (TCP/80)",
-                "ruleId": 4,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -404,7 +416,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept HTTP on WANs (TCP/80)",
-                "ruleId": 5,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -424,7 +436,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept SSH on LANs (TCP/22)",
-                "ruleId": 6,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -444,7 +456,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept SSH on WANs (TCP/22)",
-                "ruleId": 7,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -464,7 +476,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (TCP/53)",
-                "ruleId": 8,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -484,7 +496,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (UDP/53)",
-                "ruleId": 9,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -504,7 +516,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Drop All",
-                "ruleId": 10,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "DROP"
@@ -560,7 +572,7 @@ def default_shaping_rules_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call prioritization-rules",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -569,7 +581,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "Call limiting-rules",
-                "ruleId": 2,
+                "ruleId": 0,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -583,7 +595,7 @@ def default_shaping_rules_table():
             "rules": [{
                 "enabled": False,
                 "description": "VoIP (SIP) Traffic",
-                "ruleId": 1,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -600,7 +612,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": False,
                 "description": "VoIP (IAX) Traffic",
-                "ruleId": 2,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -617,7 +629,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "Ping Priority",
-                "ruleId": 3,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -630,7 +642,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "DNS Priority",
-                "ruleId": 4,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -647,7 +659,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "SSH Priority",
-                "ruleId": 5,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -664,7 +676,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "Openvpn Priority",
-                "ruleId": 6,
+                "ruleId": 0,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
