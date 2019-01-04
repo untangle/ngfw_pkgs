@@ -347,7 +347,19 @@ def default_access_rules_table():
             "priority": 0,
             "rules": [{
                 "enabled": True,
-                "description": "Accept established sessions",
+                "description": "Accept loopback",
+                "ruleId": 0,
+                "conditions": [{
+                    "type": "SOURCE_INTERFACE_NAME",
+                    "op": "==",
+                    "value": "lo"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept established",
                 "ruleId": 0,
                 "conditions": [{
                     "type": "CT_STATE",
