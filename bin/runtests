@@ -13,6 +13,7 @@ import time
 import traceback
 import unittest
 import importlib
+import datetime
 
 class ArgumentParser(object):
     """Command line argument parser"""
@@ -198,6 +199,7 @@ def run_test_suite(suite):
         sys.stderr = logfile
 
         test_start_time = time.time()
+        runtests.test_start_time = datetime.datetime.now()
 
         print("\n\n")
         print("="*70)
