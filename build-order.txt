@@ -2,6 +2,7 @@ untangle-hardware-azure-byol		stretch
 untangle-hardware-azure-payg		stretch
 untangle-suricata-config		stretch
 untangle-python-sync-settings		stretch
+untangle-python-runtests		stretch
 untangle-pyconnector			stretch
 untangle-development-kernel		stretch
 untangle-root				stretch
