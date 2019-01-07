@@ -311,7 +311,8 @@ runtests.remote_control.verbosity = parser.verbosity
 runtests.remote_control.logfile = logfile
 runtests.remote_control.interface = int(parser.internal_intf_id)
 runtests.remote_control.interface_external = int(parser.external_intf_id)
-runtests.remote_control.quick_tests_only = parser.quick_tests_only
+
+runtests.quick_tests_only = parser.quick_tests_only
 
 if ("environment" in parser.suites_to_run or "all" in parser.suites_to_run) and "environment" not in parser.suites_to_exclude:
     run_environment_tests()
