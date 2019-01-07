@@ -44,13 +44,13 @@ class WirelessManager:
         self.write_wireless_file(settings, prefix)
 
     def get_phy_name(self, interface):
-        return subprocess.check_output("cat /sys/class/net/%s/phy80211/name" % interface['device'], shell=True).decode('ascii').rstrip()
+        return interface['device'].replace("wlan", "phy")
 
     def get_phy_path(self, interface):
         path = subprocess.check_output("readlink -f /sys/class/ieee80211/%s/device" % self.get_phy_name(interface), shell=True).decode('ascii').rstrip()
         path = os.path.relpath(path, '/sys/devices')
         if bool(re.search('platform.*/pci*', path)):
-            path = os.path.relpath(path, '/platform')
+            path = os.path.relpath(path, 'platform')
         return path
 
     def get_phy_mac(self, interface):
@@ -126,6 +126,7 @@ class WirelessManager:
                 file.write("\n")
                 file.write("config wifi-iface 'default_radio%d'\n" % devidx)
                 file.write("\toption device 'radio%d'\n" % devidx)
+                file.write("\toption ifname '%s'\n" % intf.get('device'))
                 if intf.get('configType') == 'BRIDGED':
                     file.write("\toption network '%s'\n" % self.get_bridge_name(settings, intf))
                 elif intf.get('configType') == 'ADDRESSED':

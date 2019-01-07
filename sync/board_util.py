@@ -60,7 +60,7 @@ def increment_mac(mac, inc):
     eth_mac = mac.split(':')
     nic = int("".join([eth_mac[3], eth_mac[4], eth_mac[5]]), 16)
     nic += inc
-    new_nic = "%6x" % nic
+    new_nic = "%06x" % nic
     return ":".join([eth_mac[0], eth_mac[1], eth_mac[2], new_nic[0:2], new_nic[2:4], new_nic[4:6]]) 
 
 def get_interface_macaddr(ifname):
