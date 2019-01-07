@@ -5,7 +5,7 @@ from . import wireless_manager
 from . import interface_manager
 from . import dhcp_manager
 from . import nat_manager
-from . import admin_manager
+from . import accounts_manager
 from . import reports_manager
 from . import qos_manager
 from . import route_manager

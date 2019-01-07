@@ -1,27 +1,25 @@
+"Handles accounts/admin settings"
+# pylint: disable=unused-argument
+# pylint: disable=no-self-use
 import crypt
 import os
 import stat
-import sys
-import subprocess
-import datetime
-import traceback
 from sync import registrar
-from sync import nftables_util
 
-# This class is responsible for managing the "admin" (credentials) settings
-
-class AdminManager:
+class AccountsManager:
+    """AccountsManager is responsible for managing the "accounts" (credentials) settings"""
     password_setter_filename = "/etc/config/startup.d/100-setpasswd"
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.password_setter_filename, "startup-scripts", self)
-        pass
 
     def sanitize_settings(self, settings):
-        admin = settings.get('admin')
-        if admin is None:
+        """sanitizes removes the cleartext password and replaces with the proper hashes"""
+        accounts = settings.get('accounts')
+        if accounts is None:
             return
-        creds = admin.get('credentials')
+        creds = accounts.get('credentials')
         if creds is None:
             return
         for cred in creds:
@@ -38,22 +36,24 @@ class AdminManager:
         return
 
     def validate_settings(self, settings):
+        """validates settings"""
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['admin'] = {}
-        settings['admin']['credentials'] = [{
+        settings['accounts'] = {}
+        settings['accounts']['credentials'] = [{
             "username": "admin",
             "passwordCleartext": "passwd"
         }]
-        pass
 
     def sync_settings(self, settings, prefix, delete_list):
-        admin = settings.get('admin')
-        if admin is None:
+        """syncs settings"""
+        accounts = settings.get('accounts')
+        if accounts is None:
             return
-        creds = admin.get('credentials')
+        creds = accounts.get('credentials')
         if creds is None:
             return
 
@@ -70,11 +70,13 @@ class AdminManager:
             if cred["username"] == "admin":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
                 return
+
         # if not found, delete any previous password script
-        delete_list.append(password_setter_filename)
+        delete_list.append(self.password_setter_filename)
         return
 
     def write_password_setter(self, phash, prefix):
+        """Write the script to set the password in /tmp/shadow"""
         filename = prefix + self.password_setter_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -90,7 +92,7 @@ class AdminManager:
 
         file.write('TMPFILE="/tmp/shadow"\n')
         file.write('/bin/sed -e \'s|^\\(root:\\)[^:]*\\(:.*\\)$|\\1')
-        file.write(phash.replace("$","\$"))
+        file.write(phash.replace("$", r"\$"))
         file.write('\\2|\' /etc/shadow > $TMPFILE\n')
         file.write('\n')
 
@@ -104,7 +106,7 @@ class AdminManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        print("AdminManager: Wrote %s" % filename)
+        print("AccountsManager: Wrote %s" % filename)
         return
 
-registrar.register_manager(AdminManager())
+registrar.register_manager(AccountsManager())
