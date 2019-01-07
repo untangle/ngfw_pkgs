@@ -1,30 +1,29 @@
+"""table manager manages nftable tables"""
+# pylint: disable=unused-argument
+# pylint: disable=bare-except
 import os
 import stat
-import sys
-import subprocess
-import datetime
-import traceback
 from sync import registrar
 from sync import nftables_util
 
-# This class is responsible for writing all of the tables
-# from settings/firewall/tables
-
-
 class TableManager:
+    """ReportsManager manages the all the firewall tables"""
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.filename_prefix + ".*", "restart-nftables-rules", self)
-        pass
 
     def sanitize_settings(self, settings):
+        """sanitizes settings"""
         pass
 
     def validate_settings(self, settings):
+        """validates settings"""
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
         tables = {}
@@ -40,40 +39,18 @@ class TableManager:
         settings['firewall'] = {}
         settings['firewall']['tables'] = tables
 
-    def write_file(self, filename, table_settings, prefix):
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        file = open(filename, "w+")
-        file.write("#!/bin/sh")
-        file.write("\n\n")
-
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n\n")
-
-        file.write(nftables_util.table_all_cmds(table_settings) + "\n")
-
-        file.write("\n")
-        file.flush()
-        file.close()
-
-        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-        print("TableManager: Wrote %s" % filename)
-        return
-
     def write_files(self, settings, prefix, delete_list):
-        if settings.get('firewall') == None or settings.get('firewall').get('tables') == None:
+        """writes the rule files"""
+        if settings.get('firewall') is None or settings.get('firewall').get('tables') is None:
             return
 
         i = 0
-        for table_name, table in sorted(settings.get('firewall').get('tables').items()):
-            if table.get('name') == None:
+        for _, table in sorted(settings.get('firewall').get('tables').items()):
+            if table.get('name') is None:
                 raise Exception('Invalid table: Missing name')
-            if table.get('family') == None:
+            if table.get('family') is None:
                 raise Exception('Invalid table %s: Missing family' % table.get('name'))
-            if table.get('chains') == None:
+            if table.get('chains') is None:
                 raise Exception('Invalid table %s: Missing chains' % table.get('name'))
 
             filename_noprefix = self.filename_prefix + ("%02d-%s" % (i, table.get('name')))
@@ -82,28 +59,53 @@ class TableManager:
                 delete_list.remove(filename_noprefix)
             except:
                 pass
-            self.write_file(filename, table, prefix)
+            write_file(filename, table, prefix)
             i = i+1
 
     def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
+
         # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
         # Remove all the files that we write later
         # This ensures that all the existing /etc/config/nftables-rules.d/2* that we don't
         # write get removed
-        for (dirpath, dirnames, filenames) in os.walk("/etc/config/nftables-rules.d/"):
+        for (dirpath, _, filenames) in os.walk("/etc/config/nftables-rules.d/"):
             for filename in filenames:
                 if filename.startswith("2"):
                     full_name = dirpath + filename
                     delete_list.append(full_name)
         # Write all the /etc/config/nftables-rules.d/2.* files
         self.write_files(settings, prefix, delete_list)
-        pass
-
 
 registrar.register_manager(TableManager())
 
+def write_file(filename, table_settings, prefix):
+    """write_file writes the specified file"""
+    file_dir = os.path.dirname(filename)
+    if not os.path.exists(file_dir):
+        os.makedirs(file_dir)
+
+    file = open(filename, "w+")
+    file.write("#!/bin/sh")
+    file.write("\n\n")
+
+    file.write("## Auto Generated\n")
+    file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+    file.write("\n\n")
+
+    file.write(nftables_util.table_all_cmds(table_settings) + "\n")
+
+    file.write("\n")
+    file.flush()
+    file.close()
+
+    os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+    print("TableManager: Wrote %s" % filename)
+    return
+
 
 def default_filter_rules_table():
+    """default filter rules table"""
     return {
         "name": "filter",
         "family": "inet",
@@ -153,7 +155,7 @@ def default_filter_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "SERVER_ADDRESS",
                     "op": "==",
@@ -173,7 +175,7 @@ def default_filter_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "CLIENT_ADDRESS",
                     "op": "==",
@@ -200,6 +202,7 @@ def default_filter_rules_table():
 
 
 def default_port_forward_table():
+    """default port forward table"""
     return {
         "name": "port-forward",
         "family": "ip,ip6",
@@ -230,6 +233,7 @@ def default_port_forward_table():
 
 
 def default_vote_table():
+    """default vote table"""
     return {
         "name": "vote",
         "family": "ip,ip6,inet",
@@ -260,7 +264,7 @@ def default_vote_table():
             "rules": [{
                 "enabled": True,
                 "description": "Call route-vote-rules",
-                "ruleId": 1,
+                "ruleId": 2,
                 "conditions": [],
                 "action": {
                     "type": "JUMP",
@@ -277,6 +281,7 @@ def default_vote_table():
 
 
 def default_nat_rules_table():
+    """default nat rules table"""
     return {
         "name": "nat",
         "family": "ip,ip6",
@@ -294,7 +299,7 @@ def default_nat_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "SERVER_PORT",
                     "op": "==",
@@ -307,7 +312,7 @@ def default_nat_rules_table():
             }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.100 to 1.2.3.4",
-                "ruleId": 1,
+                "ruleId": 2,
                 "conditions": [{
                     "type": "SOURCE_ADDRESS",
                     "op": "==",
@@ -320,7 +325,7 @@ def default_nat_rules_table():
             }, {
                 "enabled": True,
                 "description": "Example: NAT client 192.168.1.200 to Auto",
-                "ruleId": 1,
+                "ruleId": 3,
                 "conditions": [{
                     "type": "SOURCE_ADDRESS",
                     "op": "==",
@@ -335,6 +340,7 @@ def default_nat_rules_table():
 
 
 def default_access_rules_table():
+    """default access rules table"""
     return {
         "name": "access",
         "family": "inet",
@@ -347,7 +353,7 @@ def default_access_rules_table():
             "priority": 0,
             "rules": [{
                 "enabled": True,
-                "description": "Allow established sessions",
+                "description": "Accept established",
                 "ruleId": 1,
                 "conditions": [{
                     "type": "CT_STATE",
@@ -359,7 +365,7 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Allow related sessions",
+                "description": "Accept related",
                 "ruleId": 2,
                 "conditions": [{
                     "type": "CT_STATE",
@@ -371,13 +377,233 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Block invalid packets",
-                "ruleId": 2,
+                "description": "Drop invalid",
+                "ruleId": 3,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
                     "value": "invalid"
                 }],
+                "action": {
+                    "type": "DROP"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept loopback",
+                "ruleId": 4,
+                "conditions": [{
+                    "type": "SOURCE_INTERFACE_NAME",
+                    "op": "==",
+                    "value": "lo"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept HTTP on LANs (TCP/80)",
+                "ruleId": 5,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "80"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept HTTP on WANs (TCP/80)",
+                "ruleId": 6,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "80"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "wan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH on LANs (TCP/22)",
+                "ruleId": 7,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "22"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH on WANs (TCP/22)",
+                "ruleId": 8,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "22"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "wan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DNS on LANs (TCP/53)",
+                "ruleId": 9,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "53"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DNS on LANs (UDP/53)",
+                "ruleId": 10,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "53"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept ICMP",
+                "ruleId": 11,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "1"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept ICMPv6",
+                "ruleId": 12,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "58"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DHCP on LANs (UDP/67)",
+                "ruleId": 13,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "67"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DHCPv6 on LANs (UDP/547)",
+                "ruleId": 14,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "547"
+                }, {
+                    "type": "SOURCE_INTERFACE_ZONE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept DHCPv6 Replies (UDP/546)",
+                "ruleId": 15,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "546"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Drop All",
+                "ruleId": 16,
+                "conditions": [],
                 "action": {
                     "type": "DROP"
                 }
@@ -387,6 +613,7 @@ def default_access_rules_table():
 
 
 def default_web_filter_table():
+    """default web filter table"""
     return {
         "name": "web-filter",
         "family": "ip,ip6",
@@ -403,6 +630,7 @@ def default_web_filter_table():
 
 
 def default_captive_portal_table():
+    """default captive portal table"""
     return {
         "name": "captive-portal",
         "family": "ip,ip6",
@@ -419,6 +647,7 @@ def default_captive_portal_table():
 
 
 def default_shaping_rules_table():
+    """default shaping rules table"""
     return {
         "name": "shaping",
         "family": "inet",
@@ -459,7 +688,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -476,7 +705,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -523,7 +752,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
@@ -540,7 +769,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "tcp"
+                    "value": "6"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",

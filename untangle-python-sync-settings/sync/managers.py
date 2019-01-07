@@ -1,3 +1,5 @@
+"""Manager helper functions"""
+# pylint: disable=bare-except
 import traceback
 import os
 
@@ -11,9 +13,8 @@ def managers_init():
     for manager in registrar.managers:
         try:
             manager.initialize()
-        except Exception as e:
+        except:
             traceback.print_exc()
-            print("Abort. (errors)")
             return 1
     return 0
 
@@ -24,14 +25,14 @@ def sanitize_settings(settings):
     If the settings change, save them
     """
     for manager in registrar.managers:
-            manager.sanitize_settings(settings)
+        manager.sanitize_settings(settings)
 
 def validate_settings(settings):
     """
     Validate the settings
     """
     for manager in registrar.managers:
-            manager.validate_settings(settings)
+        manager.validate_settings(settings)
 
 def sync_to_tmpdirs(settings, tmpdir, tmpdir_delete):
     """
@@ -41,7 +42,7 @@ def sync_to_tmpdirs(settings, tmpdir, tmpdir_delete):
     for manager in registrar.managers:
         try:
             manager.sync_settings(settings, tmpdir, delete_list)
-        except Exception as e:
+        except:
             traceback.print_exc()
             return 1
 
@@ -68,7 +69,7 @@ def create_settings_in_tmpdir(settings_filename, tmpdir, tmpdir_delete):
     for manager in registrar.managers:
         try:
             manager.create_settings(new_settings, tmpdir, delete_list, settings_filename)
-        except Exception as e:
+        except:
             traceback.print_exc()
             return 1
 

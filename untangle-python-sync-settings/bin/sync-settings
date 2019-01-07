@@ -23,6 +23,17 @@ import time
 import traceback
 import collections
 
+# modify sys.path before import
+# pylint: disable=wrong-import-position
+# need os._exit
+# pylint: disable=protected-access
+# not globals
+# pylint: disable=global-variable-not-assigned
+# not globals
+# pylint: disable=global-statement
+# broad except used to call modules
+# pylint: disable=broad-except
+
 # For running in git/dev, prefer loading from git instead of system
 if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
@@ -30,7 +41,9 @@ import sync
 
 opts = None
 
+
 class Options(object):
+
     """Options parses the command line arguments"""
 
     def __init__(self):
@@ -94,7 +107,7 @@ def cleanup(code):
     cleanup_tmpdirs()
     exit(code)
 
-    
+
 def print_usage():
     """Print usage"""
     sys.stderr.write("""\
@@ -187,14 +200,18 @@ def copy_files(dirname):
     if opts.os_name == 'debian':
         # First copy all the directories that do not exist
         # then copy remaining files
-        # We do this to keep the original permission/ownership on directories, but use the new permission/ownership on files
-        cmd = "find " + dirname + " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + dirname + "/$dir /$dir ; fi ; done"
+        # We do this to keep the original permission/ownership on directories, but
+        # use the new permission/ownership on files
+        cmd = "find " + dirname + \
+            " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + \
+                dirname + "/$dir /$dir ; fi ; done"
         result = run_cmd(cmd)
-        cmd = "find " + dirname + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + dirname + "/$file /$file ; done"
+        cmd = "find " + dirname + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + \
+            dirname + "/$file /$file ; done"
         result += run_cmd(cmd)
     else:
         # OpenWRT does not support printf in find, so go back to cp
-        cmd = "/bin/cp -ar " + dirname+"/*" + " /"
+        cmd = "/bin/cp -ar " + dirname + "/*" + " /"
         result = run_cmd(cmd)
     if result != 0:
         print("Failed to copy results: " + str(result))
@@ -249,7 +266,8 @@ def run_commands(ops, key):
             time1 = time.time()
             result = run_cmd(command)
             time2 = time.time()
-            print("[" + operation + "]: " + command + " done. [" + ("%.2f" % (time2-time1)) + "s]")
+            print("[" + operation + "]: " + command +
+                  " done. [" + ("%.2f" % (time2 - time1)) + "s]")
             if result != 0:
                 print("Error[" + str(result) + "]: " + command)
             ret += result
@@ -297,9 +315,11 @@ def make_tmpdirs():
     try:
         global opts
         opts.tmpdir = tempfile.mkdtemp()
-        os.chmod(opts.tmpdir, os.stat(opts.tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+        os.chmod(opts.tmpdir, os.stat(opts.tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP |
+                 stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
         opts.tmpdir_delete = tempfile.mkdtemp()
-        os.chmod(opts.tmpdir_delete, os.stat(opts.tmpdir_delete).st_mode | stat.S_IEXEC | stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
+        os.chmod(opts.tmpdir_delete, os.stat(opts.tmpdir_delete).st_mode | stat.S_IEXEC |
+                 stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
     except Exception as exc:
         print("Error creating tmp directory.", exc)
         traceback.print_exc()
@@ -329,7 +349,8 @@ def read_settings():
         settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
         return settings
     except IOError as exc:
-        print("Unable to read settings file: ", exc)
+        print("Unable to read settings file.", exc)
+        traceback.print_exc()
         cleanup(1)
 
 
@@ -344,10 +365,11 @@ def save_settings(settings):
         settings_file.flush()
         settings_file.close()
     except IOError as exc:
-        print("Unable to save settings file: ", exc)
+        print("Unable to save settings file.", exc)
+        traceback.print_exc()
         cleanup(1)
 
-        
+
 def create_settings():
     """
     Create settings from scratch
@@ -355,7 +377,7 @@ def create_settings():
     global opts
     result = call_without_permissions(sync.managers.create_settings_in_tmpdir, opts.filename, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
-        print("\nError during sync process. Abort.")
+        print("Failed to create settings.")
         cleanup(result)
 
     deleted_files = calculate_deleted_files(opts.tmpdir_delete)
@@ -375,7 +397,7 @@ def sync_to_system(settings):
     """
     result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
-        print("\nError during sync process. Abort.")
+        print("Failed to sync settings.")
         cleanup(result)
 
     # Check that all new files in the tmpdir are registered in the registrar
@@ -482,17 +504,23 @@ def main():
     settings = read_settings()
 
     # Sanitize settings. If they changed, save the new version
-    orig_settings = copy.deepcopy(settings)
-    sync.managers.sanitize_settings(settings)
-    if json.dumps(orig_settings) != json.dumps(settings):
-        print("Sanitization changed settings. Saving new settings...\n")
-        save_settings(settings)
+    try:
+        orig_settings = copy.deepcopy(settings)
+        sync.managers.sanitize_settings(settings)
+        if json.dumps(orig_settings) != json.dumps(settings):
+            print("Sanitization changed settings. Saving new settings...")
+            print()
+            save_settings(settings)
+    except Exception:
+        print("Settings sanitization failed!")
+        traceback.print_exc()
+        cleanup(1)
 
     # Validate settings
     try:
         sync.managers.validate_settings(settings)
     except Exception:
-        print("\nSettings verification failed!\n")
+        print("Settings verification failed!")
         traceback.print_exc()
         cleanup(1)
 
