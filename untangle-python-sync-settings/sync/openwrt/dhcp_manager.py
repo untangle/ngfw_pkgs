@@ -102,6 +102,7 @@ class DhcpManager:
 
         file.write("\n")
 
+        dhcpv6_in_use = False
         for intf in interfaces:
             if intf.get('configType') == 'ADDRESSED':
                 if intf.get('is_bridge'):
@@ -149,6 +150,7 @@ class DhcpManager:
                                 file.write("\tlist dhcp_option '%s'\n" % dhcpOption.get('value'))
 
                     if intf.get('v6ConfigType') != 'DISABLED':
+                        dhcpv6_in_use = True
                         file.write("\toption dhcpv6 'server'\n")
                         file.write("\toption ra 'server'\n")
 
@@ -158,12 +160,13 @@ class DhcpManager:
                     file.write("\toption ignore '1'\n")
                     file.write("\n")
 
-        file.write("config odhcpd 'odhcpd'\n")
-        file.write("\toption maindhcp '0'\n")
-        file.write("\toption leasefile '/tmp/hosts/odhcpd'\n")
-        file.write("\toption leasetrigger '/usr/sbin/odhcpd-update'\n")
-        file.write("\toption loglevel '4'\n")
-        file.write("\n")
+        if dhcpv6_in_use == True:
+            file.write("config odhcpd 'odhcpd'\n")
+            file.write("\toption maindhcp '0'\n")
+            file.write("\toption leasefile '/tmp/hosts/odhcpd'\n")
+            file.write("\toption leasetrigger '/usr/sbin/odhcpd-update'\n")
+            file.write("\toption loglevel '4'\n")
+            file.write("\n")
 
         if dns.get('staticEntries') != None:
             for entry in dns.get('staticEntries'):
