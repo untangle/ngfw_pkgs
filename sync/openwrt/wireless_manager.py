@@ -7,6 +7,7 @@ import traceback
 import re
 from sync import registrar
 from sync import board_util
+from sync import network_util
 
 # This class is responsible for writing /etc/config/wireless
 # based on the settings object passed from sync-settings
@@ -130,7 +131,7 @@ class WirelessManager:
                 if intf.get('configType') == 'BRIDGED':
                     file.write("\toption network '%s'\n" % self.get_bridge_name(settings, intf))
                 elif intf.get('configType') == 'ADDRESSED':
-                    file.write("\toption network '%s'\n" % (intf.get('name')+"4"))
+                    file.write("\toption network '%s'\n" % (network_util.get_interface_name(settings, intf)))
                 if intf.get('wirelessMode') == 'AP':
                     file.write("\toption mode 'ap'\n")
                 else:
