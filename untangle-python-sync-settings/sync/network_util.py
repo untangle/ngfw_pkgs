@@ -126,4 +126,33 @@ def ipv4_prefix_to_netmask(prefix):
     if prefix < 0 or prefix > 32:
         return None
     return CIDR_MAP.get(prefix)
+
+def is_bridge_interface(settings, interface):
+    """
+    returns true if interface has any other interfaces bridged to it
+    If it does this interface is definitionally a "bridge group"
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get('configType') == "BRIDGED" and \
+           intf.get('bridgedTo') == interface.get('interfaceId'):
+            return True
+    return False
+
+def get_interface_name(settings, intf):
+    """
+    returns the interface name as it would appear in /etc/config/network
+    """
+    interface_name = ""
+    if is_bridge_interface(settings, intf):
+        interface_name = "b_"
+
+    interface_name = interface_name + intf.get('name')
+
+    if intf.get('v4ConfigType') != 'DISABLED':
+        interface_name = interface_name + "4"
+    elif intf.get('v6ConfigType') != 'DISABLED':
+        interface_name = interface_name + "6"
+
+    return interface_name
     
