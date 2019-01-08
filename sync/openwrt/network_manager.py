@@ -80,13 +80,16 @@ class NetworkManager:
 
             if intf.get('is_bridge'):
                 intf['logical_name'] = "b_" + intf['name']
-                intf['ifname'] = intf['logical_name']
+                # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
+                # documentation says to use "br-" plus logical name
+                intf['ifname'] = "br-" + intf['logical_name']
+                intf['netfilterDev'] = intf['ifname']
             else:
                 intf['logical_name'] = intf['name']
                 intf['ifname'] = intf.get('device')
+                intf['netfilterDev'] = intf['device']
 
         for intf in interfaces:
-            intf['netfilterDev'] = intf['device']
             if intf.get('configType') != "DISABLED":
                 self.write_interface_bridge(intf, settings)
                 self.write_interface_v4(intf, settings)
@@ -187,12 +190,7 @@ class NetworkManager:
 
         file.write("\n")
         file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
-        if intf.get('is_bridge'):
-            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
-            # documentation says to use "br-" plus logical name
-            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
-        else:
-            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
@@ -248,12 +246,7 @@ class NetworkManager:
 
         file.write("\n")
         file.write("config interface '%s'\n" % (intf['logical_name']+"4"+"_"+str(count)))
-        if intf.get('is_bridge'):
-            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
-            # documentation says to use "br-" plus logical name
-            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
-        else:
-            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
         file.write("\toption proto 'static'\n")
         file.write("\toption ipaddr '%s'\n" % alias.get('v4Address'))
         file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(alias.get('v4Prefix')))
@@ -269,12 +262,7 @@ class NetworkManager:
         file = self.network_file
         file.write("\n")
         file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
-        if intf.get('is_bridge'):
-            # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
-            # documentation says to use "br-" plus logical name
-            file.write("\toption ifname '%s'\n" % ("br-"+intf['ifname']))
-        else:
-            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
 
         if intf.get('v6ConfigType') == "DHCP":

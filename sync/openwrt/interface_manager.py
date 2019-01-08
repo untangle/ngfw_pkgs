@@ -106,8 +106,6 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
             # just use the normal interface name
             # unless its a bridge and then use the bridge zone interface name
             interface_name = intf.get('netfilterDev')
-            if is_bridge_interface(settings, intf):
-                interface_name = "br-b_" + intf.get('name')
             interface_type = 2 # lan
             if intf.get('wan'):
                 interface_type = 1 # wan
@@ -172,16 +170,5 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("InterfaceManager: Wrote %s" % filename)
         return
-
-def is_bridge_interface(settings, interface):
-    """
-    returns true if interface has any other interfaces bridged to it
-    If it does this interface is definitionally a "bridge group"
-    """
-    interfaces = settings.get('network').get('interfaces')
-    for intf in interfaces:
-        if intf.get('configType') == "BRIDGED" and intf.get('bridgedTo') == interface.get('interfaceId'):
-            return True
-    return False
 
 registrar.register_manager(InterfaceManager())
