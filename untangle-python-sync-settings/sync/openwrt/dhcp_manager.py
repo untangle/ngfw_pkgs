@@ -111,44 +111,46 @@ class DhcpManager:
 
                 file.write("config dhcp '%s'\n" % interface_name)
                 if intf.get('dhcpEnabled') == True:
-                    file.write("\toption interface '%s'\n" % interface_name)
-                    file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
-                                                                               intf.get('dhcpRangeStart')))
-                    file.write("\toption limit '%d'\n" % calc_dhcp_range_limit(intf.get('dhcpRangeStart'), intf.get('dhcpRangeEnd')))
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        file.write("\toption interface '%s'\n" % interface_name)
+                        file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
+                                                                                   intf.get('dhcpRangeStart')))
+                        file.write("\toption limit '%d'\n" % calc_dhcp_range_limit(intf.get('dhcpRangeStart'), intf.get('dhcpRangeEnd')))
 
-                    if intf.get('dhcpLeaseDuration') != None and intf.get('dhcpLeaseDuration') != 0:
-                        file.write("\toption leasetime '%d'\n" % intf.get('dhcpLeaseDuration'))
-                    else:
-                        file.write("\toption leasetime '3600'\n")
+                        if intf.get('dhcpLeaseDuration') != None and intf.get('dhcpLeaseDuration') != 0:
+                            file.write("\toption leasetime '%d'\n" % intf.get('dhcpLeaseDuration'))
+                        else:
+                            file.write("\toption leasetime '3600'\n")
 
-                    file.write("\toption dhcpv6 'server'\n")
-                    file.write("\toption ra 'server'\n")
+                        if intf.get('v4DhcpGatewayOverride') != None and intf.get('v4DhcpGatewayOverride') != "":
+                            file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4DhcpGatewayOverride'))
+                        else:
+                            file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4StaticAddress'))
 
-                    if intf.get('v4DhcpGatewayOverride') != None and intf.get('v4DhcpGatewayOverride') != "":
-                        file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4DhcpGatewayOverride'))
-                    else:
-                        file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4StaticAddress'))
+                        if intf.get('v4DhcpPrefixOverride') != None and intf.get('v4DhcpPrefixOverride') != "":
+                            file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4DhcpPrefixOverride')))
+                        else:
+                            file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
 
-                    if intf.get('v4DhcpPrefixOverride') != None and intf.get('v4DhcpPrefixOverride') != "":
-                        file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4DhcpPrefixOverride')))
-                    else:
-                        file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
+                        if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "":
+                            DNSServers = intf.get('v4DhcpDNS1Override')
+                        else:
+                            DNSServers = intf.get('v4StaticAddress')
 
-                    if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "":
-                        DNSServers = intf.get('v4DhcpDNS1Override')
-                    else:
-                        DNSServers = intf.get('v4StaticAddress')
+                        if intf.get('v4DhcpDNS2Override') != None and intf.get('v4DhcpDNS2Override') != "":
+                            DNSServers = DNSServers + "," + intf.get('v4DhcpDNS2Override')
 
-                    if intf.get('v4DhcpDNS2Override') != None and intf.get('v4DhcpDNS2Override') != "":
-                        DNSServers = DNSServers + "," + intf.get('v4DhcpDNS2Override')
+                        file.write("\tlist dhcp_option '6,%s'\n" % DNSServers)
 
-                    file.write("\tlist dhcp_option '6,%s'\n" % DNSServers)
+                        if intf.get('dhcpOptions') != None:
+                            for dhcpOption in intf.get('dhcpOptions'):
+                                if dhcpOption.get('enabled') == None or not dhcpOption.get('enabled'):
+                                    continue
+                                file.write("\tlist dhcp_option '%s'\n" % dhcpOption.get('value'))
 
-                    if intf.get('dhcpOptions') != None:
-                        for dhcpOption in intf.get('dhcpOptions'):
-                            if dhcpOption.get('enabled') == None or not dhcpOption.get('enabled'):
-                                continue
-                            file.write("\tlist dhcp_option '%s'\n" % dhcpOption.get('value'))
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        file.write("\toption dhcpv6 'server'\n")
+                        file.write("\toption ra 'server'\n")
 
                     file.write("\n")
                 else:
