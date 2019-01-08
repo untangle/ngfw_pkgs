@@ -105,10 +105,7 @@ class DhcpManager:
         dhcpv6_in_use = False
         for intf in interfaces:
             if intf.get('configType') == 'ADDRESSED':
-                if intf.get('is_bridge'):
-                    interface_name = "b_"+intf.get('name')+"4"
-                else:
-                    interface_name = intf.get('name')+"4"
+                interface_name = network_util.get_interface_name(settings, intf)
 
                 file.write("config dhcp '%s'\n" % interface_name)
                 if intf.get('dhcpEnabled') == True:
