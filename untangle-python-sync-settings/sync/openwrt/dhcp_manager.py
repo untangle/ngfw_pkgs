@@ -120,23 +120,20 @@ class DhcpManager:
                         else:
                             file.write("\toption leasetime '3600'\n")
 
-                        if intf.get('v4DhcpGatewayOverride') != None and intf.get('v4DhcpGatewayOverride') != "":
-                            file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4DhcpGatewayOverride'))
+                        if intf.get('dhcpGatewayOverride') != None and intf.get('dhcpGatewayOverride') != "":
+                            file.write("\tlist dhcp_option '3,%s'\n" % intf.get('dhcpGatewayOverride'))
                         else:
                             file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4StaticAddress'))
 
-                        if intf.get('v4DhcpPrefixOverride') != None and intf.get('v4DhcpPrefixOverride') != "":
-                            file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4DhcpPrefixOverride')))
+                        if intf.get('dhcpPrefixOverride') != None and intf.get('dhcpPrefixOverride') != "":
+                            file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('dhcpPrefixOverride')))
                         else:
                             file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
 
-                        if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "":
-                            DNSServers = intf.get('v4DhcpDNS1Override')
+                        if intf.get('dhcpDNSOverride') != None and intf.get('dhcpDNSOverride') != "":
+                            DNSServers = intf.get('dhcpDNSOverride')
                         else:
                             DNSServers = intf.get('v4StaticAddress')
-
-                        if intf.get('v4DhcpDNS2Override') != None and intf.get('v4DhcpDNS2Override') != "":
-                            DNSServers = DNSServers + "," + intf.get('v4DhcpDNS2Override')
 
                         file.write("\tlist dhcp_option '6,%s'\n" % DNSServers)
 
