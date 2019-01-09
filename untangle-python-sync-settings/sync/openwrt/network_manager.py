@@ -275,6 +275,12 @@ class NetworkManager:
 
         if intf.get('v6ConfigType') == "DHCP":
             file.write("\toption proto 'dhcpv6'\n")
+            if intf.get('v6DhcpDNS1Override') != None and intf.get('v6DhcpDNS2Override') != None:
+                file.write("\toption dns '%s %s'\n" % (intf.get('v6DhcpDNS1Override'), intf.get('v6DhcpDNS2Override')))
+                file.write("\toption peerdns '0'\n")
+            elif intf.get('v6DhcpDNS1Override') != None:
+                file.write("\toption dns '%s'\n" % intf.get('v6DhcpDNS1Override'))
+                file.write("\toption peerdns '0'\n")
         elif intf.get('v6ConfigType') == "SLAAC":
             # FIXME
             pass
