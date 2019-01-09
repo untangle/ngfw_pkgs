@@ -213,6 +213,12 @@ class NetworkManager:
             file.write("\toption proto 'dhcp'\n")
             if intf.get('v4DhcpAddressOverride') != None:
                 file.write("\toption ipaddr '%s'\n" % intf.get('v4DhcpAddressOverride'))
+            if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS2Override') != None:
+                file.write("\toption dns '%s %s'\n" % (intf.get('v4DhcpDNS1Override'), intf.get('v4DhcpDNS2Override')))
+                file.write("\toption peerdns '0'\n")
+            elif intf.get('v4DhcpDNS1Override') != None:
+                file.write("\toption dns '%s'\n" % intf.get('v4DhcpDNS1Override'))
+                file.write("\toption peerdns '0'\n")
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
             file.write("\toption force_link '0'\n")
