@@ -211,6 +211,8 @@ class NetworkManager:
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use DHCP on non-WAN interfaces')
             file.write("\toption proto 'dhcp'\n")
+            if intf.get('v4DhcpAddressOverride') != None:
+                file.write("\toption ipaddr '%s'\n" % intf.get('v4DhcpAddressOverride'))
         elif intf.get('v4ConfigType') == "STATIC":
             file.write("\toption proto 'static'\n")
             file.write("\toption force_link '0'\n")
