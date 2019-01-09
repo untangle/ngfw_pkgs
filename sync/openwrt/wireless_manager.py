@@ -81,12 +81,6 @@ class WirelessManager:
                 htmode = "\toption htmode 'VHT80'\n"
         return htmode
 
-    def get_bridge_name(self, settings, interface):
-        interfaces = settings['network']['interfaces']
-        for intf in interfaces:
-            if intf.get('interfaceId') == interface.get('bridgedTo'):
-                return "b_" + intf.get('name')
-
     def write_country(self, file):
         country_code = board_util.get_country_code()
         if country_code != "":
@@ -129,7 +123,7 @@ class WirelessManager:
                 file.write("\toption device 'radio%d'\n" % devidx)
                 file.write("\toption ifname '%s'\n" % intf.get('device'))
                 if intf.get('configType') == 'BRIDGED':
-                    file.write("\toption network '%s'\n" % self.get_bridge_name(settings, intf))
+                    file.write("\toption network '%s'\n" % (network_util.get_bridge_name(settings, intf)))
                 elif intf.get('configType') == 'ADDRESSED':
                     file.write("\toption network '%s'\n" % (network_util.get_interface_name(settings, intf)))
                 if intf.get('wirelessMode') == 'AP':

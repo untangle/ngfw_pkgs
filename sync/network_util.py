@@ -155,4 +155,15 @@ def get_interface_name(settings, intf):
         interface_name = interface_name + "6"
 
     return interface_name
+
+def get_bridge_name(settings, interface):
+    """
+    returns the name of the bridge that this interface is a part of
+    as it would appear in /etc/config/network
+    """
+    interfaces = settings['network']['interfaces']
+    for intf in interfaces:
+        if intf.get('interfaceId') == interface.get('bridgedTo'):
+            return "b_" + intf.get('name')
+    return ""
     
