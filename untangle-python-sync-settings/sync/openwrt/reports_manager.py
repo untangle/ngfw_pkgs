@@ -40,16 +40,22 @@ def default_dashboard_settings():
     """default dashboard settings"""
     return {
         "widgets": [{
+            "name": "Top Clients by Bandwidth",
+            "interval": 10
+        }, {
+            "name": "Top Clients Bandwidth by Time",
+            "interval": 10
+        }, {
+            "name": "Top Applications by Bandwidth",
+            "interval": 5
+        }, {
+            "name": "Top Applications Bandwidth by Time",
+            "interval": 5
+        }, {
             "name": "Top Server Ports by Session Count",
             "interval": 10
         }, {
-            "name": "Top Clients Sessions by Time",
-            "interval": 10
-        }, {
-            "name": "Top Client Addresses by Session Count",
-            "interval": 5
-        }, {
-            "name": "Top Server Port Sessions by Time",
+            "name": "Top Clients by Session Count",
             "interval": 30
         }, {
             "name": "Sessions",
