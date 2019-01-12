@@ -41,19 +41,19 @@ def default_dashboard_settings():
     return {
         "widgets": [{
             "name": "Top Clients by Bandwidth",
-            "interval": 10
+            "interval": 30
         }, {
             "name": "Top Clients Bandwidth by Time",
-            "interval": 10
+            "interval": 30
         }, {
             "name": "Top Applications by Bandwidth",
-            "interval": 5
+            "interval": 30
         }, {
             "name": "Top Applications Bandwidth by Time",
-            "interval": 5
+            "interval": 30
         }, {
             "name": "Top Server Ports by Session Count",
-            "interval": 10
+            "interval": 30
         }, {
             "name": "Top Clients by Session Count",
             "interval": 30
