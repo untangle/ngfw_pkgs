@@ -1,31 +1,34 @@
+"""wireless_manager manages /etc/config/wireless"""
+# pylint: disable=unused-argument
+# pylint: disable=no-self-use
 import os
-import stat
-import sys
 import subprocess
-import datetime
-import traceback
 import re
 from sync import registrar
 from sync import board_util
 from sync import network_util
 
-# This class is responsible for writing /etc/config/wireless
-# based on the settings object passed from sync-settings
-
-
 class WirelessManager:
+    """
+    This class is responsible for writing /etc/config/wireless
+    based on the settings object passed from sync-settings
+    """
     wireless_filename = "/etc/config/wireless"
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
     def sanitize_settings(self, settings):
+        """sanitizes removes blank settings"""
         pass
 
     def validate_settings(self, settings):
+        """validates settings"""
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
@@ -41,10 +44,12 @@ class WirelessManager:
                 intf['wirelessSsid'] = 'Untangle'
 
     def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_wireless_file(settings, prefix)
 
     def get_phy_name(self, interface):
+        "get the phy name for an device"
         return interface['device'].replace("wlan", "phy")
 
     def get_phy_path(self, interface):
