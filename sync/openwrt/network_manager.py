@@ -1,31 +1,38 @@
+"""network_manager manages /etc/config/network"""
+# pylint: disable=unused-argument
+# pylint: disable=no-self-use
 import os
-import stat
-import sys
 import subprocess
-import datetime
-import traceback
 from sync import registrar
 from sync import network_util
 from sync import board_util
 
-# This class is responsible for writing /etc/config/network
-# based on the settings object passed from sync-settings
-
-
 class NetworkManager:
+    """
+    This class is responsible for writing /etc/config/network
+    based on the settings object passed from sync-settings
+    """
     network_filename = "/etc/config/network"
     GREEK_NAMES = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu"]
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.network_filename, "restart-networking", self)
 
     def sanitize_settings(self, settings):
-        pass
+        """sanitizes removes blank settings"""
+        interfaces = settings.get('network').get('interfaces')
+        for intf in interfaces:
+            for k, v in intf.items():
+                if v == "":
+                    del interfaces[k]
 
     def validate_settings(self, settings):
+        """validates settings"""
         pass
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
@@ -36,9 +43,11 @@ class NetworkManager:
         self.create_settings_switches(settings, prefix, delete_list)
 
     def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
         self.write_network_file(settings, prefix)
 
     def write_network_file(self, settings, prefix=""):
+        """write /etc/config/network"""
         filename = prefix + self.network_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -108,6 +117,7 @@ class NetworkManager:
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_route_rules(self, settings):
+        """write the route rules"""
         priority = 70000
         file = self.network_file
         file.write("\n")
@@ -125,6 +135,7 @@ class NetworkManager:
         return
 
     def write_switch(self, swi, settings):
+        """write the switch config"""
         file = self.network_file
 
         file.write("\n")
@@ -151,6 +162,7 @@ class NetworkManager:
         return
 
     def write_interface_bridge(self, intf, settings):
+        """write a bridge interface"""
         if intf.get('configType') != "ADDRESSED":
             return
         if not intf.get('is_bridge'):
@@ -211,12 +223,12 @@ class NetworkManager:
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use DHCP on non-WAN interfaces')
             file.write("\toption proto 'dhcp'\n")
-            if intf.get('v4DhcpAddressOverride') != None:
+            if intf.get('v4DhcpAddressOverride') != None and intf.get('v4DhcpAddressOverride') != "":
                 file.write("\toption ipaddr '%s'\n" % intf.get('v4DhcpAddressOverride'))
-            if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS2Override') != None:
+            if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "" and intf.get('v4DhcpDNS2Override') != None and intf.get('v4DhcpDNS2Override') != "":
                 file.write("\toption dns '%s %s'\n" % (intf.get('v4DhcpDNS1Override'), intf.get('v4DhcpDNS2Override')))
                 file.write("\toption peerdns '0'\n")
-            elif intf.get('v4DhcpDNS1Override') != None:
+            elif intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "":
                 file.write("\toption dns '%s'\n" % intf.get('v4DhcpDNS1Override'))
                 file.write("\toption peerdns '0'\n")
         elif intf.get('v4ConfigType') == "STATIC":
@@ -316,12 +328,14 @@ class NetworkManager:
         file.write("\toption ip6prefix '%s'\n" % alias.get('v6Prefix'))
 
     def create_settings_devices(self, settings, prefix, delete_list):
+        """create device settings"""
         device_list = get_devices()
         settings['network']['devices'] = []
         for dev in device_list:
             settings['network']['devices'].append(new_device_settings(dev))
 
     def create_settings_interfaces(self, settings, prefix, delete_list):
+        """create interfaces settings"""
         device_list = get_devices()
         if len(device_list) == 1:
             internal_device_name = "None"
@@ -376,22 +390,25 @@ class NetworkManager:
                 interface['type'] = 'NIC'
                 interface['wan'] = False
                 interface['configType'] = 'DISABLED'
-                try:
+                if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
-                except:
+                else:
                     interface['name'] = "intf%i" % intf_id
 
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
 
     def write_macaddr(self, file, macaddr):
+        """write macaddr option"""
         if macaddr != "":
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def create_settings_switches(self, settings, prefix, delete_list):
+        """create switches config"""
         settings['network']['switches'] = board_util.get_switch_settings()
 
 def get_wireless_devices():
+    """get wireless devices"""
     device_list = []
     devices = subprocess.check_output("find /sys/class/ieee80211 -type l -name 'phy*' | sed -e 's|/sys/class/ieee80211/||' | sort", shell=True).decode('ascii')
     for dev in devices.splitlines():
@@ -400,6 +417,7 @@ def get_wireless_devices():
     return device_list
 
 def get_devices():
+    """get devices"""
     device_list = []
     device_list.extend(get_devices_matching_glob("eth*"))
     device_list.extend(get_devices_matching_glob("lan*"))
@@ -409,6 +427,7 @@ def get_devices():
 
 
 def get_devices_matching_glob(glob):
+    """get devices matching the specified glob"""
     device_list = []
     devices = subprocess.check_output("find /sys/class/net -type l -name '%s' | sed -e 's|/sys/class/net/||' | sort" % glob, shell=True).decode('ascii')
     for dev in devices.splitlines():
@@ -416,8 +435,8 @@ def get_devices_matching_glob(glob):
             device_list.append(dev)
     return device_list
 
-
 def new_device_settings(devname):
+    """get new device settings"""
     return {
         "name": devname,
         "duplex": "AUTO",
