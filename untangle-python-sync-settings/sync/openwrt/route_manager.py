@@ -213,8 +213,13 @@ class RouteManager:
             if intf.get('configType') == 'DISABLED':
                 continue
             if intf.get('wan'):
+                # FIXME - we should remove wanWeight from interface settings
+                # it should depend on the wan policy, which could have different weights for different purposes
+                weight = intf.get('wanWeight')
+                if weight is None:
+                    weight = 50
                 file.write("\tnetwork_is_up %s4 && {\n" % intf.get('name'))
-                file.write("\t\tROUTE_STR=\"$ROUTE_STR `ip route show table wan.%d | cut -f 1-5 -d ' ' | grep default | sed -e 's/default/nexthop/'` weight %d\"\n" % (intf.get('interfaceId'), intf.get('wanWeight')))
+                file.write("\t\tROUTE_STR=\"$ROUTE_STR `ip route show table wan.%d | cut -f 1-5 -d ' ' | grep default | sed -e 's/default/nexthop/'` weight %d\"\n" % (intf.get('interfaceId'), weight))
                 file.write("\t}\n")
                 file.write("\n")
 
