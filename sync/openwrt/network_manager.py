@@ -1,6 +1,7 @@
 """network_manager manages /etc/config/network"""
 # pylint: disable=unused-argument
 # pylint: disable=no-self-use
+# pylint: disable=too-many-statements
 import os
 import subprocess
 from sync import registrar
@@ -12,8 +13,9 @@ class NetworkManager:
     This class is responsible for writing /etc/config/network
     based on the settings object passed from sync-settings
     """
-    network_filename = "/etc/config/network"
     GREEK_NAMES = ["alpha", "beta", "gamma", "delta", "epsilon", "zeta", "eta", "theta", "iota", "kappa", "lambda", "mu"]
+    network_filename = "/etc/config/network"
+    network_file = None
 
     def initialize(self):
         """initialize this module"""
@@ -23,9 +25,9 @@ class NetworkManager:
         """sanitizes removes blank settings"""
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            for k, v in intf.items():
+            for k, v in dict(intf).items():
                 if v == "":
-                    del interfaces[k]
+                    del intf[k]
 
     def validate_settings(self, settings):
         """validates settings"""
@@ -152,7 +154,7 @@ class NetworkManager:
             vlan_ports = []
             for port in swi['ports']:
                 if port['pvid'] == vlan['id']:
-                    if port['cpu_port'] == True:
+                    if port['cpu_port'] is True:
                         vlan_ports.append("%st" % port['id'])
                     else:
                         vlan_ports.append("%s" % port['id'])
