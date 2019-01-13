@@ -125,7 +125,7 @@ class DhcpManager:
                         else:
                             file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4StaticAddress'))
 
-                        if intf.get('dhcpPrefixOverride') != None and intf.get('dhcpPrefixOverride') != "":
+                        if intf.get('dhcpPrefixOverride') != None and intf.get('dhcpPrefixOverride') != "" and intf.get('dhcpPrefixOverride') != 0:
                             file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('dhcpPrefixOverride')))
                         else:
                             file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
