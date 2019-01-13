@@ -120,7 +120,7 @@ class DhcpManager:
                         else:
                             file.write("\toption leasetime '3600'\n")
 
-                        if intf.get('dhcpGatewayOverride') != None and intf.get('dhcpGatewayOverride') != "":
+                        if intf.get('dhcpGatewayOverride') != None and intf.get('dhcpGatewayOverride') != "" and intf.get('dhcpGatewayOverride') != 0:
                             file.write("\tlist dhcp_option '3,%s'\n" % intf.get('dhcpGatewayOverride'))
                         else:
                             file.write("\tlist dhcp_option '3,%s'\n" % intf.get('v4StaticAddress'))
