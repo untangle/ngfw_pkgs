@@ -353,6 +353,7 @@ class NetworkManager:
         settings['network']['interfaces'] = []
         interface_list = []
         intf_id = 0
+        internal_id = None
         for dev in settings['network']['devices']:
             intf_id = intf_id + 1
             interface = {}
@@ -366,6 +367,7 @@ class NetworkManager:
             interface['macaddr'] = board_util.get_interface_macaddr(interface['device'])
 
             if dev.get('name') == internal_device_name:
+                internal_id = intf_id
                 interface['name'] = 'internal'
                 interface['type'] = 'NIC'
                 interface['wan'] = False
@@ -391,11 +393,15 @@ class NetworkManager:
             else:
                 interface['type'] = 'NIC'
                 interface['wan'] = False
-                interface['configType'] = 'DISABLED'
                 if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 else:
                     interface['name'] = "intf%i" % intf_id
+                if internal_id != None and (dev.get('name').startswith('wlan') or dev.get('name').startswith('lan')):
+                    interface['configType'] = 'BRIDGED'
+                    interface['bridgedTo'] = internal_id
+                else:
+                    interface['configType'] = 'DISABLED'
 
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
