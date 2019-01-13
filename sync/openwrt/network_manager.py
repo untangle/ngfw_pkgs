@@ -24,9 +24,13 @@ class NetworkManager:
     def sanitize_settings(self, settings):
         """sanitizes removes blank settings"""
         interfaces = settings.get('network').get('interfaces')
+        # FIXME for now we remove all "" and 0 values
+        # We need to handle this per setting and define the correct behavior
         for intf in interfaces:
             for k, v in dict(intf).items():
                 if v == "":
+                    del intf[k]
+                if v == 0:
                     del intf[k]
 
     def validate_settings(self, settings):
