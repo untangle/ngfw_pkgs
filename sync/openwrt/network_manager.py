@@ -28,12 +28,14 @@ class NetworkManager:
     def sanitize_settings(self, settings):
         """sanitizes removes blank settings"""
         interfaces = settings.get('network').get('interfaces')
-        # Remove all "" and 0 values
+        # Remove all "" and 0 and null values
         for intf in interfaces:
             for k, v in dict(intf).items():
                 if v == "":
                     del intf[k]
                 if v == 0:
+                    del intf[k]
+                if intf.get(k, "missing") is None:
                     del intf[k]
             # The UI currently doesn't set wan = false for LANS
             # if it is not specified, assume its false
