@@ -388,10 +388,14 @@ class NetworkManager:
             interface['wanWeight'] = 0
             interface['macaddr'] = board_util.get_interface_macaddr(interface['device'])
 
+            if interface['device'].startswith("wlan"):
+                interface['type'] = 'WIFI'
+            else:
+                interface['type'] = 'NIC'
+
             if dev.get('name') == internal_device_name:
                 internal_id = intf_id
                 interface['name'] = 'internal'
-                interface['type'] = 'NIC'
                 interface['wan'] = False
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'STATIC'
@@ -406,14 +410,12 @@ class NetworkManager:
                 interface['v6AssignHint'] = '1234'
             elif dev.get('name') == external_device_name:
                 interface['name'] = 'external'
-                interface['type'] = 'NIC'
                 interface['wan'] = True
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'DHCP'
                 interface['v6ConfigType'] = 'DHCP'
                 interface['natEgress'] = True
             else:
-                interface['type'] = 'NIC'
                 interface['wan'] = False
                 if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
