@@ -91,7 +91,7 @@ class WirelessManager:
             file.write("\toption country '%s'\n" % country_code)
 
     def write_macaddr(self, file, macaddr):
-        if macaddr != "":
+        if macaddr != "" and macaddr != None:
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def write_wireless_file(self, settings, prefix=""):
