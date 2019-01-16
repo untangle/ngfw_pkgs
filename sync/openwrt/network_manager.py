@@ -126,9 +126,12 @@ class NetworkManager:
 
         for intf in interfaces:
             if intf.get('configType') != "DISABLED":
-                self.write_interface_bridge(intf, settings)
-                self.write_interface_v4(intf, settings)
-                self.write_interface_v6(intf, settings)
+                if intf.get('type') == 'OPENVPN':
+                    self.write_interface_tunnel(intf, settings)
+                else:
+                    self.write_interface_bridge(intf, settings)
+                    self.write_interface_v4(intf, settings)
+                    self.write_interface_v6(intf, settings)
 
         switches = settings['network'].get('switches')
         if switches != None:
@@ -186,6 +189,15 @@ class NetworkManager:
             file.write("\n")
 
         return
+
+    def write_interface_tunnel(self, intf, settings):
+        """write a tunnel interface"""
+        file = self.network_file
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % intf['logical_name'])
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption proto 'none'\n")
 
     def write_interface_bridge(self, intf, settings):
         """write a bridge interface"""
