@@ -13,6 +13,7 @@ if [[ $version -lt 236 ]] ; then
   sed -i -e '/^OnFailure=/d' ${CHROOT}/lib/systemd/system/initrd-switch-root.service
 fi
 
+# the UVM will create sources as it sees fit during startup
+echo >| ${CHROOT}/etc/apt/sources.list
+
 exit 0
-
-
