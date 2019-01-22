@@ -26,9 +26,9 @@ untangle-hardware-portwell-u150         stretch
 untangle-hardware-portwell-u500         stretch
 untangle-hardware-portwell-m1500        stretch
 untangle-hardware-portwell-m3000        stretch
-untangle-hardware-portwell-z6           stretch
-untangle-hardware-portwell-z12          stretch
-untangle-hardware-portwell-z20          stretch
+untangle-hardware-caswell-z6            stretch
+untangle-hardware-caswell-z12           stretch
+untangle-hardware-caswell-z20           stretch
 untangle-hardware-jetway-u50w           stretch
 untangle-hardware-asus-ac88u	     	stretch
 untangle-hardware-linksys-wrt1900acs    stretch
