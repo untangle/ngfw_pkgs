@@ -7,6 +7,7 @@ import os
 import stat
 from sync import registrar
 from sync import nftables_util
+from sync import network_util
 
 # This class is responsible for writing /etc/iproute2/rt_tables and /etc/hotplug.d/iface/*
 # based on the settings object passed from sync-settings
@@ -280,7 +281,7 @@ class RouteManager:
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s4 = \"$INTERFACE\" ] && {\n" % intf.get('name'))
+                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\tnft list chain inet wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n")
                     file.write("\t\tnft add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % intf.get('interfaceId'))
                     file.write("\t}\n")
@@ -330,7 +331,7 @@ class RouteManager:
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("\tnetwork_is_up %s4 && {\n" % intf.get('name'))
+                    file.write("\tnetwork_is_up %s && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\t\techo add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
                     file.write("\t\twrite_rules\n")
                     file.write("\t}\n\n")
@@ -339,7 +340,7 @@ class RouteManager:
 
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s4 = \"$INTERFACE\" ] && {\n" % intf.get('name'))
+                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\tnft list chain inet wan-routing route-to-default-wan | grep -q mark-for-wan-%d && {\n" % intf.get('interfaceId'))
                     file.write("\t\tupdate_default_route\n")
                     file.write("\t}\n")
@@ -396,7 +397,7 @@ class RouteManager:
                         weight = 50
                     file.write("\techo flush chain inet wan-routing mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
                     file.write("\techo flush set inet wan-routing wan-%d-table >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\tif network_is_up \"%s4\" ; then\n" % intf.get('name'))
+                    file.write("\tif network_is_up \"%s\" ; then\n" % network_util.get_interface_name(settings, intf))
                     file.write("\t\techo add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x >> $TMPFILE\n" % (intf.get('interfaceId'), (intf.get('interfaceId') << 8) & 0xff00))
                     file.write("\t\techo add rule inet wan-routing route-to-wan-balancer ip saddr . ip daddr @wan-%d-table jump route-to-wan-%d >> $TMPFILE\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
                     file.write("\t\tif [ $TOTAL_WEIGHT -ne 0 ] ; then\n")
@@ -417,7 +418,7 @@ class RouteManager:
 
             for intf in interfaces:
                 if intf.get('wan'):
-                    file.write("[ %s4 = \"$INTERFACE\" ] && {\n" % intf.get('name'))
+                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\tbuild_balance_table\n")
                     file.write("}\n")
                     file.write("\n")
