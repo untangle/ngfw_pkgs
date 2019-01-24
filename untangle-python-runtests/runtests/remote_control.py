@@ -68,12 +68,12 @@ def run_command(command, host=None, stdout=False, nowait=False):
                 return 0
 
         result = proc.wait()
-        output = proc.communicate()[0].strip()
+        output = proc.communicate()[0].strip().decode("utf-8")
         print("Result  : %i"  % result)
         print("Output  : %s"  % output)
         sys.stdout.flush()
         if stdout:
-            return output.decode("utf-8")
+            return output
         else:
             return result
     finally:
