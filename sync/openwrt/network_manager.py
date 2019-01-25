@@ -72,6 +72,11 @@ class NetworkManager:
         """syncs settings"""
         self.write_network_file(settings, prefix)
 
+        # the first go at openvpn support created these files, but
+        # we don't need them anymore.  Eventually this can be removed
+        delete_list.append("/etc/config/ifup.d/30-openvpn")
+        delete_list.append("/etc/config/ifdown.d/30-openvpn")
+
     def write_network_file(self, settings, prefix=""):
         """write /etc/config/network"""
         filename = prefix + self.network_filename
@@ -197,7 +202,12 @@ class NetworkManager:
         file.write("\n")
         file.write("config interface '%s'\n" % intf['logical_name'])
         file.write("\toption ifname '%s'\n" % intf['ifname'])
-        file.write("\toption proto 'none'\n")
+        file.write("\toption proto 'openvpn'\n")
+        file.write("\toption config '%s'\n" % intf.get('openvpnConfFile'))
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+            file.write("\toption defaultroute '1'\n")
 
     def write_interface_bridge(self, intf, settings):
         """write a bridge interface"""
