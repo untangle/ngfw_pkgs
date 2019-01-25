@@ -149,7 +149,7 @@ def get_interface_name(settings, intf):
 
     interface_name = interface_name + intf.get('name')
 
-    if intf.get('type') == 'OPENVPN':
+    if intf.get('type') == 'OPENVPN' or intf.get('type') == 'WIREGUARD':
         return interface_name
 
     if intf.get('v4ConfigType') != 'DISABLED':
