@@ -132,7 +132,7 @@ class NetworkManager:
         for intf in interfaces:
             if intf.get('configType') != "DISABLED":
                 if intf.get('type') == 'OPENVPN':
-                    self.write_interface_tunnel(intf, settings)
+                    self.write_interface_wireguard(intf, settings)
                 else:
                     self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
@@ -195,8 +195,8 @@ class NetworkManager:
 
         return
 
-    def write_interface_tunnel(self, intf, settings):
-        """write a tunnel interface"""
+    def write_interface_openvpn(self, intf, settings):
+        """write an openvpn interface"""
         file = self.network_file
 
         file.write("\n")
