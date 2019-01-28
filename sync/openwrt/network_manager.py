@@ -132,6 +132,8 @@ class NetworkManager:
         for intf in interfaces:
             if intf.get('configType') != "DISABLED":
                 if intf.get('type') == 'OPENVPN':
+                    self.write_interface_openvpn(intf, settings)
+                elif intf.get('type') == 'WIREGUARD':
                     self.write_interface_wireguard(intf, settings)
                 else:
                     self.write_interface_bridge(intf, settings)
@@ -194,6 +196,45 @@ class NetworkManager:
             file.write("\n")
 
         return
+
+    def write_interface_wireguard(self, intf, settings):
+        """write a wireguard interface"""
+        file = self.network_file
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % intf['logical_name'])
+        file.write("\toption proto 'wireguard'\n")
+        file.write("\toption private_key '%s'\n" % intf.get('wireguardPrivateKey'))
+        addresses = intf.get('wireguardAddresses')
+        for address in addresses:
+            file.write("\tlist addresses '%s'\n" % address)
+        if intf.get('wireguardPort') != None:
+            file.write("\toption listen_port '%s'\n" % intf.get('wireguardPort'))
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+            file.write("\toption defaultroute '1'\n")
+
+        file.write("\n")
+        peers = intf.get('wireguardPeers')
+        for peer in peers:
+            file.write("config 'wireguard_%s'\n" % intf['logical_name'])
+            file.write("\toption public_key '%s'\n" % peer.get('publicKey'))
+            if peer.get('routeAllowedIps') != None and peer.get('routeAllowedIps'):
+                file.write("\toption route_allowed_ips '1'\n")
+            else:
+                file.write("\toption route_allowed_ips '0'\n")
+            ips = peer.get('allowedIps')
+            for ip in ips:
+                file.write("\tlist allowed_ips '%s'\n" % ip)
+            if peer.get('host') != None:
+                file.write("\toption endpoint_host '%s'\n" % peer.get('host'))
+            if peer.get('port') != None:
+                file.write("\toption endpoint_port '%s'\n" % peer.get('port'))
+            if peer.get('keepalive') != None:
+                file.write("\toption persistent_keepalive '%d'\n" % peer.get('keepalive'))
+            if peer.get('presharedKey') != None:
+                file.write("\toption preshared_key '%s'\n" % peer.get('presharedKey'))
 
     def write_interface_openvpn(self, intf, settings):
         """write an openvpn interface"""
