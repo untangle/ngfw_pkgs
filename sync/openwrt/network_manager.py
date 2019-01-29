@@ -560,6 +560,26 @@ def valid_ipv6(address, accept_none=False):
     except:
         return False
 
+def valid_ipv4_network(address, accept_none=False):
+    """returns true if address (string) is a valid IPv4 network"""
+    if address is None and accept_none:
+        return True
+    try:
+        ipaddress.IPv4Interface(address)
+        return True
+    except:
+        return False
+
+def valid_ipv6_network(address, accept_none=False):
+    """returns true if address (string) is a valid IPv6 network"""
+    if address is None and accept_none:
+        return True
+    try:
+        ipaddress.IPv6Interface(address)
+        return True
+    except:
+        return False
+
 def validate_interface(intf):
     """validates that each field within an interface makes sense individually"""
     # If the interface is disabled, don't bother verifying attributes
