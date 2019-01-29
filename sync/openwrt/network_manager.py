@@ -551,7 +551,7 @@ def valid_ipv4(address, accept_none=False):
         return False
 
 def valid_ipv6(address, accept_none=False):
-    """returns true if address (string) is a valid IPv4 address"""
+    """returns true if address (string) is a valid IPv6 address"""
     if address is None and accept_none:
         return True
     try:
@@ -655,19 +655,19 @@ def validate_interface(intf):
                 raise Exception("Invalid IPv4 VRRP Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
 
     if intf.get("wirelessSsid") != None and not isinstance(intf.get("wirelessSsid"), str):
-        raise Exception("Invalid Wireles SSID: " + intf.get('name') + " " + intf.get("wirelessSsid"))
+        raise Exception("Invalid Wireless SSID: " + intf.get('name') + " " + intf.get("wirelessSsid"))
 
     if not intf.get("wirelessEncryption") in [None, "NONE", "WPA1", "WPA12", "WPA2"]:
-        raise Exception("Invalid Wireles Encryption: " + intf.get('name') + intf.get("wirelessEncryption"))
+        raise Exception("Invalid Wireless Encryption: " + intf.get('name') + intf.get("wirelessEncryption"))
 
     if not intf.get("wirelessMode") in [None, "AP", "CLIENT"]:
-        raise Exception("Invalid Wireles Mode: " + intf.get('name') + " " + intf.get("wirelessMode"))
+        raise Exception("Invalid Wireless Mode: " + intf.get('name') + " " + intf.get("wirelessMode"))
 
     if intf.get("wirelessPassword") != None and not isinstance(intf.get("wirelessPassword"), str):
-        raise Exception("Invalid Wireles Password: " + intf.get('name') + " " + intf.get("wirelessPassword"))
+        raise Exception("Invalid Wireless Password: " + intf.get('name') + " " + intf.get("wirelessPassword"))
 
     if intf.get("wirelessChannel") != None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
-        raise Exception("Invalid Wireles Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
+        raise Exception("Invalid Wireless Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
 
     if intf.get("type") == 'OPENVPN':
         if intf.get("openvpnConfFile") is None or intf.get("openvpnConfFile") == "":
