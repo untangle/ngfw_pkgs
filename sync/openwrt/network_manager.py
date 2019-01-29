@@ -669,4 +669,10 @@ def validate_interface(intf):
     if intf.get("wirelessChannel") != None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
         raise Exception("Invalid Wireles Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
 
+    if intf.get("type") == 'OPENVPN':
+        if intf.get("openvpnConfFile") is None or intf.get("openvpnConfFile") == "":
+            raise Exception("No configuration file specified for openvpn interface " + intf.get('name'))
+
+        if os.path.isfile(intf.get("openvpnConfFile")) == False:
+            raise Exception("Configuration file " + intf.get("openvpnConfFile") + " openvpn interface " + intf.get('name') + "does not exist")
 registrar.register_manager(NetworkManager())
