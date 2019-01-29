@@ -695,4 +695,55 @@ def validate_interface(intf):
 
         if os.path.isfile(intf.get("openvpnConfFile")) == False:
             raise Exception("Configuration file " + intf.get("openvpnConfFile") + " openvpn interface " + intf.get('name') + "does not exist")
+
+    if intf.get("type") == 'WIREGUARD':
+        if intf.get("wireguardPrivateKey") == None or intf.get("wireguardPrivateKey") == "":
+            raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
+
+        if not isinstance(intf.get("wireguardPrivateKey"), str):
+            raise Exception("Specified wireguard private key is not a string: " + intf.get('name'))
+
+        if intf.get("wireguardAddresses") == None or intf.get("wireguardAddresses") == []:
+            raise Exception("No wireguard addresses specified for interface: " + intf.get('name'))
+
+        addresses = intf.get('wireguardAddresses')
+        for address in addresses:
+            if not valid_ipv4_network(address) and not valid_ipv6_network(address):
+                raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
+
+        if intf.get("wireguardPeers") == None or intf.get("wireguardPeers") == []:
+            raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
+
+        peers = intf.get('wireguardPeers')
+        for peer in peers:
+            if peer.get("publicKey") == None or peer.get("publicKey") == "":
+                raise Exception("No public key specified for wireguard peer of interface: " + intf.get('name'))
+
+            if not isinstance(peer.get("publicKey"), str):
+                raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
+
+            if peer.get("allowedIps") == None or peer.get("allowedIps") == []:
+                raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
+
+            ips = peer.get('allowedIps')
+            for ip in ips:
+                if not valid_ipv4_network(ip) and not valid_ipv6_network(ip):
+                    raise Exception("Invalid wireguard ip: " + intf.get('name') + " " + ip)
+
+            if peer.get("routeAllowedIps") is not None and not isinstance(peer.get("routeAllowedIps"), bool):
+                raise Exception("wireguard peer settings routeAllowedIps is not a bool: " + intf.get('name'))
+
+            if peer.get("keepalive") is not None and not isinstance(peer.get("keepalive"), int):
+                raise Exception("wireguard peer keepalive is not an integer: " + intf.get('name'))
+
+            if peer.get("keepalive") is not None and peer.get("keepalive") < 0:
+                raise Exception("Invalid wireguard peer keepalive: " + intf.get('name') + " " + str(peer.get("keepalive")))
+
+        if intf.get("wireguardPort") != None:
+            if not isinstance(intf.get("wireguardPort"), int):
+                raise Exception("Specified wireguard port is not an integer: " + intf.get('name'))
+
+            if intf.get("wireguardPort") < 0 or intf.get("wireguardPort") > 65535:
+                raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
+
 registrar.register_manager(NetworkManager())
