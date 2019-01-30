@@ -456,11 +456,7 @@ class NetworkManager:
 
     def write_macaddr(self, file, macaddr):
         """write macaddr option"""
-<<<<<<< HEAD
-        if macaddr != "":
-=======
         if macaddr != "" and macaddr != None:
->>>>>>> 6af844a0d1ac719f5e5cc9c86139ebb07980dd74
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def create_settings_switches(self, settings, prefix, delete_list):
