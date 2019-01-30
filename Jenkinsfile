@@ -1,10 +1,9 @@
 pipeline {
-  agent none
 
   stages {
     stage('Build') {
 
-      agent { any }
+      agent any
 
       steps {
 	sh "python setup.py build"
@@ -14,7 +13,7 @@ pipeline {
 
     stage('Test') {
 
-      agent { any }
+      agent any
 
       steps {
 	sh "true" // FIXME: should be "python setup.py test"
