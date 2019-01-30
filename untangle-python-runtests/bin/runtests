@@ -264,11 +264,11 @@ def load_modules(path):
     """load all test modules in the specified path"""
     if not os.path.isdir(path):
         return
+    sys.path.insert(0, path)
     testsdir = path+"tests"
     if not os.path.isdir(testsdir):
         return
     print("Loading tests from " + path)
-    sys.path.insert(0, path)
     for i in os.listdir(testsdir):
         (name, ext) = os.path.splitext(i)
         if not ext in ['.py']:
