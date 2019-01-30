@@ -28,12 +28,14 @@ class NetworkManager:
     def sanitize_settings(self, settings):
         """sanitizes removes blank settings"""
         interfaces = settings.get('network').get('interfaces')
-        # Remove all "" and 0 values
+        # Remove all "" and 0 and null values
         for intf in interfaces:
             for k, v in dict(intf).items():
                 if v == "":
                     del intf[k]
                 if v == 0:
+                    del intf[k]
+                if intf.get(k, "missing") is None:
                     del intf[k]
             # The UI currently doesn't set wan = false for LANS
             # if it is not specified, assume its false
@@ -69,6 +71,11 @@ class NetworkManager:
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
         self.write_network_file(settings, prefix)
+
+        # the first go at openvpn support created these files, but
+        # we don't need them anymore.  Eventually this can be removed
+        delete_list.append("/etc/config/ifup.d/30-openvpn")
+        delete_list.append("/etc/config/ifdown.d/30-openvpn")
 
     def write_network_file(self, settings, prefix=""):
         """write /etc/config/network"""
@@ -124,9 +131,12 @@ class NetworkManager:
 
         for intf in interfaces:
             if intf.get('configType') != "DISABLED":
-                self.write_interface_bridge(intf, settings)
-                self.write_interface_v4(intf, settings)
-                self.write_interface_v6(intf, settings)
+                if intf.get('type') == 'OPENVPN':
+                    self.write_interface_tunnel(intf, settings)
+                else:
+                    self.write_interface_bridge(intf, settings)
+                    self.write_interface_v4(intf, settings)
+                    self.write_interface_v6(intf, settings)
 
         switches = settings['network'].get('switches')
         if switches != None:
@@ -184,6 +194,20 @@ class NetworkManager:
             file.write("\n")
 
         return
+
+    def write_interface_tunnel(self, intf, settings):
+        """write a tunnel interface"""
+        file = self.network_file
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % intf['logical_name'])
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\toption proto 'openvpn'\n")
+        file.write("\toption config '%s'\n" % intf.get('openvpnConfFile'))
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+            file.write("\toption defaultroute '1'\n")
 
     def write_interface_bridge(self, intf, settings):
         """write a bridge interface"""
@@ -388,10 +412,14 @@ class NetworkManager:
             interface['wanWeight'] = 0
             interface['macaddr'] = board_util.get_interface_macaddr(interface['device'])
 
+            if interface['device'].startswith("wlan"):
+                interface['type'] = 'WIFI'
+            else:
+                interface['type'] = 'NIC'
+
             if dev.get('name') == internal_device_name:
                 internal_id = intf_id
                 interface['name'] = 'internal'
-                interface['type'] = 'NIC'
                 interface['wan'] = False
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'STATIC'
@@ -406,14 +434,12 @@ class NetworkManager:
                 interface['v6AssignHint'] = '1234'
             elif dev.get('name') == external_device_name:
                 interface['name'] = 'external'
-                interface['type'] = 'NIC'
                 interface['wan'] = True
                 interface['configType'] = 'ADDRESSED'
                 interface['v4ConfigType'] = 'DHCP'
                 interface['v6ConfigType'] = 'DHCP'
                 interface['natEgress'] = True
             else:
-                interface['type'] = 'NIC'
                 interface['wan'] = False
                 if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
@@ -430,7 +456,11 @@ class NetworkManager:
 
     def write_macaddr(self, file, macaddr):
         """write macaddr option"""
+<<<<<<< HEAD
         if macaddr != "":
+=======
+        if macaddr != "" and macaddr != None:
+>>>>>>> 6af844a0d1ac719f5e5cc9c86139ebb07980dd74
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def create_settings_switches(self, settings, prefix, delete_list):
