@@ -38,8 +38,9 @@ untangle-hardware-qotom-u25xw           stretch
 untangle-hardware-qotom-u50x            stretch
 untangle-hardware-qotom-u50xw           stretch
 untangle-hardware-qotom-z4              stretch
-untangle-hardware-qotom-z4w              stretch
+untangle-hardware-qotom-z4w             stretch
 untangle-bootsplash                     stretch
+untangle-kernel-modules-stretch-arm64   stretch
 untangle-kernel-modules-stretch-armhf   stretch
 untangle-kernel-modules-stretch-i386    stretch
 untangle-kernel-modules-stretch-amd64   stretch
