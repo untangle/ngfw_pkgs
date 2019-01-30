@@ -89,6 +89,7 @@ nft add chain inet interface-marks check-dst-interface-mark
 nft add rule inet interface-marks prerouting-interface-marks jump restore-interface-marks
 nft add rule inet interface-marks prerouting-interface-marks mark and 0x000000ff == 0 jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks jump check-src-interface-mark
+nft add rule inet interface-marks forward-interface-marks ct state new jump mark-dst-interface
 nft add rule inet interface-marks forward-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
