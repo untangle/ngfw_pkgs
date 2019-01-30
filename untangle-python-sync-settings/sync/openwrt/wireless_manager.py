@@ -32,8 +32,7 @@ class WirelessManager:
         print("%s: Initializing settings" % self.__class__.__name__)
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf['device'].startswith("wlan"):
-                intf['wireless'] = True
+            if intf.get('type') == 'WIFI':
                 if self.is_5ghz(intf):
                     intf['wirelessChannel'] = 36
                 else:
@@ -92,7 +91,7 @@ class WirelessManager:
             file.write("\toption country '%s'\n" % country_code)
 
     def write_macaddr(self, file, macaddr):
-        if macaddr != "":
+        if macaddr != "" and macaddr != None:
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def write_wireless_file(self, settings, prefix=""):
@@ -111,7 +110,7 @@ class WirelessManager:
         interfaces = settings['network']['interfaces']
         devidx = 0
         for intf in interfaces:
-            if intf.get('wireless'):
+            if intf.get('type') == 'WIFI':
                 file.write("config wifi-device 'radio%d'\n" % devidx)
                 file.write("\toption type 'mac80211'\n")
                 file.write("\toption channel '%s'\n" % intf['wirelessChannel'])
