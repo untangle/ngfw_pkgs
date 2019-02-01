@@ -21,9 +21,6 @@ class RouteManager:
     ifup_route_file = None
     ifdown_routes_filename = "/etc/config/ifdown.d/10-default-route"
     ifdown_route_file = None
-    ifup_wan_balancer_filename = "/etc/config/ifup.d/20-wan-balancer"
-    ifdown_wan_balancer_filename = "/etc/config/ifdown.d/20-wan-balancer"
-    wan_balancer_file = None
     wan_routing_filename = "/etc/config/nftables-rules.d/102-wan-routing"
     wan_routing_file = None
 
@@ -31,8 +28,6 @@ class RouteManager:
         """initialize this module"""
         registrar.register_file(self.ifup_routes_filename, "restart-default-route", self)
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
-        registrar.register_file(self.ifup_wan_balancer_filename, "restart-wan-balancer", self)
-        registrar.register_file(self.ifdown_wan_balancer_filename, "restart-wan-balancer", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
         registrar.register_file(self.wan_routing_filename, "restart-nftables-rules", self)
 
@@ -47,22 +42,48 @@ class RouteManager:
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        user_chain = {}
-        user_chain['name'] = "user-wan-rules"
-        user_chain['description'] = "User defined wan routing rules"
-        user_chain['default'] = True
-        user_chain['rules'] = [{
-            "enabled": True,
-            "description": "Send traffic to default wan",
-            "ruleId": 1,
-            "conditions": [],
-            "action": {
-                "type": "WAN_POLICY",
-                "policy": "DEFAULT"
-            }
-        }]
+
+        default_wan = 0
+        interfaces = settings.get('network').get('interfaces')
+        for intf in interfaces:
+            if enabled_wan(intf):
+                default_wan = intf.get('interfaceId')
+                break
+
         settings['wan'] = {}
-        settings['wan']['user_chain'] = user_chain
+        settings['wan']['policy_chains'] = [
+            {
+                "default": True,
+                "description": "User defined wan routing rules",
+                "name": "user-wan-rules",
+                "rules": [
+                    {
+                        "action": {
+                            "policy": 1,
+                            "type": "WAN_POLICY"
+                        },
+                        "conditions": [],
+                        "description": "Send all traffic to wan policy 1",
+                        "enabled": True,
+                        "ruleId": 1
+                    }
+                ]
+            }
+        ]
+        settings['wan']['policies'] = [
+            {
+                "policyId": 1,
+                "description": "Send traffic to external",
+                "enabled": True,
+                "type": "SPECIFIC_WAN",
+                "interfaces": [
+                    {
+                        "id": default_wan
+                    }
+                ],
+                "criteria": []
+            }
+        ]
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
@@ -70,9 +91,12 @@ class RouteManager:
         self.write_rt_tables_file(settings, prefix)
         self.write_ifup_routes_file(settings, prefix)
         self.write_ifdown_routes_file(settings, prefix)
-        self.write_wan_balancer_file(self.ifup_wan_balancer_filename, settings, prefix)
-        self.write_wan_balancer_file(self.ifdown_wan_balancer_filename, settings, prefix)
         self.write_wan_routing_file(settings, prefix)
+
+        # the first go at wan routing support created these files, but
+        # we don't need them anymore.  Eventually this can be removed
+        delete_list.append("/etc/config/ifup.d/20-wan-balancer")
+        delete_list.append("/etc/config/ifdown.d/20-wan-balancer")
 
     def write_wan_routing_file(self, settings, prefix=""):
         """write_wan_routing_file writes /etc/config/nftables-rules.d/102-wan-routing"""
@@ -93,113 +117,112 @@ class RouteManager:
 
         file.write("nft delete table inet wan-routing 2>/dev/null || true\n")
         file.write("nft add table inet wan-routing\n")
+        file.write("\n")
         file.write("nft add chain inet wan-routing wan-routing-exit\n")
         file.write("nft add rule inet wan-routing wan-routing-exit counter\n")
         file.write("nft add rule inet wan-routing wan-routing-exit mark and 0x0000ff00 == 0x0000 counter\n")
 
-        if get_number_of_wans(settings) == 1:
-            interfaces = settings.get('network').get('interfaces')
-            for intf in interfaces:
-                if enabled_wan(intf):
-                    file.write("nft add chain inet wan-routing wan-routing-entry\n")
+        interfaces = settings.get('network').get('interfaces')
+        for intf in interfaces:
+            if enabled_wan(intf):
+                file.write("nft add chain inet wan-routing mark-for-wan-%d\n" % intf.get('interfaceId'))
+                file.write("nft add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
+                file.write("nft add rule inet wan-routing mark-for-wan-%d goto wan-routing-exit\n" % intf.get('interfaceId'))
+                file.write("\n")
 
-                    file.write("nft add rule inet wan-routing wan-routing-entry ip saddr 127.0.0.1 goto wan-routing-exit\n")
-                    file.write("nft add rule inet wan-routing wan-routing-entry ip daddr 127.0.0.1 goto wan-routing-exit\n")
-                    file.write("nft add rule inet wan-routing wan-routing-entry ip6 saddr ::1 goto wan-routing-exit\n")
-                    file.write("nft add rule inet wan-routing wan-routing-entry ip6 daddr ::1 goto wan-routing-exit\n")
-                    file.write("nft add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 goto wan-routing-exit\n")
-                    file.write("nft add rule inet wan-routing wan-routing-entry mark set mark and 0xffff00ff or 0x%x\n" % ((intf.get('interfaceId') << 8) & 0xff00))
-                    file.write("nft add rule inet wan-routing wan-routing-entry goto wan-routing-exit\n")
-        else:
-            interfaces = settings.get('network').get('interfaces')
-            for intf in interfaces:
-                if enabled_wan(intf):
-                    file.write("nft add set inet wan-routing wan-%d-table \"{ type ipv4_addr . ipv4_addr; flags timeout; }\"\n" % intf.get('interfaceId'))
-                    file.write("nft add chain inet wan-routing mark-for-wan-%d\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
+        default_wan = 0
+        for intf in interfaces:
+            if enabled_wan(intf):
+                default_wan = intf.get('interfaceId')
+                break
 
-                    file.write("nft add chain inet wan-routing route-to-wan-%d\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing route-to-wan-%d jump mark-for-wan-%d\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                    file.write("nft add rule inet wan-routing route-to-wan-%d mark and 0x0000ff00 == 0 return\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing route-to-wan-%d set update ip saddr . ip daddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                    file.write("nft add rule inet wan-routing route-to-wan-%d set update ip daddr . ip saddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                    file.write("nft add rule inet wan-routing route-to-wan-%d goto wan-routing-exit\n" % intf.get('interfaceId'))
-                    file.write("\n")
+        file.write("nft add chain inet wan-routing route-to-default-wan\n")
+        file.write("nft add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % default_wan)
+        file.write("\n")
+        file.write("nft add chain inet wan-routing wan-policy-routing\n")
+        file.write("\n")
 
-            file.write("nft add chain inet wan-routing route-to-wan-balancer\n")
+        wan = settings['wan']
+        policies = wan.get('policies')
+        for policy in policies:
+            if policy.get('enabled'):
+                policyId = policy.get('policyId')
+                interfaces = policy.get('interfaces')
 
+                file.write("nft add chain inet wan-routing route-to-policy-%d\n" % policyId)
+                file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string policy-%d jump route-to-policy-%d comment \\\"%s\\\"\n" % (policyId, policyId, policy.get('description')))
 
-            total_weight = 0
-            balance_string = ""
-            for intf in interfaces:
-                if enabled_wan(intf):
-                    # FIXME - we should remove wanWeight from interface settings
-                    # it should depend on the wan policy, which could have different weights for different purposes
-                    weight = intf.get('wanWeight')
-                    if weight is None:
-                        weight = 50
-                    file.write("nft add rule inet wan-routing route-to-wan-balancer ip saddr . ip daddr @wan-%d-table jump route-to-wan-%d\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
+                if policy.get('type') == "SPECIFIC_WAN":
+                    interfaceId = interfaces[0].get('id')
+                    if interface_meets_policy_criteria(settings, policy, interfaceId):
+                        file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
+                    else:
+                        file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
 
-                    if total_weight > 0:
-                        balance_string = balance_string + ", "
-                    balance_string = balance_string + "%d-%d : jump route-to-wan-%d" % (total_weight, weight + total_weight - 1, intf.get('interfaceId'))
-                    total_weight += weight
+                elif policy.get('type') == "BEST_OF":
+                    for interface in interfaces:
+                        interfaceId = interface.get('id')
+                        if interface_meets_policy_criteria(settings, policy, interfaceId):
+                            file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
+                            break
 
-            file.write("nft add inet wan-routing route-to-wan-balancer numgen random mod %d vmap { %s }\n" % (total_weight, balance_string))
+                elif policy.get('type') == "BALANCE":
+                    total_weight = 0
+                    range_end = 0
+                    balance_string = ""
+                    algorithm = policy.get('balance_algorithm')
 
-            for intf in interfaces:
-                if enabled_wan(intf):
-                    file.write("nft add chain inet wan-routing route-to-default-wan\n")
-                    file.write("nft add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % intf.get('interfaceId'))
+                    for interface in interfaces:
+                        interfaceId = interface.get('id')
+                        if interface_meets_policy_criteria(settings, policy, interfaceId):
+                            if algorithm == "WEIGHTED":
+                                weight = interface.get('weight')
+                            else:
+                                weight = 1
 
-                    file.write("nft add chain inet wan-routing route-to-low-jitter\n")
-                    file.write("nft add rule inet wan-routing route-to-low-jitter jump mark-for-wan-%d\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing route-to-low-jitter mark and 0x0000ff00 == 0 return\n")
-                    file.write("nft add rule inet wan-routing route-to-low-jitter goto wan-routing-exit\n")
+                            if total_weight > 0:
+                                balance_string = balance_string + ", "
 
-                    file.write("nft add chain inet wan-routing route-to-low-latency\n")
-                    file.write("nft add rule inet wan-routing route-to-low-latency jump mark-for-wan-%d\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing route-to-low-latency mark and 0x0000ff00 == 0 return\n")
-                    file.write("nft add rule inet wan-routing route-to-low-latency goto wan-routing-exit\n")
+                            range_end = weight + total_weight - 1
+                            if total_weight == range_end:
+                                balance_string = balance_string + "%d : jump mark-for-wan-%d" % (total_weight, interfaceId)
+                            else:
+                                balance_string = balance_string + "%d-%d : jump mark-for-wan-%d" % (total_weight, range_end, interfaceId)
 
-                    file.write("nft add chain inet wan-routing route-to-high-bandwidth\n")
-                    file.write("nft add rule inet wan-routing route-to-high-bandwidth jump mark-for-wan-%d\n" % intf.get('interfaceId'))
-                    file.write("nft add rule inet wan-routing route-to-high-bandwidth mark and 0x0000ff00 == 0 return\n")
-                    file.write("nft add rule inet wan-routing route-to-high-bandwidth goto wan-routing-exit\n")
-                    break
+                            total_weight += weight
 
-            file.write("nft add chain inet wan-routing wan-policy-routing\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string low_jitter jump route-to-low-jitter\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string low_latency jump route-to-low-latency\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string high_bandwidth jump route-to-high-bandwidth\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string balance jump route-to-wan-balancer\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string default jump route-to-default-wan\n")
+                    if balance_string != "":
+                        file.write("nft add inet wan-routing route-to-policy-%d numgen random mod %d vmap { %s }\n" % (policyId, total_weight, balance_string))
+                    else:
+                        file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
 
-            file.write("nft add chain inet wan-routing wan-policy-routing-enabled\n")
-            file.write("nft add rule inet wan-routing wan-policy-routing-enabled jump wan-policy-routing comment \\\"wan policy routing enabled\\\"\n")
+                file.write("\n")
 
-            wan = settings['wan']
-            file.write(nftables_util.chain_create_cmd(wan.get('user_chain'), "inet", "wan-routing") + "\n")
-            file.write(nftables_util.chain_rules_cmds(wan.get('user_chain'), "inet", "wan-routing") + "\n")
+        policy_chains = wan.get('policy_chains')
+        for chain in policy_chains:
+            file.write(nftables_util.chain_create_cmd(chain, "inet", "wan-routing") + "\n")
+            file.write(nftables_util.chain_rules_cmds(chain, "inet", "wan-routing") + "\n")
+            file.write("\n")
 
-            file.write("nft add chain inet wan-routing wan-routing-entry\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry ip saddr 127.0.0.1 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry ip daddr 127.0.0.1 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry ip6 saddr ::1 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry ip6 daddr ::1 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry jump user-wan-rules\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 goto wan-routing-exit\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry jump wan-policy-routing-enabled\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry jump route-to-default-wan\n")
-            file.write("nft add rule inet wan-routing wan-routing-entry goto wan-routing-exit\n")
+        file.write("nft add chain inet wan-routing wan-routing-entry\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry ip saddr 127.0.0.1 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry ip daddr 127.0.0.1 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry ip6 saddr ::1 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry ip6 daddr ::1 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry jump user-wan-rules\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry jump wan-policy-routing\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 goto wan-routing-exit\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry jump route-to-default-wan\n")
+        file.write("nft add rule inet wan-routing wan-routing-entry goto wan-routing-exit\n")
 
+        file.write("\n")
         file.write("nft add chain inet wan-routing wan-routing-prerouting \"{ type filter hook prerouting priority -25 ; }\"\n")
         file.write("nft add rule inet wan-routing wan-routing-prerouting jump wan-routing-entry\n")
 
+        file.write("\n")
         file.write("nft add chain inet wan-routing wan-routing-output \"{ type filter hook output priority -135 ; }\"\n")
         file.write("nft add rule inet wan-routing wan-routing-output jump wan-routing-entry\n")
-        file.write("\n")
 
         file.flush()
         file.close()
@@ -245,10 +268,6 @@ class RouteManager:
                 file.write("%d\twan.%d\n" % (interface_id, interface_id))
 
         file.write("\n\n")
-        file.write("#\n")
-        file.write("# special tables\n")
-        file.write("#\n")
-        file.write("500\tbalance\n")
 
         file.flush()
         file.close()
@@ -356,83 +375,6 @@ class RouteManager:
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
-    def write_wan_balancer_file(self, fname, settings, prefix=""):
-        """write_wan_balancer_file writes /etc/config/if[up|down].d/20-wan-balancer"""
-        filename = prefix + fname
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        self.wan_balancer_file = open(filename, "w+")
-        file = self.wan_balancer_file
-        file.write("#!/bin/sh")
-        file.write("\n\n")
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n")
-        file.write(". /lib/functions/network.sh\n")
-        file.write("\n")
-        file.write("INTERFACE=$1\n")
-        file.write("\n")
-
-        if get_number_of_wans(settings) == 1:
-            file.write("\n# Only one wan, do nothing\n\n")
-        else:
-            file.write("build_balance_table()\n")
-            file.write("{\n")
-            file.write("\tBALANCE_STRING=\"\"\n")
-            file.write("\tTOTAL_WEIGHT=0\n")
-            file.write("\tTMPFILE=`mktemp -t wan-balancer.XXXXXX`\n")
-            file.write("\n")
-            file.write("\techo flush chain inet wan-routing route-to-wan-balancer >> $TMPFILE\n")
-            file.write("\n")
-
-            interfaces = settings.get('network').get('interfaces')
-            for intf in interfaces:
-                if enabled_wan(intf):
-                    # FIXME - we should remove wanWeight from interface settings
-                    # it should depend on the wan policy, which could have different weights for different purposes
-                    weight = intf.get('wanWeight')
-                    if weight is None:
-                        weight = 50
-                    file.write("\techo flush chain inet wan-routing mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\techo flush set inet wan-routing wan-%d-table >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\tif network_is_up \"%s\" ; then\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\t\techo add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x >> $TMPFILE\n" % (intf.get('interfaceId'), (intf.get('interfaceId') << 8) & 0xff00))
-                    file.write("\t\techo add rule inet wan-routing route-to-wan-balancer ip saddr . ip daddr @wan-%d-table jump route-to-wan-%d >> $TMPFILE\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                    file.write("\t\tif [ $TOTAL_WEIGHT -ne 0 ] ; then\n")
-                    file.write("\t\t\tBALANCE_STRING=\"$BALANCE_STRING,\"\n")
-                    file.write("\t\tfi\n")
-                    file.write("\t\tBALANCE_STRING=\"$BALANCE_STRING $TOTAL_WEIGHT-$((TOTAL_WEIGHT+%d-1)) : jump route-to-wan-%d\"\n" % (weight, intf.get('interfaceId')))
-                    file.write("\t\tTOTAL_WEIGHT=$((TOTAL_WEIGHT+%d))\n" % weight)
-                    file.write("\telse\n")
-                    file.write("\t\techo add rule inet wan-routing mark-for-wan-%d return comment \\\"wan %d is down\\\" >> $TMPFILE\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                    file.write("\tfi\n")
-                    file.write("\n")
-
-            file.write("\techo add rule inet wan-routing route-to-wan-balancer numgen random mod $TOTAL_WEIGHT vmap { $BALANCE_STRING } >> $TMPFILE\n")
-
-            file.write("\tnft -f $TMPFILE\n")
-            file.write("\trm $TMPFILE\n")
-            file.write("}\n\n")
-
-            for intf in interfaces:
-                if intf.get('wan'):
-                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\tbuild_balance_table\n")
-                    file.write("}\n")
-                    file.write("\n")
-
-            file.write("[ -z \"$INTERFACE\" ] && {\n")
-            file.write("\tbuild_balance_table\n")
-            file.write("}\n\n")
-
-        file.flush()
-        file.close()
-        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-
-        print("%s: Wrote %s" % (self.__class__.__name__, filename))
-
 def get_number_of_wans(settings):
     """returns number of enabled wan interfaces"""
     wans = 0
@@ -448,5 +390,34 @@ def enabled_wan(intf):
     if intf.get('configType') != 'DISABLED' and intf.get('wan'):
         return True
     return False
+
+def get_interface_by_id(settings, interfaceId):
+    """ returns interface with the given interfaceId """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get('interfaceId') == interfaceId:
+            return intf
+    return None
+
+def interface_meets_policy_criteria(settings, policy, interface):
+    """
+    returns true if the interface meets all criteria that can
+    be verified at creation time that are specified by the
+    wan policy
+    """
+    intf = get_interface_by_id(settings, interface)
+    if not enabled_wan(intf):
+        return False
+
+    criteria = policy.get('criteria')
+    if criteria == None:
+        return True
+
+    for criterion in criteria:
+        if criterion.get('type') == 'ATTRIBUTE':
+            if criterion.get('attribute') == 'VPN':
+                if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
+                    return False
+    return True
 
 registrar.register_manager(RouteManager())
