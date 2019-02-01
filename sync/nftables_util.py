@@ -400,23 +400,10 @@ def action_expression(json_action, family):
         destination_int = int(destination) & 0xff
         return "meta mark set \"mark and 0xffff00ff or 0x0000%s00\"" % ('{:02x}'.format(destination_int))
     elif typ == "WAN_POLICY":
-        policy_string = ""
         policy = json_action.get('policy')
         if policy is None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
-        if policy == "LOW_JITTER":
-            policy_string = "low_jitter"
-        elif policy == "LOW_LATENCY":
-            policy_string = "low_latency"
-        elif policy == "HIGH_BANDWIDTH":
-            policy_string = "high_bandwidth"
-        elif policy == "BALANCE":
-            policy_string = "balance"
-        elif policy == "DEFAULT":
-            policy_string = "default"
-        else:
-            policy_string = "default"
-        return "dict session ct id wan_policy long_string set %s" % policy_string
+        return "dict session ct id wan_policy long_string set policy-%s" % str(policy)
     else:
         raise Exception("Unknown action type: " + str(json_action))
 
