@@ -257,45 +257,45 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "SERVER_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x0c000000", 26, "0x0000ff00", value, op)
     elif condtype == "CLIENT_ADDRESS":
-        return condition_dict_expression("session", "ct id", "client_address", "ipv4_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "client_address", "ipv4_addr", op, value)
     elif condtype == "SERVER_ADDRESS":
-        return condition_dict_expression("session", "ct id", "server_address", "ipv4_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_address", "ipv4_addr", op, value)
     elif condtype == "LOCAL_ADDRESS":
-        return condition_dict_expression("session", "ct id", "local_address", "ipv4_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "local_address", "ipv4_addr", op, value)
     elif condtype == "REMOTE_ADDRESS":
-        return condition_dict_expression("session", "ct id", "remote_address", "ipv4_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "remote_address", "ipv4_addr", op, value)
     elif condtype == "CLIENT_ADDRESS_V6":
-        return condition_dict_expression("session", "ct id", "client_address", "ipv6_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "client_address", "ipv6_addr", op, value)
     elif condtype == "SERVER_ADDRESS_V6":
-        return condition_dict_expression("session", "ct id", "server_address", "ipv6_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_address", "ipv6_addr", op, value)
     elif condtype == "LOCAL_ADDRESS_V6":
-        return condition_dict_expression("session", "ct id", "local_address", "ipv6_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "local_address", "ipv6_addr", op, value)
     elif condtype == "REMOTE_ADDRESS_V6":
-        return condition_dict_expression("session", "ct id", "remote_address", "ipv6_addr", op, value)
+        return condition_dict_expression("sessions", "ct id", "remote_address", "ipv6_addr", op, value)
     elif condtype == "CLIENT_PORT":
-        return condition_dict_expression("session", "ct id", "client_port", "int", op, value)
+        return condition_dict_expression("sessions", "ct id", "client_port", "int", op, value)
     elif condtype == "SERVER_PORT":
-        return condition_dict_expression("session", "ct id", "server_port", "int", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_port", "int", op, value)
     elif condtype == "LOCAL_PORT":
-        return condition_dict_expression("session", "ct id", "local_port", "int", op, value)
+        return condition_dict_expression("sessions", "ct id", "local_port", "int", op, value)
     elif condtype == "REMOTE_PORT":
-        return condition_dict_expression("session", "ct id", "remote_port", "int", op, value)
+        return condition_dict_expression("sessions", "ct id", "remote_port", "int", op, value)
     elif condtype == "CLIENT_HOSTNAME":
-        return condition_dict_expression("session", "ct id", "client_hostname", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "client_hostname", "long_string", op, value)
     elif condtype == "SERVER_HOSTNAME":
-        return condition_dict_expression("session", "ct id", "server_hostname", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_hostname", "long_string", op, value)
     elif condtype == "LOCAL_HOSTNAME":
-        return condition_dict_expression("session", "ct id", "local_hostname", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "local_hostname", "long_string", op, value)
     elif condtype == "REMOTE_HOSTNAME":
-        return condition_dict_expression("session", "ct id", "remote_hostname", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "remote_hostname", "long_string", op, value)
     elif condtype == "CLIENT_USERNAME":
-        return condition_dict_expression("session", "ct id", "client_username", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "client_username", "long_string", op, value)
     elif condtype == "SERVER_USERNAME":
-        return condition_dict_expression("session", "ct id", "server_username", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_username", "long_string", op, value)
     elif condtype == "LOCAL_USERNAME":
-        return condition_dict_expression("session", "ct id", "local_username", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "local_username", "long_string", op, value)
     elif condtype == "REMOTE_USERNAME":
-        return condition_dict_expression("session", "ct id", "remote_username", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "remote_username", "long_string", op, value)
     elif condtype == "CT_STATE":
         return condition_ct_state_expression(value, op)
     elif condtype == "LIMIT_RATE":
