@@ -4,10 +4,12 @@
 # pylint: disable=too-many-statements
 # pylint: disable=bare-except
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-public-methods
 import os
 import subprocess
 import ipaddress
 import re
+import base64
 from sync import registrar
 from sync import network_util
 from sync import board_util
@@ -46,7 +48,7 @@ class NetworkManager:
         """validates settings"""
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            validate_interface(intf)
+            self.validate_interface(intf)
             # TODO add mulit-setting validation:
             # for example:
             # if dhcp is enabled, dhcpStart and dhcpEnd are specified
@@ -77,7 +79,7 @@ class NetworkManager:
         delete_list.append("/etc/config/ifup.d/30-openvpn")
         delete_list.append("/etc/config/ifdown.d/30-openvpn")
 
-    def write_network_file(self, settings, prefix=""):
+    def write_network_file(self, settings, prefix):
         """write /etc/config/network"""
         filename = prefix + self.network_filename
         file_dir = os.path.dirname(filename)
@@ -132,7 +134,7 @@ class NetworkManager:
         for intf in interfaces:
             if intf.get('configType') != "DISABLED":
                 if intf.get('type') == 'OPENVPN':
-                    self.write_interface_openvpn(intf, settings)
+                    self.write_interface_openvpn(intf, settings, prefix)
                 elif intf.get('type') == 'WIREGUARD':
                     self.write_interface_wireguard(intf, settings)
                 else:
@@ -236,7 +238,7 @@ class NetworkManager:
             if peer.get('presharedKey') != None:
                 file.write("\toption preshared_key '%s'\n" % peer.get('presharedKey'))
 
-    def write_interface_openvpn(self, intf, settings):
+    def write_interface_openvpn(self, intf, settings, prefix):
         """write an openvpn interface"""
         file = self.network_file
 
@@ -244,11 +246,32 @@ class NetworkManager:
         file.write("config interface '%s'\n" % intf['logical_name'])
         file.write("\toption ifname '%s'\n" % intf['ifname'])
         file.write("\toption proto 'openvpn'\n")
-        file.write("\toption config '%s'\n" % intf.get('openvpnConfFile'))
+        path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
+        file.write("\toption config '%s'\n" % path)
 
         if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
             file.write("\toption defaultroute '1'\n")
+
+        # also write the conf file
+        self.write_openvpn_conf_file(intf, path, prefix)
+
+    def write_openvpn_conf_file(self, intf, path, prefix):
+        """write the specified file"""
+
+        filename = prefix + path
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        conffile = intf["openvpnConfFile"]
+
+        file = open(filename, "wb+")
+        # only base64 is currently supported
+        if conffile.get('encoding') == 'base64':
+            file.write(base64.b64decode(conffile.get('contents')))
+            file.flush()
+            file.close()
+            print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_interface_bridge(self, intf, settings):
         """write a bridge interface"""
@@ -504,6 +527,181 @@ class NetworkManager:
         """create switches config"""
         settings['network']['switches'] = board_util.get_switch_settings()
 
+    def validate_interface(self, intf):
+        """validates that each field within an interface makes sense individually"""
+        # If the interface is disabled, don't bother verifying attributes
+        if intf.get("configType") == "DISABLED":
+            return
+        for required_key in ["interfaceId", "name", "wan", "device", "type", "configType"]:
+            if required_key not in intf:
+                raise Exception("Missing required attribute: " + intf.get('name') + " " + required_key)
+
+        for ipv4_key in ["v4StaticAddress", "v4StaticGateway", "v4StaticDNS1", "v4StaticDNS2", "v4DhcpAddressOverride", "v4DhcpGatewayOverride", "v4DhcpDNS1Override", "v4DhcpDNS2Override", "v4PPPoEOverrideDNS1", "v4PPPoEOverrideDNS2", "dhcpRangeStart", "dhcpRangeEnd", "dhcpGatewayOverride", "dhcpDNSOverride"]:
+            if not valid_ipv4(intf.get(ipv4_key), accept_none=True):
+                raise Exception("Invalid IPv4 Address: " + intf.get('name') + " " + ipv4_key + " = " + intf.get(ipv4_key))
+
+        for ipv6_key in ["v6StaticAddress", "v6StaticGateway", "v6StaticDNS1", "v6StaticDNS2", "v6DhcpDNS1Override", "v6DhcpDNS2Override"]:
+            if not valid_ipv6(intf.get(ipv6_key), accept_none=True):
+                raise Exception("Invalid IPv6 Address: " + intf.get('name') + " " + ipv6_key + " = " + intf.get(ipv6_key))
+
+        for ipv4_prefix_key in ["v4StaticPrefix", "v4DhcpPrefixOverride", "dhcpPrefixOverride"]:
+            if intf.get(ipv4_prefix_key) != None and (intf.get(ipv4_prefix_key) < 1 or intf.get(ipv4_prefix_key) > 32):
+                raise Exception("Invalid IPv4 Prefix: " + intf.get('name') + " " + ipv4_prefix_key + " = " + intf.get(ipv4_prefix_key))
+
+        for ipv6_prefix_key in ["v6StaticPrefix", "v6AssignPrefix"]:
+            if intf.get(ipv6_prefix_key) != None and (intf.get(ipv6_prefix_key) < 1 or intf.get(ipv6_prefix_key) > 128):
+                raise Exception("Invalid IPv6 Prefix: " + intf.get('name') + " " + ipv6_prefix_key + " = " + intf.get(ipv6_prefix_key))
+
+        # check individual settings
+        if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
+            raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
+
+        if intf.get("v4_aliases") != None:
+            for v4_alias in intf.get("v4_aliases"):
+                if not valid_ipv4(v4_alias.get("v4Address")):
+                    raise Exception("Invalid IPv4 Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
+                if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
+                    raise Exception("Invalid IPv4 Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
+
+        if intf.get("v4PPPoEUsername") != None and not isinstance(intf.get("v4PPPoEUsername"), str):
+            raise Exception("Invalid PPPoE Username: " + intf.get('name') + " " + intf.get("v4PPPoEUsername"))
+
+        if intf.get("v4PPPoEPassword") != None and not isinstance(intf.get("v4PPPoEPassword"), str):
+            raise Exception("Invalid PPPoE Password: " + intf.get('name') + " " + intf.get("v4PPPoEPassword"))
+
+        if intf.get("v4PPPoEUsePeerDNS") != None and not isinstance(intf.get("v4PPPoEUsePeerDNS"), bool):
+            raise Exception("Invalid PPPoE UsePeerDNS: " + intf.get('name') + " " + intf.get("v4PPPoEUsePeerDNS"))
+
+        if intf.get("v6ConfigType") not in [None, "DHCP", "SLAAC", "ASSIGN", "STATIC", "DISABLED"]:
+            raise Exception("Invalid v6ConfigType: " + intf.get('name') + " " + intf.get("v6ConfigType"))
+
+        if intf.get("v6AssignHint") != None and not isinstance(intf.get("v6AssignHint"), str):
+            raise Exception("Invalid v6AssignHint: " + intf.get('name') + " " + intf.get("v6AssignHint"))
+
+        if intf.get("routerAdvertisements") != None and not isinstance(intf.get("routerAdvertisements"), bool):
+            raise Exception("Invalid Router Advertisements: " + intf.get('name') + " " + intf.get("routerAdvertisements"))
+
+        if intf.get("bridgedTo") != None and not isinstance(intf.get("bridgedTo"), int):
+            raise Exception("Invalid Bridged To: " + intf.get('name') + " " + intf.get("bridgedTo"))
+
+        if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
+            raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
+
+        if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
+            raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
+
+        if intf.get("macaddr") != None and not isinstance(intf.get("macaddr"), str):
+            raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
+        if intf.get("macaddr") != None and not re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", intf.get("macaddr")):
+            raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
+
+        if intf.get("dhcpEnabled") != None and not isinstance(intf.get("dhcpEnabled"), bool):
+            raise Exception("Invalid DHCP Enabled: " + intf.get('name') + " " + intf.get("dhcpEnabled"))
+
+        if intf.get("dhcpOptions") != None:
+            for dhcp_option in intf.get("dhcpOptions"):
+                if not isinstance(dhcp_option.get("enabled"), bool):
+                    raise Exception("Invalid DHCP Option Enabled: " + intf.get('name') + " " + dhcp_option.get("enabled"))
+                if not isinstance(dhcp_option.get("value"), str):
+                    raise Exception("Invalid DHCP Option Value: " + intf.get('name') + " " + dhcp_option.get("value"))
+
+        if intf.get("vrrpEnabled") != None and not isinstance(intf.get("vrrpEnabled"), bool):
+            raise Exception("Invalid VRRP Enabled: " + intf.get('name') + " " + intf.get("vrrpEnabled"))
+
+        if intf.get("vrrpId") != None and (not isinstance(intf.get("vrrpId"), int) or intf.get("vrrpId") < 1 or intf.get("vrrpId") > 255):
+            raise Exception("Invalid VRRP Id: " + intf.get('name') + " " + intf.get("vrrpId"))
+
+        if intf.get("vrrpPriority") != None and (not isinstance(intf.get("vrrpPriority"), int) or intf.get("vrrpPriority") < 1 or intf.get("vrrpPriority") > 255):
+            raise Exception("Invalid VRRP Priority: " + intf.get('name') + " " + intf.get("vrrpPriority"))
+
+        if intf.get("vrrpV4Aliases") != None:
+            for v4_alias in intf.get("v4_aliases"):
+                if not valid_ipv4(v4_alias.get("v4Address")):
+                    raise Exception("Invalid IPv4 VRRP Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
+                if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
+                    raise Exception("Invalid IPv4 VRRP Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
+
+        if intf.get("wirelessSsid") != None and not isinstance(intf.get("wirelessSsid"), str):
+            raise Exception("Invalid Wireless SSID: " + intf.get('name') + " " + intf.get("wirelessSsid"))
+
+        if not intf.get("wirelessEncryption") in [None, "NONE", "WPA1", "WPA12", "WPA2"]:
+            raise Exception("Invalid Wireless Encryption: " + intf.get('name') + intf.get("wirelessEncryption"))
+
+        if not intf.get("wirelessMode") in [None, "AP", "CLIENT"]:
+            raise Exception("Invalid Wireless Mode: " + intf.get('name') + " " + intf.get("wirelessMode"))
+
+        if intf.get("wirelessPassword") != None and not isinstance(intf.get("wirelessPassword"), str):
+            raise Exception("Invalid Wireless Password: " + intf.get('name') + " " + intf.get("wirelessPassword"))
+
+        if intf.get("wirelessChannel") != None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
+            raise Exception("Invalid Wireless Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
+
+        if intf.get("type") == 'OPENVPN':
+            if intf.get("configType") not in ["ADDRESSED", "DISABLED"]:
+                raise Exception("Unsupported OPENVPN config type: " + intf.get("configType"))
+            for required_attribute in ["name", "device", "openvpnConfFile", "natEgress", "wan"]:
+                if intf.get(required_attribute) is None:
+                    raise Exception("Missing required OpenVPN interface attribute: " + required_attribute)
+            conffile = intf["openvpnConfFile"]
+            for required_attribute in ["encoding", "contents"]:
+                if conffile.get(required_attribute) is None:
+                    raise Exception("Missing required OpenVPN interface confFile attribute: " + required_attribute)
+            if conffile["encoding"] != "base64":
+                raise Exception("Unsupported encoding in OpenVPN conf file: " + conffile["encoding"])
+            path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
+            # register this file in the registrar!
+            registrar.register_file(path, "restart-networking", self)
+
+        if intf.get("type") == 'WIREGUARD':
+            if intf.get("wireguardPrivateKey") == None or intf.get("wireguardPrivateKey") == "":
+                raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
+
+            if not isinstance(intf.get("wireguardPrivateKey"), str):
+                raise Exception("Specified wireguard private key is not a string: " + intf.get('name'))
+
+            if intf.get("wireguardAddresses") == None or intf.get("wireguardAddresses") == []:
+                raise Exception("No wireguard addresses specified for interface: " + intf.get('name'))
+
+            addresses = intf.get('wireguardAddresses')
+            for address in addresses:
+                if not valid_ipv4_network(address) and not valid_ipv6_network(address):
+                    raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
+
+            if intf.get("wireguardPeers") == None or intf.get("wireguardPeers") == []:
+                raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
+
+            peers = intf.get('wireguardPeers')
+            for peer in peers:
+                if peer.get("publicKey") == None or peer.get("publicKey") == "":
+                    raise Exception("No public key specified for wireguard peer of interface: " + intf.get('name'))
+
+                if not isinstance(peer.get("publicKey"), str):
+                    raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
+
+                if peer.get("allowedIps") == None or peer.get("allowedIps") == []:
+                    raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
+
+                ips = peer.get('allowedIps')
+                for ip in ips:
+                    if not valid_ipv4_network(ip) and not valid_ipv6_network(ip):
+                        raise Exception("Invalid wireguard ip: " + intf.get('name') + " " + ip)
+
+                if peer.get("routeAllowedIps") is not None and not isinstance(peer.get("routeAllowedIps"), bool):
+                    raise Exception("wireguard peer settings routeAllowedIps is not a bool: " + intf.get('name'))
+
+                if peer.get("keepalive") is not None and not isinstance(peer.get("keepalive"), int):
+                    raise Exception("wireguard peer keepalive is not an integer: " + intf.get('name'))
+
+                if peer.get("keepalive") is not None and peer.get("keepalive") < 0:
+                    raise Exception("Invalid wireguard peer keepalive: " + intf.get('name') + " " + str(peer.get("keepalive")))
+
+            if intf.get("wireguardPort") != None:
+                if not isinstance(intf.get("wireguardPort"), int):
+                    raise Exception("Specified wireguard port is not an integer: " + intf.get('name'))
+
+                if intf.get("wireguardPort") < 0 or intf.get("wireguardPort") > 65535:
+                    raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
+        
 def get_wireless_devices():
     """get wireless devices"""
     device_list = []
@@ -579,171 +777,5 @@ def valid_ipv6_network(address, accept_none=False):
         return True
     except:
         return False
-
-def validate_interface(intf):
-    """validates that each field within an interface makes sense individually"""
-    # If the interface is disabled, don't bother verifying attributes
-    if intf.get("configType") == "DISABLED":
-        return
-    for required_key in ["interfaceId", "name", "wan", "device", "type", "configType"]:
-        if required_key not in intf:
-            raise Exception("Missing required attribute: " + intf.get('name') + " " + required_key)
-
-    for ipv4_key in ["v4StaticAddress", "v4StaticGateway", "v4StaticDNS1", "v4StaticDNS2", "v4DhcpAddressOverride", "v4DhcpGatewayOverride", "v4DhcpDNS1Override", "v4DhcpDNS2Override", "v4PPPoEOverrideDNS1", "v4PPPoEOverrideDNS2", "dhcpRangeStart", "dhcpRangeEnd", "dhcpGatewayOverride", "dhcpDNSOverride"]:
-        if not valid_ipv4(intf.get(ipv4_key), accept_none=True):
-            raise Exception("Invalid IPv4 Address: " + intf.get('name') + " " + ipv4_key + " = " + intf.get(ipv4_key))
-
-    for ipv6_key in ["v6StaticAddress", "v6StaticGateway", "v6StaticDNS1", "v6StaticDNS2", "v6DhcpDNS1Override", "v6DhcpDNS2Override"]:
-        if not valid_ipv6(intf.get(ipv6_key), accept_none=True):
-            raise Exception("Invalid IPv6 Address: " + intf.get('name') + " " + ipv6_key + " = " + intf.get(ipv6_key))
-
-    for ipv4_prefix_key in ["v4StaticPrefix", "v4DhcpPrefixOverride", "dhcpPrefixOverride"]:
-        if intf.get(ipv4_prefix_key) != None and (intf.get(ipv4_prefix_key) < 1 or intf.get(ipv4_prefix_key) > 32):
-            raise Exception("Invalid IPv4 Prefix: " + intf.get('name') + " " + ipv4_prefix_key + " = " + intf.get(ipv4_prefix_key))
-
-    for ipv6_prefix_key in ["v6StaticPrefix", "v6AssignPrefix"]:
-        if intf.get(ipv6_prefix_key) != None and (intf.get(ipv6_prefix_key) < 1 or intf.get(ipv6_prefix_key) > 128):
-            raise Exception("Invalid IPv6 Prefix: " + intf.get('name') + " " + ipv6_prefix_key + " = " + intf.get(ipv6_prefix_key))
-
-    # check individual settings
-    if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
-        raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
-
-    if intf.get("v4_aliases") != None:
-        for v4_alias in intf.get("v4_aliases"):
-            if not valid_ipv4(v4_alias.get("v4Address")):
-                raise Exception("Invalid IPv4 Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
-            if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
-                raise Exception("Invalid IPv4 Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
-
-    if intf.get("v4PPPoEUsername") != None and not isinstance(intf.get("v4PPPoEUsername"), str):
-        raise Exception("Invalid PPPoE Username: " + intf.get('name') + " " + intf.get("v4PPPoEUsername"))
-
-    if intf.get("v4PPPoEPassword") != None and not isinstance(intf.get("v4PPPoEPassword"), str):
-        raise Exception("Invalid PPPoE Password: " + intf.get('name') + " " + intf.get("v4PPPoEPassword"))
-
-    if intf.get("v4PPPoEUsePeerDNS") != None and not isinstance(intf.get("v4PPPoEUsePeerDNS"), bool):
-        raise Exception("Invalid PPPoE UsePeerDNS: " + intf.get('name') + " " + intf.get("v4PPPoEUsePeerDNS"))
-
-    if intf.get("v6ConfigType") not in [None, "DHCP", "SLAAC", "ASSIGN", "STATIC", "DISABLED"]:
-        raise Exception("Invalid v6ConfigType: " + intf.get('name') + " " + intf.get("v6ConfigType"))
-
-    if intf.get("v6AssignHint") != None and not isinstance(intf.get("v6AssignHint"), str):
-        raise Exception("Invalid v6AssignHint: " + intf.get('name') + " " + intf.get("v6AssignHint"))
-
-    if intf.get("routerAdvertisements") != None and not isinstance(intf.get("routerAdvertisements"), bool):
-        raise Exception("Invalid Router Advertisements: " + intf.get('name') + " " + intf.get("routerAdvertisements"))
-
-    if intf.get("bridgedTo") != None and not isinstance(intf.get("bridgedTo"), int):
-        raise Exception("Invalid Bridged To: " + intf.get('name') + " " + intf.get("bridgedTo"))
-
-    if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
-        raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
-
-    if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
-        raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
-
-    if intf.get("macaddr") != None and not isinstance(intf.get("macaddr"), str):
-        raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
-    if intf.get("macaddr") != None and not re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", intf.get("macaddr")):
-        raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
-
-    if intf.get("dhcpEnabled") != None and not isinstance(intf.get("dhcpEnabled"), bool):
-        raise Exception("Invalid DHCP Enabled: " + intf.get('name') + " " + intf.get("dhcpEnabled"))
-
-    if intf.get("dhcpOptions") != None:
-        for dhcp_option in intf.get("dhcpOptions"):
-            if not isinstance(dhcp_option.get("enabled"), bool):
-                raise Exception("Invalid DHCP Option Enabled: " + intf.get('name') + " " + dhcp_option.get("enabled"))
-            if not isinstance(dhcp_option.get("value"), str):
-                raise Exception("Invalid DHCP Option Value: " + intf.get('name') + " " + dhcp_option.get("value"))
-
-    if intf.get("vrrpEnabled") != None and not isinstance(intf.get("vrrpEnabled"), bool):
-        raise Exception("Invalid VRRP Enabled: " + intf.get('name') + " " + intf.get("vrrpEnabled"))
-
-    if intf.get("vrrpId") != None and (not isinstance(intf.get("vrrpId"), int) or intf.get("vrrpId") < 1 or intf.get("vrrpId") > 255):
-        raise Exception("Invalid VRRP Id: " + intf.get('name') + " " + intf.get("vrrpId"))
-
-    if intf.get("vrrpPriority") != None and (not isinstance(intf.get("vrrpPriority"), int) or intf.get("vrrpPriority") < 1 or intf.get("vrrpPriority") > 255):
-        raise Exception("Invalid VRRP Priority: " + intf.get('name') + " " + intf.get("vrrpPriority"))
-
-    if intf.get("vrrpV4Aliases") != None:
-        for v4_alias in intf.get("v4_aliases"):
-            if not valid_ipv4(v4_alias.get("v4Address")):
-                raise Exception("Invalid IPv4 VRRP Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
-            if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
-                raise Exception("Invalid IPv4 VRRP Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
-
-    if intf.get("wirelessSsid") != None and not isinstance(intf.get("wirelessSsid"), str):
-        raise Exception("Invalid Wireless SSID: " + intf.get('name') + " " + intf.get("wirelessSsid"))
-
-    if not intf.get("wirelessEncryption") in [None, "NONE", "WPA1", "WPA12", "WPA2"]:
-        raise Exception("Invalid Wireless Encryption: " + intf.get('name') + intf.get("wirelessEncryption"))
-
-    if not intf.get("wirelessMode") in [None, "AP", "CLIENT"]:
-        raise Exception("Invalid Wireless Mode: " + intf.get('name') + " " + intf.get("wirelessMode"))
-
-    if intf.get("wirelessPassword") != None and not isinstance(intf.get("wirelessPassword"), str):
-        raise Exception("Invalid Wireless Password: " + intf.get('name') + " " + intf.get("wirelessPassword"))
-
-    if intf.get("wirelessChannel") != None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
-        raise Exception("Invalid Wireless Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
-
-    if intf.get("type") == 'OPENVPN':
-        if intf.get("openvpnConfFile") is None or intf.get("openvpnConfFile") == "":
-            raise Exception("No configuration file specified for openvpn interface " + intf.get('name'))
-
-        if os.path.isfile(intf.get("openvpnConfFile")) == False:
-            raise Exception("Configuration file " + intf.get("openvpnConfFile") + " openvpn interface " + intf.get('name') + "does not exist")
-
-    if intf.get("type") == 'WIREGUARD':
-        if intf.get("wireguardPrivateKey") == None or intf.get("wireguardPrivateKey") == "":
-            raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
-
-        if not isinstance(intf.get("wireguardPrivateKey"), str):
-            raise Exception("Specified wireguard private key is not a string: " + intf.get('name'))
-
-        if intf.get("wireguardAddresses") == None or intf.get("wireguardAddresses") == []:
-            raise Exception("No wireguard addresses specified for interface: " + intf.get('name'))
-
-        addresses = intf.get('wireguardAddresses')
-        for address in addresses:
-            if not valid_ipv4_network(address) and not valid_ipv6_network(address):
-                raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
-
-        if intf.get("wireguardPeers") == None or intf.get("wireguardPeers") == []:
-            raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
-
-        peers = intf.get('wireguardPeers')
-        for peer in peers:
-            if peer.get("publicKey") == None or peer.get("publicKey") == "":
-                raise Exception("No public key specified for wireguard peer of interface: " + intf.get('name'))
-
-            if not isinstance(peer.get("publicKey"), str):
-                raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
-
-            if peer.get("allowedIps") == None or peer.get("allowedIps") == []:
-                raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
-
-            ips = peer.get('allowedIps')
-            for ip in ips:
-                if not valid_ipv4_network(ip) and not valid_ipv6_network(ip):
-                    raise Exception("Invalid wireguard ip: " + intf.get('name') + " " + ip)
-
-            if peer.get("routeAllowedIps") is not None and not isinstance(peer.get("routeAllowedIps"), bool):
-                raise Exception("wireguard peer settings routeAllowedIps is not a bool: " + intf.get('name'))
-
-            if peer.get("keepalive") is not None and not isinstance(peer.get("keepalive"), int):
-                raise Exception("wireguard peer keepalive is not an integer: " + intf.get('name'))
-
-            if peer.get("keepalive") is not None and peer.get("keepalive") < 0:
-                raise Exception("Invalid wireguard peer keepalive: " + intf.get('name') + " " + str(peer.get("keepalive")))
-
-        if intf.get("wireguardPort") != None:
-            if not isinstance(intf.get("wireguardPort"), int):
-                raise Exception("Specified wireguard port is not an integer: " + intf.get('name'))
-
-            if intf.get("wireguardPort") < 0 or intf.get("wireguardPort") > 65535:
-                raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
 
 registrar.register_manager(NetworkManager())
