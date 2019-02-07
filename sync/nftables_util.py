@@ -393,12 +393,6 @@ def action_expression(json_action, family):
             raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
         priority_int = int(priority) & 0xff
         return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
-    elif typ == "WAN_DESTINATION":
-        destination = json_action.get('destination')
-        if destination is None:
-            raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
-        destination_int = int(destination) & 0xff
-        return "meta mark set \"mark and 0xffff00ff or 0x0000%s00\"" % ('{:02x}'.format(destination_int))
     elif typ == "WAN_POLICY":
         policy = json_action.get('policy')
         if policy is None:
