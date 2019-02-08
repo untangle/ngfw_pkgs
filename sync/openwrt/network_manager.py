@@ -43,6 +43,8 @@ class NetworkManager:
             # if it is not specified, assume its false
             if intf.get("wan") is None:
                 intf["wan"] = False
+        # Give any OpenVPN interfaces tun devices
+        openvpn_set_tun_interfaces(settings)
 
     def validate_settings(self, settings):
         """validates settings"""
@@ -778,4 +780,37 @@ def valid_ipv6_network(address, accept_none=False):
     except:
         return False
 
+def openvpn_set_tun_interfaces(settings):
+    """
+    openvpn_set_tun_interfaces sets the "device" for an openvpn interface
+    When creating new openvpn interfaces the UI doesn't know which tunX
+    interface to use so it leaves it unset. This process will go through
+    and find the first available tunX interface for any openvpn interface
+    without a device set
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get("type") == "OPENVPN" and intf.get("device") is None:
+            intf["device"] = find_lowest_available_tun(interfaces)
+
+def find_lowest_available_tun(interfaces):
+    """
+    This loops throught the specified interfaces
+    and finds the lowest available unused tunX device
+    If no other tun devices exists tun0 is returned
+    """
+    available = list(range(0, 255))
+    for intf in interfaces:
+        if intf.get("device") is not None and intf.get("device").startswith("tun"):
+            dev = intf["device"].replace("tun", "")
+            try:
+                available.remove(int(dev))
+            except ValueError:
+                raise Exception("Invalid tun interface: " + intf["device"])
+    if len(available) == 0:
+        raise Exception("No available tun interfaces")
+    else:
+        return "tun" + str(available[0])
+
 registrar.register_manager(NetworkManager())
+
