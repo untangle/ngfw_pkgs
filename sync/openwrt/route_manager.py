@@ -149,6 +149,9 @@ class RouteManager:
                 policyId = policy.get('policyId')
                 interfaces = policy.get('interfaces')
 
+                if len(interfaces) == 1 and interfaces[0].get('id') == 0:
+                    interfaces = get_wan_list(settings)
+
                 valid_wan_list = []
                 for interface in interfaces:
                     interfaceId = interface.get('id')
@@ -414,5 +417,21 @@ def interface_meets_policy_criteria(settings, policy, interface):
                 if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
                     return False
     return True
+
+def get_wan_list(settings):
+    """
+    returns a list of wan_interface's for all enabled wans
+    """
+    wan_list = []
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if enabled_wan(intf):
+            wan = {
+                "id": intf.get('interfaceId'),
+                "weight": 1
+            }
+            wan_list.append(wan)
+
+    return wan_list
 
 registrar.register_manager(RouteManager())
