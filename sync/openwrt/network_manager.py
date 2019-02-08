@@ -5,6 +5,7 @@
 # pylint: disable=bare-except
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-public-methods
+# pylint: disable=too-many-locals
 import os
 import subprocess
 import ipaddress
@@ -651,17 +652,22 @@ class NetworkManager:
             if conffile["encoding"] != "base64":
                 raise Exception("Unsupported encoding in OpenVPN conf file: " + conffile["encoding"])
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
-            # register this file in the registrar!
-            registrar.register_file(path, "restart-networking", self)
+
+            # register a new operation to restart this interface if this config file changes
+            # register the config file with the new operation
+            cmd = "ifdown " + intf["device"] + " ; " + "ifup " + intf["device"]
+            opname = "restart-" + intf["device"]
+            registrar.register_operation(opname, [""], [cmd], 99, None)
+            registrar.register_file(path, opname, self)
 
         if intf.get("type") == 'WIREGUARD':
-            if intf.get("wireguardPrivateKey") == None or intf.get("wireguardPrivateKey") == "":
+            if intf.get("wireguardPrivateKey") is None or intf.get("wireguardPrivateKey") == "":
                 raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
 
             if not isinstance(intf.get("wireguardPrivateKey"), str):
                 raise Exception("Specified wireguard private key is not a string: " + intf.get('name'))
 
-            if intf.get("wireguardAddresses") == None or intf.get("wireguardAddresses") == []:
+            if intf.get("wireguardAddresses") is None or intf.get("wireguardAddresses") == []:
                 raise Exception("No wireguard addresses specified for interface: " + intf.get('name'))
 
             addresses = intf.get('wireguardAddresses')
@@ -669,18 +675,18 @@ class NetworkManager:
                 if not valid_ipv4_network(address) and not valid_ipv6_network(address):
                     raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
 
-            if intf.get("wireguardPeers") == None or intf.get("wireguardPeers") == []:
+            if intf.get("wireguardPeers") is None or intf.get("wireguardPeers") == []:
                 raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
 
             peers = intf.get('wireguardPeers')
             for peer in peers:
-                if peer.get("publicKey") == None or peer.get("publicKey") == "":
+                if peer.get("publicKey") is None or peer.get("publicKey") == "":
                     raise Exception("No public key specified for wireguard peer of interface: " + intf.get('name'))
 
                 if not isinstance(peer.get("publicKey"), str):
                     raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
 
-                if peer.get("allowedIps") == None or peer.get("allowedIps") == []:
+                if peer.get("allowedIps") is None or peer.get("allowedIps") == []:
                     raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
 
                 ips = peer.get('allowedIps')
@@ -703,7 +709,7 @@ class NetworkManager:
 
                 if intf.get("wireguardPort") < 0 or intf.get("wireguardPort") > 65535:
                     raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
-        
+
 def get_wireless_devices():
     """get wireless devices"""
     device_list = []
