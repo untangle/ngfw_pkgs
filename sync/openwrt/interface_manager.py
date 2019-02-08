@@ -41,8 +41,7 @@ class InterfaceManager:
         registrar.register_file(self.INTERFACE_MARKS_FILENAME, "restart-nftables-rules", self)
 
     def sanitize_settings(self, settings):
-        """sanitizes settings"""
-        pass
+        openvpn_set_tun_interfaces(settings)
 
     def validate_settings(self, settings):
         """validates settings"""
@@ -87,8 +86,8 @@ nft add chain inet interface-marks mark-dst-interface
 nft add chain inet interface-marks check-src-interface-mark
 nft add chain inet interface-marks check-dst-interface-mark
 nft add rule inet interface-marks prerouting-interface-marks jump restore-interface-marks
-#nft add rule inet interface-marks prerouting-interface-marks mark and 0x000000ff == 0 jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks ct state new jump mark-src-interface
+nft add rule inet interface-marks prerouting-interface-marks mark and 0x000000ff == 0 jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks jump check-src-interface-mark
 
 # If its a new session - we set the mark the dst interface marks regardless of what they were set to before
@@ -180,3 +179,35 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
         return
 
 registrar.register_manager(InterfaceManager())
+
+def openvpn_set_tun_interfaces(settings):
+    """
+    openvpn_set_tun_interfaces sets the "device" for an openvpn interface
+    When creating new openvpn interfaces the UI doesn't know which tunX
+    interface to use so it leaves it unset. This process will go through
+    and find the first available tunX interface for any openvpn interface
+    without a device set
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get("type") == "OPENVPN" and intf.get("device") is None:
+            intf["device"] = find_lowest_available_tun(interfaces)
+
+def find_lowest_available_tun(interfaces):
+    """
+    This loops throught the specified interfaces
+    and finds the lowest available unused tunX device
+    If no other tun devices exists tun0 is returned
+    """
+    available = list(range(0, 255))
+    for intf in interfaces:
+        if intf.get("device") is not None and intf.get("device").startswith("tun"):
+            dev = intf["device"].replace("tun", "")
+            try:
+                available.remove(int(dev))
+            except ValueError:
+                raise Exception("Invalid tun interface: " + intf["device"])
+    if len(available) == 0:
+        raise Exception("No available tun interfaces")
+    else:
+        return "tun" + str(available[0])
