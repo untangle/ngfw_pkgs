@@ -149,22 +149,21 @@ class RouteManager:
                 policyId = policy.get('policyId')
                 interfaces = policy.get('interfaces')
 
+                valid_wan_list = []
+                for interface in interfaces:
+                    interfaceId = interface.get('id')
+                    if interface_meets_policy_criteria(settings, policy, interfaceId):
+                        valid_wan_list.append(interface)
+
                 file.write("nft add chain inet wan-routing route-to-policy-%d\n" % policyId)
                 file.write("nft add rule inet wan-routing wan-policy-routing dict session ct id wan_policy long_string policy-%d jump route-to-policy-%d comment \\\"%s\\\"\n" % (policyId, policyId, policy.get('description')))
 
-                if policy.get('type') == "SPECIFIC_WAN":
-                    interfaceId = interfaces[0].get('id')
-                    if interface_meets_policy_criteria(settings, policy, interfaceId):
-                        file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
-                    else:
-                        file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
+                if len(valid_wan_list) == 0:
+                    file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
 
-                elif policy.get('type') == "BEST_OF":
-                    for interface in interfaces:
-                        interfaceId = interface.get('id')
-                        if interface_meets_policy_criteria(settings, policy, interfaceId):
-                            file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
-                            break
+                elif policy.get('type') == "SPECIFIC_WAN" or policy.get('type') == "BEST_OF":
+                    interfaceId = valid_wan_list[0].get('id')
+                    file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
 
                 elif policy.get('type') == "BALANCE":
                     total_weight = 0
@@ -172,29 +171,25 @@ class RouteManager:
                     balance_string = ""
                     algorithm = policy.get('balance_algorithm')
 
-                    for interface in interfaces:
+                    for interface in valid_wan_list:
                         interfaceId = interface.get('id')
-                        if interface_meets_policy_criteria(settings, policy, interfaceId):
-                            if algorithm == "WEIGHTED":
-                                weight = interface.get('weight')
-                            else:
-                                weight = 1
+                        if algorithm == "WEIGHTED":
+                            weight = interface.get('weight')
+                        else:
+                            weight = 1
 
-                            if total_weight > 0:
-                                balance_string = balance_string + ", "
+                        if total_weight > 0:
+                            balance_string = balance_string + ", "
 
-                            range_end = weight + total_weight - 1
-                            if total_weight == range_end:
-                                balance_string = balance_string + "%d : jump mark-for-wan-%d" % (total_weight, interfaceId)
-                            else:
-                                balance_string = balance_string + "%d-%d : jump mark-for-wan-%d" % (total_weight, range_end, interfaceId)
+                        range_end = weight + total_weight - 1
+                        if total_weight == range_end:
+                            balance_string = balance_string + "%d : jump mark-for-wan-%d" % (total_weight, interfaceId)
+                        else:
+                            balance_string = balance_string + "%d-%d : jump mark-for-wan-%d" % (total_weight, range_end, interfaceId)
 
-                            total_weight += weight
+                        total_weight += weight
 
-                    if balance_string != "":
-                        file.write("nft add inet wan-routing route-to-policy-%d numgen random mod %d vmap { %s }\n" % (policyId, total_weight, balance_string))
-                    else:
-                        file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
+                    file.write("nft add inet wan-routing route-to-policy-%d numgen random mod %d vmap { %s }\n" % (policyId, total_weight, balance_string))
 
                 file.write("\n")
 
