@@ -103,7 +103,7 @@ nft add rule inet interface-marks forward-interface-marks ct state new jump mark
 nft add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
 """)
-        file.write("nft add rule inet interface-marks input-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+        file.write("nft add rule inet interface-marks input-interface-marks ct state new fib daddr type unicast ct mark set ct mark and 0x%x or 0x%x\n" %
                    (self.SERVER_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SERVER_INTERFACE_SHIFT)))
         file.write("nft add rule inet interface-marks input-interface-marks mark set mark and 0x%x or 0x%x\n" %
                    (self.DST_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.DST_INTERFACE_SHIFT)))
