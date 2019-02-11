@@ -385,6 +385,9 @@ def get_number_of_wans(settings):
 
 def enabled_wan(intf):
     """returns true if the interface is an enabled wan"""
+    if intf is None:
+        return False
+
     if intf.get('configType') != 'DISABLED' and intf.get('wan'):
         return True
     return False
