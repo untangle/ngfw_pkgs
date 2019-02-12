@@ -35,10 +35,19 @@ class RouteManager:
         """sanitizes settings"""
         wan = settings['wan']
         policies = wan.get('policies')
-        policy_id = 1
+        highest_policy_id = 0
         for policy in policies:
-            policy['policyId'] = policy_id
-            policy_id += 1
+            policy_id = policy.get('policyId')
+            if policy_id is not None and policy_id > highest_policy_id:
+                highest_policy_id = policy_id
+
+        highest_policy_id += 1
+
+        for policy in policies:
+            policy_id = policy.get('policyId')
+            if policy_id is None:
+                policy['policyId'] = highest_policy_id
+                highest_policy_id += 1
 
     def validate_settings(self, settings):
         """validates settings"""
