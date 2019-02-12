@@ -42,7 +42,16 @@ class RouteManager:
 
     def validate_settings(self, settings):
         """validates settings"""
-        pass
+        wan = settings['wan']
+        policies = wan.get('policies')
+        for policy in policies:
+            interfaces = policy.get('interfaces')
+            if interfaces is None:
+                raise Exception("No interfaces specified: policy " + str(policy.get('policyId')))
+
+            for interface in interfaces:
+                if interface.get('id') is None:
+                    raise Exception("No interface id specified: policy " + str(policy.get('policyId')))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
