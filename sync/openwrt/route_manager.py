@@ -33,7 +33,12 @@ class RouteManager:
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
-        pass
+        wan = settings['wan']
+        policies = wan.get('policies')
+        policy_id = 1
+        for policy in policies:
+            policy['policyId'] = policy_id
+            policy_id += 1
 
     def validate_settings(self, settings):
         """validates settings"""
