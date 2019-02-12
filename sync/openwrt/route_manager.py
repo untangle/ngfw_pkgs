@@ -62,6 +62,10 @@ class RouteManager:
                 if interface.get('interfaceId') is None:
                     raise Exception("No interface id specified: policy " + str(policy.get('policyId')))
 
+                weight = interface.get('weight')
+                if weight is not None and (weight > 10000 or weight < 1):
+                    raise Exception("Invalid interface weight specified: policy " + str(policy.get('policyId')) + " " + str(weight))
+
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
