@@ -59,7 +59,7 @@ class RouteManager:
                 raise Exception("No interfaces specified: policy " + str(policy.get('policyId')))
 
             for interface in interfaces:
-                if interface.get('id') is None:
+                if interface.get('interfaceId') is None:
                     raise Exception("No interface id specified: policy " + str(policy.get('policyId')))
 
     def create_settings(self, settings, prefix, delete_list, filename):
@@ -172,12 +172,12 @@ class RouteManager:
                 policyId = policy.get('policyId')
                 interfaces = policy.get('interfaces')
 
-                if len(interfaces) == 1 and interfaces[0].get('id') == 0:
+                if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
                     interfaces = get_wan_list(settings)
 
                 valid_wan_list = []
                 for interface in interfaces:
-                    interfaceId = interface.get('id')
+                    interfaceId = interface.get('interfaceId')
                     if interface_meets_policy_criteria(settings, policy, interfaceId):
                         valid_wan_list.append(interface)
 
@@ -188,7 +188,7 @@ class RouteManager:
                     file.write("nft add rule inet wan-routing route-to-policy-%d return comment \\\"policy disabled\\\"\n" % policyId)
 
                 elif policy.get('type') == "SPECIFIC_WAN" or policy.get('type') == "BEST_OF":
-                    interfaceId = valid_wan_list[0].get('id')
+                    interfaceId = valid_wan_list[0].get('interfaceId')
                     file.write("nft add rule inet wan-routing route-to-policy-%d jump mark-for-wan-%d\n" % (policyId, interfaceId))
 
                 elif policy.get('type') == "BALANCE":
@@ -198,7 +198,7 @@ class RouteManager:
                     algorithm = policy.get('balance_algorithm')
 
                     for interface in valid_wan_list:
-                        interfaceId = interface.get('id')
+                        interfaceId = interface.get('interfaceId')
                         if algorithm == "WEIGHTED":
                             weight = interface.get('weight')
                         else:
