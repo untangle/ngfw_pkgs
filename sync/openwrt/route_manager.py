@@ -105,7 +105,7 @@ class RouteManager:
                 "type": "SPECIFIC_WAN",
                 "interfaces": [
                     {
-                        "id": default_wan
+                        "interfaceId": default_wan
                     }
                 ],
                 "criteria": []
@@ -457,7 +457,7 @@ def get_wan_list(settings):
     for intf in interfaces:
         if enabled_wan(intf):
             wan = {
-                "id": intf.get('interfaceId'),
+                "interfaceId": intf.get('interfaceId'),
                 "weight": 1
             }
             wan_list.append(wan)
