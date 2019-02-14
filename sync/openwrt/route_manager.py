@@ -53,18 +53,43 @@ class RouteManager:
         """validates settings"""
         wan = settings['wan']
         policies = wan.get('policies')
+        policy_ids = []
         for policy in policies:
             interfaces = policy.get('interfaces')
+            policy_id = policy.get('policyId')
+            if policy_id is None:
+                raise Exception("Policy missing policyId")
+            policy_ids.append(policy_id)
             if interfaces is None:
-                raise Exception("No interfaces specified: policy " + str(policy.get('policyId')))
+                raise Exception("No interfaces specified: policy " + str(policy_id))
 
             for interface in interfaces:
                 if interface.get('interfaceId') is None:
-                    raise Exception("No interface id specified: policy " + str(policy.get('policyId')))
+                    raise Exception("No interface id specified: policy " + str(policy_id))
 
                 weight = interface.get('weight')
                 if weight is not None and (weight > 10000 or weight < 1):
-                    raise Exception("Invalid interface weight specified: policy " + str(policy.get('policyId')) + " " + str(weight))
+                    raise Exception("Invalid interface weight specified: policy " + str(policy_id) + " " + str(weight))
+        policy_chains = wan.get("policy_chains")
+        if policy_chains is None:
+            raise Exception("Missing policy_chains in WAN settings")
+        for policy_chain in policy_chains:
+            if policy_chain.get("rules") is None:
+                raise Exception("Missing rules in wan settings policy chain.")
+            for rule in policy_chain.get("rules"):
+                action = rule.get("action")
+                rule_id = rule.get("ruleId")
+                if rule_id is None:
+                    raise Exception("Missing ruleId in WAN rule")
+                if action is None:
+                    raise Exception("Missing action in WAN rule" + str(rule.get("ruleId")))
+                if rule.get("enabled") is None:
+                    raise Exception("Missing enabled in WAN rule" + str(rule.get("ruleId")))
+                if action.get("type") is None:
+                    raise Exception("Missing action type in WAN rule" + str(rule.get("ruleId")))
+                if action.get("type") == "WAN_POLICY":
+                    if action.get("policy") not in policy_ids:
+                        raise Exception("WAN rule " + str(rule.get("ruleId")) + " uses missing WAN policy " + str(action.get("policy")))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
