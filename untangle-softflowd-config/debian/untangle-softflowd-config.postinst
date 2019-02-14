@@ -2,7 +2,7 @@
 
 DEFAULT_FILE="/etc/default/softflowd"
 
-deb-systemd-helper disable softflowd
+deb-systemd-helper disable softflowd.service
 
 # Only for first time installation.
 if [ -z "$2" ] ; then
