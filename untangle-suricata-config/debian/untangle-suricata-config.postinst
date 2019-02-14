@@ -9,4 +9,4 @@ fi
 # the intrusion-prevention app will start suricata
 # stop it and disable it so it is not started automatically
 systemctl --no-block stop suricata || true
-deb-systemd-helper disable suricata
+deb-systemd-helper disable suricata.service

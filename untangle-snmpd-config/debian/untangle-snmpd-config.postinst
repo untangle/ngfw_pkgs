@@ -2,7 +2,7 @@
 
 DEFAULT_FILE="/etc/default/snmpd"
 
-deb-systemd-helper disable snmpd
+deb-systemd-helper disable snmpd.service
 
 # Only for first time installation.
 if [ -z "$2" ] && ! grep -q "UDP" $DEFAULT_FILE ; then

@@ -20,26 +20,26 @@ fi
 
 # disable hostapd
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable hostapd
+deb-systemd-helper disable hostapd.service
 
 # disable keepalived
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable keepalived
+deb-systemd-helper disable keepalived.service
 
 # disable miniupnpd
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable miniupnpd
+deb-systemd-helper disable miniupnpd.service
 
 # disable ddclient
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable ddclient
+deb-systemd-helper disable ddclient.service
 
 # disable dynamic routing daemons
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable zebra
-deb-systemd-helper disable ospfd
-deb-systemd-helper disable ospf6d
-deb-systemd-helper disable bgpd
+deb-systemd-helper disable zebra.service
+deb-systemd-helper disable ospfd.service
+deb-systemd-helper disable ospf6d.service
+deb-systemd-helper disable bgpd.service
 
 # disable 0000usepeerdns pppoe script, we will handle usepeerdns option
 # bug #11185

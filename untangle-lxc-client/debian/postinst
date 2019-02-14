@@ -9,7 +9,7 @@ rm -f /etc/init.d/untangle-lxc-client
 
 # disable the service from auto-starting
 # NGFW-11687
-deb-systemd-helper disable untangle-lxc-client
+deb-systemd-helper disable untangle-lxc-client.service
 
 #DEBHELPER#
 
