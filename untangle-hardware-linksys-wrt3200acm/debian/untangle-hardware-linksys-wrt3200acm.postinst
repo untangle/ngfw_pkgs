@@ -10,7 +10,7 @@ rm -f /etc/udev/rules.d/70-persistent-net.rules
 rm -f /etc/untangle/hardware/firmware.d/50hide
 
 # disable rsyslog by default on linksys
-deb-systemd-helper disable rsyslog
+deb-systemd-helper disable rsyslog.service
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
