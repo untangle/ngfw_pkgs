@@ -44,6 +44,8 @@ class NetworkManager:
             # if it is not specified, assume its false
             if intf.get("wan") is None:
                 intf["wan"] = False
+            if intf.get("interfaceId") is None:
+                intf["interfaceId"] = find_lowest_available_interface_id(interfaces)
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings)
 
@@ -817,6 +819,25 @@ def find_lowest_available_tun(interfaces):
         raise Exception("No available tun interfaces")
     else:
         return "tun" + str(available[0])
+
+
+def find_lowest_available_interface_id(interfaces):
+    """
+    This loops throught the specified interfaces
+    and finds the lowest available unused interfaceID
+    """
+    available = list(range(1, 254))
+    for intf in interfaces:
+        interface_id = intf.get("interfaceId")
+        try:
+            if interface_id is not None:
+                available.remove(interface_id)
+        except ValueError:
+            raise Exception("Invalid interface ID: " + intf["interfaceId"])
+    if len(available) == 0:
+        raise Exception("No available interface IDs")
+    else:
+        return available[0]
 
 registrar.register_manager(NetworkManager())
 
