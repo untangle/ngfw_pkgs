@@ -561,8 +561,8 @@ class NetworkManager:
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
-        if intf.get("v4_aliases") != None:
-            for v4_alias in intf.get("v4_aliases"):
+        if intf.get("v4Aliases") != None:
+            for v4_alias in intf.get("v4Aliases"):
                 if not valid_ipv4(v4_alias.get("v4Address")):
                     raise Exception("Invalid IPv4 Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
                 if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
@@ -620,7 +620,7 @@ class NetworkManager:
             raise Exception("Invalid VRRP Priority: " + intf.get('name') + " " + intf.get("vrrpPriority"))
 
         if intf.get("vrrpV4Aliases") != None:
-            for v4_alias in intf.get("v4_aliases"):
+            for v4_alias in intf.get("vrrpV4Aliases"):
                 if not valid_ipv4(v4_alias.get("v4Address")):
                     raise Exception("Invalid IPv4 VRRP Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
                 if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
