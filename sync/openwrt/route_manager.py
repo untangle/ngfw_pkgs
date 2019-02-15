@@ -49,6 +49,13 @@ class RouteManager:
                 policy['policyId'] = highest_policy_id
                 highest_policy_id += 1
 
+        policy_chains = wan.get('policy_chains')
+        for chain in policy_chains:
+            rule_id = 1
+            for rule in chain.get('rules'):
+                rule['ruleId'] = rule_id
+                rule_id += 1
+
     def validate_settings(self, settings):
         """validates settings"""
         wan = settings['wan']
