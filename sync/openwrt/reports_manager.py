@@ -58,9 +58,6 @@ def default_dashboard_settings():
             "name": "Top Clients by Session Count",
             "interval": 30
         }, {
-            "name": "Sessions",
-            "interval": 10
-        }, {
             "name": "Session Count Summary",
             "interval": 30
         }]
