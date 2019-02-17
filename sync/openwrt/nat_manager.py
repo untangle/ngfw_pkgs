@@ -28,12 +28,6 @@ class NatManager:
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
 
-        # XXX
-        # docker runs in the same kernel as the host, most hosts kernel do not yet support multiple NAT hooks
-        # docker needs the iptables NAT hooks so we can't insert nft nat rules or it will break iptables NAT
-        if board_util.is_docker():
-            return
-
         self.write_nat_rules_sys_file(settings, prefix)
 
     def write_nat_rules_sys_file(self, settings, prefix):
@@ -50,6 +44,16 @@ class NatManager:
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
+
+        # docker runs in the same kernel as the host, most hosts kernel do not yet support multiple NAT hooks
+        # docker needs the iptables NAT hooks so we can't insert nft nat rules or it will break iptables NAT
+        if board_util.is_docker():
+            file.write("iptables -t nat -A POSTROUTING -j MASQUERADE" + "\n")
+            file.flush()
+            file.close()
+            os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+            print("NatManager: Wrote %s" % filename)
+            return
 
         file.write(r"""
 nft delete table ip  nat-sys 2>/dev/null || true
