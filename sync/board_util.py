@@ -104,25 +104,9 @@ def is_docker():
     """returns true if the system is a docker container"""
     try:
         grep_output = subprocess.check_output(["/bin/grep", "docker", "/proc/1/cgroup"])
-        if "docker" in grep_output.encode():
+        if "docker" in grep_output.decode():
             return True
     except subprocess.CalledProcessError:
         pass
     return False
 
-def get_interface_ip4addr(ifname):
-    """Get the IPv4 address of the specified interface"""
-    try:
-        cmd = r"ip addr show %s | sed -rne '/inet/s:\s+inet\s+([0-9.]+).*:\1:gp'"%ifname
-        return subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
-    except:
-        return None
-
-def get_interface_ip4prefix(ifname):
-    """Get the IPv4 prefix of the specified interface"""
-    try:
-        cmd = r"ip addr show %s | sed -rne '/inet/s:\s+inet\s+[0-9.]+/([0-9]+).*:\1:gp'"%ifname
-        return subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
-    except:
-        return None
-    

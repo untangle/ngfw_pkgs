@@ -838,9 +838,9 @@ def create_settings_internal_interface(interface):
     interface['v6AssignPrefix'] = 64
     interface['v6AssignHint'] = '1234'
     if board_util.is_docker():
-        ip4addr = board_util.get_interface_ip4addr(interface['device'])
-        ip4prefix = board_util.get_interface_ip4prefix(interface['device'])
-        if ip4addr != None & ip4prefix != None:
+        ip4addr = network_util.get_interface_ip4addr(interface['device'])
+        ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
+        if ip4addr is not None and ip4prefix is not None:
             interface['configType'] = 'ADDRESSED'
             interface['v4ConfigType'] = 'STATIC'
             interface['v4StaticAddress'] = ip4addr
@@ -857,9 +857,9 @@ def create_settings_external_interface(interface):
     interface['v6ConfigType'] = 'DHCP'
     interface['natEgress'] = True
     if board_util.is_docker():
-        ip4addr = board_util.get_interface_ip4addr(interface['device'])
-        ip4prefix = board_util.get_interface_ip4prefix(interface['device'])
-        if ip4addr != None & ip4prefix != None:
+        ip4addr = network_util.get_interface_ip4addr(interface['device'])
+        ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
+        if ip4addr is not None and ip4prefix is not None:
             interface['configType'] = 'ADDRESSED'
             interface['v4ConfigType'] = 'STATIC'
             interface['v4StaticAddress'] = ip4addr
