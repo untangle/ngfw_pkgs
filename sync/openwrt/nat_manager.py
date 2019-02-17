@@ -3,6 +3,7 @@
 import os
 import stat
 from sync import registrar
+from sync import board_util
 
 class NatManager:
     """NatManager manages the nat tables and settings"""
@@ -26,6 +27,13 @@ class NatManager:
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
+
+        # XXX
+        # docker runs in the same kernel as the host, most hosts kernel do not yet support multiple NAT hooks
+        # docker needs the iptables NAT hooks so we can't insert nft nat rules or it will break iptables NAT
+        if board_util.is_docker():
+            return
+
         self.write_nat_rules_sys_file(settings, prefix)
 
     def write_nat_rules_sys_file(self, settings, prefix):
