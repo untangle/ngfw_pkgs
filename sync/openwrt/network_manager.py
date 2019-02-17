@@ -840,6 +840,7 @@ def create_settings_internal_interface(interface):
     if board_util.is_docker():
         ip4addr = network_util.get_interface_ip4addr(interface['device'])
         ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
+        print("XXX DOCKER INT " + str(ipaddr) + " " + str(ip4prefix))
         if ip4addr is not None and ip4prefix is not None:
             interface['configType'] = 'ADDRESSED'
             interface['v4ConfigType'] = 'STATIC'
@@ -859,6 +860,7 @@ def create_settings_external_interface(interface):
     if board_util.is_docker():
         ip4addr = network_util.get_interface_ip4addr(interface['device'])
         ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
+        print("XXX DOCKER EXT " + str(ipaddr) + " " + str(ip4prefix))
         if ip4addr is not None and ip4prefix is not None:
             interface['configType'] = 'ADDRESSED'
             interface['v4ConfigType'] = 'STATIC'
