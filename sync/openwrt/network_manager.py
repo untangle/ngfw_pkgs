@@ -488,26 +488,9 @@ class NetworkManager:
 
             if dev.get('name') == internal_device_name:
                 internal_id = intf_id
-                interface['name'] = 'internal'
-                interface['wan'] = False
-                interface['configType'] = 'ADDRESSED'
-                interface['v4ConfigType'] = 'STATIC'
-                interface['v4StaticAddress'] = '192.168.1.1'
-                interface['v4StaticPrefix'] = 24
-                interface['dhcpEnabled'] = True
-                interface['dhcpRangeStart'] = '192.168.1.100'
-                interface['dhcpRangeEnd'] = '192.168.1.200'
-                interface['dhcpLeaseDuration'] = 60*60
-                interface['v6ConfigType'] = 'ASSIGN'
-                interface['v6AssignPrefix'] = 64
-                interface['v6AssignHint'] = '1234'
+                create_settings_internal_interface(interface)
             elif dev.get('name') == external_device_name:
-                interface['name'] = 'external'
-                interface['wan'] = True
-                interface['configType'] = 'ADDRESSED'
-                interface['v4ConfigType'] = 'DHCP'
-                interface['v6ConfigType'] = 'DHCP'
-                interface['natEgress'] = True
+                create_settings_external_interface(interface)
             else:
                 interface['wan'] = False
                 if intf_id < len(self.GREEK_NAMES):
@@ -839,5 +822,48 @@ def find_lowest_available_interface_id(interfaces):
     else:
         return available[0]
 
-registrar.register_manager(NetworkManager())
+def create_settings_internal_interface(interface):
+    """create the default internal settings"""
+    interface['name'] = 'internal'
+    interface['wan'] = False
+    interface['configType'] = 'ADDRESSED'
+    interface['v4ConfigType'] = 'STATIC'
+    interface['v4StaticAddress'] = '192.168.1.1'
+    interface['v4StaticPrefix'] = 24
+    interface['dhcpEnabled'] = True
+    interface['dhcpRangeStart'] = '192.168.1.100'
+    interface['dhcpRangeEnd'] = '192.168.1.200'
+    interface['dhcpLeaseDuration'] = 60*60
+    interface['v6ConfigType'] = 'ASSIGN'
+    interface['v6AssignPrefix'] = 64
+    interface['v6AssignHint'] = '1234'
+    if board_util.is_docker():
+        ip4addr = board_util.get_interface_ip4addr(interface['device'])
+        ip4prefix = board_util.get_interface_ip4prefix(interface['device'])
+        if ip4addr != None & ip4prefix != None:
+            interface['configType'] = 'ADDRESSED'
+            interface['v4ConfigType'] = 'STATIC'
+            interface['v4StaticAddress'] = ip4addr
+            interface['v4StaticPrefix'] = ip4prefix
+            interface['v6ConfigType'] = 'DISABLED'
+            interface['dhcpEnabled'] = False
 
+def create_settings_external_interface(interface):
+    """create the default external settings"""
+    interface['name'] = 'external'
+    interface['wan'] = True
+    interface['configType'] = 'ADDRESSED'
+    interface['v4ConfigType'] = 'DHCP'
+    interface['v6ConfigType'] = 'DHCP'
+    interface['natEgress'] = True
+    if board_util.is_docker():
+        ip4addr = board_util.get_interface_ip4addr(interface['device'])
+        ip4prefix = board_util.get_interface_ip4prefix(interface['device'])
+        if ip4addr != None & ip4prefix != None:
+            interface['configType'] = 'ADDRESSED'
+            interface['v4ConfigType'] = 'STATIC'
+            interface['v4StaticAddress'] = ip4addr
+            interface['v4StaticPrefix'] = ip4prefix
+            interface['v6ConfigType'] = 'DISABLED'
+
+registrar.register_manager(NetworkManager())
