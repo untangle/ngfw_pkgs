@@ -838,16 +838,12 @@ def create_settings_internal_interface(interface):
     interface['v6AssignPrefix'] = 64
     interface['v6AssignHint'] = '1234'
     if board_util.is_docker():
-        ip4addr = network_util.get_interface_ip4addr(interface['device'])
-        ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
-        print("XXX DOCKER INT " + str(ip4addr) + " " + str(ip4prefix))
-        if ip4addr is not None and ip4prefix is not None:
-            interface['configType'] = 'ADDRESSED'
-            interface['v4ConfigType'] = 'STATIC'
-            interface['v4StaticAddress'] = ip4addr
-            interface['v4StaticPrefix'] = ip4prefix
-            interface['v6ConfigType'] = 'DISABLED'
-            interface['dhcpEnabled'] = False
+        interface['configType'] = 'ADDRESSED'
+        interface['v4ConfigType'] = 'STATIC'
+        interface['v4StaticAddress'] = "172.51.0.2"
+        interface['v4StaticPrefix'] = 16
+        interface['v6ConfigType'] = 'DISABLED'
+        interface['dhcpEnabled'] = False
 
 def create_settings_external_interface(interface):
     """create the default external settings"""
@@ -858,14 +854,13 @@ def create_settings_external_interface(interface):
     interface['v6ConfigType'] = 'DHCP'
     interface['natEgress'] = True
     if board_util.is_docker():
-        ip4addr = network_util.get_interface_ip4addr(interface['device'])
-        ip4prefix = network_util.get_interface_ip4prefix(interface['device'])
-        print("XXX DOCKER EXT " + str(ip4addr) + " " + str(ip4prefix))
-        if ip4addr is not None and ip4prefix is not None:
-            interface['configType'] = 'ADDRESSED'
-            interface['v4ConfigType'] = 'STATIC'
-            interface['v4StaticAddress'] = ip4addr
-            interface['v4StaticPrefix'] = ip4prefix
-            interface['v6ConfigType'] = 'DISABLED'
+        interface['configType'] = 'ADDRESSED'
+        interface['v4ConfigType'] = 'STATIC'
+        interface['v4StaticAddress'] = "172.50.0.2"
+        interface['v4StaticPrefix'] = 16
+        interface['v4StaticGateway'] = "172.50.0.1"
+        interface['v4StaticDNS1'] = "8.8.8.8"
+        interface['v4StaticDNS2'] = "8.8.4.4"
+        interface['v6ConfigType'] = 'DISABLED'
 
 registrar.register_manager(NetworkManager())
