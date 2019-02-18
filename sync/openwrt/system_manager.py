@@ -3,6 +3,7 @@
 import os
 import stat
 from sync import registrar
+from sync import board_util
 
 class SystemManager:
     """SystemManager manages the system settings"""
@@ -27,7 +28,10 @@ class SystemManager:
         settings['system']['hostName'] = 'mfw'
         settings['system']['domainName'] = 'example.com'
         settings['system']['timeZone'] = 'UTC'
-        settings['system']['setupWizard'] = {"completed": False}
+        if board_util.is_docker():
+            settings['system']['setupWizard'] = {"completed": True}
+        else:
+            settings['system']['setupWizard'] = {"completed": False}
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
