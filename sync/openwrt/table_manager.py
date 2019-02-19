@@ -680,7 +680,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "icmp"
+                    "value": "1"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -693,7 +693,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "udp"
+                    "value": "17"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
