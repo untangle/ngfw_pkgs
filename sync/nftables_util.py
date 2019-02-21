@@ -397,7 +397,7 @@ def action_expression(json_action, family):
         policy = json_action.get('policy')
         if policy is None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
-        return "dict session ct id wan_policy long_string set policy-%s" % str(policy)
+        return "jump route-to-policy-%s" % str(policy)
     else:
         raise Exception("Unknown action type: " + str(json_action))
 
