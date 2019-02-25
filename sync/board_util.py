@@ -16,6 +16,7 @@ def get_hidden_interfaces():
     return {
         "armada-385-linksys-shelby": ["eth0", "eth1"],
         "armada-385-linksys-rango": ["eth0", "eth1"],
+        "armada-385-linksys-venom": ["eth0", "eth1"],
         "armada-385-turris-omnia": ["eth0", "eth1"],
     }.get(board_name, [])
 
@@ -25,6 +26,7 @@ def get_external_device_name():
     return {
         "armada-385-linksys-shelby": "wan",
         "armada-385-linksys-rango": "wan",
+        "armada-385-linksys-venom": "wan",
         "armada-385-turris-omnia": "eth2",
     }.get(board_name, "eth1")
 
@@ -34,6 +36,7 @@ def get_internal_device_name():
     return {
         "armada-385-linksys-shelby": "lan1",
         "armada-385-linksys-rango": "lan1",
+        "armada-385-linksys-venom": "lan1",
         "armada-385-turris-omnia": "lan0",
     }.get(board_name, "eth0")
 
@@ -83,7 +86,7 @@ def get_interface_macaddr(ifname):
             "lan4": get_device_macaddr("eth1"),
             "wan": get_device_macaddr("eth1"),
         }.get(ifname, "")
-    elif board_name == "armada-385-linksys-rango":
+    elif board_name == "armada-385-linksys-rango" or board_name == "armada-385-linksys-venom":
         return {
             "lan1": get_device_macaddr("eth1"),
             "lan2": get_device_macaddr("eth1"),
