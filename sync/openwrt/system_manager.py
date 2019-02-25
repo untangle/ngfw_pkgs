@@ -41,7 +41,17 @@ class SystemManager:
         time_zone = system.get('timeZone')
         if time_zone is None:
             return
-        self.write_timezone_setter(time_zone, prefix)
+        # If the timezone is just a string, use that
+        # In old settings.json, time_zone was just a string
+        if isinstance(time_zone, str):
+            self.write_timezone_setter(time_zone, prefix)
+            return
+        if isinstance(time_zone, dict):
+            time_zone_value = time_zone.get('value')
+            if time_zone_value is None:
+                return
+            self.write_timezone_setter(time_zone_value, prefix)
+            return
 
     def write_timezone_setter(self, time_zone, prefix):
         """Write the script to set the timezone in /etc/config/system"""
