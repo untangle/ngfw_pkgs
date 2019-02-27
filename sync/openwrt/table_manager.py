@@ -115,11 +115,11 @@ def default_filter_rules_table():
     return {
         "name": "filter",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "filter-rules",
             "description": "The base filter-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "forward",
             "priority": 0,
             "rules": [{
@@ -212,11 +212,11 @@ def default_port_forward_table():
     return {
         "name": "port-forward",
         "family": "ip,ip6",
+        "chain_type": "nat",
         "chains": [{
             "name": "port-forward-rules",
             "description": "The base port-forwards chain",
             "base": True,
-            "type": "nat",
             "hook": "prerouting",
             "priority": 100,
             "default": True,
@@ -243,11 +243,11 @@ def default_nat_rules_table():
     return {
         "name": "nat",
         "family": "ip,ip6",
+        "chain_type": "nat",
         "chains": [{
             "name": "nat-rules",
             "description": "The nat-rules chain",
             "base": True,
-            "type": "nat",
             "hook": "postrouting",
             "priority": 95,
             "rules": [{
@@ -302,11 +302,11 @@ def default_access_rules_table():
     return {
         "name": "access",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "access-rules",
             "description": "The base access-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "input",
             "priority": 0,
             "rules": [{
@@ -609,11 +609,11 @@ def default_shaping_rules_table():
     return {
         "name": "shaping",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "shaping-rules",
             "description": "The base shaping-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "postrouting",
             "priority": 5,
             "rules": [{

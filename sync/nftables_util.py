@@ -430,37 +430,46 @@ def rule_cmd(json_rule, family, table, chain):
     except:
         raise
 
-def chain_create_cmd(json_chain, family, table):
+def chain_create_cmd(json_chain, family, chain_type, table):
     """Return the nft command to create this chain"""
     check_chain(json_chain)
     check_family(family)
 
     name = json_chain.get('name')
 
+    # type used to be stored in the chain JSON definition
+    # keep this for backwards compatibility
+    if chain_type is None:
+        chain_type = json_chain.get('type')
+    
     # vote is only valid in the ip, ip6 familyt, but the vote table is ip,ip6,inet just ignore inet
     if json_chain.get('base') and json_chain.get('type') == "route" and family == "inet":
         raise NonsensicalException("Ignore inet/route chains")
 
     if json_chain.get('base'):
-        typ = json_chain.get('type')
         hook = json_chain.get('hook')
         priority = json_chain.get('priority')
-        if typ is None or typ not in ["filter", "route", "nat"]:
-            raise Exception("Invalid type (%s) for chain %s" % (typ, name))
+        if chain_type is None or chain_type not in ["filter", "route", "nat"]:
+            raise Exception("Invalid type (%s) for chain %s" % (chain_type, name))
         if hook is None or hook not in ["prerouting", "input", "forward", "output", "postrouting", "ingress"]:
             raise Exception("Invalid hook (%s) for chain %s" % (hook, name))
         if priority is None or priority < -500 or priority > 500:
             raise Exception("Invalid priority (%d) for chain %s" % (priority, name))
-        return "nft add chain %s %s %s \"{ type %s hook %s priority %d ; }\"" % (family, table, name, typ, hook, priority)
+        return "nft add chain %s %s %s \"{ type %s hook %s priority %d ; }\"" % (family, table, name, chain_type, hook, priority)
     else:
         return "nft add chain %s %s %s" % (family, table, name)
 
-def chain_rules_cmds(json_chain, family, table):
+def chain_rules_cmds(json_chain, family, chain_type, table):
     """Return all the commands to create and populate this chain"""
     check_chain(json_chain)
 
-    # vote is only valid in the ip, ip6 familyt, but the vote table is ip,ip6,inet just ignore inet
-    if json_chain.get('base') and json_chain.get('type') == "route" and family == "inet":
+    # type used to be stored in the chain JSON definition
+    # keep this for backwards compatibility
+    if chain_type is None:
+        chain_type = json_chain.get('type')
+    
+    # route is only valid in the ip, ip6 families
+    if json_chain.get('base') and chain_type == "route" and family not in ["ip","ip6"]:
         raise NonsensicalException("Ignore inet/route chains")
 
     cmds = []
@@ -491,6 +500,7 @@ def table_all_cmds(json_table):
     cmds = []
     name = json_table.get('name')
     family = json_table.get('family')
+    chain_type = json_table.get('chain_type')
     if "," in family:
         families = family.split(",")
         strcat = ""
@@ -505,12 +515,12 @@ def table_all_cmds(json_table):
     cmds.append(table_create_cmd(json_table))
     for json_chain in json_table.get('chains'):
         try:
-            cmds.append(chain_create_cmd(json_chain, family, name))
+            cmds.append(chain_create_cmd(json_chain, family, chain_type, name))
         except NonsensicalException:
             pass
     for json_chain in json_table.get('chains'):
         try:
-            cmds.append(chain_rules_cmds(json_chain, family, name))
+            cmds.append(chain_rules_cmds(json_chain, family, chain_type, name))
         except NonsensicalException:
             pass
     return '\n'.join(cmds)
