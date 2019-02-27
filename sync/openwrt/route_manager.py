@@ -257,8 +257,8 @@ class RouteManager:
 
         policy_chains = wan.get('policy_chains')
         for chain in policy_chains:
-            file.write(nftables_util.chain_create_cmd(chain, "inet", "wan-routing") + "\n")
-            file.write(nftables_util.chain_rules_cmds(chain, "inet", "wan-routing") + "\n")
+            file.write(nftables_util.chain_create_cmd(chain, "inet", None, "wan-routing") + "\n")
+            file.write(nftables_util.chain_rules_cmds(chain, "inet", None, "wan-routing") + "\n")
             file.write("\n")
 
         file.write("nft add chain inet wan-routing wan-routing-entry\n")
