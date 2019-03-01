@@ -38,7 +38,7 @@ class NatManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh")
+        file.write("#!/usr/sbin/nft -f")
         file.write("\n\n")
 
         file.write("## Auto Generated\n")
@@ -56,26 +56,26 @@ class NatManager:
             return
 
         file.write(r"""
-nft delete table ip  nat-sys 2>/dev/null || true
-nft delete table ip6 nat-sys 2>/dev/null || true
-nft add table ip  nat-sys
-nft add table ip6 nat-sys
+add table ip  nat-sys
+flush table ip  nat-sys
+add table ip6 nat-sys
+flush table ip6 nat-sys
 
-nft add chain ip nat-sys postrouting-nat "{ type nat hook postrouting priority 100 ; }"
-nft add chain ip nat-sys prerouting-nat  "{ type nat hook prerouting priority -50 ; }"
-nft add chain ip6 nat-sys postrouting-nat "{ type nat hook postrouting priority 100 ; }"
-nft add chain ip6 nat-sys prerouting-nat  "{ type nat hook prerouting priority -50 ; }"
+add chain ip nat-sys postrouting-nat { type nat hook postrouting priority 100 ; }
+add chain ip nat-sys prerouting-nat  { type nat hook prerouting priority -50 ; }
+add chain ip6 nat-sys postrouting-nat { type nat hook postrouting priority 100 ; }
+add chain ip6 nat-sys prerouting-nat  { type nat hook prerouting priority -50 ; }
 
-nft add chain ip nat-sys miniupnpd
-nft add chain ip nat-sys nat-rules-sys
+add chain ip nat-sys miniupnpd
+add chain ip nat-sys nat-rules-sys
 
-nft add rule ip nat-sys postrouting-nat oifname lo accept
-nft add rule ip nat-sys postrouting-nat iifname lo accept
-nft add rule ip nat-sys postrouting-nat jump nat-rules-sys
+add rule ip nat-sys postrouting-nat oifname lo accept
+add rule ip nat-sys postrouting-nat iifname lo accept
+add rule ip nat-sys postrouting-nat jump nat-rules-sys
 
-nft add rule ip nat-sys prerouting-nat jump miniupnpd
+add rule ip nat-sys prerouting-nat jump miniupnpd
 
-nft add chain ip nat-sys filter-rules-nat "{ type filter hook forward priority -5 ; }"
+add chain ip nat-sys filter-rules-nat { type filter hook forward priority -5 ; }
 
 
 """)
@@ -88,12 +88,12 @@ nft add chain ip nat-sys filter-rules-nat "{ type filter hook forward priority -
                 # FIXME - this should be a rule based on mark instead of netfilterDev
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                 file.write("# NAT Egress traffic to interface %i\n" % intf.get('interfaceId'))
-                file.write("nft add rule ip nat-sys nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
+                file.write("add rule ip nat-sys nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
             if intf.get('natIngress'):
                 # FIXME - this should be a rule based on mark instead of netfilterDev
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                 file.write("# NAT Ingress traffic from interface %i\n" % intf.get('interfaceId'))
-                file.write("nft add rule ip nat-sys nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
+                file.write("add rule ip nat-sys nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
 
         file.write("\n")
         file.flush()
