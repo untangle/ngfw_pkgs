@@ -27,7 +27,7 @@ while getopts uf:r:d:a:s:k:p: option ; do
     f) IMAGE="$OPTARG" ;;
     a) ARCH="$OPTARG" ;;
     s) SIZE="$OPTARG" ;;
-    s) KERNEL_VERSION="$OPTARG" ;;
+    k) KERNEL_VERSION="$OPTARG" ;;
     p) PACKAGES=(--package ${OPTARG//,/ --package }) ;;
     u) UVM=1 ;;
     h|\?) usage ;;
