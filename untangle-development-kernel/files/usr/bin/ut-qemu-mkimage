@@ -3,12 +3,13 @@
 set -e
 
 usage() {
-  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size] [-p package[,package]]"
+  echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size] [-k kernel_version] [-p package[,package]]"
   echo "-r repository        : jessie or stretch"
   echo "-d distribution      : stable or testing (Untangle's definitions, not Debian's)"
   echo "-a architecture      : amd64, i386, armel, armhf, arm64, etc"
   echo "-u                   : installs untangle-gateway and all its dependencies"
   echo "-s size              : size of the image, for instance 20G"
+  echo "-k kernel_version    : debian kernel version, for instance 4.9.0-8"
   echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
   exit 1
 }
@@ -19,13 +20,14 @@ fi
 
 ### CLI args
 typeset -a PACKAGES
-while getopts uf:r:d:a:s:p: option ; do
+while getopts uf:r:d:a:s:k:p: option ; do
   case "$option" in
     r) REPOSITORY="$OPTARG" ;;
     d) DISTRIBUTION="$OPTARG" ;;
     f) IMAGE="$OPTARG" ;;
     a) ARCH="$OPTARG" ;;
     s) SIZE="$OPTARG" ;;
+    s) KERNEL_VERSION="$OPTARG" ;;
     p) PACKAGES=(--package ${OPTARG//,/ --package }) ;;
     u) UVM=1 ;;
     h|\?) usage ;;
@@ -50,11 +52,11 @@ if [[ -n "$UVM" ]] ; then
   # debootstrap has trouble resolving virtual packages
   case $REPOSITORY in
     jessie)
-      KERNEL_VERSION="3.16.0-4"
+      KERNEL_VERSION=${KERNEL_VERSION:-3.16.0-4}
       CUSTOMIZE=(--customize install-uvm.sh)
       PACKAGES+=(--package sysvinit-core) ;;
     stretch)
-      KERNEL_VERSION="4.9.0-8"
+      KERNEL_VERSION=${KERNEL_VERSION:-4.9.0-8}
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
