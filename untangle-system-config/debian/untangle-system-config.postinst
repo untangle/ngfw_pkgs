@@ -88,4 +88,21 @@ if uname -r | grep -q 4.9.0-6-untangle ; then
     fi
 fi
 
+# 14.2 4.9.0-7 to 4.9.0-8 auto-switch
+if uname -r | grep -q 4.9.0-7-untangle ; then
+    if cat /proc/cmdline | grep -q 'video-safe-mode' ; then
+        echo "Switching to 4.9.0-8 video safe mode"
+        grub-set-default 1
+    elif cat /proc/cmdline | grep -q 'vga=791' ; then
+        echo "Switching to 4.9.0-8 kern video mode"
+        grub-set-default 2
+    elif cat /proc/cmdline | grep -q 'noapic' ; then
+        echo "Switching to 4.9.0-8 hardware safe mode"
+        grub-set-default 3
+    else
+        echo "Switching to 4.9.0-8"
+        grub-set-default 0
+    fi
+fi
+
 exit 0

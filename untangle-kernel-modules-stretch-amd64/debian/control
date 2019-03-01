@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-kernel-modules-stretch-amd64
 Architecture: amd64
-Depends: ${misc:Depends}, linux-image-4.9.0-7-untangle-amd64, firmware-bnx2, firmware-bnx2x
+Depends: ${misc:Depends}, linux-image-4.9.0-8-untangle-amd64, firmware-bnx2, firmware-bnx2x
 Provides: untangle-kernel-modules-stretch
 Pre-Depends: untangle-debconf-manager
 Description: Untangle kernel modules for amd64
