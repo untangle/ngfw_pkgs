@@ -98,7 +98,7 @@ def write_file(filename, table_settings, prefix):
         os.makedirs(file_dir)
 
     file = open(filename, "w+")
-    file.write("#!/bin/sh")
+    file.write("#!/usr/sbin/nft -f")
     file.write("\n\n")
 
     file.write("## Auto Generated\n")

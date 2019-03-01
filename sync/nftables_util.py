@@ -57,13 +57,13 @@ def op_str(op):
     elif op == "!=":
         return " != "
     elif op == "<":
-        return " \"<\" "
+        return " < "
     elif op == ">":
-        return " \">\" "
+        return " > "
     elif op == "<=":
-        return " \"<=\" "
+        return " <= "
     elif op == ">=":
-        return " \">=\" "
+        return " >= "
 
 def ip_protocol_number_to_str(ip_protocol):
     """
@@ -83,9 +83,9 @@ def value_str(value):
     If the string contains a comma, it separates into nft list
     """
     if len(value.split(",")) < 2:
-        return "'" + value + "'"
+        return value
     else:
-        return "'{" + value + "}'"
+        return "{" + value + "}"
 
 def selector_expression(typ, family, ip_protocol=None):
     """generic helper function to build a basic nftables selector expression"""
@@ -394,7 +394,7 @@ def action_expression(json_action, family):
         priority_int = int(priority) & 0xff
         if priority_int < 1 or priority_int > 4:
             raise Exception("Priority out of range (1-4): %d" % priority_int)
-        return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
+        return "meta mark set mark and 0xff00ffff or 0x00%s0000" % ('{:02x}'.format(priority_int))
     elif typ == "WAN_POLICY":
         policy = json_action.get('policy')
         if policy is None:
@@ -425,7 +425,7 @@ def rule_cmd(json_rule, family, table, chain):
         return None
 
     try:
-        cmd = "nft add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
+        cmd = "add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
         return cmd
     except NonsensicalException:
         return None
@@ -457,9 +457,9 @@ def chain_create_cmd(json_chain, family, chain_type, table):
             raise Exception("Invalid hook (%s) for chain %s" % (hook, name))
         if priority is None or priority < -500 or priority > 500:
             raise Exception("Invalid priority (%d) for chain %s" % (priority, name))
-        return "nft add chain %s %s %s \"{ type %s hook %s priority %d ; }\"" % (family, table, name, chain_type, hook, priority)
+        return "add chain %s %s %s { type %s hook %s priority %d ; }" % (family, table, name, chain_type, hook, priority)
     else:
-        return "nft add chain %s %s %s" % (family, table, name)
+        return "add chain %s %s %s" % (family, table, name)
 
 def chain_rules_cmds(json_chain, family, chain_type, table):
     """Return all the commands to create and populate this chain"""
@@ -484,7 +484,7 @@ def chain_rules_cmds(json_chain, family, chain_type, table):
 def table_create_cmd(json_table):
     """Return the nft command to create this table"""
     check_table(json_table)
-    return "nft add table %s %s" % (json_table.get('family'), json_table.get('name'))
+    return "add table %s %s" % (json_table.get('family'), json_table.get('name'))
 
 def table_flush_cmd(json_table):
     """Return the nft command to flush this table"""
@@ -494,7 +494,7 @@ def table_flush_cmd(json_table):
 def table_delete_cmd(json_table):
     """Return the nft command to delete this table"""
     cmd = table_create_cmd(json_table)
-    return cmd.replace(" add ", " delete ") + " 2>/dev/null || true"
+    return cmd.replace(" add ", " delete ")
 
 def table_all_cmds(json_table):
     """Return all the commands to create, flush, and populate this table"""
