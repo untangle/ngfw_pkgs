@@ -113,9 +113,12 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
 
         file.write("nft add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
                    (self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
+        file.write("nft add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
         file.write("nft add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
                    (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
-
+        file.write("nft add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
+                   (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         # We don't set/restore marks in output because there is no src/client mark
         # and the dst/server mark is handled in postrouting
 
