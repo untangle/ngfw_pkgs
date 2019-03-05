@@ -230,7 +230,7 @@ class RouteManager:
                 break
 
         file.write("add chain inet wan-routing route-to-default-wan\n")
-        file.write("add rule inet wan-routing route-to-default-wan dict session ct id wan_policy long_string set system-default\n")
+        file.write("add rule inet wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default\n")
         file.write("add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % default_wan)
         file.write("\n")
         file.write("add chain inet wan-routing route-via-cache\n")
@@ -244,7 +244,7 @@ class RouteManager:
             file.write("add set inet wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
             file.write("add chain inet wan-routing route-to-policy-%d\n" % policyId)
             file.write("add rule inet wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
-            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table dict session ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId))
+            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId))
             file.write("\n")
 
         policy_chains = wan.get('policy_chains')
@@ -356,7 +356,7 @@ class RouteManager:
                     file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\tnft list chain inet wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n")
                     file.write("\t\tnft flush chain inet wan-routing route-to-default-wan\n")
-                    file.write("\t\tnft add rule inet wan-routing route-to-default-wan dict session ct id wan_policy long_string set system-default\n")
+                    file.write("\t\tnft add rule inet wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default\n")
                     file.write("\t\tnft add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % intf.get('interfaceId'))
                     file.write("\t}\n")
                     file.write("\texit 0\n")
@@ -406,7 +406,7 @@ class RouteManager:
             for intf in interfaces:
                 if enabled_wan(intf):
                     file.write("\tnetwork_is_up %s && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\t\techo add rule inet wan-routing route-to-default-wan dict session ct id wan_policy long_string set system-default >> $TMPFILE\n")
+                    file.write("\t\techo add rule inet wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
                     file.write("\t\techo add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
                     file.write("\t\twrite_rules\n")
                     file.write("\t}\n\n")
