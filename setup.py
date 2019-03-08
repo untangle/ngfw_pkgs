@@ -27,7 +27,7 @@ setup(name='sync-settings',
       license='GPL',
       #      test_suite='',
       #      cmdclass={'test': PyTest},
-      classifiers=(
+      classifiers=[
           'Development Status :: 5 - Production/Stable',
           'License :: OSI Approved :: General Public License v2 (GPL-2)',
           'Environment :: Console',
@@ -39,4 +39,4 @@ setup(name='sync-settings',
           'Programming Language :: Python :: 3.5',
           'Programming Language :: Python :: 3.6',
           'Programming Language :: Python :: 3.7'
-      ))
+      ])
