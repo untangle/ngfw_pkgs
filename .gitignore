@@ -1,2 +1,6 @@
 build
 sync/version.py
+.coverage
+.eggs
+.pybuild
+*.egg-info
