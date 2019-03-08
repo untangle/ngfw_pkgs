@@ -25,7 +25,35 @@ class WirelessManager:
 
     def validate_settings(self, settings):
         """validates settings"""
-        pass
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if enabled_wifi(intf):
+                encryption = intf.get('wirelessEncryption')
+                if encryption == None or encryption == "":
+                    raise Exception("No wireless encryption specified: " + intf.get('name'))
+                if encryption == 'WPA1' or encryption == 'WPA12' or encryption == 'WPA2':
+                    password = intf.get('wirelessPassword')
+                    if password == None or password == "":
+                        raise Exception("No WPA psk specified: " + intf.get('name'))
+                    if len(password) < 8:
+                        raise Exception("WPA psk too short: " + intf.get('name') + " " + password)
+
+                ssid = intf.get('wirelessSsid')
+                if ssid == None or ssid == "":
+                    raise Exception("No ssid specified: " + intf.get('name'))
+
+                mode = intf.get('wirelessMode')
+                if mode == None or mode == "":
+                    raise Exception("No wireless mode specified: " + intf.get('name'))
+                if mode != 'AP' and mode != 'CLIENT':
+                    raise Exception("Invalid wireless mode specified: " + intf.get('name') + " " + mode)
+
+                if mode == 'AP':
+                    channel = intf.get('wirelessChannel')
+                    if channel == None:
+                        raise Exception("No wireless channel specified: " + intf.get('name'))
+                    if channel <= 0:
+                        raise Exception("Invalid wireless channel specified: " + intf.get('name') + " " + str(channel))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -155,5 +183,10 @@ class WirelessManager:
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
+def enabled_wifi(intf):
+    """returns true if the interface is an enabled wifi interface"""
+    if intf.get('configType') != 'DISABLED' and intf.get('type') == 'WIFI':
+        return True
+    return False
 
 registrar.register_manager(WirelessManager())

@@ -1,7 +1,7 @@
 """This class is responsible for writing interface-marks chains"""
 # pylint: disable=unused-argument
 # pylint: disable=too-many-statements
-
+# pylint: disable=no-self-use
 import os
 import stat
 from sync import registrar
@@ -35,14 +35,14 @@ class InterfaceManager:
     SERVER_TYPE_MASK_INVERSE = 0xf3ffffff
     SERVER_TYPE_SHIFT = 26
     ALL_MASK = 0x0f00ffff
+    LOCAL_INTERFACE_ID = 0xff #255
 
     def initialize(self):
         """initialize this module"""
         registrar.register_file(self.INTERFACE_MARKS_FILENAME, "restart-nftables-rules", self)
 
     def sanitize_settings(self, settings):
-        """sanitizes settings"""
-        pass
+        """sanitize settings"""
 
     def validate_settings(self, settings):
         """validates settings"""
@@ -77,6 +77,8 @@ nft add table inet interface-marks
 nft add chain inet interface-marks prerouting-interface-marks "{ type filter hook prerouting priority -150 ; }"
 nft add chain inet interface-marks forward-interface-marks "{ type filter hook forward priority -150 ; }"
 nft add chain inet interface-marks postrouting-interface-marks "{ type filter hook postrouting priority 0 ; }"
+nft add chain inet interface-marks output-interface-marks "{ type filter hook output priority -150 ; }"
+nft add chain inet interface-marks input-interface-marks "{ type filter hook input priority -150 ; }"
 nft add chain inet interface-marks restore-interface-marks
 nft add chain inet interface-marks restore-interface-marks-original
 nft add chain inet interface-marks restore-interface-marks-reply
@@ -87,6 +89,7 @@ nft add chain inet interface-marks mark-dst-interface
 nft add chain inet interface-marks check-src-interface-mark
 nft add chain inet interface-marks check-dst-interface-mark
 nft add rule inet interface-marks prerouting-interface-marks jump restore-interface-marks
+nft add rule inet interface-marks prerouting-interface-marks ct state new jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks mark and 0x000000ff == 0 jump mark-src-interface
 nft add rule inet interface-marks prerouting-interface-marks jump check-src-interface-mark
 
@@ -95,11 +98,27 @@ nft add rule inet interface-marks prerouting-interface-marks jump check-src-inte
 # after the routing table is consulted (it could have been overridden by a local route for example)
 # in this case we need to reset the dst interface mark to the correct & actual dst interface mark
 nft add rule inet interface-marks forward-interface-marks ct state new jump mark-dst-interface
-nft add rule inet interface-marks forward-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 
-nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
+#nft add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
+nft add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
 nft add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
 """)
+
+        # input-interface-marks doesn't mark broadcast or multicast sessions
+        # These sessions have multiple destinations and so setting the dest/server mark to 0xff does not make much sense
+        file.write("nft add rule inet interface-marks input-interface-marks ct state new fib daddr type != \\{ broadcast, multicast \\} ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.SERVER_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SERVER_INTERFACE_SHIFT)))
+        file.write("nft add rule inet interface-marks input-interface-marks mark set mark and 0x%x or 0x%x\n" %
+                   (self.DST_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.DST_INTERFACE_SHIFT)))
+
+        file.write("nft add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
+        file.write("nft add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
+        file.write("nft add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
+                   (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
+        file.write("nft add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
+                   (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         # We don't set/restore marks in output because there is no src/client mark
         # and the dst/server mark is handled in postrouting
 
@@ -126,10 +145,10 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
                        (interface_name, self.SRC_TYPE_MASK_INVERSE, (interface_type << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
             file.write("# set client interface mark\n")
             file.write("nft add rule inet interface-marks mark-src-interface ct direction original iifname %s ct mark set ct mark and 0x%x or 0x%x\n" %
-                       (interface_name, self.SRC_INTERFACE_MASK_INVERSE, (interface_id << self.SRC_INTERFACE_SHIFT) & self.SRC_INTERFACE_MASK))
+                       (interface_name, self.CLIENT_INTERFACE_MASK_INVERSE, (interface_id << self.CLIENT_INTERFACE_SHIFT) & self.CLIENT_INTERFACE_MASK))
             file.write("# set client interface type\n")
             file.write("nft add rule inet interface-marks mark-src-interface ct direction original iifname %s ct mark set ct mark and 0x%x or 0x%x\n" %
-                       (interface_name, self.SRC_TYPE_MASK_INVERSE, (interface_type << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
+                       (interface_name, self.CLIENT_TYPE_MASK_INVERSE, (interface_type << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
 
             file.write("# set destination interface mark\n")
             file.write("nft add rule inet interface-marks mark-dst-interface oifname %s mark set mark and 0x%x or 0x%x\n" %
@@ -139,10 +158,10 @@ nft add rule inet interface-marks postrouting-interface-marks jump check-dst-int
                        (interface_name, self.DST_TYPE_MASK_INVERSE, (interface_type << self.DST_TYPE_SHIFT) & self.DST_TYPE_MASK))
             file.write("# set server interface mark\n")
             file.write("nft add rule inet interface-marks mark-dst-interface ct direction original oifname %s ct mark set ct mark and 0x%x or 0x%x\n" %
-                       (interface_name, self.DST_INTERFACE_MASK_INVERSE, (interface_id << self.DST_INTERFACE_SHIFT) & self.DST_INTERFACE_MASK))
+                       (interface_name, self.SERVER_INTERFACE_MASK_INVERSE, (interface_id << self.SERVER_INTERFACE_SHIFT) & self.SERVER_INTERFACE_MASK))
             file.write("# set server interface type\n")
             file.write("nft add rule inet interface-marks mark-dst-interface ct direction original oifname %s ct mark set ct mark and 0x%x or 0x%x\n" %
-                       (interface_name, self.DST_TYPE_MASK_INVERSE, (interface_type << self.DST_TYPE_SHIFT) & self.DST_TYPE_MASK))
+                       (interface_name, self.SERVER_TYPE_MASK_INVERSE, (interface_type << self.SERVER_TYPE_SHIFT) & self.SERVER_TYPE_MASK))
 
             file.write("# if ct mark server interface is X then set the mark client interface to X\n")
             file.write("nft add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
