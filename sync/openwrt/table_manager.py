@@ -5,6 +5,7 @@ import os
 import stat
 from sync import registrar
 from sync import nftables_util
+from sync import board_util
 
 class TableManager:
     """ReportsManager manages the all the firewall tables"""
@@ -51,6 +52,12 @@ class TableManager:
                 raise Exception('Invalid table %s: Missing family' % table.get('name'))
             if table.get('chains') is None:
                 raise Exception('Invalid table %s: Missing chains' % table.get('name'))
+
+            # XXX
+            # docker runs in the same kernel as the host, most hosts kernel do not yet support multiple NAT hooks
+            # docker needs the iptables NAT hooks so we can't insert nft nat rules or it will break iptables NAT
+            if board_util.is_docker() and (table.get('name') == "nat" or table.get('name') == "port-forward"):
+                continue
 
             filename_noprefix = self.filename_prefix + ("%02d-%s" % (i, table.get('name')))
             filename = prefix + filename_noprefix
@@ -108,11 +115,11 @@ def default_filter_rules_table():
     return {
         "name": "filter",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "filter-rules",
             "description": "The base filter-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "forward",
             "priority": 0,
             "rules": [{
@@ -205,11 +212,11 @@ def default_port_forward_table():
     return {
         "name": "port-forward",
         "family": "ip,ip6",
+        "chain_type": "nat",
         "chains": [{
             "name": "port-forward-rules",
             "description": "The base port-forwards chain",
             "base": True,
-            "type": "nat",
             "hook": "prerouting",
             "priority": 100,
             "default": True,
@@ -236,11 +243,11 @@ def default_nat_rules_table():
     return {
         "name": "nat",
         "family": "ip,ip6",
+        "chain_type": "nat",
         "chains": [{
             "name": "nat-rules",
             "description": "The nat-rules chain",
             "base": True,
-            "type": "nat",
             "hook": "postrouting",
             "priority": 95,
             "rules": [{
@@ -295,11 +302,11 @@ def default_access_rules_table():
     return {
         "name": "access",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "access-rules",
             "description": "The base access-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "input",
             "priority": 0,
             "rules": [{
@@ -602,11 +609,11 @@ def default_shaping_rules_table():
     return {
         "name": "shaping",
         "family": "inet",
+        "chain_type": "filter",
         "chains": [{
             "name": "shaping-rules",
             "description": "The base shaping-rules chain",
             "base": True,
-            "type": "filter",
             "hook": "postrouting",
             "priority": 5,
             "rules": [{
@@ -673,7 +680,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "icmp"
+                    "value": "1"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -686,7 +693,7 @@ def default_shaping_rules_table():
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
-                    "value": "udp"
+                    "value": "17"
                 }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",

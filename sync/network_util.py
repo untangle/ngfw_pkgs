@@ -1,20 +1,17 @@
-import os
-import sys
+"""network utilities"""
+# pylint: disable=broad-except
+# pylint: disable=bare-except
 import subprocess
-import datetime
-import traceback
-import string
-import socket
-import struct
 
-# This class is a utility class with utility functions providing
-# useful tools for dealing with iptables rules
 class NetworkUtil:
-
-    settings = None
+    """
+    This class is a utility class with utility functions providing
+    useful tools for dealing with iptables rules
+    """
+    settings = {}
 
     @staticmethod
-    def interface_list( verbosity=0 ):
+    def interface_list():
         """
         returns a list of the interfaceId's extracted from the settings
         """
@@ -28,61 +25,57 @@ class NetworkUtil:
             if 'interfaceId' not in intf:
                 continue
             ret.append(int(intf['interfaceId']))
-        
         return ret
-        
 
     @staticmethod
-    def wan_list( verbosity=0 ):
+    def wan_list():
         """
         returns a list of the interfaceId's for WANS extracted from the settings
         """
         settings = NetworkUtil.settings
         ret = []
 
-        if settings == None or settings.get('interfaces') == None:
+        if settings is None or settings.get('interfaces') is None:
             return ret
 
         for intf in settings['interfaces']:
-            if intf.get('interfaceId') == None:
+            if intf.get('interfaceId') is None:
                 continue
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 ret.append(int(intf['interfaceId']))
 
         for intf in settings['virtualInterfaces']:
-            if intf.get('interfaceId') == None:
+            if intf.get('interfaceId') is None:
                 continue
             if intf.get('isWan'):
                 ret.append(int(intf['interfaceId']))
-                
         return ret
 
     @staticmethod
-    def non_wan_list( verbosity=0 ):
+    def non_wan_list():
         """
         returns a list of the interfaceId's for non-WANS extracted from the settings
         """
         settings = NetworkUtil.settings
         ret = []
 
-        if settings == None or settings.get('interfaces') == None:
+        if settings is None or settings.get('interfaces') is None:
             return ret
 
         for intf in settings['interfaces']:
-            if intf.get('interfaceId') == None:
+            if intf.get('interfaceId') is None:
                 continue
             if intf.get('configType') == 'ADDRESSED' and intf.get('isWan'):
                 continue
             else:
                 ret.append(int(intf['interfaceId']))
         for intf in settings['virtualInterfaces']:
-            if intf.get('interfaceId') == None:
+            if intf.get('interfaceId') is None:
                 continue
             if intf.get('isWan'):
                 continue
             else:
                 ret.append(int(intf['interfaceId']))
-                
         return ret
 
 
@@ -122,7 +115,7 @@ CIDR_MAP = {
 }
     
 def ipv4_prefix_to_netmask(prefix):
-    global CIDR_MAP
+    """prefix to netmask string"""
     if prefix < 0 or prefix > 32:
         return None
     return CIDR_MAP.get(prefix)
@@ -149,7 +142,7 @@ def get_interface_name(settings, intf):
 
     interface_name = interface_name + intf.get('name')
 
-    if intf.get('type') == 'OPENVPN':
+    if intf.get('type') == 'OPENVPN' or intf.get('type') == 'WIREGUARD':
         return interface_name
     if intf.get('v4ConfigType') != 'DISABLED':
         interface_name = interface_name + "4"
@@ -168,4 +161,20 @@ def get_bridge_name(settings, interface):
         if intf.get('interfaceId') == interface.get('bridgedTo'):
             return "b_" + intf.get('name')
     return ""
-    
+
+def get_interface_ip4addr(ifname):
+    """Get the IPv4 address of the specified interface"""
+    try:
+        cmd = r"ip addr show %s | sed -rne '/inet/s:\s+inet\s+([0-9.]+).*:\1:gp'"%ifname
+        return subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
+    except:
+        return None
+
+def get_interface_ip4prefix(ifname):
+    """Get the IPv4 prefix of the specified interface"""
+    try:
+        cmd = r"ip addr show %s | sed -rne '/inet/s:\s+inet\s+[0-9.]+/([0-9]+).*:\1:gp'"%ifname
+        output = subprocess.check_output(cmd, shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
+        return int(output)
+    except:
+        return None
