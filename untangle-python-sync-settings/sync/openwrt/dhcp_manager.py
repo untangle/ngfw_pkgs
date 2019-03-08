@@ -1,31 +1,52 @@
+"""dhcp_manager manages dhcp & dnsmasq settings"""
+# pylint: disable=unused-argument
+# pylint: disable=no-self-use
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-locals
+# pylint: disable=too-many-statements
 import os
-import stat
-import sys
-import subprocess
-import datetime
-import traceback
-import re
 import ipaddress
 from sync import registrar
 from sync import network_util
 
-# This class is responsible for writing /etc/config/dhcp
-# based on the settings object passed from sync-settings
-
-
 class DhcpManager:
+    """
+    This class is responsible for writing /etc/config/dhcp
+    based on the settings object passed from sync-settings
+    """
     dhcp_filename = "/etc/config/dhcp"
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.dhcp_filename, "restart-dhcp", self)
 
     def sanitize_settings(self, settings):
+        """sanitizes removes blank settings"""
         pass
 
     def validate_settings(self, settings):
-        pass
+        """validates settings"""
+        dns_settings = settings.get('dns')
+        if dns_settings is not None:
+            if dns_settings.get('localServers') is not None:
+                for local_server in dns_settings.get('localServers'):
+                    if local_server.get('domain') is None:
+                        raise Exception('Missing domain in DNS local server')
+                    if local_server.get('localServer') is None:
+                        raise Exception('Missing localServer in DNS local server')
+        dhcp_settings = settings.get('dns')
+        if dhcp_settings is not None:
+            if dhcp_settings.get('staticDhcpEntries') is not None:
+                for static_entry in dhcp_settings.get('staticDhcpEntries'):
+                    if static_entry.get('macAddress') is None:
+                        raise Exception('Missing macAddress in DHCP static entry')
+                    if static_entry.get('address') is None:
+                        raise Exception('Missing address in DHCP static entry')
+        return
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         settings['dns'] = {}
         settings['dns']['localServers'] = []
@@ -36,10 +57,12 @@ class DhcpManager:
         settings['dhcp']['staticDhcpEntries'] = []
 
     def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_dhcp_file(settings, prefix)
 
     def write_dhcp_file(self, settings, prefix=""):
+        """writes prefix/etc/config/dhcp"""
         filename = prefix + self.dhcp_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -49,8 +72,7 @@ class DhcpManager:
         dns = settings.get('dns')
         dhcp = settings.get('dhcp')
 
-        self.network_file = open(filename, "w+")
-        file = self.network_file
+        file = open(filename, "w+")
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n")
@@ -58,13 +80,13 @@ class DhcpManager:
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') == True and intf.get('v4ConfigType') == 'STATIC':
+            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'STATIC':
                 if intf.get('v4StaticDNS1') != None:
                     file.write("\tlist server '%s'\n" % intf.get('v4StaticDNS1'))
                 if intf.get('v4StaticDNS2') != None:
                     file.write("\tlist server '%s'\n" % intf.get('v4StaticDNS2'))
 
-            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') == True and intf.get('v4ConfigType') == 'PPPOE' and intf.get('v4PPPoEUsePeerDNS') == False:
+            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'PPPOE' and intf.get('v4PPPoEUsePeerDNS') is False:
                 if intf.get('v4PPPoEDNS1') != None:
                     file.write("\tlist server '%s'\n" % intf.get('v4PPPoEDNS1'))
                 if intf.get('v4PPPoEDNS2') != None:
@@ -79,7 +101,7 @@ class DhcpManager:
 
         file.write("\toption expandhosts '1'\n")
         file.write("\toption nonegcache '0'\n")
-        if dhcp.get('dhcpAuthoritative') == True:
+        if dhcp.get('dhcpAuthoritative') is True:
             file.write("\toption authoritative '1'\n")
         else:
             file.write("\toption authoritative '0'\n")
@@ -108,7 +130,7 @@ class DhcpManager:
                 interface_name = network_util.get_interface_name(settings, intf)
 
                 file.write("config dhcp '%s'\n" % interface_name)
-                if intf.get('dhcpEnabled') == True:
+                if intf.get('dhcpEnabled') is True:
                     if intf.get('v4ConfigType') != 'DISABLED':
                         file.write("\toption interface '%s'\n" % interface_name)
                         file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
@@ -131,17 +153,17 @@ class DhcpManager:
                             file.write("\tlist dhcp_option '1,%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
 
                         if intf.get('dhcpDNSOverride') != None and intf.get('dhcpDNSOverride') != "":
-                            DNSServers = intf.get('dhcpDNSOverride')
+                            dns_servers = intf.get('dhcpDNSOverride')
                         else:
-                            DNSServers = intf.get('v4StaticAddress')
+                            dns_servers = intf.get('v4StaticAddress')
 
-                        file.write("\tlist dhcp_option '6,%s'\n" % DNSServers)
+                        file.write("\tlist dhcp_option '6,%s'\n" % dns_servers)
 
                         if intf.get('dhcpOptions') != None:
-                            for dhcpOption in intf.get('dhcpOptions'):
-                                if dhcpOption.get('enabled') == None or not dhcpOption.get('enabled'):
+                            for dhcp_option in intf.get('dhcpOptions'):
+                                if dhcp_option.get('enabled') is None or not dhcp_option.get('enabled'):
                                     continue
-                                file.write("\tlist dhcp_option '%s'\n" % dhcpOption.get('value'))
+                                file.write("\tlist dhcp_option '%s'\n" % dhcp_option.get('value'))
 
                     if intf.get('v6ConfigType') != 'DISABLED':
                         dhcpv6_in_use = True
@@ -154,7 +176,7 @@ class DhcpManager:
                     file.write("\toption ignore '1'\n")
                     file.write("\n")
 
-        if dhcpv6_in_use == True:
+        if dhcpv6_in_use is True:
             file.write("config odhcpd 'odhcpd'\n")
             file.write("\toption maindhcp '0'\n")
             file.write("\toption leasefile '/tmp/hosts/odhcpd'\n")
@@ -185,6 +207,7 @@ class DhcpManager:
 
 
 def calc_dhcp_range_start(ip, prefix, start):
+    """calucale a good dhcp range start"""
     ip_int = int(ipaddress.IPv4Address(ip))
     netmask_int = int(ipaddress.IPv4Address(network_util.ipv4_prefix_to_netmask(prefix)))
     start_int = int(ipaddress.IPv4Address(start))
@@ -192,6 +215,7 @@ def calc_dhcp_range_start(ip, prefix, start):
 
 
 def calc_dhcp_range_limit(start, end):
+    """calucale a good dhcp range limit"""
     start_int = int(ipaddress.IPv4Address(start))
     end_int = int(ipaddress.IPv4Address(end))
     return end_int - start_int + 1

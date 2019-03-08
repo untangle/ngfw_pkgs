@@ -1,2 +1,8 @@
 build
 sync/version.py
+.coverage
+.eggs
+.pybuild
+*.egg-info
+debian/*stamp
+debian/untangle-python3-sync-settings/
