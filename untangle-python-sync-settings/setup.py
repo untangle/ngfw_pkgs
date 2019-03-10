@@ -25,10 +25,10 @@ setup(name='sync-settings',
       packages=['sync', 'sync.debian', 'sync.openwrt'],
       install_requires=[],
       license='GPL',
-      setup_requires=['pytest-runner'],
       tests_require=[
         "pytest",
-        "pytest-cov"
+        "pytest-cov",
+        "pytest-runner"
       ],
       #      test_suite='',
       #      cmdclass={'test': PyTest},
