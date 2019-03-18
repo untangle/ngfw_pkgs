@@ -251,7 +251,7 @@ def default_nat_rules_table():
             "hook": "postrouting",
             "priority": 95,
             "rules": [{
-                "enabled": True,
+                "enabled": False,
                 "description": "Example: NAT TCP port 25 to 1.2.3.4",
                 "ruleId": 1,
                 "conditions": [{
@@ -268,7 +268,7 @@ def default_nat_rules_table():
                     "snat_address": "1.2.3.4"
                 }
             }, {
-                "enabled": True,
+                "enabled": False,
                 "description": "Example: NAT client 192.168.1.100 to 1.2.3.4",
                 "ruleId": 2,
                 "conditions": [{
@@ -281,7 +281,7 @@ def default_nat_rules_table():
                     "snat_address": "1.2.3.4"
                 }
             }, {
-                "enabled": True,
+                "enabled": False,
                 "description": "Example: NAT client 192.168.1.200 to Auto",
                 "ruleId": 3,
                 "conditions": [{
