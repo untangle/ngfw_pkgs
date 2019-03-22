@@ -2,6 +2,7 @@
 # pylint: disable=unused-argument
 import os
 import json
+import shutil
 from sync import registrar
 
 # This class is responsible for writing /etc/config/network
@@ -49,6 +50,11 @@ class SettingsManager:
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
-        pass
+        orig_settings_filename = settings["filename"]
+        filename = prefix + self.settings_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        shutil.copyfile(orig_settings_filename, filename)
 
 registrar.register_manager(SettingsManager())
