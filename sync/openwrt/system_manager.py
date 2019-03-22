@@ -27,7 +27,10 @@ class SystemManager:
         settings['system'] = {}
         settings['system']['hostName'] = 'mfw'
         settings['system']['domainName'] = 'example.com'
-        settings['system']['timeZone'] = 'UTC'
+        settings['system']['timeZone'] = {
+            "displayName": "UTC",
+            "value": "UTC"
+        }
         if board_util.is_docker():
             settings['system']['setupWizard'] = {"completed": True}
         else:
