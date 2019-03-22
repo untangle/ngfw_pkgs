@@ -31,6 +31,11 @@ class SystemManager:
             "displayName": "UTC",
             "value": "UTC"
         }
+        settings['system']['cloud'] = {
+            "enabled": True,
+            "supportAccessEnabled": True,
+            "cloudServers": ["cmd.untangle.com"]
+        }
         if board_util.is_docker():
             settings['system']['setupWizard'] = {"completed": True}
         else:
