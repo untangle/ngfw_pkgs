@@ -49,17 +49,6 @@ class SettingsManager:
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
-        filename = prefix + self.settings_filename
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        json_str = json.dumps(settings, indent=4)
-
-        file = open(filename, "w+")
-        file.write(json_str)
-        file.write("\n")
-        file.flush()
-        file.close()
+        pass
 
 registrar.register_manager(SettingsManager())
