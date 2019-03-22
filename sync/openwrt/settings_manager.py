@@ -56,5 +56,6 @@ class SettingsManager:
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
         shutil.copyfile(orig_settings_filename, filename)
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
 registrar.register_manager(SettingsManager())
