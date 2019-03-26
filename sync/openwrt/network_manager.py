@@ -674,6 +674,13 @@ class NetworkManager:
             registrar.register_operation(opname, [""], [cmd], 99, None)
             registrar.register_file(path, opname, self)
 
+            # if this openvpn interface uses a username and password, also
+            # register the auth file
+            if intf.get('openvpnUsernamePasswordEnabled'):
+                path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
+                registrar.register_operation(opname, [""], [cmd], 99, None)
+                registrar.register_file(path, opname, self)
+
         if intf.get("type") == 'WIREGUARD':
             if intf.get("wireguardPrivateKey") is None or intf.get("wireguardPrivateKey") == "":
                 raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
