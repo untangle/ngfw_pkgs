@@ -256,9 +256,8 @@ class NetworkManager:
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
             file.write("\toption defaultroute '1'\n")
 
-        # FIXME implement authfile option
-        #if intf.get('openvpnUsernamePasswordEnabled'):
-            #file.write("\toption authfile '%s'\n" % auth_path)
+        if intf.get('openvpnUsernamePasswordEnabled'):
+            file.write("\toption authfile '%s'\n" % auth_path)
 
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
