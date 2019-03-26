@@ -274,7 +274,7 @@ class NetworkManager:
         if password_base64 is None:
             raise Exception("Missing password on openvpn interface: " + intf["interfaceId"])
         try:
-            password = base64.b64decode(password_base64)
+            password = base64.b64decode(password_base64).decode()
         except:
             raise Exception("Failed to parse password on openvpn interface: " + intf["interfaceId"])
 
