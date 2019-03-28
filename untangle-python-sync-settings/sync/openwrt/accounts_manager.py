@@ -91,9 +91,9 @@ class AccountsManager:
         file.write("\n\n")
 
         file.write('TMPFILE="/tmp/shadow"\n')
-        file.write('/bin/sed -e \'s|^\\(root:\\)[^:]*\\(:.*\\)$|\\1')
+        file.write('/bin/sed -e \'s|^\\(root:\\)[^:]*:[^:]*\\(:.*\\)$|\\1')
         file.write(phash.replace("$", r"\$"))
-        file.write('\\2|\' /etc/shadow > $TMPFILE\n')
+        file.write(':\\2|\' /etc/shadow > $TMPFILE\n')
         file.write('\n')
 
         file.write('if ! diff /etc/shadow $TMPFILE >/dev/null 2>&1 ; then cp $TMPFILE /etc/shadow ; fi\n')
