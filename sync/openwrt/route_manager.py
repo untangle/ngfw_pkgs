@@ -3,7 +3,7 @@
 # pylint: disable=no-self-use
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
-import copy
+# pylint: disable=too-many-branches
 import os
 import json
 import stat

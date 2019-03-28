@@ -525,6 +525,7 @@ def main():
         cleanup(1)
 
     sync.NetworkUtil.settings = settings
+    settings["filename"] = opts.filename
 
     # Call all the managers to "sync" settings to tmpdir
     # We drop root permissions to call these functions so that
