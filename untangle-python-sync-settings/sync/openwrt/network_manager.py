@@ -11,6 +11,7 @@ import subprocess
 import ipaddress
 import re
 import base64
+import stat
 from sync import registrar
 from sync import network_util
 from sync import board_util
@@ -78,11 +79,6 @@ class NetworkManager:
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
         self.write_network_file(settings, prefix)
-
-        # the first go at openvpn support created these files, but
-        # we don't need them anymore.  Eventually this can be removed
-        delete_list.append("/etc/config/ifup.d/30-openvpn")
-        delete_list.append("/etc/config/ifdown.d/30-openvpn")
 
     def write_network_file(self, settings, prefix):
         """write /etc/config/network"""
@@ -247,19 +243,51 @@ class NetworkManager:
         """write an openvpn interface"""
         file = self.network_file
 
+        path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
+        auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
+
         file.write("\n")
         file.write("config interface '%s'\n" % intf['logical_name'])
         file.write("\toption ifname '%s'\n" % intf['ifname'])
         file.write("\toption proto 'openvpn'\n")
-        path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
         file.write("\toption config '%s'\n" % path)
 
         if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
             file.write("\toption defaultroute '1'\n")
 
+        if intf.get('openvpnUsernamePasswordEnabled'):
+            file.write("\toption authfile '%s'\n" % auth_path)
+
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
+        if intf.get('openvpnUsernamePasswordEnabled'):
+            self.write_openvpn_auth_file(intf, auth_path, prefix)
+
+    def write_openvpn_auth_file(self, intf, path, prefix):
+        """write the openvpn username/password auth file"""
+        username = intf.get('openvpnUsername')
+        password_base64 = intf.get('openvpnPasswordBase64')
+        if username is None:
+            raise Exception("Missing username on openvpn interface: " + intf["interfaceId"])
+        if password_base64 is None:
+            raise Exception("Missing password on openvpn interface: " + intf["interfaceId"])
+        try:
+            password = base64.b64decode(password_base64).decode()
+        except:
+            raise Exception("Failed to parse password on openvpn interface: " + intf["interfaceId"])
+
+        filename = prefix + path
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("%s\n%s\n" % (username, password))
+        file.flush()
+        file.close()
+        os.chmod(filename, stat.S_IWRITE | stat.S_IREAD)
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_openvpn_conf_file(self, intf, path, prefix):
         """write the specified file"""
@@ -644,6 +672,13 @@ class NetworkManager:
             opname = "restart-" + intf["device"]
             registrar.register_operation(opname, [""], [cmd], 99, None)
             registrar.register_file(path, opname, self)
+
+            # if this openvpn interface uses a username and password, also
+            # register the auth file
+            if intf.get('openvpnUsernamePasswordEnabled'):
+                path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
+                registrar.register_operation(opname, [""], [cmd], 99, None)
+                registrar.register_file(path, opname, self)
 
         if intf.get("type") == 'WIREGUARD':
             if intf.get("wireguardPrivateKey") is None or intf.get("wireguardPrivateKey") == "":

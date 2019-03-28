@@ -27,7 +27,15 @@ class SystemManager:
         settings['system'] = {}
         settings['system']['hostName'] = 'mfw'
         settings['system']['domainName'] = 'example.com'
-        settings['system']['timeZone'] = 'UTC'
+        settings['system']['timeZone'] = {
+            "displayName": "UTC",
+            "value": "UTC"
+        }
+        settings['system']['cloud'] = {
+            "enabled": True,
+            "supportAccessEnabled": True,
+            "cloudServers": ["cmd.untangle.com"]
+        }
         if board_util.is_docker():
             settings['system']['setupWizard'] = {"completed": True}
         else:
