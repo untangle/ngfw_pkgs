@@ -504,6 +504,7 @@ class NetworkManager:
             interface['device'] = dev['name']
             interface['hidden'] = (interface['device'] in board_util.get_hidden_interfaces())
 
+            interface['qosEnabled'] = False
             interface['downloadKbps'] = 0
             interface['uploadKbps'] = 0
             interface['wanWeight'] = 0
@@ -600,11 +601,18 @@ class NetworkManager:
         if intf.get("bridgedTo") != None and not isinstance(intf.get("bridgedTo"), int):
             raise Exception("Invalid Bridged To: " + intf.get('name') + " " + intf.get("bridgedTo"))
 
-        if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
-            raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
+        if intf.get("wan") and intf.get("qosEnabled"):
+            if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
+                raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
 
-        if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
-            raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
+            if intf.get("downloadKbps") == None or intf.get("downloadKpbs") == 0:
+                raise Exception("No DownloadKbps specified: " + intf.get('name'))
+
+            if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
+                raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
+
+            if intf.get("uploadKbps") == None or intf.get("uploadKpbs") == 0:
+                raise Exception("No UploadKbps specified: " + intf.get('name'))
 
         if intf.get("macaddr") != None and not isinstance(intf.get("macaddr"), str):
             raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))

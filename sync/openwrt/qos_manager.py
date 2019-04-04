@@ -25,9 +25,6 @@ class QosManager:
 
     def create_settings(self, settings, prefix, delete_list, filename):
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['qos'] = {}
-        settings['qos']['qosEnabled'] = False
-        settings['qos']['defaultPriority'] = 3
         pass
 
     def write_qos_rules_sys_file(self, settings, prefix):
@@ -57,9 +54,49 @@ class QosManager:
         file.write("\n")
 
         try:
-            qos = settings['qos']
-            if qos.get('qosEnabled'):
+            add_qos_rules = False
+            interfaces = settings.get('network').get('interfaces')
+            for intf in interfaces:
+                if intf.get('configType') == 'DISABLED':
+                    continue
+                if intf.get('wan') and intf.get('qosEnabled'):
+                    file.write("# qos for %i\n" % intf.get('interfaceId'))
+                    file.write("\n")
 
+                    file.write("# create an ifb device %i\n" % intf.get('interfaceId'))
+                    file.write("ip link set dev ifb4%s down 2> /dev/null\n" % intf.get('device'))
+                    file.write("ip link delete ifb4%s type ifb 2> /dev/null\n" % intf.get('device'))
+                    file.write("ip link add name ifb4%s type ifb\n" % intf.get('device'))
+                    file.write("\n")
+
+                    file.write("# egress %i\n" % intf.get('interfaceId'))
+                    file.write("tc qdisc del dev %s root 2> /dev/null\n" % intf.get('device'))
+                    file.write("tc qdisc add dev %s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('uploadKbps')))
+                    file.write("\n")
+
+                    file.write("# ingress %i\n" % intf.get('interfaceId'))
+                    file.write("tc qdisc del dev %s handle ffff: ingress 2> /dev/null\n" % intf.get('device'))
+                    file.write("tc qdisc add dev %s handle ffff: ingress\n" % intf.get('device'))
+                    file.write("\n")
+
+                    file.write("tc qdisc del dev ifb4%s root 2> /dev/null\n" % intf.get('device'))
+                    file.write("tc qdisc add dev ifb4%s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('downloadKbps')))
+                    file.write("\n")
+
+                    file.write("# bring up ifb device %i\n" % intf.get('interfaceId'))
+                    file.write("ip link set dev ifb4%s up\n" % intf.get('device'))
+                    file.write("\n")
+
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("\n")
+                    add_qos_rules = True
+
+            if add_qos_rules:
                 file.write("nft add table inet qos\n")
                 file.write("nft add chain inet qos restore-priority-mark\n")
                 file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x40000 ct mark set ct mark and 0xff00ffff or 0x40000 ip dscp set cs1 counter\n")
@@ -67,49 +104,7 @@ class QosManager:
                 file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x20000 ct mark set ct mark and 0xff00ffff or 0x20000 ip dscp set cs2 counter\n")
                 file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x10000 ct mark set ct mark and 0xff00ffff or 0x10000 ip dscp set cs7 counter\n")
                 file.write("nft add chain inet qos postrouting-qos \"{ type filter hook postrouting priority 50 ; }\"\n")
-                file.write("nft add rule inet qos postrouting-qos meta mark and 0xff0000 == 0x00000 meta mark set mark or 0x%s0000\n" % ('{:02x}'.format(qos.get('defaultPriority'))))
                 file.write("nft add rule inet qos postrouting-qos jump restore-priority-mark\n")
-
-                interfaces = settings.get('network').get('interfaces')
-                for intf in interfaces:
-                    if intf.get('configType') == 'DISABLED':
-                        continue
-                    if intf.get('wan'):
-                        file.write("# qos for %i\n" % intf.get('interfaceId'))
-                        file.write("\n")
-
-                        file.write("# create an ifb device %i\n" % intf.get('interfaceId'))
-                        file.write("ip link set dev ifb4%s down 2> /dev/null\n" % intf.get('device'))
-                        file.write("ip link delete ifb4%s type ifb 2> /dev/null\n" % intf.get('device'))
-                        file.write("ip link add name ifb4%s type ifb\n" % intf.get('device'))
-                        file.write("\n")
-
-                        file.write("# egress %i\n" % intf.get('interfaceId'))
-                        file.write("tc qdisc del dev %s root 2> /dev/null\n" % intf.get('device'))
-                        file.write("tc qdisc add dev %s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('uploadKbps')))
-                        file.write("\n")
-
-                        file.write("# ingress %i\n" % intf.get('interfaceId'))
-                        file.write("tc qdisc del dev %s handle ffff: ingress 2> /dev/null\n" % intf.get('device'))
-                        file.write("tc qdisc add dev %s handle ffff: ingress\n" % intf.get('device'))
-                        file.write("\n")
-
-                        file.write("tc qdisc del dev ifb4%s root 2> /dev/null\n" % intf.get('device'))
-                        file.write("tc qdisc add dev ifb4%s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('downloadKbps')))
-                        file.write("\n")
-
-                        file.write("# bring up ifb device %i\n" % intf.get('interfaceId'))
-                        file.write("ip link set dev ifb4%s up\n" % intf.get('device'))
-                        file.write("\n")
-
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                        file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                        file.write("\n")
-
         except:
             print("ERROR:")
             traceback.print_exception()

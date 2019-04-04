@@ -646,21 +646,13 @@ def default_shaping_rules_table():
             "description": "The main prioritization rules chain",
             "default": True,
             "rules": [{
-                "enabled": False,
-                "description": "VoIP (SIP) Traffic",
+                "enabled": True,
+                "description": "Default priority",
                 "ruleId": 1,
-                "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
-                    "type": "DESTINATION_PORT",
-                    "op": "==",
-                    "value": "{5060,5061}"
-                }],
+                "conditions": [],
                 "action": {
                     "type": "SET_PRIORITY",
-                    "priority": 1
+                    "priority": 3
                 }
             }, {
                 "enabled": False,
@@ -680,9 +672,26 @@ def default_shaping_rules_table():
                     "priority": 1
                 }
             }, {
+                "enabled": False,
+                "description": "VoIP (IAX) Traffic",
+                "ruleId": 3,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "4569"
+                }],
+                "action": {
+                    "type": "SET_PRIORITY",
+                    "priority": 1
+                }
+            }, {
                 "enabled": True,
                 "description": "Ping Priority",
-                "ruleId": 3,
+                "ruleId": 4,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -695,7 +704,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "DNS Priority",
-                "ruleId": 4,
+                "ruleId": 5,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -712,7 +721,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "SSH Priority",
-                "ruleId": 5,
+                "ruleId": 6,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -729,7 +738,7 @@ def default_shaping_rules_table():
             }, {
                 "enabled": True,
                 "description": "Openvpn Priority",
-                "ruleId": 6,
+                "ruleId": 7,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
