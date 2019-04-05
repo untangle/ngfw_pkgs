@@ -87,7 +87,11 @@ class WirelessManager:
         return path
 
     def get_phy_mac(self, interface):
-        return subprocess.check_output("cat /sys/class/ieee80211/%s/macaddress" % self.get_phy_name(interface), shell=True).decode('ascii').rstrip()
+        try:
+            return subprocess.check_output("cat /sys/class/ieee80211/%s/macaddress" % self.get_phy_name(interface), shell=True).decode('ascii').rstrip()
+        except:
+            print("WARNING: Failed to determine MAC address for %s\n" % str(interface.get('device')))
+            return "00:00:00:00:00:00"
 
     def get_device_id(self, interface):
         if os.path.islink("/sys/class/ieee80211/%s" % self.get_phy_name(interface)):
