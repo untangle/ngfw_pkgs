@@ -665,6 +665,7 @@ class NetworkManager:
             if conffile["encoding"] != "base64":
                 raise Exception("Unsupported encoding in OpenVPN conf file: " + conffile["encoding"])
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
+            auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
 
             # register a new operation to restart this interface if this config file changes
             # register the config file with the new operation
@@ -672,6 +673,7 @@ class NetworkManager:
             opname = "restart-" + intf["device"]
             registrar.register_operation(opname, [""], [cmd], 99, None)
             registrar.register_file(path, opname, self)
+            registrar.register_file(auth_path, opname, self)
 
             # if this openvpn interface uses a username and password, also
             # register the auth file
