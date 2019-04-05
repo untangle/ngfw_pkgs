@@ -392,6 +392,8 @@ def action_expression(json_action, family):
         if priority is None:
             raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
         priority_int = int(priority) & 0xff
+        if priority_int < 1 or priority_int > 4:
+            raise Exception("Priority out of range (1-4): %d" % priority_int)
         return "meta mark set \"mark and 0xff00ffff or 0x00%s0000\"" % ('{:02x}'.format(priority_int))
     elif typ == "WAN_POLICY":
         policy = json_action.get('policy')
