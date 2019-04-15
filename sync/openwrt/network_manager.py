@@ -570,6 +570,9 @@ class NetworkManager:
                 raise Exception("Invalid IPv6 Prefix: " + intf.get('name') + " " + ipv6_prefix_key + " = " + intf.get(ipv6_prefix_key))
 
         # check individual settings
+        if '-' in intf.get("name"):
+            raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
+
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
