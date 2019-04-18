@@ -211,6 +211,7 @@ def copy_files(dirname):
         result += run_cmd(cmd)
     else:
         # OpenWRT does not support printf in find, so go back to cp
+        run_cmd("/bin/chown -R root:root " + dirname)
         cmd = "/bin/cp -ar " + dirname + "/*" + " /"
         result = run_cmd(cmd)
     if result != 0:
