@@ -68,6 +68,14 @@ class AccountsManager:
         if creds is None:
             return
 
+        # write authorized keys
+        for cred in creds:
+            if cred.get("authorizedKeys") is None:
+                continue
+            if cred.get("username") != "admin":
+                continue
+            self.write_authorized_keys("/root/.ssh", cred.get("authorizedKeys"), prefix)
+
         # prefer "root" user for root password
         # if "root" doesn't exist use "admin"
         # if neither exist, don't set root password
@@ -76,17 +84,11 @@ class AccountsManager:
         for cred in creds:
             if cred["username"] == "root":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
+            return
         for cred in creds:
             if cred["username"] == "admin":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
-
-        # write authorized keys
-        for cred in creds:
-            if cred.get("authorizedKeys") is None:
-                continue
-            if cred.get("username") != "admin":
-                continue
-            self.write_authorized_keys("/root/.ssh", cred.get("authorizedKeys"), prefix)
+            return
 
         # if not found, delete any previous password script
         delete_list.append(self.password_setter_filename)
