@@ -402,7 +402,7 @@ def sync_to_system(settings):
 
     # Check that all new files in the tmpdir are registered in the registrar
     if sync.registrar.check_registrar_files(opts.tmpdir) != 0:
-        print("File missing in registrar: " + opts.filename)
+        print("File missing in registrar.")
         cleanup(1)
 
     # Calculate the changed files and the needed operations
