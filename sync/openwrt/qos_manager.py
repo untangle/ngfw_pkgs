@@ -154,7 +154,7 @@ class QosManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/bin/sh")
+        file.write("#!/usr/sbin/nft -f")
         file.write("\n\n")
 
         file.write("## Auto Generated\n")
@@ -171,20 +171,19 @@ class QosManager:
                     add_qos_rules = True
 
             if add_qos_rules:
-                file.write("nft delete table inet qos 2>/dev/null || true\n")
-                file.write("nft add table inet qos\n")
-                file.write("nft add chain inet qos restore-priority-mark\n")
-                file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x40000 ct mark set ct mark and 0xff00ffff or 0x40000 ip dscp set cs1 counter\n")
-                file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x30000 ct mark set ct mark and 0xff00ffff or 0x30000 ip dscp set cs0 counter\n")
-                file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x20000 ct mark set ct mark and 0xff00ffff or 0x20000 ip dscp set cs2 counter\n")
-                file.write("nft add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x10000 ct mark set ct mark and 0xff00ffff or 0x10000 ip dscp set cs7 counter\n")
-                file.write("nft add chain inet qos postrouting-qos \"{ type filter hook postrouting priority 50 ; }\"\n")
-                file.write("nft add rule inet qos postrouting-qos jump restore-priority-mark\n")
+                file.write("add table inet qos\n")
+                file.write("flush table inet qos\n")
+                file.write("add chain inet qos restore-priority-mark\n")
+                file.write("add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x40000 ct mark set ct mark and 0xff00ffff or 0x40000 ip dscp set cs1 counter\n")
+                file.write("add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x30000 ct mark set ct mark and 0xff00ffff or 0x30000 ip dscp set cs0 counter\n")
+                file.write("add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x20000 ct mark set ct mark and 0xff00ffff or 0x20000 ip dscp set cs2 counter\n")
+                file.write("add rule inet qos restore-priority-mark meta mark and 0xff0000 == 0x10000 ct mark set ct mark and 0xff00ffff or 0x10000 ip dscp set cs7 counter\n")
+                file.write("add chain inet qos postrouting-qos { type filter hook postrouting priority 50 ; }\n")
+                file.write("add rule inet qos postrouting-qos jump restore-priority-mark\n")
         except:
             print("ERROR:")
             traceback.print_exception()
         finally:
-            file.write("exit 0")
             file.write("\n")
             file.flush()
             file.close()
