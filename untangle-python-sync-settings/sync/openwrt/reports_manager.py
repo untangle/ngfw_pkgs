@@ -40,7 +40,26 @@ def default_dashboard_settings():
     """default dashboard settings"""
     return {
         "widgets": [{
+            "name": "Server Info",
+            "isReport": False,
+            "interval": 0
+        }, {
+            "name": "CPU Load",
+            "isReport": False,
+            "interval": 0
+        }, {
+            "name": "Network Layout",
+            "isReport": False,
+            "interval": 0
+        }, {
+            "name": "Map Distribution",
+            "isReport": False,
+            "interval": 30
+        }, {
             "name": "Interface Usage",
+            "interval": 30
+        }, {
+            "name": "Interface Average Latency",
             "interval": 30
         }, {
             "name": "Top Clients by Bandwidth",

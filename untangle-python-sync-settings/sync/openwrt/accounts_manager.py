@@ -37,7 +37,18 @@ class AccountsManager:
 
     def validate_settings(self, settings):
         """validates settings"""
-        pass
+        accounts = settings.get('accounts')
+        if accounts is None:
+            return
+        creds = accounts.get('credentials')
+        if creds is None:
+            return
+        for cred in creds:
+            if cred.get("authorizedKeys") is None:
+                continue
+            if cred.get("username") != "admin":
+                continue
+            registrar.register_file("/root/.ssh/authorized_keys", None, self)
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -57,6 +68,14 @@ class AccountsManager:
         if creds is None:
             return
 
+        # write authorized keys
+        for cred in creds:
+            if cred.get("authorizedKeys") is None:
+                continue
+            if cred.get("username") != "admin":
+                continue
+            self.write_authorized_keys("/root/.ssh", cred.get("authorizedKeys"), prefix)
+
         # prefer "root" user for root password
         # if "root" doesn't exist use "admin"
         # if neither exist, don't set root password
@@ -65,14 +84,32 @@ class AccountsManager:
         for cred in creds:
             if cred["username"] == "root":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
-                return
+            return
         for cred in creds:
             if cred["username"] == "admin":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
-                return
+            return
 
         # if not found, delete any previous password script
         delete_list.append(self.password_setter_filename)
+        return
+
+    def write_authorized_keys(self, dirname, contents, prefix):
+        """Write the script to set the password in /tmp/shadow"""
+        filename = prefix + dirname + "/authorized_keys"
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+        registrar.register_file(filename, None, self)
+
+        file = open(filename, "w+")
+        file.write(contents)
+        file.flush()
+        file.close()
+
+        os.chmod(filename, stat.S_IWRITE | stat.S_IREAD) # chmod 600
+        # os.chown(filename, 0, 0) # chown root:root
+        print("AccountsManager: Wrote %s" % filename)
         return
 
     def write_password_setter(self, phash, prefix):

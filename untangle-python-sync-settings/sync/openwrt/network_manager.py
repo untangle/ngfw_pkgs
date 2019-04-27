@@ -504,6 +504,7 @@ class NetworkManager:
             interface['device'] = dev['name']
             interface['hidden'] = (interface['device'] in board_util.get_hidden_interfaces())
 
+            interface['qosEnabled'] = False
             interface['downloadKbps'] = 0
             interface['uploadKbps'] = 0
             interface['wanWeight'] = 0
@@ -569,6 +570,9 @@ class NetworkManager:
                 raise Exception("Invalid IPv6 Prefix: " + intf.get('name') + " " + ipv6_prefix_key + " = " + intf.get(ipv6_prefix_key))
 
         # check individual settings
+        if '-' in intf.get("name"):
+            raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
+
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
@@ -600,11 +604,18 @@ class NetworkManager:
         if intf.get("bridgedTo") != None and not isinstance(intf.get("bridgedTo"), int):
             raise Exception("Invalid Bridged To: " + intf.get('name') + " " + intf.get("bridgedTo"))
 
-        if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
-            raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
+        if intf.get("wan") and intf.get("qosEnabled"):
+            if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
+                raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
 
-        if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
-            raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
+            if intf.get("downloadKbps") == None or intf.get("downloadKpbs") == 0:
+                raise Exception("No DownloadKbps specified: " + intf.get('name'))
+
+            if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
+                raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
+
+            if intf.get("uploadKbps") == None or intf.get("uploadKpbs") == 0:
+                raise Exception("No UploadKbps specified: " + intf.get('name'))
 
         if intf.get("macaddr") != None and not isinstance(intf.get("macaddr"), str):
             raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
@@ -665,6 +676,7 @@ class NetworkManager:
             if conffile["encoding"] != "base64":
                 raise Exception("Unsupported encoding in OpenVPN conf file: " + conffile["encoding"])
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
+            auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
 
             # register a new operation to restart this interface if this config file changes
             # register the config file with the new operation
@@ -672,6 +684,7 @@ class NetworkManager:
             opname = "restart-" + intf["device"]
             registrar.register_operation(opname, [""], [cmd], 99, None)
             registrar.register_file(path, opname, self)
+            registrar.register_file(auth_path, opname, self)
 
             # if this openvpn interface uses a username and password, also
             # register the auth file
