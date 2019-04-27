@@ -65,6 +65,9 @@ class RouteManager:
         file.write("0\tunspec" + "\n")
         file.write("\n\n")
 
+        file.write("220\tipsec" + "\n")
+        file.write("\n\n")
+
         file.write("#" + "\n")
         file.write("# local" + "\n")
         file.write("#" + "\n")
