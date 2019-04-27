@@ -55,7 +55,7 @@ class DdclientManager:
                 "no-ip": {"protocol": "dyndns2", "server": "dynupdate.no-ip.com", "ssl": True},
                 "dnsomatic": {"protocol": "dyndns2", "server": "updates.dnsomatic.com", "ssl": True},
                 "google": {"protocol": "dyndns2", "server": "domains.google.com", "ssl": True},
-                "freedns": {"protocol": "dyndns2", "server": "freedns.afraid.org", "ssl": True},
+                "freedns": {"protocol": "freedns", "server": "freedns.afraid.org", "ssl": True},
                 "cloudflare": {"protocol": "cloudflare", "server": "www.cloudflare.com", "ssl": True},
                 "googledomains": {"protocol": "googledomains", "ssl": True},
                 "duckdns": {"protocol": "duckdns", "server": "www.duckdns.org", "ssl": True}
