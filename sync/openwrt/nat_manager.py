@@ -38,7 +38,7 @@ class NatManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/usr/sbin/nft -f")
+        file.write("#!/usr/bin/nft_debug -f")
         file.write("\n\n")
 
         file.write("## Auto Generated\n")
