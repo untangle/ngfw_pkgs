@@ -488,13 +488,13 @@ def table_create_cmd(json_table):
 
 def table_flush_cmd(json_table):
     """Return the nft command to flush this table"""
-    cmd = table_create_cmd(json_table).replace(" add ", " flush ")
-    return cmd.replace(" add ", " flush ")
+    cmd = table_create_cmd(json_table)
+    return cmd.replace("add ", "flush ")
 
 def table_delete_cmd(json_table):
     """Return the nft command to delete this table"""
     cmd = table_create_cmd(json_table)
-    return cmd.replace(" add ", " delete ")
+    return cmd.replace("add ", "delete ")
 
 def table_all_cmds(json_table):
     """Return all the commands to create, flush, and populate this table"""
@@ -513,8 +513,8 @@ def table_all_cmds(json_table):
             strcat += table_all_cmds(json_table_fam) + "\n"
         return strcat
 
-    cmds.append(table_delete_cmd(json_table))
     cmds.append(table_create_cmd(json_table))
+    cmds.append(table_flush_cmd(json_table))
     for json_chain in json_table.get('chains'):
         try:
             cmds.append(chain_create_cmd(json_chain, family, chain_type, name))
