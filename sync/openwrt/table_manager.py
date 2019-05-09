@@ -1,6 +1,7 @@
 """table manager manages nftable tables"""
 # pylint: disable=unused-argument
 # pylint: disable=bare-except
+# pylint: disable=no-self-use
 import os
 import stat
 from sync import registrar
@@ -18,12 +19,12 @@ class TableManager:
     def sanitize_settings(self, settings):
         """sanitizes settings"""
         # Set the rule_id to unique values of every chain
-        for table in ['filter','port-forward','nat','access','web-filter','captive-portal','shaping']:
+        for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
             for chain in settings['firewall']['tables'][table]['chains']:
-                rule_id=1
+                rule_id = 1
                 for rule in chain['rules']:
                     rule['ruleId'] = rule_id
-                    rule_id=rule_id+1
+                    rule_id = rule_id + 1
 
     def validate_settings(self, settings):
         """validates settings"""
