@@ -38,16 +38,16 @@ class NatManager:
             os.makedirs(file_dir)
 
         file = open(filename, "w+")
-        file.write("#!/usr/bin/nft_debug -f")
-        file.write("\n\n")
-
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n\n")
 
         # docker runs in the same kernel as the host, most hosts kernel do not yet support multiple NAT hooks
         # docker needs the iptables NAT hooks so we can't insert nft nat rules or it will break iptables NAT
         if board_util.is_docker():
+            file.write("#!/bin/sh")
+            file.write("\n\n")
+
+            file.write("## Auto Generated\n")
+            file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+            file.write("\n")
             file.write("iptables -t nat -A POSTROUTING -j MASQUERADE" + "\n")
             file.flush()
             file.close()
@@ -55,6 +55,12 @@ class NatManager:
             print("NatManager: Wrote %s" % filename)
             return
 
+        file.write("#!/usr/bin/nft_debug -f")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
         file.write(r"""
 add table ip  nat-sys
 flush table ip  nat-sys
