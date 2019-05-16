@@ -200,7 +200,7 @@ class RouteManager:
         self.wan_routing_file = open(filename, "w+")
         file = self.wan_routing_file
 
-        file.write("#!/usr/sbin/nft -f")
+        file.write("#!/usr/bin/nft_debug -f")
         file.write("\n\n")
 
         file.write("## Auto Generated\n")

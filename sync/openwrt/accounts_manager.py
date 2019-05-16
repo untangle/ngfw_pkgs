@@ -84,11 +84,11 @@ class AccountsManager:
         for cred in creds:
             if cred["username"] == "root":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
-            return
+                return
         for cred in creds:
             if cred["username"] == "admin":
                 self.write_password_setter(cred["passwordHashMD5"], prefix)
-            return
+                return
 
         # if not found, delete any previous password script
         delete_list.append(self.password_setter_filename)

@@ -119,7 +119,6 @@ class NetworkManager:
             intf['is_bridge'] = is_bridge
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
-                intf['bridged_interfaces'] = bridged_interfaces
 
             if intf.get('is_bridge'):
                 intf['logical_name'] = "b_" + intf['name']
