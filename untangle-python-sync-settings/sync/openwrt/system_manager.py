@@ -8,10 +8,14 @@ from sync import board_util
 class SystemManager:
     """SystemManager manages the system settings"""
     timezone_setter_filename = "/etc/config/startup.d/010-timezone"
+    watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
+    rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
 
     def initialize(self):
         """initialize this module"""
         registrar.register_file(self.timezone_setter_filename, "startup-scripts", self)
+        registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
+        registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
@@ -43,6 +47,11 @@ class SystemManager:
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
+
+        if board_util.is_docker():
+            self.write_watchdog_disabler(prefix)
+            self.write_rpfilter_disabler(prefix)
+
         system = settings.get('system')
         if system is None:
             return
@@ -85,6 +94,58 @@ class SystemManager:
 
         file.write('rm -f $TMPFILE')
         file.write('\n')
+
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+        return
+
+    def write_watchdog_disabler(self, prefix):
+        """Write the script to disable watchdog in docker containers"""
+        filename = prefix + self.watchdog_disabler_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        file.write("ubus call system watchdog \'{\"magicclose\": true,\"stop\": true}'\n")
+        file.write("\n")
+
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+        return
+
+    def write_rpfilter_disabler(self, prefix):
+        """Write the script to disable rpfilter in docker containers"""
+        filename = prefix + self.rpfilter_disabler_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        file.write("find /proc/sys/net/ipv4/conf/*/rp_filter | while read conf ; do\n")
+        file.write("\techo 0 > $conf\n")
+        file.write("done\n")
+        file.write("\n")
 
         file.flush()
         file.close()
