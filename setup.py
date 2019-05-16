@@ -5,7 +5,7 @@ from setuptools import setup
 from subprocess import check_output
 from os.path import isdir
 
-if isdir("../.git"): # debian source tarballs don't contain .git
+if isdir("../.git") or isdir(".git"): # debian source tarballs don't contain .git
     version_cmd = "git describe --tags --always --long"
     version = check_output(version_cmd.split(" ")).decode().strip()
     with open('sync/version.py', 'w') as f:
