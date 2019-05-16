@@ -59,7 +59,7 @@ def default_dashboard_settings():
             "name": "Interface Usage",
             "interval": 30
         }, {
-            "name": "Interface Average Latency",
+            "name": "Interface Average Active Latency",
             "interval": 30
         }, {
             "name": "Top Clients by Bandwidth",
