@@ -4,12 +4,10 @@
 
 import argparse
 import subprocess
+import yaml
 
 # constants
-SUBTREES = {
-    'untangle-python-sync-settings': 'git@github.com:untangle/sync-settings.git',
-    'untangle-python-runtests': 'git@github.com:untangle/runtests.git'
-}
+SUBTREES = yaml.load(open("subtrees.yaml"))['subtrees']
 
 # CL args
 parser = argparse.ArgumentParser(description="Update subtrees, and optionally push result back to origin")
