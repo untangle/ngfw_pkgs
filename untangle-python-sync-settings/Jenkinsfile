@@ -5,14 +5,14 @@ pipeline {
     stage('Build') {
       agent any
       steps {
-	sh "python setup.py build"
+	sh "python3 setup.py build"
       }
     }
 
     stage('Test') {
       agent any
       steps {
-	sh "true" // FIXME: should be "python setup.py test"
+	sh "python3 setup.py test"
       }
 
       post {
