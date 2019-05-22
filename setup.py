@@ -1,9 +1,12 @@
 #!/usr/bin/env python
 """setup.py"""
 
+import sys
+
 from setuptools import setup
 from subprocess import check_output
 from os.path import isdir
+
 
 if isdir("../.git") or isdir(".git"): # debian source tarballs don't contain .git
     version_cmd = "git describe --tags --always --long"
@@ -15,6 +18,11 @@ if isdir("../.git") or isdir(".git"): # debian source tarballs don't contain .gi
         f.write('__version__ = "{}"\n'.format(version))
 else:
     version = "undefined"
+
+if {'pytest', 'test', 'ptr'}.intersection(sys.argv):
+    pytestRunner = ['pytest-runner']
+else:
+    pytestRunner = []
 
 setup(name='sync-settings',
       version=version,
@@ -28,7 +36,7 @@ setup(name='sync-settings',
       packages=['sync', 'sync.debian', 'sync.openwrt'],
       install_requires=[],
       license='GPL',
-      setup_requires=['pytest-runner',],
+      setup_requires=pytestRunner,
       tests_require=[
         "pytest",
         "pytest-cov"
