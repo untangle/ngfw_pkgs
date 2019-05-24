@@ -133,19 +133,14 @@ def default_filter_rules_table():
                 "enabled": True,
                 "description": "Call new session filter rules",
                 "ruleId": 1,
-                "conditions": [],
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "new"
+                }],
                 "action": {
                     "type": "JUMP",
                     "chain": "filter-rules-new"
-                }
-            }, {
-                "enabled": True,
-                "description": "Call early-session session filter rules",
-                "ruleId": 2,
-                "conditions": [],
-                "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-early"
                 }
             }, {
                 "enabled": True,
@@ -163,7 +158,7 @@ def default_filter_rules_table():
             "default": True,
             "rules": [{
                 "ruleId": 1,
-                "description": "Example: A rule of blocking TCP sessions to 1.2.3.4 port 1234",
+                "description": "Example: A rule of rejecting TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -183,7 +178,7 @@ def default_filter_rules_table():
                 }
             }, {
                 "ruleId": 2,
-                "description": "Example: A rule of blocking TCP port 21 (FTP) from 192.168.1.100",
+                "description": "Example: A rule of rejecting TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -203,13 +198,45 @@ def default_filter_rules_table():
                 }
             }]
         }, {
-            "name": "filter-rules-early",
-            "description": "The chain to process the first few packets of each session (early in session)",
-            "rules": []
-        }, {
             "name": "filter-rules-all",
             "description": "The chain to process the all packets",
-            "rules": []
+            "rules": [{
+                "ruleId": 1,
+                "description": "Allow packets in an already established session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "established"
+                }],
+                "action": {
+                    "type": "ALLOW"
+                }
+            },{
+                "ruleId": 2,
+                "description": "Allow packets related to already established session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "related"
+                }],
+                "action": {
+                    "type": "ALLOW"
+                }
+            },{
+                "ruleId": 3,
+                "description": "Example: Reject packets from client 192.168.1.100",
+                "enabled": False,
+                "conditions": [{
+                    "type": "CLIENT_ADDRESS",
+                    "op": "==",
+                    "value": "192.168.1.100"
+                }],
+                "action": {
+                    "type": "REJECT"
+                }
+            }]
         }]
     }
 
