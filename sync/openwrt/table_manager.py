@@ -210,9 +210,9 @@ def default_filter_rules_table():
                     "value": "established"
                 }],
                 "action": {
-                    "type": "ALLOW"
+                    "type": "ACCEPT"
                 }
-            },{
+            }, {
                 "ruleId": 2,
                 "description": "Allow packets related to already established session",
                 "enabled": True,
@@ -222,9 +222,9 @@ def default_filter_rules_table():
                     "value": "related"
                 }],
                 "action": {
-                    "type": "ALLOW"
+                    "type": "ACCEPT"
                 }
-            },{
+            }, {
                 "ruleId": 3,
                 "description": "Example: Reject packets from client 192.168.1.100",
                 "enabled": False,
