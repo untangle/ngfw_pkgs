@@ -130,34 +130,43 @@ def default_filter_rules_table():
             "hook": "forward",
             "priority": 0,
             "rules": [{
-                "enabled": True,
-                "description": "Call new session filter rules",
                 "ruleId": 1,
+                "description": "Allow packets in an already established session",
+                "enabled": True,
                 "conditions": [{
                     "type": "CT_STATE",
                     "op": "==",
-                    "value": "new"
+                    "value": "established"
                 }],
                 "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-new"
+                    "type": "ACCEPT"
                 }
             }, {
+                "ruleId": 2,
+                "description": "Allow packets related to an already established session",
                 "enabled": True,
-                "description": "Call deep-session (all packets) session filter rules",
-                "ruleId": 3,
-                "conditions": [],
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "related"
+                }],
                 "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-all"
+                    "type": "ACCEPT"
                 }
-            }]
-        }, {
-            "name": "filter-rules-new",
-            "description": "The chain to process the first packet of each session (new sessions)",
-            "default": True,
-            "rules": [{
-                "ruleId": 1,
+            }, {
+                "ruleId": 3,
+                "description": "Drop packets not related to any session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "invalid"
+                }],
+                "action": {
+                    "type": "DROP"
+                }
+            }, {
+                "ruleId": 4,
                 "description": "Example: A rule of rejecting TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
@@ -177,7 +186,7 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }, {
-                "ruleId": 2,
+                "ruleId": 5,
                 "description": "Example: A rule of rejecting TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{
@@ -192,46 +201,6 @@ def default_filter_rules_table():
                     "type": "SERVER_PORT",
                     "op": "==",
                     "value": "21"
-                }],
-                "action": {
-                    "type": "REJECT"
-                }
-            }]
-        }, {
-            "name": "filter-rules-all",
-            "description": "The chain to process the all packets",
-            "rules": [{
-                "ruleId": 1,
-                "description": "Allow packets in an already established session",
-                "enabled": True,
-                "conditions": [{
-                    "type": "CT_STATE",
-                    "op": "==",
-                    "value": "established"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "ruleId": 2,
-                "description": "Allow packets related to already established session",
-                "enabled": True,
-                "conditions": [{
-                    "type": "CT_STATE",
-                    "op": "==",
-                    "value": "related"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "ruleId": 3,
-                "description": "Example: Reject packets from client 192.168.1.100",
-                "enabled": False,
-                "conditions": [{
-                    "type": "CLIENT_ADDRESS",
-                    "op": "==",
-                    "value": "192.168.1.100"
                 }],
                 "action": {
                     "type": "REJECT"
