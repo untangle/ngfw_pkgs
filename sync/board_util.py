@@ -18,6 +18,7 @@ def get_hidden_interfaces():
         "armada-385-linksys-rango": ["eth0", "eth1"],
         "armada-385-linksys-venom": ["eth0", "eth1"],
         "armada-385-turris-omnia": ["eth0", "eth1"],
+        "globalscale,espressobin": ["eth0"],
     }.get(board_name, [])
 
 def get_external_device_name():
@@ -28,6 +29,7 @@ def get_external_device_name():
         "armada-385-linksys-rango": "wan",
         "armada-385-linksys-venom": "wan",
         "armada-385-turris-omnia": "eth2",
+        "globalscale,espressobin": "wan",
     }.get(board_name, "eth1")
 
 def get_internal_device_name():
@@ -38,6 +40,7 @@ def get_internal_device_name():
         "armada-385-linksys-rango": "lan1",
         "armada-385-linksys-venom": "lan1",
         "armada-385-turris-omnia": "lan0",
+        "globalscale,espressobin": "lan0",
     }.get(board_name, "eth0")
 
 def get_country_code():
