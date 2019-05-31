@@ -40,6 +40,10 @@ def sanitize_condition(condition):
     condition['op'] = str(op) # change all types to string
     condition['value'] = str(value) # change all types to string
     condition['unit'] = str(unit) # change all types to string
+
+    if '"' in condition.get('value'):
+        raise Exception("Invalid character in condition value: " + str(condition.get('value')))
+
     return condition
 
 def check_operation(op, array):
