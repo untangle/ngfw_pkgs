@@ -130,40 +130,44 @@ def default_filter_rules_table():
             "hook": "forward",
             "priority": 0,
             "rules": [{
-                "enabled": True,
-                "description": "Call new session filter rules",
                 "ruleId": 1,
-                "conditions": [],
+                "description": "Allow packets in an already established session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "established"
+                }],
                 "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-new"
+                    "type": "ACCEPT"
                 }
             }, {
-                "enabled": True,
-                "description": "Call early-session session filter rules",
                 "ruleId": 2,
-                "conditions": [],
+                "description": "Allow packets related to an already established session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "related"
+                }],
                 "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-early"
+                    "type": "ACCEPT"
                 }
             }, {
-                "enabled": True,
-                "description": "Call deep-session (all packets) session filter rules",
                 "ruleId": 3,
-                "conditions": [],
+                "description": "Drop packets not related to any session",
+                "enabled": True,
+                "conditions": [{
+                    "type": "CT_STATE",
+                    "op": "==",
+                    "value": "invalid"
+                }],
                 "action": {
-                    "type": "JUMP",
-                    "chain": "filter-rules-all"
+                    "type": "DROP"
                 }
-            }]
-        }, {
-            "name": "filter-rules-new",
-            "description": "The chain to process the first packet of each session (new sessions)",
-            "default": True,
-            "rules": [{
-                "ruleId": 1,
-                "description": "Example: A rule of blocking TCP sessions to 1.2.3.4 port 1234",
+            }, {
+                "ruleId": 4,
+                "description": "Example: A rule of rejecting TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -182,8 +186,8 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }, {
-                "ruleId": 2,
-                "description": "Example: A rule of blocking TCP port 21 (FTP) from 192.168.1.100",
+                "ruleId": 5,
+                "description": "Example: A rule of rejecting TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
@@ -202,14 +206,6 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }]
-        }, {
-            "name": "filter-rules-early",
-            "description": "The chain to process the first few packets of each session (early in session)",
-            "rules": []
-        }, {
-            "name": "filter-rules-all",
-            "description": "The chain to process the all packets",
-            "rules": []
         }]
     }
 
