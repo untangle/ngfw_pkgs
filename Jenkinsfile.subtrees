@@ -5,7 +5,7 @@ pipeline {
     stage('Update subtrees') {
       agent any
       steps {
-	sh "./update-subtrees.py"
+	sh "./update-subtrees.py --push"
       }
 
       post {
