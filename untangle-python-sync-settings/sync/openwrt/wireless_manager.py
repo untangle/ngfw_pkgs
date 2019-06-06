@@ -54,6 +54,10 @@ class WirelessManager:
                         raise Exception("No wireless channel specified: " + intf.get('name'))
                     if channel <= 0:
                         raise Exception("Invalid wireless channel specified: " + intf.get('name') + " " + str(channel))
+                    if channel <= 11 and not self.has_2ghz(intf):
+                        raise Exception("Invalid wireless channel specified for 5 Ghz: " + intf.get('name') + " " + str(channel))
+                    if channel > 11 and not self.has_5ghz(intf):
+                        raise Exception("Invalid wireless channel specified for 2.4 Ghz: " + intf.get('name') + " " + str(channel))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -61,7 +65,7 @@ class WirelessManager:
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
             if intf.get('type') == 'WIFI':
-                if self.is_5ghz(intf):
+                if self.has_5ghz(intf):
                     intf['wirelessChannel'] = 36
                 else:
                     intf['wirelessChannel'] = 11
@@ -100,7 +104,16 @@ class WirelessManager:
             return "option macaddr '%s'" % self.get_phy_mac(interface)
 
     def is_5ghz(self, interface):
+        if interface.get('wirelessChannel') > 11:
+            return True
+        else:
+            return False
+
+    def has_5ghz(self, interface):
         return (0 == subprocess.call("iw phy %s info | grep -q '5180 MHz'" % self.get_phy_name(interface), shell=True))
+
+    def has_2ghz(self, interface):
+        return (0 == subprocess.call("iw phy %s info | grep -q '2412 MHz'" % self.get_phy_name(interface), shell=True))
 
     def get_hwmode(self, interface):
         if self.is_5ghz(interface):
