@@ -258,6 +258,17 @@ class NetworkManager:
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
 
+        wanId = intf.get('openvpnBoundInterfaceId')
+        if wanId is not None:
+
+            # FIXME: This is currently defined as a string, but probably should be an int.
+            # Deal with either for now
+            if isinstance(wanId, str):
+                wanId = int(wanId,10)
+
+            if wanId != 0:
+                file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId)))
+
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
         if intf.get('openvpnUsernamePasswordEnabled'):
@@ -300,7 +311,7 @@ class NetworkManager:
         file = open(filename, "wb+")
         # only base64 is currently supported
         if conffile.get('encoding') == 'base64':
-            file.write(base64.b64decode(conffile.get('contents')))
+            file.write(base64.b64decode(conffile.get('contents')).replace(b'nobind',b'#nobind'))
             file.flush()
             file.close()
             print("%s: Wrote %s" % (self.__class__.__name__, filename))
