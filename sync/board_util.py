@@ -21,27 +21,27 @@ def get_hidden_interfaces():
         "globalscale,espressobin": ["eth0"],
     }.get(board_name, [])
 
-def get_external_device_name():
-    """get the name of the external device"""
+def get_wan_interfaces():
+    """get the list of the wan devices"""
     board_name = get_board_name()
     return {
-        "armada-385-linksys-shelby": "wan",
-        "armada-385-linksys-rango": "wan",
-        "armada-385-linksys-venom": "wan",
-        "armada-385-turris-omnia": "eth2",
-        "globalscale,espressobin": "wan",
-    }.get(board_name, "eth1")
+        "armada-385-linksys-shelby": ["wan"],
+        "armada-385-linksys-rango": ["wan"],
+        "armada-385-linksys-venom": ["wan"],
+        "armada-385-turris-omnia": ["eth2"],
+        "globalscale,espressobin": ["wan", "lan0"],
+    }.get(board_name, ["eth1"])
 
-def get_internal_device_name():
-    """get the name of the internal device"""
+def get_internal_interfaces():
+    """get the list of the internal devices"""
     board_name = get_board_name()
     return {
-        "armada-385-linksys-shelby": "lan1",
-        "armada-385-linksys-rango": "lan1",
-        "armada-385-linksys-venom": "lan1",
-        "armada-385-turris-omnia": "lan0",
-        "globalscale,espressobin": "lan0",
-    }.get(board_name, "eth0")
+        "armada-385-linksys-shelby": ["lan1", "lan2", "lan3", "lan4"],
+        "armada-385-linksys-rango": ["lan1", "lan2", "lan3", "lan4"],
+        "armada-385-linksys-venom": ["lan1", "lan2", "lan3", "lan4"],
+        "armada-385-turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
+        "globalscale,espressobin": ["lan1"],
+    }.get(board_name, ["eth0"])
 
 def get_country_code():
     """get the country code"""
