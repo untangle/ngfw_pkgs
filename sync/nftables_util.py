@@ -139,19 +139,24 @@ def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shif
     """A generic helper for generating zone expressions"""
     if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
-    if value != "wan" and value != "lan":
-        raise Exception("Invalid interface type expression: " + value)
 
     if value == "wan":
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((1<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((1<<intf_type_shift), '#010x')
-    else: #lan
+    elif value == "lan":
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((2<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((2<<intf_type_shift), '#010x')
+    elif value == "unset":
+        if op == "==":
+            return mark_exp + " and " + intf_type_mask + " " + format(0, '#010x')
+        else:
+            return mark_exp + " and " + intf_type_mask + " != " + format(0, '#010x')
+    else:
+        raise Exception("Invalid interface type expression: " + value)
 
 def condition_interface_zone_expression(mark_exp, intf_mask, value, op):
     """A generic helper for generating zone expressions"""
