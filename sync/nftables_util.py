@@ -311,6 +311,16 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "local_username", "long_string", op, value)
     elif condtype == "REMOTE_USERNAME":
         return condition_dict_expression("sessions", "ct id", "remote_username", "long_string", op, value)
+    elif condtype == "APPLICATION_ID":
+        return condition_dict_expression("sessions", "ct id", "application_id", "long_string", op, value)
+    elif condtype == "APPLICATION_NAME":
+        return condition_dict_expression("sessions", "ct id", "application_name", "long_string", op, value)
+    elif condtype == "APPLICATION_PROTOCHAIN":
+        return condition_dict_expression("sessions", "ct id", "application_protochain", "long_string", op, value)
+    elif condtype == "APPLICATION_DETAIL":
+        return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
+    elif condtype == "APPLICATION_CATEGORY":
+        return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
     elif condtype == "CT_STATE":
         return condition_ct_state_expression(value, op)
     elif condtype == "LIMIT_RATE":
