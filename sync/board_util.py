@@ -15,10 +15,15 @@ def get_hidden_interfaces():
     board_name = get_board_name()
     return {
         "armada-385-linksys-shelby": ["eth0", "eth1"],
+        "linksys,shelby": ["eth0", "eth1"],
         "armada-385-linksys-rango": ["eth0", "eth1"],
+        "linksys,rango": ["eth0", "eth1"],
         "armada-385-linksys-venom": ["eth0", "eth1"],
+        "linksys,venom": ["eth0", "eth1"],
         "armada-385-turris-omnia": ["eth0", "eth1"],
+        "cznic,turris-omnia": ["eth0", "eth1"],
         "globalscale,espressobin": ["eth0"],
+        "globalscale,espressobin-v7-emmc": ["eth0"],
     }.get(board_name, [])
 
 def get_wan_interfaces():
@@ -26,10 +31,15 @@ def get_wan_interfaces():
     board_name = get_board_name()
     return {
         "armada-385-linksys-shelby": ["wan"],
+        "linksys,shelby": ["wan"],
         "armada-385-linksys-rango": ["wan"],
+        "linksys,rango": ["wan"],
         "armada-385-linksys-venom": ["wan"],
+        "linksys,venom": ["wan"],
         "armada-385-turris-omnia": ["eth2"],
+        "cznic,turris-omnia": ["eth2"],
         "globalscale,espressobin": ["wan", "lan0"],
+        "globalscale,espressobin-v7-emmc": ["lan0", "lan1"],
         "caswell-caf-0262": ["eth4", "eth5"],
     }.get(board_name, ["eth1"])
 
@@ -38,10 +48,15 @@ def get_internal_interfaces():
     board_name = get_board_name()
     return {
         "armada-385-linksys-shelby": ["lan1", "lan2", "lan3", "lan4"],
+        "linksys,shelby": ["lan1", "lan2", "lan3", "lan4"],
         "armada-385-linksys-rango": ["lan1", "lan2", "lan3", "lan4"],
+        "linksys,rango": ["lan1", "lan2", "lan3", "lan4"],
         "armada-385-linksys-venom": ["lan1", "lan2", "lan3", "lan4"],
+        "linksys,venom": ["lan1", "lan2", "lan3", "lan4"],
         "armada-385-turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
+        "cznic,turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
         "globalscale,espressobin": ["lan1"],
+        "globalscale,espressobin-v7-emmc": ["wan"],
         "caswell-caf-0262": ["eth0", "eth1", "eth2", "eth3"],
     }.get(board_name, ["eth0"])
 
