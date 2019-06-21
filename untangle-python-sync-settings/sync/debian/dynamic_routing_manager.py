@@ -246,7 +246,6 @@ class DynamicRoutingManager:
 
         file.flush()
         file.close()
-        os.chown(filename, self.file_uid, self.file_gid)
 
         print("DynamicRoutingManager: Wrote %s" % filename)
 
@@ -287,7 +286,6 @@ line vty
         file.write("\n")
         file.flush()
         file.close()
-        os.chown(filename, self.file_uid, self.file_gid)
 
         print("DynamicRoutingManager: Wrote %s" % filename)
 
@@ -342,7 +340,6 @@ route-map set-nexthop permit 10
         file.write("\n")
         file.flush()
         file.close()
-        os.chown(filename, self.file_uid, self.file_gid)
 
         print("DynamicRoutingManager: Wrote %s" % filename)
 
@@ -476,7 +473,6 @@ route-map set-nexthop permit 10
         file.write("\n")
         file.flush()
         file.close()
-        os.chown(filename, self.file_uid, self.file_gid)
 
         print("DynamicRoutingManager: Wrote %s" % filename)
 
