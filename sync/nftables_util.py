@@ -321,6 +321,46 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
     elif condtype == "APPLICATION_CATEGORY":
         return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_CN":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_cn", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_SN":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_sn", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_C":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_c", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_O":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_o", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_OU":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_ou", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_L":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_l", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_P":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_p", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_SA":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_sa", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_PC":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_pc", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_SAN":
+        return condition_dict_expression("sessions", "ct id", "certificate_subject_san", "long_string", op, value)
+    elif condtype == "CERT_SUBJECT_DNS":
+        return condition_dict_expression("sessions", "ct id", "cert_dns_names", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_CN":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_cn", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_SN":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_sn", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_C":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_c", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_O":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_o", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_OU":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_ou", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_L":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_l", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_P":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_p", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_SA":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_sa", "long_string", op, value)
+    elif condtype == "CERT_ISSUER_PC":
+        return condition_dict_expression("sessions", "ct id", "certificate_issuer_pc", "long_string", op, value)
     elif condtype == "CT_STATE":
         return condition_ct_state_expression(value, op)
     elif condtype == "LIMIT_RATE":
