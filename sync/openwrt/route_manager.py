@@ -61,6 +61,17 @@ class RouteManager:
                 rule['ruleId'] = rule_id
                 rule_id += 1
 
+                action = rule.get("action")
+                if action.get("type") == "WAN_POLICY":
+                    rule['logs'] = [
+                        {
+                            "type": "DICT",
+                            "field": "wan-routing-reason",
+                            "value": "%s-%s" % (chain.get('name'), rule.get('ruleId'))
+                        }
+                    ]
+
+
     def validate_settings(self, settings):
         """validates settings"""
         wan = settings['wan']
