@@ -12,6 +12,6 @@ sync.registrar.register_operation("restart-wireless", [""], ["/sbin/wifi"], 20, 
 
 sync.registrar.register_operation("restart-dhcp", [""], ["/etc/init.d/dnsmasq restart"], 30, None)
 
-sync.registrar.register_operation("startup-scripts", [""], ["/etc/init.d/startup boot"], 40, None)
+sync.registrar.register_operation("startup-scripts", [""], ["/etc/init.d/startup boot ; /etc/init.d/system restart"], 40, None)
 
 

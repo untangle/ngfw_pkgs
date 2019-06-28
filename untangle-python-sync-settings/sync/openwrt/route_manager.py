@@ -107,12 +107,11 @@ class RouteManager:
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
-        default_wan = 0
+        wans = []
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
             if enabled_wan(intf):
-                default_wan = intf.get('interfaceId')
-                break
+                wans.append(intf.get('interfaceId'))
 
         settings['wan'] = {}
         settings['wan']['policy_chains'] = [
@@ -134,20 +133,29 @@ class RouteManager:
                 ]
             }
         ]
-        settings['wan']['policies'] = [
-            {
-                "policyId": 1,
-                "description": "Send traffic to external",
-                "enabled": True,
-                "type": "SPECIFIC_WAN",
-                "interfaces": [
-                    {
-                        "interfaceId": default_wan
-                    }
-                ],
-                "criteria": []
-            }
-        ]
+
+        settings['wan']['policies'] = []
+        policy = {}
+        policy["policyId"] = 1
+        policy["description"] = "Send traffic to external"
+        policy["enabled"] = True
+        policy["criteria"] = []
+        if len(wans) == 1:
+            policy["type"] = "SPECIFIC_WAN"
+            policy_interface = {}
+            policy_interface["interfaceId"] = wans[0]
+            policy["interfaces"] = []
+            policy["interfaces"].append(policy_interface)
+        else:
+            policy["type"] = "BALANCE"
+            policy["balance_algorithm"] = "WEIGHTED"
+            policy["interfaces"] = []
+            for wan in wans:
+                policy_interface = {}
+                policy_interface["interfaceId"] = wan
+                policy_interface["weight"] = 100
+                policy["interfaces"].append(policy_interface)
+        settings['wan']['policies'].append(policy)
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
