@@ -22,6 +22,7 @@ Depends: ${misc:Depends}, chromium-driver [!armel !armhf !arm64],
          untangle-base-web-filter,
          untangle-bdamserver [!armel !armhf !arm64],
          untangle-bootsplash [!armel !armhf !arm64],
+	 untangle-citrix | untangle-spam-blocker,
          untangle-ddclient-config,
          untangle-development-runtime,
          untangle-exim4-config,
@@ -64,7 +65,7 @@ Depends: ${misc:Depends}, chromium-driver [!armel !armhf !arm64],
          untangle-system-config,
          untangle-update-manager,
 	 untangle-vm
-Conflicts: sysvinit-core, untangle-citrix
+Conflicts: sysvinit-core
 Pre-Depends: untangle-debconf-manager
 Description: The Untangle Gateway
  The Untangle Top Level Untangle package.
