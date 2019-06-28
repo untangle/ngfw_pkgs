@@ -10,12 +10,14 @@ class SystemManager:
     timezone_setter_filename = "/etc/config/startup.d/010-timezone"
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
+    hostname_setter_filename = "/etc/config/startup.d/050-hostname"
 
     def initialize(self):
         """initialize this module"""
         registrar.register_file(self.timezone_setter_filename, "startup-scripts", self)
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
+        registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
@@ -55,6 +57,11 @@ class SystemManager:
         system = settings.get('system')
         if system is None:
             return
+
+        hostname = system.get('hostName')
+        if hostname is not None:
+            self.write_hostname_setter(hostname, prefix)
+
         time_zone = system.get('timeZone')
         if time_zone is None:
             return
@@ -69,6 +76,39 @@ class SystemManager:
                 return
             self.write_timezone_setter(time_zone_value, prefix)
             return
+
+    def write_hostname_setter(self, hostname, prefix):
+        """Write the script to set the hostname in /etc/config/system"""
+        filename = prefix + self.hostname_setter_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        file.write('TMPFILE="/tmp/system"\n')
+        file.write(r'''/bin/sed -e "s/option hostname .*/option hostname '%s'/" /etc/config/system > $TMPFILE''' % hostname)
+        file.write('\n\n')
+
+        file.write('if ! diff /etc/config/system $TMPFILE >/dev/null 2>&1 ; then cp $TMPFILE /etc/config/system ; fi\n')
+        file.write('\n')
+
+        file.write('rm -f $TMPFILE')
+        file.write('\n')
+
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+        return
+
 
     def write_timezone_setter(self, time_zone, prefix):
         """Write the script to set the timezone in /etc/config/system"""

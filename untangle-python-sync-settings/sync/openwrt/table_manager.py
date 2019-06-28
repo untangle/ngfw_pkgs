@@ -373,7 +373,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "80"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],
@@ -393,7 +393,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "80"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "wan"
                 }],
@@ -413,7 +413,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "22"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],
@@ -433,7 +433,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "22"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "wan"
                 }],
@@ -453,7 +453,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "53"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],
@@ -473,7 +473,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "53"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],
@@ -517,7 +517,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "67"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],
@@ -537,7 +537,7 @@ def default_access_rules_table():
                     "op": "==",
                     "value": "547"
                 }, {
-                    "type": "SOURCE_INTERFACE_ZONE",
+                    "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
                     "value": "lan"
                 }],

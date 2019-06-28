@@ -258,6 +258,17 @@ class NetworkManager:
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
 
+        wanId = intf.get('openvpnBoundInterfaceId')
+        if wanId is not None:
+
+            # FIXME: This is currently defined as a string, but probably should be an int.
+            # Deal with either for now
+            if isinstance(wanId, str):
+                wanId = int(wanId,10)
+
+            if wanId != 0:
+                file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId)))
+
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
         if intf.get('openvpnUsernamePasswordEnabled'):
@@ -300,7 +311,7 @@ class NetworkManager:
         file = open(filename, "wb+")
         # only base64 is currently supported
         if conffile.get('encoding') == 'base64':
-            file.write(base64.b64decode(conffile.get('contents')))
+            file.write(base64.b64decode(conffile.get('contents')).replace(b'nobind',b'#nobind'))
             file.flush()
             file.close()
             print("%s: Wrote %s" % (self.__class__.__name__, filename))
@@ -482,16 +493,21 @@ class NetworkManager:
         """create interfaces settings"""
         device_list = get_devices()
         if len(device_list) == 1:
+            internal_device_list = []
             internal_device_name = "None"
-            external_device_name = device_list[0]
+            wan_device_list = []
+            wan_device_list.append(device_list[0])
         else:
-            internal_device_name = board_util.get_internal_device_name()
-            external_device_name = board_util.get_external_device_name()
+            internal_device_list = board_util.get_internal_interfaces()
+            internal_device_name = internal_device_list[0]
+            wan_device_list = board_util.get_wan_interfaces()
 
-        # Move wan to top of list, in OpenWRT eth1 is the WAN
-        if external_device_name in device_list:
-            device_list.remove(external_device_name)
-            device_list.insert(0, external_device_name)
+        # Move wans to top of list
+        for wan_device_name in wan_device_list:
+            if wan_device_name in device_list:
+                device_list.remove(wan_device_name)
+                device_list.insert(wan_device_list.index(wan_device_name), wan_device_name)
+
         settings['network']['interfaces'] = []
         interface_list = []
         intf_id = 0
@@ -517,15 +533,15 @@ class NetworkManager:
             if dev.get('name') == internal_device_name:
                 internal_id = intf_id
                 create_settings_internal_interface(interface)
-            elif dev.get('name') == external_device_name:
-                create_settings_external_interface(interface)
+            elif dev.get('name') in wan_device_list:
+                create_settings_wan_interface(interface, wan_device_list.index(dev.get('name')))
             else:
                 interface['wan'] = False
                 if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 else:
                     interface['name'] = "intf%i" % intf_id
-                if internal_id != None and (dev.get('name').startswith('wlan') or dev.get('name').startswith('lan')):
+                if internal_id != None and (dev.get('name').startswith('wlan') or dev.get('name') in internal_device_list):
                     interface['configType'] = 'BRIDGED'
                     interface['bridgedTo'] = internal_id
                 else:
@@ -892,9 +908,9 @@ def create_settings_internal_interface(interface):
         interface['v6ConfigType'] = 'DISABLED'
         interface['dhcpEnabled'] = False
 
-def create_settings_external_interface(interface):
-    """create the default external settings"""
-    interface['name'] = 'external'
+def create_settings_wan_interface(interface, index):
+    """create the default wan settings"""
+    interface['name'] = "WAN" + str(index)
     interface['wan'] = True
     interface['configType'] = 'ADDRESSED'
     interface['v4ConfigType'] = 'DHCP'

@@ -132,6 +132,14 @@ def is_bridge_interface(settings, interface):
             return True
     return False
 
+def get_interface_by_id(settings, interfaceId):
+    """ returns interface with the given interfaceId """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get('interfaceId') == interfaceId:
+            return intf
+    return None
+
 def get_interface_name(settings, intf):
     """
     returns the interface name as it would appear in /etc/config/network
