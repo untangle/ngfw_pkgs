@@ -8,9 +8,9 @@ Standards-Version: 3.9.8
 
 Package: untangle-citrix
 Architecture: all
-Provides: untangle-spam-blocker 
-Replaces: untangle-spam-blocker 
-Conflicts: untangle-spam-blocker
+Provides: untangle-app-spam-blocker-lite, untangle-app-spam-blocker
+Replaces: untangle-app-spam-blocker-lite, untangle-app-spam-blocker
+Conflicts: untangle-app-spam-blocker-lite, untangle-app-spam-blocker
 Description: Provide packages not needed on citrix
  This packages provides packages that are not needed on citrix, via
  PRC.
