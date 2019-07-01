@@ -65,9 +65,8 @@ class RouteManager:
                 if action.get("type") == "WAN_POLICY":
                     rule['logs'] = [
                         {
-                            "type": "DICT",
-                            "field": "wan-routing-reason",
-                            "value": "%s-%s" % (chain.get('name'), rule.get('ruleId'))
+                            "type": "NFLOG",
+                            "prefix": "wan-routing-reason: wan-routing-%s-%s " % (chain.get('name'), rule.get('ruleId')),
                         }
                     ]
 
