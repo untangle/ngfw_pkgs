@@ -30,9 +30,8 @@ class TableManager:
                     if action.get("type") == "DROP":
                         rule['logs'] = [
                             {
-                                "type": "DICT",
-                                "field": "drop-reason",
-                                "value": "%s-%s" % (chain.get('name'), rule.get('ruleId'))
+                                "type": "NFLOG",
+                                "prefix": "drop-reason: %s-%s-%s: " % (table, chain.get('name'), rule.get('ruleId')),
                             }
                         ]
 
