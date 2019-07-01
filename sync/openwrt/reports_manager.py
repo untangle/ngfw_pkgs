@@ -38,6 +38,28 @@ def default_reports_settings():
 
 def default_dashboard_settings():
     """default dashboard settings"""
+
+# {
+#            "name": "Map Distribution",
+#            "isReport": False,
+#            "interval": 30
+# }
+# {
+#            "name": "Top Clients by Bandwidth",
+#            "interval": 30
+# }
+# {
+#            "name": "Top Clients Bandwidth by Time",
+#            "interval": 30
+# }
+# {
+#            "name": "Top Server Ports by Session Count",
+#            "interval": 30
+# }
+# {
+#            "name": "Top Clients by Session Count",
+#            "interval": 30
+# }
     return {
         "widgets": [{
             "name": "Server Info",
@@ -52,32 +74,16 @@ def default_dashboard_settings():
             "isReport": False,
             "interval": 0
         }, {
-            "name": "Map Distribution",
-            "isReport": False,
-            "interval": 30
-        }, {
             "name": "Interface Usage",
             "interval": 30
         }, {
             "name": "Interface Average Active Latency",
             "interval": 30
         }, {
-            "name": "Top Clients by Bandwidth",
-            "interval": 30
-        }, {
-            "name": "Top Clients Bandwidth by Time",
-            "interval": 30
-        }, {
             "name": "Top Applications by Bandwidth",
             "interval": 30
         }, {
             "name": "Top Applications Bandwidth by Time",
-            "interval": 30
-        }, {
-            "name": "Top Server Ports by Session Count",
-            "interval": 30
-        }, {
-            "name": "Top Clients by Session Count",
             "interval": 30
         }, {
             "name": "Session Count Summary",
