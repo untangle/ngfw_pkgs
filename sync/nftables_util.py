@@ -480,7 +480,7 @@ def logs_expression(logs):
             strcat = strcat + " counter"
         elif typ == "NFLOG":
             prefix = log.get('prefix')
-            strcat = strcat + " log prefix \"%s: \"" % prefix
+            strcat = strcat + " log prefix \"%s \" group 0" % prefix
         elif typ == "DICT":
             field = log.get('field')
             value = log.get('value')
