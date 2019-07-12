@@ -468,6 +468,28 @@ def action_expression(json_action, family):
     else:
         raise Exception("Unknown action type: " + str(json_action))
 
+def logs_expression(logs):
+    """This method takes an method json object and provides the nft log action(s)"""
+
+    strcat = ""
+    for log in logs:
+        check_log(log)
+        typ = log.get('type')
+
+        if typ == "COUNTER":
+            strcat = strcat + " counter"
+        elif typ == "NFLOG":
+            prefix = log.get('prefix')
+            strcat = strcat + " log prefix \"%s \" group 0" % prefix
+        elif typ == "DICT":
+            field = log.get('field')
+            value = log.get('value')
+            strcat = strcat + " dict sessions ct id %s long_string set %s" % (field, value)
+        else:
+            raise Exception("Unknown log type: " + str(log))
+
+    return strcat.strip()
+
 def rule_expression(json_rule, family):
     """Builds an nft rule from the JSON rule object"""
     check_rule(json_rule)
@@ -476,6 +498,10 @@ def rule_expression(json_rule, family):
     conditions = json_rule.get('conditions')
     if conditions != None:
         rule_exp = rule_exp + " " + conditions_expression(conditions, family)
+
+    logs = json_rule.get('logs')
+    if logs != None:
+        rule_exp = rule_exp + " " + logs_expression(logs)
 
     action_exp = action_expression(json_rule.get('action'), family)
     rule_exp = rule_exp + " " + action_exp
@@ -630,6 +656,19 @@ def check_table(json_table, allow_multiple_families=False):
             raise Exception("Invalid family (%s) for table %s" % (family, name))
     if chains is None:
         raise Exception("Invalid chains (null) for table %s" % name)
+
+def check_log(json_log):
+    """Check the provided log has the required attributes, throw exception if not"""
+    if json_log is None:
+        raise Exception("Invalid log: null")
+    if json_log.get('type') is None:
+        raise Exception("Invalid log type: null")
+    if json_log.get('type') == 'NFLOG' and json_log.get('prefix') is None:
+        raise Exception("Invalid log NFLOG prefix: null")
+    if json_log.get('type') == 'DICT' and json_log.get('field') is None:
+        raise Exception("Invalid log DICT field: null")
+    if json_log.get('type') == 'DICT' and json_log.get('value') is None:
+        raise Exception("Invalid log DICT value: null")
 
 def check_action(json_action):
     """Check the provided action has the required attributes, throw exception if not"""
