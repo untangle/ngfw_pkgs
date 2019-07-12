@@ -1,0 +1,19 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+if [ -z "$2"] ; then
+    ##
+    ## On initial install:
+    ##
+    ## Change Interface names to physical port numbers.
+    sed --in-place \
+        --follow-symlinks \
+        -r 's/^([[:space:]]+)"name": "Interface ([[:digit:]]+)"/echo "\1\\"name\\":" \\"Interface $((\2-1))\\"/ge' \
+        /usr/share/untangle/settings/untangle-vm/network.js
+fi
+
+
+exit 0
