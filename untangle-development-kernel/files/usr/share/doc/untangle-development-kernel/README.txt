@@ -15,7 +15,7 @@ To install on stretch, you can for instance do:
 A. Typical workflow:
 ====================
 
-Let's define version="4.9.0-8-untangle-amd64".
+Let's define version="4.9.0-9-untangle-amd64".
 
 1. Change your main interface to a bridge
 -----------------------------------------
