@@ -144,7 +144,56 @@ class RouteManager:
             }
         ]
 
-        settings['wan']['policies'] = []
+        settings['wan']['policies'] = [{
+            "best_of_metric": "LOWEST_LATENCY",
+            "criteria": [],
+            "description": "Lowest Latency WAN",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BEST_OF",
+            "policyId": 1
+        }, {
+            "best_of_metric": "HIGHEST_AVAILABLE_BANDWIDTH",
+            "criteria": [],
+            "description": "Highest Bandwidth WAN",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BEST_OF",
+            "policyId": 2
+        }, {
+            "balance_algorithm": "AVAILABLE_BANDWIDTH",
+            "criteria": [],
+            "description": "Balance by Bandwidth Available",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BALANCE",
+            "policyId": 3
+        }, {
+            "balance_algorithm": "BANDWIDTH",
+            "criteria": [],
+            "description": "Balance by Bandwidth",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BALANCE",
+            "policyId": 4
+        }]
+
         policy = {}
         policy["policyId"] = 1
         policy["description"] = "Send traffic to external"
