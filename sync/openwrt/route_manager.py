@@ -4,9 +4,11 @@
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-locals
 import os
 import json
 import stat
+import traceback
 from sync import registrar
 from sync import nftables_util
 from sync import network_util
@@ -81,6 +83,8 @@ class RouteManager:
             policy_id = policy.get('policyId')
             if policy_id is None:
                 raise Exception("Policy missing policyId")
+            if policy_id in policy_ids:
+                raise Exception("Duplicate policyId " + str(policy_id))
             policy_ids.append(policy_id)
             if interfaces is None:
                 raise Exception("No interfaces specified: policy " + str(policy_id))
@@ -104,14 +108,14 @@ class RouteManager:
                 if rule_id is None:
                     raise Exception("Missing ruleId in WAN rule")
                 if action is None:
-                    raise Exception("Missing action in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing action in WAN rule" + str(rule_id))
                 if rule.get("enabled") is None:
-                    raise Exception("Missing enabled in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing enabled in WAN rule" + str(rule_id))
                 if action.get("type") is None:
-                    raise Exception("Missing action type in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing action type in WAN rule" + str(rule_id))
                 if action.get("type") == "WAN_POLICY":
                     if action.get("policy") not in policy_ids:
-                        raise Exception("WAN rule " + str(rule.get("ruleId")) + " uses missing WAN policy " + str(action.get("policy")))
+                        raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(action.get("policy")))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -194,28 +198,6 @@ class RouteManager:
             "policyId": 4
         }]
 
-        policy = {}
-        policy["policyId"] = 1
-        policy["description"] = "Send traffic to external"
-        policy["enabled"] = True
-        policy["criteria"] = []
-        if len(wans) == 1:
-            policy["type"] = "SPECIFIC_WAN"
-            policy_interface = {}
-            policy_interface["interfaceId"] = wans[0]
-            policy["interfaces"] = []
-            policy["interfaces"].append(policy_interface)
-        else:
-            policy["type"] = "BALANCE"
-            policy["balance_algorithm"] = "WEIGHTED"
-            policy["interfaces"] = []
-            for wan in wans:
-                policy_interface = {}
-                policy_interface["interfaceId"] = wan
-                policy_interface["weight"] = 100
-                policy["interfaces"].append(policy_interface)
-        settings['wan']['policies'].append(policy)
-
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
@@ -252,7 +234,7 @@ class RouteManager:
             json.dump(policy_settings, self.wan_policy_file, indent=4, separators=(',', ': '))
             self.wan_policy_file.flush()
             self.wan_policy_file.close()
-        except IOError as exc:
+        except IOError:
             traceback.print_exc()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
