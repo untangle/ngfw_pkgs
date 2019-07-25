@@ -68,7 +68,7 @@ class RouteManager:
                     rule['logs'] = [
                         {
                             "type": "NFLOG",
-                            "prefix": "wan-routing-reason: wan-routing-%s-%s " % (chain.get('name'), rule.get('ruleId')),
+                            "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (chain.get('name'), rule.get('ruleId'), action.get('policy')),
                         }
                     ]
 
@@ -296,7 +296,7 @@ class RouteManager:
             file.write("add set inet wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
             file.write("add chain inet wan-routing route-to-policy-%d\n" % policyId)
             file.write("add rule inet wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
-            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId))
+            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0 dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId, policyId))
             file.write("\n")
 
         policy_chains = wan.get('policy_chains')
@@ -318,7 +318,7 @@ class RouteManager:
         file.write("add rule inet wan-routing wan-routing-entry jump route-via-cache\n")
         file.write("add rule inet wan-routing wan-routing-entry jump user-wan-rules\n")
         file.write("add rule inet wan-routing wan-routing-entry counter\n")
-        file.write("add rule inet wan-routing wan-routing-entry jump route-to-default-wan\n")
+        file.write("add rule inet wan-routing wan-routing-entry log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'wan-routing-entry\',\'ruleId\':-2,\'action\':\'WAN_POLICY\',\'policy\':-2}\" group 0 jump route-to-default-wan\n")
         file.write("add rule inet wan-routing wan-routing-entry counter\n")
 
         file.write("\n")

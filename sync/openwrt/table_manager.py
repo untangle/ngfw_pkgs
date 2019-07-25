@@ -32,6 +32,7 @@ class TableManager:
                             {
                                 "type": "NFLOG",
                                 "prefix": "drop-reason: %s-%s-%s: " % (table, chain.get('name'), rule.get('ruleId')),
+                                "prefix": "{\'type\':\'rule\',\'table\':\'%s\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'DROP\'} " % (table, chain.get('name'), rule.get('ruleId')),
                             }
                         ]
 
