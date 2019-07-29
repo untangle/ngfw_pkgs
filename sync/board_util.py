@@ -42,6 +42,8 @@ def get_wan_interfaces():
         "globalscale,espressobin-v7-emmc": ["eth1", "eth2"],
         "caswell-caf-0262": ["eth4", "eth5"],
         "untangle-inc-default-string": ["eth4", "eth5"],
+        "raspberrypi,3-model-b-plus": ["eth0"],
+        "raspberrypi,3-model-b": ["eth0"],
     }.get(board_name, ["eth1"])
 
 def get_internal_interfaces():
@@ -60,6 +62,8 @@ def get_internal_interfaces():
         "globalscale,espressobin-v7-emmc": ["eth3"],
         "caswell-caf-0262": ["eth0", "eth1", "eth2", "eth3"],
         "untangle-inc-default-string": ["eth0", "eth1", "eth2", "eth3"],
+        "raspberrypi,3-model-b-plus": ["wlan0"],
+        "raspberrypi,3-model-b": ["wlan0"],
     }.get(board_name, ["eth0"])
 
 interface_name_maps = {
