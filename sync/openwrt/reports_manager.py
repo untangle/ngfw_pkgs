@@ -74,6 +74,10 @@ def default_dashboard_settings():
             "isReport": False,
             "interval": 0
         }, {
+            "name": "WAN Routing",
+            "isReport": True,
+            "interval": 30
+        }, {
             "name": "Interface Usage",
             "interval": 30
         }, {
