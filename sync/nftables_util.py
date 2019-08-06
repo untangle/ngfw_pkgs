@@ -419,7 +419,7 @@ def action_expression(json_action, family):
         addr = json_action.get('dnat_address')
         port = json_action.get('dnat_port')
         if addr is None:
-            raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
+            raise Exception("Invalid action: Missing required address parameter for action type " + str(typ))
         if family == "ip" and ":" in addr:
             raise NonsensicalException("Ignore IPv6 for IPv4 DNAT: %s" % family)
         if family == "ip6" and "." in addr:
