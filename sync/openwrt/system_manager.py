@@ -120,20 +120,17 @@ class SystemManager:
     def write_autoupgrade_file(self, autoupgrade_settings, prefix):
         """Write the autoupgrade file"""
         enabled = True
+        day = 6
+        hour = 0
+        minute = 0
         if autoupgrade_settings is None:
             enabled = False
         else:
             if autoupgrade_settings.get('enabled') is None or autoupgrade_settings.get('enabled') is False:
                 enabled = False
-        day = autoupgrade_settings.get('dayOfWeek')
-        hour = autoupgrade_settings.get('hourOfDay')
-        minute = autoupgrade_settings.get('minuteOfHour')
-        if day is None:
-            day = 6
-        if hour is None:
-            hour = 0
-        if minute is None:
-            minute = 0
+            day = autoupgrade_settings.get('dayOfWeek')
+            hour = autoupgrade_settings.get('hourOfDay')
+            minute = autoupgrade_settings.get('minuteOfHour')
 
         filename = prefix + self.autoupgrade_filename
         file_dir = os.path.dirname(filename)
