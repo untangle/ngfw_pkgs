@@ -32,12 +32,6 @@ class SystemManager:
         if autoupgrade_settings is not None:
             if autoupgrade_settings.get('enabled') is None:
                 raise Exception("Missing required autoUpgrade setting \"enabled\"")
-            if autoupgrade_settings.get('dayOfWeek') is None:
-                raise Exception("Missing required autoUpgrade setting \"dayOfWeek\"")
-            if autoupgrade_settings.get('hourOfDay') is None:
-                raise Exception("Missing required autoUpgrade setting \"hourOfDay\"")
-            if autoupgrade_settings.get('minuteOfHour') is None:
-                raise Exception("Missing required autoUpgrade setting \"minuteOfHour\"")
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -133,8 +127,12 @@ class SystemManager:
         day = autoupgrade_settings.get('dayOfWeek')
         hour = autoupgrade_settings.get('hourOfDay')
         minute = autoupgrade_settings.get('minuteOfHour')
-        if day is None or hour is None or min is None:
-            enabled = False
+        if day is None:
+            day = 6
+        if hour is None:
+            hour = 0
+        if minute is None:
+            minute = 0
 
         filename = prefix + self.autoupgrade_filename
         file_dir = os.path.dirname(filename)
