@@ -128,9 +128,12 @@ class SystemManager:
         else:
             if autoupgrade_settings.get('enabled') is None or autoupgrade_settings.get('enabled') is False:
                 enabled = False
-            day = autoupgrade_settings.get('dayOfWeek')
-            hour = autoupgrade_settings.get('hourOfDay')
-            minute = autoupgrade_settings.get('minuteOfHour')
+            if autoupgrade_settings.get('dayOfWeek') is not None:
+                day = autoupgrade_settings.get('dayOfWeek')
+            if autoupgrade_settings.get('hourOfDay') is not None:
+                hour = autoupgrade_settings.get('hourOfDay')
+            if autoupgrade_settings.get('minuteOfHour') is not None:
+                minute = autoupgrade_settings.get('minuteOfHour')
 
         filename = prefix + self.autoupgrade_filename
         file_dir = os.path.dirname(filename)
