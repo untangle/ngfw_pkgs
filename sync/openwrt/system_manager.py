@@ -122,8 +122,9 @@ class SystemManager:
         enabled = True
         if autoupgrade_settings is None:
             enabled = False
-        if autoupgrade_settings.get('enabled') is None or autoupgrade_settings.get('enabled') is False:
-            enabled = False
+        else:
+            if autoupgrade_settings.get('enabled') is None or autoupgrade_settings.get('enabled') is False:
+                enabled = False
         day = autoupgrade_settings.get('dayOfWeek')
         hour = autoupgrade_settings.get('hourOfDay')
         minute = autoupgrade_settings.get('minuteOfHour')
