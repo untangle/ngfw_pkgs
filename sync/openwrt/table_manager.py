@@ -391,7 +391,7 @@ def default_access_rules_table():
                     "type": "ACCEPT"
                 }
             }, {
-                "enabled": True,
+                "enabled": False,
                 "description": "Accept HTTP on WANs (TCP/80)",
                 "ruleId": 6,
                 "conditions": [{
@@ -412,8 +412,48 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept SSH on LANs (TCP/22)",
+                "description": "Accept HTTPS on LANs (TCP/443)",
                 "ruleId": 7,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "443"
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": "lan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept HTTPS on WANs (TCP/443)",
+                "ruleId": 8,
+                "conditions": [{
+                    "type": "IP_PROTOCOL",
+                    "op": "==",
+                    "value": "6"
+                }, {
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "443"
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": "wan"
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Accept SSH on LANs (TCP/22)",
+                "ruleId": 9,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -433,7 +473,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept SSH on WANs (TCP/22)",
-                "ruleId": 8,
+                "ruleId": 10,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -453,7 +493,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (TCP/53)",
-                "ruleId": 9,
+                "ruleId": 11,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -473,7 +513,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DNS on LANs (UDP/53)",
-                "ruleId": 10,
+                "ruleId": 12,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -493,7 +533,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept ICMP",
-                "ruleId": 11,
+                "ruleId": 13,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -505,7 +545,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept ICMPv6",
-                "ruleId": 12,
+                "ruleId": 14,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -517,7 +557,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DHCP on LANs (UDP/67)",
-                "ruleId": 13,
+                "ruleId": 15,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -537,7 +577,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DHCPv6 on LANs (UDP/547)",
-                "ruleId": 14,
+                "ruleId": 16,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -557,7 +597,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Accept DHCPv6 Replies (UDP/546)",
-                "ruleId": 15,
+                "ruleId": 17,
                 "conditions": [{
                     "type": "IP_PROTOCOL",
                     "op": "==",
@@ -573,7 +613,7 @@ def default_access_rules_table():
             }, {
                 "enabled": True,
                 "description": "Drop All",
-                "ruleId": 16,
+                "ruleId": 18,
                 "conditions": [],
                 "action": {
                     "type": "DROP"

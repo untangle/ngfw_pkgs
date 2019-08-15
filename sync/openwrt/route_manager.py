@@ -114,9 +114,7 @@ class RouteManager:
                 if action.get("type") is None:
                     raise Exception("Missing action type in WAN rule" + str(rule_id))
                 if action.get("type") == "WAN_POLICY":
-                    # FIXME MFW-520 - currently policy is getting saved as a string
-                    # temp fix here
-                    policy = int(action.get("policy"))
+                    policy = action.get("policy")
                     if policy not in policy_ids:
                         raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
