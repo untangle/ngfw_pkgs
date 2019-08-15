@@ -34,6 +34,10 @@ deb-systemd-helper disable miniupnpd.service
 # It will be started via the post-network scripts if needed
 deb-systemd-helper disable ddclient.service
 
+# disable softflowd
+# It will be started via the post-network scripts if needed
+deb-systemd-helper disable softflowd.service
+
 # disable dynamic routing daemons
 # It will be started via the post-network scripts if needed
 deb-systemd-helper disable zebra.service
