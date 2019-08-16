@@ -137,6 +137,8 @@ class NetworkManager:
                     self.write_interface_openvpn(intf, settings, prefix)
                 elif intf.get('type') == 'WIREGUARD':
                     self.write_interface_wireguard(intf, settings)
+                elif intf.get('type') == 'WWAN':
+                    self.write_interface_wwan(intf, settings)
                 else:
                     self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
@@ -198,6 +200,88 @@ class NetworkManager:
             file.write("\n")
 
         return
+
+    def write_interface_wwan(self, intf, settings):
+        """write a wwan interface"""
+        file = self.network_file
+        ifname = intf['ifname']
+        device = "/dev/cdc-wdm" + ifname.split('wwan')[-1]
+
+        file.write("\n")
+        file.write("config interface '%s'\n" % intf['logical_name'])
+        file.write("\toption proto 'qmi'\n")
+        file.write("\toption ifname '%s'\n" % ifname)
+        file.write("\toption device '%s'\n" % device)
+
+        if intf.get('simDelay') is not None:
+            file.write("\toption delay '%d'\n" % intf.get('simDelay'))
+
+        if intf.get('simApn') is not None:
+            file.write("\toption apn '%s'\n" % intf.get('simApn'))
+
+        if intf.get('simProfile') is not None:
+            file.write("\toption profile '%d'\n" % intf.get('simProfile'))
+
+        if intf.get('simPin') is not None:
+            file.write("\toption pincode '%s'\n" % intf.get('simPin'))
+
+        auth = intf.get('simAuth')
+        if auth is not None and auth != "NONE":
+            if auth == "PAP":
+                file.write("\toption auth 'pap'\n")
+            elif auth == "CHAP":
+                file.write("\toption auth 'chap'\n")
+            else:
+                file.write("\toption auth 'both'\n")
+
+            file.write("\toption username '%s'\n" % intf.get('simUsername'))
+            file.write("\toption password '%s'\n" % intf.get('simPassword'))
+
+        mode = intf.get('simMode')
+        if mode is None:
+            file.write("\toption modes 'all'\n")
+        else:
+            if mode == "ALL":
+                file.write("\toption modes 'all'\n")
+            elif mode == "LTE":
+                file.write("\toption modes 'lte'\n")
+            elif mode == "UMTS":
+                file.write("\toption modes 'umts'\n")
+            elif mode == "GSM":
+                file.write("\toption modes 'gsm'\n")
+            elif mode == "CDMA":
+                file.write("\toption modes 'cdma'\n")
+            elif mode == "TDSCDMA":
+                file.write("\toption modes 'td-scdma'\n")
+
+        pdptype = intf.get('simPdptype')
+        if pdptype is None:
+            file.write("\toption pdptype 'ip'\n")
+        else:
+            if pdptype == "IPV4":
+                file.write("\toption pdptype 'ip'\n")
+            elif pdptype == "IPV6":
+                file.write("\toption pdptype 'ipv6'\n")
+            elif pdptype == "IPV4V6":
+                file.write("\toption pdptype 'ipv4v6'\n")
+
+        plmn = intf.get('simPlmn')
+        if plmn is not None:
+            file.write("\toption plmn '%d'\n" % intf.get('simPlmn'))
+
+        autoconnect = intf.get('simAutoconnect')
+        if autoconnect is not None:
+            if autoconnect is True:
+                file.write("\toption autoconnect '1'\n")
+            else:
+                file.write("\toption autoconnect '0'\n")
+
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+            file.write("\toption defaultroute '1'\n")
+
+        if intf.get('wan') and intf.get('v6ConfigType') == "DHCP":
+            file.write("\toption dhcpv6 '1'\n")
 
     def write_interface_wireguard(self, intf, settings):
         """write a wireguard interface"""
@@ -512,6 +596,7 @@ class NetworkManager:
         interface_list = []
         intf_id = 0
         internal_id = None
+        wwan_index = 0
         for dev in settings['network']['devices']:
             intf_id = intf_id + 1
             interface = {}
@@ -527,6 +612,8 @@ class NetworkManager:
 
             if interface['device'].startswith("wlan"):
                 interface['type'] = 'WIFI'
+            elif interface['device'].startswith("wwan"):
+                interface['type'] = 'WWAN'
             else:
                 interface['type'] = 'NIC'
 
@@ -535,6 +622,9 @@ class NetworkManager:
                 create_settings_internal_interface(interface)
             elif dev.get('name') in wan_device_list:
                 create_settings_wan_interface(interface, wan_device_list.index(dev.get('name')))
+            elif interface['type'] == 'WWAN':
+                create_settings_wwan_interface(interface, index)
+                wwan_index += 1
             else:
                 interface['wan'] = False
                 if intf_id < len(self.GREEK_NAMES):
@@ -758,6 +848,69 @@ class NetworkManager:
                 if intf.get("wireguardPort") < 0 or intf.get("wireguardPort") > 65535:
                     raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
 
+        if intf.get("type") == 'WWAN':
+            if intf.get("simApn") is None and intf.get("simProfile") is None:
+                raise Exception("Invalid: WWAN interface must specify either apn or profile: " + intf.get('name'))
+
+            if intf.get("simApn") is not None and not isinstance(intf.get("simApn"), str):
+                raise Exception("Invalid WWAN apn: must be a string: " + intf.get('name'))
+
+            if intf.get("simProfile") is not None and not isinstance(intf.get("simProfile"), int):
+                raise Exception("Invalid WWAN profile: must be an int: " + intf.get('name'))
+
+            if intf.get("simPin") is not None and not isinstance(intf.get("simPin"), int):
+                raise Exception("Invalid WWAN pin: must be an int: " + intf.get('name'))
+
+            auth = intf.get('simAuth')
+            if auth is not None:
+                if not isinstance(auth, str):
+                    raise Exception("Invalid WWAN auth: must be a string: " + intf.get('name'))
+
+                if auth != "NONE":
+                    if auth != "PAP" and auth != "CHAP" and auth != "BOTH":
+                        raise Exception("Invalid WWAN auth: must NONE, PAP, CHAP, or BOTH: " + intf.get('name'))
+
+                    if intf.get('simUsername') is None:
+                        raise Exception("Invalid WWAN config: Must specify username for PAP/CHAP/BOTH: " + intf.get('name'))
+
+                    if not isinstance(intf.get("simUsername"), str):
+                        raise Exception("Invalid WWAN username: Username must be string: " + intf.get('name'))
+
+                    if intf.get('simPassword') is None:
+                        raise Exception("Invalid WWAN config: Must specify password for PAP/CHAP/BOTH: " + intf.get('name'))
+
+                    if not isinstance(intf.get("simPassword"), str):
+                        raise Exception("Invalid WWAN password: Password must be string: " + intf.get('name'))
+
+            mode = intf.get('simMode')
+            if mode is not None:
+                if not isinstance(mode, str):
+                    raise Exception("Invalid WWAN mode: must be a string: " + intf.get('name'))
+
+                if mode != "ALL" and mode != "LTE" and mode != "UMTS" and mode != "GSM" and mode != "CDMA" and mode != "TDSCDMA":
+                    raise Exception("Invalid WWAN mode: must be ALL, LTE, UMTS, GSM, CDMA, or TDSCDMA: " + intf.get('name'))
+
+            pdptype = intf.get('simPdptype')
+            if pdptype is not None:
+                if not isinstance(pdptype, str):
+                    raise Exception("Invalid WWAN pdptype: must be a string: " + intf.get('name'))
+
+                if pdptype != "IPV4" and pdptype != "IPV6" and pdptype != "IPV4V6":
+                    raise Exception("Invalid WWAN pdptype: must be IPV4, IPV6, or IPV4V6: " + intf.get('name'))
+
+            plmn = intf.get('simPlmn')
+            if plmn is not None:
+                if not isinstance(plmn, int):
+                    raise Exception("Invalid WWAN plmn: must be an int: " + intf.get('name'))
+
+            autoconnect = intf.get('simAutoconnect')
+            if autoconnect is not None:
+                if not isinstance(autoconnect, bool):
+                    raise Exception("Invalid WWAN autoconnect: must be a bool: " + intf.get('name'))
+
+            if intf.get('v6ConfigType') is not None and intf.get('v6ConfigType') == "DHCP" and (pdptype is None or pdptype == "IPV4"):
+                    raise Exception("Invalid WWAN config: pdptype must be IPV6 or IPV4V6 to enable dhcpv6: " + intf.get('name'))
+
 def get_wireless_devices():
     """get wireless devices"""
     device_list = []
@@ -773,6 +926,7 @@ def get_devices():
     device_list.extend(get_devices_matching_glob("eth*"))
     device_list.extend(get_devices_matching_glob("lan*"))
     device_list.extend(get_devices_matching_glob("wan*"))
+    device_list.extend(get_devices_matching_glob("wwan*"))
     device_list.extend(get_wireless_devices())
     return device_list
 
@@ -884,6 +1038,19 @@ def find_lowest_available_interface_id(interfaces):
         raise Exception("No available interface IDs")
     else:
         return available[0]
+
+def create_settings_wwan_interface(interface, index):
+    """create the default wwan settings"""
+    interface['name'] = "WWAN" + str(index)
+    interface['wan'] = True
+    interface['simApn'] = 'apn'
+    interface['simDelay'] = 10
+    interface['simMode'] = 'ALL'
+    interface['simPdptype'] = 'IPV4V6'
+    interface['configType'] = 'ADDRESSED'
+    interface['v4ConfigType'] = 'DHCP'
+    interface['v6ConfigType'] = 'DHCP'
+    interface['natEgress'] = True
 
 def create_settings_internal_interface(interface):
     """create the default internal settings"""

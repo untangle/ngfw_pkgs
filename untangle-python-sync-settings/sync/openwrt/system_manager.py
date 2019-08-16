@@ -1,5 +1,6 @@
 """This class is responsible for writing the system settings"""
 # pylint: disable=unused-argument
+# pylint: disable=no-self-use
 import os
 import stat
 from sync import registrar
@@ -11,6 +12,7 @@ class SystemManager:
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
+    autoupgrade_filename = "/etc/crontabs/autoupgrade"
 
     def initialize(self):
         """initialize this module"""
@@ -18,14 +20,18 @@ class SystemManager:
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
+        registrar.register_file(self.autoupgrade_filename, "restart-cron", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
-        pass
+        return
 
     def validate_settings(self, settings):
         """validates settings"""
-        pass
+        autoupgrade_settings = settings.get('autoUpgrade')
+        if autoupgrade_settings is not None:
+            if autoupgrade_settings.get('enabled') is None:
+                raise Exception("Missing required autoUpgrade setting \"enabled\"")
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -61,6 +67,9 @@ class SystemManager:
         hostname = system.get('hostName')
         if hostname is not None:
             self.write_hostname_setter(hostname, prefix)
+
+        autoupgrade = system.get('autoUpgrade')
+        self.write_autoupgrade_file(autoupgrade, prefix)
 
         time_zone = system.get('timeZone')
         if time_zone is None:
@@ -107,8 +116,40 @@ class SystemManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
-        return
 
+    def write_autoupgrade_file(self, autoupgrade_settings, prefix):
+        """Write the autoupgrade file"""
+        enabled = True
+        day = 6
+        hour = 0
+        minute = 0
+        if autoupgrade_settings is None:
+            enabled = False
+        else:
+            if autoupgrade_settings.get('enabled') is None or autoupgrade_settings.get('enabled') is False:
+                enabled = False
+            if autoupgrade_settings.get('dayOfWeek') is not None:
+                day = autoupgrade_settings.get('dayOfWeek')
+            if autoupgrade_settings.get('hourOfDay') is not None:
+                hour = autoupgrade_settings.get('hourOfDay')
+            if autoupgrade_settings.get('minuteOfHour') is not None:
+                minute = autoupgrade_settings.get('minuteOfHour')
+
+        filename = prefix + self.autoupgrade_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+
+        if enabled:
+            file.write("%i %i * * %i /usr/bin/upgrade.sh\n" % (minute, hour, day))
+
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
 
     def write_timezone_setter(self, time_zone, prefix):
         """Write the script to set the timezone in /etc/config/system"""
@@ -140,7 +181,6 @@ class SystemManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
-        return
 
     def write_watchdog_disabler(self, prefix):
         """Write the script to disable watchdog in docker containers"""
@@ -165,7 +205,6 @@ class SystemManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
-        return
 
     def write_rpfilter_disabler(self, prefix):
         """Write the script to disable rpfilter in docker containers"""
@@ -192,6 +231,5 @@ class SystemManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
-        return
 
 registrar.register_manager(SystemManager())

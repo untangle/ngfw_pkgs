@@ -321,6 +321,12 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
     elif condtype == "APPLICATION_CATEGORY":
         return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_NAME":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_name", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_CONFIDENCE":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_confidence", "int", op, value)
+    elif condtype == "APPLICATION_PREDICTED_PROTOCHAIN":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_protochain", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_CN":
         return condition_dict_expression("sessions", "ct id", "certificate_subject_cn", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_SN":
@@ -419,7 +425,7 @@ def action_expression(json_action, family):
         addr = json_action.get('dnat_address')
         port = json_action.get('dnat_port')
         if addr is None:
-            raise Exception("Invalid action: Missing required parameter for action type " + str(typ))
+            raise Exception("Invalid action: Missing required address parameter for action type " + str(typ))
         if family == "ip" and ":" in addr:
             raise NonsensicalException("Ignore IPv6 for IPv4 DNAT: %s" % family)
         if family == "ip6" and "." in addr:
