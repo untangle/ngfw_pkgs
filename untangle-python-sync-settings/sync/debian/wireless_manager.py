@@ -1,5 +1,4 @@
 import os
-import stat
 import sys
 import subprocess
 import datetime
