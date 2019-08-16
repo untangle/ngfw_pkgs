@@ -4,9 +4,11 @@
 # pylint: disable=too-many-statements
 # pylint: disable=line-too-long
 # pylint: disable=too-many-branches
+# pylint: disable=too-many-locals
 import os
 import json
 import stat
+import traceback
 from sync import registrar
 from sync import nftables_util
 from sync import network_util
@@ -66,7 +68,7 @@ class RouteManager:
                     rule['logs'] = [
                         {
                             "type": "NFLOG",
-                            "prefix": "wan-routing-reason: wan-routing-%s-%s " % (chain.get('name'), rule.get('ruleId')),
+                            "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (chain.get('name'), rule.get('ruleId'), action.get('policy')),
                         }
                     ]
 
@@ -81,6 +83,8 @@ class RouteManager:
             policy_id = policy.get('policyId')
             if policy_id is None:
                 raise Exception("Policy missing policyId")
+            if policy_id in policy_ids:
+                raise Exception("Duplicate policyId " + str(policy_id))
             policy_ids.append(policy_id)
             if interfaces is None:
                 raise Exception("No interfaces specified: policy " + str(policy_id))
@@ -104,14 +108,15 @@ class RouteManager:
                 if rule_id is None:
                     raise Exception("Missing ruleId in WAN rule")
                 if action is None:
-                    raise Exception("Missing action in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing action in WAN rule" + str(rule_id))
                 if rule.get("enabled") is None:
-                    raise Exception("Missing enabled in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing enabled in WAN rule" + str(rule_id))
                 if action.get("type") is None:
-                    raise Exception("Missing action type in WAN rule" + str(rule.get("ruleId")))
+                    raise Exception("Missing action type in WAN rule" + str(rule_id))
                 if action.get("type") == "WAN_POLICY":
-                    if action.get("policy") not in policy_ids:
-                        raise Exception("WAN rule " + str(rule.get("ruleId")) + " uses missing WAN policy " + str(action.get("policy")))
+                    policy = action.get("policy")
+                    if policy not in policy_ids:
+                        raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
     def create_settings(self, settings, prefix, delete_list, filename):
         """creates settings"""
@@ -144,28 +149,55 @@ class RouteManager:
             }
         ]
 
-        settings['wan']['policies'] = []
-        policy = {}
-        policy["policyId"] = 1
-        policy["description"] = "Send traffic to external"
-        policy["enabled"] = True
-        policy["criteria"] = []
-        if len(wans) == 1:
-            policy["type"] = "SPECIFIC_WAN"
-            policy_interface = {}
-            policy_interface["interfaceId"] = wans[0]
-            policy["interfaces"] = []
-            policy["interfaces"].append(policy_interface)
-        else:
-            policy["type"] = "BALANCE"
-            policy["balance_algorithm"] = "WEIGHTED"
-            policy["interfaces"] = []
-            for wan in wans:
-                policy_interface = {}
-                policy_interface["interfaceId"] = wan
-                policy_interface["weight"] = 100
-                policy["interfaces"].append(policy_interface)
-        settings['wan']['policies'].append(policy)
+        settings['wan']['policies'] = [{
+            "best_of_metric": "LOWEST_LATENCY",
+            "criteria": [],
+            "description": "Lowest Latency WAN",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BEST_OF",
+            "policyId": 1
+        }, {
+            "best_of_metric": "HIGHEST_AVAILABLE_BANDWIDTH",
+            "criteria": [],
+            "description": "Highest Bandwidth WAN",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BEST_OF",
+            "policyId": 2
+        }, {
+            "balance_algorithm": "AVAILABLE_BANDWIDTH",
+            "criteria": [],
+            "description": "Balance by Bandwidth Available",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BALANCE",
+            "policyId": 3
+        }, {
+            "balance_algorithm": "BANDWIDTH",
+            "criteria": [],
+            "description": "Balance by Bandwidth",
+            "enabled": True,
+            "interfaces": [
+                {
+                    "interfaceId": 0
+                }
+            ],
+            "type": "BALANCE",
+            "policyId": 4
+        }]
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
@@ -203,7 +235,7 @@ class RouteManager:
             json.dump(policy_settings, self.wan_policy_file, indent=4, separators=(',', ': '))
             self.wan_policy_file.flush()
             self.wan_policy_file.close()
-        except IOError as exc:
+        except IOError:
             traceback.print_exc()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
@@ -262,13 +294,13 @@ class RouteManager:
             file.write("add set inet wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
             file.write("add chain inet wan-routing route-to-policy-%d\n" % policyId)
             file.write("add rule inet wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
-            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId))
+            file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0 dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId, policyId))
             file.write("\n")
 
         policy_chains = wan.get('policy_chains')
         for chain in policy_chains:
-            file.write(nftables_util.chain_create_cmd(chain, "inet", None, "wan-routing").replace("nft add", "add").replace("'","") + "\n")
-            file.write(nftables_util.chain_rules_cmds(chain, "inet", None, "wan-routing").replace("nft add", "add").replace("'","") + "\n")
+            file.write(nftables_util.chain_create_cmd(chain, "inet", None, "wan-routing") + "\n")
+            file.write(nftables_util.chain_rules_cmds(chain, "inet", None, "wan-routing") + "\n")
             file.write("\n")
 
         for intf in interfaces:
@@ -284,7 +316,7 @@ class RouteManager:
         file.write("add rule inet wan-routing wan-routing-entry jump route-via-cache\n")
         file.write("add rule inet wan-routing wan-routing-entry jump user-wan-rules\n")
         file.write("add rule inet wan-routing wan-routing-entry counter\n")
-        file.write("add rule inet wan-routing wan-routing-entry jump route-to-default-wan\n")
+        file.write("add rule inet wan-routing wan-routing-entry log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'wan-routing-entry\',\'ruleId\':-2,\'action\':\'WAN_POLICY\',\'policy\':-2}\" group 0 jump route-to-default-wan\n")
         file.write("add rule inet wan-routing wan-routing-entry counter\n")
 
         file.write("\n")
