@@ -6,7 +6,6 @@
 # pylint: disable=too-many-branches
 # pylint: disable=too-many-locals
 import os
-import json
 import stat
 import traceback
 from sync import registrar
@@ -27,8 +26,8 @@ class RouteManager:
     ifdown_route_file = None
     wan_routing_filename = "/etc/config/nftables-rules.d/102-wan-routing"
     wan_routing_file = None
-    wan_policy_filename = "/etc/config/wan_policy.json"
-    wan_policy_file = None
+    wan_manager_filename = "/etc/config/wan_manager"
+    wan_manager_file = None
 
     def initialize(self):
         """initialize this module"""
@@ -36,7 +35,7 @@ class RouteManager:
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
         registrar.register_file(self.wan_routing_filename, "restart-wan-routing", self)
-        registrar.register_file(self.wan_policy_filename, "restart-wan-manager", self)
+        registrar.register_file(self.wan_manager_filename, "restart-wan-manager", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
@@ -206,37 +205,137 @@ class RouteManager:
         self.write_ifup_routes_file(settings, prefix)
         self.write_ifdown_routes_file(settings, prefix)
         self.write_wan_routing_file(settings, prefix)
-        self.write_wan_policy_file(settings, prefix)
+        self.write_wan_manager_file(settings, prefix)
 
         # the first go at wan routing support created these files, but
         # we don't need them anymore.  Eventually this can be removed
         delete_list.append("/etc/config/ifup.d/20-wan-balancer")
         delete_list.append("/etc/config/ifdown.d/20-wan-balancer")
+        delete_list.append("/etc/config/wan_policy.json")
 
-    def write_wan_policy_file(self, settings, prefix=""):
-        """write_wan_policy_file writes /etc/config/wan_policy.json"""
-        filename = prefix + self.wan_policy_filename
+    def write_wan_manager_file(self, settings, prefix=""):
+        """write_wan_manager_file writes /etc/config/wan_manager"""
+        filename = prefix + self.wan_manager_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        policy_settings = {}
-        policy_settings['wan'] = settings.get('wan')
-        policy_settings['network'] = {}
-        policy_interfaces = []
-        interfaces = settings.get('network').get('interfaces')
-        for intf in interfaces:
-            if intf.get('wan'):
-                policy_interfaces.append(intf)
-        policy_settings['network']['interfaces'] = policy_interfaces
+        self.wan_manager_file = open(filename, "w+")
+        file = self.wan_manager_file
 
-        try:
-            self.wan_policy_file = open(filename, "w+")
-            json.dump(policy_settings, self.wan_policy_file, indent=4, separators=(',', ': '))
-            self.wan_policy_file.flush()
-            self.wan_policy_file.close()
-        except IOError:
-            traceback.print_exc()
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        wan = settings['wan']
+        policies = wan.get('policies')
+        for policy in policies:
+            if policy.get('enabled'):
+                policyId = policy.get('policyId')
+                interfaces = policy.get('interfaces')
+
+                if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
+                    interfaces = get_wan_list(settings)
+
+                for intf in interfaces:
+                    interfaceId = intf.get('interfaceId')
+                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId))
+                    criteria = policy.get('criteria')
+                    if criteria is None:
+                        file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                    else:
+                        down_by_attribute = False
+                        for criterion in criteria:
+                            if criterion.get('type') == 'ATTRIBUTE':
+                                if criterion.get('attribute') == 'VPN':
+                                    if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
+                                        file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interfaceName))
+                                        down_by_attribute = True
+                                    else:
+                                        file.write("attribute policy-%d %d %s VPN up &\n" % (policyId, interfaceId, interfaceName))
+                                elif criterion.get('attribute') == 'NAME':
+                                    name_contains = criterion.get('name_contains')
+                                    if name_contains not in interfaceName:
+                                        file.write("attribute policy-%d %d %s NAME %s down &\n" % (policyId, interfaceId, interfaceName, name_contains))
+                                        down_by_attribute = True
+                                    else:
+                                        file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interfaceName, name_contains))
+
+                        if down_by_attribute is False:
+                            file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                            for criterion in criteria:
+                                if criterion.get('type') == 'METRIC':
+                                    metric_value = criterion.get('metric_value')
+
+                                    metric = criterion.get('metric')
+                                    if metric == 'LATENCY':
+                                        stat_name = "latency"
+                                        metric_name = "1_minute"
+                                    elif metric == 'AVAILABLE_BANDWIDTH':
+                                        stat_name = "available_bandwidth"
+                                        metric_name = "1_minute"
+                                    elif metric == 'JITTER':
+                                        stat_name = "jitter"
+                                        metric_name = "1_minute"
+                                    elif metric == 'PACKET_LOSS':
+                                        stat_name = "packet_loss"
+                                        metric_name = "1_minute"
+
+                                    metric_op = criterion.get('metric_op')
+                                    if metric_op == "<":
+                                        op="lt"
+                                    elif metric_op == "<=":
+                                        op="le"
+                                    elif metric_op == ">":
+                                        op="gt"
+                                    elif metric_op == ">=":
+                                        op="ge"
+
+                                    file.write("metric policy-%d %d %s %s %s %s %d &\n" % (policyId, interfaceId, interfaceName, stat_name, metric_name, op, metric_value))
+
+                                elif criterion.get('type') == 'CONNECTIVITY':
+                                    test_type = criterion.get('connectivityTestType')
+                                    interval = criterion.get('connectivityTestInterval')
+                                    timeout = criterion.get('connectivityTestTimeout')
+                                    threshold = criterion.get('connectivityTestFailureThreshold')
+                                    target = criterion.get('connectivityTestTarget')
+                                    if test_type == "PING":
+                                        test="ping"
+                                    elif test_type == "HTTP":
+                                        test="http"
+                                    elif test_type == "ARP":
+                                        test="arp"
+                                    elif test_type == "DNS":
+                                        test="dns"
+                                    file.write("test policy-%d %d %s %s %d %d %d %s &\n" % (policyId, interfaceId, interfaceName, test, interval, timeout, threshold, target))
+
+                if policy.get('type') == "SPECIFIC_WAN":
+                    file.write("specific_wan policy-%d %d &\n" % (policyId, interfaceId))
+                elif policy.get('type') == "BEST_OF":
+                    best_of_metric = policy.get('best_of_metric')
+                    if best_of_metric == "LOWEST_LATENCY":
+                        stat_name = "latency"
+                        metric_name = "1_minute"
+                        op="le"
+                    elif best_of_metric == "LOWEST_JITTER":
+                        stat_name = "jitter"
+                        metric_name = "1_minute"
+                        op="le"
+                    elif best_of_metric == "HIGHEST_AVAILABLE_BANDWIDTH":
+                        stat_name = "available_bandwidth"
+                        metric_name = "1_minute"
+                        op="ge"
+                    elif best_of_metric == "LOWEST_PACKET_LOSS":
+                        stat_name = "packet_loss"
+                        metric_name = "1_minute"
+                        op="le"
+                    file.write("best_of policy-%d %s %s %s &\n" % (policyId, stat_name, metric_name, op))
+                elif policy.get('type') == "BALANCE":
+                    algorithm = policy.get('balance_algorithm')
+                    file.write("balance policy-%d %s &\n" % (policyId, algorithm))
+
+        file.flush()
+        file.close()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
@@ -499,5 +598,29 @@ def enabled_wan(intf):
     if intf.get('configType') != 'DISABLED' and intf.get('wan'):
         return True
     return False
+
+def get_wan_list(settings):
+    """
+    returns a list of wan_interface's for all enabled wans
+    """
+    wan_list = []
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if enabled_wan(intf):
+            wan = {
+                "interfaceId": intf.get('interfaceId'),
+                "weight": 1
+            }
+            wan_list.append(wan)
+
+    return wan_list
+
+def get_interface_by_id(settings, interfaceId):
+    """ returns interface with the given interfaceId """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get('interfaceId') == interfaceId:
+            return intf
+    return None
 
 registrar.register_manager(RouteManager())
