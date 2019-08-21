@@ -623,7 +623,7 @@ class NetworkManager:
             elif dev.get('name') in wan_device_list:
                 create_settings_wan_interface(interface, wan_device_list.index(dev.get('name')))
             elif interface['type'] == 'WWAN':
-                create_settings_wwan_interface(interface, index)
+                create_settings_wwan_interface(interface, wwan_index)
                 wwan_index += 1
             else:
                 interface['wan'] = False
