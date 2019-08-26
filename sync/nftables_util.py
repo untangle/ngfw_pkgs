@@ -321,12 +321,20 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
     elif condtype == "APPLICATION_CATEGORY":
         return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_ID":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_id", "long_string", op, value)
     elif condtype == "APPLICATION_PREDICTED_NAME":
         return condition_dict_expression("sessions", "ct id", "application_predicted_name", "long_string", op, value)
     elif condtype == "APPLICATION_PREDICTED_CONFIDENCE":
         return condition_dict_expression("sessions", "ct id", "application_predicted_confidence", "int", op, value)
     elif condtype == "APPLICATION_PREDICTED_PROTOCHAIN":
         return condition_dict_expression("sessions", "ct id", "application_predicted_protochain", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_PRODUCTIVITY":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_productivity", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_THREAT":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_threat", "long_string", op, value)
+    elif condtype == "APPLICATION_PREDICTED_CATEGORY":
+        return condition_dict_expression("sessions", "ct id", "application_predicted_category", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_CN":
         return condition_dict_expression("sessions", "ct id", "certificate_subject_cn", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_SN":
