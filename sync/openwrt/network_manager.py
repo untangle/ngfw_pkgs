@@ -216,6 +216,9 @@ class NetworkManager:
         if intf.get('simDelay') is not None:
             file.write("\toption delay '%d'\n" % intf.get('simDelay'))
 
+        if intf.get('simTimeout') is not None:
+            file.write("\toption timeout '%d'\n" % intf.get('simTimeout'))
+
         if intf.get('simApn') is not None:
             file.write("\toption apn '%s'\n" % intf.get('simApn'))
 
@@ -1045,6 +1048,7 @@ def create_settings_wwan_interface(interface, index):
     interface['wan'] = True
     interface['simApn'] = 'apn'
     interface['simDelay'] = 10
+    interface['simTimeout'] = 30
     interface['simMode'] = 'ALL'
     interface['simPdptype'] = 'IPV4V6'
     interface['configType'] = 'ADDRESSED'
