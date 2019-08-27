@@ -99,7 +99,8 @@ add rule inet interface-marks prerouting-interface-marks jump check-src-interfac
 # in this case we need to reset the dst interface mark to the correct & actual dst interface mark
 add rule inet interface-marks forward-interface-marks ct state new jump mark-dst-interface
 
-#add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
+# sometimes sessions were created before these rules were in place - still mark these
+add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
 """)
