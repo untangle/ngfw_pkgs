@@ -39,7 +39,7 @@ def get_wan_interfaces():
         "armada-385-turris-omnia": ["eth2"],
         "cznic,turris-omnia": ["eth2"],
         "globalscale,espressobin": ["wan", "lan0"],
-        "globalscale,espressobin-v7-emmc": ["lan0", "lan1"],
+        "globalscale,espressobin-v7-emmc": ["eth1", "eth2"],
         "caswell-caf-0262": ["eth4", "eth5"],
     }.get(board_name, ["eth1"])
 
@@ -56,7 +56,7 @@ def get_internal_interfaces():
         "armada-385-turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
         "cznic,turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
         "globalscale,espressobin": ["lan1"],
-        "globalscale,espressobin-v7-emmc": ["wan"],
+        "globalscale,espressobin-v7-emmc": ["eth3"],
         "caswell-caf-0262": ["eth0", "eth1", "eth2", "eth3"],
     }.get(board_name, ["eth0"])
 

@@ -47,6 +47,12 @@ class NetworkManager:
                 intf["wan"] = False
             if intf.get("interfaceId") is None:
                 intf["interfaceId"] = find_lowest_available_interface_id(interfaces)
+            # We used to set configType == DISABLED to disable interfaces
+            if intf.get("enabled") is None:
+                if intf["configType"] == "DISABLED":
+                    intf["enabled"] = False
+                else:
+                    intf["enabled"] = True
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings)
 
@@ -112,7 +118,7 @@ class NetworkManager:
                 if intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
                     bridged_interfaces_str.append(str(intf2.get('device')))
                     bridged_interfaces.append(intf2)
-            if len(bridged_interfaces) > 0:
+            if bridged_interfaces:
                 is_bridge = True
                 bridged_interfaces_str.insert(0, intf.get('device'))  # include yourself in bridge at front
                 bridged_interfaces.insert(0, intf)  # include yourself in bridge at front
@@ -132,7 +138,7 @@ class NetworkManager:
                 intf['netfilterDev'] = intf['device']
 
         for intf in interfaces:
-            if intf.get('configType') != "DISABLED":
+            if intf.get('enabled'):
                 if intf.get('type') == 'OPENVPN':
                     self.write_interface_openvpn(intf, settings, prefix)
                 elif intf.get('type') == 'WIREGUARD':
@@ -145,7 +151,7 @@ class NetworkManager:
                     self.write_interface_v6(intf, settings)
 
         switches = settings['network'].get('switches')
-        if switches != None:
+        if switches is not None:
             for swi in switches:
                 self.write_switch(swi, settings)
 
@@ -164,15 +170,13 @@ class NetworkManager:
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('wan') and intf.get('configType') != "DISABLED" and intf.get('v4ConfigType') != "DISABLED":
+            if intf.get('wan') and intf.get('enabled') and intf.get('v4ConfigType') != "DISABLED":
                 file.write("config rule\n")
                 file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
                 file.write("\toption priority '%d'\n" % priority)
                 file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
                 file.write("\n")
                 priority = priority + 1
-
-        return
 
     def write_switch(self, swi, settings):
         """write the switch config"""
@@ -198,8 +202,6 @@ class NetworkManager:
                         vlan_ports.append("%s" % port['id'])
             file.write("\toption ports '%s'\n" % " ".join(vlan_ports))
             file.write("\n")
-
-        return
 
     def write_interface_wwan(self, intf, settings):
         """write a wwan interface"""
@@ -297,7 +299,7 @@ class NetworkManager:
         addresses = intf.get('wireguardAddresses')
         for address in addresses:
             file.write("\tlist addresses '%s'\n" % address)
-        if intf.get('wireguardPort') != None:
+        if intf.get('wireguardPort') is not None:
             file.write("\toption listen_port '%s'\n" % intf.get('wireguardPort'))
 
         if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
@@ -309,20 +311,20 @@ class NetworkManager:
         for peer in peers:
             file.write("config 'wireguard_%s'\n" % intf['logical_name'])
             file.write("\toption public_key '%s'\n" % peer.get('publicKey'))
-            if peer.get('routeAllowedIps') != None and peer.get('routeAllowedIps'):
+            if peer.get('routeAllowedIps') is not None and peer.get('routeAllowedIps'):
                 file.write("\toption route_allowed_ips '1'\n")
             else:
                 file.write("\toption route_allowed_ips '0'\n")
             ips = peer.get('allowedIps')
             for ip in ips:
                 file.write("\tlist allowed_ips '%s'\n" % ip)
-            if peer.get('host') != None:
+            if peer.get('host') is not None:
                 file.write("\toption endpoint_host '%s'\n" % peer.get('host'))
-            if peer.get('port') != None:
+            if peer.get('port') is not None:
                 file.write("\toption endpoint_port '%s'\n" % peer.get('port'))
-            if peer.get('keepalive') != None:
+            if peer.get('keepalive') is not None:
                 file.write("\toption persistent_keepalive '%d'\n" % peer.get('keepalive'))
-            if peer.get('presharedKey') != None:
+            if peer.get('presharedKey') is not None:
                 file.write("\toption preshared_key '%s'\n" % peer.get('presharedKey'))
 
     def write_interface_openvpn(self, intf, settings, prefix):
@@ -448,7 +450,7 @@ class NetworkManager:
         self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
-        if intf.get('v4Aliases') != None and intf.get('v4ConfigType') == "STATIC":
+        if intf.get('v4Aliases') is not None and intf.get('v4ConfigType') == "STATIC":
             for idx, alias in enumerate(intf.get('v4Aliases')):
                 self.write_interface_v4_alias(intf, alias, (idx+1), settings)
 
@@ -465,12 +467,12 @@ class NetworkManager:
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use DHCP on non-WAN interfaces')
             file.write("\toption proto 'dhcp'\n")
-            if intf.get('v4DhcpAddressOverride') != None and intf.get('v4DhcpAddressOverride') != "":
+            if intf.get('v4DhcpAddressOverride') is not None and intf.get('v4DhcpAddressOverride') != "":
                 file.write("\toption ipaddr '%s'\n" % intf.get('v4DhcpAddressOverride'))
-            if intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "" and intf.get('v4DhcpDNS2Override') != None and intf.get('v4DhcpDNS2Override') != "":
+            if intf.get('v4DhcpDNS1Override') is not None and intf.get('v4DhcpDNS1Override') != "" and intf.get('v4DhcpDNS2Override') is not None and intf.get('v4DhcpDNS2Override') != "":
                 file.write("\toption dns '%s %s'\n" % (intf.get('v4DhcpDNS1Override'), intf.get('v4DhcpDNS2Override')))
                 file.write("\toption peerdns '0'\n")
-            elif intf.get('v4DhcpDNS1Override') != None and intf.get('v4DhcpDNS1Override') != "":
+            elif intf.get('v4DhcpDNS1Override') is not None and intf.get('v4DhcpDNS1Override') != "":
                 file.write("\toption dns '%s'\n" % intf.get('v4DhcpDNS1Override'))
                 file.write("\toption peerdns '0'\n")
         elif intf.get('v4ConfigType') == "STATIC":
@@ -478,7 +480,7 @@ class NetworkManager:
             file.write("\toption force_link '0'\n")
             file.write("\toption ipaddr '%s'\n" % intf.get('v4StaticAddress'))
             file.write("\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix')))
-            if intf.get('wan') and intf.get('v4StaticGateway') != None:
+            if intf.get('wan') and intf.get('v4StaticGateway') is not None:
                 file.write("\toption gateway '%s'\n" % intf.get('v4StaticGateway'))
         elif intf.get('v4ConfigType') == "PPPOE":
             if not intf.get('wan'):
@@ -497,8 +499,6 @@ class NetworkManager:
 
         if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-
-        return
 
     def write_interface_v4_alias(self, intf, alias, count, settings):
         """
@@ -529,10 +529,10 @@ class NetworkManager:
 
         if intf.get('v6ConfigType') == "DHCP":
             file.write("\toption proto 'dhcpv6'\n")
-            if intf.get('v6DhcpDNS1Override') != None and intf.get('v6DhcpDNS2Override') != None:
+            if intf.get('v6DhcpDNS1Override') is not None and intf.get('v6DhcpDNS2Override') is not None:
                 file.write("\toption dns '%s %s'\n" % (intf.get('v6DhcpDNS1Override'), intf.get('v6DhcpDNS2Override')))
                 file.write("\toption peerdns '0'\n")
-            elif intf.get('v6DhcpDNS1Override') != None:
+            elif intf.get('v6DhcpDNS1Override') is not None:
                 file.write("\toption dns '%s'\n" % intf.get('v6DhcpDNS1Override'))
                 file.write("\toption peerdns '0'\n")
         elif intf.get('v6ConfigType') == "SLAAC":
@@ -543,14 +543,14 @@ class NetworkManager:
             file.write("\toption ip6assign '%s'\n" % intf.get('v6AssignPrefix'))
             file.write("\toption ip6hint '%s'\n" % intf.get('v6AssignHint'))
         elif intf.get('v6ConfigType') == "STATIC":
-            if intf.get('v6StaticAddress') != None and intf.get('v6StaticPrefix') != None:
+            if intf.get('v6StaticAddress') is not None and intf.get('v6StaticPrefix') is not None:
                 file.write("\toption proto 'static'\n")
                 file.write("\toption ip6addr '%s'\n" % intf.get('v6StaticAddress'))
                 file.write("\toption ip6prefix '%s'\n" % intf.get('v6StaticPrefix'))
-                if intf.get('wan') and intf.get('v6StaticGateway') != None:
+                if intf.get('wan') and intf.get('v6StaticGateway') is not None:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
 
-        if intf.get('v6Aliases') != None and intf.get('v6ConfigType') == "STATIC":
+        if intf.get('v6Aliases') is not None and intf.get('v6ConfigType') == "STATIC":
             for idx, alias in enumerate(intf.get('v6Aliases')):
                 self.write_interface_v6_alias(intf, alias, (idx+1), settings)
 
@@ -600,6 +600,7 @@ class NetworkManager:
         intf_id = 0
         internal_id = None
         wwan_index = 0
+        internal_count = 1
         for dev in settings['network']['devices']:
             intf_id = intf_id + 1
             interface = {}
@@ -622,7 +623,8 @@ class NetworkManager:
 
             if dev.get('name') == internal_device_name:
                 internal_id = intf_id
-                create_settings_internal_interface(interface)
+                create_settings_internal_interface(interface, internal_count)
+                internal_count = internal_count + 1
             elif dev.get('name') in wan_device_list:
                 create_settings_wan_interface(interface, wan_device_list.index(dev.get('name')))
             elif interface['type'] == 'WWAN':
@@ -630,22 +632,25 @@ class NetworkManager:
                 wwan_index += 1
             else:
                 interface['wan'] = False
+                interface['enabled'] = True
                 if intf_id < len(self.GREEK_NAMES):
                     interface['name'] = self.GREEK_NAMES[intf_id]
                 else:
                     interface['name'] = "intf%i" % intf_id
-                if internal_id != None and (dev.get('name').startswith('wlan') or dev.get('name') in internal_device_list):
+                if internal_id is not None and (dev.get('name').startswith('wlan') or dev.get('name') in internal_device_list):
                     interface['configType'] = 'BRIDGED'
                     interface['bridgedTo'] = internal_id
                 else:
-                    interface['configType'] = 'DISABLED'
+                    create_settings_internal_interface(interface, internal_count)
+                    internal_count = internal_count + 1
+                    interface['enabled'] = False
 
             interface_list.append(interface)
         settings['network']['interfaces'] = interface_list
 
     def write_macaddr(self, file, macaddr):
         """write macaddr option"""
-        if macaddr != "" and macaddr != None:
+        if macaddr != "" and macaddr is not None:
             file.write("\toption macaddr '%s'\n" % macaddr)
 
     def create_settings_switches(self, settings, prefix, delete_list):
@@ -655,8 +660,11 @@ class NetworkManager:
     def validate_interface(self, intf):
         """validates that each field within an interface makes sense individually"""
         # If the interface is disabled, don't bother verifying attributes
-        if intf.get("configType") == "DISABLED":
+        if intf.get("enabled") is None:
+            raise Exception("Missing enabled attribute: " + intf.get('name'))
+        if not intf.get("enabled"):
             return
+
         for required_key in ["interfaceId", "name", "wan", "device", "type", "configType"]:
             if required_key not in intf:
                 raise Exception("Missing required attribute: " + intf.get('name') + " " + required_key)
@@ -670,11 +678,11 @@ class NetworkManager:
                 raise Exception("Invalid IPv6 Address: " + intf.get('name') + " " + ipv6_key + " = " + intf.get(ipv6_key))
 
         for ipv4_prefix_key in ["v4StaticPrefix", "v4DhcpPrefixOverride", "dhcpPrefixOverride"]:
-            if intf.get(ipv4_prefix_key) != None and (intf.get(ipv4_prefix_key) < 1 or intf.get(ipv4_prefix_key) > 32):
+            if intf.get(ipv4_prefix_key) is not None and (intf.get(ipv4_prefix_key) < 1 or intf.get(ipv4_prefix_key) > 32):
                 raise Exception("Invalid IPv4 Prefix: " + intf.get('name') + " " + ipv4_prefix_key + " = " + intf.get(ipv4_prefix_key))
 
         for ipv6_prefix_key in ["v6StaticPrefix", "v6AssignPrefix"]:
-            if intf.get(ipv6_prefix_key) != None and (intf.get(ipv6_prefix_key) < 1 or intf.get(ipv6_prefix_key) > 128):
+            if intf.get(ipv6_prefix_key) is not None and (intf.get(ipv6_prefix_key) < 1 or intf.get(ipv6_prefix_key) > 128):
                 raise Exception("Invalid IPv6 Prefix: " + intf.get('name') + " " + ipv6_prefix_key + " = " + intf.get(ipv6_prefix_key))
 
         # check individual settings
@@ -684,79 +692,79 @@ class NetworkManager:
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
-        if intf.get("v4Aliases") != None:
+        if intf.get("v4Aliases") is not None:
             for v4_alias in intf.get("v4Aliases"):
                 if not valid_ipv4(v4_alias.get("v4Address")):
                     raise Exception("Invalid IPv4 Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
                 if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
                     raise Exception("Invalid IPv4 Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
 
-        if intf.get("v4PPPoEUsername") != None and not isinstance(intf.get("v4PPPoEUsername"), str):
+        if intf.get("v4PPPoEUsername") is not None and not isinstance(intf.get("v4PPPoEUsername"), str):
             raise Exception("Invalid PPPoE Username: " + intf.get('name') + " " + intf.get("v4PPPoEUsername"))
 
-        if intf.get("v4PPPoEPassword") != None and not isinstance(intf.get("v4PPPoEPassword"), str):
+        if intf.get("v4PPPoEPassword") is not None and not isinstance(intf.get("v4PPPoEPassword"), str):
             raise Exception("Invalid PPPoE Password: " + intf.get('name') + " " + intf.get("v4PPPoEPassword"))
 
-        if intf.get("v4PPPoEUsePeerDNS") != None and not isinstance(intf.get("v4PPPoEUsePeerDNS"), bool):
+        if intf.get("v4PPPoEUsePeerDNS") is not None and not isinstance(intf.get("v4PPPoEUsePeerDNS"), bool):
             raise Exception("Invalid PPPoE UsePeerDNS: " + intf.get('name') + " " + intf.get("v4PPPoEUsePeerDNS"))
 
         if intf.get("v6ConfigType") not in [None, "DHCP", "SLAAC", "ASSIGN", "STATIC", "DISABLED"]:
             raise Exception("Invalid v6ConfigType: " + intf.get('name') + " " + intf.get("v6ConfigType"))
 
-        if intf.get("v6AssignHint") != None and not isinstance(intf.get("v6AssignHint"), str):
+        if intf.get("v6AssignHint") is not None and not isinstance(intf.get("v6AssignHint"), str):
             raise Exception("Invalid v6AssignHint: " + intf.get('name') + " " + intf.get("v6AssignHint"))
 
-        if intf.get("routerAdvertisements") != None and not isinstance(intf.get("routerAdvertisements"), bool):
+        if intf.get("routerAdvertisements") is not None and not isinstance(intf.get("routerAdvertisements"), bool):
             raise Exception("Invalid Router Advertisements: " + intf.get('name') + " " + intf.get("routerAdvertisements"))
 
-        if intf.get("bridgedTo") != None and not isinstance(intf.get("bridgedTo"), int):
+        if intf.get("bridgedTo") is not None and not isinstance(intf.get("bridgedTo"), int):
             raise Exception("Invalid Bridged To: " + intf.get('name') + " " + intf.get("bridgedTo"))
 
         if intf.get("wan") and intf.get("qosEnabled"):
-            if intf.get("downloadKbps") != None and not isinstance(intf.get("downloadKbps"), int):
+            if intf.get("downloadKbps") is not None and not isinstance(intf.get("downloadKbps"), int):
                 raise Exception("Invalid DownloadKbps: " + intf.get('name') + " " + intf.get("downloadKbps"))
 
-            if intf.get("downloadKbps") == None or intf.get("downloadKpbs") == 0:
+            if intf.get("downloadKbps") is None or intf.get("downloadKpbs") == 0:
                 raise Exception("No DownloadKbps specified: " + intf.get('name'))
 
-            if intf.get("uploadKbps") != None and not isinstance(intf.get("uploadKbps"), int):
+            if intf.get("uploadKbps") is not None and not isinstance(intf.get("uploadKbps"), int):
                 raise Exception("Invalid UploadKbps: " + intf.get('name') + " " + intf.get("uploadKbps"))
 
-            if intf.get("uploadKbps") == None or intf.get("uploadKpbs") == 0:
+            if intf.get("uploadKbps") is None or intf.get("uploadKpbs") == 0:
                 raise Exception("No UploadKbps specified: " + intf.get('name'))
 
-        if intf.get("macaddr") != None and not isinstance(intf.get("macaddr"), str):
+        if intf.get("macaddr") is not None and not isinstance(intf.get("macaddr"), str):
             raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
-        if intf.get("macaddr") != None and not re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", intf.get("macaddr")):
+        if intf.get("macaddr") is not None and not re.match("[0-9a-f]{2}([-:]?)[0-9a-f]{2}(\\1[0-9a-f]{2}){4}$", intf.get("macaddr")):
             raise Exception("Invalid MAC Address: " + intf.get('name') + " " + intf.get("macaddr"))
 
-        if intf.get("dhcpEnabled") != None and not isinstance(intf.get("dhcpEnabled"), bool):
+        if intf.get("dhcpEnabled") is not None and not isinstance(intf.get("dhcpEnabled"), bool):
             raise Exception("Invalid DHCP Enabled: " + intf.get('name') + " " + intf.get("dhcpEnabled"))
 
-        if intf.get("dhcpOptions") != None:
+        if intf.get("dhcpOptions") is not None:
             for dhcp_option in intf.get("dhcpOptions"):
                 if not isinstance(dhcp_option.get("enabled"), bool):
                     raise Exception("Invalid DHCP Option Enabled: " + intf.get('name') + " " + dhcp_option.get("enabled"))
                 if not isinstance(dhcp_option.get("value"), str):
                     raise Exception("Invalid DHCP Option Value: " + intf.get('name') + " " + dhcp_option.get("value"))
 
-        if intf.get("vrrpEnabled") != None and not isinstance(intf.get("vrrpEnabled"), bool):
+        if intf.get("vrrpEnabled") is not None and not isinstance(intf.get("vrrpEnabled"), bool):
             raise Exception("Invalid VRRP Enabled: " + intf.get('name') + " " + intf.get("vrrpEnabled"))
 
-        if intf.get("vrrpId") != None and (not isinstance(intf.get("vrrpId"), int) or intf.get("vrrpId") < 1 or intf.get("vrrpId") > 255):
+        if intf.get("vrrpId") is not None and (not isinstance(intf.get("vrrpId"), int) or intf.get("vrrpId") < 1 or intf.get("vrrpId") > 255):
             raise Exception("Invalid VRRP Id: " + intf.get('name') + " " + intf.get("vrrpId"))
 
-        if intf.get("vrrpPriority") != None and (not isinstance(intf.get("vrrpPriority"), int) or intf.get("vrrpPriority") < 1 or intf.get("vrrpPriority") > 255):
+        if intf.get("vrrpPriority") is not None and (not isinstance(intf.get("vrrpPriority"), int) or intf.get("vrrpPriority") < 1 or intf.get("vrrpPriority") > 255):
             raise Exception("Invalid VRRP Priority: " + intf.get('name') + " " + intf.get("vrrpPriority"))
 
-        if intf.get("vrrpV4Aliases") != None:
+        if intf.get("vrrpV4Aliases") is not None:
             for v4_alias in intf.get("vrrpV4Aliases"):
                 if not valid_ipv4(v4_alias.get("v4Address")):
                     raise Exception("Invalid IPv4 VRRP Alias Address: " + intf.get('name') + " " + v4_alias.get("v4Address"))
                 if v4_alias.get("v4Prefix") < 1 or v4_alias.get("v4Prefix") > 32:
                     raise Exception("Invalid IPv4 VRRP Alias Prefix: " + intf.get('name') + " " + v4_alias.get("v4Prefix"))
 
-        if intf.get("wirelessSsid") != None and not isinstance(intf.get("wirelessSsid"), str):
+        if intf.get("wirelessSsid") is not None and not isinstance(intf.get("wirelessSsid"), str):
             raise Exception("Invalid Wireless SSID: " + intf.get('name') + " " + intf.get("wirelessSsid"))
 
         if not intf.get("wirelessEncryption") in [None, "NONE", "WPA1", "WPA12", "WPA2"]:
@@ -765,14 +773,14 @@ class NetworkManager:
         if not intf.get("wirelessMode") in [None, "AP", "CLIENT"]:
             raise Exception("Invalid Wireless Mode: " + intf.get('name') + " " + intf.get("wirelessMode"))
 
-        if intf.get("wirelessPassword") != None and not isinstance(intf.get("wirelessPassword"), str):
+        if intf.get("wirelessPassword") is not None and not isinstance(intf.get("wirelessPassword"), str):
             raise Exception("Invalid Wireless Password: " + intf.get('name') + " " + intf.get("wirelessPassword"))
 
-        if intf.get("wirelessChannel") != None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
+        if intf.get("wirelessChannel") is not None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
             raise Exception("Invalid Wireless Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
 
         if intf.get("type") == 'OPENVPN':
-            if intf.get("configType") not in ["ADDRESSED", "DISABLED"]:
+            if intf.get("configType") not in ["ADDRESSED"]:
                 raise Exception("Unsupported OPENVPN config type: " + intf.get("configType"))
             for required_attribute in ["name", "device", "openvpnConfFile", "natEgress", "wan"]:
                 if intf.get(required_attribute) is None:
@@ -844,7 +852,7 @@ class NetworkManager:
                 if peer.get("keepalive") is not None and peer.get("keepalive") < 0:
                     raise Exception("Invalid wireguard peer keepalive: " + intf.get('name') + " " + str(peer.get("keepalive")))
 
-            if intf.get("wireguardPort") != None:
+            if intf.get("wireguardPort") is not None:
                 if not isinstance(intf.get("wireguardPort"), int):
                     raise Exception("Specified wireguard port is not an integer: " + intf.get('name'))
 
@@ -870,7 +878,7 @@ class NetworkManager:
                     raise Exception("Invalid WWAN auth: must be a string: " + intf.get('name'))
 
                 if auth != "NONE":
-                    if auth != "PAP" and auth != "CHAP" and auth != "BOTH":
+                    if auth not in ["PAP", "CHAP", "BOTH"]:
                         raise Exception("Invalid WWAN auth: must NONE, PAP, CHAP, or BOTH: " + intf.get('name'))
 
                     if intf.get('simUsername') is None:
@@ -890,7 +898,7 @@ class NetworkManager:
                 if not isinstance(mode, str):
                     raise Exception("Invalid WWAN mode: must be a string: " + intf.get('name'))
 
-                if mode != "ALL" and mode != "LTE" and mode != "UMTS" and mode != "GSM" and mode != "CDMA" and mode != "TDSCDMA":
+                if mode not in ["ALL", "LTE", "UMTS", "GSM", "CDMA", "TDSCDMA"]:
                     raise Exception("Invalid WWAN mode: must be ALL, LTE, UMTS, GSM, CDMA, or TDSCDMA: " + intf.get('name'))
 
             pdptype = intf.get('simPdptype')
@@ -898,7 +906,7 @@ class NetworkManager:
                 if not isinstance(pdptype, str):
                     raise Exception("Invalid WWAN pdptype: must be a string: " + intf.get('name'))
 
-                if pdptype != "IPV4" and pdptype != "IPV6" and pdptype != "IPV4V6":
+                if pdptype not in ["IPV4", "IPV6", "IPV4V6"]:
                     raise Exception("Invalid WWAN pdptype: must be IPV4, IPV6, or IPV4V6: " + intf.get('name'))
 
             plmn = intf.get('simPlmn')
@@ -912,7 +920,7 @@ class NetworkManager:
                     raise Exception("Invalid WWAN autoconnect: must be a bool: " + intf.get('name'))
 
             if intf.get('v6ConfigType') is not None and intf.get('v6ConfigType') == "DHCP" and (pdptype is None or pdptype == "IPV4"):
-                    raise Exception("Invalid WWAN config: pdptype must be IPV6 or IPV4V6 to enable dhcpv6: " + intf.get('name'))
+                raise Exception("Invalid WWAN config: pdptype must be IPV6 or IPV4V6 to enable dhcpv6: " + intf.get('name'))
 
 def get_wireless_devices():
     """get wireless devices"""
@@ -1018,7 +1026,7 @@ def find_lowest_available_tun(interfaces):
                 available.remove(int(dev))
             except ValueError:
                 raise Exception("Invalid tun interface: " + intf["device"])
-    if len(available) == 0:
+    if available:
         raise Exception("No available tun interfaces")
     else:
         return "tun" + str(available[0])
@@ -1037,7 +1045,7 @@ def find_lowest_available_interface_id(interfaces):
                 available.remove(interface_id)
         except ValueError:
             raise Exception("Invalid interface ID: " + intf["interfaceId"])
-    if len(available) == 0:
+    if available:
         raise Exception("No available interface IDs")
     else:
         return available[0]
@@ -1046,6 +1054,7 @@ def create_settings_wwan_interface(interface, index):
     """create the default wwan settings"""
     interface['name'] = "WWAN" + str(index)
     interface['wan'] = True
+    interface['enabled'] = True
     interface['simApn'] = 'apn'
     interface['simDelay'] = 10
     interface['simTimeout'] = 30
@@ -1056,17 +1065,21 @@ def create_settings_wwan_interface(interface, index):
     interface['v6ConfigType'] = 'DHCP'
     interface['natEgress'] = True
 
-def create_settings_internal_interface(interface):
+def create_settings_internal_interface(interface, internal_count):
     """create the default internal settings"""
-    interface['name'] = 'internal'
+    if internal_count > 1:
+        interface['name'] = 'internal%i' % internal_count
+    else:
+        interface['name'] = 'internal'
     interface['wan'] = False
+    interface['enabled'] = True
     interface['configType'] = 'ADDRESSED'
     interface['v4ConfigType'] = 'STATIC'
-    interface['v4StaticAddress'] = '192.168.1.1'
+    interface['v4StaticAddress'] = '192.168.%i.1' % internal_count
     interface['v4StaticPrefix'] = 24
     interface['dhcpEnabled'] = True
-    interface['dhcpRangeStart'] = '192.168.1.100'
-    interface['dhcpRangeEnd'] = '192.168.1.200'
+    interface['dhcpRangeStart'] = '192.168.%i.100' % internal_count
+    interface['dhcpRangeEnd'] = '192.168.%i.200' % internal_count
     interface['dhcpLeaseDuration'] = 60*60
     interface['v6ConfigType'] = 'ASSIGN'
     interface['v6AssignPrefix'] = 64
@@ -1083,6 +1096,7 @@ def create_settings_wan_interface(interface, index):
     """create the default wan settings"""
     interface['name'] = "WAN" + str(index)
     interface['wan'] = True
+    interface['enabled'] = True
     interface['configType'] = 'ADDRESSED'
     interface['v4ConfigType'] = 'DHCP'
     interface['v6ConfigType'] = 'DHCP'
