@@ -595,7 +595,7 @@ def enabled_wan(intf):
     if intf is None:
         return False
 
-    if not intf.get('enabled') and intf.get('wan'):
+    if intf.get('enabled') and intf.get('wan'):
         return True
     return False
 
