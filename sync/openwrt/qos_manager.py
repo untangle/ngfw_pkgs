@@ -43,7 +43,7 @@ class QosManager:
         qos_interfaces = ""
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            if intf.get('configType') == 'DISABLED':
+            if not intf.get('enabled'):
                 continue
             if intf.get('wan') and intf.get('qosEnabled'):
                 qos_interfaces = qos_interfaces + " " + intf.get('device')
@@ -177,7 +177,7 @@ class QosManager:
             add_qos_rules = False
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
-                if intf.get('configType') == 'DISABLED':
+                if not intf.get('enabled'):
                     continue
                 if intf.get('wan') and intf.get('qosEnabled'):
                     add_qos_rules = True

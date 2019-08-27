@@ -162,7 +162,7 @@ class WirelessManager:
                 file.write("\toption hwmode '%s'\n" % self.get_hwmode(intf))
                 file.write("\t%s\n" % self.get_device_id(intf))
                 file.write("%s" % self.get_htmode(intf))
-                if intf.get('configType') == 'DISABLED':
+                if not intf.get('enabled'):
                     file.write("\toption disabled '1'\n")
                 else:
                     file.write("\toption disabled '0'\n")
@@ -202,7 +202,7 @@ class WirelessManager:
 
 def enabled_wifi(intf):
     """returns true if the interface is an enabled wifi interface"""
-    if intf.get('configType') != 'DISABLED' and intf.get('type') == 'WIFI':
+    if intf.get('enabled') and intf.get('type') == 'WIFI':
         return True
     return False
 

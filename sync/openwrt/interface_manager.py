@@ -124,7 +124,7 @@ add rule inet interface-marks postrouting-interface-marks jump check-dst-interfa
 
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            if intf.get('configType') == 'DISABLED':
+            if not intf.get('enabled'):
                 continue
             if intf.get('configType') == 'BRIDGED':
                 continue

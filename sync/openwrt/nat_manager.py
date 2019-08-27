@@ -88,7 +88,7 @@ add chain ip nat-sys filter-rules-nat { type filter hook forward priority -5 ; }
 
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            if intf.get('configType') == 'DISABLED':
+            if not intf.get('enabled'):
                 continue
             if intf.get('natEgress'):
                 # FIXME - this should be a rule based on mark instead of netfilterDev
