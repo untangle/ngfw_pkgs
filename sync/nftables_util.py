@@ -331,8 +331,8 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_protochain_inferred", "long_string", op, value)
     elif condtype == "APPLICATION_PRODUCTIVITY_INFERRED":
         return condition_dict_expression("sessions", "ct id", "application_productivity_inferred", "long_string", op, value)
-    elif condtype == "APPLICATION_THREAT_INFERRED":
-        return condition_dict_expression("sessions", "ct id", "application_threat_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_RISK_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_risk_inferred", "long_string", op, value)
     elif condtype == "APPLICATION_CATEGORY_INFERRED":
         return condition_dict_expression("sessions", "ct id", "application_category_inferred", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_CN":
