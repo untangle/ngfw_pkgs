@@ -321,12 +321,20 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
     elif condtype == "APPLICATION_CATEGORY":
         return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
-    elif condtype == "APPLICATION_PREDICTED_NAME":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_name", "long_string", op, value)
-    elif condtype == "APPLICATION_PREDICTED_CONFIDENCE":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_confidence", "int", op, value)
-    elif condtype == "APPLICATION_PREDICTED_PROTOCHAIN":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_protochain", "long_string", op, value)
+    elif condtype == "APPLICATION_ID_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_id_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_NAME_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_name_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_CONFIDENCE_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_confidence_inferred", "int", op, value)
+    elif condtype == "APPLICATION_PROTOCHAIN_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_protochain_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_PRODUCTIVITY_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_productivity_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_RISK_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_risk_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_CATEGORY_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_category_inferred", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_CN":
         return condition_dict_expression("sessions", "ct id", "certificate_subject_cn", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_SN":

@@ -352,6 +352,17 @@ conditions_tests = [
     [[{"type": "REMOTE_USERNAME","op":"!=","value": "username"}], "dict sessions ct id remote_username long_string != \"username\""],
     [[{"type": "REMOTE_USERNAME","op":"==","value": "username,username2"}], "dict sessions ct id remote_username long_string \"{username,username2}\""],
     [[{"type": "REMOTE_USERNAME","op":"!=","value": "username,username2"}], "dict sessions ct id remote_username long_string != \"{username,username2}\""],
+
+    [[{"type": "APPLICATION_ID","op":"==","value": "DNS"}], "dict sessions ct id application_id long_string \"DNS\""],
+    [[{"type": "APPLICATION_ID","op":"!=","value": "DNS"}], "dict sessions ct id application_id long_string != \"DNS\""],
+    [[{"type": "APPLICATION_ID","op":"==","value": "DNS,SSL"}], "dict sessions ct id application_id long_string \"{DNS,SSL}\""],
+    [[{"type": "APPLICATION_ID","op":"!=","value": "DNS,SSL"}], "dict sessions ct id application_id long_string != \"{DNS,SSL}\""],
+
+    [[{"type": "APPLICATION_ID_INFERRED","op":"==","value": "DNS"}], "dict sessions ct id application_id_inferred long_string \"DNS\""],
+    [[{"type": "APPLICATION_ID_INFERRED","op":"!=","value": "DNS"}], "dict sessions ct id application_id_inferred long_string != \"DNS\""],
+    [[{"type": "APPLICATION_ID_INFERRED","op":"==","value": "DNS,SSL"}], "dict sessions ct id application_id_inferred long_string \"{DNS,SSL}\""],
+    [[{"type": "APPLICATION_ID_INFERRED","op":"!=","value": "DNS,SSL"}], "dict sessions ct id application_id_inferred long_string != \"{DNS,SSL}\""],
+
 ]
 
 for i, obj in enumerate(conditions_tests):
