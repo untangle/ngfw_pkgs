@@ -431,7 +431,7 @@ def default_access_rules_table():
                     "type": "ACCEPT"
                 }
             }, {
-                "enabled": True,
+                "enabled": False,
                 "description": "Accept HTTPS on WANs (TCP/443)",
                 "ruleId": 8,
                 "conditions": [{
@@ -471,7 +471,7 @@ def default_access_rules_table():
                     "type": "ACCEPT"
                 }
             }, {
-                "enabled": True,
+                "enabled": False,
                 "description": "Accept SSH on WANs (TCP/22)",
                 "ruleId": 10,
                 "conditions": [{
