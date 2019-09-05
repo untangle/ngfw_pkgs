@@ -63,7 +63,7 @@ def get_internal_interfaces():
 def get_country_code():
     """get the country code"""
     board_name = get_board_name()
-    if board_name == "armada-385-linksys-shelby" or board_name == "linksys,shelby":
+    if board_name in ["armada-385-linksys-shelby", "linksys,shelby"]:
         sku = None
         try:
             sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
@@ -96,7 +96,7 @@ def increment_mac(mac, inc):
 def get_interface_macaddr(ifname):
     """get the interface's mac address"""
     board_name = get_board_name()
-    if board_name == "armada-385-linksys-shelby" or board_name == "linksys,shelby":
+    if board_name in ["armada-385-linksys-shelby", "linksys,shelby"]:
         return {
             "wlan0": increment_mac(get_device_macaddr("eth0"), 1),
             "wlan1": increment_mac(get_device_macaddr("eth0"), 2),
@@ -106,7 +106,7 @@ def get_interface_macaddr(ifname):
             "lan4": get_device_macaddr("eth1"),
             "wan": get_device_macaddr("eth1"),
         }.get(ifname, "")
-    elif board_name == "armada-385-linksys-rango" or board_name == "armada-385-linksys-venom" or board_name == "linksys,rango" or board_name == "linksys,venom":
+    if board_name in ["armada-385-linksys-rango", "armada-385-linksys-venom", "linksys,rango", "linksys,venom"]:
         return {
             "lan1": get_device_macaddr("eth1"),
             "lan2": get_device_macaddr("eth1"),
@@ -132,4 +132,3 @@ def is_docker():
     except subprocess.CalledProcessError:
         pass
     return False
-
