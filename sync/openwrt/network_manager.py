@@ -1026,7 +1026,7 @@ def find_lowest_available_tun(interfaces):
                 available.remove(int(dev))
             except ValueError:
                 raise Exception("Invalid tun interface: " + intf["device"])
-    if available:
+    if not available:
         raise Exception("No available tun interfaces")
     else:
         return "tun" + str(available[0])
