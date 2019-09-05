@@ -34,10 +34,9 @@ class NetworkManager:
         interfaces = settings.get('network').get('interfaces')
         # Remove all "" and 0 and null values
         for intf in interfaces:
+            print(intf)
             for k, v in dict(intf).items():
                 if v == "":
-                    del intf[k]
-                if v == 0:
                     del intf[k]
                 if intf.get(k, "missing") is None:
                     del intf[k]
