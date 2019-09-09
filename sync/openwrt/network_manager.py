@@ -1044,7 +1044,7 @@ def find_lowest_available_interface_id(interfaces):
                 available.remove(interface_id)
         except ValueError:
             raise Exception("Invalid interface ID: " + intf["interfaceId"])
-    if available:
+    if not available:
         raise Exception("No available interface IDs")
     else:
         return available[0]
