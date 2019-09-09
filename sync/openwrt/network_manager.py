@@ -607,6 +607,7 @@ class NetworkManager:
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
+            interface['name'] = board_util.get_interface_name(interface['device'])
 
             interface['qosEnabled'] = False
             interface['downloadKbps'] = 0
@@ -633,10 +634,11 @@ class NetworkManager:
             else:
                 interface['wan'] = False
                 interface['enabled'] = True
-                if intf_id < len(self.GREEK_NAMES):
-                    interface['name'] = self.GREEK_NAMES[intf_id]
-                else:
-                    interface['name'] = "intf%i" % intf_id
+                if interface['name'] == "":
+                    if intf_id < len(self.GREEK_NAMES):
+                        interface['name'] = self.GREEK_NAMES[intf_id]
+                    else:
+                        interface['name'] = "intf%i" % intf_id
                 if internal_id is not None and (dev.get('name').startswith('wlan') or dev.get('name') in internal_device_list):
                     interface['configType'] = 'BRIDGED'
                     interface['bridgedTo'] = internal_id
@@ -1052,7 +1054,8 @@ def find_lowest_available_interface_id(interfaces):
 
 def create_settings_wwan_interface(interface, index):
     """create the default wwan settings"""
-    interface['name'] = "WWAN" + str(index)
+    if interface['name'] == "":
+        interface['name'] = "WWAN" + str(index)
     interface['wan'] = True
     interface['enabled'] = True
     interface['simApn'] = 'apn'
@@ -1067,10 +1070,11 @@ def create_settings_wwan_interface(interface, index):
 
 def create_settings_internal_interface(interface, internal_count):
     """create the default internal settings"""
-    if internal_count > 1:
-        interface['name'] = 'internal%i' % internal_count
-    else:
-        interface['name'] = 'internal'
+    if interface['name'] == "":
+        if internal_count > 1:
+            interface['name'] = 'internal%i' % internal_count
+        else:
+            interface['name'] = 'internal'
     interface['wan'] = False
     interface['enabled'] = True
     interface['configType'] = 'ADDRESSED'
@@ -1094,7 +1098,8 @@ def create_settings_internal_interface(interface, internal_count):
 
 def create_settings_wan_interface(interface, index):
     """create the default wan settings"""
-    interface['name'] = "WAN" + str(index)
+    if interface['name'] == "":
+        interface['name'] = "WAN" + str(index)
     interface['wan'] = True
     interface['enabled'] = True
     interface['configType'] = 'ADDRESSED'
