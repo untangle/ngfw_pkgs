@@ -601,11 +601,12 @@ class NetworkManager:
         wwan_index = 0
         internal_count = 1
         for dev in settings['network']['devices']:
+            if dev['name'] in board_util.get_hidden_interfaces():
+                continue
             intf_id = intf_id + 1
             interface = {}
             interface['interfaceId'] = intf_id
             interface['device'] = dev['name']
-            interface['hidden'] = (interface['device'] in board_util.get_hidden_interfaces())
 
             interface['qosEnabled'] = False
             interface['downloadKbps'] = 0
