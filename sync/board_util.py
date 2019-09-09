@@ -60,6 +60,22 @@ def get_internal_interfaces():
         "caswell-caf-0262": ["eth0", "eth1", "eth2", "eth3"],
     }.get(board_name, ["eth0"])
 
+interface_name_maps = {
+    "globalscale,espressobin-v7-emmc": { "eth1": "WAN0", "eth2": "WAN1", "eth3": "LAN", "wlan0": "WiFi"},
+    "caswell-caf-0262": { "eth0": "LAN1", "eth1": "LAN2", "eth2": "LAN3", "eth3": "LAN4", "eth4": "WAN0", "eth5": "WAN1", "wlan0": "WiFi", "wwan0": "LTE"},
+    "linksys,shelby": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"},
+    "linksys,rango": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"},
+    "linksys,venom": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"}
+}
+
+def get_interface_name(device):
+    """get the device specific interface name"""
+    board_name = get_board_name()
+    interface_name = interface_name_maps.get(board_name, "").get(device, "")
+
+    return interface_name
+
+
 def get_country_code():
     """get the country code"""
     board_name = get_board_name()
