@@ -305,8 +305,16 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "remote_hostname", "long_string", op, value)
     elif condtype == "CLIENT_USERNAME":
         return condition_dict_expression("sessions", "ct id", "client_username", "long_string", op, value)
+    elif condtype == "CLIENT_REVERSE_DNS":
+        return condition_dict_expression("sessions", "ct id", "client_reverse_dns", "long_string", op, value)
+    elif condtype == "CLIENT_DNS_HINT":
+        return condition_dict_expression("sessions", "ct id", "client_dns_hint", "long_string", op, value)
     elif condtype == "SERVER_USERNAME":
         return condition_dict_expression("sessions", "ct id", "server_username", "long_string", op, value)
+    elif condtype == "SERVER_REVERSE_DNS":
+        return condition_dict_expression("sessions", "ct id", "sever_reverse_dns", "long_string", op, value)
+    elif condtype == "SERVER_DNS_HINT":
+        return condition_dict_expression("sessions", "ct id", "server_dns_hint", "long_string", op, value)
     elif condtype == "LOCAL_USERNAME":
         return condition_dict_expression("sessions", "ct id", "local_username", "long_string", op, value)
     elif condtype == "REMOTE_USERNAME":
