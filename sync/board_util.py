@@ -71,7 +71,7 @@ interface_name_maps = {
 def get_interface_name(device):
     """get the device specific interface name"""
     board_name = get_board_name()
-    interface_name = interface_name_maps.get(board_name, "").get(device, "")
+    interface_name = interface_name_maps.get(board_name, {}).get(device, "")
 
     return interface_name
 
