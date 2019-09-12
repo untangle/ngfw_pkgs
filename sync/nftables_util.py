@@ -91,6 +91,16 @@ def value_str(value):
     else:
         return "\"{" + value + "}\""
 
+def ip_val(value):
+    """
+    ip_val returns an NFT formatted value representing an IP address
+    If the ip value contains a comma, the results are split into an NFT list
+    """
+    if len(value.split(",")) < 2:
+        return value
+    else:
+        return "{" + value + "}"
+        
 def selector_expression(typ, family, ip_protocol=None):
     """generic helper function to build a basic nftables selector expression"""
     if typ == "IP_PROTOCOL":
@@ -177,7 +187,7 @@ def condition_v4address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv4 family: %s" % family)
     if ":" in value:
         raise Exception("Invalid IPv4 value: " + str(value))
-    return "ip " + addr_str + op_str(op) + value_str(value)
+    return "ip " + addr_str + op_str(op) + ip_val(value)
 
 def condition_address_type_expression(addr_str, value, op, family):
     """Generic helper for making destination_type expressions"""
@@ -193,7 +203,7 @@ def condition_v6address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv6 family: %s" % family)
     if "." in value:
         raise Exception("Invalid IPv6 value: " + str(value))
-    return "ip6 " + addr_str + op_str(op) + value_str(value)
+    return "ip6 " + addr_str + op_str(op) + ip_val(value)
 
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
