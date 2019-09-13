@@ -3,6 +3,7 @@
 # pylint: disable=no-self-use
 import os
 import stat
+import json
 from sync import registrar
 from sync import board_util
 
@@ -12,6 +13,7 @@ class SystemManager:
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
+    wizard_status_filename = "/etc/config/wizard-status.json"
     cron_filename = "/etc/crontabs/root"
 
     def initialize(self):
@@ -20,6 +22,7 @@ class SystemManager:
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
+        registrar.register_file(self.wizard_status_filename, "restart-pyconnector", self)
         registrar.register_file(self.cron_filename, "restart-cron", self)
 
     def sanitize_settings(self, settings):
@@ -85,6 +88,8 @@ class SystemManager:
             self.write_timezone_setter(time_zone_value, prefix)
             return
 
+        self.write_wizard_status(settings, prefix)
+
     def write_hostname_setter(self, hostname, prefix):
         """Write the script to set the hostname in /etc/config/system"""
         filename = prefix + self.hostname_setter_filename
@@ -114,6 +119,22 @@ class SystemManager:
         file.close()
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+
+    def write_wizard_status(self, settings, prefix):
+        """Write the wizard status in /etc/config/wizard-status.json"""
+        filename = prefix + self.wizard_status_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+
+        file.write(json.dumps(settings['system']['setupWizard']))
+
+        file.flush()
+        file.close()
+
         print("SystemManager: Wrote %s" % filename)
 
     def write_cron_file(self, settings, prefix):
