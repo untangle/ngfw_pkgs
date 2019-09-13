@@ -142,8 +142,12 @@ def condition_dict_expression(table, key, field, typ, op, value):
         raise Exception("Invalid field: " + str(field))
     if typ in ["long_string", "bool"] and op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op) + " for type " + typ)
+    if typ in ["ipv4_addr", "ipv6_addr"]:
+        val = ip_val(value)
+    else:
+        val = value_str(value)
 
-    return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + typ.strip() + op_str(op) + value_str(value)
+    return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + typ.strip() + op_str(op) + val
 
 def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shift, value, op):
     """A generic helper for generating zone expressions"""
