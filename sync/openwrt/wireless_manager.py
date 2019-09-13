@@ -161,7 +161,11 @@ class WirelessManager:
                 file.write("\toption channel '%s'\n" % intf['wirelessChannel'])
                 file.write("\toption hwmode '%s'\n" % self.get_hwmode(intf))
                 file.write("\t%s\n" % self.get_device_id(intf))
-                file.write("%s" % self.get_htmode(intf))
+                thruput = intf.get('wirelessThroughput')
+                if thruput == None or thruput == "" or thruput == "AUTO":
+                    file.write("%s" % self.get_htmode(intf))
+                else:
+                    file.write("%s" % thruput)
                 if not intf.get('enabled'):
                     file.write("\toption disabled '1'\n")
                 else:
