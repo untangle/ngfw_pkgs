@@ -130,7 +130,7 @@ class SystemManager:
 
         file = open(filename, "w+")
 
-        file.write(json.dumps(settings['system']['setupWizard']))
+        file.write(json.dumps(settings['system']['setupWizard'].get('completed')))
 
         file.flush()
         file.close()
