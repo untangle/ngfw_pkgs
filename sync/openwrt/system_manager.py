@@ -31,7 +31,10 @@ class SystemManager:
 
     def validate_settings(self, settings):
         """validates settings"""
-        autoupgrade_settings = settings.get('autoUpgrade')
+        system_settings = settings.get('system')
+        if system_settings is None:
+            raise Exception("Missing required system settings")
+        autoupgrade_settings = system_settings.get('autoUpgrade')
         if autoupgrade_settings is not None:
             if autoupgrade_settings.get('enabled') is None:
                 raise Exception("Missing required autoUpgrade setting \"enabled\"")
