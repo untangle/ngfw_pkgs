@@ -73,22 +73,19 @@ class SystemManager:
 
         self.write_cron_file(settings, prefix)
 
+        self.write_wizard_status(settings, prefix)
+
         time_zone = system.get('timeZone')
         if time_zone is None:
-            return
+            pass
         # If the timezone is just a string, use that
         # In old settings.json, time_zone was just a string
-        if isinstance(time_zone, str):
+        elif isinstance(time_zone, str):
             self.write_timezone_setter(time_zone, prefix)
-            return
-        if isinstance(time_zone, dict):
+        elif isinstance(time_zone, dict):
             time_zone_value = time_zone.get('value')
-            if time_zone_value is None:
-                return
-            self.write_timezone_setter(time_zone_value, prefix)
-            return
-
-        self.write_wizard_status(settings, prefix)
+            if time_zone_value is not None:
+                self.write_timezone_setter(time_zone_value, prefix)
 
     def write_hostname_setter(self, hostname, prefix):
         """Write the script to set the hostname in /etc/config/system"""
