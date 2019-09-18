@@ -80,7 +80,6 @@ def schema_recurse(currentItem, bad_attr_locations, itemParents=['root']):
     This function currently recurses the entire json schema for attribute names of 'output', 'result', or 'error' and raises an exception if found
 
     """
-    print("Starting schema scan on: %s" % itemParents)
     bad_attributes = ['output', 'results', 'error']
 
     if isinstance(currentItem, OrderedDict):
@@ -88,12 +87,9 @@ def schema_recurse(currentItem, bad_attr_locations, itemParents=['root']):
     elif isinstance(currentItem, list):
         iterator = enumerate(currentItem) 
     else:
-        # print("Attribute: %s is non iterable" % currentItem)
         return
 
     for k, v in iterator:
-        # print("Schema Validation: Verifying: %s type: %s" % (k, type(v)))
-
         if k in bad_attributes:
             dataLocation = str('/'.join(itemParents)) + '/' +  k
             print("Bad JSON data found: %s " % dataLocation)
