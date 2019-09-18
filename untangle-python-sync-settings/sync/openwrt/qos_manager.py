@@ -1,8 +1,13 @@
+"""qos_manager manages qos settings"""
+# pylint: disable=unused-argument
+# pylint: disable=no-self-use
+# pylint: disable=too-many-statements
+# pylint: disable=bare-except
+# pylint: disable=too-many-branches
+# pylint: disable=too-many-public-methods
+# pylint: disable=too-many-locals
 import os
 import stat
-import sys
-import subprocess
-import datetime
 import traceback
 from sync import registrar
 
@@ -10,32 +15,38 @@ from sync import registrar
 # /etc/config/nftables-rules.d/300-qos-rules-sys
 # based on the settings object passed from sync-settings
 class QosManager:
+    """
+    This class is responsible for writing all the qos-related settings files
+    """
     qos_rules_sys_filename = "/etc/config/nftables-rules.d/300-qos-rules-sys"
     qos_file_path = "/etc/config/qos.d"
 
     def initialize(self):
+        """initialize this module"""
         registrar.register_file(self.qos_rules_sys_filename, "restart-nftables-rules", self)
         registrar.register_file(self.qos_file_path + "/*", "restart-qos", self)
-        pass
 
     def sanitize_settings(self, settings):
-        pass
+        """sanitizes removes blank settings"""
+        return
 
     def validate_settings(self, settings):
-        pass
+        """validates settings"""
+        return
 
     def create_settings(self, settings, prefix, delete_list, filename):
+        """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        pass
 
     def write_qos_files(self, settings, prefix, delete_list):
-        qos_interfaces=""
+        """write /etc/config/qos.d files"""
+        qos_interfaces = ""
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
-            if intf.get('configType') == 'DISABLED':
+            if not intf.get('enabled'):
                 continue
             if intf.get('wan') and intf.get('qosEnabled'):
-                qos_interfaces=qos_interfaces + " " + intf.get('device')
+                qos_interfaces = qos_interfaces + " " + intf.get('device')
                 filename_noprefix = self.qos_file_path + ("/10-disable-qos-wan-%s" % intf.get('device'))
                 filename = prefix + filename_noprefix
                 file_dir = os.path.dirname(filename)
@@ -86,12 +97,15 @@ class QosManager:
                 file.write("## Auto Generated\n")
                 file.write("## DO NOT EDIT. Changes will be overwritten.\n")
                 file.write("\n")
+                file.write("""DOWN="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('downloadKbps'))
+                file.write("""UP="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('uploadKbps'))
+                file.write("\n")
                 file.write("ip link add name ifb4%s type ifb\n" % intf.get('device'))
                 file.write("\n")
-                file.write("tc qdisc add dev %s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('uploadKbps')))
+                file.write("tc qdisc add dev %s root cake bandwidth ${UP}kbit diffserv4\n" % intf.get('device'))
                 file.write("\n")
                 file.write("tc qdisc add dev %s handle ffff: ingress\n" % intf.get('device'))
-                file.write("tc qdisc add dev ifb4%s root cake bandwidth %skbit diffserv4\n" % (intf.get('device'), intf.get('downloadKbps')))
+                file.write("tc qdisc add dev ifb4%s root cake bandwidth ${DOWN}kbit diffserv4\n" % intf.get('device'))
                 file.write("ip link set dev ifb4%s up\n" % intf.get('device'))
                 file.write("\n")
                 file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
@@ -142,12 +156,10 @@ class QosManager:
         file.write("\n")
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
-
         print("QosManager: Wrote %s" % filename)
 
-        return
-
     def write_qos_rules_sys_file(self, settings, prefix):
+        """write /etc/config/nftables-rules.d/300-qos-rules-sys"""
         filename = prefix + self.qos_rules_sys_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -165,7 +177,7 @@ class QosManager:
             add_qos_rules = False
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
-                if intf.get('configType') == 'DISABLED':
+                if not intf.get('enabled'):
                     continue
                 if intf.get('wan') and intf.get('qosEnabled'):
                     add_qos_rules = True
@@ -182,7 +194,7 @@ class QosManager:
                 file.write("add rule inet qos postrouting-qos jump restore-priority-mark\n")
         except:
             print("ERROR:")
-            traceback.print_exception()
+            traceback.print_exc()
         finally:
             file.write("\n")
             file.flush()
@@ -190,9 +202,9 @@ class QosManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("QosManager: Wrote %s" % filename)
-        return
 
     def sync_settings(self, settings, prefix, delete_list):
+        """syncs settings"""
         self.write_qos_rules_sys_file(settings, prefix)
         for (dirpath, _, filenames) in os.walk(self.qos_file_path + "/"):
             for filename in filenames:
@@ -200,7 +212,5 @@ class QosManager:
                 delete_list.append(full_name)
         # Write all the /etc/config/qos.d/* files
         self.write_qos_files(settings, prefix, delete_list)
-        pass
-
 
 registrar.register_manager(QosManager())
