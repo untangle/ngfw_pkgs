@@ -84,4 +84,3 @@ def create_settings_in_tmpdir(settings_filename, tmpdir, tmpdir_delete):
         file.close()
 
     return 0
-    
