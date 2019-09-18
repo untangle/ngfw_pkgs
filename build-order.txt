@@ -1,4 +1,3 @@
-untangle-citrix				stretch
 untangle-hardware-azure-byol		stretch
 untangle-hardware-azure-payg		stretch
 untangle-suricata-config		stretch
