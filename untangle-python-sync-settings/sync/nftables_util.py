@@ -91,6 +91,16 @@ def value_str(value):
     else:
         return "\"{" + value + "}\""
 
+def ip_val(value):
+    """
+    ip_val returns an NFT formatted value representing an IP address
+    If the ip value contains a comma, the results are split into an NFT list
+    """
+    if len(value.split(",")) < 2:
+        return value
+    else:
+        return "{" + value + "}"
+        
 def selector_expression(typ, family, ip_protocol=None):
     """generic helper function to build a basic nftables selector expression"""
     if typ == "IP_PROTOCOL":
@@ -132,8 +142,12 @@ def condition_dict_expression(table, key, field, typ, op, value):
         raise Exception("Invalid field: " + str(field))
     if typ in ["long_string", "bool"] and op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op) + " for type " + typ)
+    if typ in ["ipv4_addr", "ipv6_addr"]:
+        val = ip_val(value)
+    else:
+        val = value_str(value)
 
-    return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + typ.strip() + op_str(op) + value_str(value)
+    return "dict " + table.strip() + " " + key.strip() + " " + field.strip() + " " + typ.strip() + op_str(op) + val
 
 def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shift, value, op):
     """A generic helper for generating zone expressions"""
@@ -177,7 +191,7 @@ def condition_v4address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv4 family: %s" % family)
     if ":" in value:
         raise Exception("Invalid IPv4 value: " + str(value))
-    return "ip " + addr_str + op_str(op) + value_str(value)
+    return "ip " + addr_str + op_str(op) + ip_val(value)
 
 def condition_address_type_expression(addr_str, value, op, family):
     """Generic helper for making destination_type expressions"""
@@ -193,7 +207,7 @@ def condition_v6address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv6 family: %s" % family)
     if "." in value:
         raise Exception("Invalid IPv6 value: " + str(value))
-    return "ip6 " + addr_str + op_str(op) + value_str(value)
+    return "ip6 " + addr_str + op_str(op) + ip_val(value)
 
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
@@ -305,8 +319,16 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "remote_hostname", "long_string", op, value)
     elif condtype == "CLIENT_USERNAME":
         return condition_dict_expression("sessions", "ct id", "client_username", "long_string", op, value)
+    elif condtype == "CLIENT_REVERSE_DNS":
+        return condition_dict_expression("sessions", "ct id", "client_reverse_dns", "long_string", op, value)
+    elif condtype == "CLIENT_DNS_HINT":
+        return condition_dict_expression("sessions", "ct id", "client_dns_hint", "long_string", op, value)
     elif condtype == "SERVER_USERNAME":
         return condition_dict_expression("sessions", "ct id", "server_username", "long_string", op, value)
+    elif condtype == "SERVER_REVERSE_DNS":
+        return condition_dict_expression("sessions", "ct id", "sever_reverse_dns", "long_string", op, value)
+    elif condtype == "SERVER_DNS_HINT":
+        return condition_dict_expression("sessions", "ct id", "server_dns_hint", "long_string", op, value)
     elif condtype == "LOCAL_USERNAME":
         return condition_dict_expression("sessions", "ct id", "local_username", "long_string", op, value)
     elif condtype == "REMOTE_USERNAME":
@@ -315,18 +337,32 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_dict_expression("sessions", "ct id", "application_id", "long_string", op, value)
     elif condtype == "APPLICATION_NAME":
         return condition_dict_expression("sessions", "ct id", "application_name", "long_string", op, value)
+    elif condtype == "APPLICATION_CONFIDENCE":
+        return condition_dict_expression("sessions", "ct id", "application_confidence", "int", op, value)
     elif condtype == "APPLICATION_PROTOCHAIN":
         return condition_dict_expression("sessions", "ct id", "application_protochain", "long_string", op, value)
     elif condtype == "APPLICATION_DETAIL":
         return condition_dict_expression("sessions", "ct id", "application_detail", "long_string", op, value)
+    elif condtype == "APPLICATION_PRODUCTIVITY":
+        return condition_dict_expression("sessions", "ct id", "application_productivity", "int", op, value)
+    elif condtype == "APPLICATION_RISK":
+        return condition_dict_expression("sessions", "ct id", "application_risk", "int", op, value)
     elif condtype == "APPLICATION_CATEGORY":
         return condition_dict_expression("sessions", "ct id", "application_category", "long_string", op, value)
-    elif condtype == "APPLICATION_PREDICTED_NAME":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_name", "long_string", op, value)
-    elif condtype == "APPLICATION_PREDICTED_CONFIDENCE":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_confidence", "int", op, value)
-    elif condtype == "APPLICATION_PREDICTED_PROTOCHAIN":
-        return condition_dict_expression("sessions", "ct id", "application_predicted_protochain", "long_string", op, value)
+    elif condtype == "APPLICATION_ID_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_id_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_NAME_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_name_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_CONFIDENCE_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_confidence_inferred", "int", op, value)
+    elif condtype == "APPLICATION_PROTOCHAIN_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_protochain_inferred", "long_string", op, value)
+    elif condtype == "APPLICATION_PRODUCTIVITY_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_productivity_inferred", "int", op, value)
+    elif condtype == "APPLICATION_RISK_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_risk_inferred", "int", op, value)
+    elif condtype == "APPLICATION_CATEGORY_INFERRED":
+        return condition_dict_expression("sessions", "ct id", "application_category_inferred", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_CN":
         return condition_dict_expression("sessions", "ct id", "certificate_subject_cn", "long_string", op, value)
     elif condtype == "CERT_SUBJECT_SN":

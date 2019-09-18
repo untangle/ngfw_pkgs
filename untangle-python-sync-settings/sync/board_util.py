@@ -39,8 +39,9 @@ def get_wan_interfaces():
         "armada-385-turris-omnia": ["eth2"],
         "cznic,turris-omnia": ["eth2"],
         "globalscale,espressobin": ["wan", "lan0"],
-        "globalscale,espressobin-v7-emmc": ["lan0", "lan1"],
+        "globalscale,espressobin-v7-emmc": ["eth1", "eth2"],
         "caswell-caf-0262": ["eth4", "eth5"],
+        "untangle-inc-default-string": ["eth4", "eth5"],
     }.get(board_name, ["eth1"])
 
 def get_internal_interfaces():
@@ -56,14 +57,32 @@ def get_internal_interfaces():
         "armada-385-turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
         "cznic,turris-omnia": ["lan0", "lan1", "lan2", "lan3", "lan4"],
         "globalscale,espressobin": ["lan1"],
-        "globalscale,espressobin-v7-emmc": ["wan"],
+        "globalscale,espressobin-v7-emmc": ["eth3"],
         "caswell-caf-0262": ["eth0", "eth1", "eth2", "eth3"],
+        "untangle-inc-default-string": ["eth0", "eth1", "eth2", "eth3"],
     }.get(board_name, ["eth0"])
+
+interface_name_maps = {
+    "globalscale,espressobin-v7-emmc": { "eth1": "WAN0", "eth2": "WAN1", "eth3": "LAN", "wlan0": "WiFi"},
+    "caswell-caf-0262": { "eth0": "LAN1", "eth1": "LAN2", "eth2": "LAN3", "eth3": "LAN4", "eth4": "WAN0", "eth5": "WAN1", "wlan0": "WiFi", "wwan0": "LTE"},
+    "untangle-inc-default-string": { "eth0": "LAN1", "eth1": "LAN2", "eth2": "LAN3", "eth3": "LAN4", "eth4": "WAN0", "eth5": "WAN1", "wlan0": "WiFi", "wwan0": "LTE"},
+    "linksys,shelby": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"},
+    "linksys,rango": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"},
+    "linksys,venom": { "lan1": "LAN1", "lan2": "LAN2", "lan3": "LAN3", "lan4": "LAN4", "wan": "WAN", "wlan0": "WiFiOne", "wlan1": "WiFiTwo"}
+}
+
+def get_interface_name(device):
+    """get the device specific interface name"""
+    board_name = get_board_name()
+    interface_name = interface_name_maps.get(board_name, {}).get(device, "")
+
+    return interface_name
+
 
 def get_country_code():
     """get the country code"""
     board_name = get_board_name()
-    if board_name == "armada-385-linksys-shelby" or board_name == "linksys,shelby":
+    if board_name in ["armada-385-linksys-shelby", "linksys,shelby"]:
         sku = None
         try:
             sku = subprocess.check_output("cat /tmp/syscfg/syscfg/syscfg.dat | sed -ne 's/^device::cert_region=//p'", shell=True, stderr=subprocess.DEVNULL).decode('ascii').rstrip()
@@ -96,7 +115,7 @@ def increment_mac(mac, inc):
 def get_interface_macaddr(ifname):
     """get the interface's mac address"""
     board_name = get_board_name()
-    if board_name == "armada-385-linksys-shelby" or board_name == "linksys,shelby":
+    if board_name in ["armada-385-linksys-shelby", "linksys,shelby"]:
         return {
             "wlan0": increment_mac(get_device_macaddr("eth0"), 1),
             "wlan1": increment_mac(get_device_macaddr("eth0"), 2),
@@ -106,7 +125,7 @@ def get_interface_macaddr(ifname):
             "lan4": get_device_macaddr("eth1"),
             "wan": get_device_macaddr("eth1"),
         }.get(ifname, "")
-    elif board_name == "armada-385-linksys-rango" or board_name == "armada-385-linksys-venom" or board_name == "linksys,rango" or board_name == "linksys,venom":
+    if board_name in ["armada-385-linksys-rango", "armada-385-linksys-venom", "linksys,rango", "linksys,venom"]:
         return {
             "lan1": get_device_macaddr("eth1"),
             "lan2": get_device_macaddr("eth1"),
@@ -132,4 +151,3 @@ def is_docker():
     except subprocess.CalledProcessError:
         pass
     return False
-

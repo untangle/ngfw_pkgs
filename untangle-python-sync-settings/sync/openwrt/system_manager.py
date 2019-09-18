@@ -3,6 +3,7 @@
 # pylint: disable=no-self-use
 import os
 import stat
+import json
 from sync import registrar
 from sync import board_util
 
@@ -12,7 +13,8 @@ class SystemManager:
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
-    autoupgrade_filename = "/etc/crontabs/autoupgrade"
+    wizard_status_filename = "/etc/config/wizard-status.json"
+    cron_filename = "/etc/crontabs/root"
 
     def initialize(self):
         """initialize this module"""
@@ -20,7 +22,8 @@ class SystemManager:
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
-        registrar.register_file(self.autoupgrade_filename, "restart-cron", self)
+        registrar.register_file(self.wizard_status_filename, "restart-pyconnector", self)
+        registrar.register_file(self.cron_filename, "restart-cron", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
@@ -28,7 +31,10 @@ class SystemManager:
 
     def validate_settings(self, settings):
         """validates settings"""
-        autoupgrade_settings = settings.get('autoUpgrade')
+        system_settings = settings.get('system')
+        if system_settings is None:
+            raise Exception("Missing required system settings")
+        autoupgrade_settings = system_settings.get('autoUpgrade')
         if autoupgrade_settings is not None:
             if autoupgrade_settings.get('enabled') is None:
                 raise Exception("Missing required autoUpgrade setting \"enabled\"")
@@ -68,23 +74,21 @@ class SystemManager:
         if hostname is not None:
             self.write_hostname_setter(hostname, prefix)
 
-        autoupgrade = system.get('autoUpgrade')
-        self.write_autoupgrade_file(autoupgrade, prefix)
+        self.write_cron_file(settings, prefix)
+
+        self.write_wizard_status(settings, prefix)
 
         time_zone = system.get('timeZone')
         if time_zone is None:
-            return
+            pass
         # If the timezone is just a string, use that
         # In old settings.json, time_zone was just a string
-        if isinstance(time_zone, str):
+        elif isinstance(time_zone, str):
             self.write_timezone_setter(time_zone, prefix)
-            return
-        if isinstance(time_zone, dict):
+        elif isinstance(time_zone, dict):
             time_zone_value = time_zone.get('value')
-            if time_zone_value is None:
-                return
-            self.write_timezone_setter(time_zone_value, prefix)
-            return
+            if time_zone_value is not None:
+                self.write_timezone_setter(time_zone_value, prefix)
 
     def write_hostname_setter(self, hostname, prefix):
         """Write the script to set the hostname in /etc/config/system"""
@@ -117,12 +121,30 @@ class SystemManager:
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
 
-    def write_autoupgrade_file(self, autoupgrade_settings, prefix):
-        """Write the autoupgrade file"""
+    def write_wizard_status(self, settings, prefix):
+        """Write the wizard status in /etc/config/wizard-status.json"""
+        filename = prefix + self.wizard_status_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+
+        file.write(json.dumps(settings['system']['setupWizard'].get('completed')))
+        file.write('\n')
+
+        file.flush()
+        file.close()
+
+        print("SystemManager: Wrote %s" % filename)
+
+    def write_cron_file(self, settings, prefix):
+        """Write the cron file"""
         enabled = True
         day = 6
         hour = 0
         minute = 0
+        autoupgrade_settings = settings.get('system').get('autoUpgrade')
         if autoupgrade_settings is None:
             enabled = False
         else:
@@ -135,7 +157,7 @@ class SystemManager:
             if autoupgrade_settings.get('minuteOfHour') is not None:
                 minute = autoupgrade_settings.get('minuteOfHour')
 
-        filename = prefix + self.autoupgrade_filename
+        filename = prefix + self.cron_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
@@ -143,8 +165,9 @@ class SystemManager:
         file = open(filename, "w+")
 
         if enabled:
-            file.write("%i %i * * %i /usr/bin/upgrade.sh\n" % (minute, hour, day))
+            file.write("%i %i * * %i /usr/bin/upgrade.sh >/dev/null 2>&1\n" % (minute, hour, day))
 
+        file.write("0 */12 * * * /usr/bin/fetch-licenses.sh >/dev/null 2>&1\n")
         file.flush()
         file.close()
 
