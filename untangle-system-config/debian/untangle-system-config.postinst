@@ -88,9 +88,28 @@ if uname -r | grep -q 4.9.0-6-untangle ; then
     fi
 fi
 
-# 14.2 4.9.0-7/4.9.0-8 to 4.9.0-11 auto-switch
-latest="4.9.0-11"
+# 14.2 4.9.0-7/4.9.0-8 to 4.9.0-9 auto-switch
+latest="4.9.0-9"
 if uname -r | grep -qE '4.9.0-[78]-untangle' ; then
+    case "$(cat /proc/cmdline)" in 
+        *video-safe-mode*)
+            echo "Switching to ${latest} video safe mode"
+            grub-set-default 1 ;;
+	*vga=791*)
+	    echo "Switching to ${latest} kern video mode"
+	    grub-set-default 2 ;;
+	*noapic*)
+            echo "Switching to ${latest} hardware safe mode"
+            grub-set-default 3 ;;
+	*)
+            echo "Switching to ${latest}"
+            grub-set-default 0 ;;
+    esac
+fi
+
+# 14.3 4.9.0-9 to 4.9.0-11 auto-switch
+latest="4.9.0-11"
+if uname -r | grep -qE '4.9.0-9-untangle' ; then
     case "$(cat /proc/cmdline)" in 
         *video-safe-mode*)
             echo "Switching to ${latest} video safe mode"
