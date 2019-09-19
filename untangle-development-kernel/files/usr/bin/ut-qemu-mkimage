@@ -9,7 +9,7 @@ usage() {
   echo "-a architecture      : amd64, i386, armel, armhf, arm64, etc"
   echo "-u                   : installs untangle-gateway and all its dependencies"
   echo "-s size              : size of the image, for instance 20G"
-  echo "-k kernel_version    : debian kernel version, for instance 4.9.0-9"
+  echo "-k kernel_version    : debian kernel version, for instance 4.9.0-11"
   echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
   exit 1
 }
@@ -56,7 +56,7 @@ if [[ -n "$UVM" ]] ; then
       CUSTOMIZE=(--customize install-uvm.sh)
       PACKAGES+=(--package sysvinit-core) ;;
     stretch)
-      KERNEL_VERSION=${KERNEL_VERSION:-4.9.0-9}
+      KERNEL_VERSION=${KERNEL_VERSION:-4.9.0-11}
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
