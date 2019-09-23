@@ -73,6 +73,7 @@ class WirelessManager:
                 intf['wirelessEncryption'] = 'WPA2'
                 intf['wirelessPassword'] = '12345678'
                 intf['wirelessSsid'] = 'Untangle'
+                intf['wirelessThroughput'] = 'AUTO'
 
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
