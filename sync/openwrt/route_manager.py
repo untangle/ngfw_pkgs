@@ -35,7 +35,7 @@ class RouteManager:
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
         registrar.register_file(self.wan_routing_filename, "restart-wan-routing", self)
-        registrar.register_file(self.wan_manager_filename, "restart-wan-manager", self)
+        registrar.register_file(self.wan_manager_filename, "restart-wan-routing", self)
 
     def sanitize_settings(self, settings):
         """sanitizes settings"""
