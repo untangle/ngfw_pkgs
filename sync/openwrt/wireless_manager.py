@@ -166,7 +166,7 @@ class WirelessManager:
                 if thruput == None or thruput == "" or thruput == "AUTO":
                     file.write("%s" % self.get_htmode(intf))
                 else:
-                    file.write("%s" % thruput)
+                    file.write("\toption htmode '%s'\n" % thruput)
                 if not intf.get('enabled'):
                     file.write("\toption disabled '1'\n")
                 else:
