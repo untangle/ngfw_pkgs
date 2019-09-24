@@ -504,9 +504,15 @@ class RouteManager:
             file.write("write_rules()\n")
             file.write("{\n")
             file.write("\tnft -f $TMPFILE\n")
+            file.write("\tretval=$?\n")
+            file.write("\twhile [ $retval -ne 0 ] ; do\n")
+            file.write("\t\tnft -f $TMPFILE\n")
+            file.write("\t\tretval=$?\n")
+            file.write("\tdone\n")
             file.write("\trm $TMPFILE\n")
             file.write("\texit 0\n")
             file.write("}\n\n")
+
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
@@ -552,6 +558,11 @@ class RouteManager:
             file.write("write_rules()\n")
             file.write("{\n")
             file.write("\tnft -f $TMPFILE\n")
+            file.write("\tretval=$?\n")
+            file.write("\twhile [ $retval -ne 0 ] ; do\n")
+            file.write("\t\tnft -f $TMPFILE\n")
+            file.write("\t\tretval=$?\n")
+            file.write("\tdone\n")
             file.write("\trm $TMPFILE\n")
             file.write("\texit 0\n")
             file.write("}\n\n")
