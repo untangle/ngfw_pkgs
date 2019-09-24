@@ -499,14 +499,23 @@ class RouteManager:
         if get_number_of_wans(settings) == 1:
             file.write("\n# Only one wan, do nothing\n\n")
         else:
+            file.write("TMPFILE=`mktemp -t default-route.XXXXXX`\n")
+            file.write("\n")
+            file.write("write_rules()\n")
+            file.write("{\n")
+            file.write("\tnft -f $TMPFILE\n")
+            file.write("\trm $TMPFILE\n")
+            file.write("\texit 0\n")
+            file.write("}\n\n")
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
                     file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
                     file.write("\tnft list chain inet wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n")
-                    file.write("\t\tnft flush chain inet wan-routing route-to-default-wan\n")
-                    file.write("\t\tnft add rule inet wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default\n")
-                    file.write("\t\tnft add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d\n" % intf.get('interfaceId'))
+                    file.write("\t\techo flush chain inet wan-routing route-to-default-wan >> $TMPFILE\n")
+                    file.write("\t\techo add rule inet wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
+                    file.write("\t\techo add rule inet wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
+                    file.write("\t\twrite_rules\n")
                     file.write("\t}\n")
                     file.write("\texit 0\n")
                     file.write("}\n\n")
