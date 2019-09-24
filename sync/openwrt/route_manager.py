@@ -226,6 +226,9 @@ class RouteManager:
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
+        file.write("# Make sure default route is up to date\n")
+        file.write("/etc/config/ifdown.d/10-default-route")
+        file.write("\n\n")
 
         wan = settings['wan']
         policies = wan.get('policies')
