@@ -19,7 +19,7 @@ def run(cmd, simulate=False):
     if not simulate:
         try:
             bytesOutput = subprocess.check_output(cmd, shell=True)
-            return bytesOutput.decode(ENCODING)
+            return bytesOutput.decode(ENCODING).strip()
         except subprocess.CalledProcessError as e:
             print("Error:\n", e.output)
             sys.exit(1)
