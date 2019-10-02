@@ -5,16 +5,22 @@
 
 import argparse
 import subprocess
+import sys
 import yaml
 
 # constants
 SUBTREES = yaml.load(open("subtrees.yaml"))['subtrees']
 
+
 # functions
 def run(cmd, simulate=False):
     print('... running {}'.format(cmd))
     if not simulate:
-        subprocess.call(cmd, shell=True)
+        try:
+            return subprocess.check_output(cmd, shell=True, text=True)
+        except subprocess.CalledProcessError as e:
+            print("Error:\n", e.output)
+            sys.exit(1)
 
 # CL args
 parser = argparse.ArgumentParser(description="Update subtrees, and optionally push result back to origin")
@@ -30,8 +36,8 @@ parser.add_argument('--simulate', dest='simulate',
 # main
 args = parser.parse_args()
 
-branch = subprocess.getoutput('git symbolic-ref --short HEAD')
-origin = subprocess.getoutput('git remote').split('\n')[0]
+branch = run('git symbolic-ref --short HEAD')
+origin = run('git remote').split('\n')[0]
 
 for directory, repository in SUBTREES.items():
     # FIXME: handle release branch as well
