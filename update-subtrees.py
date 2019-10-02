@@ -4,20 +4,22 @@
    push the main tree back to its origin"""
 
 import argparse
+import locale
 import subprocess
 import sys
 import yaml
 
 # constants
 SUBTREES = yaml.load(open("subtrees.yaml"))['subtrees']
-
+ENCODING = locale.getpreferredencoding()
 
 # functions
 def run(cmd, simulate=False):
     print('... running {}'.format(cmd))
     if not simulate:
         try:
-            return subprocess.check_output(cmd, shell=True, text=True)
+            bytesOutput = subprocess.check_output(cmd, shell=True)
+            return bytesOutput.decode(ENCODING)
         except subprocess.CalledProcessError as e:
             print("Error:\n", e.output)
             sys.exit(1)
