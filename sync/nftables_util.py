@@ -154,17 +154,17 @@ def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shif
     if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
 
-    if value == "1":
+    if value in ["1", "wan"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((1<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((1<<intf_type_shift), '#010x')
-    elif value == "2":
+    elif value in ["2", "lan"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((2<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((2<<intf_type_shift), '#010x')
-    elif value == "0":
+    elif value in ["0", "unset"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format(0, '#010x')
         else:
