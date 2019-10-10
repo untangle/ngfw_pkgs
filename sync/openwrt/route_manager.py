@@ -368,6 +368,7 @@ class RouteManager:
         for intf in interfaces:
             if enabled_wan(intf):
                 file.write("add set inet wan-routing wan-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % intf.get('interfaceId'))
+                file.write("flush set inet wan-routing wan-%d-table\n" % intf.get('interfaceId'))
                 file.write("add chain inet wan-routing mark-for-wan-%d\n" % intf.get('interfaceId'))
                 file.write("add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("add rule inet wan-routing mark-for-wan-%d set update ip saddr . ip daddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
@@ -394,6 +395,7 @@ class RouteManager:
             policyId = policy.get('policyId')
 
             file.write("add set inet wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
+            file.write("flush set inet wan-routing policy-%d-table\n" % policyId)
             file.write("add chain inet wan-routing route-to-policy-%d\n" % policyId)
             file.write("add rule inet wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
             file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0 dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId, policyId))
