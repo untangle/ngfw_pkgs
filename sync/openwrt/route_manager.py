@@ -231,10 +231,23 @@ class RouteManager:
         file.write("\n\n")
 
         wan = settings['wan']
+        active_policy_ids = []
+        policy_chains = wan.get('policy_chains')
+        for policy_chain in policy_chains:
+            for rule in policy_chain.get("rules"):
+                if rule.get("enabled"):
+                    action = rule.get("action")
+                    if action.get("type") == "WAN_POLICY":
+                        policy = action.get("policy")
+                        if policy not in active_policy_ids:
+                            active_policy_ids.append(policy)
+
         policies = wan.get('policies')
         for policy in policies:
             if policy.get('enabled'):
                 policyId = policy.get('policyId')
+                if policyId not in active_policy_ids:
+                    continue
                 interfaces = policy.get('interfaces')
 
                 if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
