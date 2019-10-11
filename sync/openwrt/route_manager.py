@@ -231,10 +231,23 @@ class RouteManager:
         file.write("\n\n")
 
         wan = settings['wan']
+        active_policy_ids = []
+        policy_chains = wan.get('policy_chains')
+        for policy_chain in policy_chains:
+            for rule in policy_chain.get("rules"):
+                if rule.get("enabled"):
+                    action = rule.get("action")
+                    if action.get("type") == "WAN_POLICY":
+                        policy = action.get("policy")
+                        if policy not in active_policy_ids:
+                            active_policy_ids.append(policy)
+
         policies = wan.get('policies')
         for policy in policies:
             if policy.get('enabled'):
                 policyId = policy.get('policyId')
+                if policyId not in active_policy_ids:
+                    continue
                 interfaces = policy.get('interfaces')
 
                 if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
@@ -368,6 +381,7 @@ class RouteManager:
         for intf in interfaces:
             if enabled_wan(intf):
                 file.write("add set inet wan-routing wan-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % intf.get('interfaceId'))
+                file.write("flush set inet wan-routing wan-%d-table\n" % intf.get('interfaceId'))
                 file.write("add chain inet wan-routing mark-for-wan-%d\n" % intf.get('interfaceId'))
                 file.write("add rule inet wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
                 file.write("add rule inet wan-routing mark-for-wan-%d set update ip saddr . ip daddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
@@ -394,6 +408,7 @@ class RouteManager:
             policyId = policy.get('policyId')
 
             file.write("add set inet wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
+            file.write("flush set inet wan-routing policy-%d-table\n" % policyId)
             file.write("add chain inet wan-routing route-to-policy-%d\n" % policyId)
             file.write("add rule inet wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
             file.write("add rule inet wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0 dict sessions ct id wan_policy long_string set policy-%d-cache\n" % (policyId, policyId, policyId))
