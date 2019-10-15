@@ -385,7 +385,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -405,7 +405,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -425,7 +425,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -445,7 +445,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -465,7 +465,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -485,7 +485,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -505,7 +505,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -525,7 +525,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -569,7 +569,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -589,7 +589,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
