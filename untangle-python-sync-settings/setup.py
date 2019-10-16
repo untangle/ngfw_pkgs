@@ -11,9 +11,12 @@ from os.path import isdir
 if isdir("../.git") or isdir(".git"): # debian source tarballs don't contain .git
     version_cmd = "git describe --tags --always --long"
     version = check_output(version_cmd.split(" ")).decode().strip()
+    print("Working on git version {}".format(version))
     # enforce https://www.python.org/dev/peps/pep-0440
     items = version[1:].split('-')
-    version = '{}+{}'.format(items[0], items[2])
+    if len(items) == 3:
+        version = '{}+{}'.format(items[0], items[2][1:])
+    print("--> PEP-0440 version will be {}".format(version))
     with open('sync/version.py', 'w') as f:
         f.write('__version__ = "{}"\n'.format(version))
 else:

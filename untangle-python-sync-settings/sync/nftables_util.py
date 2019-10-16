@@ -154,17 +154,17 @@ def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shif
     if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
 
-    if value == "wan":
+    if value in ["1", "wan"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((1<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((1<<intf_type_shift), '#010x')
-    elif value == "lan":
+    elif value in ["2", "lan"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format((2<<intf_type_shift), '#010x')
         else:
             return mark_exp + " and " + intf_type_mask + " != " + format((2<<intf_type_shift), '#010x')
-    elif value == "unset":
+    elif value in ["0", "unset"]:
         if op == "==":
             return mark_exp + " and " + intf_type_mask + " " + format(0, '#010x')
         else:
@@ -326,7 +326,7 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "SERVER_USERNAME":
         return condition_dict_expression("sessions", "ct id", "server_username", "long_string", op, value)
     elif condtype == "SERVER_REVERSE_DNS":
-        return condition_dict_expression("sessions", "ct id", "sever_reverse_dns", "long_string", op, value)
+        return condition_dict_expression("sessions", "ct id", "server_reverse_dns", "long_string", op, value)
     elif condtype == "SERVER_DNS_HINT":
         return condition_dict_expression("sessions", "ct id", "server_dns_hint", "long_string", op, value)
     elif condtype == "LOCAL_USERNAME":
