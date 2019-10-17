@@ -36,6 +36,19 @@ class TableManager:
                             }
                         ]
 
+                    conditions = rule.get("conditions")
+                    for condition in conditions:
+                        condition_type = condition.get("type")
+                        if condition_type == "SOURCE_INTERFACE_TYPE":
+                            value = condition.get("value")
+                            if value == "unset":
+                                condition["value"] = 0
+                            elif value == "wan":
+                                condition["value"] = 1
+                            elif value == "lan":
+                                condition["value"] = 2
+
+
     def validate_settings(self, settings):
         """validates settings"""
         pass
@@ -385,7 +398,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -405,7 +418,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -425,7 +438,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -445,7 +458,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -465,7 +478,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -485,7 +498,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -505,7 +518,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -525,7 +538,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -569,7 +582,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -589,7 +602,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
