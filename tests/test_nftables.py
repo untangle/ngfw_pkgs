@@ -3,7 +3,6 @@ import unittest
 import json
 import sys
 import traceback
-import runtests.test_registry as test_registry
 import sync.nftables_util as nftables_util
 
 class NftablesTests(unittest.TestCase):
@@ -372,5 +371,3 @@ for i, obj in enumerate(conditions_tests):
     first_condition = obj[0][0]
     method.__name__="test_"+str(500+i)+"_"+str(first_condition.get('type')).lower()
     setattr(NftablesTests, method.__name__, method)
-    
-test_registry.register_module("nftables_util", NftablesTests)

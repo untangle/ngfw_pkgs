@@ -9,8 +9,7 @@ Build-Depends: debhelper (>= 10),
 	       python3-pytest-runner,
 	       python3-pytest-cov,
 	       dh-python,
-	       git,
-	       untangle-python3-runtests
+	       git
 Standards-Version: 3.9.8
 Homepage: https://github.com/untangle/ngfw_pkgs
 Vcs-Git: https://github.com/untangle/ngfw_pkgs.git
