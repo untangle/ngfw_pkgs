@@ -19,6 +19,6 @@ Package: untangle-python3-sync-settings
 Architecture: all
 Depends: ${misc:Depends}, python, ${misc:Depends}, ${python3:Depends}
 Description: Library for manipulating Untangle system settings (Python 3)
- This module is a Library for manipulating Untangle system settings.
+ This module is a library for manipulating Untangle system settings.
  .
  This is the Python 3 version of the package.
