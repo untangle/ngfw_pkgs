@@ -40,36 +40,11 @@ class RouteManager:
     def sanitize_settings(self, settings):
         """sanitizes settings"""
         wan = settings['wan']
-        policies = wan.get('policies')
-        highest_policy_id = 0
-        for policy in policies:
-            policy_id = policy.get('policyId')
-            if policy_id is not None and policy_id > highest_policy_id:
-                highest_policy_id = policy_id
+        nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
-        highest_policy_id += 1
-
-        for policy in policies:
-            policy_id = policy.get('policyId')
-            if policy_id is None:
-                policy['policyId'] = highest_policy_id
-                highest_policy_id += 1
-
-        policy_chains = wan.get('policy_chains')
-        for chain in policy_chains:
-            rule_id = 1
-            for rule in chain.get('rules'):
-                rule['ruleId'] = rule_id
-                rule_id += 1
-
-                action = rule.get("action")
-                if action.get("type") == "WAN_POLICY":
-                    rule['logs'] = [
-                        {
-                            "type": "NFLOG",
-                            "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (chain.get('name'), rule.get('ruleId'), action.get('policy')),
-                        }
-                    ]
+        for chain in wan.get('policy_chains'):
+            nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
+            nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
 
     def validate_settings(self, settings):
