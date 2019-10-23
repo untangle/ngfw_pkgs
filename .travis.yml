@@ -1,10 +1,18 @@
 sudo: required
+
 services:
 - docker
+
+env:
+  - repository: stretch
+  - repository: buster
+
 before_install:
-- docker pull untangleinc/ngfw:base
+- docker pull untangleinc/ngfw:${repository}-build
+
 script:
-- docker-compose -f docker-compose.build.yml run build
+- docker-compose -f docker-compose.build.yml run ${repository}-build
+
 notifications:
   email: false
   slack:
