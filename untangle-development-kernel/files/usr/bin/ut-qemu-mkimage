@@ -72,6 +72,23 @@ if [[ -n "$UVM" ]] ; then
 		--package xfce4-session
 		--package dbus-x11
 		--package libfreeradius-dev) ;;
+    buster)
+      KERNEL_VERSION=${KERNEL_VERSION:-4.19.0-6}
+      CUSTOMIZE=(--customize fix-uvm.sh)
+      # FIXME: manually maintaining a list of or'ed dependencies is
+      # not sustainable in the longer run
+      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
+		--package untangle-gateway
+		--package postgresql-client
+		--package postgresql
+		--package openjdk-11-jre
+		--package perl-openssl-defaults
+		--package lhasa
+		--package zoo
+		--package isc-dhcp-client
+		--package xfce4-session
+		--package dbus-x11
+		--package libfreeradius-dev) ;;
   esac
 
   case $ARCH in
