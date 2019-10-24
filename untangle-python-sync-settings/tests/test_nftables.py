@@ -3,7 +3,6 @@ import unittest
 import json
 import sys
 import traceback
-import runtests.test_registry as test_registry
 import sync.nftables_util as nftables_util
 
 class NftablesTests(unittest.TestCase):
@@ -219,33 +218,33 @@ conditions_tests = [
     [[{"type": "SERVER_INTERFACE_ZONE","op":"==","value": "1,2"}], "ct mark and 0x0000ff00 \"{1,2}\""],
     [[{"type": "SERVER_INTERFACE_ZONE","op":"!=","value": "1,2"}], "ct mark and 0x0000ff00 != \"{1,2}\""],
 
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "wan"}], "mark and 0x03000000 0x01000000"],
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "lan"}], "mark and 0x03000000 0x02000000"],
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "unset"}], "mark and 0x03000000 0x00000000"],
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "wan"}], "mark and 0x03000000 != 0x01000000"],
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "lan"}], "mark and 0x03000000 != 0x02000000"],
-    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "unset"}], "mark and 0x03000000 != 0x00000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "1"}], "mark and 0x03000000 0x01000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "2"}], "mark and 0x03000000 0x02000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "0"}], "mark and 0x03000000 0x00000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "1"}], "mark and 0x03000000 != 0x01000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "2"}], "mark and 0x03000000 != 0x02000000"],
+    [[{"type": "SOURCE_INTERFACE_TYPE","op":"!=","value": "0"}], "mark and 0x03000000 != 0x00000000"],
 
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "wan"}], "mark and 0x0c000000 0x04000000"],
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "lan"}], "mark and 0x0c000000 0x08000000"],
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "unset"}], "mark and 0x0c000000 0x00000000"],
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "wan"}], "mark and 0x0c000000 != 0x04000000"],
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "lan"}], "mark and 0x0c000000 != 0x08000000"],
-    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "unset"}], "mark and 0x0c000000 != 0x00000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "1"}], "mark and 0x0c000000 0x04000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "2"}], "mark and 0x0c000000 0x08000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"==","value": "0"}], "mark and 0x0c000000 0x00000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "1"}], "mark and 0x0c000000 != 0x04000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "2"}], "mark and 0x0c000000 != 0x08000000"],
+    [[{"type": "DESTINATION_INTERFACE_TYPE","op":"!=","value": "0"}], "mark and 0x0c000000 != 0x00000000"],
 
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "wan"}], "ct mark and 0x03000000 0x01000000"],
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "lan"}], "ct mark and 0x03000000 0x02000000"],
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "unset"}], "ct mark and 0x03000000 0x00000000"],
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "wan"}], "ct mark and 0x03000000 != 0x01000000"],
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "lan"}], "ct mark and 0x03000000 != 0x02000000"],
-    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "unset"}], "ct mark and 0x03000000 != 0x00000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "1"}], "ct mark and 0x03000000 0x01000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "2"}], "ct mark and 0x03000000 0x02000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"==","value": "0"}], "ct mark and 0x03000000 0x00000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "1"}], "ct mark and 0x03000000 != 0x01000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "2"}], "ct mark and 0x03000000 != 0x02000000"],
+    [[{"type": "CLIENT_INTERFACE_TYPE","op":"!=","value": "0"}], "ct mark and 0x03000000 != 0x00000000"],
 
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "wan"}], "ct mark and 0x0c000000 0x04000000"],
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "lan"}], "ct mark and 0x0c000000 0x08000000"],
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "unset"}], "ct mark and 0x0c000000 0x00000000"],
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "wan"}], "ct mark and 0x0c000000 != 0x04000000"],
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "lan"}], "ct mark and 0x0c000000 != 0x08000000"],
-    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "unset"}], "ct mark and 0x0c000000 != 0x00000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "1"}], "ct mark and 0x0c000000 0x04000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "2"}], "ct mark and 0x0c000000 0x08000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"==","value": "0"}], "ct mark and 0x0c000000 0x00000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "1"}], "ct mark and 0x0c000000 != 0x04000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "2"}], "ct mark and 0x0c000000 != 0x08000000"],
+    [[{"type": "SERVER_INTERFACE_TYPE","op":"!=","value": "0"}], "ct mark and 0x0c000000 != 0x00000000"],
 
     [[{"type": "CLIENT_PORT","op":"==","value": "1234"}], "dict sessions ct id client_port int \"1234\""],
     [[{"type": "CLIENT_PORT","op":"!=","value": "1234"}], "dict sessions ct id client_port int != \"1234\""],
@@ -372,5 +371,3 @@ for i, obj in enumerate(conditions_tests):
     first_condition = obj[0][0]
     method.__name__="test_"+str(500+i)+"_"+str(first_condition.get('type')).lower()
     setattr(NftablesTests, method.__name__, method)
-    
-test_registry.register_module("nftables_util", NftablesTests)
