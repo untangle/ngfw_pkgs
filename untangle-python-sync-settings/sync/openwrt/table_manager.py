@@ -21,20 +21,10 @@ class TableManager:
         # Set the rule_id to unique values of every chain
         for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
             for chain in settings['firewall']['tables'][table]['chains']:
-                rule_id = 1
-                for rule in chain['rules']:
-                    rule['ruleId'] = rule_id
-                    rule_id = rule_id + 1
+                nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
+                nftables_util.clean_rule_actions(chain, chain.get('rules'), table)
 
-                    action = rule.get("action")
-                    if action.get("type") == "DROP":
-                        rule['logs'] = [
-                            {
-                                "type": "NFLOG",
-                                "prefix": "drop-reason: %s-%s-%s: " % (table, chain.get('name'), rule.get('ruleId')),
-                                "prefix": "{\'type\':\'rule\',\'table\':\'%s\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'DROP\'} " % (table, chain.get('name'), rule.get('ruleId')),
-                            }
-                        ]
+
 
     def validate_settings(self, settings):
         """validates settings"""
@@ -385,7 +375,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -405,7 +395,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -425,7 +415,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -445,7 +435,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -465,7 +455,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -485,7 +475,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "wan"
+                    "value": 1
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -505,7 +495,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -525,7 +515,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -569,7 +559,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -589,7 +579,7 @@ def default_access_rules_table():
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
-                    "value": "lan"
+                    "value": 2
                 }],
                 "action": {
                     "type": "ACCEPT"

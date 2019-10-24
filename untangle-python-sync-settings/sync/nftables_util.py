@@ -745,3 +745,59 @@ def get_limit_rate_unit_string(unit):
         "KBYTES_PER_SECOND": " kbytes/second",
         "MBYTES_PER_SECOND": " mbytes/second",
     }.get(unit, "/second")
+
+def create_id_seq(parent, array, idSeqName, idName):
+    """ create_id_seq is used to assign unique ids to items in an array within the settings, the sequence is held in an attribute on the array's parent node
+        :param parent: (container) the parent container of the array that should hold the idSeqName attribute and value
+        :param array: (array) an array of items that require unique ids
+        :param idseqname: (string) the id sequence name to store in the parent container """
+    if array: 
+        seq = parent.get(idSeqName) or max(item.get(idName) for item in array if item.get(idName) is not None)
+
+        for item in array:
+            # No ID and no Rank so this is probably a new item: use max(existing id) + 1
+            if (item.get(idName) is None or item.get(idName) == 0):
+                seq += 1
+                item[idName] = seq
+
+        parent[idSeqName] = seq
+
+def clean_rule_actions(parent, array, tableName=None):
+    """ clean_rule_actions is used to massage WAN_POLICY and DROP action rule types, as well as INTERFACE_TYPE conditions
+        :param parent: (container) the parent container of the array that should hold the idSeqName attribute and value
+        :param array: (array) an array of items that require unique ids
+        :param (optional) tableName: (string) currently used for passing the tableName in for DROP action types """
+    if array:
+        for item in array:
+            #If action exists on this item, we need to run some special checks for WAN_POLICY and DROP types :
+            action = item.get("action")
+            if action:
+                if action.get("type") == "WAN_POLICY":
+                    item['logs'] = [
+                        {
+                            "type": "NFLOG",
+                            "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (parent.get('name'), item.get('ruleId'), action.get('policy')),
+                        }
+                    ]
+
+                if action.get("type") == "DROP":
+                    item['logs'] = [
+                        {
+                            "type": "NFLOG",
+                            "prefix": "drop-reason: %s-%s-%s: " % (tableName, parent.get('name'), item.get('ruleId')),
+                            "prefix": "{\'type\':\'rule\',\'table\':\'%s\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'DROP\'} " % (tableName, parent.get('name'), item.get('ruleId')),
+                        }
+                    ]
+            #_INTERFACE_TYPE conditions historically might be "wan", "lan", "unset"
+            conditions = item.get("conditions")
+            if conditions:
+                for condition in conditions:
+                    condition_type = condition.get("type")
+                    if condition_type == "SOURCE_INTERFACE_TYPE":
+                        value = condition.get("value")
+                        if value == "unset":
+                            condition["value"] = 0
+                        elif value == "wan":
+                            condition["value"] = 1
+                        elif value == "lan":
+                            condition["value"] = 2
