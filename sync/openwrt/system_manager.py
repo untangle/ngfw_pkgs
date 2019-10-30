@@ -59,6 +59,13 @@ class SystemManager:
         else:
             settings['system']['setupWizard'] = {"completed": False}
 
+        settings['system']['autoUpgrade'] = {
+            "dayOfWeek": 6,
+            "hourOfDay": 0,
+            "minuteOfHour": 0,
+            "enabled": True,
+        }
+
     def sync_settings(self, settings, prefix, delete_list):
         """syncs settings"""
 
