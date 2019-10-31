@@ -26,6 +26,7 @@ services:
       volumes:
         - .:/opt/untangle/build
         - pkgtools:/opt/untangle/ngfw_pkgtools:ro
+#      entrypoint: bash -x /opt/untangle/ngfw_pkgtools/build.sh
 
 volumes:
   pkgtools:
