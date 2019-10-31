@@ -11,6 +11,8 @@ services:
         bash -c "
         git remote set-url origin $${PKGTOOLS_URL} &&
         git fetch -a &&
+        git clean -f -d &&
+        git reset --hard &&
         git checkout $${PKGTOOLS_COMMIT}"
 
     build:
