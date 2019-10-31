@@ -862,9 +862,6 @@ class NetworkManager:
                     raise Exception("Invalid wireguard port (valid values 0-65535): " + intf.get('name') + " " + str(intf.get('wireguardPort')))
 
         if intf.get("type") == 'WWAN':
-            if intf.get("simApn") is None and intf.get("simProfile") is None:
-                raise Exception("Invalid: WWAN interface must specify either apn or profile: " + intf.get('name'))
-
             if intf.get("simApn") is not None and not isinstance(intf.get("simApn"), str):
                 raise Exception("Invalid WWAN apn: must be a string: " + intf.get('name'))
 
@@ -1061,10 +1058,10 @@ def create_settings_wwan_interface(interface, index):
     interface['simDelay'] = 10
     interface['simTimeout'] = 30
     interface['simMode'] = 'ALL'
-    interface['simPdptype'] = 'IPV4V6'
+    interface['simPdptype'] = 'IPV4'
     interface['configType'] = 'ADDRESSED'
     interface['v4ConfigType'] = 'DHCP'
-    interface['v6ConfigType'] = 'DHCP'
+    interface['v6ConfigType'] = 'DISABLED'
     interface['natEgress'] = True
 
 def create_settings_internal_interface(interface, internal_count):
