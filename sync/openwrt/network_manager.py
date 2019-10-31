@@ -1058,7 +1058,6 @@ def create_settings_wwan_interface(interface, index):
         interface['name'] = "WWAN" + str(index)
     interface['wan'] = True
     interface['enabled'] = True
-    interface['simApn'] = 'apn'
     interface['simDelay'] = 10
     interface['simTimeout'] = 30
     interface['simMode'] = 'ALL'
