@@ -40,13 +40,13 @@ class QosManager:
 
     def write_qos_files(self, settings, prefix, delete_list):
         """write /etc/config/qos.d files"""
-        qos_interfaces = ""
+        qos_interfaces = []
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
             if not intf.get('enabled'):
                 continue
-            if intf.get('wan') and intf.get('qosEnabled'):
-                qos_interfaces = qos_interfaces + " " + intf.get('device')
+            if intf.get('wan'):
+                qos_interfaces.append(intf.get('device'))
                 filename_noprefix = self.qos_file_path + ("/10-disable-qos-wan-%s" % intf.get('device'))
                 filename = prefix + filename_noprefix
                 file_dir = os.path.dirname(filename)
@@ -65,16 +65,24 @@ class QosManager:
                 file.write("## Auto Generated\n")
                 file.write("## DO NOT EDIT. Changes will be overwritten.\n")
                 file.write("\n")
-                file.write("ip link set dev ifb4%s down 2> /dev/null\n" % intf.get('device'))
-                file.write("ip link delete ifb4%s type ifb 2> /dev/null\n" % intf.get('device'))
-                file.write("\n")
-                file.write("tc qdisc del dev %s root 2> /dev/null\n" % intf.get('device'))
-                file.write("\n")
-                file.write("tc qdisc del dev %s handle ffff: ingress 2> /dev/null\n" % intf.get('device'))
-                file.write("tc qdisc del dev ifb4%s root 2> /dev/null\n" % intf.get('device'))
-                file.write("\n")
-                file.write("exit 0")
-                file.write("\n")
+
+                if intf.get('qosEnabled'):
+                    file.write("ip link set dev ifb4%s down 2> /dev/null\n" % intf.get('device'))
+                    file.write("ip link delete ifb4%s type ifb 2> /dev/null\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("tc qdisc del dev %s root 2> /dev/null\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("tc qdisc del dev %s handle ffff: ingress 2> /dev/null\n" % intf.get('device'))
+                    file.write("tc qdisc del dev ifb4%s root 2> /dev/null\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("exit 0")
+                    file.write("\n")
+                else:
+                    file.write("nft delete table inet qos-%s 2> /dev/null\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("exit 0")
+                    file.write("\n")
+
                 file.flush()
                 file.close()
 
@@ -97,26 +105,45 @@ class QosManager:
                 file.write("## Auto Generated\n")
                 file.write("## DO NOT EDIT. Changes will be overwritten.\n")
                 file.write("\n")
-                file.write("""DOWN="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('downloadKbps'))
-                file.write("""UP="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('uploadKbps'))
-                file.write("\n")
-                file.write("ip link add name ifb4%s type ifb\n" % intf.get('device'))
-                file.write("\n")
-                file.write("tc qdisc add dev %s root cake bandwidth ${UP}kbit diffserv4\n" % intf.get('device'))
-                file.write("\n")
-                file.write("tc qdisc add dev %s handle ffff: ingress\n" % intf.get('device'))
-                file.write("tc qdisc add dev ifb4%s root cake bandwidth ${DOWN}kbit diffserv4\n" % intf.get('device'))
-                file.write("ip link set dev ifb4%s up\n" % intf.get('device'))
-                file.write("\n")
-                file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
-                file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
-                file.write("\n")
-                file.write("exit 0")
-                file.write("\n")
+
+                if intf.get('qosEnabled'):
+                    file.write("""DOWN="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('downloadKbps'))
+                    file.write("""UP="`/usr/bin/interface-kbps %s 2>/dev/null`"\n""" % intf.get('uploadKbps'))
+                    file.write("\n")
+                    file.write("ip link add name ifb4%s type ifb\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("tc qdisc add dev %s root cake bandwidth ${UP}kbit diffserv4\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("tc qdisc add dev %s handle ffff: ingress\n" % intf.get('device'))
+                    file.write("tc qdisc add dev ifb4%s root cake bandwidth ${DOWN}kbit diffserv4\n" % intf.get('device'))
+                    file.write("ip link set dev ifb4%s up\n" % intf.get('device'))
+                    file.write("\n")
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 1 u32 match u32 0 0 flowid :1 action connmark action pedit munge ip tos set 0 pipe csum ip continue\n" % intf.get('device'))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 2 u32 match mark 0x00040000 0x00ff0000 flowid :1 action pedit munge ip tos set 32 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 3 u32 match mark 0x00030000 0x00ff0000 flowid :1 action pedit munge ip tos set 0 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 4 u32 match mark 0x00020000 0x00ff0000 flowid :1 action pedit munge ip tos set 64 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol ip prio 5 u32 match mark 0x00010000 0x00ff0000 flowid :1 action pedit munge ip tos set 224 pipe csum ip pipe mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("tc filter add dev %s parent ffff: protocol all prio 6 u32 match u32 0 0 flowid 1:1 action mirred egress redirect dev ifb4%s\n" % (intf.get('device'), intf.get('device')))
+                    file.write("\n")
+                    file.write("exit 0")
+                    file.write("\n")
+                else:
+                    file.write("""DOWN="`/usr/bin/interface-kbps 100000000 2>/dev/null`"\n""")
+                    file.write("""UP="`/usr/bin/interface-kbps 100000000 2>/dev/null`"\n""")
+                    file.write("\n")
+                    file.write("DOWN_KBYTES=$((DOWN / 8))\n")
+                    file.write("UP_KBYTES=$((UP / 8))\n")
+                    file.write("\n")
+                    file.write("nft add table inet qos-%s\n" % intf.get('device'))
+                    file.write("nft flush table inet qos-%s\n" % intf.get('device'))
+                    file.write("nft add chain inet qos-%s upload \"{ type filter hook postrouting priority 0 ; }\"\n" % intf.get('device'))
+                    file.write("nft add rule inet qos-%s upload oifname %s limit rate over $UP_KBYTES kbytes/second drop\n" % (intf.get('device'), intf.get('device')))
+                    file.write("nft add chain inet qos-%s download \"{ type filter hook prerouting priority 0 ; }\"\n" % intf.get('device'))
+                    file.write("nft add rule inet qos-%s download iifname %s limit rate over $DOWN_KBYTES kbytes/second drop\n" % (intf.get('device'), intf.get('device')))
+                    file.write("\n")
+                    file.write("exit 0")
+                    file.write("\n")
+
                 file.flush()
                 file.close()
 
@@ -153,6 +180,11 @@ class QosManager:
         file.write("\tip link set dev $dev down 2> /dev/null > /dev/null\n")
         file.write("\tip link delete dev $dev type ifb 2> /dev/null > /dev/null\n")
         file.write("done\n")
+        file.write("\n")
+        for qos_intf in qos_interfaces:
+            file.write("nft delete table inet qos-%s 2> /dev/null\n" % qos_intf)
+        file.write("\n")
+        file.write("exit 0")
         file.write("\n")
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
