@@ -71,59 +71,21 @@ if [ -f /etc/default/irqbalance ] ; then
     fi
 fi
 
-# 14.0 4.9.0-6 to 4.9.0-7 auto-switch
-if uname -r | grep -q 4.9.0-6-untangle ; then
-    if cat /proc/cmdline | grep -q 'video-safe-mode' ; then
-        echo "Switching to 4.9.0-7 video safe mode"
-        grub-set-default 1
-    elif cat /proc/cmdline | grep -q 'vga=791' ; then
-        echo "Switching to 4.9.0-7 kern video mode"
-        grub-set-default 2
-    elif cat /proc/cmdline | grep -q 'noapic' ; then
-        echo "Switching to 4.9.0-7 hardware safe mode"
-        grub-set-default 3
-    else
-        echo "Switching to 4.9.0-7"
-        grub-set-default 0
-    fi
-fi
-
-# 14.2 4.9.0-7/4.9.0-8 to 4.9.0-9 auto-switch
-latest="4.9.0-9"
-if uname -r | grep -qE '4.9.0-[78]-untangle' ; then
-    case "$(cat /proc/cmdline)" in 
-        *video-safe-mode*)
-            echo "Switching to ${latest} video safe mode"
-            grub-set-default 1 ;;
-	*vga=791*)
-	    echo "Switching to ${latest} kern video mode"
-	    grub-set-default 2 ;;
-	*noapic*)
-            echo "Switching to ${latest} hardware safe mode"
-            grub-set-default 3 ;;
-	*)
-            echo "Switching to ${latest}"
-            grub-set-default 0 ;;
-    esac
-fi
-
-# 14.3 4.9.0-9 to 4.9.0-11 auto-switch
+# 15.0: any to 4.9.0-11 auto-switch (NGFW-12661)
 latest="4.9.0-11"
-if uname -r | grep -qE '4.9.0-9-untangle' ; then
-    case "$(cat /proc/cmdline)" in 
-        *video-safe-mode*)
-            echo "Switching to ${latest} video safe mode"
-            grub-set-default 1 ;;
-	*vga=791*)
-	    echo "Switching to ${latest} kern video mode"
-	    grub-set-default 2 ;;
-	*noapic*)
-            echo "Switching to ${latest} hardware safe mode"
-            grub-set-default 3 ;;
-	*)
-            echo "Switching to ${latest}"
-            grub-set-default 0 ;;
-    esac
-fi
+case "$(cat /proc/cmdline)" in 
+    *video-safe-mode*)
+	echo "Switching to ${latest} video safe mode"
+	grub-set-default 1 ;;
+    *vga=791*)
+	echo "Switching to ${latest} kern video mode"
+	grub-set-default 2 ;;
+    *noapic*)
+	echo "Switching to ${latest} hardware safe mode"
+	grub-set-default 3 ;;
+    *)
+	echo "Switching to ${latest}"
+	grub-set-default 0 ;;
+esac
 
 exit 0
