@@ -40,6 +40,10 @@ untangle-hardware-qotom-u50xw           stretch,buster
 untangle-hardware-qotom-z4              stretch,buster
 untangle-hardware-qotom-z4w             stretch,buster
 untangle-bootsplash                     stretch,buster
+untangle-kernel-modules-buster-arm64	buster
+untangle-kernel-modules-buster-armhf	buster
+untangle-kernel-modules-buster-i386	buster
+untangle-kernel-modules-buster-amd64	buster
 untangle-kernel-modules-stretch-arm64   stretch
 untangle-kernel-modules-stretch-armhf   stretch
 untangle-kernel-modules-stretch-i386    stretch
