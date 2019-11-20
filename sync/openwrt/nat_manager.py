@@ -81,8 +81,6 @@ add rule ip nat-sys postrouting-nat jump nat-rules-sys
 
 add rule ip nat-sys prerouting-nat jump miniupnpd
 
-add chain ip nat-sys filter-rules-nat { type filter hook forward priority -5 ; }
-
 
 """)
 
