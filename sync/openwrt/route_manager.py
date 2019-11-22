@@ -404,7 +404,6 @@ class RouteManager:
         file.write("add rule inet wan-routing wan-routing-entry ip daddr 127.0.0.1 return\n")
         file.write("add rule inet wan-routing wan-routing-entry ip6 saddr ::1 return\n")
         file.write("add rule inet wan-routing wan-routing-entry ip6 daddr ::1 return\n")
-        file.write("add rule inet wan-routing wan-routing-entry mark and 0x0000ff00 != 0 return\n")
         file.write("add rule inet wan-routing wan-routing-entry jump route-via-cache\n")
         file.write("add rule inet wan-routing wan-routing-entry jump user-wan-rules\n")
         file.write("add rule inet wan-routing wan-routing-entry counter\n")
@@ -413,10 +412,12 @@ class RouteManager:
 
         file.write("\n")
         file.write("add chain inet wan-routing wan-routing-prerouting { type filter hook prerouting priority -25 ; }\n")
+        file.write("add rule inet wan-routing wan-routing-prerouting mark and 0x0000ff00 != 0 return\n")
         file.write("add rule inet wan-routing wan-routing-prerouting jump wan-routing-entry\n")
 
         file.write("\n")
         file.write("add chain inet wan-routing wan-routing-output { type filter hook output priority -135 ; }\n")
+        file.write("add rule inet wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n")
         file.write("add rule inet wan-routing wan-routing-output jump wan-routing-entry\n")
 
         file.flush()

@@ -72,16 +72,11 @@ add chain ip nat-sys prerouting-nat  { type nat hook prerouting priority -50 ; }
 add chain ip6 nat-sys postrouting-nat { type nat hook postrouting priority 100 ; }
 add chain ip6 nat-sys prerouting-nat  { type nat hook prerouting priority -50 ; }
 
-add chain ip nat-sys miniupnpd
 add chain ip nat-sys nat-rules-sys
 
 add rule ip nat-sys postrouting-nat oifname lo accept
 add rule ip nat-sys postrouting-nat iifname lo accept
 add rule ip nat-sys postrouting-nat jump nat-rules-sys
-
-add rule ip nat-sys prerouting-nat jump miniupnpd
-
-add chain ip nat-sys filter-rules-nat { type filter hook forward priority -5 ; }
 
 
 """)
