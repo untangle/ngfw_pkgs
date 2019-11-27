@@ -14,4 +14,4 @@ sync.registrar.register_operation("restart-dhcp", [""], ["/etc/init.d/dnsmasq re
 
 sync.registrar.register_operation("restart-cron", [""], ["/etc/init.d/cron stop ; /etc/init.d/cron enable ; /etc/init.d/cron start "], 35, None)
 
-sync.registrar.register_operation("startup-scripts", [""], ["/etc/init.d/startup boot ; /etc/init.d/system restart"], 40, None)
+sync.registrar.register_operation("startup-scripts", [""], ["/etc/init.d/startup boot"], 40, None)

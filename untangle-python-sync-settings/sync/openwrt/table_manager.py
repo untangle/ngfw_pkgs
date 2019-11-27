@@ -131,30 +131,6 @@ def default_filter_rules_table():
             "priority": 0,
             "rules": [{
                 "ruleId": 1,
-                "description": "Allow packets in an already established session",
-                "enabled": True,
-                "conditions": [{
-                    "type": "CT_STATE",
-                    "op": "==",
-                    "value": "established"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "ruleId": 2,
-                "description": "Allow packets related to an already established session",
-                "enabled": True,
-                "conditions": [{
-                    "type": "CT_STATE",
-                    "op": "==",
-                    "value": "related"
-                }],
-                "action": {
-                    "type": "ACCEPT"
-                }
-            }, {
-                "ruleId": 3,
                 "description": "Drop packets not related to any session",
                 "enabled": True,
                 "conditions": [{
@@ -166,7 +142,7 @@ def default_filter_rules_table():
                     "type": "DROP"
                 }
             }, {
-                "ruleId": 4,
+                "ruleId": 2,
                 "description": "Example: A rule of rejecting TCP sessions to 1.2.3.4 port 1234",
                 "enabled": False,
                 "conditions": [{
@@ -186,7 +162,7 @@ def default_filter_rules_table():
                     "type": "REJECT"
                 }
             }, {
-                "ruleId": 5,
+                "ruleId": 3,
                 "description": "Example: A rule of rejecting TCP port 21 (FTP) from 192.168.1.100",
                 "enabled": False,
                 "conditions": [{

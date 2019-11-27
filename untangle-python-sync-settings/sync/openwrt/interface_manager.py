@@ -86,12 +86,9 @@ add rule inet interface-marks restore-interface-marks ct direction original jump
 add rule inet interface-marks restore-interface-marks ct direction reply jump restore-interface-marks-reply
 add chain inet interface-marks mark-src-interface
 add chain inet interface-marks mark-dst-interface
-add chain inet interface-marks check-src-interface-mark
-add chain inet interface-marks check-dst-interface-mark
 add rule inet interface-marks prerouting-interface-marks jump restore-interface-marks
 add rule inet interface-marks prerouting-interface-marks ct state new jump mark-src-interface
 add rule inet interface-marks prerouting-interface-marks mark and 0x000000ff == 0 jump mark-src-interface
-add rule inet interface-marks prerouting-interface-marks jump check-src-interface-mark
 
 # If its a new session - we set the mark the dst interface marks regardless of what they were set to before
 # often we will set them prerouting to "vote" for a specific interface, but that may not be the actual dst interface 
@@ -102,7 +99,6 @@ add rule inet interface-marks forward-interface-marks ct state new jump mark-dst
 # sometimes sessions were created before these rules were in place - still mark these
 add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
-add rule inet interface-marks postrouting-interface-marks jump check-dst-interface-mark
 """)
 
         # input-interface-marks doesn't mark broadcast or multicast sessions
@@ -180,8 +176,8 @@ add rule inet interface-marks postrouting-interface-marks jump check-dst-interfa
         file.write("# restore original direction interface marks\n")
         file.write("add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
 
-        file.write("add rule inet interface-marks check-src-interface-mark mark and 0x%x == 0 iifname != lo log prefix \"WARNING: Unknown src intf: \"\n" % (self.SRC_INTERFACE_MASK))
-        file.write("add rule inet interface-marks check-dst-interface-mark mark and 0x%x == 0 oifname != lo log prefix \"WARNING: Unknown dst intf: \"\n" % (self.DST_INTERFACE_MASK))
+        file.write("add rule inet interface-marks prerouting-interface-marks mark and 0x%x == 0 iifname != lo log prefix \"WARNING: Unknown src intf: \"\n" % (self.SRC_INTERFACE_MASK))
+        file.write("add rule inet interface-marks postrouting-interface-marks mark and 0x%x == 0 oifname != lo log prefix \"WARNING: Unknown dst intf: \"\n" % (self.DST_INTERFACE_MASK))
 
         # We could just have static rules in restore-interface-marks-reply that just apply the original marks but shifted around a bit
         # However This would require something like:

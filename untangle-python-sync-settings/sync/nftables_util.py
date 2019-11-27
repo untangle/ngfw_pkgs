@@ -780,14 +780,6 @@ def clean_rule_actions(parent, array, tableName=None):
                         }
                     ]
 
-                if action.get("type") == "DROP":
-                    item['logs'] = [
-                        {
-                            "type": "NFLOG",
-                            "prefix": "drop-reason: %s-%s-%s: " % (tableName, parent.get('name'), item.get('ruleId')),
-                            "prefix": "{\'type\':\'rule\',\'table\':\'%s\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'DROP\'} " % (tableName, parent.get('name'), item.get('ruleId')),
-                        }
-                    ]
             #_INTERFACE_TYPE conditions historically might be "wan", "lan", "unset"
             conditions = item.get("conditions")
             if conditions:
