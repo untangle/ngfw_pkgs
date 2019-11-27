@@ -14,6 +14,7 @@ class SystemManager:
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
     wizard_status_filename = "/etc/config/wizard-status.json"
+    reload_system_filename = "/etc/config/startup.d/zzz-reload-system"
     cron_filename = "/etc/crontabs/root"
 
     def initialize(self):
@@ -23,6 +24,7 @@ class SystemManager:
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
         registrar.register_file(self.wizard_status_filename, "restart-pyconnector", self)
+        registrar.register_file(self.reload_system_filename, "startup-scripts", self)
         registrar.register_file(self.cron_filename, "restart-cron", self)
 
     def sanitize_settings(self, settings):
@@ -84,6 +86,8 @@ class SystemManager:
         self.write_cron_file(settings, prefix)
 
         self.write_wizard_status(settings, prefix)
+
+        self.write_system_reloader(prefix)
 
         time_zone = system.get('timeZone')
         if time_zone is None:
@@ -261,5 +265,30 @@ class SystemManager:
 
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
+
+    def write_system_reloader(self, prefix):
+        """Write the script to reload system service"""
+        filename = prefix + self.reload_system_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        file.write("/etc/init.d/system reload\n")
+        file.write("\n")
+
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+
 
 registrar.register_manager(SystemManager())
