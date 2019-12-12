@@ -201,7 +201,7 @@ class SystemManager:
         file.write("\n\n")
 
         file.write('TMPFILE="/tmp/system"\n')
-        file.write(r'''/bin/sed -e "s/option timezone .*/option timezone '%s'/" /etc/config/system > $TMPFILE''' % time_zone)
+        file.write(r'''/bin/sed -e "s@option timezone .*@option timezone '%s'@" /etc/config/system > $TMPFILE''' % time_zone)
         file.write('\n\n')
 
         file.write('if ! diff /etc/config/system $TMPFILE >/dev/null 2>&1 ; then cp $TMPFILE /etc/config/system ; fi\n')
