@@ -269,6 +269,8 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_v4address_expression("daddr", value, op, family)
     elif condtype == "DESTINATION_ADDRESS_TYPE":
         return condition_address_type_expression("daddr", value, op, family)
+    elif condtype == "DESTINED_LOCAL":
+        return condition_address_type_expression("daddr", "local", op, family)
     elif condtype == "SOURCE_ADDRESS_V6":
         return condition_v6address_expression("saddr", value, op, family)
     elif condtype == "DESTINATION_ADDRESS_V6":
