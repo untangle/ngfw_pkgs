@@ -406,11 +406,34 @@ class InterfacesManager:
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 file.write("${IPTABLES} -t mangle -A mark-src-intf -m physdev --physdev-in %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set src interface mark for intf %i using physdev\"" % (systemDev, id, self.src_interface_mark_mask, id) + "\n")
 
+        # NGFW-12726
+        # We need to restore both interface marks on re-injected TCP packets.
+        # Our reinject-restore-marks chain will extract the interface marks
+        # from the source MAC address where the UVM stores them and set them
+        # in the packet mark. This requires our modified xt_mac.ko matcher
+        # module that has been enhanced to allow matching on the individual
+        # bytes of the MAC address. When the first byte of the comparison
+        # MAC address is 0xFF the module will use the second byte of the
+        # address as the index to be compared. So bytes at index 0 and 1 are
+        # used to trigger our special match logic. 2 and 3 are unused.
+        # 4 = dst interface and 5 = src interface. So here we create a rule
+        # that jumps to the reinject-restore-marks chain, and an OUTPUT rule
+        # that will restore the marks from the values we extract and set in
+        # our chain. We then fill our chain with a src and dst extraction rule
+        # for each interface and finally add a rule to store the extracted
+        # mark in connmark so so it can be restored later.
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -p tcp -j reinject-restore-marks -m comment --comment \"Extract src and dest interface marks from source MAC address\"\n")
+        file.write("${IPTABLES} -t mangle -D OUTPUT -p tcp -m conntrack --ctdir REPLY -j restore-interface-marks >/dev/null 2>&1" + "\n")
+        file.write("${IPTABLES} -t mangle -A OUTPUT -p tcp -m conntrack --ctdir REPLY -j restore-interface-marks >/dev/null 2>&1" + "\n")
+
         for intf in interfaces:
             id = intf['interfaceId']
-            # Restore the mark from the source MAC address
-            # see netcap_virtual_interface.c for more details
-            file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -p tcp -m mac --mac-source 00:00:00:00:00:%02X -j MARK --set-mark 0x00%02X/0x00FF -m comment --comment \"Set reinject packet src interface mark for intf %x\"" % (id, id, id) + "\n")
+            # Restore the interface marks from the source MAC address
+            # See netcap_virtual_interface.c for more details
+            file.write("${IPTABLES} -t mangle -A reinject-restore-marks -m mac --mac-source FF:05:00:00:00:%02x -j MARK --set-mark 0x00%02X/0x00FF -m comment --comment \"Set reinjected packet src interface %x\"" % (id, id, id) + "\n")
+            file.write("${IPTABLES} -t mangle -A reinject-restore-marks -m mac --mac-source FF:04:00:00:%02X:00 -j MARK --set-mark 0x%02X00/0xFF00 -m comment --comment \"Set reinjected packet dst interface %x\"" % (id, id, id) + "\n")
+
+        file.write("${IPTABLES} -t mangle -A mark-src-intf -i utun -p tcp -j CONNMARK --save-mark -m comment --comment \"Save mark to connmark for reinject packets\"\n")
 
         # Special rule to mark LXC traffic
         # This is put in a special chain so it can be easily flushed/changed
@@ -520,7 +543,7 @@ class InterfacesManager:
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
 
-        file.write("# Create (if needed) and flush restore-interface-marks, mark-src-intf, mark-dst-intf chains" + "\n")
+        file.write("# Create (if needed) and flush restore-interface-marks, mark-src-intf, mark-dst-intf, reinject-restore-marks chains" + "\n")
         file.write("${IPTABLES} -t mangle -N restore-interface-marks 2>/dev/null" + "\n")
         file.write("${IPTABLES} -t mangle -F restore-interface-marks >/dev/null 2>&1" + "\n")
         file.write("${IPTABLES} -t mangle -N mark-src-intf 2>/dev/null" + "\n")
@@ -531,6 +554,9 @@ class InterfacesManager:
         file.write("${IPTABLES} -t filter -F save-mark-dst-intf >/dev/null 2>&1" + "\n")
         file.write("${IPTABLES} -t mangle -N mark-src-lxc-intf 2>/dev/null" + "\n")
         file.write("${IPTABLES} -t mangle -F mark-src-lxc-intf 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -N reinject-restore-marks 2>/dev/null" + "\n")
+        file.write("${IPTABLES} -t mangle -F reinject-restore-marks 2>/dev/null" + "\n")
+
         file.write("\n")
 
         file.write("# Call restore-interface-marks then mark-src-intf from PREROUTING chain in mangle" + "\n")
