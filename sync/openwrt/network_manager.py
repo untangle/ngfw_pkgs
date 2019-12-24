@@ -398,7 +398,10 @@ class NetworkManager:
         file = open(filename, "wb+")
         # only base64 is currently supported
         if conffile.get('encoding') == 'base64':
-            file.write(base64.b64decode(conffile.get('contents')).replace(b'nobind',b'#nobind'))
+            contents = base64.b64decode(conffile.get('contents'))
+            contents = contents.replace(b'nobind',b'#nobind')
+            contents = contents.replace(b'persist-tun',b'#persist-tun')
+            file.write(contents)
             file.flush()
             file.close()
             print("%s: Wrote %s" % (self.__class__.__name__, filename))
