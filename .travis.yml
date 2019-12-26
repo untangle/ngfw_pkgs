@@ -15,6 +15,12 @@ env:
       PKGTOOLS_COMMIT: origin/master
     - REPOSITORY: buster
       DISTRIBUTION: current
+      ARCHITECTURE: amd64
+      PKGTOOLS_COMMIT: origin/master
+      UPLOAD: scp
+    - REPOSITORY: buster
+      DISTRIBUTION: current
+      ARCHITECTURE: i386
       PKGTOOLS_COMMIT: origin/master
       UPLOAD: scp
 
