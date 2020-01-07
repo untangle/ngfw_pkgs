@@ -528,7 +528,11 @@ def logs_expression(logs):
         elif typ == "DICT":
             field = log.get('field')
             value = log.get('value')
-            strcat = strcat + " dict sessions ct id %s long_string set %s" % (field, value)
+            field_type = log.get('field_type')
+            if field_type == None or field_type == "LONG_STRING":
+                strcat = strcat + " dict sessions ct id %s long_string set %s" % (field, value)
+            elif field_type == "INT":
+                strcat = strcat + " dict sessions ct id %s int set %s" % (field, value)
         else:
             raise Exception("Unknown log type: " + str(log))
 
