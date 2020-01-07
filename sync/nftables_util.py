@@ -783,6 +783,12 @@ def clean_rule_actions(parent, array, tableName=None):
                         {
                             "type": "NFLOG",
                             "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (parent.get('name'), item.get('ruleId'), action.get('policy')),
+                        },
+                        {
+                            "type": "DICT",
+                            "field": "wan_rule_id",
+                            "field_type": "INT",
+                            "value": "%d" % item.get('ruleId'),
                         }
                     ]
 
