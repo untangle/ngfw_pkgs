@@ -13,6 +13,7 @@ env:
     - REPOSITORY: stretch
       DISTRIBUTION: current
       PKGTOOLS_COMMIT: origin/master
+      ARCHITECTURE: amd64
     - REPOSITORY: buster
       DISTRIBUTION: current
       ARCHITECTURE: amd64
@@ -25,8 +26,8 @@ env:
       UPLOAD: scp
 
 before_install:
-- docker pull untangleinc/ngfw:${REPOSITORY}-build
-- openssl aes-256-cbc -K $encrypted_4573965c4e34_key -iv $encrypted_4573965c4e34_iv -in .travis/buildbot.rsa.enc -out ${SSH_KEY} -d
+- docker pull untangleinc/ngfw:${REPOSITORY}-build-${ARCHITECTURE}
+- openssl aes-256-cbc -K $encrypted_43711b6157b7_key -iv $encrypted_43711b6157b7_iv -in .travis/buildbot.rsa.enc -out ${SSH_KEY} -d
 - chmod 600 ${SSH_KEY}
 
 script:
@@ -37,6 +38,6 @@ notifications:
   email: false
   slack:
     rooms:
-      secure: "Kq5FIzBEvoCwRyuqA1kdspe6ZN/+91duHOEpBe7nfYmDIYIRteBQpNDYQLhqtrSqHwVnWaCQpy39qe4aOqOFtGYeSH8nn4KI6dUKIC14dTQvAEePWppxPRXGxLzIbGws14reC5mV0hViOAhLEU4rBcJREaR/cSPYj+iuw9JnxbEM5bCleBPcZXJEAGuYSLhgofYIp5H+My3LdV1l7uUjWObCX23t/6gMJoOrVan7w6UPOMSr0kFiDYA5gZm5X6ngEF0BZOvW1nu3DArcTTJ1lvqGVuJK2sRMVFUxVkr8/gYOGasHGm/8BKsusco5vHU9R5gSjhnK0w7FAVqZtJ1Ikn+SKnYhwNDxfNY18yB+s7SPFmGxZLXRGpnCAoiqMGQm5U5GyvrXT8mMBuUkbhBnvf31JKQhVbdt7OwabPjICMqcnVTZGSY2T6WSgafJnHVq71Qbx/fkK8VFlX6beonUbGrCtuzb5oY1iQNJ5fFgHjnsmvULp1Agk6sqoEa5RF+EyhzX0FVOK9+T08ToFDJ3VCDA5yc5iCyKZm9ImO9MoTjDRIpUZINAtNlAWYZdEFC/JXyQLoZiuvSUsYroy8ZyMXpvTrDC9s9mwtfAsOdbv+SyzJyIrKbSmU75aRxuQG/iCRbWepH6OxKsQ2EBGS+YewNXX1cSLFPlTNRKjr3bawQ="
+      secure: "iAbQKMELDfEbl9Pf4RINoFc1XW/WpI0pmMFzrUsUUgECWxA3MuOCBgUxXb79OZQSTtxcsaA70wmEnHyEuPwEe5ZRedA9zl7sw1CdPvz626yD+Tyo5miB+ZoN5YbXRSeIfrzc3zhaTG2Li9nE9QHofXRtWJ3nbqE9uLg1em6DaFxbyJsOkIrTR1+5vaZSnW502QtjMp+O+thimaPn1ZZ62oKl6w7PmB/pvIHpCJvrOK9J2w34YS0y8tJNPXOU7wsdygstMxqH2CBB5rzcwMz7u0MdRs7hcUVUs7uqKmiRscjEo6VUW8AywNTSKsV5UyslA3/Y80YjPxWuhSY31mRjhqf7VVtwuqUQtIkdlctLyaCvl6xjAfzvss73UIMS52O/UQyeMocZsf/LpGMvMOlxQ/Odvs3B0h+4RfDNXCNIDy0p42pxocXVhZxWAYwUyuzopsZ+uuH6Ekf8oiB/i2QBDpinMo7SKTEeyAIUxw4TswJ0Ws7qzOoakwxZ0wSwqsqgbtibEf2MYVO9SedUA6kHC449u9fHQXmQWwoHUqwU7TCjo71iJy2MSls3pJEV8rklDGcfUyXvNT7agZux42beyfb1HPJ/sVMIVi9ngrk9H6GgZWkpw1Qs7zMhXrZtwgDkuoIRzXd/PTaxmcCERyDwrec+lFKSZRSdpBGU5ivn9pk="
     on_success: change
     on_failure: always
