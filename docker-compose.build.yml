@@ -16,7 +16,7 @@ services:
         git checkout $${PKGTOOLS_COMMIT}"
 
     build:
-      image: untangleinc/ngfw:${REPOSITORY:-stretch}-build
+      image: untangleinc/ngfw:${REPOSITORY:-stretch}-build-${ARCHITECTURE:-amd64}
       environment:
         - REPOSITORY=${REPOSITORY:-stretch}
         - DISTRIBUTION=${DISTRIBUTION:-current}
