@@ -10,23 +10,18 @@ DEBUG = -g3 -ggdb
 SPEED = -O2
 
 BUILDID := "$(shell date -u "+%G/%m/%d %H:%M:%S UTC")"
-SYSTEM := $(shell uname)
-ARCH := $(shell uname -m)
 
-PLATFORM = -D__LINUX__
-LIBFILES = -lpthread -ldl -lnetfilter_log
-
-CXXFLAGS = $(DEBUG) $(GPROF) $(SPEED) -Wall -pthread
-
+CXXFLAGS += $(DEBUG) $(GPROF) $(SPEED) -Wall -pthread
 CXXFLAGS += -DBUILDID=\"$(BUILDID)\"
-CXXFLAGS += -DPLATFORM=\"$(PLATFORM)\"
+
+LDLIBS += -lpthread -ldl -lnetfilter_log
 
 OBJFILES := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
 
-untangle-nflogd : $(OBJFILES)
-	$(CC) $(DEBUG) $(GPROF) $(SPEED) $(OBJFILES) $(LIBPATH) $(LIBFILES) -o nflogd
+nflogd : $(OBJFILES)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -o $@ $^
 
-install: untangle-nflogd
+install: nflogd
 	mkdir -p $(DESTDIR)/usr/bin
 	cp nflogd $(DESTDIR)/usr/bin/
 
