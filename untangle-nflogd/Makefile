@@ -24,7 +24,7 @@ CXXFLAGS += -DPLATFORM=\"$(PLATFORM)\"
 OBJFILES := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
 
 untangle-nflogd : $(OBJFILES)
-	$(CXX) $(DEBUG) $(GPROF) $(SPEED) $(OBJFILES) $(LIBPATH) $(LIBFILES) -o nflogd
+	$(CC) $(DEBUG) $(GPROF) $(SPEED) $(OBJFILES) $(LIBPATH) $(LIBFILES) -o nflogd
 
 install: untangle-nflogd
 	mkdir -p $(DESTDIR)/usr/bin
