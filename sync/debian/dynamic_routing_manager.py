@@ -8,13 +8,13 @@ import traceback
 import re
 from shutil import move
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing
 # based on the settings object passed from sync-settings
 
 
-class DynamicRoutingManager:
+class DynamicRoutingManager(Manager):
     conf_path = "/etc/quagga"
     daemons_conf_filename = conf_path + "/daemons"
     zebra_conf_filename = conf_path + "/zebra.conf"
@@ -37,6 +37,7 @@ class DynamicRoutingManager:
     ip_addr_regex = re.compile(r'\s+inet\s+([^\s]+)')
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         try:
             self.file_uid = pwd.getpwnam("quagga").pw_uid
             self.file_gid = grp.getgrnam("quagga").gr_gid
@@ -50,20 +51,14 @@ class DynamicRoutingManager:
         registrar.register_file(self.ospfd_conf_filename, "restart-quagga", self)
         registrar.register_file(self.restart_hook_filename, "restart-quagga", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        if settings.get('dynamicRoutingSettings') is not None:
-            if 'enabled' in settings['dynamicRoutingSettings'] and settings['dynamicRoutingSettings']['enabled'] is True:
-                self.write_daemons_conf(settings, prefix)
-                self.write_zebra_conf(settings, prefix)
-                self.write_bgpd_conf(settings, prefix)
-                self.write_ospfd_conf(settings, prefix)
-            self.write_restart_quagga_daemons_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        if settings_file.settings.get('dynamicRoutingSettings') is not None:
+            if 'enabled' in settings_file.settings['dynamicRoutingSettings'] and settings_file.settings['dynamicRoutingSettings']['enabled'] is True:
+                self.write_daemons_conf(settings_file.settings, prefix)
+                self.write_zebra_conf(settings_file.settings, prefix)
+                self.write_bgpd_conf(settings_file.settings, prefix)
+                self.write_ospfd_conf(settings_file.settings, prefix)
+            self.write_restart_quagga_daemons_hook(settings_file.settings, prefix)
         return
 
     def address_to_bits(self, address):

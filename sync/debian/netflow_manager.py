@@ -7,29 +7,24 @@ import traceback
 import re
 from shutil import move
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing
 # based on the settings object passed from sync-settings
 
 
-class NetflowManager:
+class NetflowManager(Manager):
     softflow_daemon_conf_filename = "/etc/default/softflowd"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.softflow_daemon_conf_filename, "restart-softflowd", self)
         registrar.register_file(self.restart_hook_filename, "restart-softflowd", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_softflow_daemon_conf(settings, prefix)
-        self.write_restart_softflow_daemon_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_softflow_daemon_conf(settings_file.settings, prefix)
+        self.write_restart_softflow_daemon_hook(settings_file.settings, prefix)
 
     def write_softflow_daemon_conf(self, settings, prefix=""):
         """

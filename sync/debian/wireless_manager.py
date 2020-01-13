@@ -5,44 +5,39 @@ import datetime
 import traceback
 import time
 import re
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings
 
 
-class WirelessManager:
+class WirelessManager(Manager):
     wpasupplicant_conf_filename = "/etc/wpa_supplicant/wpa_supplicant.conf"
     hostapd_conf_filename = "/etc/hostapd/hostapd.conf"
     crda_default_filename = "/etc/default/crda"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.wpasupplicant_conf_filename+".*", "restart-networking", self)
         registrar.register_file(self.hostapd_conf_filename+".*", "restart-networking", self)
         registrar.register_file(self.crda_default_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
 
         # on Asus AC88U, find each disabled wifi interface, and remove
         # its corresponding hostapd configuration file if it
         # exists. untangle-broadcom-wireless relies solely on the
         # presence of that file to decide whether to start the AP
         # daemon or not (#13066)
-        enabledInterfaces = [x['physicalDev'] for x in settings.get('interfaces')]
+        enabledInterfaces = [x['physicalDev'] for x in settings_file.settings.get('interfaces')]
         for intfName in [x for x in ('eth1', 'eth2') if not x in enabledInterfaces]:
             filename = prefix + self.hostapd_conf_filename + "-" + intfName
             if os.path.exists(filename):
                 delete_list.append(filename)
 
-        self.write_wpasupplicant_conf(settings, prefix)
-        self.write_hostapd_conf(settings, prefix)
-        self.write_crda_file(settings, prefix)
+        self.write_wpasupplicant_conf(settings_file.settings, prefix)
+        self.write_hostapd_conf(settings_file.settings, prefix)
+        self.write_crda_file(settings_file.settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/untangle/pre-network-hook.d/990-restart-hostapd")

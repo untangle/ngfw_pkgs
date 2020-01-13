@@ -5,13 +5,13 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/210-bypass-rules
 # based on the settings object passed from sync-settings
 
 
-class BypassRuleManager:
+class BypassRuleManager(Manager):
     bypass_mark_mask = 0x01000000
     interfaces_mark_mask = 0x0000FFFF
 
@@ -20,16 +20,11 @@ class BypassRuleManager:
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.bypass_rules_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_files(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_files(settings_file.settings, prefix)
 
     def write_bypass_rule(self, bypass_rule):
         if 'enabled' in bypass_rule and not bypass_rule['enabled']:

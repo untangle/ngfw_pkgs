@@ -4,7 +4,7 @@ import sys
 import subprocess
 import datetime
 import traceback
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/011-kernel
@@ -12,21 +12,15 @@ from sync import registrar
 # based on the settings object passed from sync-settings
 #
 
-
-class KernelManager:
+class KernelManager(Manager):
     kernel_hook_filename = "/etc/untangle/post-network-hook.d/011-kernel"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.kernel_hook_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_file(settings_file.settings, prefix)
 
     def write_file(self, settings, prefix):
         filename = prefix + self.kernel_hook_filename

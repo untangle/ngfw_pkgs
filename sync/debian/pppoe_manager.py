@@ -5,14 +5,14 @@ import subprocess
 import datetime
 import traceback
 import re
-from sync import registrar
+from sync import registrar,Manager
 from sync.network_util import NetworkUtil
 
 # This class is responsible for writing PPPoE related conf files
 # based on the settings object passed from sync-settings
 
 
-class PPPoEManager:
+class PPPoEManager(Manager):
     pap_secrets_filename = "/etc/ppp/pap-secrets"
     chap_secrets_filename = "/etc/ppp/chap-secrets"
     peers_directory = "/etc/ppp/peers/"
@@ -21,23 +21,18 @@ class PPPoEManager:
     ppp_ip_up_filename = "/etc/ppp/ip-up.d/99-untangle"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.pap_secrets_filename, "restart-networking", self)
         registrar.register_file(self.chap_secrets_filename, "restart-networking", self)  # FIXME
         registrar.register_file(self.peers_directory+".*", "restart-networking", self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
         registrar.register_file(self.ppp_ip_up_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_pppoe_connection_files(settings, delete_list, prefix)
-        self.write_secret_files(settings, prefix)
-        self.write_pre_network_hook(settings, prefix)
-        self.write_ppp_ipup_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_pppoe_connection_files(settings_file.settings, delete_list, prefix)
+        self.write_secret_files(settings_file.settings, prefix)
+        self.write_pre_network_hook(settings_file.settings, prefix)
+        self.write_ppp_ipup_hook(settings_file.settings, prefix)
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/ppp/ip-up.d/99-netd")
 
