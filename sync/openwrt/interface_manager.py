@@ -4,9 +4,9 @@
 # pylint: disable=no-self-use
 import os
 import stat
-from sync import registrar
+from sync import registrar, Manager
 
-class InterfaceManager:
+class InterfaceManager(Manager):
     """InterfaceManager writes /etc/config/nftables-rules.d/101-interface-marks"""
     INTERFACE_MARKS_FILENAME = "/etc/config/nftables-rules.d/101-interface-marks"
 
@@ -39,22 +39,12 @@ class InterfaceManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.INTERFACE_MARKS_FILENAME, "restart-nftables-rules", self)
 
-    def sanitize_settings(self, settings):
-        """sanitize settings"""
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        pass
-
-    def create_settings(self, settings, prefix, delete_list, filename):
-        """creates settings"""
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_interface_marks_file(settings, prefix)
+        self.write_interface_marks_file(settings_file.settings, prefix)
 
     def write_interface_marks_file(self, settings, prefix):
         """write_interface_marks_file writes /etc/config/nftables-rules.d/101-interface-marks"""
