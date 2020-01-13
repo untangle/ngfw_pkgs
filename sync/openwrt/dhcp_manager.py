@@ -7,10 +7,10 @@
 # pylint: disable=too-many-statements
 import os
 import ipaddress
-from sync import registrar
+from sync import registrar, Manager
 from sync import network_util
 
-class DhcpManager:
+class DhcpManager(Manager):
     """
     This class is responsible for writing /etc/config/dhcp
     based on the settings object passed from sync-settings
@@ -19,15 +19,12 @@ class DhcpManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.dhcp_filename, "restart-dhcp", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes removes blank settings"""
-        pass
-
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        dns_settings = settings.get('dns')
+        dns_settings = settings_file.settings.get('dns')
         if dns_settings is not None:
             if dns_settings.get('localServers') is not None:
                 for local_server in dns_settings.get('localServers'):
@@ -35,7 +32,7 @@ class DhcpManager:
                         raise Exception('Missing domain in DNS local server')
                     if local_server.get('localServer') is None:
                         raise Exception('Missing localServer in DNS local server')
-        dhcp_settings = settings.get('dns')
+        dhcp_settings = settings_file.settings.get('dns')
         if dhcp_settings is not None:
             if dhcp_settings.get('staticDhcpEntries') is not None:
                 for static_entry in dhcp_settings.get('staticDhcpEntries'):
@@ -45,21 +42,21 @@ class DhcpManager:
                         raise Exception('Missing address in DHCP static entry')
         return
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['dns'] = {}
-        settings['dns']['localServers'] = []
-        settings['dns']['staticEntries'] = []
+        settings_file.settings['dns'] = {}
+        settings_file.settings['dns']['localServers'] = []
+        settings_file.settings['dns']['staticEntries'] = []
 
-        settings['dhcp'] = {}
-        settings['dhcp']['dhcpAuthoritative'] = True
-        settings['dhcp']['staticDhcpEntries'] = []
+        settings_file.settings['dhcp'] = {}
+        settings_file.settings['dhcp']['dhcpAuthoritative'] = True
+        settings_file.settings['dhcp']['staticDhcpEntries'] = []
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_dhcp_file(settings, prefix)
+        self.write_dhcp_file(settings_file.settings, prefix)
 
     def write_dhcp_file(self, settings, prefix=""):
         """writes prefix/etc/config/dhcp"""
