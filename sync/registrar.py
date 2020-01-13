@@ -26,16 +26,25 @@ files = {}
 # managers are responsible for serializing the settings to disk
 managers = []
 
+# A list of settings_files and the managers that want to operate on them.
+settings_files = []
+
 def register_manager( manager ):
     global managers
     managers.append(manager)
 
 def register_operation( name, pre_commands, post_commands, priority, parent=None ):
+    """
+    Register available operations that can be associated with processing files.
+    """
     global operations
     # print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))
     operations[name] = { "name": name, "pre_commands": pre_commands, "post_commands": post_commands, "priority": priority, "parent": parent }
 
 def register_file( filepath, operation, owner ):
+    """
+    Register a file (full path) with an operation to act upon.
+    """
     global files, operations
     # print("Registering file: " + filepath.ljust(70) + " op: " + str(operation).ljust(20) + " owner: " + str(type(owner).__name__))
     if operation != None:
@@ -44,6 +53,13 @@ def register_file( filepath, operation, owner ):
             raise ValueError("Unknown operation: " + operation)
         
     files[filepath] = { "filepath": filepath, "operation": operation, "owner": owner}
+
+def register_settings_file(id, manager):
+    """
+    Register a manager with a settings file identifer.
+    If id=*, manager will see all settings files.
+    """
+    settings_files.append({ "id": id, "manager" : manager})
 
 def operation_subset_of( parent, child ):
     """
@@ -171,3 +187,13 @@ def check_registrar_operations(ops):
             return 1
     return 0
 
+def check_registrar_settings_file(id, manager):
+    """
+    Determine if the specified manager is interested in this settings file identifier.
+    """
+    for settings_file in settings_files:
+        if settings_file['manager'] == manager:
+            if settings_file['id'] == id or settings_file['id'] == '*':
+                return True
+
+    return False
