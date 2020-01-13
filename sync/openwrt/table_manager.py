@@ -4,33 +4,28 @@
 # pylint: disable=no-self-use
 import os
 import stat
-from sync import registrar
+from sync import registrar, Manager
 from sync import nftables_util
 from sync import board_util
 
-class TableManager:
+class TableManager(Manager):
     """ReportsManager manages the all the firewall tables"""
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.filename_prefix + ".*", "restart-nftables-rules", self)
 
-    def sanitize_settings(self, settings):
+    def sanitize_settings(self, settings_file):
         """sanitizes settings"""
         # Set the rule_id to unique values of every chain
         for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
-            for chain in settings['firewall']['tables'][table]['chains']:
+            for chain in settings_file.settings['firewall']['tables'][table]['chains']:
                 nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
                 nftables_util.clean_rule_actions(chain, chain.get('rules'), table)
 
-
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        pass
-
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
@@ -43,8 +38,8 @@ class TableManager:
         tables['captive-portal'] = default_captive_portal_table()
         tables['shaping'] = default_shaping_rules_table()
 
-        settings['firewall'] = {}
-        settings['firewall']['tables'] = tables
+        settings_file.settings['firewall'] = {}
+        settings_file.settings['firewall']['tables'] = tables
 
     def write_files(self, settings, prefix, delete_list):
         """writes the rule files"""
@@ -75,7 +70,7 @@ class TableManager:
             write_file(filename, table, prefix)
             i = i+1
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
 
         # Add all /etc/config/nftables-rules.d/2.* files to the delete_list
@@ -88,7 +83,7 @@ class TableManager:
                     full_name = dirpath + filename
                     delete_list.append(full_name)
         # Write all the /etc/config/nftables-rules.d/2.* files
-        self.write_files(settings, prefix, delete_list)
+        self.write_files(settings_file.settings, prefix, delete_list)
 
 registrar.register_manager(TableManager())
 

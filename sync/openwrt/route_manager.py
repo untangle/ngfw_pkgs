@@ -8,7 +8,7 @@
 import os
 import stat
 import traceback
-from sync import registrar
+from sync import registrar, Manager
 from sync import nftables_util
 from sync import network_util
 
@@ -16,7 +16,7 @@ from sync import network_util
 # based on the settings object passed from sync-settings
 
 
-class RouteManager:
+class RouteManager(Manager):
     """Manages files responsible for wan routing"""
     rt_tables_filename = "/etc/iproute2/rt_tables"
     rt_tables_file = None
@@ -31,15 +31,16 @@ class RouteManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.ifup_routes_filename, "restart-default-route", self)
         registrar.register_file(self.ifdown_routes_filename, "restart-default-route", self)
         registrar.register_file(self.rt_tables_filename, "restart-networking", self)
         registrar.register_file(self.wan_routing_filename, "restart-wan-routing", self)
         registrar.register_file(self.wan_manager_filename, "restart-wan-routing", self)
 
-    def sanitize_settings(self, settings):
+    def sanitize_settings(self, settings_file):
         """sanitizes settings"""
-        wan = settings['wan']
+        wan = settings_file.settings['wan']
         nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
         for chain in wan.get('policy_chains'):
@@ -47,9 +48,9 @@ class RouteManager:
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
 
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        wan = settings['wan']
+        wan = settings_file.settings['wan']
         policies = wan.get('policies')
         policy_ids = []
         for policy in policies:
@@ -92,18 +93,18 @@ class RouteManager:
                     if policy not in policy_ids:
                         raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
         wans = []
-        interfaces = settings.get('network').get('interfaces')
+        interfaces = settings_file.settings.get('network').get('interfaces')
         for intf in interfaces:
             if enabled_wan(intf):
                 wans.append(intf.get('interfaceId'))
 
-        settings['wan'] = {}
-        settings['wan']['policy_chains'] = [
+        settings_file.settings['wan'] = {}
+        settings_file.settings['wan']['policy_chains'] = [
             {
                 "default": True,
                 "description": "User defined wan routing rules",
@@ -123,7 +124,7 @@ class RouteManager:
             }
         ]
 
-        settings['wan']['policies'] = [{
+        settings_file.settings['wan']['policies'] = [{
             "best_of_metric": "LOWEST_LATENCY",
             "criteria": [],
             "description": "Lowest Latency WAN",
@@ -173,14 +174,14 @@ class RouteManager:
             "policyId": 4
         }]
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_rt_tables_file(settings, prefix)
-        self.write_ifup_routes_file(settings, prefix)
-        self.write_ifdown_routes_file(settings, prefix)
-        self.write_wan_routing_file(settings, prefix)
-        self.write_wan_manager_file(settings, prefix)
+        self.write_rt_tables_file(settings_file.settings, prefix)
+        self.write_ifup_routes_file(settings_file.settings, prefix)
+        self.write_ifdown_routes_file(settings_file.settings, prefix)
+        self.write_wan_routing_file(settings_file.settings, prefix)
+        self.write_wan_manager_file(settings_file.settings, prefix)
 
         # the first go at wan routing support created these files, but
         # we don't need them anymore.  Eventually this can be removed

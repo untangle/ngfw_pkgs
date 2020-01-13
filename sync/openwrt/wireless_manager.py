@@ -4,11 +4,11 @@
 import os
 import subprocess
 import re
-from sync import registrar
+from sync import registrar, Manager
 from sync import board_util
 from sync import network_util
 
-class WirelessManager:
+class WirelessManager(Manager):
     """
     This class is responsible for writing /etc/config/wireless
     based on the settings object passed from sync-settings
@@ -17,15 +17,12 @@ class WirelessManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.wireless_filename, "restart-wireless", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes removes blank settings"""
-        pass
-
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        interfaces = settings['network']['interfaces']
+        interfaces = settings_file.settings['network']['interfaces']
         for intf in interfaces:
             if enabled_wifi(intf):
                 encryption = intf.get('wirelessEncryption')
@@ -59,10 +56,10 @@ class WirelessManager:
                     if channel > 11 and not self.has_5ghz(intf):
                         raise Exception("Invalid wireless channel specified for 2.4 Ghz: " + intf.get('name') + " " + str(channel))
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        interfaces = settings['network']['interfaces']
+        interfaces = settings_file.settings['network']['interfaces']
         for intf in interfaces:
             if intf.get('type') == 'WIFI':
                 if self.has_5ghz(intf):
@@ -75,10 +72,10 @@ class WirelessManager:
                 intf['wirelessSsid'] = 'Untangle'
                 intf['wirelessThroughput'] = 'AUTO'
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
-        self.write_wireless_file(settings, prefix)
+        self.write_wireless_file(settings_file.settings, prefix)
 
     def get_phy_name(self, interface):
         "get the phy name for an device"
