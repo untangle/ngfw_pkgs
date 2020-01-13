@@ -43,27 +43,27 @@ opts = None
 
 
 class Options(object):
-
     """Options parses the command line arguments"""
 
     def __init__(self):
+        self.settings_file_names = []
         if os.path.isfile('/etc/debian_version'):
             self.os_name = 'debian'
         elif os.path.isfile('/etc/openwrt_version'):
             self.os_name = 'openwrt'
         if self.os_name == 'openwrt':
-            self.filename = '/etc/config/settings.json'
+            self.default_settings_filename = '/etc/config/settings.json'
         else:
-            self.filename = '/usr/share/untangle/settings/untangle-vm/network.js'
+            self.default_settings_filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.restart_services = True
         self.test_run = False
         self.create_settings = False
         self.tmpdir = None
         self.tmpdir_delete = None
 
-    def set_filename(self, arg):
-        """Set filename argument"""
-        self.filename = arg
+    def set_settings_filename(self, arg):
+        """Set settings filename argument"""
+        self.settings_file_names.append(arg)
 
     def set_os(self, arg):
         """Set os_name argument"""
@@ -84,7 +84,7 @@ class Options(object):
     def parse_args(self):
         """Parse command line arguments"""
         handlers = {
-            '-f': self.set_filename,
+            '-f': self.set_settings_filename,
             '-o': self.set_os,
             '-n': self.set_norestart,
             '-s': self.set_test_run,
@@ -95,18 +95,20 @@ class Options(object):
             (optlist, args) = getopt.getopt(sys.argv[1:], 'f:o:nsc')
             for opt in optlist:
                 handlers[opt[0]](opt[1])
+
+            if len(self.settings_file_names) == 0:
+                # If no settings file names specified, use defalt file name.
+                self.settings_file_names.append(self.default_settings_filename)
             return args
         except getopt.GetoptError as exc:
             print(exc)
             print_usage()
             exit(1)
 
-
 def cleanup(code):
     """Cleanup tmpdirs and exit with specified code"""
     cleanup_tmpdirs()
     exit(code)
-
 
 def print_usage():
     """Print usage"""
@@ -119,7 +121,6 @@ def print_usage():
     -s          : do not copy or run restart commands (test run)
     -o          : specify OS manually (debian/openwrt)
 """ % sys.argv[0])
-
 
 def calculate_changed_files(dirname):
     """
@@ -159,7 +160,6 @@ def calculate_changed_files(dirname):
 
     return changes
 
-
 def calculate_deleted_files(dirname_delete):
     """
     Calculate the list of files to be deleted by looking in the dir
@@ -177,7 +177,6 @@ def calculate_deleted_files(dirname_delete):
 
     return deleted_files
 
-
 def run_cmd(cmd):
     """
     Run the specified command and print the ouput and return the result
@@ -190,7 +189,6 @@ def run_cmd(cmd):
         print(line.decode('ascii').strip())
     proc.wait()
     return proc.returncode
-
 
 def copy_files(dirname):
     """
@@ -220,7 +218,6 @@ def copy_files(dirname):
     run_cmd("/bin/sync")
     return 0
 
-
 def delete_files(delete_list):
     """
     Delete the files in the list
@@ -240,7 +237,6 @@ def delete_files(delete_list):
             print("Error deleting file: " + filex, exc)
 
     return result_sum
-
 
 def run_commands(ops, key):
     """
@@ -274,7 +270,6 @@ def run_commands(ops, key):
             ret += result
     return ret
 
-
 def tee_stdout_log():
     """
     Forks stdout to a log file
@@ -283,14 +278,12 @@ def tee_stdout_log():
     os.dup2(tee.stdin.fileno(), sys.stdout.fileno())
     os.dup2(tee.stdin.fileno(), sys.stderr.fileno())
 
-
 def drop_permissions():
     """
     Set this process permissions to nobody (drop root permissions)
     """
     os.setegid(65534)  # nogroup
     os.seteuid(65534)  # nobody
-
 
 def call_without_permissions(func, *args, **kw):
     """
@@ -307,7 +300,6 @@ def call_without_permissions(func, *args, **kw):
         # os.close(write_pipe)
         (_, result) = os.waitpid(pid, 0)
         return result >> 8
-
 
 def make_tmpdirs():
     """
@@ -326,7 +318,6 @@ def make_tmpdirs():
         traceback.print_exc()
         cleanup(1)
 
-
 def cleanup_tmpdirs():
     """
     Delete the tmp directories
@@ -337,46 +328,13 @@ def cleanup_tmpdirs():
     if opts.tmpdir_delete != None:
         shutil.rmtree(opts.tmpdir_delete)
 
-
-def read_settings():
-    """
-    Read and parse the settings file
-    """
-    global opts
-    try:
-        settings_file = open(opts.filename, 'r')
-        settings_data = settings_file.read()
-        settings_file.close()
-        settings = json.loads(settings_data, object_pairs_hook=collections.OrderedDict)
-        return settings
-    except IOError as exc:
-        print("Unable to read settings file.", exc)
-        traceback.print_exc()
-        cleanup(1)
-
-
-def save_settings(settings):
-    """
-    Save the specified settings to the settings file
-    """
-    global opts
-    try:
-        settings_file = open(opts.filename, 'w')
-        json.dump(settings, settings_file, indent=4, separators=(',', ': '))
-        settings_file.flush()
-        settings_file.close()
-    except IOError as exc:
-        print("Unable to save settings file.", exc)
-        traceback.print_exc()
-        cleanup(1)
-
-
-def create_settings():
+def create_settings(settings_file):
     """
     Create settings from scratch
     """
     global opts
-    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, opts.filename, opts.tmpdir, opts.tmpdir_delete)
+
+    result = call_without_permissions(sync.managers.create_settings_in_tmpdir, settings_file, opts.tmpdir, opts.tmpdir_delete)
     if result != 0:
         print("Failed to create settings.")
         cleanup(result)
@@ -390,17 +348,49 @@ def create_settings():
     cleanup_tmpdirs()
     make_tmpdirs()
 
+def sanitize_settings(settings_file):
+    """
+    Sanitize settings. If they changed, save the new version
+    """
+    try:
+        orig_settings = copy.deepcopy(settings_file.settings)
+        sync.managers.sanitize_settings(settings_file)
+        if json.dumps(orig_settings) != json.dumps(settings_file.settings):
+            print("Sanitization changed settings. Saving new settings...")
+            print()
+            # save_settings(settings)
+            settings.save_settings()
+    except Exception:
+        print("Settings sanitization failed!")
+        traceback.print_exc()
+        cleanup(1)
+
+def validate_settings(settings_file):
+    """
+    Validate settings.
+    """
+    try:
+        sync.managers.validate_settings(settings_file)
+    except Exception:
+        print("Settings verification failed!")
+        traceback.print_exc()
+        cleanup(1)
+
+def sync_settings(settings_file):
+    """
+    Validate settings.
+    """
+    result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings_file, opts.tmpdir, opts.tmpdir_delete)
+    if result != 0:
+        print("Failed to sync settings.")
+        cleanup(result)
+
 
 def sync_to_system(settings):
     """
     Synchronize these settings to the system
     These settings should have been sanitized and verified before calling this function
     """
-    result = call_without_permissions(sync.managers.sync_to_tmpdirs, settings, opts.tmpdir, opts.tmpdir_delete)
-    if result != 0:
-        print("Failed to sync settings.")
-        cleanup(result)
-
     # Check that all new files in the tmpdir are registered in the registrar
     if sync.registrar.check_registrar_files(opts.tmpdir) != 0:
         print("File missing in registrar.")
@@ -464,7 +454,6 @@ def sync_to_system(settings):
         print("\nDone.")
         cleanup(0)
 
-
 def main():
     """
     main()
@@ -476,11 +465,9 @@ def main():
 
     # options argument parser
     opts = Options()
-    # The JSON settings object
-    settings = None
-
     opts.parse_args()
 
+    # Import appropriate library for our architecture.
     if opts.os_name == 'debian':
         import sync.debian as _
     elif opts.os_name == 'openwrt':
@@ -497,44 +484,39 @@ def main():
         print("\nError during init process. Abort.")
         cleanup(result)
 
-    # Create settings if necessary
-    if opts.create_settings:
-        create_settings()
+    #
+    # Walk through settings, running create, read, santize, validate, and sync commands
+    #
+    sync.SettingsFile.set_os_name(opts.os_name)
+    # Sort so that our default settings file name, if specified, comes first to use
+    # in sync.NetworkUtil.settings
+    sorted_settings_file_names = sorted(opts.settings_file_names, key=lambda x:(x.endswith(opts.default_settings_filename) == False, x))
+    for settings_file_name in sorted_settings_file_names:
+        settings_file = sync.SettingsFile(settings_file_name)
 
-    # Read settings
-    settings = read_settings()
+        # Create settings if necessary
+        if opts.create_settings:
+            create_settings(settings_file)
 
-    # Sanitize settings. If they changed, save the new version
-    try:
-        orig_settings = copy.deepcopy(settings)
-        sync.managers.sanitize_settings(settings)
-        if json.dumps(orig_settings) != json.dumps(settings):
-            print("Sanitization changed settings. Saving new settings...")
-            print()
-            save_settings(settings)
-    except Exception:
-        print("Settings sanitization failed!")
-        traceback.print_exc()
-        cleanup(1)
+        # Read settings
+        settings_file.read_settings()
 
-    # Validate settings
-    try:
-        sync.managers.validate_settings(settings)
-    except Exception:
-        print("Settings verification failed!")
-        traceback.print_exc()
-        cleanup(1)
+        # Sanitize settings
+        sanitize_settings(settings_file)
 
-    sync.NetworkUtil.settings = settings
-    settings["filename"] = opts.filename
+        # Validate settings
+        validate_settings(settings_file)
 
-    # Call all the managers to "sync" settings to tmpdir
-    # We drop root permissions to call these functions so that
-    # the managers can't access the / filesystem directly
+        if settings_file_name.endswith(opts.default_settings_filename):
+            sync.NetworkUtil.settings = settings_file.settings
+
+        # Call all the managers to "sync" settings to tmpdir
+        # We drop root permissions to call these functions so that
+        # the managers can't access the / filesystem directly
+        sync_settings(settings_file)
+
     print("Syncing to system...")
-    sync_to_system(settings)
-
+    sync_to_system(settings_file)
     exit(0)
-
 
 main()
