@@ -5,6 +5,8 @@ except:
 
 from .iptables_util import IptablesUtil
 from .network_util import NetworkUtil
+from .settings_file import SettingsFile
+from .manager import Manager
 
 from . import registrar
 from . import managers
