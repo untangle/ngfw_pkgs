@@ -4,7 +4,7 @@ import subprocess
 import datetime
 import stat
 import traceback
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/960-iptables
@@ -14,27 +14,21 @@ from sync import registrar
 # based on the settings object passed from sync-settings
 #
 
-
-class IptablesManager:
+class IptablesManager(Manager):
     flush_filename = "/etc/untangle/iptables-rules.d/010-flush"
     helpers_filename = "/etc/untangle/iptables-rules.d/011-helpers"
     post_network_filename = "/etc/untangle/post-network-hook.d/960-iptables"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.flush_filename, "restart-iptables", self)
         registrar.register_file(self.helpers_filename, "restart-iptables", self)
         registrar.register_file(self.post_network_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_flush_file(settings, prefix)
-        self.write_helpers_file(settings, prefix)
-        self.write_post_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_flush_file(settings_file.settings, prefix)
+        self.write_helpers_file(settings_file.settings, prefix)
+        self.write_post_file(settings_file.settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/untangle/iptables-rules.d/825-classd")

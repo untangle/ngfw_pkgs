@@ -7,29 +7,24 @@ import traceback
 import re
 from sync.network_util import NetworkUtil
 from sync.iptables_util import IptablesUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/300-qos
 # and others based on the settings object passed from sync-settings
 
 
-class QosManager:
+class QosManager(Manager):
     bypass_mark_mask = 0x01000000
     qos_filename = "/etc/untangle/iptables-rules.d/300-qos"
     src_interface_mark_mask = 0x00ff
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.qos_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_qos_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_qos_hook(settings_file.settings, prefix)
         return
 
     def find_priority(self, qosPriorities, priorityId):

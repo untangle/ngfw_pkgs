@@ -6,7 +6,7 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing:
 # /etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
@@ -14,7 +14,7 @@ from sync import registrar
 # based on the settings object passed from sync-settings
 
 
-class DhcpManager:
+class DhcpManager(Manager):
     enter_hook_filename = "/etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook"
     exit_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook"
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/035-dhcp"
@@ -22,23 +22,18 @@ class DhcpManager:
     ddclient_hook_filename = "/etc/dhcp/dhclient-exit-hooks.d/ddclient"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.enter_hook_filename, "restart-networking", self)
         registrar.register_file(self.exit_hook_filename, "restart-networking", self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
         registrar.register_file(self.dhcp_conf_filename, "restart-networking", self)
         registrar.register_file(self.ddclient_hook_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_exit_hook(settings, prefix)
-        self.write_enter_hook(settings, prefix)
-        self.write_pre_network_hook(settings, prefix)
-        self.write_dhcp_ddclient_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_exit_hook(settings_file.settings, prefix)
+        self.write_enter_hook(settings_file.settings, prefix)
+        self.write_pre_network_hook(settings_file.settings, prefix)
+        self.write_dhcp_ddclient_file(settings_file.settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook")

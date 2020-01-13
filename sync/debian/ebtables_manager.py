@@ -3,22 +3,20 @@ import sys
 import subprocess
 import datetime
 import traceback
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/020-ebtables
 # based on the settings object passed from sync-settings
 
 
-class EbtablesManager:
+class EbtablesManager(Manager):
     iptables_filename = "/etc/untangle/iptables-rules.d/020-ebtables"
     filename = iptables_filename
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
-
-    def sanitize_settings(self, settings):
-        pass
 
     def validate_settings(self, settings):
         pass
