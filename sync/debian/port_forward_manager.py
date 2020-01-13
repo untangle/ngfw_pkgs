@@ -4,13 +4,13 @@ import subprocess
 import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/230-port-forward-rules
 # based on the settings object passed from sync-settings
 
 
-class PortForwardManager:
+class PortForwardManager(Manager):
     iptables_filename = "/etc/untangle/iptables-rules.d/230-port-forward-rules"
     admin_filename = "/etc/untangle/iptables-rules.d/250-admin-port-rules"
     src_interface_mark_mask = 0x00ff
@@ -18,18 +18,13 @@ class PortForwardManager:
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
         registrar.register_file(self.admin_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_port_forwards(settings, prefix)
-        self.write_admin_port_rules(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_port_forwards(settings_file.settings, prefix)
+        self.write_admin_port_rules(settings_file.settings, prefix)
 
     def write_port_forward_rule(self, port_forward_rule):
         if 'enabled' in port_forward_rule and not port_forward_rule['enabled']:

@@ -4,26 +4,21 @@ import sys
 import subprocess
 import datetime
 import traceback
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/025-arp
 # based on the settings object passed from sync-settings
 
 
-class ArpManager:
+class ArpManager(Manager):
     filename = "/etc/untangle/post-network-hook.d/025-arp"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_arp(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_arp(settings_file.settings, prefix)
         return
 
     def write_arp(self, settings, prefix):
