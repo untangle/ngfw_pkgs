@@ -6,13 +6,13 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/hosts and /etc/hostname
 # based on the settings object passed from sync-settings
 
 
-class HostsManager:
+class HostsManager(Manager):
     hosts_filename = "/etc/hosts"
     hostname_filename = "/etc/hostname"
     mailname_filename = "/etc/mailname"
@@ -20,24 +20,19 @@ class HostsManager:
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/001-sethostname"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.hosts_filename, None, self)
         registrar.register_file(self.hostname_filename, "update-hostname", self)
         registrar.register_file(self.mailname_filename, None, self)
         registrar.register_file(self.resolv_filename, None, self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_hostname_file(settings, prefix)
-        self.write_hosts_file(settings, prefix)
-        self.write_resolve_file(settings, prefix)
-        self.write_mailname_file(settings, prefix)
-        self.write_pre_network_hook_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_hostname_file(settings_file.settings, prefix)
+        self.write_hosts_file(settings_file.settings, prefix)
+        self.write_resolve_file(settings_file.settings, prefix)
+        self.write_mailname_file(settings_file.settings, prefix)
+        self.write_pre_network_hook_file(settings_file.settings, prefix)
         return
 
     def write_hosts_file(self, settings, prefix):
