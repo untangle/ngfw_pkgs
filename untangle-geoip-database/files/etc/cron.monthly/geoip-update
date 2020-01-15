@@ -32,7 +32,7 @@ if [ -f $TEMPFILE ]; then
 fi
 
 # Download the update from the external server
-/usr/bin/wget -O $TEMPFILE $NETURL?resource=geoip&uid=$UID
+/usr/bin/wget -O $TEMPFILE $NETURL?resource=geoipCity&uid=$UID
 wait
 if [ $? -ne 0 ]; then
     printf "Unable to download new GeoIP database\n"
