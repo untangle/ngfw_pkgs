@@ -2,33 +2,22 @@
 # pylint: disable=unused-argument
 import os
 import stat
-from sync import registrar
+from sync import registrar, Manager
 from sync import board_util
 
-class NatManager:
+class NatManager(Manager):
     """NatManager manages the nat tables and settings"""
     nat_rules_sys_filename = "/etc/config/nftables-rules.d/100-nat"
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.nat_rules_sys_filename, "restart-nftables-rules", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes settings"""
-        pass
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        pass
-
-    def create_settings(self, settings, prefix, delete_list, filename):
-        """creates settings"""
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
 
-        self.write_nat_rules_sys_file(settings, prefix)
+        self.write_nat_rules_sys_file(settings_file.settings, prefix)
 
     def write_nat_rules_sys_file(self, settings, prefix):
         "write the nat rules file"

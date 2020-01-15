@@ -12,11 +12,11 @@ import ipaddress
 import re
 import base64
 import stat
-from sync import registrar
+from sync import registrar, Manager
 from sync import network_util
 from sync import board_util
 
-class NetworkManager:
+class NetworkManager(Manager):
     """
     This class is responsible for writing /etc/config/network
     based on the settings object passed from sync-settings
@@ -27,11 +27,12 @@ class NetworkManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
+    def sanitize_settings(self, settings_file):
         """sanitizes removes blank settings"""
-        interfaces = settings.get('network').get('interfaces')
+        interfaces = settings_file.settings.get('network').get('interfaces')
         # Remove all "" and 0 and null values
         for intf in interfaces:
             for k, v in dict(intf).items():
@@ -52,11 +53,11 @@ class NetworkManager:
                 else:
                     intf["enabled"] = True
         # Give any OpenVPN interfaces tun devices
-        openvpn_set_tun_interfaces(settings)
+        openvpn_set_tun_interfaces(settings_file.settings)
 
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        interfaces = settings.get('network').get('interfaces')
+        interfaces = settings_file.settings.get('network').get('interfaces')
         for intf in interfaces:
             self.validate_interface(intf)
             # TODO add mulit-setting validation:
@@ -69,20 +70,20 @@ class NetworkManager:
             # a static interface doesn't have the same subnet as another static interface
             # etc
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         network = {}
         network['interfaces'] = []
-        settings['network'] = network
+        settings_file.settings['network'] = network
 
-        self.create_settings_devices(settings, prefix, delete_list)
-        self.create_settings_interfaces(settings, prefix, delete_list)
-        self.create_settings_switches(settings, prefix, delete_list)
+        self.create_settings_devices(settings_file.settings, prefix, delete_list)
+        self.create_settings_interfaces(settings_file.settings, prefix, delete_list)
+        self.create_settings_switches(settings_file.settings, prefix, delete_list)
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_network_file(settings, prefix)
+        self.write_network_file(settings_file.settings, prefix)
 
     def write_network_file(self, settings, prefix):
         """write /etc/config/network"""

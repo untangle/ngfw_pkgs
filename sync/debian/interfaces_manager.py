@@ -4,13 +4,13 @@ import sys
 import subprocess
 import datetime
 import traceback
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/network/interfaces
 # based on the settings object passed from sync-settings
 
 
-class InterfacesManager:
+class InterfacesManager(Manager):
     interfaces_filename = "/etc/network/interfaces"
     interfaces_marks_filename = "/etc/untangle/iptables-rules.d/100-interface-marks"
     pre_network_hook_filename = "/etc/untangle/pre-network-hook.d/045-interfaces"
@@ -21,38 +21,36 @@ class InterfacesManager:
     interfaces_file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.interfaces_filename, "restart-networking", self)
         registrar.register_file(self.interfaces_marks_filename, "restart-iptables", self)
         registrar.register_file(self.pre_network_hook_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        if settings is None:
+    def validate_settings(self, settings_file):
+        if settings_file.settings is None:
             raise Exception("Invalid Settings: null")
 
-        if 'interfaces' not in settings:
+        if 'interfaces' not in settings_file.settings:
             raise Exception("Invalid Settings: missing interfaces")
-        interfaces = settings['interfaces']
+        interfaces = settings_file.settings['interfaces']
         for intf in interfaces:
             for key in ['interfaceId', 'name', 'systemDev', 'symbolicDev', 'physicalDev', 'configType']:
                 if key not in intf:
                     raise Exception("Invalid Interface Settings: missing key %s" % key)
 
-        if 'virtualInterfaces' not in settings:
+        if 'virtualInterfaces' not in settings_file.settings:
             raise Exception("Invalid Settings: missing virtualInterfaces")
-        virtualInterfaces = settings['virtualInterfaces']
+        virtualInterfaces = settings_file.settings['virtualInterfaces']
         for intf in virtualInterfaces:
             for key in ['interfaceId', 'name']:
                 if key not in intf:
                     raise Exception("Invalid Virtual Interface Settings: missing key %s" % key)
         return
     
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_interfaces_file(settings, prefix)
-        self.write_interface_marks(settings, prefix)
-        self.write_pre_network_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_interfaces_file(settings_file.settings, prefix)
+        self.write_interface_marks(settings_file.settings, prefix)
+        self.write_pre_network_hook(settings_file.settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/network/if-up.d/netd")

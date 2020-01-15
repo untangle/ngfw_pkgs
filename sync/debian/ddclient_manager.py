@@ -6,32 +6,27 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing /etc/ddclient.conf
 # and others based on the settings object passed from sync-settings
 
 
-class DdclientManager:
+class DdclientManager(Manager):
     config_filename = "/etc/ddclient.conf"
     default_filename = "/etc/default/ddclient"
     restart_filename = "/etc/untangle/post-network-hook.d/990-restart-ddclient"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.config_filename, "restart-ddclient", self)
         registrar.register_file(self.default_filename, "restart-ddclient", self)
         registrar.register_file(self.restart_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_config_file(settings, prefix)
-        self.write_default_file(settings, prefix)
-        self.write_restart_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_config_file(settings_file.settings, prefix)
+        self.write_default_file(settings_file.settings, prefix)
+        self.write_restart_file(settings_file.settings, prefix)
 
     def write_config_file(self, settings, prefix=""):
         filename = prefix + self.config_filename
