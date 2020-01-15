@@ -19,32 +19,35 @@ def managers_init():
     return 0
 
 
-def sanitize_settings(settings):
+def sanitize_settings(settings_file):
     """
     Run the modules sanitizeor on the settings
     If the settings change, save them
     """
     for manager in registrar.managers:
-        manager.sanitize_settings(settings)
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            manager.sanitize_settings(settings_file)
 
-def validate_settings(settings):
+def validate_settings(settings_file):
     """
     Validate the settings
     """
     for manager in registrar.managers:
-        manager.validate_settings(settings)
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            manager.validate_settings(settings_file)
 
-def sync_to_tmpdirs(settings, tmpdir, tmpdir_delete):
+def sync_to_tmpdirs(settings_file, tmpdir, tmpdir_delete):
     """
     Call sync_settings() on all managers
     """
     delete_list = []
     for manager in registrar.managers:
-        try:
-            manager.sync_settings(settings, tmpdir, delete_list)
-        except:
-            traceback.print_exc()
-            return 1
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            try:
+                manager.sync_settings(settings_file, tmpdir, delete_list)
+            except:
+                traceback.print_exc()
+                return 1
 
     for filename in delete_list:
         path = tmpdir_delete + filename
@@ -59,7 +62,7 @@ def sync_to_tmpdirs(settings, tmpdir, tmpdir_delete):
     return 0
 
 
-def create_settings_in_tmpdir(settings_filename, tmpdir, tmpdir_delete):
+def create_settings_in_tmpdir(settings_file, tmpdir, tmpdir_delete):
     """
     Call create_settings() on all managers
     """
@@ -67,11 +70,13 @@ def create_settings_in_tmpdir(settings_filename, tmpdir, tmpdir_delete):
     delete_list = []
 
     for manager in registrar.managers:
-        try:
-            manager.create_settings(new_settings, tmpdir, delete_list, settings_filename)
-        except:
-            traceback.print_exc()
-            return 1
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            try:
+                # manager.create_settings(new_settings, tmpdir, delete_list, settings_file.file_name)
+                manager.create_settings(new_settings, tmpdir, delete_list, settings_file)
+            except:
+                traceback.print_exc()
+                return 1
 
     for filename in delete_list:
         path = tmpdir_delete + filename

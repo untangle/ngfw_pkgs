@@ -4,19 +4,20 @@
 import crypt
 import os
 import stat
-from sync import registrar
+from sync import registrar, Manager
 
-class AccountsManager:
+class AccountsManager(Manager):
     """AccountsManager is responsible for managing the "accounts" (credentials) settings"""
     password_setter_filename = "/etc/config/startup.d/100-setpasswd"
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.password_setter_filename, "startup-scripts", self)
 
-    def sanitize_settings(self, settings):
+    def sanitize_settings(self, settings_file):
         """sanitizes removes the cleartext password and replaces with the proper hashes"""
-        accounts = settings.get('accounts')
+        accounts = settings_file.settings.get('accounts')
         if accounts is None:
             return
         creds = accounts.get('credentials')
@@ -35,9 +36,9 @@ class AccountsManager:
             cred['passwordHashSHA256'] = crypt.crypt(cleartext_password, crypt.mksalt(crypt.METHOD_SHA256))
         return
 
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        accounts = settings.get('accounts')
+        accounts = settings_file.settings.get('accounts')
         if accounts is None:
             return
         creds = accounts.get('credentials')
@@ -50,18 +51,18 @@ class AccountsManager:
                 continue
             registrar.register_file("/root/.ssh/authorized_keys", None, self)
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['accounts'] = {}
-        settings['accounts']['credentials'] = [{
+        settings_file.settings['accounts'] = {}
+        settings_file.settings['accounts']['credentials'] = [{
             "username": "admin",
             "passwordCleartext": "passwd"
         }]
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        accounts = settings.get('accounts')
+        accounts = settings_file.settings.get('accounts')
         if accounts is None:
             return
         creds = accounts.get('credentials')
