@@ -89,6 +89,9 @@ add rule inet interface-marks forward-interface-marks ct state new jump mark-dst
 # sometimes sessions were created before these rules were in place - still mark these
 add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
+
+# make sure we restore interface marks on local output traffic so we see return traffic as already routed
+add rule inet interface-marks output-interface-marks jump restore-interface-marks
 """)
 
         # input-interface-marks doesn't mark broadcast or multicast sessions
@@ -162,6 +165,12 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
             file.write("# if ct mark client interface is X then set the mark server type to Xs type\n")
             file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
                        (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
+
+        file.write("# restore reply direction interface marks for local output traffic\n")
+        file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.SERVER_INTERFACE_MASK, (255 << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, 255 << self.CLIENT_INTERFACE_SHIFT))
+        file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_INTERFACE_MASK, (255 << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, 255 << self.SERVER_INTERFACE_SHIFT))
 
         file.write("# restore original direction interface marks\n")
         file.write("add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
