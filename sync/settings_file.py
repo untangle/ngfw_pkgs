@@ -41,10 +41,10 @@ class SettingsFile:
         if self._id is None:
             path = os.path.abspath(self.file_name).split('/')
             base_name = path.pop().split('.')
-            base_name.pop()
-            base_name = '.'.join(base_name)
-            id = base_name
             if SettingsFile.os_name == 'debian':
+                base_name.pop()
+                base_name = '.'.join(base_name)
+                id = base_name
                 # Debian/ngfw has a special case where settings file is usually
                 # "network.js" but if another app is specified, it will be
                 # "settings_xx.js" where xx is a number.  In this case, pull
@@ -52,6 +52,8 @@ class SettingsFile:
                 # will have an idenfitier of "intrusion-prevention".
                 if base_name.startswith('settings_'):
                     id = path.pop()
+            elif SettingsFile.os_name == 'openwrt':
+                id = base_name[0]
         return id
 
     @property
