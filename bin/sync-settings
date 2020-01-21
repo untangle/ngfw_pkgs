@@ -358,8 +358,7 @@ def sanitize_settings(settings_file):
         if json.dumps(orig_settings) != json.dumps(settings_file.settings):
             print("Sanitization changed settings. Saving new settings...")
             print()
-            # save_settings(settings)
-            settings.save_settings()
+            settings_file.save_settings()
     except Exception:
         print("Settings sanitization failed!")
         traceback.print_exc()
