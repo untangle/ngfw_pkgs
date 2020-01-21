@@ -72,8 +72,7 @@ def create_settings_in_tmpdir(settings_file, tmpdir, tmpdir_delete):
     for manager in registrar.managers:
         if registrar.check_registrar_settings_file(settings_file.id, manager):
             try:
-                # manager.create_settings(new_settings, tmpdir, delete_list, settings_file.file_name)
-                manager.create_settings(new_settings, tmpdir, delete_list, settings_file)
+                manager.create_settings(settings_file, tmpdir, delete_list, settings_file.file_name)
             except:
                 traceback.print_exc()
                 return 1
