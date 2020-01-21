@@ -11,9 +11,6 @@ class SettingsFile:
     """
     os_name = None
 
-    file_name = None
-    settings = {}
-
     @classmethod
     def set_os_name(cls, os_name = None):
         """
