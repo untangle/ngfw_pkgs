@@ -27,7 +27,7 @@ class SettingsFile:
         """
         self._file_name = file_name
         self._id = None
-        self._settings = []
+        self._settings = {}
 
     @property
     def file_name(self):
@@ -93,8 +93,8 @@ class SettingsFile:
         Save the specified settings to the settings file
         """
         try:
-            settings_file = open(self.filename, 'w')
-            json.dump(settings, settings_file, indent=4, separators=(',', ': '))
+            settings_file = open(self.file_name, 'w')
+            json.dump(self.settings, settings_file, indent=4, separators=(',', ': '))
             settings_file.flush()
             settings_file.close()
         except IOError as exc:
