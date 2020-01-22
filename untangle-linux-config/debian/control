@@ -16,7 +16,7 @@ Depends: ${misc:Depends}, bash (>= 3.1),
          initramfs-tools,
 	 linux-untangle (>= 4.9.82-1+deb9u3+untangle2) | untangle-linux-image | linux-virtual-untangle,
          untangle-bootsplash,
-         untangle-kernel-modules-stretch,
+         untangle-kernel-modules-stretch | untangle-kernel-modules-buster,
          uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base
 Description: The Untangle kernel config
