@@ -6,19 +6,20 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing
 # based on the settings object passed from sync-settings
 
 
-class DnsMasqManager:
+class DnsMasqManager(Manager):
     dnsmasq_hosts_filename = "/etc/hosts.dnsmasq"
     dnsmasq_conf_filename = "/etc/dnsmasq.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-dnsmasq"
     dhcp_statics_filename = "/etc/dnsmasq.d/dhcp-static"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         # dnsmasq settings, requires dnsmasq restart
         registrar.register_file(self.dnsmasq_hosts_filename, "restart-dnsmasq", self)
         registrar.register_file(self.dnsmasq_conf_filename, "restart-dnsmasq", self)
@@ -26,17 +27,11 @@ class DnsMasqManager:
         # Just a restart script, no need to restart if changed
         registrar.register_file(self.restart_hook_filename, None, self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_dnsmasq_hosts(settings, prefix)
-        self.write_dhcp_statics_file(settings, prefix)
-        self.write_dnsmasq_conf(settings, prefix)
-        self.write_restart_dnsmasq_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_dnsmasq_hosts(settings_file.settings, prefix)
+        self.write_dhcp_statics_file(settings_file.settings, prefix)
+        self.write_dnsmasq_conf(settings_file.settings, prefix)
+        self.write_restart_dnsmasq_hook(settings_file.settings, prefix)
         return
 
     def write_dnsmasq_hosts(self, settings, prefix):

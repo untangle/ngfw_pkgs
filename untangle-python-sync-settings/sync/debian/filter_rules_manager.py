@@ -5,13 +5,13 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/240-filter-rules
 # based on the settings object passed from sync-settings
 
 
-class FilterRulesManager:
+class FilterRulesManager(Manager):
     interfaces_mark_mask = 0x0000FFFF
 
     iptables_filename = "/etc/untangle/iptables-rules.d/240-filter-rules"
@@ -19,16 +19,11 @@ class FilterRulesManager:
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_filter_rules_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_filter_rules_file(settings_file.settings, prefix)
 
     def write_filter_rule(self, table_name, filter_rule, drop_target):
 

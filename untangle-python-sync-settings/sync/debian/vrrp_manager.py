@@ -6,34 +6,29 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing:
 # /etc/untangle/post-network-hook.d/200-vrrp
 # based on the settings object passed from sync-settings
 
 
-class VrrpManager:
+class VrrpManager(Manager):
     keepalived_conf_filename = "/etc/keepalived/keepalived.conf"
     post_network_hook_filename = "/etc/untangle/post-network-hook.d/200-vrrp"
     iptables_hook_filename = "/etc/untangle/iptables-rules.d/241-vrrp-rules"
     vrrp_enabled = False
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.keepalived_conf_filename, "restart-keepalived", self)
         registrar.register_file(self.post_network_hook_filename, "restart-networking", self)
         registrar.register_file(self.iptables_hook_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_keepalivd_conf(settings, prefix)
-        self.write_post_network_hook(settings, prefix)
-        self.write_iptables_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_keepalivd_conf(settings_file.settings, prefix)
+        self.write_post_network_hook(settings_file.settings, prefix)
+        self.write_iptables_hook(settings_file.settings, prefix)
 
     def get_vrrp_interfaces(self, settings):
         vrrp_interfaces = []

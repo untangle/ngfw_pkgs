@@ -528,7 +528,11 @@ def logs_expression(logs):
         elif typ == "DICT":
             field = log.get('field')
             value = log.get('value')
-            strcat = strcat + " dict sessions ct id %s long_string set %s" % (field, value)
+            field_type = log.get('field_type')
+            if field_type == None or field_type == "LONG_STRING":
+                strcat = strcat + " dict sessions ct id %s long_string set %s" % (field, value)
+            elif field_type == "INT":
+                strcat = strcat + " dict sessions ct id %s int set %s" % (field, value)
         else:
             raise Exception("Unknown log type: " + str(log))
 
@@ -779,6 +783,12 @@ def clean_rule_actions(parent, array, tableName=None):
                         {
                             "type": "NFLOG",
                             "prefix": "{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\',\'policy\':%d} " % (parent.get('name'), item.get('ruleId'), action.get('policy')),
+                        },
+                        {
+                            "type": "DICT",
+                            "field": "wan_rule_id",
+                            "field_type": "INT",
+                            "value": "%d" % item.get('ruleId'),
                         }
                     ]
 

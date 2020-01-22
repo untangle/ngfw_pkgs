@@ -5,13 +5,13 @@ import datetime
 import traceback
 from sync.iptables_util import IptablesUtil
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/iptables-rules.d/220-nat-rules
 # based on the settings object passed from sync-settings
 
 
-class NatRulesManager:
+class NatRulesManager(Manager):
     interfaces_mark_mask = 0x0000FFFF
     lxc_mark_mask = 0x04000000
 
@@ -20,16 +20,11 @@ class NatRulesManager:
     file = None
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_nat_rules_file(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_nat_rules_file(settings_file.settings, prefix)
 
     def write_nat_rule(self, nat_rule):
 

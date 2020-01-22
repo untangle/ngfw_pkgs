@@ -4,10 +4,10 @@
 import os
 import stat
 import json
-from sync import registrar
+from sync import registrar, Manager
 from sync import board_util
 
-class SystemManager:
+class SystemManager(Manager):
     """SystemManager manages the system settings"""
     timezone_setter_filename = "/etc/config/startup.d/010-timezone"
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
@@ -19,6 +19,7 @@ class SystemManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.timezone_setter_filename, "startup-scripts", self)
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
@@ -27,13 +28,9 @@ class SystemManager:
         registrar.register_file(self.reload_system_filename, "startup-scripts", self)
         registrar.register_file(self.cron_filename, "restart-cron", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes settings"""
-        return
-
-    def validate_settings(self, settings):
+    def validate_settings(self, settings_file):
         """validates settings"""
-        system_settings = settings.get('system')
+        system_settings = settings_file.settings.get('system')
         if system_settings is None:
             raise Exception("Missing required system settings")
         autoupgrade_settings = system_settings.get('autoUpgrade')
@@ -41,41 +38,41 @@ class SystemManager:
             if autoupgrade_settings.get('enabled') is None:
                 raise Exception("Missing required autoUpgrade setting \"enabled\"")
 
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['system'] = {}
-        settings['system']['hostName'] = 'mfw'
-        settings['system']['domainName'] = 'example.com'
-        settings['system']['timeZone'] = {
+        settings_file.settings['system'] = {}
+        settings_file.settings['system']['hostName'] = 'mfw'
+        settings_file.settings['system']['domainName'] = 'example.com'
+        settings_file.settings['system']['timeZone'] = {
             "displayName": "UTC",
             "value": "UTC"
         }
-        settings['system']['cloud'] = {
+        settings_file.settings['system']['cloud'] = {
             "enabled": True,
             "supportAccessEnabled": True,
             "cloudServers": ["cmd.untangle.com"]
         }
         if board_util.is_docker():
-            settings['system']['setupWizard'] = {"completed": True}
+            settings_file.settings['system']['setupWizard'] = {"completed": True}
         else:
-            settings['system']['setupWizard'] = {"completed": False}
+            settings_file.settings['system']['setupWizard'] = {"completed": False}
 
-        settings['system']['autoUpgrade'] = {
+        settings_file.settings['system']['autoUpgrade'] = {
             "dayOfWeek": 6,
             "hourOfDay": 0,
             "minuteOfHour": 0,
             "enabled": True,
         }
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
 
         if board_util.is_docker():
             self.write_watchdog_disabler(prefix)
             self.write_rpfilter_disabler(prefix)
 
-        system = settings.get('system')
+        system = settings_file.settings.get('system')
         if system is None:
             return
 
@@ -83,9 +80,9 @@ class SystemManager:
         if hostname is not None:
             self.write_hostname_setter(hostname, prefix)
 
-        self.write_cron_file(settings, prefix)
+        self.write_cron_file(settings_file.settings, prefix)
 
-        self.write_wizard_status(settings, prefix)
+        self.write_wizard_status(settings_file.settings, prefix)
 
         self.write_system_reloader(prefix)
 

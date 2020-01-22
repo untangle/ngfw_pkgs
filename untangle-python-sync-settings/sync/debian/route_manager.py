@@ -6,13 +6,13 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing /etc/untangle/post-network-hook.d/030-routes
 # and others based on the settings object passed from sync-settings
 
 
-class RouteManager:
+class RouteManager(Manager):
     rt_table_filename = "/etc/iproute2/rt_tables"
     routes_filename = "/etc/untangle/post-network-hook.d/030-routes"
     pre_routes_filename = "/etc/untangle/pre-network-hook.d/030-routes"
@@ -23,20 +23,15 @@ class RouteManager:
     DST_INTERFACE_MASK = 0xFF00
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.rt_table_filename, "restart-networking", self)
         registrar.register_file(self.routes_filename, "restart-networking", self)
         registrar.register_file(self.pre_routes_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_rt_table(settings, prefix)
-        self.write_routes(settings, prefix)
-        self.write_routes_pre_hook(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_rt_table(settings_file.settings, prefix)
+        self.write_routes(settings_file.settings, prefix)
+        self.write_routes_pre_hook(settings_file.settings, prefix)
 
     def string_is_int(self, s):
         try:

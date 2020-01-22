@@ -4,9 +4,9 @@
 # pylint: disable=no-self-use
 import os
 import stat
-from sync import registrar
+from sync import registrar, Manager
 
-class InterfaceManager:
+class InterfaceManager(Manager):
     """InterfaceManager writes /etc/config/nftables-rules.d/101-interface-marks"""
     INTERFACE_MARKS_FILENAME = "/etc/config/nftables-rules.d/101-interface-marks"
 
@@ -39,22 +39,12 @@ class InterfaceManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.INTERFACE_MARKS_FILENAME, "restart-nftables-rules", self)
 
-    def sanitize_settings(self, settings):
-        """sanitize settings"""
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        pass
-
-    def create_settings(self, settings, prefix, delete_list, filename):
-        """creates settings"""
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_interface_marks_file(settings, prefix)
+        self.write_interface_marks_file(settings_file.settings, prefix)
 
     def write_interface_marks_file(self, settings, prefix):
         """write_interface_marks_file writes /etc/config/nftables-rules.d/101-interface-marks"""
@@ -99,6 +89,9 @@ add rule inet interface-marks forward-interface-marks ct state new jump mark-dst
 # sometimes sessions were created before these rules were in place - still mark these
 add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
+
+# make sure we restore interface marks on local output traffic so we see return traffic as already routed
+add rule inet interface-marks output-interface-marks jump restore-interface-marks
 """)
 
         # input-interface-marks doesn't mark broadcast or multicast sessions
@@ -172,6 +165,12 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
             file.write("# if ct mark client interface is X then set the mark server type to Xs type\n")
             file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
                        (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
+
+        file.write("# restore reply direction interface marks for local output traffic\n")
+        file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.SERVER_INTERFACE_MASK, (255 << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, 255 << self.CLIENT_INTERFACE_SHIFT))
+        file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_INTERFACE_MASK, (255 << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, 255 << self.SERVER_INTERFACE_SHIFT))
 
         file.write("# restore original direction interface marks\n")
         file.write("add rule inet interface-marks restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
