@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-postgresql-config
 Architecture: i386 amd64 arm64
-Depends: ${misc:Depends}, systemd, procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-9.6, postgresql-9.6
+Depends: ${misc:Depends}, systemd, procps (>= 3.2.7-2~bpo.1), untangle-hardware-config, postgresql-client-9.6 | postgresql-client-11, postgresql-9.6 | postgresql-11
 Description: Untangle Postgres wrapper package
- The Untangle Postgres config for Postgres 8.3
+ The Untangle Postgres config for Postgres
 
