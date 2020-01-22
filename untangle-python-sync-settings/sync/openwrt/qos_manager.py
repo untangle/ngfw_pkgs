@@ -9,12 +9,12 @@
 import os
 import stat
 import traceback
-from sync import registrar
+from sync import registrar, Manager
 
 # This class is responsible for writing /etc/config/qos.d/* and
 # /etc/config/nftables-rules.d/300-qos-rules-sys
 # based on the settings object passed from sync-settings
-class QosManager:
+class QosManager(Manager):
     """
     This class is responsible for writing all the qos-related settings files
     """
@@ -23,18 +23,11 @@ class QosManager:
 
     def initialize(self):
         """initialize this module"""
+        registrar.register_settings_file("settings", self)
         registrar.register_file(self.qos_rules_sys_filename, "restart-nftables-rules", self)
         registrar.register_file(self.qos_file_path + "/*", "restart-qos", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes removes blank settings"""
-        return
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        return
-
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
@@ -235,14 +228,14 @@ class QosManager:
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("QosManager: Wrote %s" % filename)
 
-    def sync_settings(self, settings, prefix, delete_list):
+    def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_qos_rules_sys_file(settings, prefix)
+        self.write_qos_rules_sys_file(settings_file.settings, prefix)
         for (dirpath, _, filenames) in os.walk(self.qos_file_path + "/"):
             for filename in filenames:
                 full_name = dirpath + filename
                 delete_list.append(full_name)
         # Write all the /etc/config/qos.d/* files
-        self.write_qos_files(settings, prefix, delete_list)
+        self.write_qos_files(settings_file.settings, prefix, delete_list)
 
 registrar.register_manager(QosManager())

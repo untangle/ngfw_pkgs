@@ -7,13 +7,13 @@ import traceback
 import re
 from shutil import move
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class is responsible for writing
 # based on the settings object passed from sync-settings
 
 
-class UpnpManager:
+class UpnpManager(Manager):
     upnp_daemon_conf_filename = "/etc/miniupnpd/miniupnpd.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-upnp"
     iptables_filename = "/etc/untangle/iptables-rules.d/741-upnp"
@@ -23,23 +23,18 @@ class UpnpManager:
     iptables_chain = "upnp-rules"
 
     def initialize(self):
+        registrar.register_settings_file("network", self)
         registrar.register_file(self.upnp_daemon_conf_filename, "restart-miniupnpd", self)
         registrar.register_file(self.restart_hook_filename, "restart-miniupnpd", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
         registrar.register_file(self.iptables_init_filename, "restart-miniupnpd", self)
         registrar.register_file(self.ip6tables_init_filename, "restart-miniupnpd", self)
 
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        pass
-
-    def sync_settings(self, settings, prefix, delete_list):
-        self.write_upnp_daemon_conf(settings, prefix)
-        self.write_restart_upnp_daemon_hook(settings, prefix)
-        self.write_iptables_hook(settings, prefix)
-        self.write_iptables_init_files(settings, prefix)
+    def sync_settings(self, settings_file, prefix, delete_list):
+        self.write_upnp_daemon_conf(settings_file.settings, prefix)
+        self.write_restart_upnp_daemon_hook(settings_file.settings, prefix)
+        self.write_iptables_hook(settings_file.settings, prefix)
+        self.write_iptables_init_files(settings_file.settings, prefix)
 
     def write_upnp_daemon_conf(self, settings, prefix=""):
         """

@@ -6,22 +6,20 @@ import datetime
 import traceback
 import re
 from sync.network_util import NetworkUtil
-from sync import registrar
+from sync import registrar,Manager
 
 # This class just does some initial cleanups of the settings object
 # while sync_settings before the other managers get access to the settings object
 
-class SettingsManager:
+class SettingsManager(Manager):
 
     def initialize(self):
+        registrar.register_settings_file("*", self)
         pass
     
-    def sanitize_settings(self, settings):
-        pass
-
-    def validate_settings(self, settings):
-        fixup_settings(settings)
-        cleanup_settings(settings)
+    def validate_settings(self, settings_file):
+        fixup_settings(settings_file.settings)
+        cleanup_settings(settings_file)
 
     def sync_settings(self, settings, prefix, delete_list):
         pass
@@ -49,7 +47,7 @@ def fixup_settings(json_obj):
         for i in range(len(json_obj)):
             fixup_settings(json_obj[i])
 
-def cleanup_settings(settings):
+def cleanup_settings(settings_file):
     """
     This removes/disable hidden fields in the interface settings so we are certain they don't apply
     We do these operations here because we don't want to actually modify the settings
@@ -60,6 +58,9 @@ def cleanup_settings(settings):
 
     This function runs through the settings and removes/disables settings that are hidden/disabled in the current configuration.
     """
+    if settings_file.id != 'network':
+        return
+    settings = settings_file.settings
     interfaces = settings['interfaces']
     virtualInterfaces = settings['virtualInterfaces']
 

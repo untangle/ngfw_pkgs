@@ -1,30 +1,18 @@
 """This class is responsible for managing the reports settings"""
 # pylint: disable=unused-argument
-from sync import registrar
+from sync import registrar, Manager
 
-class ReportsManager:
+class ReportsManager(Manager):
     """ReportsManager manages the system settings"""
     def initialize(self):
         """initialize this module"""
-        pass
+        registrar.register_settings_file("settings", self)
 
-    def sanitize_settings(self, settings):
-        """sanitizes settings"""
-        pass
-
-    def validate_settings(self, settings):
-        """validates settings"""
-        pass
-
-    def create_settings(self, settings, prefix, delete_list, filename):
+    def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        settings['reports'] = default_reports_settings()
-        settings['dashboard'] = default_dashboard_settings()
-
-    def sync_settings(self, settings, prefix, delete_list):
-        """syncs settings"""
-        pass
+        settings_file.settings['reports'] = default_reports_settings()
+        settings_file.settings['dashboard'] = default_dashboard_settings()
 
 
 registrar.register_manager(ReportsManager())
