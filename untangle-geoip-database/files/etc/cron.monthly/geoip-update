@@ -6,8 +6,11 @@
 # with the .update extension and Uvm will take care of the rest.
 #
 
+# You can uncomment the following to debug script execution
+#set -x
+
 # This is the URL where we download the compressed city database from maxmind
-NETURL=http://geolite.maxmind.com/download/geoip/database/GeoLite2-City.mmdb.gz
+NETURL=https://downloads.untangle.com/download.php
 
 # This is the location for the temporary working copy we download
 TEMPFILE=/tmp/geoip_download.gz
@@ -15,32 +18,58 @@ TEMPFILE=/tmp/geoip_download.gz
 # This is the name of the update file
 UPFILE=/var/cache/untangle-geoip/GeoLite2-City.update
 
+# Get the UID so we can pass it in the download request
+UID=`cat /usr/share/untangle/conf/uid`
+
 # Remove any existing temporary file that may have been downloaded
 if [ -f $TEMPFILE ]; then
     /bin/rm -f $TEMPFILE
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP download file\n"
+	exit 1
+    fi
+
 fi
 
 # Download the update from the external server
-/usr/bin/wget -O $TEMPFILE $NETURL
+/usr/bin/wget -O $TEMPFILE $NETURL?resource=geoipCity&uid=$UID
+wait
+if [ $? -ne 0 ]; then
+    printf "Unable to download new GeoIP database\n"
+    exit 1
+fi
 
 # Make sure we actually received the file
 if [ ! -f $TEMPFILE ]; then
-    printf "Unable to download GeoIP database file"
+    printf "Unable to download GeoIP database file\n"
     exit 1
 fi
 
 # Remove any existing update file
 if [ -f $UPFILE ]; then
     /bin/rm -f $UPFILE
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP update file\n"
+	exit 1
+    fi
 fi
 
 # Uncompress the downloaded file and write to the update file
 /bin/gunzip --stdout -d $TEMPFILE > $UPFILE
+wait
+if [ $? -ne 0 ]; then
+    printf "Unable to decompress GeoIP update file\n"
+    exit 1
+fi
 
 # Remove the temporary
 /bin/rm -f $TEMPFILE
 
 # Remove the new update file if empty
 if [ ! -s $UPFILE ]; then
+    printf "Removing empty GeoIP update file\n"
     /bin/rm -f $UPFILE
+    exit 1
 fi
+
+exit 0
