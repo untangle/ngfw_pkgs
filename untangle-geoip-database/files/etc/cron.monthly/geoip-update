@@ -9,14 +9,20 @@
 # You can uncomment the following to debug script execution
 #set -x
 
-# This is the URL where we download the compressed city database from maxmind
+# This is the URL where we download the database update tarball
 NETURL=https://downloads.untangle.com/download.php
 
 # This is the location for the temporary working copy we download
-TEMPFILE=/tmp/geoip_download.gz
+TEMPFILE=/tmp/geoip-download.tar.gz
 
-# This is the name of the update file
+# This is the name of the update file the Uvm will watch for
 UPFILE=/var/cache/untangle-geoip/GeoLite2-City.update
+
+# This is the path where we extract the update tarball
+CITYPATH=/tmp/geoip-update
+
+# This is the full path to the database file extracted from the update tarball
+CITYFILE=/tmp/geoip-update/GeoLite2-City.mmdb
 
 # Get the UID so we can pass it in the download request
 UID=`cat /usr/share/untangle/conf/uid`
@@ -28,7 +34,15 @@ if [ -f $TEMPFILE ]; then
 	printf "Unable to remove existing GeoIP download file\n"
 	exit 1
     fi
+fi
 
+# Remove any existing extraction directory that may have been created
+if [ -d $CITYPATH ]; then
+    /bin/rm -r -f $CITYPATH
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP extraction directory\n"
+	exit 1
+    fi
 fi
 
 # Download the update from the external server
@@ -45,6 +59,27 @@ if [ ! -f $TEMPFILE ]; then
     exit 1
 fi
 
+# Create a directory where we can extract the update files
+/bin/mkdir $CITYPATH
+if [ ! -d $CITYPATH ]; then
+    printf "Unable to create temporary update directory\n"
+    exit 1
+fi
+
+# Extract the files from the tarball to a temporary directory
+/bin/tar xvfz $TEMPFILE --directory $CITYPATH --strip=1
+wait
+if [ $? -ne 0 ]; then
+    printf "Unable to extract GeoIP update file\n"
+    exit 1
+fi
+
+# Make sure the update database file isn't empty
+if [ ! -s $CITYFILE ]; then
+    printf "The extracted GeoIP database file is empty\n"
+    exit 1
+fi
+
 # Remove any existing update file
 if [ -f $UPFILE ]; then
     /bin/rm -f $UPFILE
@@ -54,22 +89,11 @@ if [ -f $UPFILE ]; then
     fi
 fi
 
-# Uncompress the downloaded file and write to the update file
-/bin/gunzip --stdout -d $TEMPFILE > $UPFILE
-wait
-if [ $? -ne 0 ]; then
-    printf "Unable to decompress GeoIP update file\n"
-    exit 1
-fi
+# Copy the update file to where the Uvm will look for it
+/bin/cp $CITYFILE $UPFILE
 
-# Remove the temporary
+# Remove the downloaded file and extraction directory
 /bin/rm -f $TEMPFILE
-
-# Remove the new update file if empty
-if [ ! -s $UPFILE ]; then
-    printf "Removing empty GeoIP update file\n"
-    /bin/rm -f $UPFILE
-    exit 1
-fi
+/bin/rm -r -f $CITYPATH
 
 exit 0
