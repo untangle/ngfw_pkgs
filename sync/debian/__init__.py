@@ -25,5 +25,6 @@ from . import upnp_manager
 from . import netflow_manager
 from . import dynamic_routing_manager
 from . import intrusion_prevention_manager
+from . import bdamserver_manager
 
 from . import operations
