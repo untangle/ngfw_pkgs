@@ -12,7 +12,7 @@ from sync.uri_util import UriUtil
 # This class is responsible for updating apt settings files
 
 class AptManager(Manager):
-    update_uri = 'https://updates.untangle.com/'
+    update_uri = 'http://updates.untangle.com/'
 
     apt_sources_untangle_file_name = "/etc/apt/sources.list.d/untangle.list"
     apt_sources_untangle_source = re.compile(r'^(deb )(https?:\/\/[^?\/\s]+[?\/])([^\s]*)\s+(.*)')
@@ -61,7 +61,6 @@ class AptManager(Manager):
                             # Use current URI to preserve existing auth
                             new_uri = UriUtil.build_uri(current_uri, uri)
                             line = "{config_option}{new_uri} {components}\n".format(config_option=config_option,new_uri=new_uri,components=components)
-                            print(line)
 
             if write_line == True:
                 self.out_file.write(line)
