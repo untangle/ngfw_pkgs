@@ -30,7 +30,10 @@ class UriUtil:
         path = current_uri.path
         if 'path' in uri_settings and uri_settings['path'] != None:
             path = uri_settings['path']
-        return util.url.Url(scheme=scheme, host=host, port=port, path=path)
+        auth=current_uri.auth
+        if 'auth' in uri_settings and uri_settings['auth'] != None:
+            auth = uri_settings['auth']
+        return util.url.Url(scheme=scheme, host=host, port=port, path=path, auth=auth)
                     
 
 
