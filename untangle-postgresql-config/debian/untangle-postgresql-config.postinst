@@ -1,6 +1,6 @@
 #! /bin/bash
 
-PG_VERSION="9.6"
+PG_VERSION="11.0"
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
@@ -41,6 +41,9 @@ elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
+
+# 15.1 conversion: migrate from 9.6 to 11.0 (NGFW-12624)
+/usr/share/untangle/bin/postgresql-upgrade-cluster.sh 9.6 $PG_VERSION
 
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql.service
