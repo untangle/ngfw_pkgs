@@ -2,7 +2,7 @@
 # Pyconnector options
 LOG_FILE="/var/log/pyconnector.log"
 DEBUG_LEVEL=1
+#DEFAULT_SERVER=cmd.untangle.com
 SERVER=cmd.untangle.com
+#DEFAULT_PORT=80,443,993,4443,587,995,8080,53,25
 PORT=80,443,993,4443,587,995,8080,53,25
-
-
