@@ -27,5 +27,6 @@ from . import dynamic_routing_manager
 from . import intrusion_prevention_manager
 from . import bdamserver_manager
 from . import apt_manager
+from . import pyconnector_manager
 
 from . import operations
