@@ -24,7 +24,7 @@ import ssl
 import platform
 
 UNTANGLE_CMD_PORTS = [80, 443, 993, 4443, 587, 995, 8080, 53, 25]
-UNTANGLE_CMD_SERVERS = ["cmd.untangle.com", "cmd.metaloft.com"]
+UNTANGLE_CMD_SERVERS = ["cmd.untangle.com"]
 # UNTANGLE_CMD_SERVERS = ["dev-cmd.untangle.com"]
 RETRY_TIME_LONG = 10
 RETRY_TIME_SHORT = 5
@@ -303,17 +303,27 @@ def parse_args():
             sys.stdout = logfile
             sys.stderr = logfile
         elif k == '-s' or k == '--server':
-            cmd_servers.append(v)
+            if ',' in v:
+                # Allow a comma-separated list
+                for server in v.split(','):
+                    cmd_servers.append(server.strip())
+            else:
+                cmd_servers.append(v)
         elif k == '-p' or k == '--port':
-            cmd_ports.append(int(v))
+            if ',' in v:
+                # Allow a comma-separated list
+                for port in v.split(','):
+                    cmd_ports.append(int(port.strip()))
+            else:
+                cmd_ports.append(int(v))
         elif k == '-d' or k == '--debug-level':
             global debug_level
             debug_level = int(v)
 
-    if cmd_servers != []:
+    if len(cmd_servers) > 0:
         global UNTANGLE_CMD_SERVERS
         UNTANGLE_CMD_SERVERS = cmd_servers
-    if cmd_ports != []:
+    if len(cmd_ports) > 0:
         global UNTANGLE_CMD_PORTS
         UNTANGLE_CMD_PORTS = cmd_ports
 
