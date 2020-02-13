@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-kernel-modules-buster-amd64
 Architecture: amd64
-Depends: ${misc:Depends}, untangle-linux-image, firmware-bnx2, firmware-bnx2x
+Depends: ${misc:Depends}, linux-image-4.19-untangle (>= 4.19.67-2+deb10u2+untangle2), firmware-bnx2, firmware-bnx2x
 Provides: untangle-kernel-modules-buster
 Pre-Depends: untangle-debconf-manager
 Description: Untangle kernel modules for amd64
