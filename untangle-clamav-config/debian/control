@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-clamav-config
 Architecture: all
-Depends: ${misc:Depends}, systemd, clamav (>= 0.93~dfsg), clamav-daemon (>= 0.93~dfsg), clamav-freshclam (>= 0.93~dfsg), unrar, lhasa, arj, zoo | untangle-kernel-modules-buster
+Depends: ${misc:Depends}, systemd, clamav (>= 0.93~dfsg), clamav-daemon (>= 0.93~dfsg), clamav-freshclam (>= 0.93~dfsg), unrar, lhasa, arj
 Description: The Untangle clamav utils
  The Untangle clamav utilities.
  .
