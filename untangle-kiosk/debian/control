@@ -11,6 +11,7 @@ Architecture: all
 Depends: ${misc:Depends}, acpi-support-base,
          adduser,
          chromium,
+         chromium-sandbox,
 	 fbpanel,
          feh,
          gvidm,
