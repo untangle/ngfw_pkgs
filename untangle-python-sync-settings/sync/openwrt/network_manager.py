@@ -802,7 +802,7 @@ class NetworkManager(Manager):
 
             # register a new operation to restart this interface if this config file changes
             # register the config file with the new operation
-            cmd = "ifdown " + intf["device"] + " ; " + "ifup " + intf["device"]
+            cmd = "ifdown " + intf["name"] + " ; " + "ifup " + intf["name"]
             opname = "restart-" + intf["device"]
             registrar.register_operation(opname, [""], [cmd], 99, None)
             registrar.register_file(path, opname, self)
