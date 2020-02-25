@@ -8,6 +8,7 @@ Build-Depends: debhelper (>= 10),
 	       python3-pytest,
 	       python3-pytest-runner,
 	       python3-pytest-cov,
+               python3-urllib3,
 	       dh-python,
 	       git
 Standards-Version: 3.9.8
