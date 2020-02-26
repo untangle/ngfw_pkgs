@@ -81,7 +81,7 @@ sed -i -e "s/.*log_autovacuum_min_duration.*=.*/log_autovacuum_min_duration = 0/
 # is hardly required since rows are never removed only updated
 sed -i -e "s/.*autovacuum_vacuum_scale_factor.*=.*/autovacuum_vacuum_scale_factor = 10/" $PG_CONF
 # ... decrease auto-analyze 
-sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = .5/" $PG_CONF
+sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = 0.5/" $PG_CONF
 # ... increase max_lock_per_transaction (NGFW-10691)
 sed -i -e "s/.*max_locks_per_transaction.*=.*/max_locks_per_transaction = 128/" $PG_CONF
 
