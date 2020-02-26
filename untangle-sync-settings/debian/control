@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: systemd, debhelper (>= 10), python3-urllib3
+Build-Depends: systemd, debhelper (>= 10)
 Standards-Version: 3.9.8
 
 Package: untangle-sync-settings
