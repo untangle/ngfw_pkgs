@@ -1,6 +1,6 @@
 #! /bin/bash
 
-PG_VERSION="11.0"
+PG_VERSION="11"
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
