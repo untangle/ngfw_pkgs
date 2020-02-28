@@ -437,7 +437,7 @@ class RouteManager(Manager):
         file.write("add rule ip wan-routing wan-routing-prerouting ct state related counter\n")
 
         file.write("\n")
-        file.write("add chain ip wan-routing wan-routing-output { type filter hook output priority -135 ; }\n")
+        file.write("add chain ip wan-routing wan-routing-output { type route hook output priority -150 ; }\n")
         file.write("add rule ip wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n")
         file.write("add rule ip wan-routing wan-routing-output oif lo return\n")
         file.write("add rule ip wan-routing wan-routing-output ct state new jump wan-routing-entry\n")

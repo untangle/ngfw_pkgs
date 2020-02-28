@@ -67,7 +67,7 @@ flush table inet interface-marks
 add chain inet interface-marks prerouting-interface-marks { type filter hook prerouting priority -150 ; }
 add chain inet interface-marks forward-interface-marks { type filter hook forward priority -150 ; }
 add chain inet interface-marks postrouting-interface-marks { type filter hook postrouting priority 0 ; }
-add chain inet interface-marks output-interface-marks { type filter hook output priority -150 ; }
+add chain inet interface-marks output-interface-marks { type filter hook output priority -155 ; }
 add chain inet interface-marks input-interface-marks { type filter hook input priority -150 ; }
 add chain inet interface-marks restore-interface-marks
 add chain inet interface-marks restore-interface-marks-original
