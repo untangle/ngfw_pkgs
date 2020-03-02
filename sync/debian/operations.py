@@ -13,4 +13,5 @@ sync.registrar.register_operation("restart-keepalived", None, ["/etc/untangle/po
 sync.registrar.register_operation("restart-iptables",   None, ["/etc/untangle/post-network-hook.d/960-iptables", "/usr/bin/systemctl-wait"],          50, "restart-networking")
 sync.registrar.register_operation("restart-bdamserver", None, ["ps awwwux | grep -q [b]damserver && systemctl restart untangle-bdamserver", "/usr/bin/systemctl-wait"],                  51, None)
 sync.registrar.register_operation("apt-update",         None, ["apt-get update", "/usr/bin/systemctl-wait"],                                              52, None)
-sync.registrar.register_operation("restart-pyconnector",None, ["ps awwwux | grep -q [p]yconnector && systemctl restart untangle-pyconnector", "/usr/bin/systemctl-wait"],                                              52, None)
+sync.registrar.register_operation("restart-pyconnector",None, ["ps awwwux | grep -q [p]yconnector && systemctl restart untangle-pyconnector", "/usr/bin/systemctl-wait"],                                              53, None)
+sync.registrar.register_operation("geoip-update",       None, ["/usr/bin/systemctl-wait"],                                              54, None)
