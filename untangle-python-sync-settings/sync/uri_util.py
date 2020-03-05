@@ -5,7 +5,10 @@ import datetime
 import traceback
 import string
 import re
-from urllib3 import util
+try:
+    from urllib3 import util
+except ImportError:
+    pass
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with uris.
