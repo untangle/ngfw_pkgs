@@ -18,6 +18,26 @@ from sync import network_util
 
 class RouteManager(Manager):
     """Manages files responsible for wan routing"""
+
+    SRC_INTERFACE_MASK_INVERSE = 0xffffff00
+    SRC_INTERFACE_SHIFT = 0
+    CLIENT_INTERFACE_MASK = 0x000000ff
+    CLIENT_INTERFACE_MASK_INVERSE = 0xffffff00
+    CLIENT_INTERFACE_SHIFT = 0
+    SERVER_INTERFACE_MASK = 0x0000ff00
+    SERVER_INTERFACE_MASK_INVERSE = 0xffff00ff
+    SERVER_INTERFACE_SHIFT = 8
+    SRC_TYPE_MASK = 0x03000000
+    SRC_TYPE_MASK_INVERSE = 0xfcffffff
+    SRC_TYPE_SHIFT = 24
+    CLIENT_TYPE_MASK = 0x03000000
+    CLIENT_TYPE_MASK_INVERSE = 0xfcffffff
+    CLIENT_TYPE_SHIFT = 24
+    SERVER_TYPE_MASK_INVERSE = 0xf3ffffff
+    SERVER_TYPE_SHIFT = 26
+    ALL_MASK = 0x0f00ffff
+    LOCAL_INTERFACE_ID = 0xff #255
+
     rt_tables_filename = "/etc/iproute2/rt_tables"
     rt_tables_file = None
     ifup_routes_filename = "/etc/config/ifup.d/10-default-route"
@@ -353,6 +373,13 @@ class RouteManager(Manager):
         file.write("add table ip wan-routing\n")
         file.write("\n")
 
+        file.write("add chain ip wan-routing restore-interface-marks\n")
+        file.write("add chain ip wan-routing restore-interface-marks-original\n")
+        file.write("add chain ip wan-routing restore-interface-marks-reply\n")
+        file.write("add rule ip wan-routing restore-interface-marks ct direction original jump restore-interface-marks-original\n")
+        file.write("add rule ip wan-routing restore-interface-marks ct direction reply jump restore-interface-marks-reply\n")
+        file.write("add rule ip wan-routing restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
+
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
             if enabled_wan(intf):
@@ -364,6 +391,38 @@ class RouteManager(Manager):
                 file.write("add rule ip wan-routing mark-for-wan-%d set update ip daddr . ip saddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
                 file.write("add rule ip wan-routing mark-for-wan-%d accept\n" % intf.get('interfaceId'))
                 file.write("\n")
+
+            if not intf.get('enabled'):
+                continue
+            if intf.get('configType') == 'BRIDGED':
+                continue
+
+            # just use the normal interface name
+            # unless its a bridge and then use the bridge zone interface name
+            interface_name = intf.get('netfilterDev')
+            interface_type = 2 # lan
+            if intf.get('wan'):
+                interface_type = 1 # wan
+            interface_id = intf.get('interfaceId')
+
+            file.write("# if ct mark server interface is X then set the mark client interface to X\n")
+            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, interface_id << self.CLIENT_INTERFACE_SHIFT))
+            file.write("# if ct mark server interface is X then set the mark client type to Xs type\n")
+            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK_INVERSE, interface_type << self.CLIENT_TYPE_SHIFT))
+            file.write("# if ct mark client interface is X then set the mark server interface to X\n")
+            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, interface_id << self.SERVER_INTERFACE_SHIFT))
+            file.write("# if ct mark client interface is X then set the mark server type to Xs type\n")
+            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
+
+        file.write("# restore reply direction interface marks for local output traffic\n")
+        file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.SERVER_INTERFACE_MASK, (255 << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, 255 << self.CLIENT_INTERFACE_SHIFT))
+        file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_INTERFACE_MASK, (255 << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, 255 << self.SERVER_INTERFACE_SHIFT))
 
         default_wan = 0
         for intf in interfaces:
@@ -438,6 +497,15 @@ class RouteManager(Manager):
 
         file.write("\n")
         file.write("add chain ip wan-routing wan-routing-output { type route hook output priority -150 ; }\n")
+        file.write("add rule ip wan-routing wan-routing-output jump restore-interface-marks\n")
+        file.write("add rule ip wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
+        file.write("add rule ip wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
+        file.write("add rule ip wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
+                   (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
+        file.write("add rule ip wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
+                   (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         file.write("add rule ip wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n")
         file.write("add rule ip wan-routing wan-routing-output oif lo return\n")
         file.write("add rule ip wan-routing wan-routing-output ct state new jump wan-routing-entry\n")

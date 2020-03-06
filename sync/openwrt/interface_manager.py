@@ -67,7 +67,6 @@ flush table inet interface-marks
 add chain inet interface-marks prerouting-interface-marks { type filter hook prerouting priority -150 ; }
 add chain inet interface-marks forward-interface-marks { type filter hook forward priority -150 ; }
 add chain inet interface-marks postrouting-interface-marks { type filter hook postrouting priority 0 ; }
-add chain inet interface-marks output-interface-marks { type filter hook output priority -155 ; }
 add chain inet interface-marks input-interface-marks { type filter hook input priority -150 ; }
 add chain inet interface-marks restore-interface-marks
 add chain inet interface-marks restore-interface-marks-original
@@ -90,8 +89,6 @@ add rule inet interface-marks forward-interface-marks ct state new jump mark-dst
 add rule inet interface-marks postrouting-interface-marks mark and 0x0000ff00 == 0 jump mark-dst-interface
 add rule inet interface-marks postrouting-interface-marks ct state new jump mark-dst-interface
 
-# make sure we restore interface marks on local output traffic so we see return traffic as already routed
-add rule inet interface-marks output-interface-marks jump restore-interface-marks
 """)
 
         # input-interface-marks doesn't mark broadcast or multicast sessions
@@ -101,14 +98,6 @@ add rule inet interface-marks output-interface-marks jump restore-interface-mark
         file.write("add rule inet interface-marks input-interface-marks mark set mark and 0x%x or 0x%x\n" %
                    (self.DST_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.DST_INTERFACE_SHIFT)))
 
-        file.write("add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
-                   (self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
-        file.write("add rule inet interface-marks output-interface-marks ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
-                   (self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
-        file.write("add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
-                   (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
-        file.write("add rule inet interface-marks output-interface-marks mark set mark and 0x%x or 0x%x\n" %
-                   (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         # We don't set/restore marks in output because there is no src/client mark
         # and the dst/server mark is handled in postrouting
 
