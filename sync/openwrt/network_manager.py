@@ -163,7 +163,8 @@ class NetworkManager(Manager):
 
     def write_route_rules(self, settings):
         """write the route rules"""
-        priority = 7000
+        fwmark_priority = 7000
+        oif_priority = 5000
         file = self.network_file
         file.write("\n")
 
@@ -172,10 +173,17 @@ class NetworkManager(Manager):
             if intf.get('wan') and intf.get('enabled') and intf.get('v4ConfigType') != "DISABLED":
                 file.write("config rule\n")
                 file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
-                file.write("\toption priority '%d'\n" % priority)
+                file.write("\toption priority '%d'\n" % fwmark_priority)
                 file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
                 file.write("\n")
-                priority = priority + 1
+                fwmark_priority = fwmark_priority + 1
+
+                file.write("config rule\n")
+                file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf))
+                file.write("\toption priority '%d'\n" % oif_priority)
+                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+                file.write("\n")
+                oif_priority = oif_priority + 1
 
     def write_switch(self, swi, settings):
         """write the switch config"""
