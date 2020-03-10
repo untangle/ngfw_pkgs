@@ -163,7 +163,7 @@ class NetworkManager(Manager):
 
     def write_route_rules(self, settings):
         """write the route rules"""
-        priority = 70000
+        priority = 7000
         file = self.network_file
         file.write("\n")
 
