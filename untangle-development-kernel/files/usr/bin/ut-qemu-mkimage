@@ -57,11 +57,11 @@ if [[ -n "$UVM" ]] ; then
       PACKAGES+=(--package sysvinit-core) ;;
     stretch)
       KERNEL_VERSION=${KERNEL_VERSION:-4.9.0-11}
+      KERNEL_VARIANT=""
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
-      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
-		--package untangle-gateway
+      PACKAGES+=(--package untangle-gateway
 		--package postgresql-client
 		--package postgresql
 		--package openjdk-8-jre
@@ -74,11 +74,11 @@ if [[ -n "$UVM" ]] ; then
 		--package libfreeradius-dev) ;;
     buster)
       KERNEL_VERSION=${KERNEL_VERSION:-4.19.0-6}
+      KERNEL_VARIANT="-unsigned"
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
-      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}-unsigned
-		--package untangle-gateway
+      PACKAGES+=(--package untangle-gateway
 		--package postgresql-client
 		--package postgresql
 		--package openjdk-11-jre
@@ -91,12 +91,10 @@ if [[ -n "$UVM" ]] ; then
   esac
 
   case $ARCH in
-    # FIXME: if we need to support other distributions than stretch,
-    # we'll need to add extra versions here...
     # We unfortunately can't pass linux-image-untangle because
     # debootstrap has trouble resolving virtual packages
-    amd64) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-amd64" ;; 
-    i386) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-686-pae" ;;
+    amd64) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-amd64-${KERNEL_VARIANT}" ;; 
+    i386) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-686-pae-${KERNEL_VARIANT}" ;;
     *) KERNEL_PACKAGE="libc6" ;; # cheap...
   esac
 
