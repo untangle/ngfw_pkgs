@@ -16,6 +16,10 @@ PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
 if [ -d $PG_VAR_DIR_OLD ] ; then
   echo "[$(date +%Y-%m%-dT%H:%m)] Starting conversion"
 
+  # perform this on the old version otherwise the new 9.6 version causes
+  # it not to start
+  sed -i -e "s/.*autovacuum_analyze_scale_factor.*=.*/autovacuum_analyze_scale_factor = 0.5/" ${PG_CONF_OLD}
+
   # Stop all instances
   systemctl stop postgresql || true
   /etc/init.d/postgresql stop || true
