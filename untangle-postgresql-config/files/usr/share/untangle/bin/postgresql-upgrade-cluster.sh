@@ -20,16 +20,14 @@ if [ -d $PG_VAR_DIR_OLD ] ; then
   systemctl stop postgresql || true
   /etc/init.d/postgresql stop || true
 
-  # Start 9.4
-  systemctl start postgresql@9.4-main || true
-  /etc/init.d/postgresql start 9.4 || true
+  # Start old
+  systemctl start postgresql@${VERSION_OLD}-main || true
 
   # Drop old extension (pervent upgrade from working)
   psql -U postgres -c "drop extension tablefunc" uvm || true
 
   # Stop all instances
   systemctl stop postgresql || true
-  /etc/init.d/postgresql stop || true
   
   # Run conversion
   pushd /tmp
