@@ -84,7 +84,6 @@ if [[ -n "$UVM" ]] ; then
 		--package openjdk-11-jre
 		--package perl-openssl-defaults
 		--package lhasa
-		--package zoo
 		--package isc-dhcp-client
 		--package xfce4-session
 		--package dbus-x11
