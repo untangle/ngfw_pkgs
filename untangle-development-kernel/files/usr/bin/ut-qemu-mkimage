@@ -77,7 +77,7 @@ if [[ -n "$UVM" ]] ; then
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
-      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}
+      PACKAGES+=(--package untangle-kernel-modules-${REPOSITORY}-${ARCH}-unsigned
 		--package untangle-gateway
 		--package postgresql-client
 		--package postgresql
