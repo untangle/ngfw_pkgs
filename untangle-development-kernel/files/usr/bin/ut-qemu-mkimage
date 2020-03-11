@@ -4,12 +4,12 @@ set -e
 
 usage() {
   echo "$0 -f <output-file> [-r <repository>] [-d distribution] [-a <arch>] [-u] [-s size] [-k kernel_version] [-p package[,package]]"
-  echo "-r repository        : jessie or stretch"
+  echo "-r repository        : jessie, stretch or buster"
   echo "-d distribution      : stable or testing (Untangle's definitions, not Debian's)"
   echo "-a architecture      : amd64, i386, armel, armhf, arm64, etc"
   echo "-u                   : installs untangle-gateway and all its dependencies"
   echo "-s size              : size of the image, for instance 20G"
-  echo "-k kernel_version    : debian kernel version, for instance 4.9.0-11"
+  echo "-k kernel_version    : debian kernel version, for instance 4.19.0-6"
   echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
   exit 1
 }
@@ -42,7 +42,7 @@ if [[ -e $IMAGE ]] ; then
 fi
 
 [[ -z "$ARCH" ]] && ARCH="amd64"
-[[ -z "$REPOSITORY" ]] && REPOSITORY="stretch"
+[[ -z "$REPOSITORY" ]] && REPOSITORY="buster"
 
 if [[ -n "$UVM" ]] ; then
   # default to Untangle testing (current)
