@@ -53,6 +53,7 @@ if [[ -n "$UVM" ]] ; then
   case $REPOSITORY in
     jessie)
       KERNEL_VERSION=${KERNEL_VERSION:-3.16.0-4}
+      KERNEL_VARIANT=""
       CUSTOMIZE=(--customize install-uvm.sh)
       PACKAGES+=(--package sysvinit-core) ;;
     stretch)
@@ -93,8 +94,8 @@ if [[ -n "$UVM" ]] ; then
   case $ARCH in
     # We unfortunately can't pass linux-image-untangle because
     # debootstrap has trouble resolving virtual packages
-    amd64) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-amd64-${KERNEL_VARIANT}" ;; 
-    i386) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-686-pae-${KERNEL_VARIANT}" ;;
+    amd64) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-amd64${KERNEL_VARIANT}" ;; 
+    i386) KERNEL_PACKAGE="linux-image-${KERNEL_VERSION}-untangle-686-pae${KERNEL_VARIANT}" ;;
     *) KERNEL_PACKAGE="libc6" ;; # cheap...
   esac
 
