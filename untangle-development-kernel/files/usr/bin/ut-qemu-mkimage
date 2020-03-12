@@ -99,7 +99,7 @@ if [[ -n "$UVM" ]] ; then
     *) KERNEL_PACKAGE="libc6" ;; # cheap...
   esac
 
-  MIRROR="http://package-server.untangle.int/public/$REPOSITORY"
+  MIRROR="http://package-server/public/$REPOSITORY"
   SIZE="${SIZE:-20G}"
   HOST="uvm-${REPOSITORY}-${ARCH}"
   EXTRA_ARGS=(--grub --no-systemd-networkd --kernel-package $KERNEL_PACKAGE --debootstrapopts "variant=minbase no-check-gpg components=main,non-free")
