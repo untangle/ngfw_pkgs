@@ -16,11 +16,12 @@ PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
 if [ -d $PG_VAR_DIR_OLD ] ; then
   echo "[$(date +%Y-%m%-dT%H:%m)] Starting conversion"
 
-  # Stop all instances
-  systemctl stop postgresql
-
   # Drop old extension (prevent upgrade from working)
   psql -U postgres -c "drop extension tablefunc" uvm
+
+  # Stop all instances
+  systemctl stop postgresql
+  sleep 3
 
   # Run conversion
   pushd /tmp
