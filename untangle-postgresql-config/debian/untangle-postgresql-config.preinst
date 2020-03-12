@@ -1,0 +1,18 @@
+#!/bin/bash
+
+oldVersion=""
+if [ "$1" = "upgrade" ] ; then
+  # oldVersion will be non-empty if untangle-postgresql-config is
+  # being upgraded
+  oldVersion="$2"
+fi
+
+if dpkg --compare-versions "$oldVersion" le 15.1~ ; then
+  VERSION_OLD="9.6"
+  PG_CONF_OLD="/etc/postgresql/${VERSION_OLD}/main/postgresql.conf"
+  # perform this on the old version otherwise the new 11.0 version
+  # (that parse the old config) fails to create its default cluster
+sed -i -e "s/.*autovacuum_analyze_scale_factor.*=/autovacuum_analyze_scale_factor = 0.5/" ${PG_CONF_OLD}
+
+fi
+
