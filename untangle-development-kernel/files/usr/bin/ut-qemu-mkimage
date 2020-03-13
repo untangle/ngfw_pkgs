@@ -80,6 +80,7 @@ if [[ -n "$UVM" ]] ; then
       # FIXME: manually maintaining a list of or'ed dependencies is
       # not sustainable in the longer run
       PACKAGES+=(--package untangle-gateway
+		 --package untangle-kernel-modules-${REPOSITORY}-${ARCH}
 		--package postgresql-client
 		--package postgresql
 		--package openjdk-11-jre
