@@ -506,6 +506,14 @@ class RouteManager(Manager):
                    (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
         file.write("add rule ip wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
                    (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
+        for intf in interfaces:
+            if not intf.get('enabled'):
+                continue
+            if intf.get('configType') == 'BRIDGED':
+                continue
+            if intf.get('wan'):
+                continue
+            file.write("add rule ip wan-routing wan-routing-output oifname %s return\n" % intf.get('netfilterDev'))
         file.write("add rule ip wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n")
         file.write("add rule ip wan-routing wan-routing-output oif lo return\n")
         file.write("add rule ip wan-routing wan-routing-output ct state new jump wan-routing-entry\n")
