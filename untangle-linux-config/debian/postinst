@@ -42,6 +42,37 @@ currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
 rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
 cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
 
+get_cpuinfo_field () {
+  line=$(grep -m1 ^"$1" /proc/cpuinfo)
+  echo "${line##*: }"
+}
+
+bay_trail () {
+  family=$(get_cpuinfo_field "cpu family")
+  model=$(get_cpuinfo_field "model")
+  stepping=$(get_cpuinfo_field "stepping")
+
+  if [ $family -eq 6 ] && \
+     [ $model -eq 55 ] && \
+     [ $stepping -eq 9 ] ; then
+
+    return 0
+  else
+    return 1
+  fi
+}
+
+# if this is a bay trail cpu like in the lanner u25, add 'intel_idle.max_cstate=1' to the kernel command line
+if bay_trail ; then
+  sed -e 's/\(^GRUB_CMDLINE_LINUX=.*\)\("\)/\1 intel_idle.max_cstate=1\2/g' -i /etc/default/grub
+
+  # schedule a reboot if we aren't already running with intel_idle.max_cstate=1
+  if ! grep -q intel_idle.max_cstate=1 /proc/cmdline ; then
+    echo "Rebooting after apt-get completes..."
+    nohup /usr/bin/uvm-restart reboot >> /var/log/uvm/restart.log 2>&1 &
+  fi
+fi
+
 if [ -z "$currentDefault" ] || [ "$currentDefault" = "default" ] ; then
   echo "Setting default grub option: 0"
   grub-set-default 0
