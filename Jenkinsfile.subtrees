@@ -2,6 +2,10 @@ pipeline {
   agent any
 
   stages {
+    triggers {
+      cron("@daily")
+    }
+
     stage('Update subtrees') {
       agent any
       steps {
