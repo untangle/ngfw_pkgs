@@ -5,6 +5,7 @@
 
 import argparse
 import locale
+import re
 import subprocess
 import sys
 import yaml
@@ -39,6 +40,10 @@ parser.add_argument('--simulate', dest='simulate',
 args = parser.parse_args()
 
 branch = run('git symbolic-ref --short HEAD')
+if not re.search(r'^(master|release-)', branch):
+    print('Cowardly refusing to operate on branches other than master or release-*')
+    sys.exit(2)
+
 origin = run('git remote').split('\n')[0]
 
 for directory, repository in SUBTREES.items():
