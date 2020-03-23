@@ -15,3 +15,4 @@ sync.registrar.register_operation("restart-bdamserver", None, ["ps awwwux | grep
 sync.registrar.register_operation("apt-update",         None, ["apt-get update", "/usr/bin/systemctl-wait"],                                              52, None)
 sync.registrar.register_operation("restart-pyconnector",None, ["ps awwwux | grep -q [p]yconnector && systemctl restart untangle-pyconnector", "/usr/bin/systemctl-wait"],                                              53, None)
 sync.registrar.register_operation("geoip-update",       None, ["/usr/bin/systemctl-wait"],                                              54, None)
+sync.registrar.register_operation("restart-wireguard",  None, ["/usr/bin/systemctl-wait"],                                              55, None)
