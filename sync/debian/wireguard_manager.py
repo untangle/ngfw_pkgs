@@ -103,12 +103,15 @@ class WireguardManager(Manager):
         self.out_file.write("PrivateKey={privateKey}\n".format(privateKey=settings_file.settings.get('privateKey')))
         self.out_file.write("Address={address}\n".format(address=settings_file.settings.get('addressPool')))
         self.out_file.write("ListenPort={listenPort}\n".format(listenPort=settings_file.settings.get('listenPort')))
-        self.out_file.write("MTU={mtu}\n".format(mtu=settings_file.settings.get('mtu')))
+        if settings_file.settings.get('mtu') != 0:
+            self.out_file.write("MTU={mtu}\n".format(mtu=settings_file.settings.get('mtu')))
         self.out_file.write("\n")
 
         # Peers
         keepaliveInterval = settings_file.settings.get('keepaliveInterval')
         for tunnel in settings_file.settings.get('tunnels'):
+            if tunnel.get('enabled') == False:
+                continue
             self.out_file.write("[Peer]\n")
             self.out_file.write("# {name}\n".format(name=tunnel.get('description')))
             self.out_file.write("PublicKey={publicKey}\n".format(publicKey=tunnel.get('publicKey')))
@@ -117,7 +120,8 @@ class WireguardManager(Manager):
             allowedIps = tunnel.get('networks')
             allowedIps.insert(0, tunnel.get('peerAddress'))
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
-            self.out_file.write("PersistentKeepalive={keepaliveInterval}\n".format(keepaliveInterval=keepaliveInterval))
+            if keepaliveInterval != 0:
+                self.out_file.write("PersistentKeepalive={keepaliveInterval}\n".format(keepaliveInterval=keepaliveInterval))
 
             self.out_file.write("\n")
 
