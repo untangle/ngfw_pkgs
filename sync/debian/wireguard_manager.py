@@ -117,8 +117,12 @@ class WireguardManager(Manager):
             self.out_file.write("PublicKey={publicKey}\n".format(publicKey=tunnel.get('publicKey')))
             if tunnel.get('endpointDynamic') == False:
                 self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=tunnel.get('endpointAddress'), endpointPort=tunnel.get('endpointPort')))
-            allowedIps = tunnel.get('networks')
-            allowedIps.insert(0, tunnel.get('peerAddress'))
+            allowedIps = []
+            allowedIps.append(tunnel.get('peerAddress'))
+            netString = tunnel.get('networks')
+            netList = netString.split()
+            for item in netList:
+                allowedIps.append(item)
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
             if keepaliveInterval != 0:
                 self.out_file.write("PersistentKeepalive={keepaliveInterval}\n".format(keepaliveInterval=keepaliveInterval))
