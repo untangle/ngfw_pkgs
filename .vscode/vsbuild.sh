@@ -18,5 +18,5 @@ else
     ## mfw.
     ##
     rsync -r -a -v -e "ssh -i /root/.ssh/untangle.openssh.rsa" bin root@$TARGET:/usr
-    rsync -r -a -v -e "ssh -i /root/.ssh/untangle.openssh.rsa" sync/* root@TARGET:/usr/lib/python3.6/site-packages/sync
+    rsync -r -a -v -e "ssh -i /root/.ssh/untangle.openssh.rsa" sync/* root@$TARGET:/usr/lib/python3.6/site-packages/sync
 fi
