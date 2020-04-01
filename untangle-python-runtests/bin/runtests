@@ -290,10 +290,10 @@ logfile = open(parser.logfile, 'w')
 signal.signal(signal.SIGINT, signal_handler)
 
 if len(parser.paths) == 0:
-    load_modules('./usr/lib/python%d.%d/' % sys.version_info[:2])
-    load_modules('./usr/lib/python%d.%d/dist-packages/' % sys.version_info[:2])
-    load_modules('/usr/lib/python%d.%d/' % sys.version_info[:2])
-    load_modules('/usr/lib/python%d.%d/dist-packages/' % sys.version_info[:2])
+    load_modules('./usr/lib/python%d/' % sys.version_info[2])
+    load_modules('./usr/lib/python%d/dist-packages/' % sys.version_info[2])
+    load_modules('/usr/lib/python%d/' % sys.version_info[2])
+    load_modules('/usr/lib/python%d/dist-packages/' % sys.version_info[2])
 else:
     for p in parser.paths:
         load_modules(p)
