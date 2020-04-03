@@ -35,22 +35,23 @@ CACHE_SIZE=$( echo "scale = 0 ; size = ${PERCENTAGE_TO_RESERVE}*${PARTITION_SIZE
 mkdir -p ${CACHE_DIR}
 chown -R proxy:proxy ${CACHE_DIR}
 
-# options we need
-setOption http_port "3128 transparent"
-setOption extension_methods "REPORT MERGE MKACTIVITY CHECKOUT X-UNTANGLE-WEBCACHE"
+# Options we need for web-cache as of Squid 4.6 on buster
+setOption http_port "3128 accel"
 setOption cache_dir "ufs ${CACHE_DIR} ${CACHE_SIZE} 16 256"
 setOption maximum_object_size "32768 KB"
 setOption client_persistent_connections off
 setOption server_persistent_connections off
-setOption dns_testnames www.untangle.com
 setOption digest_generation off 
-setOption cache_peer "127.0.0.1 parent 8888 0 no-query no-digest default"
+setOption cache_peer "127.0.0.1 parent 8888 0 no-query no-digest no-netdb-exchange standby=0 default"
 setOption never_direct "allow all"
+setOption shutdown_lifetime "2 seconds"
+setOption dns_v4_first on
+setOption memory_pools off
 
 # change error messages to say "WebCache" instead of "Squid"
 find /usr/share/squid/errors/ -type f -exec sed -i 's/Squid/WebCache/' {} \; >/dev/null 2>&1
 
-# remove squid from startup
-update-rc.d -f squid disable
+# disable auto startup
+systemctl disable squid.service
 
 exit 0
