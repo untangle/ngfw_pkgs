@@ -71,8 +71,8 @@ if [ -f /etc/default/irqbalance ] ; then
     fi
 fi
 
-# 15.0: any to 4.9.0-11 auto-switch (NGFW-12661)
-latest="4.9.0-11"
+# 15.1: any to 4.19.0-8 auto-switch (NGFW-12661)
+latest="4.19.0-8"
 case "$(cat /proc/cmdline)" in 
     *video-safe-mode*)
 	echo "Switching to ${latest} video safe mode"
