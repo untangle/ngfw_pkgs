@@ -53,6 +53,7 @@ Depends: ${misc:Depends}, autoconf,
 	 ruby-sass,
          rhino,
          unzip
+Conflicts: openjdk-8-jdk, openjdk-8-jdk-headless
 Description: Untangle Development Environment
  The Untangle Development Environment.
  .

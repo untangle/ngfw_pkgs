@@ -76,7 +76,7 @@ Depends: ${misc:Depends}, at,
          unzip,
          wget,
          zsh
-Conflicts: sysvinit-core
+Conflicts: openjdk-8-jre-headless, openjdk-8-jre
 Description: Untangle Development Runtime Environment
  The Untangle Runtime Environment package contains all packages needed
  to support running the Untangle Gateway.
