@@ -6,7 +6,7 @@
         {
             "label": "Build sync settings",
             "type": "shell",
-            "command": "./.vscode/vsbuild.sh",
+            "command": "./.vscode/vsbuild.sh mfw_ip_address",
             "group": {
                 "kind": "build",
                 "isDefault": true
