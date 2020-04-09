@@ -9,7 +9,7 @@ usage() {
   echo "-a architecture      : amd64, i386, armel, armhf, arm64, etc"
   echo "-u                   : installs untangle-gateway and all its dependencies"
   echo "-s size              : size of the image, for instance 20G"
-  echo "-k kernel_version    : debian kernel version, for instance 4.19.0-6"
+  echo "-k kernel_version    : debian kernel version, for instance 4.19.0-8"
   echo "-p package[,package] : also install those extra package, for instance -p emacs,tmux"
   exit 1
 }
@@ -74,7 +74,7 @@ if [[ -n "$UVM" ]] ; then
 		--package dbus-x11
 		--package libfreeradius-dev) ;;
     buster)
-      KERNEL_VERSION=${KERNEL_VERSION:-4.19.0-6}
+      KERNEL_VERSION=${KERNEL_VERSION:-4.19.0-8}
       KERNEL_VARIANT="-unsigned"
       CUSTOMIZE=(--customize fix-uvm.sh)
       # FIXME: manually maintaining a list of or'ed dependencies is
