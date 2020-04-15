@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -x
+
 # we don't deal with grub on arm* at all
 uname -m | grep -qE '^arm' && exit 0
 
@@ -15,12 +17,15 @@ grabRootDevice() {
  
 kernelRoot=$(perl -ne 'print $1 if m|root=([^\s]+)|' /proc/cmdline)
 
-if [ -n "$kernelRoot" ]; then
-  # regular boot; the system apparently was fine with whatever got
-  # passed to the kernel by grub, so we'll use that too
-  root=$kernelRoot
-elif [ -f /etc/mtab ]; then
+if [ -f /etc/mtab ]; then
+  # use mtab if present
   root=$(grabRootDevice /etc/mtab)
+elif [ -n "$kernelRoot" ]; then
+  # otherwise, try to default to whatever got passed to the kernel by
+  # grub
+  root=$kernelRoot
+else # hope for the best
+  root=$(mount | grabRootDevice)
 fi
 
 # If we couldn't find a root, don't bother with the rest as we must
