@@ -33,6 +33,12 @@ deb-systemd-helper disable clamav-freshclam.service
 # fix clamav.conf from broken security update (Bug #13073)
 sed -e '/AllowSupplementaryGroups/d' -i $CLAMAV_CONF_FILE
 
+# fix deprecated option warning for clamav 0.102.1/25752
+sed -e '/ScanOnAccess/d' -i $CLAMAV_CONF_FILE
+
+# fix unknown option warning for clamav 0.102.1/25752
+sed -e '/StatsEnabled/d' -i $CLAMAV_CONF_FILE
+
 # 14.0
 # Remove old cron job
 rm -f /etc/cron.d/clamav-unofficial-sigs-cron
