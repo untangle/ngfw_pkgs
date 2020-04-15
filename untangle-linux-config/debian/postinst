@@ -15,16 +15,10 @@ grabRootDevice() {
   awk '/^[^#].*[ \t]+\/[ \t]+(type )?ext/ {print $1}'
 }
  
-kernelRoot=$(perl -ne 'print $1 if m|root=([^\s]+)|' /proc/cmdline)
-
 if [ -f /etc/mtab ]; then
   # use mtab if present
   root=$(grabRootDevice /etc/mtab)
-elif [ -n "$kernelRoot" ]; then
-  # otherwise, try to default to whatever got passed to the kernel by
-  # grub
-  root=$kernelRoot
-else # hope for the best
+else # no mtab in FAI
   root=$(mount | grabRootDevice)
 fi
 
