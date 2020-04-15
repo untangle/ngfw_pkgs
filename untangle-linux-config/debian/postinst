@@ -10,7 +10,7 @@ if [ "$1" = "configure" ] ; then
 fi
 
 grabRootDevice() {
-  awk '/^[^#].*[ \t]+\/[ \t]+ext/ {print $1}' $1
+  awk '/^[^#].*[ \t]+\/[ \t]+(type )?ext/ {print $1}'
 }
  
 kernelRoot=$(perl -ne 'print $1 if m|root=([^\s]+)|' /proc/cmdline)
@@ -100,10 +100,14 @@ if [ -f /boot/grub/device.map ] ; then
 fi
 if [ ! -e "$hd0Target" ] ; then
   echo "  * No target found in /boot/grub/device.map. Using /"
-  root=$(grabRootDevice /etc/mtab)
+  if [ -f /etc/mtab ] ; then
+    root=$(grabRootDevice /etc/mtab)
+  else
+    root=$(mount | grabRootDevice)
+  fi
   rootTarget=$(readlink -f ${root})
   echo "  * / is on '${root}', which links to '${rootTarget}'"
-  hd0Target=$(echo $rootTarget | perl -pe 's/\d$//')
+  hd0Target=$(echo $rootTarget | perl -pe 's/p?\d$//')
   echo "  * target '${hd0Target}'"
 fi
 
