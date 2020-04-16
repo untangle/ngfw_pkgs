@@ -11,6 +11,9 @@ Build-Depends: debhelper (>= 10),
                python3-urllib3,
 	       dh-python,
 	       git
+Depends: ${misc:Depends},
+			dnsmasq,
+			softflowd
 Standards-Version: 3.9.8
 Homepage: https://github.com/untangle/ngfw_pkgs
 Vcs-Git: https://github.com/untangle/ngfw_pkgs.git
