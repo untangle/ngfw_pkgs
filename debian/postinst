@@ -1,0 +1,5 @@
+#! /bin/bash
+
+/usr/bin/sync-settings -f \
+  /usr/share/untangle/conf/uris.js \
+  /usr/share/untangle/settings/untangle-vm/network.js
