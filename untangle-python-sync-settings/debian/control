@@ -1,0 +1,28 @@
+Source: untangle-python-sync-settings
+Section: python
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Build-Depends: debhelper (>= 10),
+	       python3,
+	       python3-setuptools,
+	       python3-pytest,
+	       python3-pytest-runner,
+	       python3-pytest-cov,
+               python3-urllib3,
+	       dh-python,
+	       git
+Depends: ${misc:Depends},
+			dnsmasq,
+			softflowd
+Standards-Version: 3.9.8
+Homepage: https://github.com/untangle/ngfw_pkgs
+Vcs-Git: https://github.com/untangle/ngfw_pkgs.git
+Vcs-Browser: https://github.com/untangle/ngfw_pkgs.git
+
+Package: untangle-python3-sync-settings
+Architecture: all
+Depends: ${misc:Depends}, python, ${misc:Depends}, ${python3:Depends}
+Description: Library for manipulating Untangle system settings (Python 3)
+ This module is a library for manipulating Untangle system settings.
+ .
+ This is the Python 3 version of the package.

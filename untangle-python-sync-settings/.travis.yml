@@ -1,0 +1,20 @@
+language: python
+python:
+  - "3.5"
+  - "3.6"
+  - "3.7"
+  - "3.8-dev"
+
+install:
+  - python setup.py install
+
+script:
+  - python setup.py test
+
+notifications:
+  email: false
+  slack:
+    rooms:
+      - secure: Anf4o5PUukbx0ZHTmtwIGcXDpYXBSq5UIir+jbMiaSuUpKGRh1U0NjkkwrTEE7qEYBmEJAafisEzlbEnBeTI8PPSVPBsBAFj2cZ5fYhHeZuBehE8ZN36gAVTteO5t5oSh3TtOnag2DtNZPomOD0LkHr/qN0Rr16t2nkDXYPOpFKnhDMh/SAjDWboZM9son6XJiI9TQxh25HS5i8LVfle4dGCobWXmlvu9JYoRhjiWz2any/HaYPJnCC5rd4GNLkuKIW4fYCu8QcIjiTrSSwYpTlkJwbm/VuV/6bVUXWIElovjv8BLLbe0uVd5nyoileChah6QDyivgWqFidYGUO4o4mE9AoUQpEYcRKZanMaRbCjDBuj5UU1gJ+6CFMLSB0xVoFiBvSEiXs9LEI72OBil2ASxsJzfwJy2iowlJQVnpJFoIgb74yPIjLcvFyOeoQfsqjWRpxqexECZjQDxCAcarqa7ifW/ZcIi2n9kvvvp7f1rF0Hu9a5R341p2EUQeKgYRTSmBk5P1Q4hxJ20Sj3NyitxS6wZvpiEAactrAFfLHGLCSxG6gjNiY71+1QzjsmPuMkQI9MSLUNGDeluuTi4RFaGeeuPyNGxGMxj01KOMhly1d+bBfqOXG6oo5U9fkMqwqI5IVMjlVpGbz9txrzTel6RMpbOGn2vZevvD71bv8=
+    on_success: change
+    on_failure: always
