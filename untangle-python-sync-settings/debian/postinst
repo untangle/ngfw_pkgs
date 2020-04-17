@@ -1,0 +1,7 @@
+#! /bin/bash
+
+NETWORK_SETTINGS=/usr/share/untangle/settings/untangle-vm/network.js
+
+if [ -f $NETWORK_SETTINGS ] ; then
+  /usr/bin/sync-settings -f $NETWORK_SETTINGS
+fi
