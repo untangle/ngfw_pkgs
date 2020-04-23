@@ -12,7 +12,7 @@ if [ "$1" = "configure" ] ; then
 fi
 
 grabRootDevice() {
-  awk '/^[^#].*[ \t]+\/[ \t]+(type )?ext/ {print $1}'
+  awk '/^[^#].*[ \t]+\/[ \t]+(type )?ext/ {print $1}' $1
 }
  
 if [ -f /etc/mtab ]; then
