@@ -15,6 +15,7 @@ Depends: ${misc:Depends}, bash (>= 3.1),
          grub2-common,
          initramfs-tools,
 	 linux-image-4.19.0-8-untangle-amd64-unsigned | linux-image-4.19.0-8-untangle-686-pae-unsigned,
+	 linux-headers-4.19.0-8-untangle-amd64 | linux-headers-4.19.0-8-untangle-686-pae,
          untangle-bootsplash,
          untangle-kernel-modules-buster,
          uuid-runtime
