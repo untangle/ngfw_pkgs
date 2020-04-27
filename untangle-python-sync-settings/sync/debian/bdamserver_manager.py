@@ -12,7 +12,7 @@ from sync.uri_util import UriUtil
 # This class is responsible for updating bdadmserver.conf
 
 class BdamserverManager(Manager):
-    update_uri = 'https://bd.untangle.com/'
+    update_uri = 'http://bd.untangle.com/'
 
     bdadmserver_conf_file_name = "/etc/bdamserver/bdamserver.conf"
     bdadmserver_conf_update_url_antivirus = re.compile(r'^(UpdateURLAntivirus=)(https?:\/\/[^?\/\s]+[?\/])(.*)')
