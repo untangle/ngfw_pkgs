@@ -37,7 +37,10 @@ sed -e '/AllowSupplementaryGroups/d' -i $CLAMAV_CONF_FILE
 sed -e '/ScanOnAccess/d' -i $CLAMAV_CONF_FILE
 
 # fix unknown option warning for clamav 0.102.1/25752
-sed -e '/StatsEnabled/d' -i $CLAMAV_CONF_FILE
+sed -e '/^Stats.*/d' -i $CLAMAV_CONF_FILE
+
+# fix unknown option warning for clamav 0.102.1/25752
+sed -e '/^DetectBrokenExecutables.*/d' -i $CLAMAV_CONF_FILE
 
 # 14.0
 # Remove old cron job
