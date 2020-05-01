@@ -132,7 +132,7 @@ class WireguardManager(Manager):
 
         self.out_file.flush()
         self.out_file.close()
-        os.chmod(self.out_file_name, os.stat(self.out_file_name).st_mode | stat.S_IEXEC)
+        os.chmod(self.out_file_name, stat.S_IRUSR | stat.S_IWUSR)
 
         print("WireguardManager: Wrote %s" % self.out_file_name)
 
