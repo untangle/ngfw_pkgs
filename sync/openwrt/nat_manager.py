@@ -79,6 +79,20 @@ add rule ip nat-sys postrouting-nat jump nat-rules-sys
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                 file.write("# NAT Egress traffic to interface %i\n" % intf.get('interfaceId'))
                 file.write("add rule ip nat-sys nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
+                
+            # MFW-926
+            # if we are not NATting all outbound traffic, then we need to at least SNAT any of the 
+            # localhost's WAN traffic attempting to traverse the TUN0 interface with a WAN IP Address
+            if intf.get("wan") and not intf.get("natEgress"):
+                # Find LAN address of the LAN gateay
+                for lanIntf in settings.get('network').get('interfaces'):
+                    if not lanIntf.get('wan') and lanIntf.get('v4ConfigType') == "STATIC":
+                        lanAddress = lanIntf.get('v4StaticAddress')
+                        break;
+
+                file.write("# SNAT outbound traffic that has a source intf mask of 0xff on interface %s to a LAN gateway address %s \n" % (intf.get('netfilterDev'), lanAddress))
+                file.write("add rule ip nat-sys nat-rules-sys mark & 0xff == 0xff oifname %s snat %s" % (intf.get('netfilterDev'), lanAddress))
+            
             if intf.get('natIngress'):
                 # FIXME - this should be a rule based on mark instead of netfilterDev
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
