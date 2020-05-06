@@ -101,7 +101,9 @@ class WireguardManager(Manager):
         # Interface
         self.out_file.write("[Interface]\n")
         self.out_file.write("PrivateKey={privateKey}\n".format(privateKey=settings_file.settings.get('privateKey')))
-        self.out_file.write("Address={address}\n".format(address=settings_file.settings.get('addressPool')))
+        address =  settings_file.settings.get('addressPool')
+        if address is not None:
+            self.out_file.write("Address={address}\n".format(address=address.split('/')[0]))
         self.out_file.write("ListenPort={listenPort}\n".format(listenPort=settings_file.settings.get('listenPort')))
         if settings_file.settings.get('mtu') != 0:
             self.out_file.write("MTU={mtu}\n".format(mtu=settings_file.settings.get('mtu')))
@@ -132,7 +134,7 @@ class WireguardManager(Manager):
 
         self.out_file.flush()
         self.out_file.close()
-        os.chmod(self.out_file_name, os.stat(self.out_file_name).st_mode | stat.S_IEXEC)
+        os.chmod(self.out_file_name, stat.S_IRUSR | stat.S_IWUSR)
 
         print("WireguardManager: Wrote %s" % self.out_file_name)
 
