@@ -172,14 +172,18 @@ class WireguardManager(Manager):
             self.out_file.write("Address={address}\n".format(address=tunnel.get("peerAddress")))
             if tunnel.get("endpointDynamic") == False:
                 self.out_file.write("ListenPort={listenPort}\n".format(listenPort=tunnel.get('endpointPort')))
+            if settings_file.settings.get("dnsServer") != "":
+                self.out_file.write("DNS={dnsServer}\n".format(dnsServer=settings_file.settings.get("dnsServer")))
 
             self.out_file.write("\n")
             self.out_file.write("[Peer]\n")
             self.out_file.write("# {name}\n".format(name=Variables.get('wireguardHostname')))
             self.out_file.write("PublicKey={publicKey}\n".format(publicKey=settings_file.settings.get('publicKey')))
             self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=Variables.get("wireguardUrl").split(":")[0], endpointPort=settings_file.settings.get('listenPort')))
-            allowedIps = Variables.get("wireguardNetworks").split(",")
-            allowedIps.append(settings_file.settings.get('addressPool').split("/")[0])
+            if settings_file.settings.get('networks') != "":
+                # allowedIps = settings_file.settings.get('networks').split("\r\n")
+                allowedIps = re.split(r"[\r\n]+", settings_file.settings.get('networks'))
+            allowedIps.insert(0, settings_file.settings.get('addressPool').split("/")[0])
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
 
             self.out_file.write("\n")
