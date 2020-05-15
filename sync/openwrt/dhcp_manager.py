@@ -164,13 +164,19 @@ class DhcpManager(Manager):
 
                     if intf.get('v6ConfigType') != 'DISABLED':
                         dhcpv6_in_use = True
-                        file.write("\toption dhcpv6 'server'\n")
-                        file.write("\toption ra 'server'\n")
+                        if intf.get('v6RelayEnabled'):
+                            write_relay_options(file, intf.get('isWan'))
+                        else:
+                            file.write("\toption dhcpv6 'server'\n")
+                            file.write("\toption ra 'server'\n")
 
                     file.write("\n")
                 else:
                     file.write("\toption interface '%s'\n" % interface_name)
-                    file.write("\toption ignore '1'\n")
+                    if intf.get('v6RelayEnabled'):
+                        write_relay_options(file, intf.get('wan'))
+                    else: 
+                        file.write("\toption ignore '1'\n")
                     file.write("\n")
 
         if dhcpv6_in_use is True:
@@ -202,6 +208,12 @@ class DhcpManager(Manager):
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
+def write_relay_options(file, isWan):
+    file.write("\toption dhcpv6 'relay'\n")
+    file.write("\toption ra 'relay'\n")
+    file.write("\toption ndp 'relay'\n")
+    if isWan:
+        file.write("\toption master '1'\n")
 
 def calc_dhcp_range_start(ip, prefix, start):
     """calucale a good dhcp range start"""
