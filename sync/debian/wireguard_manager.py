@@ -166,7 +166,7 @@ class WireguardManager(Manager):
             # Interface
             self.out_file.write("[Interface]\n")
             if tunnel.get("privateKey") != "":
-                self.out_file.write("PrivateKey={privateKey}\n".format(privateKey=settings_file.settings.get('privateKey')))
+                self.out_file.write("PrivateKey={privateKey}\n".format(privateKey=tunnel.get("privateKey")))
             else:
                 self.out_file.write("PrivateKey=\n")
             self.out_file.write("Address={address}\n".format(address=tunnel.get("peerAddress")))
