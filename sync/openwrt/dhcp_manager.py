@@ -122,6 +122,13 @@ class DhcpManager(Manager):
         file.write("\n")
 
         dhcpv6_in_use = False
+        
+        # If relay is enabled on a WAN intf. then we need to adjust LAN intf config appropriately        
+        dhcpv6_relay_enabled = False
+        for intf in interfaces:
+            if intf.get('v6RelayEnabled'):
+                dhcpv6_relay_enabled = True
+
         for intf in interfaces:
             if intf.get('configType') == 'ADDRESSED':
                 interface_name = network_util.get_interface_name(settings, intf)
@@ -164,8 +171,8 @@ class DhcpManager(Manager):
 
                     if intf.get('v6ConfigType') != 'DISABLED':
                         dhcpv6_in_use = True
-                        if intf.get('v6RelayEnabled'):
-                            write_relay_options(file, intf.get('isWan'))
+                        if dhcpv6_relay_enabled:
+                            write_relay_options(file, intf.get('wan'))
                         else:
                             file.write("\toption dhcpv6 'server'\n")
                             file.write("\toption ra 'server'\n")
@@ -173,7 +180,8 @@ class DhcpManager(Manager):
                     file.write("\n")
                 else:
                     file.write("\toption interface '%s'\n" % interface_name)
-                    if intf.get('v6RelayEnabled'):
+                    # Only add relay options to interfaces that have IPv6 enabled, or if they are a WAN with relay enabled
+                    if ( intf.get('wan') is False and intf.get('v6ConfigType') is not None and intf.get('v6ConfigType') != 'DISABLED' and dhcpv6_relay_enabled) or intf.get('v6RelayEnabled'):
                         write_relay_options(file, intf.get('wan'))
                     else: 
                         file.write("\toption ignore '1'\n")
