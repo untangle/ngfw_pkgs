@@ -11,7 +11,7 @@ Architecture: i386 amd64
 Depends: ${misc:Depends}, bash (>= 3.1),
          firmware-linux-free,
          firmware-linux-nonfree,
-         grub-pc,
+         grub-pc | grub-efi-amd64,
          grub2-common,
          initramfs-tools,
 	 linux-image-4.19.0-8-untangle-amd64 (>= 4.19.98-1+untangle2buster) | linux-image-4.19.0-8-untangle-686-pae (>= 4.19.98-1+untangle2buster),
