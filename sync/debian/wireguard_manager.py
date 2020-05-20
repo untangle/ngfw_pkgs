@@ -180,8 +180,8 @@ class WireguardManager(Manager):
             self.out_file.write("# {name}\n".format(name=Variables.get('wireguardHostname')))
             self.out_file.write("PublicKey={publicKey}\n".format(publicKey=settings_file.settings.get('publicKey')))
             self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=Variables.get("wireguardUrl").split(":")[0], endpointPort=settings_file.settings.get('listenPort')))
+            allowedIps = []
             if settings_file.settings.get('networks') != "":
-                # allowedIps = settings_file.settings.get('networks').split("\r\n")
                 allowedIps = re.split(r"[\r\n]+", settings_file.settings.get('networks'))
             allowedIps.insert(0, settings_file.settings.get('addressPool').split("/")[0])
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
