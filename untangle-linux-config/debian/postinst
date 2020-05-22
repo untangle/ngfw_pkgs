@@ -39,6 +39,10 @@ perl -i -pe 's|^[^\s#]+(\s+/\s+)|'$rootdev'$1|' /etc/fstab
 
 currentDefault=$(grub-editenv list | awk -F= '/^saved_entry/ {print $2}')
 rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
+
+# move the uefi 'System setup' menu entry to the end of the menu
+mv /etc/grub.d/30_uefi-firmware /etc/grub.d/60_uefi-firmware
+
 cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
 
 get_cpuinfo_field () {
