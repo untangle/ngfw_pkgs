@@ -122,6 +122,13 @@ class DhcpManager(Manager):
         file.write("\n")
 
         dhcpv6_in_use = False
+        
+        # If relay is enabled on a WAN intf. then we need to adjust LAN intf config appropriately        
+        dhcpv6_relay_enabled = False
+        for intf in interfaces:
+            if intf.get('v6RelayEnabled'):
+                dhcpv6_relay_enabled = True
+
         for intf in interfaces:
             if intf.get('configType') == 'ADDRESSED':
                 interface_name = network_util.get_interface_name(settings, intf)
@@ -164,13 +171,20 @@ class DhcpManager(Manager):
 
                     if intf.get('v6ConfigType') != 'DISABLED':
                         dhcpv6_in_use = True
-                        file.write("\toption dhcpv6 'server'\n")
-                        file.write("\toption ra 'server'\n")
+                        if dhcpv6_relay_enabled:
+                            write_relay_options(file, intf.get('wan'))
+                        else:
+                            file.write("\toption dhcpv6 'server'\n")
+                            file.write("\toption ra 'server'\n")
 
                     file.write("\n")
                 else:
                     file.write("\toption interface '%s'\n" % interface_name)
-                    file.write("\toption ignore '1'\n")
+                    # Only add relay options to interfaces that have IPv6 enabled, or if they are a WAN with relay enabled
+                    if ( intf.get('wan') is False and intf.get('v6ConfigType') is not None and intf.get('v6ConfigType') != 'DISABLED' and dhcpv6_relay_enabled) or intf.get('v6RelayEnabled'):
+                        write_relay_options(file, intf.get('wan'))
+                    else: 
+                        file.write("\toption ignore '1'\n")
                     file.write("\n")
 
         if dhcpv6_in_use is True:
@@ -202,6 +216,12 @@ class DhcpManager(Manager):
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
+def write_relay_options(file, isWan):
+    file.write("\toption dhcpv6 'relay'\n")
+    file.write("\toption ra 'relay'\n")
+    file.write("\toption ndp 'relay'\n")
+    if isWan:
+        file.write("\toption master '1'\n")
 
 def calc_dhcp_range_start(ip, prefix, start):
     """calucale a good dhcp range start"""

@@ -726,6 +726,9 @@ class NetworkManager(Manager):
         if intf.get("v6AssignHint") is not None and not isinstance(intf.get("v6AssignHint"), str):
             raise Exception("Invalid v6AssignHint: " + intf.get('name') + " " + intf.get("v6AssignHint"))
 
+        if intf.get("v6RelayEnabled") is not None and not isinstance(intf.get("v6RelayEnabled"), bool):
+            raise Exception("Invalid IPv6 Relay option: " + intf.get('name') + " " + intf.get("v6RelayEnabled"))
+
         if intf.get("routerAdvertisements") is not None and not isinstance(intf.get("routerAdvertisements"), bool):
             raise Exception("Invalid Router Advertisements: " + intf.get('name') + " " + intf.get("routerAdvertisements"))
 
