@@ -38,9 +38,9 @@ import collections
 if sys.path[0] != "/usr/bin":
     sys.path.insert(0, sys.path[0] + "/../")
 import sync
+from sync import Variables
 
 opts = None
-
 
 class Options(object):
     """Options parses the command line arguments"""
@@ -81,6 +81,11 @@ class Options(object):
         """Set create_settings flag"""
         self.create_settings = True
 
+    def set_variable(self, variable):
+        """ Set variable here """
+        [name, value] = variable.split('=', 2)
+        Variables.set(name, value)
+
     def parse_args(self):
         """Parse command line arguments"""
         handlers = {
@@ -89,10 +94,11 @@ class Options(object):
             '-n': self.set_norestart,
             '-s': self.set_test_run,
             '-c': self.set_create_settings,
+            '-v': self.set_variable,
         }
 
         try:
-            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:o:nsc')
+            (optlist, args) = getopt.getopt(sys.argv[1:], 'f:v:o:nsc')
             for opt in optlist:
                 handlers[opt[0]](opt[1])
 
@@ -115,11 +121,12 @@ def print_usage():
     sys.stderr.write("""\
 %s Usage:
   optional args:
-    -f <file>   : settings filename to sync to OS
-    -c          : create settings file if non-existant
-    -n          : do not run restart commands (just copy files onto filesystem)
-    -s          : do not copy or run restart commands (test run)
-    -o          : specify OS manually (debian/openwrt)
+    -f <file>               : settings filename to sync to OS
+    -c                      : create settings file if non-existant
+    -n                      : do not run restart commands (just copy files onto filesystem)
+    -s                      : do not copy or run restart commands (test run)
+    -o                      : specify OS manually (debian/openwrt)
+    -v name=value           : variable name and value
 """ % sys.argv[0])
 
 def calculate_changed_files(dirname):
