@@ -1,4 +1,0 @@
-build
-runtests/version.py
-dist
-*.egg-info
