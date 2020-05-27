@@ -10,7 +10,7 @@ sync.registrar.register_operation("restart-pyconnector", [""], ["/etc/init.d/pyc
 
 sync.registrar.register_operation("restart-wireless", [""], ["/sbin/wifi"], 20, None)
 
-sync.registrar.register_operation("restart-dhcp", [""], ["/etc/init.d/dnsmasq restart"], 30, None)
+sync.registrar.register_operation("restart-dhcp", [""], ["/etc/init.d/dnsmasq restart ; /etc/init.d/odhcpd restart"], 30, None)
 
 sync.registrar.register_operation("restart-cron", [""], ["/etc/init.d/cron stop ; /etc/init.d/cron enable ; /etc/init.d/cron start "], 35, None)
 

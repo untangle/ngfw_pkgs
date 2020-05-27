@@ -3,11 +3,12 @@ import stat
 import pwd
 import grp
 import re
+import shutil
 import sys
 
 from collections import OrderedDict
 from sync.iptables_util import IptablesUtil
-from sync import registrar,Manager,NetworkUtil
+from sync import registrar,Manager,NetworkUtil,Variables
 
 class WireguardManager(Manager):
     """
@@ -15,6 +16,7 @@ class WireguardManager(Manager):
     based on the settings object passed from sync-settings
     """
     wireguard_vpn_conf = '/etc/wireguard/wg0.conf'
+    wireguard_remote_conf_dir = '/etc/wireguard/untangle'
     wireguard_iptables_script = '/etc/untangle/iptables-rules.d/720-wireguard-vpn'
 
     delete_rule_template = "$IPTABLES -t {table} -D {chain} {rule} >/dev/null 2>&1"
@@ -77,15 +79,18 @@ class WireguardManager(Manager):
         registrar.register_settings_file("wireguard-vpn", self)
         registrar.register_file(self.wireguard_vpn_conf, "restart-wireguard", self)
         registrar.register_file(self.wireguard_iptables_script, "restart-iptables", self)
+        ## !! need to remove all files.  Maybe rsync instead of cp?
+        registrar.register_file(self.wireguard_remote_conf_dir + "/*", "restart-wireguard", self)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """
         Synchronize our file by modifying.  This is different than how other managers.
         """
-        self.write_wireguard_vpn_configuration(settings_file, prefix)
-        self.write_wireguard_iptables_scriptiguration(settings_file, prefix)
+        self.write_wireguard_vpn_local_configuration(settings_file, prefix)
+        self.write_wireguard_vpn_remote_configuration(settings_file, prefix)
+        self.write_wireguard_iptables_script(settings_file, prefix)
 
-    def write_wireguard_vpn_configuration(self, settings_file, prefix):
+    def write_wireguard_vpn_local_configuration(self, settings_file, prefix):
         """
         Write wireguard configuration for wg-quick
         """
@@ -138,7 +143,59 @@ class WireguardManager(Manager):
 
         print("WireguardManager: Wrote %s" % self.out_file_name)
 
-    def write_wireguard_iptables_scriptiguration(self, settings_file, prefix):
+    def write_wireguard_vpn_remote_configuration(self, settings_file, prefix):
+        """
+        Write remote wireguard configuration for wg-quick
+        """
+        if settings_file.id != 'wireguard-vpn':
+            return
+
+        if "tunnels" not in settings_file.settings:
+            return
+
+        for tunnel in settings_file.settings.get("tunnels"):
+            if tunnel.get('enabled') == False:
+                continue
+
+            self.out_file_name = prefix + self.wireguard_remote_conf_dir + "/remote-" + tunnel.get("publicKey").strip() + ".conf"
+            self.out_file_dir = os.path.dirname(self.out_file_name)
+            if not os.path.exists(self.out_file_dir):
+                os.makedirs(self.out_file_dir)
+            self.out_file = open(self.out_file_name, "w+")
+
+            # Interface
+            self.out_file.write("[Interface]\n")
+            if tunnel.get("privateKey") != "":
+                self.out_file.write("PrivateKey={privateKey}\n".format(privateKey=tunnel.get("privateKey")))
+            else:
+                self.out_file.write("PrivateKey=\n")
+            self.out_file.write("Address={address}\n".format(address=tunnel.get("peerAddress")))
+            if tunnel.get("endpointDynamic") == False:
+                self.out_file.write("ListenPort={listenPort}\n".format(listenPort=tunnel.get('endpointPort')))
+            if settings_file.settings.get("dnsServer") != "":
+                self.out_file.write("DNS={dnsServer}\n".format(dnsServer=settings_file.settings.get("dnsServer")))
+
+            self.out_file.write("\n")
+            self.out_file.write("[Peer]\n")
+            self.out_file.write("# {name}\n".format(name=Variables.get('wireguardHostname')))
+            self.out_file.write("PublicKey={publicKey}\n".format(publicKey=settings_file.settings.get('publicKey')))
+            self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=Variables.get("wireguardUrl").split(":")[0], endpointPort=settings_file.settings.get('listenPort')))
+            allowedIps = []
+            if settings_file.settings.get('networks') != "":
+                allowedIps = re.split(r"[\r\n]+", settings_file.settings.get('networks'))
+            allowedIps.insert(0, settings_file.settings.get('addressPool').split("/")[0])
+            self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
+
+            self.out_file.write("\n")
+
+            self.out_file.flush()
+            self.out_file.close()
+            os.chmod(self.out_file_name, stat.S_IRUSR | stat.S_IWUSR)
+            print("WireguardManager: Wrote %s" % self.out_file_name)
+
+        # shutil.rmtree(self.wireguard_remote_conf_dir)
+
+    def write_wireguard_iptables_script(self, settings_file, prefix):
         """
         Write wireguard configuration for wg-quick
         """
