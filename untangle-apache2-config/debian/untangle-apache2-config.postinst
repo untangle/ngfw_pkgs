@@ -83,7 +83,6 @@ a2enmod ssl
 a2enmod python
 a2enmod deflate
 a2enmod rewrite
-a2enmod headers
 
 # disable these modules for "PCI scan" issues
 A2DISMOD_OPTS="-m -f"
