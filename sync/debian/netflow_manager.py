@@ -14,7 +14,7 @@ from sync import registrar,Manager
 
 
 class NetflowManager(Manager):
-    softflow_daemon_conf_filename = "/etc/default/softflowd"
+    softflow_daemon_conf_filename = "/etc/softflowd/default.conf"
     restart_hook_filename = "/etc/untangle/post-network-hook.d/990-restart-softflowd"
 
     def initialize(self):
@@ -25,6 +25,9 @@ class NetflowManager(Manager):
     def sync_settings(self, settings_file, prefix, delete_list):
         self.write_softflow_daemon_conf(settings_file.settings, prefix)
         self.write_restart_softflow_daemon_hook(settings_file.settings, prefix)
+
+        # 15.1 delete old config file
+        delete_list.append("/etc/default/softflowd")
 
     def write_softflow_daemon_conf(self, settings, prefix=""):
         """
@@ -39,11 +42,11 @@ class NetflowManager(Manager):
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
-        file.write("INTERFACE=\"any\"\n")
+        file.write("interface=\"any\"\n")
         if settings.get('netflowSettings') != None:
             netflowSettings = settings.get('netflowSettings')
             try:
-                file.write("OPTIONS=\" -n %s:%i -v %i \"\n" % (netflowSettings.get('host'), netflowSettings.get('port'), netflowSettings.get('version')))
+                file.write("options=\" -n %s:%i -v %i \"\n" % (netflowSettings.get('host'), netflowSettings.get('port'), netflowSettings.get('version')))
             except Exception as exc:
                 traceback.print_exc()
 
@@ -77,7 +80,7 @@ SOFTFLOWD_PID="`pidof softflowd`"
 
 # Stop softflowd if running
 if [ ! -z "$SOFTFLOWD_PID" ] ; then
-    systemctl --no-block stop softflowd
+    systemctl --no-block stop softflowd@default.service
 fi
 """)
         else:
@@ -85,12 +88,12 @@ fi
 SOFTFLOWD_PID="`pidof softflowd`"
 
 # Restart softflowd if it isnt found
-# Or if /etc/default/softflowd has been written since softflowd was started
+# Or if /etc/softflowd/default.conf has been written since softflowd was started
 if [ ! -z "$SOFTFLOWD_PID" ] ; then
-    systemctl --no-block restart softflowd
+    systemctl --no-block restart softflowd@default.service
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
-elif [ ! /etc/default/softflowd -ot /proc/$SOFTFLOWD_PID ] ; then
-    systemctl --no-block restart softflowd
+elif [ ! /etc/softflowd/default.conf -ot /proc/$SOFTFLOWD_PID ] ; then
+    systemctl --no-block restart softflowd@default.service
 fi
 """)
 
