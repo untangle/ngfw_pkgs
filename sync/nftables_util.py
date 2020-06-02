@@ -214,7 +214,7 @@ def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
         raise Exception("Undefined protocol with port condition")
-    return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + value_str(value)
+    return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + numerical_val(value)
 
 def condition_ct_state_expression(value, op):
     """Generic helper for making port expressions"""
