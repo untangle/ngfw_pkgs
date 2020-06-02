@@ -89,7 +89,7 @@ SOFTFLOWD_PID="`pidof softflowd`"
 
 # Restart softflowd if it isnt found
 # Or if /etc/softflowd/default.conf has been written since softflowd was started
-if [ ! -z "$SOFTFLOWD_PID" ] ; then
+if [ -z "$SOFTFLOWD_PID" ] ; then
     systemctl --no-block restart softflowd@default.service
 # use not older than (instead of newer than) because it compares seconds and we want an equal value to still do a restart
 elif [ ! /etc/softflowd/default.conf -ot /proc/$SOFTFLOWD_PID ] ; then
