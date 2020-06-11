@@ -3,7 +3,7 @@
 DIRECTORY=/usr/share/untangle-suricata-config/
 
 if [ ! -d ${DIRECTORY}/current/rules ] ; then
-    tar -xzf ${DIRECTORY}/suricatarules.tar.gz -C /usr/share/untangle-suricata-config/current 
+    tar -xzf ${DIRECTORY}/suricatasignatures4.tar.gz -C /usr/share/untangle-suricata-config/current 
 fi
 
 # the intrusion-prevention app will start suricata
