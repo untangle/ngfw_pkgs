@@ -31,7 +31,7 @@ fi
 # Create LXC instance (if it doesn't exist)
 if ! lxc-info -n $NAME > /dev/null 2>&1 ; then
   echo "Creating LXC ${NAME}..."
-  lxc-create -n $NAME -t debian -- --release=stretch --arch=$ARCH --packages=$PACKAGES
+  lxc-create -n $NAME -t debian -- --release=buster --arch=$ARCH --packages=$PACKAGES
   echo "LXC ${NAME} is ready"
 
   # Configure LXC instance
