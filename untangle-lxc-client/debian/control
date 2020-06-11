@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-lxc-client
 Architecture: any
-Depends: ${misc:Depends}, systemd, debootstrap, dpkg-dev, lxc, cgroupfs-mount, untangle-sync-settings, sudo, wget, rsync, openssh-server
+Depends: ${misc:Depends}, systemd, debootstrap, dpkg-dev, lxc, lxc-templates, cgroupfs-mount, untangle-sync-settings, sudo, wget, rsync, openssh-server
 Description: The Untangle LXC client
  Provides the basic setup for putting an LXC container "behind" a
  local Untangle VM install
