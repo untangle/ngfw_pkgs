@@ -497,6 +497,8 @@ class RouteManager(Manager):
 
         file.write("\n")
         file.write("add chain ip wan-routing wan-routing-prerouting { type filter hook prerouting priority -25 ; }\n")
+        # MFW-948: Check if the packet SRC_TYPE mark is a WAN type, then just return from wan-routing-prerouting
+        file.write("add rule ip wan-routing wan-routing-prerouting mark and 0x03000000 == 0x01000000 return\n")
         file.write("add rule ip wan-routing wan-routing-prerouting mark and 0x0000ff00 != 0 return\n")
         file.write("add rule ip wan-routing wan-routing-prerouting fib daddr type local return\n")
         file.write("add rule ip wan-routing wan-routing-prerouting ct state new jump wan-routing-entry\n")

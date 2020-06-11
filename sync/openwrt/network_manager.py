@@ -351,6 +351,9 @@ class NetworkManager(Manager):
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
             file.write("\toption defaultroute '1'\n")
 
+            if('openvpnPeerDns' in intf and intf.get('openvpnPeerDns') == True):
+                file.write("\toption peerdns '1'\n")
+
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
 
