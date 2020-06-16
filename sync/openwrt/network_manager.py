@@ -170,20 +170,30 @@ class NetworkManager(Manager):
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('wan') and intf.get('enabled') and intf.get('v4ConfigType') != "DISABLED":
-                file.write("config rule\n")
-                file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
-                file.write("\toption priority '%d'\n" % fwmark_priority)
-                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
-                file.write("\n")
-                fwmark_priority = fwmark_priority + 1
+            if intf.get('wan') and intf.get('enabled'):
+                if intf.get('v4ConfigType') != "DISABLED":
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ip4")
 
-                file.write("config rule\n")
-                file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf))
-                file.write("\toption priority '%d'\n" % oif_priority)
-                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
-                file.write("\n")
+                if intf.get('v6ConfigType') != "DISABLED":
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ip6")
+
+                fwmark_priority = fwmark_priority + 1
                 oif_priority = oif_priority + 1
+
+    def create_route_rules_ipfamily(self, file, settings, intf, fwmark_priority, oif_priority, family):
+        """create_route_rules_ipfamily creates route rules for a specific ip family rule type"""
+        ruleType = ("rule" if family == "ip4" else "rule6")
+        file.write("config %s\n" % ruleType)
+        file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
+        file.write("\toption priority '%d'\n" % fwmark_priority)
+        file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+        file.write("\n")
+
+        file.write("config %s\n" % ruleType)
+        file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf))
+        file.write("\toption priority '%d'\n" % oif_priority)
+        file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+        file.write("\n")
 
     def write_switch(self, swi, settings):
         """write the switch config"""
