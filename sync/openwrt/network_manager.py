@@ -298,12 +298,18 @@ class NetworkManager(Manager):
             else:
                 file.write("\toption autoconnect '0'\n")
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
 
-        if intf.get('wan') and intf.get('v6ConfigType') == "DHCP":
-            file.write("\toption dhcpv6 '1'\n")
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
+
+            if intf.get('v6ConfigType') == "DHCP":
+                file.write("\toption dhcpv6 '1'\n")
 
     def write_interface_wireguard(self, intf, settings):
         """write a wireguard interface"""
@@ -319,9 +325,15 @@ class NetworkManager(Manager):
         if intf.get('wireguardPort') is not None:
             file.write("\toption listen_port '%s'\n" % intf.get('wireguardPort'))
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
 
         file.write("\n")
         peers = intf.get('wireguardPeers')
@@ -357,9 +369,15 @@ class NetworkManager(Manager):
         file.write("\toption proto 'openvpn'\n")
         file.write("\toption config '%s'\n" % path)
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
 
             if('openvpnPeerDns' in intf and intf.get('openvpnPeerDns') == True):
                 file.write("\toption peerdns '1'\n")
@@ -578,6 +596,8 @@ class NetworkManager(Manager):
             for idx, alias in enumerate(intf.get('v6Aliases')):
                 self.write_interface_v6_alias(intf, alias, (idx+1), settings)
 
+        if intf.get('wan'):
+            file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
         return
 
     def write_interface_v6_alias(self, intf, alias, count, settings):
