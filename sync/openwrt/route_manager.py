@@ -251,10 +251,14 @@ class RouteManager(Manager):
 
                 for intf in interfaces:
                     interfaceId = intf.get('interfaceId')
-                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId))
+                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv4")
+                    interface6Name = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv6")
                     criteria = policy.get('criteria')
                     if criteria is None:
                         file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                        if interfaceName != interface6Name:
+                            file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
+
                     else:
                         down_by_attribute = False
                         for criterion in criteria:
@@ -262,9 +266,13 @@ class RouteManager(Manager):
                                 if criterion.get('attribute') == 'VPN':
                                     if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
                                         file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interfaceName))
+                                        if interfaceName != interface6Name:
+                                            file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interface6Name))
                                         down_by_attribute = True
                                     else:
                                         file.write("attribute policy-%d %d %s VPN up &\n" % (policyId, interfaceId, interfaceName))
+                                        if interfaceName != interface6Name:
+                                            file.write("attribute policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
                                 elif criterion.get('attribute') == 'NAME':
                                     name_contains = criterion.get('name_contains')
                                     if name_contains not in interfaceName:
@@ -275,6 +283,9 @@ class RouteManager(Manager):
 
                         if down_by_attribute is False:
                             file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                            if interfaceName != interface6Name:
+                                file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
+
                             for criterion in criteria:
                                 if criterion.get('type') == 'METRIC':
                                     metric_value = criterion.get('metric_value')
@@ -631,21 +642,30 @@ class RouteManager(Manager):
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\tnft list chain ip wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n")
-                    file.write("\t\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\t\twrite_rules\n")
-                    file.write("\t}\n")
-                    file.write("\texit 0\n")
-                    file.write("}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifup_default_route(file, intf.get('interfaceId'),network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifup_default_route(file, intf.get('interfaceId'),network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def create_ifup_default_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifup_default_route creates a validation for checking if the route-to-default-wan chains are updated"""
+        file.write("[ %s = \"$INTERFACE\" ] && {\n" % interfaceName)
+        file.write("\tnft list chain %s wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n" % tablefamily)
+        file.write("\t\techo flush chain %s wan-routing route-to-default-wan >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
+        file.write("\t\twrite_rules\n")
+        file.write("\t}\n")
+       # file.write("\texit 0\n")
+        file.write("}\n\n")
+
 
     def write_ifdown_routes_file(self, settings, prefix=""):
         """write_ifdown_routes_file writes /etc/config/ifdown.d/10-default-route"""
@@ -685,25 +705,26 @@ class RouteManager(Manager):
             file.write("{\n")
             file.write("\n")
             file.write("\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
+            file.write("\techo flush chain ip6 wan-routing route-to-default-wan >> $TMPFILE\n")
 
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("\tnetwork_is_up %s && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\t\twrite_rules\n")
-                    file.write("\t}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifdown_default_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifdown_default_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
             file.write("}\n\n")
 
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\tnft list chain ip wan-routing route-to-default-wan | grep -q mark-for-wan-%d && {\n" % intf.get('interfaceId'))
-                    file.write("\t\tupdate_default_route\n")
-                    file.write("\t}\n")
-                    file.write("}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifdown_call_update_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+                    
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifdown_call_update_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
             file.write("[ -z \"$INTERFACE\" ] && {\n")
             file.write("\tupdate_default_route\n")
@@ -714,6 +735,22 @@ class RouteManager(Manager):
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def create_ifdown_default_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifdown_default_route will create the default route rules for specific ip table families into a file"""
+        file.write("\tnetwork_is_up %s && {\n" % interfaceName)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
+        file.write("\t\twrite_rules\n")
+        file.write("\t}\n\n")
+
+    def create_ifdown_call_update_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifdown_call_update_route will write the rules that check the interface that called ifdown, and then call update_def_route if rules exist"""
+        file.write("[ %s = \"$INTERFACE\" ] && {\n" % interfaceName)
+        file.write("\tnft list chain %s wan-routing route-to-default-wan | grep -q mark-for-wan-%d && {\n" % (tablefamily, interfaceId))
+        file.write("\t\tupdate_default_route\n")
+        file.write("\t}\n")
+        file.write("}\n\n")
 
 def get_number_of_wans(settings):
     """returns number of enabled wan interfaces"""
