@@ -140,8 +140,11 @@ def get_interface_by_id(settings, interfaceId):
             return intf
     return None
 
-def get_interface_name(settings, intf):
+def get_interface_name(settings, intf, family):
     """
+    @param settings - the Settings json
+    @param intf - the interface we wish to retrieve the name from
+    @param family - the ip family we are checking against (ipv4 or ipv6)
     returns the interface name as it would appear in /etc/config/network
     """
     interface_name = ""
@@ -152,9 +155,10 @@ def get_interface_name(settings, intf):
 
     if intf.get('type') == 'OPENVPN' or intf.get('type') == 'WIREGUARD' or intf.get('type') == 'WWAN':
         return interface_name
-    if intf.get('v4ConfigType') != 'DISABLED':
+    # Does it make sense to check the "ConfigType" if we have to specify family in the util call anyway?
+    if family == 'ipv4' and intf.get('v4ConfigType') != 'DISABLED':
         interface_name = interface_name + "4"
-    elif intf.get('v6ConfigType') != 'DISABLED':
+    if family == 'ipv6' and intf.get('v6ConfigType') != 'DISABLED':
         interface_name = interface_name + "6"
 
     return interface_name

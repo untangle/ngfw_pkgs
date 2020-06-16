@@ -172,17 +172,17 @@ class NetworkManager(Manager):
         for intf in interfaces:
             if intf.get('wan') and intf.get('enabled'):
                 if intf.get('v4ConfigType') != "DISABLED":
-                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ip4")
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv4")
 
                 if intf.get('v6ConfigType') != "DISABLED":
-                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ip6")
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv6")
 
                 fwmark_priority = fwmark_priority + 1
                 oif_priority = oif_priority + 1
 
     def create_route_rules_ipfamily(self, file, settings, intf, fwmark_priority, oif_priority, family):
         """create_route_rules_ipfamily creates route rules for a specific ip family rule type"""
-        ruleType = ("rule" if family == "ip4" else "rule6")
+        ruleType = ("rule" if family == "ipv4" else "rule6")
         file.write("config %s\n" % ruleType)
         file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
         file.write("\toption priority '%d'\n" % fwmark_priority)
@@ -190,7 +190,7 @@ class NetworkManager(Manager):
         file.write("\n")
 
         file.write("config %s\n" % ruleType)
-        file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf))
+        file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf, family))
         file.write("\toption priority '%d'\n" % oif_priority)
         file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
         file.write("\n")
@@ -394,7 +394,12 @@ class NetworkManager(Manager):
                 wanId = int(wanId,10)
 
             if wanId != 0:
-                file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId)))
+                # If we have v4 or v6 configured, we can bind to both. The openvpn.sh script in openvpn-proto will prioritize IPv4, but supports IPv6 if it is available.
+                # should we split out v6 option to be "wanif6" ?
+                if intf.get('v4ConfigType') != "DISABLED":
+                    file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv4'))
+                if intf.get('v6ConfigType') != "DISABLED":
+                    file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv6'))
 
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
