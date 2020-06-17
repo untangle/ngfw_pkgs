@@ -18,7 +18,7 @@ Depends: ${misc:Depends}, bash (>= 3.1),
          untangle-bootsplash,
          untangle-kernel-modules-buster,
          uuid-runtime
-Conflicts: grub-legacy [!armel !armhf], desktop-base
+Conflicts: grub-legacy [!armel !armhf], desktop-base, linux-image-4.19.0-8-untangle-amd64-unsigned, linux-image-4.19.0-8-untangle-686-pae-unsigned
 Description: The Untangle kernel config
  The Untangle Linux kernel config package. Provides
  bootsplash support and grub auto-configuration.
