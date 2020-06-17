@@ -280,6 +280,13 @@ class RouteManager(Manager):
                                         down_by_attribute = True
                                     else:
                                         file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interfaceName, name_contains))
+                                    #Also check for IPv6 interface names
+                                    if interfaceName != interface6Name:
+                                        if name_contains not in interface6Name:
+                                            file.write("attribute policy-%d %d %s NAME %s down &\n" % (policyId, interfaceId, interface6Name, name_contains))
+                                            down_by_attribute = True
+                                        else:
+                                            file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interface6Name, name_contains))
 
                         if down_by_attribute is False:
                             file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
