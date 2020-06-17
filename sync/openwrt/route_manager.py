@@ -256,7 +256,7 @@ class RouteManager(Manager):
                     criteria = policy.get('criteria')
                     if criteria is None:
                         file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
-                        if interfaceName != interface6Name:
+                        if intf.get('ipv6Enabled'):
                             file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
 
                     else:
@@ -266,12 +266,12 @@ class RouteManager(Manager):
                                 if criterion.get('attribute') == 'VPN':
                                     if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
                                         file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interfaceName))
-                                        if interfaceName != interface6Name:
+                                        if intf.get('ipv6Enabled'):
                                             file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interface6Name))
                                         down_by_attribute = True
                                     else:
                                         file.write("attribute policy-%d %d %s VPN up &\n" % (policyId, interfaceId, interfaceName))
-                                        if interfaceName != interface6Name:
+                                        if intf.get('ipv6Enabled'):
                                             file.write("attribute policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
                                 elif criterion.get('attribute') == 'NAME':
                                     name_contains = criterion.get('name_contains')
@@ -281,7 +281,7 @@ class RouteManager(Manager):
                                     else:
                                         file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interfaceName, name_contains))
                                     #Also check for IPv6 interface names
-                                    if interfaceName != interface6Name:
+                                    if intf.get('ipv6Enabled'):
                                         if name_contains not in interface6Name:
                                             file.write("attribute policy-%d %d %s NAME %s down &\n" % (policyId, interfaceId, interface6Name, name_contains))
                                             down_by_attribute = True
@@ -322,6 +322,9 @@ class RouteManager(Manager):
                                         op="ge"
 
                                     file.write("metric policy-%d %d %s %s %s %s %d &\n" % (policyId, interfaceId, interfaceName, stat_name, metric_name, op, metric_value))
+                                    if intf.get('ipv6Enabled'):
+                                        file.write("metric policy-%d %d %s %s %s %s %d &\n" % (policyId, interfaceId, interface6Name, stat_name, metric_name, op, metric_value))
+
 
                                 elif criterion.get('type') == 'CONNECTIVITY':
                                     test_type = criterion.get('connectivityTestType')
@@ -338,6 +341,8 @@ class RouteManager(Manager):
                                     elif test_type == "DNS":
                                         test="dns"
                                     file.write("test policy-%d %d %s %s %d %d %d %s &\n" % (policyId, interfaceId, interfaceName, test, interval, timeout, threshold, target))
+                                    if intf.get('ipv6Enabled'):
+                                        file.write("test policy-%d %d %s %s %d %d %d %s &\n" % (policyId, interfaceId, interface6Name, test, interval, timeout, threshold, target))
 
                 if policy.get('type') == "SPECIFIC_WAN":
                     file.write("specific_wan policy-%d %d &\n" % (policyId, interfaceId))
@@ -788,7 +793,8 @@ def get_wan_list(settings):
         if enabled_wan(intf):
             wan = {
                 "interfaceId": intf.get('interfaceId'),
-                "weight": 1
+                "weight": 1,
+                "ipv6Enabled": 'v6ConfigType' in intf and intf.get('v6ConfigType') != 'DISABLED'
             }
             wan_list.append(wan)
 
