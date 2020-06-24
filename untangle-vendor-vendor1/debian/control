@@ -51,7 +51,6 @@ Conflicts:
   untangle-app-captive-portal,
   untangle-app-configuration-backup,
   untangle-app-directory-connector,
-  untangle-app-directory-connector,
   untangle-app-ipsec-vpn,
   untangle-app-live-support,
   untangle-app-openvpn,
