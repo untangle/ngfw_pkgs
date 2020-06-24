@@ -8,8 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-gateway
 Architecture: any
-Depends: ${misc:Depends}, chromium-driver [!armel !armhf !arm64],
-	 chromium [!armel !armhf !arm64],
+Depends: ${misc:Depends},
          libpam-systemd,
 	 nano,
          nvi,
