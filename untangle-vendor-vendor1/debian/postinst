@@ -2,4 +2,38 @@
 
 set -x 
 
+# clean man/doc/info
+for d in man doc info ; do
+  find /usr/share/${d} -type f | xargs rm
+done
+
+# remove content of firmware packages
+PACKAGES="firmware-iwlwifi firmware-bnx2 firmware-bnx2x firmware-amd-graphics firmware-realtek firmware-misc-nonfree firmware-linux-free"
+for p in $PACKAGES ; do
+  for entry in $(dpkg -L $p) ; do
+    if [ -f $entry ]; then
+      rm -f $entry
+    fi
+  done
+done
+
+# initrd tweaks
+perl -i -pe 's/(?<=COMPRESS=)gzip/xz/ ; s/(?<=MODULES=)most/dep/' /etc/initramfs-tools/initramfs.conf
+update-initramfs -u -k all
+
+# keep modules from ubuntu generic, plus those necessary for NGFW
+KERNEL_DIR="/lib/modules/4.19.0-8-untangle-amd64"
+SHARE="/usr/share/untangle-vendor-vendor1"
+GENERIC_MODULES="${SHARE}/ubuntu-generic-modules.txt"
+REQUIRED_MODULES="${SHARE}/ngfw-required-modules.txt"
+TOKEEP_MODULES="/tmp/untangle-vendor-vendor1-tokeep-modules.txt"
+
+cat $GENERIC_MODULES $REQUIRED_MODULES >| $TOKEEP_MODULES
+find $KERNEL_DIR -name '*.ko' | while read file ; do
+  module=$(echo $file | list_kernel_modules)
+  if [[ -n "$module" ]] ; then
+    grep -x -q $module $TOKEEP_MODULES || echo rm $file
+  fi
+done
+
 exit 0
