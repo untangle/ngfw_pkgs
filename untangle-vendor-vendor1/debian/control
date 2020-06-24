@@ -29,8 +29,6 @@ Conflicts:
   libgstreamer-gl1.0-0,
   libgstreamer-plugins-base1.0-0,
   libgstreamer1.0-0,
-  libnewt0.52,
-  libslang2,
   libswresample3,
   libwebkit2gtk-4.0-37,
   libx264-155,
