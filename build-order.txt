@@ -1,3 +1,4 @@
+untangle-vendor-vendor1			stretch,buster
 untangle-hardware-azure-byol		stretch,buster
 untangle-hardware-azure-payg		stretch,buster
 untangle-suricata-config		stretch,buster
