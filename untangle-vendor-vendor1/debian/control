@@ -1,0 +1,15 @@
+Source: untangle-vendor-vendor1
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-vendor-vendor1
+Architecture: all
+Depends: ${misc:Depends}, 
+Description: The Untangle vendor config for vendor1
+ Provides all the additions required for vendor1, mostly in the
+ postinst but also in the dependencies themselves.
+
