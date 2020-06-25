@@ -62,11 +62,15 @@ add chain ip6 nat-sys postrouting-nat { type nat hook postrouting priority 100 ;
 add chain ip6 nat-sys prerouting-nat  { type nat hook prerouting priority -50 ; }
 
 add chain ip nat-sys nat-rules-sys
+add chain ip6 nat-sys nat-rules-sys
 
 add rule ip nat-sys postrouting-nat oifname lo accept
 add rule ip nat-sys postrouting-nat iifname lo accept
 add rule ip nat-sys postrouting-nat jump nat-rules-sys
 
+add rule ip6 nat-sys postrouting-nat oifname lo accept
+add rule ip6 nat-sys postrouting-nat iifname lo accept
+add rule ip6 nat-sys postrouting-nat jump nat-rules-sys
 
 """)
 
@@ -79,19 +83,22 @@ add rule ip nat-sys postrouting-nat jump nat-rules-sys
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                 file.write("# NAT Egress traffic to interface %i\n" % intf.get('interfaceId'))
                 file.write("add rule ip nat-sys nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
-                
+                file.write("add rule ip6 nat-sys nat-rules-sys oifname %s masquerade\n" % intf.get('netfilterDev'))
+  
             # MFW-926
             # if we are not NATting all outbound traffic, then we need to at least NAT any of the 
             # localhost's WAN traffic attempting to traverse the TUN0 interface that is marked from the source interface
             if intf.get("wan") and not intf.get("natEgress"):
                 file.write("# NAT outbound traffic that has a source intf mask of 0xff on interface %s \n" % (intf.get('netfilterDev')))
                 file.write("add rule ip nat-sys nat-rules-sys mark & 0xff == 0xff oifname %s masquerade\n" % (intf.get('netfilterDev')))
-            
+                file.write("add rule ip6 nat-sys nat-rules-sys mark & 0xff == 0xff oifname %s masquerade\n" % (intf.get('netfilterDev')))
+
             if intf.get('natIngress'):
                 # FIXME - this should be a rule based on mark instead of netfilterDev
                 # The mark rules don't exist yet, so just write the NAT rules using netfilterDev for now
                 file.write("# NAT Ingress traffic from interface %i\n" % intf.get('interfaceId'))
                 file.write("add rule ip nat-sys nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
+                file.write("add rule ip6 nat-sys nat-rules-sys iifname %s masquerade\n" % intf.get('netfilterDev'))
 
         file.write("\n")
         file.flush()
