@@ -30,7 +30,7 @@ TOKEEP_MODULES="/tmp/untangle-vendor-vendor1-tokeep-modules.txt"
 
 cat $GENERIC_MODULES $REQUIRED_MODULES >| $TOKEEP_MODULES
 find $KERNEL_DIR -name '*.ko' | while read file ; do
-  module=$(echo $file | list_kernel_modules)
+  module=$(echo $file | list_kernel_modules.sh)
   if [[ -n "$module" ]] ; then
     grep -x -q $module $TOKEEP_MODULES || echo rm $file
   fi
