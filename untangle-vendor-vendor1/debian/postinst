@@ -17,10 +17,6 @@ for p in $PACKAGES ; do
   done
 done
 
-# initrd tweaks
-perl -i -pe 's/(?<=COMPRESS=)gzip/xz/ ; s/(?<=MODULES=)most/dep/' /etc/initramfs-tools/initramfs.conf
-update-initramfs -u -k all
-
 # keep modules from ubuntu generic, plus those necessary for NGFW
 KERNEL_DIR="/lib/modules/4.19.0-8-untangle-amd64"
 SHARE="/usr/share/untangle-vendor-vendor1"
@@ -35,5 +31,16 @@ find $KERNEL_DIR -name '*.ko' | while read file ; do
     grep -x -q $module $TOKEEP_MODULES || echo rm $file
   fi
 done
+
+# initrd tweaks
+
+# NGFW-13137: leaving MODULES=most instead of MODULES=dep, as it
+# results in an unbootable image; since update-initramfs is running in
+# the d-c-i install chroot, it isn't able to correctly figure out what
+# modules will be needed. This results in an initrd weighing 25MB
+# instead of the 13MB goal
+#perl -i -pe 's/(?<=COMPRESS=)gzip/xz/ ; s/(?<=MODULES=)most/dep/' /etc/initramfs-tools/initramfs.conf
+perl -i -pe 's/(?<=COMPRESS=)gzip/xz/' /etc/initramfs-tools/initramfs.conf
+update-initramfs -u -k all
 
 exit 0
