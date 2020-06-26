@@ -260,10 +260,14 @@ class RouteManager(Manager):
 
                 for intf in interfaces:
                     interfaceId = intf.get('interfaceId')
-                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId))
+                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv4")
+                    interface6Name = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv6")
                     criteria = policy.get('criteria')
                     if criteria is None:
                         file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                        if intf.get('ipv6Enabled'):
+                            file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
+
                     else:
                         down_by_attribute = False
                         for criterion in criteria:
@@ -271,9 +275,13 @@ class RouteManager(Manager):
                                 if criterion.get('attribute') == 'VPN':
                                     if intf.get('type') != 'OPENVPN' and intf.get('type') != 'WIREGUARD':
                                         file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interfaceName))
+                                        if intf.get('ipv6Enabled'):
+                                            file.write("attribute policy-%d %d %s VPN down &\n" % (policyId, interfaceId, interface6Name))
                                         down_by_attribute = True
                                     else:
                                         file.write("attribute policy-%d %d %s VPN up &\n" % (policyId, interfaceId, interfaceName))
+                                        if intf.get('ipv6Enabled'):
+                                            file.write("attribute policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
                                 elif criterion.get('attribute') == 'NAME':
                                     name_contains = criterion.get('name_contains')
                                     if name_contains not in interfaceName:
@@ -281,9 +289,19 @@ class RouteManager(Manager):
                                         down_by_attribute = True
                                     else:
                                         file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interfaceName, name_contains))
+                                    #Also check for IPv6 interface names
+                                    if intf.get('ipv6Enabled'):
+                                        if name_contains not in interface6Name:
+                                            file.write("attribute policy-%d %d %s NAME %s down &\n" % (policyId, interfaceId, interface6Name, name_contains))
+                                            down_by_attribute = True
+                                        else:
+                                            file.write("attribute policy-%d %d %s NAME %s up &\n" % (policyId, interfaceId, interface6Name, name_contains))
 
                         if down_by_attribute is False:
                             file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
+                            if interfaceName != interface6Name:
+                                file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
+
                             for criterion in criteria:
                                 if criterion.get('type') == 'METRIC':
                                     metric_value = criterion.get('metric_value')
@@ -313,6 +331,9 @@ class RouteManager(Manager):
                                         op="ge"
 
                                     file.write("metric policy-%d %d %s %s %s %s %d &\n" % (policyId, interfaceId, interfaceName, stat_name, metric_name, op, metric_value))
+                                    if intf.get('ipv6Enabled'):
+                                        file.write("metric policy-%d %d %s %s %s %s %d &\n" % (policyId, interfaceId, interface6Name, stat_name, metric_name, op, metric_value))
+
 
                                 elif criterion.get('type') == 'CONNECTIVITY':
                                     test_type = criterion.get('connectivityTestType')
@@ -329,6 +350,8 @@ class RouteManager(Manager):
                                     elif test_type == "DNS":
                                         test="dns"
                                     file.write("test policy-%d %d %s %s %d %d %d %s &\n" % (policyId, interfaceId, interfaceName, test, interval, timeout, threshold, target))
+                                    if intf.get('ipv6Enabled'):
+                                        file.write("test policy-%d %d %s %s %d %d %d %s &\n" % (policyId, interfaceId, interface6Name, test, interval, timeout, threshold, target))
 
                 if policy.get('type') == "SPECIFIC_WAN":
                     file.write("specific_wan policy-%d %d &\n" % (policyId, interfaceId))
@@ -376,29 +399,53 @@ class RouteManager(Manager):
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
+        interfaces = settings.get('network').get('interfaces')
 
-        file.write("add table ip wan-routing\n")
-        file.write("flush table ip wan-routing\n")
-        file.write("add table ip wan-routing\n")
+        self.write_wan_routing_tables(settings, file, interfaces, "ip")
+
+        #Only write the ip6 wan-routing tables if any interfaces have ipv6 enabled
+
+        self.write_wan_routing_tables(settings, file, interfaces, "ip6")
+
+        file.flush()
+        file.close()
+
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+
+
+    def write_wan_routing_tables(self, settings, file, interfaces, family):
+        """write_wan_routing_tables writes the specific ip family type rules and tables"""
+        #This is used for rules that reference the ipvX_addr type
+        ip_addr_family = "ipv4_addr"
+        if family == "ip6":
+            ip_addr_family = "ipv6_addr"
+
+        file.write("\n")
+        file.write("## %s family rules. ##\n" % family)
         file.write("\n")
 
-        file.write("add chain ip wan-routing restore-interface-marks\n")
-        file.write("add chain ip wan-routing restore-interface-marks-original\n")
-        file.write("add chain ip wan-routing restore-interface-marks-reply\n")
-        file.write("add rule ip wan-routing restore-interface-marks ct direction original jump restore-interface-marks-original\n")
-        file.write("add rule ip wan-routing restore-interface-marks ct direction reply jump restore-interface-marks-reply\n")
-        file.write("add rule ip wan-routing restore-interface-marks-original mark set ct mark and 0x%x\n" % (self.ALL_MASK))
+        file.write("add table %s wan-routing\n" % family)
+        file.write("flush table %s wan-routing\n" % family)
+        file.write("add table %s wan-routing\n" % family)
+        file.write("\n")
 
-        interfaces = settings.get('network').get('interfaces')
+        file.write("add chain %s wan-routing restore-interface-marks\n" % family)
+        file.write("add chain %s wan-routing restore-interface-marks-original\n" % family)
+        file.write("add chain %s wan-routing restore-interface-marks-reply\n" % family)
+        file.write("add rule %s wan-routing restore-interface-marks ct direction original jump restore-interface-marks-original\n" % family)
+        file.write("add rule %s wan-routing restore-interface-marks ct direction reply jump restore-interface-marks-reply\n" % family)
+        file.write("add rule %s wan-routing restore-interface-marks-original mark set ct mark and 0x%x\n" % (family, self.ALL_MASK))
+
         for intf in interfaces:
             if enabled_wan(intf):
-                file.write("add set ip wan-routing wan-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % intf.get('interfaceId'))
-                file.write("flush set ip wan-routing wan-%d-table\n" % intf.get('interfaceId'))
-                file.write("add chain ip wan-routing mark-for-wan-%d\n" % intf.get('interfaceId'))
-                file.write("add rule ip wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
-                file.write("add rule ip wan-routing mark-for-wan-%d set update ip saddr . ip daddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                file.write("add rule ip wan-routing mark-for-wan-%d set update ip daddr . ip saddr timeout 1m @wan-%d-table\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
-                file.write("add rule ip wan-routing mark-for-wan-%d accept\n" % intf.get('interfaceId'))
+                file.write("add set %s wan-routing wan-%d-table { type %s . %s; flags timeout; }\n" % (family, intf.get('interfaceId'), ip_addr_family, ip_addr_family))
+                file.write("flush set %s wan-routing wan-%d-table\n" % (family, intf.get('interfaceId')))
+                file.write("add chain %s wan-routing mark-for-wan-%d\n" % (family, intf.get('interfaceId')))
+                file.write("add rule %s wan-routing mark-for-wan-%d mark set mark and 0xffff00ff or 0x%x\n" % (family, intf.get('interfaceId'), ((intf.get('interfaceId') << 8) & 0xff00)))
+                file.write("add rule %s wan-routing mark-for-wan-%d set update %s saddr . %s daddr timeout 1m @wan-%d-table\n" % (family, intf.get('interfaceId'), family, family, intf.get('interfaceId')))
+                file.write("add rule %s wan-routing mark-for-wan-%d set update %s daddr . %s saddr timeout 1m @wan-%d-table\n" % (family, intf.get('interfaceId'), family, family, intf.get('interfaceId')))
+                file.write("add rule %s wan-routing mark-for-wan-%d accept\n" % (family, intf.get('interfaceId')))
                 file.write("\n")
 
             if not intf.get('enabled'):
@@ -415,23 +462,23 @@ class RouteManager(Manager):
             interface_id = intf.get('interfaceId')
 
             file.write("# if ct mark server interface is X then set the mark client interface to X\n")
-            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, interface_id << self.CLIENT_INTERFACE_SHIFT))
+            file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (family, self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, interface_id << self.CLIENT_INTERFACE_SHIFT))
             file.write("# if ct mark server interface is X then set the mark client type to Xs type\n")
-            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK_INVERSE, interface_type << self.CLIENT_TYPE_SHIFT))
+            file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (family, self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_TYPE_MASK_INVERSE, interface_type << self.CLIENT_TYPE_SHIFT))
             file.write("# if ct mark client interface is X then set the mark server interface to X\n")
-            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, interface_id << self.SERVER_INTERFACE_SHIFT))
+            file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (family, self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, interface_id << self.SERVER_INTERFACE_SHIFT))
             file.write("# if ct mark client interface is X then set the mark server type to Xs type\n")
-            file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                       (self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
+            file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                       (family, self.CLIENT_INTERFACE_MASK, (interface_id << self.CLIENT_INTERFACE_SHIFT), self.SERVER_TYPE_MASK_INVERSE, interface_type << self.SERVER_TYPE_SHIFT))
 
         file.write("# restore reply direction interface marks for local output traffic\n")
-        file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                   (self.SERVER_INTERFACE_MASK, (255 << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, 255 << self.CLIENT_INTERFACE_SHIFT))
-        file.write("add rule ip wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
-                   (self.CLIENT_INTERFACE_MASK, (255 << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, 255 << self.SERVER_INTERFACE_SHIFT))
+        file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (family, self.SERVER_INTERFACE_MASK, (255 << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, 255 << self.CLIENT_INTERFACE_SHIFT))
+        file.write("add rule %s wan-routing restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
+                   (family, self.CLIENT_INTERFACE_MASK, (255 << self.CLIENT_INTERFACE_SHIFT), self.SERVER_INTERFACE_MASK_INVERSE, 255 << self.SERVER_INTERFACE_SHIFT))
 
         default_wan = 0
         for intf in interfaces:
@@ -439,13 +486,13 @@ class RouteManager(Manager):
                 default_wan = intf.get('interfaceId')
                 break
 
-        file.write("add chain ip wan-routing route-to-default-wan\n")
-        file.write("add rule ip wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default\n")
-        file.write("add rule ip wan-routing route-to-default-wan jump mark-for-wan-%d\n" % default_wan)
+        file.write("add chain %s wan-routing route-to-default-wan\n" % family)
+        file.write("add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default\n" % family)
+        file.write("add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d\n" % (family, default_wan))
         file.write("\n")
-        file.write("add chain ip wan-routing update-rule-table\n")
+        file.write("add chain %s wan-routing update-rule-table\n" % family)
         file.write("\n")
-        file.write("add chain ip wan-routing route-via-cache\n")
+        file.write("add chain %s wan-routing route-via-cache\n" % family)
         file.write("\n")
 
         wan = settings['wan']
@@ -453,11 +500,11 @@ class RouteManager(Manager):
         for policy in policies:
             policyId = policy.get('policyId')
 
-            file.write("add set ip wan-routing policy-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % policyId)
-            file.write("flush set ip wan-routing policy-%d-table\n" % policyId)
-            file.write("add chain ip wan-routing route-to-policy-%d\n" % policyId)
-            file.write("add rule ip wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % policyId)
-            file.write("add rule ip wan-routing route-via-cache ip saddr . ip daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0\n" % (policyId, policyId, policyId))
+            file.write("add set %s wan-routing policy-%d-table { type %s . %s; flags timeout; }\n" % (family, policyId, ip_addr_family, ip_addr_family))
+            file.write("flush set %s wan-routing policy-%d-table\n" % (family, policyId))
+            file.write("add chain %s wan-routing route-to-policy-%d\n" % (family, policyId))
+            file.write("add rule %s wan-routing route-to-policy-%d return comment \"policy disabled\"\n" % (family, policyId))
+            file.write("add rule %s wan-routing route-via-cache %s saddr . %s daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0\n" % (family, family, family, policyId, policyId, policyId))
             file.write("\n")
 
         enabled_policy_rules = []
@@ -470,53 +517,53 @@ class RouteManager(Manager):
                     continue
                 else:
                     ruleId = rule.get('ruleId')
-                    file.write("add set ip wan-routing rule-%d-table { type ipv4_addr . ipv4_addr; flags timeout; }\n" % ruleId)
-                    file.write("flush set ip wan-routing rule-%d-table\n" % ruleId)
-                    file.write("add chain ip wan-routing update-rule-%d-table\n" % ruleId)
-                    file.write("add rule ip wan-routing update-rule-%d-table set update ip saddr . ip daddr timeout 1m @rule-%d-table\n" % (ruleId, ruleId))
-                    file.write("add rule ip wan-routing update-rule-%d-table set update ip daddr . ip saddr timeout 1m @rule-%d-table\n" % (ruleId, ruleId))
-                    file.write("add rule ip wan-routing route-via-cache ip saddr . ip daddr @rule-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\'}\" group 0\n" % (ruleId, chain_name, ruleId))
+                    file.write("add set %s wan-routing rule-%d-table { type %s . %s; flags timeout; }\n" % (family,  ruleId, ip_addr_family, ip_addr_family))
+                    file.write("flush set %s wan-routing rule-%d-table\n" % (family, ruleId))
+                    file.write("add chain %s wan-routing update-rule-%d-table\n" % (family, ruleId))
+                    file.write("add rule %s wan-routing update-rule-%d-table set update %s saddr . %s daddr timeout 1m @rule-%d-table\n" % (family, ruleId, family, family, ruleId))
+                    file.write("add rule %s wan-routing update-rule-%d-table set update %s daddr . %s saddr timeout 1m @rule-%d-table\n" % (family, ruleId, family, family, ruleId))
+                    file.write("add rule %s wan-routing route-via-cache %s saddr . %s daddr @rule-%d-table log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'%s\',\'ruleId\':%d,\'action\':\'WAN_POLICY\'}\" group 0\n" % (family, family, family, ruleId, chain_name, ruleId))
                     enabled_policy_rules.append("%d : jump update-rule-%d-table" % (ruleId, ruleId))
 
-            file.write(nftables_util.chain_create_cmd(chain, "ip", None, "wan-routing") + "\n")
-            file.write(nftables_util.chain_rules_cmds(chain, "ip", None, "wan-routing") + "\n")
+            file.write(nftables_util.chain_create_cmd(chain, family, None, "wan-routing") + "\n")
+            file.write(nftables_util.chain_rules_cmds(chain, family, None, "wan-routing") + "\n")
             file.write("\n")
 
-        file.write("add rule ip wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (",".join(enabled_policy_rules)))
+        file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
 
         for intf in interfaces:
             if enabled_wan(intf):
-                file.write("add rule ip wan-routing route-via-cache ip saddr . ip daddr @wan-%d-table jump mark-for-wan-%d\n" % (intf.get('interfaceId'), intf.get('interfaceId')))
+                file.write("add rule %s wan-routing route-via-cache %s saddr . %s daddr @wan-%d-table jump mark-for-wan-%d\n" % (family, family, family, intf.get('interfaceId'), intf.get('interfaceId')))
 
-        file.write("add chain ip wan-routing wan-routing-entry\n")
-        file.write("add rule ip wan-routing wan-routing-entry jump route-via-cache\n")
-        file.write("add rule ip wan-routing wan-routing-entry jump user-wan-rules\n")
-        file.write("add rule ip wan-routing wan-routing-entry counter\n")
-        file.write("add rule ip wan-routing wan-routing-entry log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'wan-routing-entry\',\'ruleId\':-2,\'action\':\'WAN_POLICY\',\'policy\':-2}\" group 0 jump route-to-default-wan\n")
-        file.write("add rule ip wan-routing wan-routing-entry counter\n")
+        file.write("add chain %s wan-routing wan-routing-entry\n" % family)
+        file.write("add rule %s wan-routing wan-routing-entry jump route-via-cache\n" % family)
+        file.write("add rule %s wan-routing wan-routing-entry jump user-wan-rules\n" % family)
+        file.write("add rule %s wan-routing wan-routing-entry counter\n" % family)
+        file.write("add rule %s wan-routing wan-routing-entry log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'wan-routing-entry\',\'ruleId\':-2,\'action\':\'WAN_POLICY\',\'policy\':-2}\" group 0 jump route-to-default-wan\n" % family)
+        file.write("add rule %s wan-routing wan-routing-entry counter\n" % family)
 
         file.write("\n")
-        file.write("add chain ip wan-routing wan-routing-prerouting { type filter hook prerouting priority -25 ; }\n")
+        file.write("add chain %s wan-routing wan-routing-prerouting { type filter hook prerouting priority -25 ; }\n" % family)
         # MFW-948: Check if the packet SRC_TYPE mark is a WAN type, then just return from wan-routing-prerouting
-        file.write("add rule ip wan-routing wan-routing-prerouting mark and 0x03000000 == 0x01000000 return\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting mark and 0x0000ff00 != 0 return\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting fib daddr type local return\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting ct state new jump wan-routing-entry\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting ct state invalid counter\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting ct state established counter\n")
-        file.write("add rule ip wan-routing wan-routing-prerouting ct state related counter\n")
+        file.write("add rule %s wan-routing wan-routing-prerouting mark and 0x03000000 == 0x01000000 return\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting mark and 0x0000ff00 != 0 return\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting fib daddr type local return\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting ct state new jump wan-routing-entry\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting ct state invalid counter\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting ct state established counter\n" % family)
+        file.write("add rule %s wan-routing wan-routing-prerouting ct state related counter\n" % family)
 
         file.write("\n")
-        file.write("add chain ip wan-routing wan-routing-output { type route hook output priority -150 ; }\n")
-        file.write("add rule ip wan-routing wan-routing-output jump restore-interface-marks\n")
-        file.write("add rule ip wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
-                   (self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
-        file.write("add rule ip wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
-                   (self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
-        file.write("add rule ip wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
-                   (self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
-        file.write("add rule ip wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
-                   (self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
+        file.write("add chain %s wan-routing wan-routing-output { type route hook output priority -150 ; }\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output jump restore-interface-marks\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (family, self.CLIENT_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.CLIENT_INTERFACE_SHIFT)))
+        file.write("add rule %s wan-routing wan-routing-output ct state new ct mark set ct mark and 0x%x or 0x%x\n" %
+                   (family, self.CLIENT_TYPE_MASK_INVERSE, (2 << self.CLIENT_TYPE_SHIFT) & self.CLIENT_TYPE_MASK))
+        file.write("add rule %s wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
+                   (family, self.SRC_INTERFACE_MASK_INVERSE, (self.LOCAL_INTERFACE_ID << self.SRC_INTERFACE_SHIFT)))
+        file.write("add rule %s wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
+                   (family, self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         for intf in interfaces:
             if not intf.get('enabled'):
                 continue
@@ -524,19 +571,13 @@ class RouteManager(Manager):
                 continue
             if intf.get('wan'):
                 continue
-            file.write("add rule ip wan-routing wan-routing-output oifname %s return\n" % intf.get('netfilterDev'))
-        file.write("add rule ip wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n")
-        file.write("add rule ip wan-routing wan-routing-output oif lo return\n")
-        file.write("add rule ip wan-routing wan-routing-output ct state new jump wan-routing-entry\n")
-        file.write("add rule ip wan-routing wan-routing-output ct state invalid counter\n")
-        file.write("add rule ip wan-routing wan-routing-output ct state established counter\n")
-        file.write("add rule ip wan-routing wan-routing-output ct state related counter\n")
-
-        file.flush()
-        file.close()
-
-        print("%s: Wrote %s" % (self.__class__.__name__, filename))
-        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+            file.write("add rule %s wan-routing wan-routing-output oifname %s return\n" % (family, intf.get('netfilterDev')))
+        file.write("add rule %s wan-routing wan-routing-output mark and 0x0000ff00 != 0 return\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output oif lo return\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output ct state new jump wan-routing-entry\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output ct state invalid counter\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output ct state established counter\n" % family)
+        file.write("add rule %s wan-routing wan-routing-output ct state related counter\n" % family)
 
     def write_rt_tables_file(self, settings, prefix=""):
         """write_rt_tables_file writes /etc/iproute2/rt_tables"""
@@ -622,21 +663,30 @@ class RouteManager(Manager):
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\tnft list chain ip wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n")
-                    file.write("\t\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\t\twrite_rules\n")
-                    file.write("\t}\n")
-                    file.write("\texit 0\n")
-                    file.write("}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifup_default_route(file, intf.get('interfaceId'),network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifup_default_route(file, intf.get('interfaceId'),network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
         file.flush()
         file.close()
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def create_ifup_default_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifup_default_route creates a validation for checking if the route-to-default-wan chains are updated"""
+        file.write("[ %s = \"$INTERFACE\" ] && {\n" % interfaceName)
+        file.write("\tnft list chain %s wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n" % tablefamily)
+        file.write("\t\techo flush chain %s wan-routing route-to-default-wan >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
+        file.write("\t\twrite_rules\n")
+        file.write("\t}\n")
+       # file.write("\texit 0\n")
+        file.write("}\n\n")
+
 
     def write_ifdown_routes_file(self, settings, prefix=""):
         """write_ifdown_routes_file writes /etc/config/ifdown.d/10-default-route"""
@@ -676,25 +726,26 @@ class RouteManager(Manager):
             file.write("{\n")
             file.write("\n")
             file.write("\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
+            file.write("\techo flush chain ip6 wan-routing route-to-default-wan >> $TMPFILE\n")
 
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("\tnetwork_is_up %s && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n")
-                    file.write("\t\techo add rule ip wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % intf.get('interfaceId'))
-                    file.write("\t\twrite_rules\n")
-                    file.write("\t}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifdown_default_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifdown_default_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
             file.write("}\n\n")
 
             for intf in interfaces:
                 if enabled_wan(intf):
-                    file.write("[ %s = \"$INTERFACE\" ] && {\n" % network_util.get_interface_name(settings, intf))
-                    file.write("\tnft list chain ip wan-routing route-to-default-wan | grep -q mark-for-wan-%d && {\n" % intf.get('interfaceId'))
-                    file.write("\t\tupdate_default_route\n")
-                    file.write("\t}\n")
-                    file.write("}\n\n")
+                    if intf.get('v4ConfigType') != 'DISABLED':
+                        self.create_ifdown_call_update_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv4'), "ip")
+                    
+                    if intf.get('v6ConfigType') != 'DISABLED':
+                        self.create_ifdown_call_update_route(file, intf.get('interfaceId'), network_util.get_interface_name(settings, intf, 'ipv6'), "ip6")
 
             file.write("[ -z \"$INTERFACE\" ] && {\n")
             file.write("\tupdate_default_route\n")
@@ -705,6 +756,22 @@ class RouteManager(Manager):
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def create_ifdown_default_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifdown_default_route will create the default route rules for specific ip table families into a file"""
+        file.write("\tnetwork_is_up %s && {\n" % interfaceName)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
+        file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
+        file.write("\t\twrite_rules\n")
+        file.write("\t}\n\n")
+
+    def create_ifdown_call_update_route(self, file, interfaceId, interfaceName, tablefamily):
+        """create_ifdown_call_update_route will write the rules that check the interface that called ifdown, and then call update_def_route if rules exist"""
+        file.write("[ %s = \"$INTERFACE\" ] && {\n" % interfaceName)
+        file.write("\tnft list chain %s wan-routing route-to-default-wan | grep -q mark-for-wan-%d && {\n" % (tablefamily, interfaceId))
+        file.write("\t\tupdate_default_route\n")
+        file.write("\t}\n")
+        file.write("}\n\n")
 
 def get_number_of_wans(settings):
     """returns number of enabled wan interfaces"""
@@ -735,7 +802,8 @@ def get_wan_list(settings):
         if enabled_wan(intf):
             wan = {
                 "interfaceId": intf.get('interfaceId'),
-                "weight": 1
+                "weight": 1,
+                "ipv6Enabled": 'v6ConfigType' in intf and intf.get('v6ConfigType') != 'DISABLED'
             }
             wan_list.append(wan)
 

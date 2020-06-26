@@ -131,7 +131,7 @@ class DhcpManager(Manager):
 
         for intf in interfaces:
             if intf.get('configType') == 'ADDRESSED':
-                interface_name = network_util.get_interface_name(settings, intf)
+                interface_name = network_util.get_interface_name(settings, intf, "ipv4")
 
                 file.write("config dhcp '%s'\n" % interface_name)
                 if intf.get('dhcpEnabled') is True:
