@@ -17,6 +17,16 @@ for p in $PACKAGES ; do
   done
 done
 
+# geoip
+rm /etc/cron.monthly/geoip-update
+rm -f /var/cache/untangle-geoip/GeoLite2-City.mmdb.gz
+# leaving this commented out for now, as MaxMind::DB::Writer seems
+# non-functional, and requires all of build-essential to be installed
+# anyway (see NGFW-13137)
+# export PERL_MM_USE_DEFAULT=1
+# perl -MCPAN -e 'install MaxMind::DB::Writer'
+# /usr/bin/empty_mmdb.pl
+
 # keep modules from ubuntu generic, plus those necessary for NGFW
 KERNEL_DIR="/lib/modules/4.19.0-8-untangle-amd64"
 SHARE="/usr/share/untangle-vendor-vendor1"
