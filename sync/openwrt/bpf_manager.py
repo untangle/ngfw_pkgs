@@ -21,6 +21,7 @@ class BpfManager(Manager):
         'output': 1,
         'forward': 2,
     }
+
     accepted_rule_condition_ops = {
         '==': 0,
     }
@@ -77,6 +78,7 @@ class BpfManager(Manager):
         self.write_bpf_file(settings_file.settings, prefix)
 
     def condition_expression_single(self, conditions):
+        """determines if conditions make a valid rule"""
         good_rule = 0
         bpf_condition = {}
         for condition in conditions:     
@@ -97,11 +99,14 @@ class BpfManager(Manager):
             elif condition['type'] == 'SOURCE_INTERFACE_TYPE':
                 good_rule += 1
                 bpf_condition['src-interface'] = int(condition['value'])
+
+        #if each conditions is valid, good_rule will be equal to length of conditions and hence return a condition
         if good_rule == len(conditions):
             return bpf_condition
         return None
 
     def rule_expression(self, rule, ruleIdSeq):
+        """determines if rule is a valid rule"""
         good_rule_bool = False
         bpf_condition = None
         rule_type = self.rule_type['IMR_ALU_EQ_IMM32'] #default is ALU_EQ_IMM32
@@ -118,6 +123,8 @@ class BpfManager(Manager):
         elif len(rule['conditions']) == 3 or len(rule['conditions']) == 2: #single payload/alu 
             bpf_condition = self.condition_expression_single(rule['conditions'])
         
+        #good_rule_bool is set if rules that are valid but not written out 
+        #bpf_condition is written to as not None if the rule is valid 
         if good_rule_bool or bpf_condition:
             good_rule_bool = False
             bpf_rule = {}
@@ -130,32 +137,40 @@ class BpfManager(Manager):
         return None
 
     def chain_expression(self, chain):
+        """determines if chains is a valid chain"""
         bpf_rules = []
         for rule in chain['rules']:
             bpf_rule_temp = None
             if rule['enabled']: 
                 if rule['action']['type'] in self.verdict.keys():
                     bpf_rule_temp = self.rule_expression(rule, chain['ruleIdSeq'])
+                    #if not a null rule, then append 
                     if bpf_rule_temp:
+                        #conditions has to have non-zero length to be valid and written out
                         if bpf_rule_temp['conditions']:
                             bpf_rules.append(bpf_rule_temp)
+                    #when run across a rule that is not valid, stop filtering to preserve order
                     else:
                         break
+                #when run across a rule that is not valid, stop filtering to preserve order
                 else:
                     break
                 
+        #return rules if there are more than one rule 
         if len(bpf_rules) > 0:
             return bpf_rules 
 
         return None
 
     def table_expression(self, table):
+        """determines if table is a valid table"""
         json_str = ''
         bpf_struct = {}
         for chain in table['chains']:
             bpf_rules = None
             if 'hook' in chain.keys() and chain['hook'] in self.accepted_hook_types.keys():
                 bpf_rules = self.chain_expression(chain)
+                #if any rules are valid, write them out
                 if bpf_rules:
                     bpf_struct['family-name'] = table['family']
                     bpf_struct['table-name'] = table['name']
@@ -178,12 +193,14 @@ class BpfManager(Manager):
         file = open(filename, "w+")
         file.write("\n")
 
+        #loop through tables 
         json_str='['
         for table_name in firewall_tables:
             table = firewall_tables[table_name]
             if 'chain_type' in table.keys() and table['chain_type'] in self.accepted_chain_types.keys():
                 json_str = json_str + self.table_expression(table)
 
+        #write out json_str
         if len(json_str) > 1:
             json_str = json_str[:-1]
         json_str += ']'      
