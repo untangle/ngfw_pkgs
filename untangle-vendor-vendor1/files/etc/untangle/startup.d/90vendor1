@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# 256k buckets (NGFW-13170)
+/sbin/sysctl -w net.netfilter.nf_conntrack_buckets=262144
+
+# 2M nf_conntrack_max (NGFW-13170)
+# (this is the default value set by the kernel when booting with
+# nf_conntrack.hashsize=262144)
+/sbin/sysctl -w net.nf_conntrack_max=2097152
+
