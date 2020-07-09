@@ -176,7 +176,7 @@ class WirelessManager(Manager):
                 if intf.get('configType') == 'BRIDGED':
                     file.write("\toption network '%s'\n" % (network_util.get_bridge_name(settings, intf)))
                 elif intf.get('configType') == 'ADDRESSED':
-                    file.write("\toption network '%s'\n" % (network_util.get_interface_name(settings, intf)))
+                    file.write("\toption network '%s'\n" % (network_util.get_interface_name(settings, intf, 'ipv4')))
                 if intf.get('wirelessMode') == 'AP':
                     file.write("\toption mode 'ap'\n")
                 else:
