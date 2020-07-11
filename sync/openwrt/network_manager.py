@@ -394,12 +394,11 @@ class NetworkManager(Manager):
                 wanId = int(wanId,10)
 
             if wanId != 0:
-                # If we have v4 or v6 configured, we can bind to both. The openvpn.sh script in openvpn-proto will prioritize IPv4, but supports IPv6 if it is available.
-                # should we split out v6 option to be "wanif6" ?
+                # If we have v4 or v6 configured, we can bind to both. The openvpn.sh script in openvpn-proto adds a local bind for both the IPv4 wanif and IPv6 wanif6 configurations
                 if intf.get('v4ConfigType') != "DISABLED":
                     file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv4'))
                 if intf.get('v6ConfigType') != "DISABLED":
-                    file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv6'))
+                    file.write("\toption wanif6 '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv6'))
 
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
