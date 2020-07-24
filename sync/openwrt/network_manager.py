@@ -154,12 +154,39 @@ class NetworkManager(Manager):
             for swi in switches:
                 self.write_switch(swi, settings)
 
+        self.write_lan_route_rules(settings)
         self.write_route_rules(settings)
 
         file.flush()
         file.close()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def write_lan_route_rules(self, settings):
+        """
+        Create route rules to ensure local lan to lan traffic gets
+        routed correctly.  Local lans will be enabled, non-wan, staticly
+        addressed interfaces
+        """
+        priority = 3000
+        file = self.network_file
+        file.write("\n")
+
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if (
+                intf.get('enabled')
+                and not intf.get('wan')
+                and intf.get('v4ConfigType') == "STATIC"
+               ):
+                    file.write("config rule\n")
+                    file.write("\toption dest '%s/%d'\n" % (intf.get('v4StaticAddress'), intf.get('v4StaticPrefix')))
+                    file.write("\toption priority '%d'\n" % priority)
+                    file.write("\toption lookup 'main'\n")
+                    file.write("\n")
+
+                    priority = priority + 1
+
 
     def write_route_rules(self, settings):
         """write the route rules"""
