@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-vendor-vendor1
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, tuned
 Conflicts:
   chromium,
   chromium-common,
