@@ -60,6 +60,6 @@ sed -i -e '/^test -f \/var\/run\/spamd.pid.*/d' /etc/cron.daily/spamassassin
 
 # do not leave gpg-agent processes running; our builders don't like
 # that
-pkill -f "gpg-agent.*/var/lib/spamassassin/sa-update-keys"
+pkill -9 -f "gpg-agent.*/var/lib/spamassassin/sa-update-keys"
 
 exit 0
