@@ -126,10 +126,8 @@ class WireguardManager(Manager):
                 self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=tunnel.get('endpointAddress'), endpointPort=tunnel.get('endpointPort')))
             allowedIps = []
             allowedIps.append(tunnel.get('peerAddress'))
-            netString = tunnel.get('networks')
-            netList = netString.split()
-            for item in netList:
-                allowedIps.append(item)
+            for network in settings_file.settings.get('networks'):
+                allowedIps.append(network.get('address'))
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
             if keepaliveInterval != 0:
                 self.out_file.write("PersistentKeepalive={keepaliveInterval}\n".format(keepaliveInterval=keepaliveInterval))
@@ -181,8 +179,8 @@ class WireguardManager(Manager):
             self.out_file.write("PublicKey={publicKey}\n".format(publicKey=settings_file.settings.get('publicKey')))
             self.out_file.write("Endpoint={endpointAddress}:{endpointPort}\n".format(endpointAddress=Variables.get("wireguardUrl").split(":")[0], endpointPort=settings_file.settings.get('listenPort')))
             allowedIps = []
-            if settings_file.settings.get('networks') != "":
-                allowedIps = re.split(r"[\r\n]+", settings_file.settings.get('networks'))
+            for network in settings_file.settings.get('networks'):
+                allowedIps.append(network.get('address'))
             allowedIps.insert(0, settings_file.settings.get('addressPool').split("/")[0])
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
 
