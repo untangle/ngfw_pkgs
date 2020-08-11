@@ -277,7 +277,10 @@ class WirelessManager(Manager):
                 self.hostapdConfFile.write("country_code=US\n")
                 self.hostapdConfFile.write("max_num_sta=255\n")
                 self.hostapdConfFile.write("auth_algs=1\n")
-                self.hostapdConfFile.write("ignore_broadcast_ssid=%u\n" % intf.get('wirelessVisibility'))
+                if intf.get('wirelessVisibility') != None:
+                    self.hostapdConfFile.write("ignore_broadcast_ssid=%u\n" % intf.get('wirelessVisibility'))
+                else:
+                    self.hostapdConfFile.write("ignore_broadcast_ssid=0\n")
 
                 channel = intf.get('wirelessChannel')
 
