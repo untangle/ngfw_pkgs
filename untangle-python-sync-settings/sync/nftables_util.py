@@ -91,10 +91,11 @@ def value_str(value):
     else:
         return "\"{" + value + "}\""
 
-def ip_val(value):
+def numerical_val(value):
     """
-    ip_val returns an NFT formatted value representing an IP address
-    If the ip value contains a comma, the results are split into an NFT list
+    numerical_val returns an NFT formatted value representing an IP address
+    or port value.  If the value contains a comma, the results are split
+    into an NFT list
     """
     if len(value.split(",")) < 2:
         return value
@@ -143,7 +144,7 @@ def condition_dict_expression(table, key, field, typ, op, value):
     if typ in ["long_string", "bool"] and op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op) + " for type " + typ)
     if typ in ["ipv4_addr", "ipv6_addr"]:
-        val = ip_val(value)
+        val = numerical_val(value)
     else:
         val = value_str(value)
 
@@ -191,7 +192,7 @@ def condition_v4address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv4 family: %s" % family)
     if ":" in value:
         raise Exception("Invalid IPv4 value: " + str(value))
-    return "ip " + addr_str + op_str(op) + ip_val(value)
+    return "ip " + addr_str + op_str(op) + numerical_val(value)
 
 def condition_address_type_expression(addr_str, value, op, family):
     """Generic helper for making destination_type expressions"""
@@ -207,13 +208,13 @@ def condition_v6address_expression(addr_str, value, op, family):
         raise NonsensicalException("Ignore IPv6 family: %s" % family)
     if "." in value:
         raise Exception("Invalid IPv6 value: " + str(value))
-    return "ip6 " + addr_str + op_str(op) + ip_val(value)
+    return "ip6 " + addr_str + op_str(op) + numerical_val(value)
 
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
         raise Exception("Undefined protocol with port condition")
-    return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + value_str(value)
+    return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + numerical_val(value)
 
 def condition_ct_state_expression(value, op):
     """Generic helper for making port expressions"""

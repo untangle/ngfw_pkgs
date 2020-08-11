@@ -154,12 +154,39 @@ class NetworkManager(Manager):
             for swi in switches:
                 self.write_switch(swi, settings)
 
+        self.write_lan_route_rules(settings)
         self.write_route_rules(settings)
 
         file.flush()
         file.close()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def write_lan_route_rules(self, settings):
+        """
+        Create route rules to ensure local lan to lan traffic gets
+        routed correctly.  Local lans will be enabled, non-wan, staticly
+        addressed interfaces
+        """
+        priority = 3000
+        file = self.network_file
+        file.write("\n")
+
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if (
+                intf.get('enabled')
+                and not intf.get('wan')
+                and intf.get('v4ConfigType') == "STATIC"
+               ):
+                    file.write("config rule\n")
+                    file.write("\toption dest '%s/%d'\n" % (intf.get('v4StaticAddress'), intf.get('v4StaticPrefix')))
+                    file.write("\toption priority '%d'\n" % priority)
+                    file.write("\toption lookup 'main'\n")
+                    file.write("\n")
+
+                    priority = priority + 1
+
 
     def write_route_rules(self, settings):
         """write the route rules"""
@@ -170,20 +197,30 @@ class NetworkManager(Manager):
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('wan') and intf.get('enabled') and intf.get('v4ConfigType') != "DISABLED":
-                file.write("config rule\n")
-                file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
-                file.write("\toption priority '%d'\n" % fwmark_priority)
-                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
-                file.write("\n")
-                fwmark_priority = fwmark_priority + 1
+            if intf.get('wan') and intf.get('enabled'):
+                if intf.get('v4ConfigType') != "DISABLED":
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv4")
 
-                file.write("config rule\n")
-                file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf))
-                file.write("\toption priority '%d'\n" % oif_priority)
-                file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
-                file.write("\n")
+                if intf.get('v6ConfigType') != "DISABLED":
+                    self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv6")
+
+                fwmark_priority = fwmark_priority + 1
                 oif_priority = oif_priority + 1
+
+    def create_route_rules_ipfamily(self, file, settings, intf, fwmark_priority, oif_priority, family):
+        """create_route_rules_ipfamily creates route rules for a specific ip family rule type"""
+        ruleType = ("rule" if family == "ipv4" else "rule6")
+        file.write("config %s\n" % ruleType)
+        file.write("\toption mark '0x%x00/0xff00'\n" % intf.get('interfaceId'))
+        file.write("\toption priority '%d'\n" % fwmark_priority)
+        file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+        file.write("\n")
+
+        file.write("config %s\n" % ruleType)
+        file.write("\toption out '%s'\n" % network_util.get_interface_name(settings, intf, family))
+        file.write("\toption priority '%d'\n" % oif_priority)
+        file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+        file.write("\n")
 
     def write_switch(self, swi, settings):
         """write the switch config"""
@@ -288,12 +325,18 @@ class NetworkManager(Manager):
             else:
                 file.write("\toption autoconnect '0'\n")
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
 
-        if intf.get('wan') and intf.get('v6ConfigType') == "DHCP":
-            file.write("\toption dhcpv6 '1'\n")
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
+
+            if intf.get('v6ConfigType') == "DHCP":
+                file.write("\toption dhcpv6 '1'\n")
 
     def write_interface_wireguard(self, intf, settings):
         """write a wireguard interface"""
@@ -309,9 +352,15 @@ class NetworkManager(Manager):
         if intf.get('wireguardPort') is not None:
             file.write("\toption listen_port '%s'\n" % intf.get('wireguardPort'))
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
 
         file.write("\n")
         peers = intf.get('wireguardPeers')
@@ -347,9 +396,18 @@ class NetworkManager(Manager):
         file.write("\toption proto 'openvpn'\n")
         file.write("\toption config '%s'\n" % path)
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
-            file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
-            file.write("\toption defaultroute '1'\n")
+        if intf.get('wan'):
+            if intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED":
+                file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
+
+            if intf.get('v6ConfigType') != "DISABLED" or intf.get('v4ConfigType') != "DISABLED":
+                file.write("\toption defaultroute '1'\n")
+
+            if('openvpnPeerDns' in intf and intf.get('openvpnPeerDns') == True):
+                file.write("\toption peerdns '1'\n")
 
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
@@ -363,7 +421,11 @@ class NetworkManager(Manager):
                 wanId = int(wanId,10)
 
             if wanId != 0:
-                file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId)))
+                # If we have v4 or v6 configured, we can bind to both. The openvpn.sh script in openvpn-proto adds a local bind for both the IPv4 wanif and IPv6 wanif6 configurations
+                if intf.get('v4ConfigType') != "DISABLED":
+                    file.write("\toption wanif '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv4'))
+                if intf.get('v6ConfigType') != "DISABLED":
+                    file.write("\toption wanif6 '%s'\n" % network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, wanId), 'ipv6'))
 
         # also write the conf file
         self.write_openvpn_conf_file(intf, path, prefix)
@@ -564,6 +626,8 @@ class NetworkManager(Manager):
             for idx, alias in enumerate(intf.get('v6Aliases')):
                 self.write_interface_v6_alias(intf, alias, (idx+1), settings)
 
+        if intf.get('wan'):
+            file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
         return
 
     def write_interface_v6_alias(self, intf, alias, count, settings):
