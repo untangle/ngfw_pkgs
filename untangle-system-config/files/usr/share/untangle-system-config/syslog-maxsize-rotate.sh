@@ -21,6 +21,7 @@ $LOG {
         missingok
         rotate 52
         compress
+        delaycompress
         notifempty
         create 640 root adm
         sharedscripts
