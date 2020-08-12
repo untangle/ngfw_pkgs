@@ -765,7 +765,7 @@ class NetworkManager(Manager):
         if '-' in intf.get("name"):
             raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
 
-        if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
+        if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "PPPOE", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
         if intf.get("v4Aliases") is not None:
