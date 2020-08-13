@@ -10,3 +10,6 @@ fi
 # stop it and disable it so it is not started automatically
 systemctl --no-block stop suricata || true
 deb-systemd-helper disable suricata.service
+
+# Override the suricata package logrotate config so as to avoid having .backup log files created
+cp -f /usr/share/untangle-suricata-config/logrotate.conf /etc/logrotate.d/suricata
