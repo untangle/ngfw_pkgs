@@ -6,6 +6,7 @@ except:
 from .iptables_util import IptablesUtil
 from .network_util import NetworkUtil
 from .uri_util import UriUtil
+from .variables import Variables
 from .settings_file import SettingsFile
 from .manager import Manager
 

@@ -25,12 +25,14 @@ class Manager:
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """
-        Create new settings for the appopriate settings_file
+        Create new settings for the appopriate settings_file.
         """
+        # NOTE: Python class variables won't wok as we currently fork for call_without_permissions()
         pass
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """
         Create appropriate system files from settings.
         """
+        # NOTE: Python class variables won't wok as we currently fork for call_without_permissions()
         pass

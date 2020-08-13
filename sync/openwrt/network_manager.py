@@ -618,8 +618,7 @@ class NetworkManager(Manager):
         elif intf.get('v6ConfigType') == "STATIC":
             if intf.get('v6StaticAddress') is not None and intf.get('v6StaticPrefix') is not None:
                 file.write("\toption proto 'static'\n")
-                file.write("\toption ip6addr '%s'\n" % intf.get('v6StaticAddress'))
-                file.write("\toption ip6prefix '%s'\n" % intf.get('v6StaticPrefix'))
+                file.write("\toption ip6addr '%s/%s'\n" % (intf.get('v6StaticAddress'), intf.get('v6StaticPrefix')))
                 if intf.get('wan') and intf.get('v6StaticGateway') is not None:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
 
@@ -641,8 +640,7 @@ class NetworkManager(Manager):
         file.write("config interface '%s'\n" % (intf['logical_name']+"6"+"_"+str(count)))
         file.write("\toption ifname '%s'\n" % intf['ifname'])
         file.write("\toption proto 'static'\n")
-        file.write("\toption ip6addr '%s'\n" % alias.get('v6Address'))
-        file.write("\toption ip6prefix '%s'\n" % alias.get('v6Prefix'))
+        file.write("\toption ip6addr '%s/%s'\n" % (alias.get('v6Address'), alias.get('v6Prefix')))
 
     def create_settings_devices(self, settings, prefix, delete_list):
         """create device settings"""
@@ -767,7 +765,7 @@ class NetworkManager(Manager):
         if '-' in intf.get("name"):
             raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
 
-        if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "DISABLED"]:
+        if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "PPPOE", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
         if intf.get("v4Aliases") is not None:
@@ -791,6 +789,9 @@ class NetworkManager(Manager):
 
         if intf.get("v6AssignHint") is not None and not isinstance(intf.get("v6AssignHint"), str):
             raise Exception("Invalid v6AssignHint: " + intf.get('name') + " " + intf.get("v6AssignHint"))
+
+        if intf.get("v6RelayEnabled") is not None and not isinstance(intf.get("v6RelayEnabled"), bool):
+            raise Exception("Invalid IPv6 Relay option: " + intf.get('name') + " " + intf.get("v6RelayEnabled"))
 
         if intf.get("routerAdvertisements") is not None and not isinstance(intf.get("routerAdvertisements"), bool):
             raise Exception("Invalid Router Advertisements: " + intf.get('name') + " " + intf.get("routerAdvertisements"))

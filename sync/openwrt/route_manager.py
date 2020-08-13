@@ -226,6 +226,15 @@ class RouteManager(Manager):
         file.write("/etc/config/ifdown.d/10-default-route")
         file.write("\n\n")
 
+        # Enable/Disable router advertisements for IPv6
+        interfaces = settings.get('network').get('interfaces')
+        for intf in interfaces:
+            if intf.get('enabled'):
+                if intf.get('routerAdvertisements'):
+                    file.write("echo 1 > /proc/sys/net/ipv6/conf/%s/accept_ra || true\n" % intf.get('device'))
+                else:
+                    file.write("echo 0 > /proc/sys/net/ipv6/conf/%s/accept_ra || true\n" % intf.get('device'))
+
         wan = settings['wan']
         active_policy_ids = []
         policy_chains = wan.get('policy_chains')
