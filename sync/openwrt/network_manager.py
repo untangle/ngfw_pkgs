@@ -559,6 +559,24 @@ class NetworkManager(Manager):
             if not intf.get('wan'):
                 raise Exception('Invalid v4ConfigType: Can not use PPPOE on non-WAN interfaces')
             file.write("\toption proto 'pppoe'\n")
+            file.write("\toption username '%s'\n" % intf.get('v4PPPoEUsername'))
+            file.write("\toption password '%s'\n" % intf.get('v4PPPoEPassword'))
+            if intf.get("v4PPPoEUsePeerDNS") == True:
+                file.write("\toption peerdns '1'\n")
+            else:
+                file.write("\toption peerdns '0'\n")
+                dnslist = ""
+                if intf.get('v4PPPoEOverrideDNS1') is not None and intf.get('v4PPPoEOverrideDNS1') != "":
+                    dnslist = intf.get('v4PPPoEOverrideDNS1')
+                if intf.get('v4PPPoEOverrideDNS2') is not None and intf.get('v4PPPoEOverrideDNS2') != "":
+                    if len(dnslist) != 0:
+                        dnslist += ", "
+                        dnslist += intf.get('v4PPPoEOverrideDNS2')
+                    else:
+                        dnslist = intf.get('v4PPPoEOverrideDNS2')
+                if len(dnslist) == 0:
+                    raise Exception('Use Peer DNS is disabled and no DNS servers are configured')
+                file.write("\toption dns '%s'\n" % dnslist)
             # FIXME
             # If its PPPoE the "netfilterDev" is the actual device that netfilter rules should match on
             # In this case we need to set 'netfilterDev' to 'pppX' so subsequent modules know the proper
