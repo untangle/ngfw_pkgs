@@ -20,6 +20,8 @@ class IntrusionPreventionManager(Manager):
     iptables_chains = ["suricata-scanning"]
     in_bypass_rules = False
 
+    crond_signature_update_file_name = "/root/dev/etc/cron.d/untangle-update-ips-signatures"
+
     # Mapping of script variable name to settings variable to use
     script_to_settings = {
         "intrusion-prevention": {
@@ -34,10 +36,19 @@ class IntrusionPreventionManager(Manager):
         registrar.register_settings_file("network", self)
         registrar.register_settings_file("intrusion-prevention", self)
         registrar.register_file(self.suricata_iptables_file_name, "restart-suricata", self)
+        registrar.register_file(self.crond_signature_update_file_name, None, self)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """
         Synchronize our file by modifying.  This is different than how other managers.
+        """
+        self.write_out_suricata_file(settings_file, prefix, delete_list)
+        if settings_file.id == "intrusion-prevention":
+            self.write_out_signature_update_cron(settings_file, prefix, delete_list)
+
+    def write_out_suricata_file(self, settings_file, prefix, delete_list):
+        """
+        Write out suricata file
         """
         self.out_file_name = prefix + self.suricata_iptables_file_name
         self.out_file_dir = os.path.dirname(self.out_file_name)
@@ -174,5 +185,32 @@ class IntrusionPreventionManager(Manager):
             self.out_file.write( cmd + "\n")
 
         return
+
+    def write_out_signature_update_cron(self, settings_file, prefix, delete_list):
+        filename = prefix + self.crond_signature_update_file_name
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file_contents = None
+        if settings_file.settings['updateSignatureFrequency'] == "Daily":
+            file_contents = self.write_out_signature_update_daily_cron(settings_file.settings)
+        if settings_file.settings['updateSignatureFrequency'] == "Weekly":
+            file_contents = self.write_out_signature_update_weekly_cron(settings_file.settings)
+
+        if file_contents:
+            file.write(file_contents)
+        file.flush()
+        file.close()
+        print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+    def write_out_signature_update_daily_cron(self, settings):
+        print("TODO")
+        return ""
+
+    def write_out_signature_update_weekly_cron(self, settings):
+        print("TODO")
+        return ""
 
 registrar.register_manager(IntrusionPreventionManager())
