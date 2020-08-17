@@ -4,5 +4,6 @@ size 50k
 compress
 notifempty
 copytruncate
+delaycompress
 missingok
 }
