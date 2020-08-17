@@ -206,11 +206,31 @@ class IntrusionPreventionManager(Manager):
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_out_signature_update_daily_cron(self, settings):
-        print("TODO")
-        return ""
+        file_contents = ""
+        for day in settings['updateSignatureSchedule']:
+            if day['enabled']:
+                file_contents += self.generate_day_cron_line(day)
+                file_contents += '\n'
+        return file_contents.strip()
 
     def write_out_signature_update_weekly_cron(self, settings):
-        print("TODO")
-        return ""
+        return self.generate_day_cron_line(settings['updateSignatureWeekly'])
+
+    def generate_day_cron_line(self, day):
+        day_line = ""
+        if day['minute'] != -1:
+            day_line = day_line + str(day['minute']) + " "
+        else:
+            day_line = "* "
+        if day['hour'] != -1:
+            day_line = day_line + str(day['hour']) + " "
+        else:
+            day_line = day_line + "* "
+        day_line = day_line + "* * "
+        day_value = day['day'][:3].lower()
+        day_line = day_line + day_value + " "
+        day_line = day_line + "/usr/share/untangle/bin/intrusion-prevention-get-updates "
+        day_line = day_line + ">/dev/null 2>&1"
+        return day_line
 
 registrar.register_manager(IntrusionPreventionManager())
