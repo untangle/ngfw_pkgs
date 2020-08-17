@@ -22,6 +22,11 @@ class IntrusionPreventionManager(Manager):
 
     crond_signature_update_file_name = "/root/dev/etc/cron.d/untangle-update-ips-signatures"
 
+    crontab_default_times = {
+        'hour': 0,
+        'minute': 0
+    }
+
     # Mapping of script variable name to settings variable to use
     script_to_settings = {
         "intrusion-prevention": {
@@ -187,6 +192,7 @@ class IntrusionPreventionManager(Manager):
         return
 
     def write_out_signature_update_cron(self, settings_file, prefix, delete_list):
+        self.get_crontab_default_times()
         filename = prefix + self.crond_signature_update_file_name
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -221,16 +227,41 @@ class IntrusionPreventionManager(Manager):
         if day['minute'] != -1:
             day_line = day_line + str(day['minute']) + " "
         else:
-            day_line = "* "
+            day_line = day_line + self.crontab_default_times['minute'] + " "
         if day['hour'] != -1:
-            day_line = day_line + str(day['hour']) + " "
+            day_line = day_line + str(self.convert_hour_to_24_format(day)) + " "
         else:
-            day_line = day_line + "* "
+            day_line = day_line + self.crontab_default_times['hour'] + " "
         day_line = day_line + "* * "
         day_value = day['day'][:3].lower()
         day_line = day_line + day_value + " "
         day_line = day_line + "/usr/share/untangle/bin/intrusion-prevention-get-updates "
         day_line = day_line + ">/dev/null 2>&1"
         return day_line
+
+    def get_crontab_default_times(self):
+        crontab_file = open('/etc/crontab', 'r')
+        crontab_file_contents = crontab_file.readlines()
+
+        for line in crontab_file_contents:
+            if line.find('/etc/cron.daily') != -1:
+                line_split = line.split(' ')
+                self.crontab_default_times['minute'] = line_split[0]
+                self.crontab_default_times['hour'] = line_split[1]
+                if self.crontab_default_times['hour'].find('\t') != -1:
+                    self.crontab_default_times['hour'] = self.crontab_default_times['hour'].split('\t')[0] 
+                break
+
+        crontab_file.close()
+
+    def convert_hour_to_24_format(self, day):
+        hour = day['hour']
+        isAm = day['isAm']
+        military_hour = hour
+        if isAm and hour == 12:
+            military_hour = 0
+        if not isAm and hour < 12:
+            military_hour = hour + 12
+        return military_hour
 
 registrar.register_manager(IntrusionPreventionManager())
