@@ -20,7 +20,7 @@ class IntrusionPreventionManager(Manager):
     iptables_chains = ["suricata-scanning"]
     in_bypass_rules = False
 
-    crond_signature_update_file_name = "/root/dev/etc/cron.d/untangle-update-ips-signatures"
+    crond_signature_update_file_name = "/etc/cron.d/untangle-update-ips-signatures"
 
     crontab_default_times = {
         'hour': 0,
