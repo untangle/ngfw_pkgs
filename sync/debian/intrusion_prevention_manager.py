@@ -27,6 +27,16 @@ class IntrusionPreventionManager(Manager):
         'minute': 0
     }
 
+    day_map = {
+        "Sunday": 0,
+        "Monday": 1,
+        "Tuesday": 2,
+        "Wednesday": 3,
+        "Thursday": 4,
+        "Friday": 5,
+        "Saturday": 6
+    }
+
     # Mapping of script variable name to settings variable to use
     script_to_settings = {
         "intrusion-prevention": {
@@ -207,6 +217,7 @@ class IntrusionPreventionManager(Manager):
 
         if file_contents:
             file.write(file_contents)
+            file.write('\n')
         file.flush()
         file.close()
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
@@ -233,9 +244,9 @@ class IntrusionPreventionManager(Manager):
         else:
             day_line = day_line + self.crontab_default_times['hour'] + " "
         day_line = day_line + "* * "
-        day_value = day['day'][:3].lower()
+        day_value = str(self.day_map[day['day']])
         day_line = day_line + day_value + " "
-        day_line = day_line + "/usr/share/untangle/bin/intrusion-prevention-get-updates "
+        day_line = day_line + "root /usr/share/untangle/bin/intrusion-prevention-get-updates "
         day_line = day_line + ">/dev/null 2>&1"
         return day_line
 
