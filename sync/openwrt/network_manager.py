@@ -578,8 +578,11 @@ class NetworkManager(Manager):
                     raise Exception('Use Peer DNS is disabled and no DNS servers are configured')
                 file.write("\toption dns '%s'\n" % dnslist)
 
-            # PPPOE interfaces need to set netfilterDev to the PPPOE tunnel
-            intf['netfilterDev'] = "pppoe-" + intf['logical_name'] + "4"
+            # Create the pppoe interface name here, and use it for any netfilterDev references
+            # for this interface later
+            pppoeName = "ppp-" + intf['logical_name']
+            file.write("\toption pppname '%s'\n" % pppoeName)
+            intf['netfilterDev'] = pppoeName
 
         elif intf.get('v4ConfigType') == "DISABLED":
             # This needs to be written for addressless bridges
