@@ -1,9 +1,0 @@
-/var/log/suricata/*.log {
-	rotate 2
-	size 500k
-	missingok
-	notifempty
-	compress
-	copytruncate
-}
-
