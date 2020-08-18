@@ -577,11 +577,9 @@ class NetworkManager(Manager):
                 if len(dnslist) == 0:
                     raise Exception('Use Peer DNS is disabled and no DNS servers are configured')
                 file.write("\toption dns '%s'\n" % dnslist)
-            # FIXME
-            # If its PPPoE the "netfilterDev" is the actual device that netfilter rules should match on
-            # In this case we need to set 'netfilterDev' to 'pppX' so subsequent modules know the proper
-            # netfilter device to use
-            # intf['netfilterDev'] = ppp0
+
+            # PPPOE interfaces need to set netfilterDev to the PPPOE tunnel
+            intf['netfilterDev'] = "pppoe-" + intf['logical_name'] + "4"
 
         elif intf.get('v4ConfigType') == "DISABLED":
             # This needs to be written for addressless bridges
