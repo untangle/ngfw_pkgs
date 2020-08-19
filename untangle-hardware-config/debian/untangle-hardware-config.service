@@ -7,4 +7,4 @@ ExecStart=/bin/run-parts --lsbsysinit -v /etc/untangle/startup.d
 RemainAfterExit=true
 
 [Install]
-WantedBy=multi-user.target
+WantedBy=multi-user.target untangle-vm.service
