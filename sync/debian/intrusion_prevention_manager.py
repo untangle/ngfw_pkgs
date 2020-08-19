@@ -10,6 +10,7 @@ class IntrusionPreventionManager(Manager):
     """
     This class is responsible for writing intrusion prevention iptables entries
     based on the settings object passed from sync-settings
+    This call also writes the IPS signature updates cron.d file
     """
     suricata_iptables_file_name = "/etc/untangle/iptables-rules.d/740-suricata"
     in_file_name = suricata_iptables_file_name
@@ -202,6 +203,9 @@ class IntrusionPreventionManager(Manager):
         return
 
     def write_out_signature_update_cron(self, settings_file, prefix, delete_list):
+        """
+        Write out the cron.d file for updating signatures automatically
+        """
         self.get_crontab_default_times()
         filename = prefix + self.crond_signature_update_file_name
         file_dir = os.path.dirname(filename)
@@ -210,6 +214,8 @@ class IntrusionPreventionManager(Manager):
 
         file = open(filename, "w+")
         file_contents = None
+
+        #Determine contents based on if daily or weekly or none
         if settings_file.settings['updateSignatureFrequency'] == "Daily":
             file_contents = self.write_out_signature_update_daily_cron(settings_file.settings)
         if settings_file.settings['updateSignatureFrequency'] == "Weekly":
@@ -223,6 +229,9 @@ class IntrusionPreventionManager(Manager):
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
     def write_out_signature_update_daily_cron(self, settings):
+        """
+        For each day, determine the cron.d line
+        """
         file_contents = ""
         for day in settings['updateSignatureSchedule']:
             if day['enabled']:
@@ -231,9 +240,15 @@ class IntrusionPreventionManager(Manager):
         return file_contents.strip()
 
     def write_out_signature_update_weekly_cron(self, settings):
+        """
+        Determine the single cron.d line for the weekly schedule
+        """
         return self.generate_day_cron_line(settings['updateSignatureWeekly'])
 
     def generate_day_cron_line(self, day):
+        """
+        Based on the settings, set the minute,hour,day and command to run for cron.d
+        """
         day_line = ""
         if day['minute'] != -1:
             day_line = day_line + str(day['minute']) + " "
@@ -251,6 +266,9 @@ class IntrusionPreventionManager(Manager):
         return day_line
 
     def get_crontab_default_times(self):
+        """
+        Get the default daily run times for crontab to use as default hour/minute for cron.d 
+        """
         crontab_file = open('/etc/crontab', 'r')
         crontab_file_contents = crontab_file.readlines()
 
@@ -259,6 +277,8 @@ class IntrusionPreventionManager(Manager):
                 line_split = line.split(' ')
                 self.crontab_default_times['minute'] = line_split[0]
                 self.crontab_default_times['hour'] = line_split[1]
+
+                #Clean up the hour config item
                 if self.crontab_default_times['hour'].find('\t') != -1:
                     self.crontab_default_times['hour'] = self.crontab_default_times['hour'].split('\t')[0] 
                 break
