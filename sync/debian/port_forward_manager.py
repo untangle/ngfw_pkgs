@@ -123,6 +123,11 @@ class PortForwardManager(Manager):
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                 self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
                 self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j DNAT --to-destination ${ADDR}:443 -m comment --comment \"Send ${ADDR}:%i to Apache\"" % (https_port, https_port) + "\n")
+                # NGFW-13160 Enable admin GUI on alias IP addresses
+                for alias in intf.get('v4Aliases'):
+                    addr = alias.get('staticAddress')
+                    if addr != None:
+                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:443 -m comment --comment \"Send %s:%i to Apache\"" % (addr, https_port, addr, addr, https_port) + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n")
 
@@ -139,6 +144,11 @@ class PortForwardManager(Manager):
                 self.file.write("ADDR=\"`ip addr show %s | awk '/^ *inet.*scope global/ { interface = $2 ; sub( \"/.*\", \"\", interface ) ; print interface ; exit }'`\"\n" % intf.get('symbolicDev'))
                 self.file.write("if [ ! -z \"${ADDR}\" ] ; then" + "\n")
                 self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination ${ADDR} --destination-port %i -j DNAT --to-destination ${ADDR}:80 -m comment --comment \"Send ${ADDR}:%i to Apache\"" % (http_port, http_port) + "\n")
+                # NGFW-13160 Enable admin GUI on alias IP addresses
+                for alias in intf.get('v4Aliases'):
+                    addr = alias.get('staticAddress')
+                    if addr != None:
+                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:80 -m comment --comment \"Send %s:%i to Apache\"" % (addr, http_port, addr, addr, http_port) + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n")
 
