@@ -286,6 +286,9 @@ class IntrusionPreventionManager(Manager):
         crontab_file.close()
 
     def convert_hour_to_24_format(self, day):
+        """
+        Convert the time from AM/PM to 24 hour format for cron file
+        """
         hour = day['hour']
         isAm = day['isAm']
         military_hour = hour
