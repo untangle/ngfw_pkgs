@@ -69,7 +69,7 @@ class NetworkManager(Manager):
         """validates settings"""
         interfaces = settings_file.settings.get('network').get('interfaces')
         for intf in interfaces:
-            self.validate_interface(intf)
+            self.validate_interface(intf, settings_file)
             # TODO add mulit-setting validation:
             # for example:
             # if dhcp is enabled, dhcpStart and dhcpEnd are specified
@@ -770,8 +770,13 @@ class NetworkManager(Manager):
         """create switches config"""
         settings['network']['switches'] = board_util.get_switch_settings()
 
-    def validate_interface(self, intf):
-        """validates that each field within an interface makes sense individually"""
+    def validate_interface(self, intf, settings_file):
+        """
+        validates that each field within an interface makes sense individually
+        @param self - this class instance
+        @param intf - the network interface we are validating
+        @param settings_file - the settings file
+        """
         # If the interface is disabled, don't bother verifying attributes
         if intf.get("enabled") is None:
             raise Exception("Missing enabled attribute: " + intf.get('name'))
@@ -917,6 +922,28 @@ class NetworkManager(Manager):
                 raise Exception("Unsupported encoding in OpenVPN conf file: " + conffile["encoding"])
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
             auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
+
+            wanId = intf.get("openvpnBoundInterfaceId")
+            if wanId is not None:
+
+                if isinstance(wanId, str):
+                    wanId = int(wanId,10)
+
+                interfaces = settings_file.settings.get('network').get('interfaces')
+                if wanId != 0:
+                    for interface in interfaces:
+                        if interface.get('interfaceId') == wanId:
+                            if interface.get('enabled') is not True:
+                                raise Exception("Openvpn interface " + intf.get('name') + " is bound to disabled wan " + interface.get('name'))
+                else:
+                    wanEnabled = False
+                    openvpnId = intf.get('interfaceId')
+                    for interface in interfaces:
+                        if interface.get('enabled') and interface.get('wan') and openvpnId != interface.get('interfaceId'):
+                            wanEnabled = True
+
+                    if wanEnabled is not True:
+                        raise Exception("Openvpn interface " + intf.get('name') + " is enabled, but no parent wans are enabled")
 
             # register a new operation to restart this interface if this config file changes
             # register the config file with the new operation
