@@ -299,7 +299,7 @@ class RouteManager(Manager):
 
                         if down_by_attribute is False:
                             file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
-                            if interfaceName != interface6Name:
+                            if intf.get('ipv6Enabled') and interfaceName != interface6Name:
                                 file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interface6Name))
 
                             for criterion in criteria:
