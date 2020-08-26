@@ -74,6 +74,9 @@ class RouteManager(Manager):
         policies = wan.get('policies')
         policy_ids = []
         for policy in policies:
+            if policy.get('enabled') is not True:
+               continue
+
             interfaces = policy.get('interfaces')
             policy_id = policy.get('policyId')
             if policy_id is None:
@@ -98,6 +101,8 @@ class RouteManager(Manager):
             if policy_chain.get("rules") is None:
                 raise Exception("Missing rules in wan settings policy chain.")
             for rule in policy_chain.get("rules"):
+                if rule.get('enabled') is not True:
+                   continue
                 action = rule.get("action")
                 rule_id = rule.get("ruleId")
                 if rule_id is None:
