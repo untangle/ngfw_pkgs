@@ -552,7 +552,8 @@ class RouteManager(Manager):
             file.write(nftables_util.chain_rules_cmds(chain, family, None, "wan-routing") + "\n")
             file.write("\n")
 
-        file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
+        if enabled_policy_rules:
+            file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
 
         for intf in interfaces:
             if enabled_wan(intf):
