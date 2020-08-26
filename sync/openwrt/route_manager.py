@@ -94,6 +94,24 @@ class RouteManager(Manager):
                 weight = interface.get('weight')
                 if weight is not None and (weight > 10000 or weight < 1):
                     raise Exception("Invalid interface weight specified: policy " + str(policy_id) + " " + str(weight))
+
+            if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
+                interfaces = get_wan_list(settings_file.settings)
+
+                if len(interfaces) == 0:
+                    raise Exception("Wan policy \"" + policy.get('description') + "\" specifies \"All WANs\", but no wans are enabled" )
+            else:
+                wansEnabled = False
+                for interface in interfaces:
+                    interfaceId = interface.get('interfaceId')
+                    intf = get_interface_by_id(settings_file.settings, interfaceId)
+                    if intf.get('enabled'):
+                        wansEnabled = True
+
+                if wansEnabled is not True:
+                    raise Exception("Wan policy \"" + policy.get('description') + "\" specifies only disabled wans" )
+
+
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
             raise Exception("Missing policy_chains in WAN settings")
