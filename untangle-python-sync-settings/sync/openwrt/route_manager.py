@@ -74,6 +74,9 @@ class RouteManager(Manager):
         policies = wan.get('policies')
         policy_ids = []
         for policy in policies:
+            if policy.get('enabled') is not True:
+               continue
+
             interfaces = policy.get('interfaces')
             policy_id = policy.get('policyId')
             if policy_id is None:
@@ -91,6 +94,24 @@ class RouteManager(Manager):
                 weight = interface.get('weight')
                 if weight is not None and (weight > 10000 or weight < 1):
                     raise Exception("Invalid interface weight specified: policy " + str(policy_id) + " " + str(weight))
+
+            if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
+                interfaces = get_wan_list(settings_file.settings)
+
+                if len(interfaces) == 0:
+                    raise Exception("Wan policy \"" + policy.get('description') + "\" specifies \"All WANs\", but no wans are enabled" )
+            else:
+                wansEnabled = False
+                for interface in interfaces:
+                    interfaceId = interface.get('interfaceId')
+                    intf = get_interface_by_id(settings_file.settings, interfaceId)
+                    if intf.get('enabled'):
+                        wansEnabled = True
+
+                if wansEnabled is not True:
+                    raise Exception("Wan policy \"" + policy.get('description') + "\" specifies only disabled wans" )
+
+
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
             raise Exception("Missing policy_chains in WAN settings")
@@ -98,6 +119,8 @@ class RouteManager(Manager):
             if policy_chain.get("rules") is None:
                 raise Exception("Missing rules in wan settings policy chain.")
             for rule in policy_chain.get("rules"):
+                if rule.get('enabled') is not True:
+                   continue
                 action = rule.get("action")
                 rule_id = rule.get("ruleId")
                 if rule_id is None:
@@ -529,7 +552,8 @@ class RouteManager(Manager):
             file.write(nftables_util.chain_rules_cmds(chain, family, None, "wan-routing") + "\n")
             file.write("\n")
 
-        file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
+        if enabled_policy_rules:
+            file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
 
         for intf in interfaces:
             if enabled_wan(intf):
