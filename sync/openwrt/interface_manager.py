@@ -142,6 +142,10 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
             file.write("add rule inet interface-marks mark-dst-interface ct direction original oifname %s ct mark set ct mark and 0x%x or 0x%x\n" %
                        (interface_name, self.SERVER_TYPE_MASK_INVERSE, (interface_type << self.SERVER_TYPE_SHIFT) & self.SERVER_TYPE_MASK))
 
+            if intf.get('v4ConfigType') == "PPPOE":
+                file.write("# For PPPoE interfaces, set the MSS size to route mtu\n")
+                file.write("add rule inet interface-marks forward-interface-marks mark & 0x0000ff00 == 0x%x tcp flags syn tcp option maxseg size set rt mtu\n" % (interface_id << self.DST_INTERFACE_SHIFT))
+
             file.write("# if ct mark server interface is X then set the mark client interface to X\n")
             file.write("add rule inet interface-marks restore-interface-marks-reply ct mark and 0x%x == 0x%x mark set mark and 0x%x or 0x%x\n" %
                        (self.SERVER_INTERFACE_MASK, (interface_id << self.SERVER_INTERFACE_SHIFT), self.CLIENT_INTERFACE_MASK_INVERSE, interface_id << self.CLIENT_INTERFACE_SHIFT))
