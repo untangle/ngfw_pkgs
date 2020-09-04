@@ -1,0 +1,5 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+exit 0

@@ -1,0 +1,15 @@
+Source: untangle-hardware-qotom-z4plus
+Section: admin
+Priority: optional
+Maintainer: Dirk Morris <dmorris@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-hardware-qotom-z4plus
+Depends: ${misc:Depends}, systemd, untangle-hardware-config
+Architecture: all
+Description: The Untangle hardware config
+ Provides the mechanism for other packages to register startup
+ actions, to load hardware-related settings at boot time.
+
