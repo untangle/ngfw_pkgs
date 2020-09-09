@@ -1,8 +1,0 @@
-#! /bin/sh
-
-#remove the eth9 interface in Lanner m series hardware 
-pci_bus=`/sbin/ethtool -i eth9 | grep -m1 bus-info | cut -f2 -d' '`
-
-echo "$pci_bus"  > /sys/bus/pci/drivers/igb/unbind
-
-exit 0
