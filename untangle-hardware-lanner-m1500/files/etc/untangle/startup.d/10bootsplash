@@ -1,0 +1,11 @@
+#!/bin/sh
+
+# Disable uvesafb on lanner m-series boxes NGFW-13239
+if ! grep -qE 'lanner' /etc/initramfs-tools/modules ; then
+    cat <<EOF > /etc/initramfs-tools/modules
+# Untangle lanner bootsplash settings
+EOF
+    /usr/sbin/update-initramfs -u
+fi
+
+exit 0
