@@ -1,0 +1,11 @@
+[Unit]
+Description=Call depmod -a prior to reboot
+DefaultDependencies=no
+Before=shutdown.target
+
+[Service]
+Type=oneshot
+ExecStart=/sbin/depmod -a
+
+[Install]
+WantedBy=shutdown.target

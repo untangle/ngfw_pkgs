@@ -150,4 +150,8 @@ fi
 echo -e '#!/bin/sh\nexit 0\n' > /etc/miniupnpd/iptables_init.sh
 echo -e '#!/bin/sh\nexit 0\n' > /etc/miniupnpd/ip6tables_init.sh
 
+# enable the systemd service that makes sure we call depmod -a
+# before we reboot
+deb-systemd-helper enable untangle-linux-config.service
+
 exit 0
