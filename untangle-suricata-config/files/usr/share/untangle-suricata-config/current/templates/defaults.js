@@ -8,6 +8,13 @@
             "mode": "accept",
             "fail-open": true
         },
+        "app-layer": {
+            "protocols": {
+                "modbus": {
+                    "enabled": true
+                }
+            }
+        },
         "outputs": {
             "eve-log": {
                 "enabled": false
