@@ -412,7 +412,7 @@ class NetworkManager(Manager):
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
 
-        wanId = intf.get('openvpnBoundInterfaceId')
+        wanId = intf.get('boundInterfaceId')
         if wanId is not None:
 
             # FIXME: This is currently defined as a string, but probably should be an int.
