@@ -55,7 +55,7 @@ class NetworkManager(Manager):
             # mfw-1093 ensure no more remaining openVpnBoundInterfaceId properties
             # change openvpnBoundInterfaceId to boundInterfaceId
             if intf.get('openvpnBoundInterfaceId'):
-                intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "-1")
+                intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "0")
 
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
