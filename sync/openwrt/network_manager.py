@@ -52,10 +52,13 @@ class NetworkManager(Manager):
                     intf["enabled"] = False
                 else:
                     intf["enabled"] = True
+<<<<<<< HEAD
             # mfw-1093 ensure no more remaining openVpnBoundInterfaceId properties
             # change openvpnBoundInterfaceId to boundInterfaceId
             if intf.get('openvpnBoundInterfaceId'):
                 intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "0")
+=======
+>>>>>>> 0672c97... MFW-1096: Add basic vlan configuration settings
 
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
@@ -150,6 +153,8 @@ class NetworkManager(Manager):
                 elif intf.get('type') == 'WWAN':
                     self.write_interface_wwan(intf, settings)
                 else:
+                    if intf.get('type') == 'VLAN':
+                        vlan_util.write_interface_vlan(intf)
                     self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
                     self.write_interface_v6(intf, settings)
@@ -488,6 +493,8 @@ class NetworkManager(Manager):
             return
         if not intf.get('is_bridge'):
             return
+        if intf.get('is_vlan'):
+            return
         # find interfaces bridged to this interface
         file = self.network_file
 
@@ -521,13 +528,14 @@ class NetworkManager(Manager):
 
         file = self.network_file
 
-        file.write("\n")
-        file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
-        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        if not intf.get('is_vlan'):
+            file.write("\n")
+            file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
+            file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
-        if intf.get('v4Aliases') is not None and intf.get('v4ConfigType') == "STATIC":
+        if intf.get('v4Aliases') is not None and intf.get('v4ConfigType') == "STATIC" and not intf.get('is_vlan'):
             for idx, alias in enumerate(intf.get('v4Aliases')):
                 self.write_interface_v4_alias(intf, alias, (idx+1), settings)
 
@@ -594,7 +602,7 @@ class NetworkManager(Manager):
             file.write("\toption proto 'none'\n")
             file.write("\toption auto '1'\n")
 
-        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED":
+        if intf.get('wan') and intf.get('v4ConfigType') != "DISABLED" and not intf.get('is_vlan'):
             file.write("\toption ip4table 'wan.%d'\n" % intf.get('interfaceId'))
 
     def write_interface_v4_alias(self, intf, alias, count, settings):
@@ -619,9 +627,10 @@ class NetworkManager(Manager):
         if intf.get('v6ConfigType') == "DISABLED":
             return
         file = self.network_file
-        file.write("\n")
-        file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
-        file.write("\toption ifname '%s'\n" % intf['ifname'])
+        if not intf.get('is_vlan'):
+            file.write("\n")
+            file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
+            file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
 
         if intf.get('v6ConfigType') == "DHCP":
@@ -646,11 +655,11 @@ class NetworkManager(Manager):
                 if intf.get('wan') and intf.get('v6StaticGateway') is not None:
                     file.write("\toption ip6gw '%s'\n" % intf.get('v6StaticGateway'))
 
-        if intf.get('v6Aliases') is not None and intf.get('v6ConfigType') == "STATIC":
+        if intf.get('v6Aliases') is not None and intf.get('v6ConfigType') == "STATIC" and not intf.get('is_vlan'):
             for idx, alias in enumerate(intf.get('v6Aliases')):
                 self.write_interface_v6_alias(intf, alias, (idx+1), settings)
 
-        if intf.get('wan'):
+        if intf.get('wan') and not intf.get('is_vlan'):
             file.write("\toption ip6table 'wan.%d'\n" % intf.get('interfaceId'))
         return
 
