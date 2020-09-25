@@ -229,6 +229,8 @@ class RouteManager(Manager):
         # Enable/Disable router advertisements for IPv6
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
+            if intf.get('type') == "VLAN":
+                continue
             if intf.get('enabled'):
                 if intf.get('routerAdvertisements'):
                     file.write("echo 1 > /proc/sys/net/ipv6/conf/%s/accept_ra || true\n" % intf.get('device'))
@@ -438,6 +440,8 @@ class RouteManager(Manager):
         file.write("add rule %s wan-routing restore-interface-marks-original mark set ct mark and 0x%x\n" % (family, self.ALL_MASK))
 
         for intf in interfaces:
+            if intf.get('type') == 'VLAN':
+                continue
             if enabled_wan(intf):
                 file.write("add set %s wan-routing wan-%d-table { type %s . %s; flags timeout; }\n" % (family, intf.get('interfaceId'), ip_addr_family, ip_addr_family))
                 file.write("flush set %s wan-routing wan-%d-table\n" % (family, intf.get('interfaceId')))
@@ -482,6 +486,8 @@ class RouteManager(Manager):
 
         default_wan = 0
         for intf in interfaces:
+            if intf.get('type') == 'VLAN':
+                continue
             if enabled_wan(intf):
                 default_wan = intf.get('interfaceId')
                 break
@@ -532,6 +538,8 @@ class RouteManager(Manager):
         file.write("add rule %s wan-routing update-rule-table dict sessions ct id wan_rule_id int vmap { %s }\n" % (family, ",".join(enabled_policy_rules)))
 
         for intf in interfaces:
+            if intf.get('type') == 'VLAN':
+                continue
             if enabled_wan(intf):
                 file.write("add rule %s wan-routing route-via-cache %s saddr . %s daddr @wan-%d-table jump mark-for-wan-%d\n" % (family, family, family, intf.get('interfaceId'), intf.get('interfaceId')))
 
@@ -565,6 +573,8 @@ class RouteManager(Manager):
         file.write("add rule %s wan-routing wan-routing-output mark set mark and 0x%x or 0x%x\n" %
                    (family, self.SRC_TYPE_MASK_INVERSE, (2 << self.SRC_TYPE_SHIFT) & self.SRC_TYPE_MASK))
         for intf in interfaces:
+            if intf.get('type') == 'VLAN':
+                continue
             if not intf.get('enabled'):
                 continue
             if intf.get('configType') == 'BRIDGED':
@@ -612,6 +622,8 @@ class RouteManager(Manager):
 
         interfaces = settings.get('network').get('interfaces')
         for intf in interfaces:
+            if intf.get('type') == 'VLAN':
+                continue
             if enabled_wan(intf):
                 interface_id = intf.get('interfaceId')
                 file.write("%d\twan.%d\n" % (interface_id, interface_id))

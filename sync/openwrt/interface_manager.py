@@ -107,6 +107,8 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
                 continue
             if intf.get('configType') == 'BRIDGED':
                 continue
+            if intf.get('type') == 'VLAN':
+                continue
 
             # just use the normal interface name
             # unless its a bridge and then use the bridge zone interface name
