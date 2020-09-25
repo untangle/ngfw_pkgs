@@ -15,13 +15,16 @@ def write_interface_vlan(intf, vlanBoundName):
     vlan_settings += "\toption vid '%s'\n" % intf.get('vlanid')
     vlan_settings += "\toption name '%s'\n" % intf.get('name')
 
-    #vlan interface block
-    vlan_settings += "\n"
-    vlan_settings += "config interface '%s'\n" % intf.get('name')
-    vlan_settings += "\toption proto static\n"
-    vlan_settings += "\toption ifname '%s'\n" % intf.get('name')
-    vlan_settings += "\toption ipaddr '%s'\n" % intf.get('v4StaticAddress')
-    vlan_settings += "\toption netmask '%s'\n" % network_util.ipv4_prefix_to_netmask(intf.get('v4StaticPrefix'))
-
     return vlan_settings
+
+def write_vlan_bound_to_interface(intf, vlanBoundInterface):
+    bound_to_interface = ''
+    bound_to_interface += '\n'
+
+    #bound to interface 
+    bound_to_interface += "config interface '%s'\n" % intf.get('name')
+    bound_to_interface += "\toption type 'bridge'\n"
+    bound_to_interface += "\toption ifname '%s'\n" % " ".join(intf.get('bridged_interfaces_str'))
+
+    return bound_to_interface
 

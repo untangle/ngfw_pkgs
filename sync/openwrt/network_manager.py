@@ -121,22 +121,26 @@ class NetworkManager(Manager):
         for intf in interfaces:
             is_bridge = False
             has_vlan = False
+            vlan_count = 0
             bridged_interfaces_str = []
             bridged_interfaces = []
             for intf2 in interfaces:
                 if (intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId')) or (intf2.get('type') == 'VLAN' and intf.get('interfaceId') == intf2.get('boundInterfaceId')):
                     bridged_interfaces_str.append(str(intf2.get('device')))
                     bridged_interfaces.append(intf2)
-                    if intf2.get('type') == 'VLAN':
+                    if intf2.get('type') == 'VLAN' and intf2.get('configType') != 'BRIDGED':
                         has_vlan = True
+                        vlan_count = vlan_count + 1
             if bridged_interfaces:
                 is_bridge = True
                 bridged_interfaces_str.insert(0, intf.get('device'))  # include yourself in bridge at front
                 bridged_interfaces.insert(0, intf)  # include yourself in bridge at front
-            intf['is_bridge'] = is_bridge
-            intf['has_vlan'] = has_vlan
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
+                if len(bridged_interfaces) - 1 == vlan_count:
+                    is_bridge = False
+            intf['is_bridge'] = is_bridge
+            intf['has_vlan'] = has_vlan
   
             if intf.get('is_bridge'):
                 intf['logical_name'] = "b_" + intf['name']
@@ -157,12 +161,16 @@ class NetworkManager(Manager):
                     self.write_interface_wireguard(intf, settings)
                 elif intf.get('type') == 'WWAN':
                     self.write_interface_wwan(intf, settings)
-                elif intf.get('type') == 'VLAN':
+                else: 
+                    vlanBoundInterface = None
+                    if intf.get('type') == 'VLAN':
                         vlanBoundInterface = network_util.get_interface_by_id(settings, intf.get('boundInterfaceId'))
                         vlanBoundName = vlanBoundInterface.get('device')
                         file.write(vlan_util.write_interface_vlan(intf, vlanBoundName))
-                else:
-                    self.write_interface_bridge(intf, settings)
+                    if intf.get('has_vlan') and not intf.get('is_bridged'):
+                        file.write(vlan_util.write_vlan_bound_to_interface(intf, vlanBoundInterface))
+                    else:
+                        self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
                     self.write_interface_v6(intf, settings)
 
@@ -171,7 +179,6 @@ class NetworkManager(Manager):
             for swi in switches:
                 self.write_switch(swi, settings)
 
-        #routes?
         self.write_lan_route_rules(settings)
         self.write_route_rules(settings)
 
@@ -501,8 +508,6 @@ class NetworkManager(Manager):
             return
         if not intf.get('is_bridge'):
             return
-        if intf.get('type') != 'VLAN':
-            return
         # find interfaces bridged to this interface
         file = self.network_file
 
@@ -536,7 +541,7 @@ class NetworkManager(Manager):
 
         file = self.network_file
 
-        if intf.get('type') != 'VLAN':
+        if not intf.get('has_vlan'):
             file.write("\n")
             file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
             file.write("\toption ifname '%s'\n" % intf['ifname'])
@@ -635,10 +640,9 @@ class NetworkManager(Manager):
         if intf.get('v6ConfigType') == "DISABLED":
             return
         file = self.network_file
-        if intf.get('type') != 'VLAN':
-            file.write("\n")
-            file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
-            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"6"))
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
 
         if intf.get('v6ConfigType') == "DHCP":
