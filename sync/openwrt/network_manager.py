@@ -52,6 +52,11 @@ class NetworkManager(Manager):
                     intf["enabled"] = False
                 else:
                     intf["enabled"] = True
+            # mfw-1093 ensure no more remaining openVpnBoundInterfaceId properties
+            # change openvpnBoundInterfaceId to boundInterfaceId
+            if intf.get('openvpnBoundInterfaceId'):
+                intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "0")
+
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
@@ -412,7 +417,7 @@ class NetworkManager(Manager):
         if intf.get('openvpnUsernamePasswordEnabled'):
             file.write("\toption authfile '%s'\n" % auth_path)
 
-        wanId = intf.get('openvpnBoundInterfaceId')
+        wanId = intf.get('boundInterfaceId')
         if wanId is not None:
 
             # FIXME: This is currently defined as a string, but probably should be an int.
