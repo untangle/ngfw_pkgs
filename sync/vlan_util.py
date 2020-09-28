@@ -17,10 +17,7 @@ def write_interface_vlan(intf, vlanBoundName):
     vlan_settings += '\n'
     vlan_settings += "config interface '%s'\n" % intf.get('name')
     vlan_settings += "\toption type 'bridge'\n"
-    bridged_interface_str = intf.get('name')
-    if intf.get('configType') == 'BRIDGED':
-        bridged_interface_str += " %s" % vlanBoundName
-    vlan_settings += "\toption ifname '%s'\n" % bridged_interface_str
+    vlan_settings += "\toption ifname '%s'\n" % intf.get('name')
 
     return vlan_settings
 
