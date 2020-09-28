@@ -130,7 +130,7 @@ class DhcpManager(Manager):
                 dhcpv6_relay_enabled = True
 
         for intf in interfaces:
-            if intf.get('configType') == 'ADDRESSED' and intf.get('type') != 'VLAN':
+            if intf.get('configType') == 'ADDRESSED':
                 interface_name = network_util.get_interface_name(settings, intf, "ipv4")
 
                 file.write("config dhcp '%s'\n" % interface_name)
