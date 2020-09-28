@@ -130,7 +130,6 @@ class NetworkManager(Manager):
             intf['is_bridge'] = is_bridge
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
-  
             if intf.get('is_bridge'):
                 intf['logical_name'] = "b_" + intf['name']
                 # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way

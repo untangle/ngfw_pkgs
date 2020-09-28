@@ -3,6 +3,7 @@
 # pylint: disable=bare-except
 
 def write_interface_vlan(intf, vlanBoundName):
+    """Create device and interface block for VLANs to be written to /etc/config/network"""
     vlan_settings = ""
     vlan_settings += "\n"
 
