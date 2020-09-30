@@ -646,8 +646,6 @@ class RouteManager(Manager):
         if get_number_of_wans(settings) == 1:
             file.write("\n# Only one wan, do nothing\n\n")
         else:
-            file.write("TMPFILE=`mktemp -t default-route.XXXXXX`\n")
-            file.write("\n")
             file.write("write_rules()\n")
             file.write("{\n")
             file.write("\tnft -f $TMPFILE\n")
@@ -679,6 +677,7 @@ class RouteManager(Manager):
         """create_ifup_default_route creates a validation for checking if the route-to-default-wan chains are updated"""
         file.write("[ %s = \"$INTERFACE\" ] && {\n" % interfaceName)
         file.write("\tnft list chain %s wan-routing route-to-default-wan | grep -q mark-for-wan- || {\n" % tablefamily)
+        file.write("\t\tTMPFILE=`mktemp -t default-route.XXXXXX`\n")
         file.write("\t\techo flush chain %s wan-routing route-to-default-wan >> $TMPFILE\n" % tablefamily)
         file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
         file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
@@ -709,8 +708,6 @@ class RouteManager(Manager):
         if get_number_of_wans(settings) == 1:
             file.write("\n# Only one wan, do nothing\n\n")
         else:
-            file.write("TMPFILE=`mktemp -t default-route.XXXXXX`\n")
-            file.write("\n")
             file.write("write_rules()\n")
             file.write("{\n")
             file.write("\tnft -f $TMPFILE\n")
@@ -725,8 +722,6 @@ class RouteManager(Manager):
             file.write("update_default_route()\n")
             file.write("{\n")
             file.write("\n")
-            file.write("\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
-            file.write("\techo flush chain ip6 wan-routing route-to-default-wan >> $TMPFILE\n")
 
             interfaces = settings.get('network').get('interfaces')
             for intf in interfaces:
@@ -760,6 +755,9 @@ class RouteManager(Manager):
     def create_ifdown_default_route(self, file, interfaceId, interfaceName, tablefamily):
         """create_ifdown_default_route will create the default route rules for specific ip table families into a file"""
         file.write("\tnetwork_is_up %s && {\n" % interfaceName)
+        file.write("\t\tTMPFILE=`mktemp -t default-route.XXXXXX`\n")
+        file.write("\t\techo flush chain ip wan-routing route-to-default-wan >> $TMPFILE\n")
+        file.write("\t\techo flush chain ip6 wan-routing route-to-default-wan >> $TMPFILE\n")
         file.write("\t\techo add rule %s wan-routing route-to-default-wan dict sessions ct id wan_policy long_string set system-default >> $TMPFILE\n" % tablefamily)
         file.write("\t\techo add rule %s wan-routing route-to-default-wan jump mark-for-wan-%d >> $TMPFILE\n" % (tablefamily, interfaceId))
         file.write("\t\twrite_rules\n")
