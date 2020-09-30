@@ -153,7 +153,7 @@ def get_interface_name(settings, intf, family):
 
     interface_name = interface_name + intf.get('name')
 
-    if intf.get('type') == 'OPENVPN' or intf.get('type') == 'WIREGUARD' or intf.get('type') == 'WWAN' or intf.get('type') == 'VLAN':
+    if intf.get('type') == 'OPENVPN' or intf.get('type') == 'WIREGUARD' or intf.get('type') == 'WWAN':
         return interface_name
     # Does it make sense to check the "ConfigType" if we have to specify family in the util call anyway?
     if family == 'ipv4' and intf.get('v4ConfigType') != 'DISABLED':

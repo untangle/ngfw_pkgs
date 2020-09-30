@@ -138,7 +138,10 @@ class NetworkManager(Manager):
                 intf['netfilterDev'] = intf['ifname']
             else:
                 intf['logical_name'] = intf['name']
-                intf['ifname'] = intf.get('device')
+                if intf.get('type') == 'VLAN':
+                    intf['ifname'] = intf['name']
+                else:
+                    intf['ifname'] = intf.get('device')
                 intf['netfilterDev'] = intf['device']
 
         for intf in interfaces:
@@ -152,11 +155,8 @@ class NetworkManager(Manager):
                 else: 
                     vlanBoundInterface = None
                     if intf.get('type') == 'VLAN':
-                        vlanBoundInterface = network_util.get_interface_by_id(settings, intf.get('boundInterfaceId'))
-                        vlanBoundName = vlanBoundInterface.get('device')
-                        file.write(vlan_util.write_interface_vlan(intf, vlanBoundName))
-                    else:
-                        self.write_interface_bridge(intf, settings)
+                        file.write(vlan_util.write_interface_vlan(intf, settings))
+                    self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
                     self.write_interface_v6(intf, settings)
 
@@ -528,10 +528,9 @@ class NetworkManager(Manager):
 
         file = self.network_file
 
-        if intf.get('type') != 'VLAN':
-            file.write("\n")
-            file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
-            file.write("\toption ifname '%s'\n" % intf['ifname'])
+        file.write("\n")
+        file.write("config interface '%s'\n" % (intf['logical_name']+"4"))
+        file.write("\toption ifname '%s'\n" % intf['ifname'])
         self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
