@@ -130,6 +130,7 @@ class NetworkManager(Manager):
             intf['is_bridge'] = is_bridge
             if is_bridge:
                 intf['bridged_interfaces_str'] = bridged_interfaces_str
+
             if intf.get('is_bridge'):
                 intf['logical_name'] = "b_" + intf['name']
                 # https://wiki.openwrt.org/doc/uci/network#aliasesthe_new_way
@@ -138,11 +139,12 @@ class NetworkManager(Manager):
                 intf['netfilterDev'] = intf['ifname']
             else:
                 intf['logical_name'] = intf['name']
-                if intf.get('type') == 'VLAN':
-                    intf['ifname'] = intf['name']
-                else:
-                    intf['ifname'] = intf.get('device')
+                intf['ifname'] = intf.get('device')
                 intf['netfilterDev'] = intf['device']
+
+            # Set vlan ifname to the name of the vlan so configuration works properly
+            if intf.get('type') == 'VLAN':
+                    intf['ifname'] = intf['name']
 
         for intf in interfaces:
             if intf.get('enabled'):
@@ -153,7 +155,6 @@ class NetworkManager(Manager):
                 elif intf.get('type') == 'WWAN':
                     self.write_interface_wwan(intf, settings)
                 else: 
-                    vlanBoundInterface = None
                     if intf.get('type') == 'VLAN':
                         file.write(vlan_util.write_interface_vlan(intf, settings))
                     self.write_interface_bridge(intf, settings)
