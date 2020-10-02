@@ -144,10 +144,8 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
 
             if intf.get('v4ConfigType') == "PPPOE":
                 file.write("\n")
-                file.write("# For PPPoE interfaces, set the MSS size to route mtu\n")
-                file.write("add rule inet interface-marks forward-interface-marks mark & 0x0000ff00 == 0x%x tcp flags syn tcp option maxseg size set rt mtu\n" % (interface_id << self.DST_INTERFACE_SHIFT))
-                file.write("# For PPPoE interfaces, also set local (from the appliance) traffic MSS size to route mtu\n")
-                file.write("add rule inet interface-marks mark-dst-interface mark & 0x0000ff00 == 0x%x fib saddr type local tcp flags syn tcp option maxseg size set rt mtu\n" % (interface_id << self.DST_INTERFACE_SHIFT))
+                file.write("# For PPPoE interfaces, set the MSS size to route mtu in the mark-dst-interface chain\n")
+                file.write("add rule inet interface-marks mark-dst-interface mark & 0x0000ff00 == 0x%x tcp flags syn tcp option maxseg size set rt mtu\n" % (interface_id << self.DST_INTERFACE_SHIFT))
                 file.write("\n")
 
             file.write("# if ct mark server interface is X then set the mark client interface to X\n")
