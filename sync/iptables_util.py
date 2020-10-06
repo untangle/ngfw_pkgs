@@ -13,6 +13,9 @@ class IptablesUtil:
 
     @staticmethod
     def interface_condition_string_to_interface_list( value ):
+        """
+        Real, actual interface ids (integers) from settings
+        """
         intfs = []
         
         for substr in value.split(","):
@@ -26,11 +29,26 @@ class IptablesUtil:
                 for intfId in intf_values:
                     if intfId not in intfs:
                         intfs.append(intfId)
-            else:
+            elif substr.isnumeric():
                 intfs.append(int(substr))
 
         return intfs
-                    
+
+    @staticmethod
+    def interface_condition_string_to_virtual_interface_list( value ):
+        """
+        Not actual interfaces but should "behave" like interfaces, namely
+        IPSec traffic.
+        """
+        virtual_intfs = []
+
+        for substr in value.split(","):
+            if substr == "non_wan" or \
+               substr == "ipsec":
+                ## Ipsec
+                virtual_intfs.append("-m policy --pol ipsec --dir in")
+
+        return virtual_intfs
 
     # This method takes a list of conditions from a rule and translates them into a commands that must run prior to inserting the rules
     # It returns a list of strings
@@ -122,48 +140,36 @@ class IptablesUtil:
                     conditionStr = conditionStr + (" --protocol %s " % str(protos[i])).lower()
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
-            if conditionType == "SRC_INTF":
+            if conditionType == "SRC_INTF" or \
+               conditionType == "DST_INTF":
                 if "any" in value:
                     continue # no need to do anything
 
-                intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
+                print(value)
 
-                if invert and len(intfs) > 1:
+                interfaces = IptablesUtil.interface_condition_string_to_interface_list( value ) + \
+                             IptablesUtil.interface_condition_string_to_virtual_interface_list( value )
+
+                if invert and len(interfaces) > 1:
                     print("ERROR: invert not supported on multiple interface condition")
                     continue
-                if len(intfs) == 0:
+                if len(interfaces) == 0:
                     print("ERROR: interface condition with no interfaces")
                     continue
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
-                for i in range(0 , len(intfs) ):
+                for interface in interfaces:
                     conditionStr = ""
                     if invert:
-                        conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" -m connmark --mark 0x%04X/0x00FF " % int(intfs[i]))
-                    current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
-
-            if conditionType == "DST_INTF":
-                if "any" in value:
-                    continue # no need to do anything
-
-                intfs = IptablesUtil.interface_condition_string_to_interface_list( value )
-
-                if invert and len(intfs) > 1:
-                    print("ERROR: invert not supported on multiple interface condition")
-                    continue
-                if len(intfs) == 0:
-                    print("ERROR: interface condition with no interfaces")
-                    continue
-                orig_current_strings = current_strings
-                current_strings = []
-                # split current rules for each intf specified
-                for i in range(0 , len(intfs) ):
-                    conditionStr = ""
-                    if invert:
-                        conditionStr = conditionStr + " ! "
-                    conditionStr = conditionStr + (" -m connmark --mark 0x%04X/0xFF00 " % (int(intfs[i]) << 8))
+                        conditionStr += " ! "
+                    if isinstance(interface, (int)):
+                        if conditionType == "DST_INTF":
+                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
+                        else:
+                            conditionStr += (" -m connmark --mark 0x%04X/0x00FF " % int(interface))
+                    else:
+                        conditionStr += interface
                     current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
 
             if conditionType == "SRC_MAC":
