@@ -180,9 +180,9 @@ def condition_interface_zone_expression(mark_exp, intf_mask, value, op):
 
     try:
         if op == "==":
-            return mark_exp + " and " + intf_mask + " " + value_str(value)
+            return mark_exp + " and " + intf_mask + " " + numerical_val(value)
         else:
-            return mark_exp + " and " + intf_mask + " != " + value_str(value)
+            return mark_exp + " and " + intf_mask + " != " + numerical_val(value)
     except ValueError:
         raise Exception("Invalid interface condition value: " + str(value))
 
