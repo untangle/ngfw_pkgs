@@ -15,6 +15,7 @@ import stat
 from sync import registrar, Manager
 from sync import network_util
 from sync import board_util
+from sync import vlan_util
 
 class NetworkManager(Manager):
     """
@@ -141,6 +142,10 @@ class NetworkManager(Manager):
                 intf['ifname'] = intf.get('device')
                 intf['netfilterDev'] = intf['device']
 
+            # Set vlan ifname to the name of the vlan so configuration works properly
+            if intf.get('type') == 'VLAN':
+                    intf['ifname'] = intf['name']
+
         for intf in interfaces:
             if intf.get('enabled'):
                 if intf.get('type') == 'OPENVPN':
@@ -149,7 +154,9 @@ class NetworkManager(Manager):
                     self.write_interface_wireguard(intf, settings)
                 elif intf.get('type') == 'WWAN':
                     self.write_interface_wwan(intf, settings)
-                else:
+                else: 
+                    if intf.get('type') == 'VLAN':
+                        file.write(vlan_util.write_interface_vlan(intf, settings))
                     self.write_interface_bridge(intf, settings)
                     self.write_interface_v4(intf, settings)
                     self.write_interface_v6(intf, settings)
@@ -183,6 +190,7 @@ class NetworkManager(Manager):
                 intf.get('enabled')
                 and not intf.get('wan')
                 and intf.get('v4ConfigType') == "STATIC"
+                and (intf.get('type') != 'VLAN' or (intf.get('type') == 'VLAN' and intf.get('configType') == 'ADDRESSED'))
                ):
                     file.write("config rule\n")
                     file.write("\toption dest '%s/%d'\n" % (intf.get('v4StaticAddress'), intf.get('v4StaticPrefix')))
