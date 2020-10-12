@@ -120,7 +120,7 @@ class NetworkManager(Manager):
             bridged_interfaces_str = []
             bridged_interfaces = []
             for intf2 in interfaces:
-                if intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
+                if intf2.get('enabled') and intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
                     bridged_interfaces_str.append(str(intf2.get('device')))
                     bridged_interfaces.append(intf2)
             if bridged_interfaces:
