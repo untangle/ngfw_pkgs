@@ -58,6 +58,10 @@ class NetworkManager(Manager):
             if intf.get('openvpnBoundInterfaceId'):
                 intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "0")
 
+            # sync vlan device with vlan name for debuggability's sake
+            if intf.get('type') == 'VLAN':
+                intf['device'] = intf.get('name')
+
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
