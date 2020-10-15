@@ -797,6 +797,14 @@ class NetworkManager(Manager):
         if '-' in intf.get("name"):
             raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
 
+        # validate that interface name is not only integers
+        if not re.match("^[a-zA-Z]+\w*", intf.get("name")): 
+            raise Exception("Invalid interface name, at least one character required: " + intf.get('name'))
+
+        # validate interface name is "nftables compatible"
+        if intf.get("name")[0].isdigit(): 
+            raise Exception("Invalid interface name, interfaces should not start with an integer: " + intf.get('name'))
+ 
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "PPPOE", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
