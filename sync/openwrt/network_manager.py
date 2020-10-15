@@ -211,7 +211,7 @@ class NetworkManager(Manager):
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('wan') and intf.get('enabled'):
+            if network_util.enabled_wan(intf):
                 if intf.get('v4ConfigType') != "DISABLED":
                     self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv4")
 
