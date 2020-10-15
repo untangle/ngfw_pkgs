@@ -139,12 +139,13 @@ class NetworkManager(Manager):
                 intf['netfilterDev'] = intf['ifname']
             else:
                 intf['logical_name'] = intf['name']
-                intf['ifname'] = intf.get('device')
+                # Set vlan ifname to the name of the vlan so configuration works properly
+                if intf.get('type') == 'VLAN':
+                    intf['ifname'] = intf['name']
+                else:
+                    intf['ifname'] = intf.get('device')
                 intf['netfilterDev'] = intf['device']
 
-            # Set vlan ifname to the name of the vlan so configuration works properly
-            if intf.get('type') == 'VLAN':
-                    intf['ifname'] = intf['name']
 
         for intf in interfaces:
             if intf.get('enabled'):
