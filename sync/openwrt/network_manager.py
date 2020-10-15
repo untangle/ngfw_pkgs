@@ -190,8 +190,8 @@ class NetworkManager(Manager):
             if (
                 intf.get('enabled')
                 and not intf.get('wan')
+                and intf.get('configType') == 'ADDRESSED'
                 and intf.get('v4ConfigType') == "STATIC"
-                and (intf.get('type') != 'VLAN' or (intf.get('type') == 'VLAN' and intf.get('configType') == 'ADDRESSED'))
                ):
                     file.write("config rule\n")
                     file.write("\toption dest '%s/%d'\n" % (intf.get('v4StaticAddress'), intf.get('v4StaticPrefix')))
