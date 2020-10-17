@@ -58,6 +58,10 @@ class NetworkManager(Manager):
             if intf.get('openvpnBoundInterfaceId'):
                 intf['boundInterfaceId'] = intf.pop('openvpnBoundInterfaceId', "0")
 
+            # sync vlan device with vlan name for debuggability's sake
+            if intf.get('type') == 'VLAN':
+                intf['device'] = intf.get('name')
+
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
@@ -120,7 +124,7 @@ class NetworkManager(Manager):
             bridged_interfaces_str = []
             bridged_interfaces = []
             for intf2 in interfaces:
-                if intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
+                if intf2.get('enabled') and intf2.get('configType') == 'BRIDGED' and intf2.get('bridgedTo') == intf.get('interfaceId'):
                     bridged_interfaces_str.append(str(intf2.get('device')))
                     bridged_interfaces.append(intf2)
             if bridged_interfaces:
@@ -802,6 +806,14 @@ class NetworkManager(Manager):
         if '-' in intf.get("name"):
             raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
 
+        # validate that interface name is not only integers
+        if not re.match("^[a-zA-Z]+\w*", intf.get("name")): 
+            raise Exception("Invalid interface name, at least one character required: " + intf.get('name'))
+
+        # validate interface name is "nftables compatible"
+        if intf.get("name")[0].isdigit(): 
+            raise Exception("Invalid interface name, interfaces should not start with an integer: " + intf.get('name'))
+ 
         if intf.get("v4ConfigType") not in [None, "STATIC", "DHCP", "PPPOE", "DISABLED"]:
             raise Exception("Invalid v4ConfigType: " + intf.get('name') + " " + intf.get("v4ConfigType"))
 
