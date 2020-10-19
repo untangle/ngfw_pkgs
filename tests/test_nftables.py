@@ -13,7 +13,7 @@ class NftablesTests(unittest.TestCase):
 
     def setUp(self):
         print()
-    
+
     @staticmethod
     def initial_setup(self):
         pass
@@ -57,7 +57,7 @@ class NftablesTests(unittest.TestCase):
         str = nftables_util.action_expression(action, "inet")
         print(str)
         assert(str == 'return')
-        
+
 # RULES
 # RULES
 # RULES
@@ -102,7 +102,7 @@ class NftablesTests(unittest.TestCase):
         print(rule_str)
         assert(exp_str == "meta l4proto \"tcp\" accept")
         assert(rule_str == "add rule inet forward forward-filter meta l4proto \"tcp\" accept")
-        
+
 
 
     @staticmethod
@@ -198,25 +198,17 @@ conditions_tests = [
     [[{"type": "DESTINATION_PORT","op":"==","value": "1234,1235-1236"},{"type": "IP_PROTOCOL","op":"==","value": "tcp"}], "tcp dport {1234,1235-1236} meta l4proto \"tcp\""],
     [[{"type": "DESTINATION_PORT","op":"!=","value": "1234,1235-1236"},{"type": "IP_PROTOCOL","op":"==","value": "tcp"}], "tcp dport != {1234,1235-1236} meta l4proto \"tcp\""],
 
-    [[{"type": "SOURCE_INTERFACE_ZONE","op":"==","value": "1"}], "mark and 0x000000ff 1"],
-    [[{"type": "SOURCE_INTERFACE_ZONE","op":"!=","value": "1"}], "mark and 0x000000ff != 1"],
-    [[{"type": "SOURCE_INTERFACE_ZONE","op":"==","value": "1,2"}], "mark and 0x000000ff {1,2}"],
-    [[{"type": "SOURCE_INTERFACE_ZONE","op":"!=","value": "1,2"}], "mark and 0x000000ff != {1,2}"],
+    [[{"type": "SOURCE_INTERFACE_ZONE","op":"==","value": "1"}], "mark and 0x000000ff 0x00000001"],
+    [[{"type": "SOURCE_INTERFACE_ZONE","op":"!=","value": "1"}], "mark and 0x000000ff != 0x00000001"],
 
-    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"==","value": "1"}], "mark and 0x0000ff00 1"],
-    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"!=","value": "1"}], "mark and 0x0000ff00 != 1"],
-    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"==","value": "1,2"}], "mark and 0x0000ff00 {1,2}"],
-    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"!=","value": "1,2"}], "mark and 0x0000ff00 != {1,2}"],
+    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"==","value": "1"}], "mark and 0x0000ff00 0x00000100"],
+    [[{"type": "DESTINATION_INTERFACE_ZONE","op":"!=","value": "1"}], "mark and 0x0000ff00 != 0x00000100"],
 
-    [[{"type": "CLIENT_INTERFACE_ZONE","op":"==","value": "1"}], "ct mark and 0x000000ff 1"],
-    [[{"type": "CLIENT_INTERFACE_ZONE","op":"!=","value": "1"}], "ct mark and 0x000000ff != 1"],
-    [[{"type": "CLIENT_INTERFACE_ZONE","op":"==","value": "1,2"}], "ct mark and 0x000000ff {1,2}"],
-    [[{"type": "CLIENT_INTERFACE_ZONE","op":"!=","value": "1,2"}], "ct mark and 0x000000ff != {1,2}"],
+    [[{"type": "CLIENT_INTERFACE_ZONE","op":"==","value": "1"}], "ct mark and 0x000000ff 0x00000001"],
+    [[{"type": "CLIENT_INTERFACE_ZONE","op":"!=","value": "1"}], "ct mark and 0x000000ff != 0x00000001"],
 
-    [[{"type": "SERVER_INTERFACE_ZONE","op":"==","value": "1"}], "ct mark and 0x0000ff00 1"],
-    [[{"type": "SERVER_INTERFACE_ZONE","op":"!=","value": "1"}], "ct mark and 0x0000ff00 != 1"],
-    [[{"type": "SERVER_INTERFACE_ZONE","op":"==","value": "1,2"}], "ct mark and 0x0000ff00 {1,2}"],
-    [[{"type": "SERVER_INTERFACE_ZONE","op":"!=","value": "1,2"}], "ct mark and 0x0000ff00 != {1,2}"],
+    [[{"type": "SERVER_INTERFACE_ZONE","op":"==","value": "1"}], "ct mark and 0x0000ff00 0x00000100"],
+    [[{"type": "SERVER_INTERFACE_ZONE","op":"!=","value": "1"}], "ct mark and 0x0000ff00 != 0x00000100"],
 
     [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "1"}], "mark and 0x03000000 0x01000000"],
     [[{"type": "SOURCE_INTERFACE_TYPE","op":"==","value": "2"}], "mark and 0x03000000 0x02000000"],
