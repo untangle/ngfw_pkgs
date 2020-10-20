@@ -44,7 +44,7 @@ rm -f /etc/grub.d/10_linux # we use our own 50_custom instead
 mv /etc/grub.d/30_uefi-firmware /etc/grub.d/60_uefi-firmware
 
 cp -f /usr/share/untangle-linux-config/grub-default /etc/default/grub
-if dpkg -l grub-cloud-amd64 2> /dev/null | grep -qE '^ii' ; then
+if dpkg -l 'grub-*' 2> /dev/null | grep -qP '^ii .*(grub-cloud-amd64|grub-efi-arm64)' ; then
   mkdir -p /etc/default/grub.d
   cp -f /usr/share/untangle-linux-config/grub-default-extra-cloud /etc/default/grub.d/00_untangle_cloud_serial_console.cfg
 fi
