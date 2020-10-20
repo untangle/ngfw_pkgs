@@ -270,8 +270,8 @@ class RouteManager(Manager):
 
                 for intf in interfaces:
                     interfaceId = intf.get('interfaceId')
-                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv4")
-                    interface6Name = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv6")
+                    interfaceName = network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, interfaceId), "ipv4")
+                    interface6Name = network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, interfaceId), "ipv6")
                     criteria = policy.get('criteria')
                     if criteria is None:
                         file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
@@ -817,12 +817,5 @@ def get_wan_list(settings):
 
     return wan_list
 
-def get_interface_by_id(settings, interfaceId):
-    """ returns interface with the given interfaceId """
-    interfaces = settings.get('network').get('interfaces')
-    for intf in interfaces:
-        if intf.get('interfaceId') == interfaceId:
-            return intf
-    return None
 
 registrar.register_manager(RouteManager())
