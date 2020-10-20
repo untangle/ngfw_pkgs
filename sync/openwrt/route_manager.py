@@ -70,7 +70,8 @@ class RouteManager(Manager):
 
     def validate_settings(self, settings_file):
         """validates settings"""
-        wan = settings_file.settings['wan']
+        settings = settings_file.settings
+        wan = settings['wan']
         policies = wan.get('policies')
         policy_ids = []
         for policy in policies:
@@ -91,6 +92,11 @@ class RouteManager(Manager):
                 weight = interface.get('weight')
                 if weight is not None and (weight > 10000 or weight < 1):
                     raise Exception("Invalid interface weight specified: policy " + str(policy_id) + " " + str(weight))
+
+                curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
+                if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
+                    raise Exception("Wan Rule Policy '%s' references a deleted or disabled interface: '%s'. Disable or change the policy to save these settings." %  (policy.get('description'), interface.get('interfaceId')))
+
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
             raise Exception("Missing policy_chains in WAN settings")
@@ -113,6 +119,10 @@ class RouteManager(Manager):
                     if policy not in policy_ids:
                         raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
+                    curr_pol = network_util.get_policy_by_id(settings, policy)
+                    if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
+                        raise Exception("Rule Description: '%s' references a deleted or disabled policy: '%s'. Disable or change the rule to save these settings." %  (rule.get('description'), policy))
+                
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
