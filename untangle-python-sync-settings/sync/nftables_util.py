@@ -101,7 +101,7 @@ def numerical_val(value):
         return value
     else:
         return "{" + value + "}"
-        
+
 def selector_expression(typ, family, ip_protocol=None):
     """generic helper function to build a basic nftables selector expression"""
     if typ == "IP_PROTOCOL":
@@ -173,16 +173,16 @@ def condition_interface_type_expression(mark_exp, intf_type_mask, intf_type_shif
     else:
         raise Exception("Invalid interface type expression: " + value)
 
-def condition_interface_zone_expression(mark_exp, intf_mask, value, op):
+def condition_interface_zone_expression(mark_exp, intf_mask, val_shift, value, op):
     """A generic helper for generating zone expressions"""
     if op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op))
 
     try:
         if op == "==":
-            return mark_exp + " and " + intf_mask + " " + numerical_val(value)
+            return mark_exp + " and " + intf_mask + " " + format(int(value)<<val_shift, '#010x')
         else:
-            return mark_exp + " and " + intf_mask + " != " + numerical_val(value)
+            return mark_exp + " and " + intf_mask + " != " + format(int(value)<<val_shift, '#010x')
     except ValueError:
         raise Exception("Invalid interface condition value: " + str(value))
 
@@ -249,9 +249,9 @@ def condition_expression(condition, family, ip_protocol=None):
         check_operation(op, ["==", "!="])
         return "meta l4proto" + op_str(op) + value_str(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
-        return condition_interface_zone_expression("mark", "0x000000ff", value, op)
+        return condition_interface_zone_expression("mark", "0x000000ff", 0, value, op)
     elif condtype == "DESTINATION_INTERFACE_ZONE":
-        return condition_interface_zone_expression("mark", "0x0000ff00", value, op)
+        return condition_interface_zone_expression("mark", "0x0000ff00", 8, value, op)
     elif condtype == "SOURCE_INTERFACE_TYPE":
         return condition_interface_type_expression("mark", "0x03000000", 24, value, op)
     elif condtype == "DESTINATION_INTERFACE_TYPE":
@@ -281,9 +281,9 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "DESTINATION_PORT":
         return condition_port_expression("dport", ip_protocol, value, op)
     elif condtype == "CLIENT_INTERFACE_ZONE":
-        return condition_interface_zone_expression("ct mark", "0x000000ff", value, op)
+        return condition_interface_zone_expression("ct mark", "0x000000ff", 0, value, op)
     elif condtype == "SERVER_INTERFACE_ZONE":
-        return condition_interface_zone_expression("ct mark", "0x0000ff00", value, op)
+        return condition_interface_zone_expression("ct mark", "0x0000ff00", 8, value, op)
     elif condtype == "CLIENT_INTERFACE_TYPE":
         return condition_interface_type_expression("ct mark", "0x03000000", 24, value, op)
     elif condtype == "SERVER_INTERFACE_TYPE":
@@ -583,7 +583,7 @@ def chain_create_cmd(json_chain, family, chain_type, table):
     # keep this for backwards compatibility
     if chain_type is None:
         chain_type = json_chain.get('type')
-    
+
     # vote is only valid in the ip, ip6 familyt, but the vote table is ip,ip6,inet just ignore inet
     if json_chain.get('base') and json_chain.get('type') == "route" and family == "inet":
         raise NonsensicalException("Ignore inet/route chains")
@@ -609,7 +609,7 @@ def chain_rules_cmds(json_chain, family, chain_type, table):
     # keep this for backwards compatibility
     if chain_type is None:
         chain_type = json_chain.get('type')
-    
+
     # route is only valid in the ip, ip6 families
     if json_chain.get('base') and chain_type == "route" and family not in ["ip","ip6"]:
         raise NonsensicalException("Ignore inet/route chains")
@@ -758,7 +758,7 @@ def create_id_seq(parent, array, idSeqName, idName):
         :param parent: (container) the parent container of the array that should hold the idSeqName attribute and value
         :param array: (array) an array of items that require unique ids
         :param idseqname: (string) the id sequence name to store in the parent container """
-    if array: 
+    if array:
         seq = parent.get(idSeqName) or max(item.get(idName) for item in array if item.get(idName) is not None)
 
         for item in array:
