@@ -7,7 +7,7 @@ Build-Depends: debhelper (>= 10)
 Standards-Version: 3.9.8
 
 Package: untangle-linux-config
-Architecture: i386 amd64
+Architecture: i386 amd64 arm64
 Depends: ${misc:Depends}, bash (>= 3.1),
          firmware-linux-free,
          firmware-linux-nonfree,
