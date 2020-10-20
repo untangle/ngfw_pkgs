@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-bootsplash
 Architecture: all
-Depends: ${misc:Depends}, plymouth-themes, plymouth, v86d, untangle-hardware-config
+Depends: ${misc:Depends}, plymouth-themes, plymouth, v86d | grub-efi-arm64, untangle-hardware-config
 Description: The Untangle bootsplash utilities
  The Untangle bootsplash utilities using at boot time.
 
