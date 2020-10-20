@@ -10,7 +10,7 @@ Package: untangle-kernel-modules-buster-arm64
 Architecture: arm64
 Provides: untangle-kernel-modules-buster
 Pre-Depends: untangle-debconf-manager
-Depends: ${misc:Depends}, untangle-linux-image
+Depends: ${misc:Depends}, linux-image-4.19-untangle
 Description: The Untangle kernel modules for arm64
  The Untangle kernel modules for arm64.
 
