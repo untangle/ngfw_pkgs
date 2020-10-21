@@ -101,6 +101,8 @@ class RouteManager(Manager):
         wan = settings['wan']
         policies = wan.get('policies')
         policy_ids = []
+        invalidRPs = []
+
         for policy in policies:
             interfaces = policy.get('interfaces')
             policy_id = policy.get('policyId')
@@ -122,7 +124,7 @@ class RouteManager(Manager):
 
                 curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
                 if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
-                    raise Exception("Wan Rule Policy '%s' references a deleted or disabled interface: '%s'. Disable or change the policy to save these settings." %  (policy.get('description'), interface.get('interfaceId')))
+                    invalidRPs.append("CONFIRM: Wan Rule Policy '%s' references a deleted or disabled interface: '%s'." %  (policy.get('description'), interface.get('interfaceId')))
 
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
@@ -148,8 +150,13 @@ class RouteManager(Manager):
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
                     if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
-                        raise Exception("Rule Description: '%s' references a deleted or disabled policy: '%s'. Disable or change the rule to save these settings." %  (rule.get('description'), policy))
-                
+                        invalidRPs.append("CONFIRM: Rule Description: '%s' references a deleted or disabled policy: '%s'." %  (rule.get('description'), policy))        
+        
+        if invalidRPs is not None and len(invalidRPs) > 0:
+            str1 = "\n"
+            raise Exception(str1.join(invalidRPs))
+
+
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
