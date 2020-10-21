@@ -11,6 +11,7 @@ import traceback
 from sync import registrar, Manager
 from sync import nftables_util
 from sync import network_util
+from sync import Variables
 
 # This class is responsible for writing /etc/iproute2/rt_tables and /etc/hotplug.d/iface/*
 # based on the settings object passed from sync-settings
@@ -60,12 +61,38 @@ class RouteManager(Manager):
 
     def sanitize_settings(self, settings_file):
         """sanitizes settings"""
-        wan = settings_file.settings['wan']
+        settings = settings_file.settings
+        wan = settings['wan']
         nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
         for chain in wan.get('policy_chains'):
             nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
+
+
+        #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
+        force = bool(Variables.get('force'))
+
+        if force == True:
+            policies = wan.get('policies')
+            for pidx, policy in enumerate(policies):
+                interfaces = policy.get('interfaces')
+                for iidx, interface in enumerate(interfaces):
+                    curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
+                    if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
+                        print("WARNING: Disabling policy: %s because the related interface (Id: %s) is disabled or removed." % (policy.get('description'), interface.get('interfaceId')))
+                        policies[pidx]['enabled'] = False
+
+            policy_chains = wan.get("policy_chains")
+            for pcidx, policy_chain in enumerate(policy_chains):
+                for ridx, rule in enumerate(policy_chain.get("rules")):
+                    action = rule.get("action")
+                    if action.get("type") == "WAN_POLICY":
+                        policy = action.get("policy")
+                        curr_pol = network_util.get_policy_by_id(settings, policy)
+                        if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
+                            print("WARNING: Disabling rule: %s because the related policy (Id: %s) is disabled or removed." % (rule.get('description'), policy))
+                            policy_chain.get("rules")[ridx]['enabled'] = False
 
 
     def validate_settings(self, settings_file):
