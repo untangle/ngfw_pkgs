@@ -143,12 +143,13 @@ class NetworkManager(Manager):
                 intf['netfilterDev'] = intf['ifname']
             else:
                 intf['logical_name'] = intf['name']
-                intf['ifname'] = intf.get('device')
+                # Set vlan ifname to the name of the vlan so configuration works properly
+                if intf.get('type') == 'VLAN':
+                    intf['ifname'] = intf['name']
+                else:
+                    intf['ifname'] = intf.get('device')
                 intf['netfilterDev'] = intf['device']
 
-            # Set vlan ifname to the name of the vlan so configuration works properly
-            if intf.get('type') == 'VLAN':
-                    intf['ifname'] = intf['name']
 
         for intf in interfaces:
             if intf.get('enabled'):
@@ -193,8 +194,8 @@ class NetworkManager(Manager):
             if (
                 intf.get('enabled')
                 and not intf.get('wan')
+                and intf.get('configType') == 'ADDRESSED'
                 and intf.get('v4ConfigType') == "STATIC"
-                and (intf.get('type') != 'VLAN' or (intf.get('type') == 'VLAN' and intf.get('configType') == 'ADDRESSED'))
                ):
                     file.write("config rule\n")
                     file.write("\toption dest '%s/%d'\n" % (intf.get('v4StaticAddress'), intf.get('v4StaticPrefix')))
@@ -214,7 +215,7 @@ class NetworkManager(Manager):
 
         interfaces = settings['network']['interfaces']
         for intf in interfaces:
-            if intf.get('wan') and intf.get('enabled'):
+            if network_util.enabled_wan(intf):
                 if intf.get('v4ConfigType') != "DISABLED":
                     self.create_route_rules_ipfamily(file, settings, intf, fwmark_priority, oif_priority, "ipv4")
 
