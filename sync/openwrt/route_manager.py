@@ -71,16 +71,14 @@ class RouteManager(Manager):
 
 
         #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
-        force = bool(Variables.get('force'))
-
-        if force == True:
+        if Variables.get('force') != None and Variables.get('force').lower() == 'true':
             policies = wan.get('policies')
             for pidx, policy in enumerate(policies):
                 interfaces = policy.get('interfaces')
                 for iidx, interface in enumerate(interfaces):
                     curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
                     if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
-                        print("WARNING: Disabling policy: %s because the related interface (Id: %s) is disabled or removed." % (policy.get('description'), interface.get('interfaceId')))
+                        print("WARNING: Disabling policy: '%s' and any associated rules because the related interface (Id: %s) is disabled or removed." % (policy.get('description'), interface.get('interfaceId')))
                         policies[pidx]['enabled'] = False
 
             policy_chains = wan.get("policy_chains")
