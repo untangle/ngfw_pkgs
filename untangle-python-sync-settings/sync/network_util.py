@@ -190,3 +190,12 @@ def get_interface_ip4prefix(ifname):
         return int(output)
     except:
         return None
+
+def enabled_wan(intf):
+    """returns true if the interface is an enabled wan"""
+    if intf is None:
+        return False
+
+    if intf.get('enabled') and intf.get('wan') and intf.get('configType') == "ADDRESSED":
+        return True
+    return False
