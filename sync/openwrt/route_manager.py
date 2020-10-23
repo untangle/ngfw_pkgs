@@ -79,7 +79,6 @@ class RouteManager(Manager):
                 for iidx, interface in enumerate(interfaces):
                     curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
                     if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
-                        print("WARNING: Disabling policy: '%s' and any associated rules because the related interface (Id: %s) is disabled or removed." % (policy.get('description'), interface.get('interfaceId')))
                         policies[pidx]['enabled'] = False
 
             policy_chains = wan.get("policy_chains")
@@ -90,7 +89,6 @@ class RouteManager(Manager):
                         policy = action.get("policy")
                         curr_pol = network_util.get_policy_by_id(settings, policy)
                         if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
-                            print("WARNING: Disabling rule: %s because the related policy (Id: %s) is disabled or removed." % (rule.get('description'), policy))
                             policy_chain.get("rules")[ridx]['enabled'] = False
 
 
