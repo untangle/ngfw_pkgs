@@ -8,6 +8,7 @@
 import os
 import stat
 import traceback
+import json
 from sync import registrar, Manager
 from sync import nftables_util
 from sync import network_util
@@ -100,6 +101,7 @@ class RouteManager(Manager):
         policies = wan.get('policies')
         policy_ids = []
         invalidRPs = []
+        invalidPolIDs = []
 
         for policy in policies:
             interfaces = policy.get('interfaces')
@@ -122,7 +124,8 @@ class RouteManager(Manager):
 
                 curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
                 if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
-                    invalidRPs.append("CONFIRM: Wan Rule Policy '%s' references a deleted or disabled interface: '%s'." %  (policy.get('description'), interface.get('interfaceId')))
+                    invalidPolIDs.append(policy.get('policyId'))
+                    invalidRPs.append({'affectedType': 'policy', 'affectedValue': policy, 'invalidReasonType': 'interface', 'invalidReasonValue': interface.get('interfaceId')})
 
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
@@ -147,12 +150,12 @@ class RouteManager(Manager):
                         raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
-                    if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
-                        invalidRPs.append("CONFIRM: Rule Description: '%s' references a deleted or disabled policy: '%s'." %  (rule.get('description'), policy))        
-        
+                    if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):
+                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': policy})
+
         if invalidRPs is not None and len(invalidRPs) > 0:
-            str1 = "\n"
-            raise Exception(str1.join(invalidRPs))
+            invRPStr = "CONFIRM: " + json.dumps(invalidRPs)
+            raise Exception(invRPStr)
 
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
