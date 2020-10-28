@@ -140,6 +140,18 @@ def get_interface_by_id(settings, interfaceId):
             return intf
     return None
 
+def get_policy_by_id(settings, policyId):
+    """ 
+    @param settings - The Settings json
+    @param policyId - The policy ID to load the full policy JSON for
+    returns interface with the given policyId 
+    """
+    policies = settings['wan'].get('policies')
+    for pol in policies:
+        if pol.get('policyId') == policyId:
+            return pol
+    return None
+
 def get_interface_name(settings, intf, family):
     """
     @param settings - the Settings json
