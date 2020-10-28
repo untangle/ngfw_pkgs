@@ -145,8 +145,6 @@ class IptablesUtil:
                 if "any" in value:
                     continue # no need to do anything
 
-                print(value)
-
                 interfaces = IptablesUtil.interface_condition_string_to_interface_list( value ) + \
                              IptablesUtil.interface_condition_string_to_virtual_interface_list( value )
 
