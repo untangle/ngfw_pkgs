@@ -8,9 +8,11 @@
 import os
 import stat
 import traceback
+import json
 from sync import registrar, Manager
 from sync import nftables_util
 from sync import network_util
+from sync import Variables
 
 # This class is responsible for writing /etc/iproute2/rt_tables and /etc/hotplug.d/iface/*
 # based on the settings object passed from sync-settings
@@ -60,7 +62,8 @@ class RouteManager(Manager):
 
     def sanitize_settings(self, settings_file):
         """sanitizes settings"""
-        wan = settings_file.settings['wan']
+        settings = settings_file.settings
+        wan = settings['wan']
         nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
         for chain in wan.get('policy_chains'):
@@ -68,11 +71,36 @@ class RouteManager(Manager):
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
 
+        #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
+        if Variables.get('force') != None and Variables.get('force').lower() == 'true':
+            policies = wan.get('policies')
+            for pidx, policy in enumerate(policies):
+                interfaces = policy.get('interfaces')
+                for iidx, interface in enumerate(interfaces):
+                    curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
+                    if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
+                        policies[pidx]['enabled'] = False
+
+            policy_chains = wan.get("policy_chains")
+            for pcidx, policy_chain in enumerate(policy_chains):
+                for ridx, rule in enumerate(policy_chain.get("rules")):
+                    action = rule.get("action")
+                    if action.get("type") == "WAN_POLICY":
+                        policy = action.get("policy")
+                        curr_pol = network_util.get_policy_by_id(settings, policy)
+                        if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False):
+                            policy_chain.get("rules")[ridx]['enabled'] = False
+
+
     def validate_settings(self, settings_file):
         """validates settings"""
-        wan = settings_file.settings['wan']
+        settings = settings_file.settings
+        wan = settings['wan']
         policies = wan.get('policies')
         policy_ids = []
+        invalidRPs = []
+        invalidPolIDs = []
+
         for policy in policies:
             if policy.get('enabled') is not True:
                continue
@@ -111,7 +139,6 @@ class RouteManager(Manager):
                 if wansEnabled is not True:
                     raise Exception("Wan policy \"" + policy.get('description') + "\" specifies only disabled wans" )
 
-
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
             raise Exception("Missing policy_chains in WAN settings")
@@ -135,6 +162,15 @@ class RouteManager(Manager):
                     policy = action.get("policy")
                     if policy not in policy_ids:
                         raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
+
+                    curr_pol = network_util.get_policy_by_id(settings, policy)
+                    if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):
+                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': policy})
+
+        if invalidRPs is not None and len(invalidRPs) > 0:
+            invRPStr = "CONFIRM: " + json.dumps(invalidRPs)
+            raise Exception(invRPStr)
+
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
@@ -283,8 +319,8 @@ class RouteManager(Manager):
 
                 for intf in interfaces:
                     interfaceId = intf.get('interfaceId')
-                    interfaceName = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv4")
-                    interface6Name = network_util.get_interface_name(settings, get_interface_by_id(settings, interfaceId), "ipv6")
+                    interfaceName = network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, interfaceId), "ipv4")
+                    interface6Name = network_util.get_interface_name(settings, network_util.get_interface_by_id(settings, interfaceId), "ipv6")
                     criteria = policy.get('criteria')
                     if criteria is None:
                         file.write("up policy-%d %d %s &\n" % (policyId, interfaceId, interfaceName))
@@ -822,12 +858,5 @@ def get_wan_list(settings):
 
     return wan_list
 
-def get_interface_by_id(settings, interfaceId):
-    """ returns interface with the given interfaceId """
-    interfaces = settings.get('network').get('interfaces')
-    for intf in interfaces:
-        if intf.get('interfaceId') == interfaceId:
-            return intf
-    return None
 
 registrar.register_manager(RouteManager())

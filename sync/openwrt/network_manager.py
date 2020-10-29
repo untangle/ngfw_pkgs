@@ -808,7 +808,7 @@ class NetworkManager(Manager):
             raise Exception("Invalid interface name contains hyphen: " + intf.get('name'))
 
         # validate that interface name is not only integers
-        if not re.match("^[a-zA-Z]+\w*", intf.get("name")): 
+        if not re.match("^[a-zA-Z]+[a-zA-Z0-9_]*$", intf.get("name")): 
             raise Exception("Invalid interface name, at least one character required: " + intf.get('name'))
 
         # validate interface name is "nftables compatible"
