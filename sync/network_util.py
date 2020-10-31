@@ -152,6 +152,28 @@ def get_policy_by_id(settings, policyId):
             return pol
     return None
 
+def get_policy_description(settings, policyId):
+    """
+    @param settings - The settings json
+    @param policyId - the policy ID
+    returns the policy description, or just the policy ID if not found
+    """
+    load_pol = get_policy_by_id(settings, policyId)
+    if load_pol is None:
+        return policyId
+    return load_pol.get('description')
+
+def get_interface_name_confirm(settings, interfaceId):
+    """
+    @param settings - the settings json
+    @param interfaceId - the interface ID
+    returns the interface name, or just the interface ID if not found
+    """
+    load_intf = get_interface_by_id(settings, interfaceId)
+    if load_intf is None:
+        return interfaceId
+    return load_intf.get('name')
+
 def get_interface_name(settings, intf, family):
     """
     @param settings - the Settings json
