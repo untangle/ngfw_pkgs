@@ -123,7 +123,7 @@ class RouteManager(Manager):
                 curr_intf = network_util.get_interface_by_id(settings, interface.get('interfaceId'));
                 if policy.get("enabled") and interface.get('interfaceId') != 0 and (curr_intf is None or curr_intf.get('enabled') == False):
                     invalidPolIDs.append(policy.get('policyId'))
-                    invalidRPs.append({'affectedType': 'policy', 'affectedValue': policy, 'invalidReasonType': 'interface', 'invalidReasonValue': interface.get('interfaceId')})
+                    invalidRPs.append({'affectedType': 'policy', 'affectedValue': policy, 'invalidReasonType': 'interface', 'invalidReasonValue': network_util.get_interface_name_confirm(settings, interface.get('interfaceId'))})
 
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
@@ -149,7 +149,7 @@ class RouteManager(Manager):
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
                     if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):
-                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': policy})
+                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': network_util.get_policy_description(settings, policy)})
 
         if invalidRPs is not None and len(invalidRPs) > 0:
             invRPStr = "CONFIRM: " + json.dumps(invalidRPs)
