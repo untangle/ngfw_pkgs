@@ -51,6 +51,7 @@ Depends: ${misc:Depends}, at,
 	 python3-pycurl,
 	 python3-requests,
          rsyslog,
+	 samba,
          sg3-utils,
 	 systemd,
          sudo,
@@ -75,6 +76,7 @@ Depends: ${misc:Depends}, at,
          untangle-system-config,
          unzip,
          wget,
+	 winbind,
          zsh
 Conflicts: openjdk-8-jre-headless, openjdk-8-jre
 Description: Untangle Development Runtime Environment
