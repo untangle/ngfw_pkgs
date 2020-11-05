@@ -15,7 +15,6 @@ env:
       UPLOAD: scp
   jobs:
     - ARCHITECTURE: amd64
-    - ARCHITECTURE: i386
     - ARCHITECTURE: arm64
 
 before_install:
