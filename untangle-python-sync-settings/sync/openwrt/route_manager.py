@@ -124,7 +124,7 @@ class RouteManager(Manager):
                     raise Exception("Invalid interface weight specified: policy " + str(policy_id) + " " + str(weight))
 
             if len(interfaces) == 1 and interfaces[0].get('interfaceId') == 0:
-                interfaces = get_wan_list(settings_file.settings)
+                interfaces = get_wan_list(settings)
 
                 if len(interfaces) == 0:
                     raise Exception("Wan policy \"" + policy.get('description') + "\" specifies \"All WANs\", but no wans are enabled" )
@@ -132,13 +132,17 @@ class RouteManager(Manager):
                 wansEnabled = False
                 for interface in interfaces:
                     interfaceId = interface.get('interfaceId')
-                    intf = get_interface_by_id(settings_file.settings, interfaceId)
+                    intf = network_util.get_interface_by_id(settings, interfaceId)
                     if intf.get('enabled'):
                         wansEnabled = True
+                    if policy.get("enabled") and interface.get('interfaceId') != 0 and (intf is None or intf.get('enabled') == False):
+                        invalidPolIDs.append(policy.get('policyId'))
+                        invalidRPs.append({'affectedType': 'policy', 'affectedValue': policy, 'invalidReasonType': 'interface', 'invalidReasonValue': network_util.get_interface_name_confirm(settings, interface.get('interfaceId'))})
+
 
                 if wansEnabled is not True:
                     raise Exception("Wan policy \"" + policy.get('description') + "\" specifies only disabled wans" )
-
+                    
         policy_chains = wan.get("policy_chains")
         if policy_chains is None:
             raise Exception("Missing policy_chains in WAN settings")
@@ -165,7 +169,7 @@ class RouteManager(Manager):
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
                     if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):
-                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': policy})
+                        invalidRPs.append({'affectedType': 'rule', 'affectedValue': rule, 'invalidReasonType': 'policy', 'invalidReasonValue': network_util.get_policy_description(settings, policy)})
 
         if invalidRPs is not None and len(invalidRPs) > 0:
             invRPStr = "CONFIRM: " + json.dumps(invalidRPs)
