@@ -64,6 +64,23 @@ class RouteManager(Manager):
         """sanitizes settings"""
         settings = settings_file.settings
         wan = settings['wan']
+        policies = wan.get('policies')
+
+        # Check for newly created wan interfaces (which will be flagged with
+        # a 'new' field by the UI)  For new wan interfaces create a SPECIFIC_WAN
+        # policy and then remove the new field
+        interfaces = settings.get('network').get('interfaces')
+        for interface in interfaces:
+            if interface.get('new') is not None:
+                policy = {}
+                policy['description'] = "Send all traffic to " + interface.get('name')
+                policy['enabled'] = interface.get('enabled')
+                policy['interfaces'] = [{ "interfaceId": interface.get('interfaceId') }]
+                policy['type'] = "SPECIFIC_WAN"
+                policy['policyId'] = 0
+                policies.append(policy)
+                del interface['new']
+
         nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
         for chain in wan.get('policy_chains'):
@@ -73,7 +90,6 @@ class RouteManager(Manager):
 
         #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
         if Variables.get('force') != None and Variables.get('force').lower() == 'true':
-            policies = wan.get('policies')
             for pidx, policy in enumerate(policies):
                 interfaces = policy.get('interfaces')
                 for iidx, interface in enumerate(interfaces):
