@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-cloud-config
 Architecture: all
-Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-linux-config, untangle-suricata-config, untangle-system-config, cloud-guest-utils, parted
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-linux-config, untangle-suricata-config, untangle-system-config, curl, cloud-guest-utils, parted
 Description: The Untangle Cloud config
  Configuration specific to cloud instance.
 

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+MODEL=$(cat /usr/share/untangle/conf/appliance-model)
+
+fail() {
+  echo -e '\n\n'
+  echo "Could not set password from cloud metadata: $@"
+  echo -e '\n\n'
+}
+
+get_instance_identifier() {
+  local model="$1"
+  case $model in
+    *Azure*)
+      url="http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text"
+      ;;
+    *EC2*)
+      url="http://169.254.169.254/latest/meta-data/instance-id"
+      ;;
+  esac
+
+  curl --silent --fail --header "Metadata:true" "${url}"
+}
+
+# If the wizard has not been completed, set the default password to
+# the instance name
+if grep -q "wizardComplete.*false.*" /usr/share/untangle/conf/wizard.js ; then
+    pass=$(get_instance_identifier "$MODEL")
+    if [ $? != 0 ] ; then
+        fail "failed to retrieve instance identifier"
+    elif [ "$pass" = "" ] ; then
+        fail "empty instance identifier"
+    else
+        /usr/share/untangle/bin/ut-set-admin-passwd.py "$pass"
+    fi
+fi
