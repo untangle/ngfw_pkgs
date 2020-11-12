@@ -1,0 +1,15 @@
+#! /bin/sh
+
+MODEL=$(cat /usr/share/untangle/conf/appliance-model)
+SETTINGS_DIR="/usr/share/untangle/settings/untangle-vm"
+SETTINGS_FILE="${SETTINGS_DIR}/network.js"
+
+if [ ! -f ${SETTINGS_FILE} ] ; then
+  echo "Initializing default network settings for ${MODEL}..."
+
+  mkdir -p ${SETTINGS_DIR}
+  cp /usr/share/untangle/conf/appliance-network-config.js ${SETTINGS_FILE}
+
+  # /usr/bin/sync-settings -vv
+  echo "Initializing default network settings for ${MODEL}... done"
+fi
