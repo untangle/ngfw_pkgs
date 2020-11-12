@@ -127,7 +127,7 @@ class PortForwardManager(Manager):
                 for alias in intf.get('v4Aliases'):
                     addr = alias.get('staticAddress')
                     if addr != None:
-                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:443 -m comment --comment \"Send %s:%i to Apache\"" % (addr, https_port, addr, addr, https_port) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:443 -m comment --comment \"Send %s:%i to Apache\"" % (addr, https_port, addr, addr, https_port) + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n")
 
@@ -148,7 +148,7 @@ class PortForwardManager(Manager):
                 for alias in intf.get('v4Aliases'):
                     addr = alias.get('staticAddress')
                     if addr != None:
-                        self.file.write("\t${IPTABLES} -t nat -I port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:80 -m comment --comment \"Send %s:%i to Apache\"" % (addr, http_port, addr, addr, http_port) + "\n")
+                        self.file.write("\t${IPTABLES} -t nat -A port-forward-rules -p tcp --destination %s --destination-port %i -j DNAT --to-destination %s:80 -m comment --comment \"Send %s:%i to Apache\"" % (addr, http_port, addr, addr, http_port) + "\n")
                 self.file.write("fi" + "\n")
                 self.file.write("\n")
 
