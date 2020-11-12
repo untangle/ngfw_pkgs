@@ -1070,6 +1070,13 @@ class NetworkManager(Manager):
             if intf.get('v6ConfigType') is not None and intf.get('v6ConfigType') == "DHCP" and (pdptype is None or pdptype == "IPV4"):
                 raise Exception("Invalid WWAN config: pdptype must be IPV6 or IPV4V6 to enable dhcpv6: " + intf.get('name'))
 
+        if intf.get("type") == 'VLAN':
+                interfaces = settings_file.settings.get('network').get('interfaces')
+                for interface in interfaces:
+                    if interface.get('enabled') and interface.get('type') == 'VLAN' and interface.get('vlanid') == intf.get('vlanid') and interface.get('boundInterfaceId') == intf.get('boundInterfaceId'):
+                        vlanBoundInterface = network_util.get_interface_by_id(settings_file.settings, intf.get('boundInterfaceId'))
+                        raise Exception("Invalid VLAN config: A VLAN with parent interface " + vlanBoundInterface.get('name') + " and vlanId " + str(intf.get('vlanid')) + " already exists")
+
 def get_wireless_devices():
     """get wireless devices"""
     device_list = []
