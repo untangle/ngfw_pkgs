@@ -1,0 +1,26 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+rm -f /usr/share/untangle-suricata-config/suricatarules.tar.gz
+rm -f /usr/share/untangle-suricata-config/current/rules/emerging-deleted.rules
+rm -f /usr/share/untangle-suricata-config/current/rules/emerging-activex.rules
+
+# Make specific wizard settings for cloud instance: the password is
+# required to get to the setup wizard the first time
+if [ ! -f /usr/share/untangle/conf/wizard.js ] ; then
+    echo "Creating default setup wizard settings for cloud instance..."
+    mkdir -p /usr/share/untangle/conf
+    cat > /usr/share/untangle/conf/wizard.js <<EOF
+{
+    "javaClass": "com.untangle.uvm.WizardSettings",
+    "wizardComplete": false,
+    "passwordRequired": true
+}
+EOF
+fi
+
+exit 0
+

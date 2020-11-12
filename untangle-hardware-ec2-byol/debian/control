@@ -8,10 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-ec2-byol
 Architecture: all
-Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-linux-config, untangle-suricata-config, untangle-system-config
-Provides: untangle-hardware-amazon-ec2
-Conflicts: untangle-hardware-amazon-ec2
-Replaces: untangle-hardware-amazon-ec2
-Description: The Untangle Amazon EC2 config
- Configuration specific to Amazon EC2.
+Depends: ${misc:Depends}, untangle-cloud-config
+Description: The Untangle Amazon EC2 BYOL config
+ Configuration specific to Amazon EC2 BYOL.
 

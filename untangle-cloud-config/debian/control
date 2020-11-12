@@ -1,0 +1,14 @@
+Source: untangle-cloud-config
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-cloud-config
+Architecture: all
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-linux-config, untangle-suricata-config, untangle-system-config, cloud-guest-utils, parted
+Description: The Untangle Cloud config
+ Configuration specific to cloud instance.
+

@@ -1,6 +1,6 @@
 #! /bin/sh
 
-DISK="sda"
+DISK=$( df / | awk -F/ '/dev/ {gsub(/p?[0-9] .+/, "", $3) ; print $3}')
 DEVICE="/dev/${DISK}"
 
 echo 1 > /sys/block/${DISK}/device/rescan

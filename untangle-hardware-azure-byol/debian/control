@@ -8,10 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-azure-byol
 Architecture: all
-Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-linux-config, untangle-suricata-config, untangle-system-config, cloud-guest-utils, parted
-Provides: untangle-hardware-microsoft-azure
-Conflicts: untangle-hardware-microsoft-azure
-Replaces: untangle-hardware-microsoft-azure
+Depends: ${misc:Depends}, untangle-cloud-config
 Description: The Untangle Microsoft Azure config
  Configuration specific to Microsoft Azure.
 
