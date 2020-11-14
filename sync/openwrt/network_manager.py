@@ -783,6 +783,8 @@ class NetworkManager(Manager):
         if not intf.get("enabled"):
             return
 
+        interfaces = settings_file.settings.get('network').get('interfaces')
+
         for required_key in ["interfaceId", "name", "wan", "device", "type", "configType"]:
             if required_key not in intf:
                 raise Exception("Missing required attribute: " + intf.get('name') + " " + required_key)
@@ -908,6 +910,34 @@ class NetworkManager(Manager):
         if intf.get("wirelessChannel") is not None and (not isinstance(intf.get("wirelessChannel"), int) or intf.get("wirelessChannel") < 0 or intf.get("wirelessChannel") > 200):
             raise Exception("Invalid Wireless Channel: " + intf.get('name') + " " + intf.get("wirelessChannel"))
 
+        if intf.get("type") in ["NIC", "WIFI", "VLAN"] and intf.get("configType") == "ADDRESSED":
+            v4Address = None
+            v6Address = None
+            if intf.get("v4ConfigType") == "STATIC":
+                v4Address = intf.get("v4StaticAddress")
+            if intf.get("v6ConfigType") == "STATIC":
+                v6Address = intf.get("v6StaticAddress")
+            for interface in interfaces:
+                if interface.get('enabled') and interface.get("type") in ["NIC", "WIFI", "VLAN"] and interface.get('configType') == "ADDRESSED" and intf.get("interfaceId") != interface.get("interfaceId"):
+                    if v4Address is not None:
+                        if interface.get("v4ConfigType") == "STATIC" and interface.get("v4StaticAddress") == v4Address:
+                            raise Exception("Duplicate IPV4 Address detected: " + v4Address + " used by " + intf.get("name") + " and " + interface.get("name"))
+
+                        if interface.get('v4Aliases') is not None:
+                            for alias in interface.get('v4Aliases'):
+                                if alias.get("v4Address") == v4Address:
+                                    raise Exception("Duplicate IPV4 Address detected: " + v4Address + " used by " + intf.get("name") + " and " + interface.get("name"))
+
+
+                    if v6Address is not None:
+                        if interface.get("v6ConfigType") == "STATIC" and interface.get("v6StaticAddress") == v6Address:
+                            raise Exception("Duplicate IPV6 Address detected: " + v6Address + " used by " + intf.get("name") + " and " + interface.get("name"))
+
+                        if interface.get('v6Aliases') is not None:
+                            for alias in interface.get('v6Aliases'):
+                                if alias.get("v6Address") == v6Address:
+                                    raise Exception("Duplicate IPV6 Address detected: " + v6Address + " used by " + intf.get("name") + " and " + interface.get("name"))
+
         if intf.get("type") == 'OPENVPN':
             if intf.get("configType") not in ["ADDRESSED"]:
                 raise Exception("Unsupported OPENVPN config type: " + intf.get("configType"))
@@ -929,7 +959,6 @@ class NetworkManager(Manager):
                 if isinstance(wanId, str):
                     wanId = int(wanId,10)
 
-                interfaces = settings_file.settings.get('network').get('interfaces')
                 if wanId != 0:
                     for interface in interfaces:
                         if interface.get('interfaceId') == wanId:
@@ -1071,7 +1100,6 @@ class NetworkManager(Manager):
                 raise Exception("Invalid WWAN config: pdptype must be IPV6 or IPV4V6 to enable dhcpv6: " + intf.get('name'))
 
         if intf.get("type") == 'VLAN':
-                interfaces = settings_file.settings.get('network').get('interfaces')
                 for interface in interfaces:
                     if interface.get('interfaceId') != intf.get('interfaceId') and interface.get('enabled') and interface.get('type') == 'VLAN' and interface.get('vlanid') == intf.get('vlanid') and interface.get('boundInterfaceId') == intf.get('boundInterfaceId'):
                         vlanBoundInterface = network_util.get_interface_by_id(settings_file.settings, intf.get('boundInterfaceId'))
