@@ -282,7 +282,6 @@ class SystemManager(Manager):
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
-
         file.write("/etc/init.d/system reload\n")
         file.write("\n")
 
@@ -299,6 +298,7 @@ class SystemManager(Manager):
         :param interfaces: list of interface objects
         :param prefix: filename prefix
         """
+
         filename = prefix + self.nic_setter_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
@@ -314,9 +314,13 @@ class SystemManager(Manager):
 
         for intf in interfaces:
             if 'ethAutoneg' in intf and 'ethSpeed' in intf and 'ethDuplex' in intf:
-                autoneg = 'on' if intf['ethAutoneg'] else 'off'            
-                file.write("/usr/sbin/ethtool -s {} speed {} duplex {} autoneg {}\n"
-                    .format(intf['device'], intf['ethSpeed'], intf['ethDuplex'], autoneg))
+                autoneg = 'on' if intf['ethAutoneg'] else 'off'
+                if autoneg is 'off':       
+                    file.write("/usr/sbin/ethtool -s {} speed {} duplex {} autoneg {}\n"
+                        .format(intf['device'], intf['ethSpeed'], intf['ethDuplex'], autoneg))
+                else:       
+                    file.write("/usr/sbin/ethtool -s {} autoneg {}\n"
+                        .format(intf['device'], autoneg))
       
         file.flush()
         file.close()
