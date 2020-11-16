@@ -282,6 +282,7 @@ class SystemManager(Manager):
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
         file.write("\n\n")
+
         file.write("/etc/init.d/system reload\n")
         file.write("\n")
 
@@ -298,7 +299,6 @@ class SystemManager(Manager):
         :param interfaces: list of interface objects
         :param prefix: filename prefix
         """
-
         filename = prefix + self.nic_setter_filename
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
