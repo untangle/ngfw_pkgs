@@ -41,6 +41,16 @@ def register_operation( name, pre_commands, post_commands, priority, parent=None
     # print("Registering operation: " + name.ljust(20) + " parent: " + str(parent))
     operations[name] = { "name": name, "pre_commands": pre_commands, "post_commands": post_commands, "priority": priority, "parent": parent }
 
+def get_operation( name ):
+    """
+    Return operation values
+    """
+    global operations
+    if name in operations:
+        return (operations[name]['pre_commands'], operations[name]['post_commands'], operations[name]['priority'], operations[name]['parent'])
+
+    return None
+
 def register_file( filepath, operation, owner ):
     """
     Register a file (full path) with an operation to act upon.
