@@ -953,7 +953,7 @@ class NetworkManager(Manager):
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
             auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
 
-            wanId = intf.get("openvpnBoundInterfaceId")
+            wanId = intf.get("boundInterfaceId")
             if wanId is not None:
 
                 if isinstance(wanId, str):
