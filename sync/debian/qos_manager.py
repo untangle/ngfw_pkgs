@@ -378,6 +378,7 @@ fi
         file.write("\n")
 
         file.write("# Insert IMQ rules for each WAN interface" + "\n")
+        file.write("${IPTABLES} -t mangle -A qos-imq -m policy --pol ipsec --dir in -j RETURN -m comment --comment \"Do not process IPsec traffic\"" + "\n");
         for intfSettings in interfaces:
             if self.qosed_interface(intfSettings):
                 imqDev = intfSettings.get('imqDev')
