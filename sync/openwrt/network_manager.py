@@ -995,7 +995,6 @@ class NetworkManager(Manager):
             for required_attribute in ["name", "boundInterfaceId", "wan"]:
                 if intf.get(required_attribute) is None:
                     raise Exception("Missing required WireGuard interface attribute: " + required_attribute)
-            path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
             wanId = intf.get("boundInterfaceId")
             if wanId is not None:
                 if isinstance(wanId, str):
@@ -1021,7 +1020,6 @@ class NetworkManager(Manager):
             post_commands.append("ifdown " + intf["name"] + " ; " + "ifup " + intf["name"])
             registrar.register_operation("restart-networking", pre_commands, post_commands, priority, parent)
 
-        if intf.get("type") == 'WIREGUARD':
             if intf.get("wireguardPrivateKey") is None or intf.get("wireguardPrivateKey") == "":
                 raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
 
