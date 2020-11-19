@@ -366,8 +366,8 @@ class NetworkManager(Manager):
         file.write("\toption private_key '%s'\n" % intf.get('wireguardPrivateKey'))
         addresses = intf.get('wireguardAddresses')
         for address in addresses:
-            file.write("\tlist addresses '%s'\n" % address)
-        if intf.get('wireguardPort') is not None:
+            file.write("\tlist addresses '{address}/{prefix}'\n".format(address=address.get('address'), prefix=address.get('prefix')))
+        if intf.get('wireguardType') == 'TUNNEL' and intf.get('wireguardPort') is not None:
             file.write("\toption listen_port '%s'\n" % intf.get('wireguardPort'))
 
         if intf.get('wan'):
@@ -389,9 +389,11 @@ class NetworkManager(Manager):
                 file.write("\toption route_allowed_ips '1'\n")
             else:
                 file.write("\toption route_allowed_ips '0'\n")
+            allowedIps = []
             ips = peer.get('allowedIps')
             for ip in ips:
-                file.write("\tlist allowed_ips '%s'\n" % ip)
+                allowedIps.append("{address}/{prefix}".format(address=ip.get('address'), prefix=ip.get('prefix')))
+            file.write("\tlist allowed_ips '{allowedIps}'\n".format(allowedIps=",".join(allowedIps)))
             if peer.get('host') is not None:
                 file.write("\toption endpoint_host '%s'\n" % peer.get('host'))
             if peer.get('port') is not None:
@@ -1001,7 +1003,7 @@ class NetworkManager(Manager):
 
             addresses = intf.get('wireguardAddresses')
             for address in addresses:
-                if not valid_ipv4_network(address) and not valid_ipv6_network(address):
+                if not valid_ipv4_network(address.get('address')) and not valid_ipv6_network(address.get('address')):
                     raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
 
             if intf.get("wireguardPeers") is None or intf.get("wireguardPeers") == []:
@@ -1018,10 +1020,11 @@ class NetworkManager(Manager):
                 if peer.get("allowedIps") is None or peer.get("allowedIps") == []:
                     raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
 
-                ips = peer.get('allowedIps')
-                for ip in ips:
-                    if not valid_ipv4_network(ip) and not valid_ipv6_network(ip):
-                        raise Exception("Invalid wireguard ip: " + intf.get('name') + " " + ip)
+                networks = peer.get('allowedIps')
+                for network in networks:
+                    cidr_network = "{address}/{prefix}".format(address=network.get('address'), prefix=network.get('prefix'))
+                    if not valid_ipv4_network(cidr_network) and not valid_ipv6_network(cidr_network):
+                        raise Exception("Invalid wireguard ip: " + intf.get('name') + " " + cidr_network)
 
                 if peer.get("routeAllowedIps") is not None and not isinstance(peer.get("routeAllowedIps"), bool):
                     raise Exception("wireguard peer settings routeAllowedIps is not a bool: " + intf.get('name'))
