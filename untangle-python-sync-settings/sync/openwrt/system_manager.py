@@ -15,6 +15,7 @@ class SystemManager(Manager):
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
     wizard_status_filename = "/etc/config/wizard-status.json"
     reload_system_filename = "/etc/config/startup.d/zzz-reload-system"
+    nic_setter_filename = "/etc/config/startup.d/060-nic-settings"
     cron_filename = "/etc/crontabs/root"
 
     def initialize(self):
@@ -27,6 +28,7 @@ class SystemManager(Manager):
         registrar.register_file(self.wizard_status_filename, "restart-pyconnector", self)
         registrar.register_file(self.reload_system_filename, "startup-scripts", self)
         registrar.register_file(self.cron_filename, "restart-cron", self)
+        registrar.register_file(self.nic_setter_filename, "restart-nic-setting", self)
 
     def validate_settings(self, settings_file):
         """validates settings"""
@@ -85,6 +87,9 @@ class SystemManager(Manager):
         self.write_wizard_status(settings_file.settings, prefix)
 
         self.write_system_reloader(prefix)
+
+        network = settings_file.settings.get('network')
+        self.write_nic_setter(network['interfaces'], prefix)
 
         time_zone = system.get('timeZone')
         if time_zone is None:
@@ -281,6 +286,38 @@ class SystemManager(Manager):
         file.write("/etc/init.d/system reload\n")
         file.write("\n")
 
+        file.flush()
+        file.close()
+
+        os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
+        print("SystemManager: Wrote %s" % filename)
+
+    def write_nic_setter(self, interfaces, prefix):
+        """
+        Write the NIC speed/duplex and autoneg settings
+        
+        :param interfaces: list of interface objects
+        :param prefix: filename prefix
+        """
+        filename = prefix + self.nic_setter_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        file = open(filename, "w+")
+        file.write("#!/bin/sh")
+        file.write("\n\n")
+
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n\n")
+
+        for intf in interfaces:
+            if 'ethAutoneg' in intf and 'ethSpeed' in intf and 'ethDuplex' in intf:
+                autoneg = 'on' if intf['ethAutoneg'] else 'off'            
+                file.write("/usr/sbin/ethtool -s {} speed {} duplex {} autoneg {}\n"
+                    .format(intf['device'], intf['ethSpeed'], intf['ethDuplex'], autoneg))
+      
         file.flush()
         file.close()
 

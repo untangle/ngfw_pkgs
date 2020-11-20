@@ -87,7 +87,6 @@ class NetworkManager(Manager):
         network['interfaces'] = []
         settings_file.settings['network'] = network
 
-        self.create_settings_devices(settings_file.settings, prefix, delete_list)
         self.create_settings_interfaces(settings_file.settings, prefix, delete_list)
         self.create_settings_switches(settings_file.settings, prefix, delete_list)
 
@@ -681,13 +680,6 @@ class NetworkManager(Manager):
         file.write("\toption proto 'static'\n")
         file.write("\toption ip6addr '%s/%s'\n" % (alias.get('v6Address'), alias.get('v6Prefix')))
 
-    def create_settings_devices(self, settings, prefix, delete_list):
-        """create device settings"""
-        device_list = get_devices()
-        settings['network']['devices'] = []
-        for dev in device_list:
-            settings['network']['devices'].append(new_device_settings(dev))
-
     def create_settings_interfaces(self, settings, prefix, delete_list):
         """create interfaces settings"""
         device_list = get_devices()
@@ -713,13 +705,13 @@ class NetworkManager(Manager):
         internal_id = None
         wwan_index = 0
         internal_count = 1
-        for dev in settings['network']['devices']:
-            if dev['name'] in board_util.get_hidden_interfaces():
+        for device_name in get_devices():
+            if device_name in board_util.get_hidden_interfaces():
                 continue
             intf_id = intf_id + 1
             interface = {}
             interface['interfaceId'] = intf_id
-            interface['device'] = dev['name']
+            interface['device'] = device_name
             interface['name'] = board_util.get_interface_name(interface['device'])
 
             interface['qosEnabled'] = False
@@ -735,12 +727,12 @@ class NetworkManager(Manager):
             else:
                 interface['type'] = 'NIC'
 
-            if dev.get('name') == internal_device_name:
+            if device_name == internal_device_name:
                 internal_id = intf_id
                 create_settings_internal_interface(interface, internal_count)
                 internal_count = internal_count + 1
-            elif dev.get('name') in wan_device_list:
-                create_settings_wan_interface(interface, wan_device_list.index(dev.get('name')))
+            elif device_name in wan_device_list:
+                create_settings_wan_interface(interface, wan_device_list.index(device_name))
             elif interface['type'] == 'WWAN':
                 create_settings_wwan_interface(interface, wwan_index)
                 wwan_index += 1
@@ -752,7 +744,7 @@ class NetworkManager(Manager):
                         interface['name'] = self.GREEK_NAMES[intf_id]
                     else:
                         interface['name'] = "intf%i" % intf_id
-                if internal_id is not None and (dev.get('name').startswith('wlan') or dev.get('name') in internal_device_list):
+                if internal_id is not None and (device_name.startswith('wlan') or device_name in internal_device_list):
                     interface['configType'] = 'BRIDGED'
                     interface['bridgedTo'] = internal_id
                 else:
@@ -992,6 +984,36 @@ class NetworkManager(Manager):
                 registrar.register_file(path, opname, self)
 
         if intf.get("type") == 'WIREGUARD':
+            if intf.get("configType") not in ["ADDRESSED"]:
+                raise Exception("Unsupported WIREGUARD config type: " + intf.get("configType"))
+            for required_attribute in ["name", "boundInterfaceId", "wan"]:
+                if intf.get(required_attribute) is None:
+                    raise Exception("Missing required WireGuard interface attribute: " + required_attribute)
+            wanId = intf.get("boundInterfaceId")
+            if wanId is not None:
+                if isinstance(wanId, str):
+                    wanId = int(wanId,10)
+
+                interfaces = settings_file.settings.get('network').get('interfaces')
+                if wanId != 0:
+                    for interface in interfaces:
+                        if interface.get('interfaceId') == wanId:
+                            if interface.get('enabled') is not True:
+                                raise Exception("WireGuard interface " + intf.get('name') + " is bound to disabled wan " + interface.get('name'))
+                else:
+                    wanEnabled = False
+                    wireguardId = intf.get('interfaceId')
+                    for interface in interfaces:
+                        if interface.get('enabled') and interface.get('wan') and wireguardId != interface.get('interfaceId'):
+                            wanEnabled = True
+
+                    if wanEnabled is not True:
+                        raise Exception("WireGuard interface " + intf.get('name') + " is enabled, but no parent wans are enabled")
+            ## Modify restart-networking operation to add ifdown/up after network restart
+            (pre_commands, post_commands, priority, parent) = registrar.get_operation("restart-networking")
+            post_commands.append("ifdown " + intf["name"] + " ; " + "ifup " + intf["name"])
+            registrar.register_operation("restart-networking", pre_commands, post_commands, priority, parent)
+
             if intf.get("wireguardPrivateKey") is None or intf.get("wireguardPrivateKey") == "":
                 raise Exception("No wireguard private key specified for interface: " + intf.get('name'))
 
@@ -1136,14 +1158,6 @@ def get_devices_matching_glob(glob):
         if dev:
             device_list.append(dev)
     return device_list
-
-def new_device_settings(devname):
-    """get new device settings"""
-    return {
-        "name": devname,
-        "duplex": "AUTO",
-        "mtu": None
-    }
 
 def valid_ipv4(address, accept_none=False):
     """returns true if address (string) is a valid IPv4 address"""
