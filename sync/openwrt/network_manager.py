@@ -284,6 +284,8 @@ class NetworkManager(Manager):
 
         if intf.get('simApn') is not None:
             file.write("\toption apn '%s'\n" % intf.get('simApn'))
+        else:
+            file.write("\toption apn 'any'\n")
 
         if intf.get('simProfile') is not None:
             file.write("\toption profile '%d'\n" % intf.get('simProfile'))
