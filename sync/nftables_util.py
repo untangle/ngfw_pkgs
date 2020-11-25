@@ -143,7 +143,7 @@ def condition_dict_expression(table, key, field, typ, op, value):
         raise Exception("Invalid field: " + str(field))
     if typ in ["long_string", "bool"] and op != "==" and op != "!=":
         raise Exception("Unsupported operation " + str(op) + " for type " + typ)
-    if typ in ["ipv4_addr", "ipv6_addr"]:
+    if typ in ["ipv4_addr", "ipv6_addr", "int"]:
         val = numerical_val(value)
     else:
         val = value_str(value)
