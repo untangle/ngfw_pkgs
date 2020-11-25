@@ -247,7 +247,7 @@ def condition_expression(condition, family, ip_protocol=None):
 
     if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
-        return "meta l4proto" + op_str(op) + value_str(value.lower())
+        return "meta l4proto" + op_str(op) + numerical_val(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x000000ff", 0, value, op)
     elif condtype == "DESTINATION_INTERFACE_ZONE":
