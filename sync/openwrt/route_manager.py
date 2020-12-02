@@ -87,6 +87,9 @@ class RouteManager(Manager):
             nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
+            # Version check?
+            nftables_util.fix_port_proto_rules(chain.get('rules'))
+
 
         #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
         if Variables.get('force') != None and Variables.get('force').lower() == 'true':

@@ -25,6 +25,9 @@ class TableManager(Manager):
                 nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
                 nftables_util.clean_rule_actions(chain, chain.get('rules'), table)
 
+                # Version check?
+                nftables_util.fix_port_proto_rules(chain.get('rules'))
+
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)

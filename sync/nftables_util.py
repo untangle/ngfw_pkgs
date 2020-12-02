@@ -71,14 +71,19 @@ def op_str(op):
 
 def ip_protocol_number_to_str(ip_protocol):
     """
-    Changes 6,"6","tcp" to "tcp"
-    Changes 17,"17","udp" to "udp"
+    Converts 6, 17, 33, 132, 136 to the proper ip protocol supported for sport/dport nft conditions
     All other values unchanged
     """
     if ip_protocol == "6" or ip_protocol == 6:
         return "tcp"
     if ip_protocol == "17" or ip_protocol == 17:
         return "udp"
+    if ip_protocol == "33" or ip_protocol == 33:
+        return "dccp"
+    if ip_protocol == "132" or ip_protocol == 132:
+        return "sctp"
+    if ip_protocol == "136" or ip_protocol == 136:
+        return "udplite"        
     return ip_protocol
 
 def value_str(value):
@@ -213,7 +218,7 @@ def condition_v6address_expression(addr_str, value, op, family):
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
-        raise Exception("Undefined protocol with port condition")
+        raise Exception("Undefined protocol with port condition (missing port_protocol field)")
     return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + numerical_val(value)
 
 def condition_ct_state_expression(value, op):
@@ -237,7 +242,7 @@ def condition_limit_rate_expression(value, op, rate_unit):
     else:
         return "limit rate over %d%s" % (rate_int, get_limit_rate_unit_string(rate_unit))
 
-def condition_expression(condition, family, ip_protocol=None):
+def condition_expression(condition, family):
     """Build nft expressions from the JSON condition object"""
     condition = sanitize_condition(condition)
     condtype = condition.get('type')
@@ -277,9 +282,9 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "DESTINATION_ADDRESS_V6":
         return condition_v6address_expression("daddr", value, op, family)
     elif condtype == "SOURCE_PORT":
-        return condition_port_expression("sport", ip_protocol, value, op)
+        return condition_port_expression("sport", condition.get('port_protocol'), value, op)
     elif condtype == "DESTINATION_PORT":
-        return condition_port_expression("dport", ip_protocol, value, op)
+        return condition_port_expression("dport", condition.get('port_protocol'), value, op)
     elif condtype == "CLIENT_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x000000ff", 0, value, op)
     elif condtype == "SERVER_INTERFACE_ZONE":
@@ -423,22 +428,15 @@ def conditions_expression(conditions, family):
     if conditions is None:
         return ""
 
-    # set has_protocol_condition to True if this rule as an "IP_PROTOCOL" condition
-    ip_protocol = None
-    for condition in conditions:
-        condition = sanitize_condition(condition)
-        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in condition.get('value'):
-            ip_protocol = condition.get('value')
-
     strcat = ""
     for condition in conditions:
 
         group_selector = condition.get('group_selector')
         if group_selector != None:
             conditions_expression.meter_id = getattr(conditions_expression, 'meter_id', 0) + 1
-            strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family, ip_protocol=ip_protocol))
+            strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family))
 
-        add_str = condition_expression(condition, family, ip_protocol=ip_protocol)
+        add_str = condition_expression(condition, family)
         if add_str != "":
             strcat = strcat + " " + add_str
 
@@ -806,3 +804,24 @@ def clean_rule_actions(parent, array, tableName=None):
                             condition["value"] = 1
                         elif value == "lan":
                             condition["value"] = 2
+
+def fix_port_proto_rules(rules):
+    """ 
+        fix_port_proto_rules is used to cleanup SOURCE_PORT and DESTINATION_PORT rules that are using the "old" method of 
+        checking for the ip protocol as a separate condition VS the current method of using the port_protocol extra field
+        :param rules: (array) array of rules in this chain
+    """
+    if rules:
+        for rule in rules:
+            for condition in rule.get('conditions'):
+                # We only need to check this on DESTINATION_PORT and SOURCE_PORT conditions, if they do not have port_protocol set
+                if (condition.get("type") == "DESTINATION_PORT" or condition.get("type") == "SOURCE_PORT") and condition.get("port_protocol") is None:
+                    # If we can't find an associated IP_PROTOCOL for this rule, then just assign TCP (this shouldn't be possible)
+                    setProto = 6
+
+                    # Search the other conditions on this rule for the first IP_PROTOCOL condition and value
+                    for otherCondition in rule.get('conditions'):
+                        if otherCondition.get("type") == "IP_PROTOCOL":
+                            setProto = otherCondition.get("value")
+
+                    condition["port_protocol"] = setProto
