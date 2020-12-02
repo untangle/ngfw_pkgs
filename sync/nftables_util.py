@@ -51,6 +51,17 @@ def check_operation(op, array):
     if op not in array:
         raise Exception("Unsupported operation " + str(op))
 
+def check_val_is_string(val):
+    """
+    Utility function to check if the value's contents is a string
+    :param val (string) - The value data
+    """
+
+    if re.search('[a-zA-Z]', val) is None:
+        return False
+        
+    return True
+
 def op_str(op):
     """
     Returns a command-line safe version of the operation
@@ -252,6 +263,10 @@ def condition_expression(condition, family):
 
     if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
+        if check_val_is_string(value):
+            print("this is a string: %s" % value)
+            return "meta l4proto" + op_str(op) + value_str(value.lower())
+
         return "meta l4proto" + op_str(op) + numerical_val(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x000000ff", 0, value, op)
