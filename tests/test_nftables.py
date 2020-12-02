@@ -138,6 +138,12 @@ conditions_tests = [
     [[{"type": "IP_PROTOCOL","op":"==","value": "TCP"}], "meta l4proto \"tcp\""],
     [[{"type": "IP_PROTOCOL","op":"!=","value": "tcp"}], "meta l4proto != \"tcp\""],
 
+    [[{"type": "IP_PROTOCOL","op":"==","value": "6,17"}], "meta l4proto {6,17}"],
+    [[{"type": "IP_PROTOCOL","op":"!=","value": "6,17"}], "meta l4proto != {6,17}"],
+    [[{"type": "IP_PROTOCOL","op":"==","value": "6"}], "meta l4proto 6"],
+    [[{"type": "IP_PROTOCOL","op":"==","value": "6"}], "meta l4proto 6"],
+    [[{"type": "IP_PROTOCOL","op":"!=","value": "6"}], "meta l4proto != 6"],
+
     [[{"type": "SOURCE_INTERFACE_NAME","op":"==","value": "lo"}], "iifname \"lo\""],
     [[{"type": "SOURCE_INTERFACE_NAME","op":"!=","value": "lo"}], "iifname != \"lo\""],
     [[{"type": "DESTINATION_INTERFACE_NAME","op":"==","value": "lo"}], "oifname \"lo\""],
