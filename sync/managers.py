@@ -24,9 +24,14 @@ def sanitize_settings(settings_file):
     Run the modules sanitizeor on the settings
     If the settings change, save them
     """
+    # Sanitize
     for manager in registrar.managers:
         if registrar.check_registrar_settings_file(settings_file.id, manager):
             manager.sanitize_settings(settings_file)
+    # Post sanitize
+    for manager in registrar.managers:
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            manager.sanitize_settings_post(settings_file)
 
 def validate_settings(settings_file):
     """

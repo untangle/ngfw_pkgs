@@ -17,6 +17,12 @@ class Manager:
         """
         pass
 
+    def sanitize_settings_post(self, settings_file):
+        """
+        Perform santiization on settings meant to be written back after other calls.
+        """
+        pass
+
     def validate_settings(self, settings_file):
         """
         Perform validation of settings
