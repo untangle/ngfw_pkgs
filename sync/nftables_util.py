@@ -230,6 +230,10 @@ def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
         raise Exception("Undefined protocol with port condition (missing port_protocol field)")
+    # If this is passed in here as a list, only take the first element. This occurs because we switched the UI element to a multiselect
+    if isinstance(ip_protocol, list):
+        ip_protocol = ip_protocol[0]
+
     return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + numerical_val(value)
 
 def condition_ct_state_expression(value, op):
@@ -253,7 +257,7 @@ def condition_limit_rate_expression(value, op, rate_unit):
     else:
         return "limit rate over %d%s" % (rate_int, get_limit_rate_unit_string(rate_unit))
 
-def condition_expression(condition, family):
+def condition_expression(condition, family, multi_type=None, multi_iter=None):
     """Build nft expressions from the JSON condition object"""
     condition = sanitize_condition(condition)
     condtype = condition.get('type')
@@ -297,8 +301,12 @@ def condition_expression(condition, family):
     elif condtype == "DESTINATION_ADDRESS_V6":
         return condition_v6address_expression("daddr", value, op, family)
     elif condtype == "SOURCE_PORT":
+        if multi_type is not None and multi_iter is not None and multi_type == "port_protocol":
+            return condition_port_expression("sport", multi_iter, value, op)
         return condition_port_expression("sport", condition.get('port_protocol'), value, op)
     elif condtype == "DESTINATION_PORT":
+        if multi_type is not None and multi_iter is not None and multi_type == "port_protocol":
+            return condition_port_expression("dport", multi_iter, value, op)
         return condition_port_expression("dport", condition.get('port_protocol'), value, op)
     elif condtype == "CLIENT_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x000000ff", 0, value, op)
@@ -433,7 +441,7 @@ def condition_expression(condition, family):
         return condition_limit_rate_expression(value, op, unit)
     raise Exception("Unsupported condition type " + condtype + " " + str(condition.get('ruleId')))
 
-def conditions_expression(conditions, family):
+def conditions_expression(conditions, family, multi_type=None, multi_iter=None):
     """
     This method takes a list of conditions from a rule and translates them into a string containing the nftables conditions
     It returns a list of strings, because some set of conditions require multiple nftables rules
@@ -451,7 +459,7 @@ def conditions_expression(conditions, family):
             conditions_expression.meter_id = getattr(conditions_expression, 'meter_id', 0) + 1
             strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family))
 
-        add_str = condition_expression(condition, family)
+        add_str = condition_expression(condition, family, multi_type, multi_iter)
         if add_str != "":
             strcat = strcat + " " + add_str
 
@@ -552,14 +560,14 @@ def logs_expression(logs):
 
     return strcat.strip()
 
-def rule_expression(json_rule, family):
+def rule_expression(json_rule, family, table, chain, multi_type=None, multi_iter=None):
     """Builds an nft rule from the JSON rule object"""
     check_rule(json_rule)
 
     rule_exp = ""
     conditions = json_rule.get('conditions')
     if conditions != None:
-        rule_exp = rule_exp + " " + conditions_expression(conditions, family)
+        rule_exp = rule_exp + " " + conditions_expression(conditions, family, multi_type, multi_iter)
 
     logs = json_rule.get('logs')
     if logs != None:
@@ -568,22 +576,44 @@ def rule_expression(json_rule, family):
     action_exp = action_expression(json_rule.get('action'), family)
     rule_exp = rule_exp + " " + action_exp
 
-    return rule_exp[1:]
+    return "add rule " + family + " " + table + " " + chain + " " + rule_exp[1:]
 
 def rule_cmd(json_rule, family, table, chain):
-    """This method takes a rule json object and provides the nft command"""
+    """This method takes a rule json object, and returns a list of nft commands associated with the rule"""
     check_rule(json_rule)
+    nft_rule_list = []
 
     if not json_rule.get('enabled'):
         return None
 
     try:
-        cmd = "add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
-        return cmd
+        multi_type, multi_iter = determine_multi_rule(json_rule)
+        if multi_type is not None and multi_iter is not None:
+            print("we need to write multiple nft rules here intead of one")
+            for itr in multi_iter:
+                nft_rule_list.append(rule_expression(json_rule, family, table, chain, multi_type=multi_type, multi_iter=str(itr)))   
+
+        else:
+            nft_rule_list.append(rule_expression(json_rule, family, table, chain))
+        return nft_rule_list
     except NonsensicalException:
         return None
     except:
         raise
+
+def determine_multi_rule(json_rule):
+    """
+    determine_multi_rule will return an object to iterate if we need to write multiple NFT rules for this sdwan rule
+    :param json_rule (string) - the json rule
+    """
+    # Currently only SOURCE_PORT and DESTINATION_PORT conditions might require additional rules
+    conditions = json_rule.get('conditions')
+    for cnd in conditions:
+        if cnd.get('type') == "SOURCE_PORT" or cnd.get('type') == "DESTINATION_PORT":
+            # Check if multiple port_protocols are passed in
+            if "," in str(cnd.get('port_protocol')):
+                return 'port_protocol', cnd.get('port_protocol')
+    return None, None
 
 def chain_create_cmd(json_chain, family, chain_type, table):
     """Return the nft command to create this chain"""
@@ -629,9 +659,9 @@ def chain_rules_cmds(json_chain, family, chain_type, table):
 
     cmds = []
     for rule in json_chain['rules']:
-        rule_cmd_str = rule_cmd(rule, family, table, json_chain['name'])
-        if rule_cmd_str != None:
-            cmds.append(rule_cmd_str)
+        rule_cmd_items = rule_cmd(rule, family, table, json_chain['name'])
+        if rule_cmd_items != None:
+            cmds.extend(rule_cmd_items)
     return '\n'.join(cmds)
 
 def table_create_cmd(json_table):
