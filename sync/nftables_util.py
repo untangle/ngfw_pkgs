@@ -588,7 +588,6 @@ def rule_cmd(json_rule, family, table, chain):
     try:
         multi_type, multi_iter = determine_multi_rule(json_rule)
         if multi_type is not None and multi_iter is not None:
-            print("we need to write multiple nft rules here intead of one")
             for itr in multi_iter:
                 nft_rule_list.append(rule_expression(json_rule, family, table, chain, multi_type=multi_type, multi_iter=str(itr)))   
 
