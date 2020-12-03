@@ -183,8 +183,6 @@ class RouteManager(Manager):
                     raise Exception("Missing action type in WAN rule" + str(rule_id))
                 if action.get("type") == "WAN_POLICY":
                     policy = action.get("policy")
-                    if policy not in policy_ids:
-                        raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
                     if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):
