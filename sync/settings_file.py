@@ -6,9 +6,6 @@ import json
 import os.path
 import re
 
-## dev
-import sys
-
 class SettingsFile:
     """
     This class manages settings files.
