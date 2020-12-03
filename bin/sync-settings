@@ -314,10 +314,10 @@ def make_tmpdirs():
     """
     try:
         global opts
-        opts.tmpdir = tempfile.mkdtemp()
+        opts.tmpdir = tempfile.mkdtemp(prefix="sync_settings-")
         os.chmod(opts.tmpdir, os.stat(opts.tmpdir).st_mode | stat.S_IEXEC | stat.S_IRGRP |
                  stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
-        opts.tmpdir_delete = tempfile.mkdtemp()
+        opts.tmpdir_delete = tempfile.mkdtemp(prefix="sync_settings-")
         os.chmod(opts.tmpdir_delete, os.stat(opts.tmpdir_delete).st_mode | stat.S_IEXEC |
                  stat.S_IRGRP | stat.S_IWGRP | stat.S_IXGRP | stat.S_IROTH | stat.S_IWOTH | stat.S_IXOTH)
     except Exception as exc:
