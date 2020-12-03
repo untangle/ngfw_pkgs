@@ -268,7 +268,6 @@ def condition_expression(condition, family, multi_type=None, multi_iter=None):
     if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
         if check_val_is_string(value):
-            print("this is a string: %s" % value)
             return "meta l4proto" + op_str(op) + value_str(value.lower())
 
         return "meta l4proto" + op_str(op) + numerical_val(value.lower())
