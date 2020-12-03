@@ -79,7 +79,6 @@ class RouteManager(Manager):
                 policy['type'] = "SPECIFIC_WAN"
                 policy['policyId'] = 0
                 policies.append(policy)
-                del interface['new']
 
         nftables_util.create_id_seq(wan, wan.get('policies'), 'policyIdSeq', 'policyId')
 
