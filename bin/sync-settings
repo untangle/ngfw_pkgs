@@ -308,6 +308,15 @@ def call_without_permissions(func, *args, **kw):
         (_, result) = os.waitpid(pid, 0)
         return result >> 8
 
+def remove_old_tmpdirs():
+    """
+    Remove old tmp directories
+    """
+    for item in os.listdir("/tmp"):
+        target = os.path.join("/tmp", item)
+        if os.path.isdir(target) and "sync_settings-" in item:
+            shutil.rmtree(target)
+
 def make_tmpdirs():
     """
     Make required tmp directories
@@ -482,6 +491,7 @@ def main():
         print("\nUnknown OS: " + opts.os_name)
         cleanup(1)
 
+    remove_old_tmpdirs()
     make_tmpdirs()
 
     # Initialize all managers
