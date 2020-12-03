@@ -1,0 +1,5 @@
+#! /bin/bash
+
+sed 's/#\tradutmp/\tradutmp/g' /etc/freeradius/3.0/sites-available/default > /etc/freeradius/3.0/sites-available/default.bak
+mv /etc/freeradius/3.0/sites-available/default.bak /etc/freeradius/3.0/sites-available/default
+exit 0
