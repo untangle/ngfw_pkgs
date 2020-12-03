@@ -65,6 +65,13 @@ class NetworkManager(Manager):
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
+    def sanitize_settings_post(self, settings_file):
+        # Clear "new" flag
+        interfaces = settings_file.settings.get('network').get('interfaces')
+        for interface in interfaces:
+            if interface.get('new') is not None:
+                del interface['new']
+
     def validate_settings(self, settings_file):
         """validates settings"""
         interfaces = settings_file.settings.get('network').get('interfaces')
