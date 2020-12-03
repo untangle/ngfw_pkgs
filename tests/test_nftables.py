@@ -96,11 +96,11 @@ class NftablesTests(unittest.TestCase):
                 "type": "ACCEPT"
             }
         }
-        exp_str = nftables_util.rule_expression(rule, "inet")
+        exp_str = nftables_util.rule_expression(rule, "inet", "forward", "forward-filter")
         print(exp_str)
-        rule_str = nftables_util.rule_cmd(rule, "inet", "forward", "forward-filter")
+        rule_str = nftables_util.rule_cmd(rule, "inet", "forward", "forward-filter")[0]
         print(rule_str)
-        assert(exp_str == "meta l4proto \"tcp\" accept")
+        assert(exp_str == "add rule inet forward forward-filter meta l4proto \"tcp\" accept")
         assert(rule_str == "add rule inet forward forward-filter meta l4proto \"tcp\" accept")
 
 
