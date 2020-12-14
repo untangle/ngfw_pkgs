@@ -6,7 +6,7 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: debhelper (>= 10)
 Standards-Version: 3.9.8
 
-Package: untangle-freereadius-config
+Package: untangle-freeradius-config
 Architecture: all
 Depends: ${misc:Depends}, freeradius
 Conflicts: 
