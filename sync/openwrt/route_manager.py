@@ -148,18 +148,17 @@ class RouteManager(Manager):
                 if len(interfaces) == 0:
                     raise Exception("Wan policy \"" + policy.get('description') + "\" specifies \"All WANs\", but no wans are enabled" )
             else:
-                wansEnabled = False
+                wansEnabledOrDeleted = False
                 for interface in interfaces:
                     interfaceId = interface.get('interfaceId')
                     intf = network_util.get_interface_by_id(settings, interfaceId)
-                    if intf.get('enabled'):
-                        wansEnabled = True
+                    if intf == None or intf.get('enabled'):
+                        wansEnabledOrDeleted = True
                     if policy.get("enabled") and interface.get('interfaceId') != 0 and (intf is None or intf.get('enabled') == False):
                         invalidPolIDs.append(policy.get('policyId'))
                         invalidRPs.append({'affectedType': 'policy', 'affectedValue': policy, 'invalidReasonType': 'interface', 'invalidReasonValue': network_util.get_interface_name_confirm(settings, interface.get('interfaceId'))})
 
-
-                if wansEnabled is not True:
+                if wansEnabledOrDeleted is not True:
                     raise Exception("Wan policy \"" + policy.get('description') + "\" specifies only disabled wans" )
                     
         policy_chains = wan.get("policy_chains")
