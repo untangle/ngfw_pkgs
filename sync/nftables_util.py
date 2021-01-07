@@ -456,7 +456,10 @@ def conditions_expression(conditions, family, multi_type=None, multi_iter=None):
         group_selector = condition.get('group_selector')
         if group_selector != None:
             conditions_expression.meter_id = getattr(conditions_expression, 'meter_id', 0) + 1
-            strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family))
+            if(condition.get('port_protocol')):
+                strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family, condition.get('port_protocol')))
+            else:
+                strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family))
 
         add_str = condition_expression(condition, family, multi_type, multi_iter)
         if add_str != "":
