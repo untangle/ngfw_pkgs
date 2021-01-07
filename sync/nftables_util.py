@@ -861,7 +861,10 @@ def fix_port_proto_rules(rules):
         for rule in rules:
             for condition in rule.get('conditions'):
                 # We only need to check this on DESTINATION_PORT and SOURCE_PORT conditions, if they do not have port_protocol set
-                if (condition.get("type") == "DESTINATION_PORT" or condition.get("type") == "SOURCE_PORT") and condition.get("port_protocol") is None:
+                if (condition.get("type") == "DESTINATION_PORT" or 
+                    condition.get("type") == "SOURCE_PORT" or 
+                    (condition.get("type") == "LIMIT_RATE" and condition.get("group_selector") == "DESTINATION_PORT") or 
+                    (condition.get("type") == "LIMIT_RATE" and condition.get("group_selector") == "SOURCE_PORT") ) and condition.get("port_protocol") is None:
                     # If we can't find an associated IP_PROTOCOL for this rule, then just assign TCP (this shouldn't be possible)
                     setProto = 6
 
