@@ -874,3 +874,78 @@ def fix_port_proto_rules(rules):
                             setProto = otherCondition.get("value")
 
                     condition["port_protocol"] = setProto
+
+def fix_MFW_1082_rules(tableName, rules):
+    """
+        MFW-1082:  
+        Remove Client/Server conditions from WAN Rules, Port Forward Rules, NAT Rules, and Access Rules
+        Remove Source/Destination conditions from Shaping Rules and Filter Rulesfix_chain_rules fixes
+        
+        this function will 'fix' the condition in specific tables (According to logic linked in the above ticket)
+        and then disable the rule
+    """
+
+    # clientServerConditionFixes is a map of old conditions that will be updated with whatever their value is
+    # these are used for fixing the wan-routing, port-forward, nat, access tables
+    clientServerConditionFixes = {}
+    # Client conditions -> Source conditions
+    clientServerConditionFixes['CLIENT_ADDRESS'] = 'SOURCE_ADDRESS'
+    clientServerConditionFixes['CLIENT_ADDRESS_V6'] = 'SOURCE_ADDRESS_V6'
+    clientServerConditionFixes['CLIENT_PORT'] = 'SOURCE_PORT'
+    clientServerConditionFixes['CLIENT_INTERFACE_ZONE'] = 'SOURCE_INTERFACE_ZONE'
+    clientServerConditionFixes['CLIENT_INTERFACE_TYPE'] = 'SOURCE_INTERFACE_TYPE'
+
+    # Server conditions -> Destination conditions
+    clientServerConditionFixes['SERVER_ADDRESS'] = 'DESTINATION_ADDRESS'
+    clientServerConditionFixes['SERVER_ADDRESS_V6'] = 'DESTINATION_ADDRESS_V6'
+    clientServerConditionFixes['SERVER_PORT'] = 'DESTINATION_PORT'
+    clientServerConditionFixes['SERVER_INTERFACE_ZONE'] = 'DESTINATION_INTERFACE_ZONE'
+    clientServerConditionFixes['SERVER_INTERFACE_TYPE'] = 'DESTINATION_INTERFACE_TYPE'
+
+
+    srcDstConditionFixes = {}
+    # Source conditions -> Client conditions
+    srcDstConditionFixes['SOURCE_ADDRESS'] = 'CLIENT_ADDRESS'
+    srcDstConditionFixes['SOURCE_ADDRESS_V6'] = 'CLIENT_ADDRESS_V6'
+    srcDstConditionFixes['SOURCE_PORT'] = 'CLIENT_PORT'
+    srcDstConditionFixes['SOURCE_INTERFACE_ZONE'] = 'CLIENT_INTERFACE_ZONE'
+    srcDstConditionFixes['SOURCE_INTERFACE_TYPE'] = 'CLIENT_INTERFACE_TYPE'
+
+
+    # Destination conditions -> Server conditions
+    srcDstConditionFixes['DESTINATION_ADDRESS'] = 'SERVER_ADDRESS'
+    srcDstConditionFixes['DESTINATION_ADDRESS_V6'] = 'SERVER_ADDRESS_V6'
+    srcDstConditionFixes['DESTINATION_PORT'] = 'SERVER_PORT'
+    srcDstConditionFixes['DESTINATION_INTERFACE_ZONE'] = 'SERVER_INTERFACE_ZONE'
+    srcDstConditionFixes['DESTINATION_INTERFACE_TYPE'] = 'SERVER_INTERFACE_TYPE'
+
+
+    if tableName == 'wan-routing' or tableName == 'port-forward' or tableName == 'nat' or tableName == 'access':
+        for rule in rules:
+            switchCondition(rule, clientServerConditionFixes)
+
+
+    if tableName == 'shaping' or tableName == 'filter':
+        for rule in rules:
+            switchCondition(rule, srcDstConditionFixes)
+
+def switchCondition(rule, conditionMap):
+    """
+        switchCondition is used largely by fix_MFW_1082_rules to switch old conditions with new conditions for a rule
+        and also disable that condition
+    """
+    if rule:
+        # Store the current enabled/disabled status of the rule
+        # if we have to fix a condition, then we want to always disabled the rule after processing
+        ruleEnabled = rule.get('enabled')
+        if rule.get('conditions'):
+            for condition in rule.get('conditions'):  
+                # Check if this type exists as a key in the condition map     
+                if condition.get('type') in conditionMap:
+                    condition['type'] = conditionMap[condition.get('type')]
+                    ruleEnabled = False
+
+        # if these don't match after processing, then a condition change means we need to disable the rule
+        if ruleEnabled != rule.get('enabled'):
+            rule['enabled'] = ruleEnabled
+    

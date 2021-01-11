@@ -87,8 +87,10 @@ class RouteManager(Manager):
             nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
-            # Version check?
-            nftables_util.fix_port_proto_rules(chain.get('rules'))
+            # Version check, use MFW version for the version bump
+            if settings_file.settings['version'] < 3:
+                nftables_util.fix_port_proto_rules(chain.get('rules'))
+                nftables_util.fix_MFW_1082_rules('wan-routing', chain.get('rules'))
 
 
         #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
