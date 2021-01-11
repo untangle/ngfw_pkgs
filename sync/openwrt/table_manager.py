@@ -236,7 +236,7 @@ def default_nat_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "1234"
                 }],
@@ -670,13 +670,10 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 2,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "4569"
+                    "value": "4569",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -687,13 +684,10 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 3,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "4569"
+                    "value": "4569",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -717,13 +711,10 @@ def default_shaping_rules_table():
                 "description": "DNS Priority",
                 "ruleId": 5,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "53"
+                    "value": "53",
+                    "port_protocol": "17"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -734,13 +725,10 @@ def default_shaping_rules_table():
                 "description": "SSH Priority",
                 "ruleId": 6,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "22"
+                    "value": "22",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -751,13 +739,10 @@ def default_shaping_rules_table():
                 "description": "Openvpn Priority",
                 "ruleId": 7,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "1194"
+                    "value": "1194",
+                    "port_Protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
