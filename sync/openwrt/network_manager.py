@@ -31,7 +31,7 @@ class NetworkManager(Manager):
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings_file):
+    def sanitize_settings_pre(self, settings_file):
         """sanitizes removes blank settings"""
         interfaces = settings_file.settings.get('network').get('interfaces')
         # Remove all "" and 0 and null values
@@ -1207,6 +1207,7 @@ def valid_ipv6_network(address, accept_none=False):
         return True
     except:
         return False
+
 
 def openvpn_set_tun_interfaces(settings):
     """
