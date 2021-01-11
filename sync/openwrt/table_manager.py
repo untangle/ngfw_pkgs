@@ -69,7 +69,7 @@ class TableManager(Manager):
                     find_rule = copy.deepcopy(self.wireguard_access_rule_template)
                     # Only value that can't change is interfaceId in descripton
                     find_rule["description"] = self.wireguard_description_template.format(name=".*", id=interface.get("interfaceId"))
-                    rules = settings_file.find_settings_list("firewall/tables/access/chains/name=access-rules/rules", find_rule)
+                    rules = settings_file.find_settings_list(access_rules, find_rule)
                     if len(rules) == 0:
                         # Could be coming from roaming
                         rule = copy.deepcopy(self.wireguard_access_rule_template)
@@ -91,8 +91,7 @@ class TableManager(Manager):
 
         # Look for rules to delete
         find_delete_rule = copy.deepcopy(self.wireguard_access_rule_template)
-        access_rules = settings_file.get_settings_by_path("firewall/tables/access/chains/name=access-rules/rules")
-        wg_access_rules = settings_file.find_settings_list("firewall/tables/access/chains/name=access-rules/rules", find_delete_rule)
+        wg_access_rules = settings_file.find_settings_list(access_rules, find_delete_rule)
         if len(wg_access_rules) > 0:
             wg_description_re = re.compile(self.wireguard_description_template_regex.format(name=".*", id="(\d+)"))
             delete_rules = []
@@ -120,11 +119,6 @@ class TableManager(Manager):
             for chain in settings_file.settings['firewall']['tables'][table]['chains']:
                 nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
                 nftables_util.clean_rule_actions(chain, chain.get('rules'), table)
-
-        # for rule in access_rules:
-        #     print(rule.get("description"))
-        # print(len(access_rules))
-        # sys.exit(1)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
