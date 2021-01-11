@@ -24,6 +24,10 @@ def sanitize_settings(settings_file):
     Run the modules sanitizeor on the settings
     If the settings change, save them
     """
+    # Pre sanitize
+    for manager in registrar.managers:
+        if registrar.check_registrar_settings_file(settings_file.id, manager):
+            manager.sanitize_settings_pre(settings_file)
     # Sanitize
     for manager in registrar.managers:
         if registrar.check_registrar_settings_file(settings_file.id, manager):
