@@ -234,8 +234,9 @@ class SettingsFile:
         target contains more fields that aren't in the compare like { description: "what I want", some_boolean: True }
 
         Keyword arguments:
-        path             -- path to search for (default None)
+        path             -- String path to search for (default None)
                             Example: firewall/tables/access/chains/name:access-rules/rules
+                            If not a string, assume to be a collectons.OrderedDict of the current settings node.
         compare          -- Dict object to match. (defailt None)
                             Example: { "action": { "type": "ACCEPT" } }
         current_settings -- Current settings node (default None)
@@ -251,7 +252,10 @@ class SettingsFile:
                     json.dumps(compare),
                     object_pairs_hook=collections.OrderedDict)
 
-        current_settings = self.get_settings_by_path(path)
+        if type(path) == str:
+            current_settings = self.get_settings_by_path(path)
+        else:
+            current_settings = path
 
         # Look for matching compares from this settings node.
         if type(current_settings) == list:
