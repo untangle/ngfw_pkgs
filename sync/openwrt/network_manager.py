@@ -784,7 +784,7 @@ class NetworkManager(Manager):
 
         interfaces = settings_file.settings.get('network').get('interfaces')
 
-        for required_key in ["interfaceId", "name", "wan", "type", "configType"]:
+        for required_key in ["interfaceId", "name", "wan", "device", "type", "configType"]:
             if required_key not in intf:
                 raise Exception("Missing required attribute: " + intf.get('name') + " " + required_key)
 
