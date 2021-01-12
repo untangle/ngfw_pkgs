@@ -1032,7 +1032,7 @@ class NetworkManager(Manager):
             addresses = intf.get('wireguardAddresses')
             for address in addresses:
                 if not valid_ipv4_network(address.get('address')) and not valid_ipv6_network(address.get('address')):
-                    raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
+                    raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address.get('address'))
 
             if intf.get("wireguardPeers") is None or intf.get("wireguardPeers") == []:
                 raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
@@ -1044,6 +1044,14 @@ class NetworkManager(Manager):
 
                 if not isinstance(peer.get("publicKey"), str):
                     raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
+
+                host = peer.get('host')
+                if not valid_ipv4_network(host) and not valid_ipv6_network(host) and not valid_hostname(host):
+                    raise Exception("Specified WireGuard Endpoint address is not valid: " + peer)
+
+                port = peer.get('port')
+                if not isinstance(port, int):
+                    raise Exception("WireGuard Endpoint Listen Port not an integer: " + port)
 
                 if peer.get("allowedIps") is None or peer.get("allowedIps") == []:
                     raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
@@ -1204,6 +1212,20 @@ def valid_ipv6_network(address, accept_none=False):
         return True
     except:
         return False
+
+def valid_hostname(hostname, accept_none=False):
+    """returns true if hostname (string) is a valid domain name"""
+    if hostname is None and accept_none:
+        return True
+
+    if hostname.endswith('.'):
+        hostname = hostname[:-1]
+
+    if len(hostname) < 1 or len(hostname) > 253:
+        return False
+
+    hostname_segment_re = re.compile('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$', re.IGNORECASE)
+    return all(hostname_segment_re.match(x) for x in hostname.split('.'))
 
 def openvpn_set_tun_interfaces(settings):
     """
