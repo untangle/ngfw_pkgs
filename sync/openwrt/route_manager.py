@@ -588,15 +588,19 @@ class RouteManager(Manager):
             file.write("add rule %s wan-routing route-via-cache %s saddr . %s daddr @policy-%d-table dict sessions ct id wan_policy long_string set policy-%d-cache log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'route-via-cache\',\'ruleId\':-1,\'action\':\'WAN_POLICY\',\'policy\':%d}\" group 0\n" % (family, family, family, policyId, policyId, policyId))
             file.write("\n")
 
+        has_cc_rules = False
         enabled_policy_rules = []
         policy_chains = wan.get('policy_chains')
         for chain in policy_chains:
             chain_name = chain.get('name')
+            if chain_name == "command-center-rules":
+                has_cc_rules = True
             chain_rules = chain.get('rules')
             for rule in chain_rules:
                 if not rule.get('enabled'):
                     continue
                 else:
+
                     ruleId = rule.get('ruleId')
                     file.write("add set %s wan-routing rule-%d-table { type %s . %s; flags timeout; }\n" % (family,  ruleId, ip_addr_family, ip_addr_family))
                     file.write("flush set %s wan-routing rule-%d-table\n" % (family, ruleId))
@@ -619,6 +623,8 @@ class RouteManager(Manager):
 
         file.write("add chain %s wan-routing wan-routing-entry\n" % family)
         file.write("add rule %s wan-routing wan-routing-entry jump route-via-cache\n" % family)
+        if has_cc_rules:
+            file.write("add rule %s wan-routing wan-routing-entry jump command-center-rules\n" % family)
         file.write("add rule %s wan-routing wan-routing-entry jump user-wan-rules\n" % family)
         file.write("add rule %s wan-routing wan-routing-entry counter\n" % family)
         file.write("add rule %s wan-routing wan-routing-entry log prefix \"{\'type\':\'rule\',\'table\':\'wan-routing\',\'chain\':\'wan-routing-entry\',\'ruleId\':-2,\'action\':\'WAN_POLICY\',\'policy\':-2}\" group 0 jump route-to-default-wan\n" % family)
