@@ -65,6 +65,9 @@ class NetworkManager(Manager):
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
+        # Perform operations on WireGuard interfaces
+        sanitize_wireguard_interfaces(settings_file.settings)
+
     def validate_settings(self, settings_file):
         """validates settings"""
         interfaces = settings_file.settings.get('network').get('interfaces')
@@ -1214,6 +1217,16 @@ def openvpn_set_tun_interfaces(settings):
     for intf in interfaces:
         if intf.get("type") == "OPENVPN" and intf.get("device") is None:
             intf["device"] = find_lowest_available_tun(interfaces)
+
+def sanitize_wireguard_interfaces(settings):
+    """
+    Make sure that WireGuard devices match names.
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get("type") == "WIREGUARD":
+            if 'device' not in intf or intf.get("name") is not None:
+                intf["device"] = intf.get("name")
 
 def find_lowest_available_tun(interfaces):
     """
