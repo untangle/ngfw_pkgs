@@ -234,13 +234,10 @@ def default_nat_rules_table():
                 "description": "Example: NAT TCP port 25 to 1.2.3.4",
                 "ruleId": 1,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "1234"
+                    "value": "1234",
+                    "port_protocol": 6
                 }],
                 "action": {
                     "type": "SNAT",
@@ -341,13 +338,10 @@ def default_access_rules_table():
                 "description": "Accept HTTP on LANs (TCP/80)",
                 "ruleId": 5,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "80"
+                    "value": "80",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -361,13 +355,10 @@ def default_access_rules_table():
                 "description": "Accept HTTP on WANs (TCP/80)",
                 "ruleId": 6,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "80"
+                    "value": "80",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -381,13 +372,10 @@ def default_access_rules_table():
                 "description": "Accept HTTPS on LANs (TCP/443)",
                 "ruleId": 7,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "443"
+                    "value": "443",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -401,13 +389,10 @@ def default_access_rules_table():
                 "description": "Accept HTTPS on WANs (TCP/443)",
                 "ruleId": 8,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "443"
+                    "value": "443",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -421,13 +406,10 @@ def default_access_rules_table():
                 "description": "Accept SSH on LANs (TCP/22)",
                 "ruleId": 9,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "22"
+                    "value": "22",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -441,13 +423,10 @@ def default_access_rules_table():
                 "description": "Accept SSH on WANs (TCP/22)",
                 "ruleId": 10,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "22"
+                    "value": "22",
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -461,13 +440,10 @@ def default_access_rules_table():
                 "description": "Accept DNS on LANs (TCP/53)",
                 "ruleId": 11,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "53"
+                    "value": "53",
+                    "port_protocol": 17
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -481,13 +457,10 @@ def default_access_rules_table():
                 "description": "Accept DNS on LANs (UDP/53)",
                 "ruleId": 12,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "53"
+                    "value": "53",
+                    "port_protocol": 17
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -525,13 +498,10 @@ def default_access_rules_table():
                 "description": "Accept DHCP on LANs (UDP/67)",
                 "ruleId": 15,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "67"
+                    "value": "67",
+                    "port_protocol": 17
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -545,13 +515,10 @@ def default_access_rules_table():
                 "description": "Accept DHCPv6 on LANs (UDP/547)",
                 "ruleId": 16,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "547"
+                    "value": "547",
+                    "port_protocol": 17
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -565,13 +532,10 @@ def default_access_rules_table():
                 "description": "Accept DHCPv6 Replies (UDP/546)",
                 "ruleId": 17,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "546"
+                    "value": "546",
+                    "port_protocol": 17
                 }],
                 "action": {
                     "type": "ACCEPT"
@@ -672,10 +636,13 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 2,
                 "conditions": [{
-                    "type": "DESTINATION_PORT",
+                    "type":"IP_PROTOCOL",
                     "op": "==",
-                    "value": "4569",
-                    "port_protocol": "6"
+                    "value": "6"
+                }, {
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "4569"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -686,10 +653,13 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 3,
                 "conditions": [{
-                    "type": "DESTINATION_PORT",
+                    "type":"IP_PROTOCOL",
                     "op": "==",
-                    "value": "4569",
-                    "port_protocol": "6"
+                    "value": "6"
+                },{
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "4569"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -713,10 +683,13 @@ def default_shaping_rules_table():
                 "description": "DNS Priority",
                 "ruleId": 5,
                 "conditions": [{
-                    "type": "DESTINATION_PORT",
+                    "type":"IP_PROTOCOL",
+                    "op": "==",
+                    "value": "17"
+                }, {
+                    "type": "SERVER_PORT",
                     "op": "==",
                     "value": "53",
-                    "port_protocol": "17"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -727,10 +700,13 @@ def default_shaping_rules_table():
                 "description": "SSH Priority",
                 "ruleId": 6,
                 "conditions": [{
-                    "type": "DESTINATION_PORT",
+                    "type":"IP_PROTOCOL",
                     "op": "==",
-                    "value": "22",
-                    "port_protocol": "6"
+                    "value": "6"
+                },{
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "22"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -741,10 +717,13 @@ def default_shaping_rules_table():
                 "description": "Openvpn Priority",
                 "ruleId": 7,
                 "conditions": [{
-                    "type": "DESTINATION_PORT",
+                    "type":"IP_PROTOCOL",
                     "op": "==",
-                    "value": "1194",
-                    "port_Protocol": "6"
+                    "value": "6"
+                },{
+                    "type": "SERVER_PORT",
+                    "op": "==",
+                    "value": "1194"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
