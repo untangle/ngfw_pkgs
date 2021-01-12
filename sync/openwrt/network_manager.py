@@ -11,7 +11,6 @@ import subprocess
 import ipaddress
 import re
 import base64
-import socket
 import stat
 from sync import registrar, Manager
 from sync import network_util
@@ -1045,11 +1044,6 @@ class NetworkManager(Manager):
                 host = peer.get('host')
                 if not valid_ipv4_network(host) and not valid_ipv6_network(host) and not valid_hostname(host):
                     raise Exception("Specified WireGuard Endpoint address is not valid: " + peer)
-
-                try:
-                    socket.gethostbyname(host)
-                except:
-                    raise Exception("Unable to resolve WireGuard Endpoint address: " + host)
 
                 port = peer.get('port')
                 if not isinstance(port, int):
