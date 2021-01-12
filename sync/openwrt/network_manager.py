@@ -494,6 +494,7 @@ class NetworkManager(Manager):
             contents = contents.replace(b'nobind',b'#nobind')
             contents = contents.replace(b'persist-tun',b'#persist-tun')
             file.write(contents)
+            file.write(b'route-nopull\n')
             file.flush()
             file.close()
             print("%s: Wrote %s" % (self.__class__.__name__, filename))
