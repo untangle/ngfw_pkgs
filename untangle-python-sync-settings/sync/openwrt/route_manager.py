@@ -87,6 +87,11 @@ class RouteManager(Manager):
             nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
             nftables_util.clean_rule_actions(chain, chain.get('rules'))
 
+            # Version check, use MFW version for the version bump
+            if settings_file.settings['version'] < 3:
+                nftables_util.fix_port_proto_rules(chain.get('rules'))
+                nftables_util.fix_MFW_1082_rules('wan-routing', chain.get('rules'))
+
 
         #Clean up rules and policies that may be referencing a disabled interface, only if Force is passed as true
         if Variables.get('force') != None and Variables.get('force').lower() == 'true':
@@ -179,8 +184,6 @@ class RouteManager(Manager):
                     raise Exception("Missing action type in WAN rule" + str(rule_id))
                 if action.get("type") == "WAN_POLICY":
                     policy = action.get("policy")
-                    if policy not in policy_ids:
-                        raise Exception("WAN rule " + str(rule_id) + " uses missing WAN policy " + str(policy))
 
                     curr_pol = network_util.get_policy_by_id(settings, policy)
                     if rule.get("enabled") and (curr_pol is None or curr_pol.get('enabled') == False or curr_pol.get('policyId') in invalidPolIDs):

@@ -51,6 +51,17 @@ def check_operation(op, array):
     if op not in array:
         raise Exception("Unsupported operation " + str(op))
 
+def check_val_is_string(val):
+    """
+    Utility function to check if the value's contents is a string
+    :param val (string) - The value data
+    """
+
+    if re.search('[a-zA-Z]', val) is None:
+        return False
+        
+    return True
+
 def op_str(op):
     """
     Returns a command-line safe version of the operation
@@ -71,14 +82,19 @@ def op_str(op):
 
 def ip_protocol_number_to_str(ip_protocol):
     """
-    Changes 6,"6","tcp" to "tcp"
-    Changes 17,"17","udp" to "udp"
+    Converts 6, 17, 33, 132, 136 to the proper ip protocol supported for sport/dport nft conditions
     All other values unchanged
     """
     if ip_protocol == "6" or ip_protocol == 6:
         return "tcp"
     if ip_protocol == "17" or ip_protocol == 17:
         return "udp"
+    if ip_protocol == "33" or ip_protocol == 33:
+        return "dccp"
+    if ip_protocol == "132" or ip_protocol == 132:
+        return "sctp"
+    if ip_protocol == "136" or ip_protocol == 136:
+        return "udplite"        
     return ip_protocol
 
 def value_str(value):
@@ -213,7 +229,11 @@ def condition_v6address_expression(addr_str, value, op, family):
 def condition_port_expression(port_str, ip_protocol, value, op):
     """Generic helper for making port expressions"""
     if ip_protocol is None:
-        raise Exception("Undefined protocol with port condition")
+        raise Exception("Undefined protocol with port condition (missing port_protocol field)")
+    # If this is passed in here as a list, only take the first element. This occurs because we switched the UI element to a multiselect
+    if isinstance(ip_protocol, list):
+        ip_protocol = ip_protocol[0]
+
     return ip_protocol_number_to_str(ip_protocol) + " " + port_str + op_str(op) + numerical_val(value)
 
 def condition_ct_state_expression(value, op):
@@ -237,7 +257,7 @@ def condition_limit_rate_expression(value, op, rate_unit):
     else:
         return "limit rate over %d%s" % (rate_int, get_limit_rate_unit_string(rate_unit))
 
-def condition_expression(condition, family, ip_protocol=None):
+def condition_expression(condition, family, multi_type=None, multi_iter=None):
     """Build nft expressions from the JSON condition object"""
     condition = sanitize_condition(condition)
     condtype = condition.get('type')
@@ -247,7 +267,10 @@ def condition_expression(condition, family, ip_protocol=None):
 
     if condtype == "IP_PROTOCOL":
         check_operation(op, ["==", "!="])
-        return "meta l4proto" + op_str(op) + value_str(value.lower())
+        if check_val_is_string(value):
+            return "meta l4proto" + op_str(op) + value_str(value.lower())
+
+        return "meta l4proto" + op_str(op) + numerical_val(value.lower())
     elif condtype == "SOURCE_INTERFACE_ZONE":
         return condition_interface_zone_expression("mark", "0x000000ff", 0, value, op)
     elif condtype == "DESTINATION_INTERFACE_ZONE":
@@ -277,9 +300,13 @@ def condition_expression(condition, family, ip_protocol=None):
     elif condtype == "DESTINATION_ADDRESS_V6":
         return condition_v6address_expression("daddr", value, op, family)
     elif condtype == "SOURCE_PORT":
-        return condition_port_expression("sport", ip_protocol, value, op)
+        if multi_type is not None and multi_iter is not None and multi_type == "port_protocol":
+            return condition_port_expression("sport", multi_iter, value, op)
+        return condition_port_expression("sport", condition.get('port_protocol'), value, op)
     elif condtype == "DESTINATION_PORT":
-        return condition_port_expression("dport", ip_protocol, value, op)
+        if multi_type is not None and multi_iter is not None and multi_type == "port_protocol":
+            return condition_port_expression("dport", multi_iter, value, op)
+        return condition_port_expression("dport", condition.get('port_protocol'), value, op)
     elif condtype == "CLIENT_INTERFACE_ZONE":
         return condition_interface_zone_expression("ct mark", "0x000000ff", 0, value, op)
     elif condtype == "SERVER_INTERFACE_ZONE":
@@ -413,7 +440,7 @@ def condition_expression(condition, family, ip_protocol=None):
         return condition_limit_rate_expression(value, op, unit)
     raise Exception("Unsupported condition type " + condtype + " " + str(condition.get('ruleId')))
 
-def conditions_expression(conditions, family):
+def conditions_expression(conditions, family, multi_type=None, multi_iter=None):
     """
     This method takes a list of conditions from a rule and translates them into a string containing the nftables conditions
     It returns a list of strings, because some set of conditions require multiple nftables rules
@@ -423,22 +450,18 @@ def conditions_expression(conditions, family):
     if conditions is None:
         return ""
 
-    # set has_protocol_condition to True if this rule as an "IP_PROTOCOL" condition
-    ip_protocol = None
-    for condition in conditions:
-        condition = sanitize_condition(condition)
-        if condition.get('type') == 'IP_PROTOCOL' and condition.get('op') == '==' and condition.get('value') != None and "," not in condition.get('value'):
-            ip_protocol = condition.get('value')
-
     strcat = ""
     for condition in conditions:
 
         group_selector = condition.get('group_selector')
         if group_selector != None:
             conditions_expression.meter_id = getattr(conditions_expression, 'meter_id', 0) + 1
-            strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family, ip_protocol=ip_protocol))
+            if(condition.get('port_protocol')):
+                strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family, condition.get('port_protocol')))
+            else:
+                strcat = strcat + " meter meter-%d { %s" % (conditions_expression.meter_id, selector_expression(group_selector, family))
 
-        add_str = condition_expression(condition, family, ip_protocol=ip_protocol)
+        add_str = condition_expression(condition, family, multi_type, multi_iter)
         if add_str != "":
             strcat = strcat + " " + add_str
 
@@ -539,14 +562,14 @@ def logs_expression(logs):
 
     return strcat.strip()
 
-def rule_expression(json_rule, family):
+def rule_expression(json_rule, family, table, chain, multi_type=None, multi_iter=None):
     """Builds an nft rule from the JSON rule object"""
     check_rule(json_rule)
 
     rule_exp = ""
     conditions = json_rule.get('conditions')
     if conditions != None:
-        rule_exp = rule_exp + " " + conditions_expression(conditions, family)
+        rule_exp = rule_exp + " " + conditions_expression(conditions, family, multi_type, multi_iter)
 
     logs = json_rule.get('logs')
     if logs != None:
@@ -555,22 +578,43 @@ def rule_expression(json_rule, family):
     action_exp = action_expression(json_rule.get('action'), family)
     rule_exp = rule_exp + " " + action_exp
 
-    return rule_exp[1:]
+    return "add rule " + family + " " + table + " " + chain + " " + rule_exp[1:]
 
 def rule_cmd(json_rule, family, table, chain):
-    """This method takes a rule json object and provides the nft command"""
+    """This method takes a rule json object, and returns a list of nft commands associated with the rule"""
     check_rule(json_rule)
+    nft_rule_list = []
 
     if not json_rule.get('enabled'):
         return None
 
     try:
-        cmd = "add rule " + family + " " + table + " " + chain + " " + rule_expression(json_rule, family)
-        return cmd
+        multi_type, multi_iter = determine_multi_rule(json_rule)
+        if multi_type is not None and multi_iter is not None:
+            for itr in multi_iter:
+                nft_rule_list.append(rule_expression(json_rule, family, table, chain, multi_type=multi_type, multi_iter=str(itr)))   
+
+        else:
+            nft_rule_list.append(rule_expression(json_rule, family, table, chain))
+        return nft_rule_list
     except NonsensicalException:
         return None
     except:
         raise
+
+def determine_multi_rule(json_rule):
+    """
+    determine_multi_rule will return an object to iterate if we need to write multiple NFT rules for this sdwan rule
+    :param json_rule (string) - the json rule
+    """
+    # Currently only SOURCE_PORT and DESTINATION_PORT conditions might require additional rules
+    conditions = json_rule.get('conditions')
+    for cnd in conditions:
+        if cnd.get('type') == "SOURCE_PORT" or cnd.get('type') == "DESTINATION_PORT":
+            # Check if multiple port_protocols are passed in
+            if "," in str(cnd.get('port_protocol')):
+                return 'port_protocol', cnd.get('port_protocol')
+    return None, None
 
 def chain_create_cmd(json_chain, family, chain_type, table):
     """Return the nft command to create this chain"""
@@ -616,9 +660,9 @@ def chain_rules_cmds(json_chain, family, chain_type, table):
 
     cmds = []
     for rule in json_chain['rules']:
-        rule_cmd_str = rule_cmd(rule, family, table, json_chain['name'])
-        if rule_cmd_str != None:
-            cmds.append(rule_cmd_str)
+        rule_cmd_items = rule_cmd(rule, family, table, json_chain['name'])
+        if rule_cmd_items != None:
+            cmds.extend(rule_cmd_items)
     return '\n'.join(cmds)
 
 def table_create_cmd(json_table):
@@ -806,3 +850,102 @@ def clean_rule_actions(parent, array, tableName=None):
                             condition["value"] = 1
                         elif value == "lan":
                             condition["value"] = 2
+
+def fix_port_proto_rules(rules):
+    """ 
+        fix_port_proto_rules is used to cleanup SOURCE_PORT and DESTINATION_PORT rules that are using the "old" method of 
+        checking for the ip protocol as a separate condition VS the current method of using the port_protocol extra field
+        :param rules: (array) array of rules in this chain
+    """
+    if rules:
+        for rule in rules:
+            for condition in rule.get('conditions'):
+                # We only need to check this on DESTINATION_PORT and SOURCE_PORT conditions, if they do not have port_protocol set
+                if (condition.get("type") == "DESTINATION_PORT" or 
+                    condition.get("type") == "SOURCE_PORT" or 
+                    (condition.get("type") == "LIMIT_RATE" and condition.get("group_selector") == "DESTINATION_PORT") or 
+                    (condition.get("type") == "LIMIT_RATE" and condition.get("group_selector") == "SOURCE_PORT") ) and condition.get("port_protocol") is None:
+                    # If we can't find an associated IP_PROTOCOL for this rule, then just assign TCP (this shouldn't be possible)
+                    setProto = 6
+
+                    # Search the other conditions on this rule for the first IP_PROTOCOL condition and value
+                    for otherCondition in rule.get('conditions'):
+                        if otherCondition.get("type") == "IP_PROTOCOL":
+                            setProto = otherCondition.get("value")
+
+                    condition["port_protocol"] = setProto
+
+def fix_MFW_1082_rules(tableName, rules):
+    """
+        MFW-1082:  
+        Remove Client/Server conditions from WAN Rules, Port Forward Rules, NAT Rules, and Access Rules
+        Remove Source/Destination conditions from Shaping Rules and Filter Rulesfix_chain_rules fixes
+        
+        this function will 'fix' the condition in specific tables (According to logic linked in the above ticket)
+        and then disable the rule
+    """
+
+    # clientServerConditionFixes is a map of old conditions that will be updated with whatever their value is
+    # these are used for fixing the wan-routing, port-forward, nat, access tables
+    clientServerConditionFixes = {}
+    # Client conditions -> Source conditions
+    clientServerConditionFixes['CLIENT_ADDRESS'] = 'SOURCE_ADDRESS'
+    clientServerConditionFixes['CLIENT_ADDRESS_V6'] = 'SOURCE_ADDRESS_V6'
+    clientServerConditionFixes['CLIENT_PORT'] = 'SOURCE_PORT'
+    clientServerConditionFixes['CLIENT_INTERFACE_ZONE'] = 'SOURCE_INTERFACE_ZONE'
+    clientServerConditionFixes['CLIENT_INTERFACE_TYPE'] = 'SOURCE_INTERFACE_TYPE'
+
+    # Server conditions -> Destination conditions
+    clientServerConditionFixes['SERVER_ADDRESS'] = 'DESTINATION_ADDRESS'
+    clientServerConditionFixes['SERVER_ADDRESS_V6'] = 'DESTINATION_ADDRESS_V6'
+    clientServerConditionFixes['SERVER_PORT'] = 'DESTINATION_PORT'
+    clientServerConditionFixes['SERVER_INTERFACE_ZONE'] = 'DESTINATION_INTERFACE_ZONE'
+    clientServerConditionFixes['SERVER_INTERFACE_TYPE'] = 'DESTINATION_INTERFACE_TYPE'
+
+
+    srcDstConditionFixes = {}
+    # Source conditions -> Client conditions
+    srcDstConditionFixes['SOURCE_ADDRESS'] = 'CLIENT_ADDRESS'
+    srcDstConditionFixes['SOURCE_ADDRESS_V6'] = 'CLIENT_ADDRESS_V6'
+    srcDstConditionFixes['SOURCE_PORT'] = 'CLIENT_PORT'
+    srcDstConditionFixes['SOURCE_INTERFACE_ZONE'] = 'CLIENT_INTERFACE_ZONE'
+    srcDstConditionFixes['SOURCE_INTERFACE_TYPE'] = 'CLIENT_INTERFACE_TYPE'
+
+
+    # Destination conditions -> Server conditions
+    srcDstConditionFixes['DESTINATION_ADDRESS'] = 'SERVER_ADDRESS'
+    srcDstConditionFixes['DESTINATION_ADDRESS_V6'] = 'SERVER_ADDRESS_V6'
+    srcDstConditionFixes['DESTINATION_PORT'] = 'SERVER_PORT'
+    srcDstConditionFixes['DESTINATION_INTERFACE_ZONE'] = 'SERVER_INTERFACE_ZONE'
+    srcDstConditionFixes['DESTINATION_INTERFACE_TYPE'] = 'SERVER_INTERFACE_TYPE'
+
+
+    if tableName == 'wan-routing' or tableName == 'port-forward' or tableName == 'nat' or tableName == 'access':
+        for rule in rules:
+            switchCondition(rule, clientServerConditionFixes)
+
+
+    if tableName == 'shaping' or tableName == 'filter':
+        for rule in rules:
+            switchCondition(rule, srcDstConditionFixes)
+
+def switchCondition(rule, conditionMap):
+    """
+        switchCondition is used largely by fix_MFW_1082_rules to switch old conditions with new conditions for a rule
+        and also disable that condition
+    """
+    if rule:
+        # Store the current enabled/disabled status of the rule
+        # if we have to fix a condition, then we want to always disabled the rule after processing
+        ruleEnabled = rule.get('enabled')
+        if rule.get('conditions'):
+            for condition in rule.get('conditions'):  
+                # Check if this type exists as a key in the condition map     
+                if condition.get('type') in conditionMap:
+                    condition['type'] = conditionMap[condition.get('type')]
+                    ruleEnabled = False
+
+        # if these don't match after processing, then a condition change means we need to disable the rule
+        if ruleEnabled != rule.get('enabled'):
+            rule['enabled'] = ruleEnabled
+    

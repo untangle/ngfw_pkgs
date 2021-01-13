@@ -53,6 +53,11 @@ class SettingsManager(Manager):
         shutil.copyfile(orig_settings_filename, filename)
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
 
+    def sanitize_settings(self, settings_file):
+        # Update settings file version after all other sanitizers have run
+        if settings_file.settings['version'] < 3:
+            settings_file.settings['version'] = 3
+
 registrar.register_manager(SettingsManager())
 
 
