@@ -65,6 +65,9 @@ class NetworkManager(Manager):
         # Give any OpenVPN interfaces tun devices
         openvpn_set_tun_interfaces(settings_file.settings)
 
+        # Perform operations on WireGuard interfaces
+        sanitize_wireguard_interfaces(settings_file.settings)
+
     def sanitize_settings_post(self, settings_file):
         # Clear "new" flag
         interfaces = settings_file.settings.get('network').get('interfaces')
@@ -501,6 +504,7 @@ class NetworkManager(Manager):
             contents = contents.replace(b'nobind',b'#nobind')
             contents = contents.replace(b'persist-tun',b'#persist-tun')
             file.write(contents)
+            file.write(b'route-nopull\n')
             file.flush()
             file.close()
             print("%s: Wrote %s" % (self.__class__.__name__, filename))
@@ -956,7 +960,7 @@ class NetworkManager(Manager):
             path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".ovpn"
             auth_path = "/etc/config/openvpn-" + str(intf["interfaceId"]) + ".auth"
 
-            wanId = intf.get("openvpnBoundInterfaceId")
+            wanId = intf.get("boundInterfaceId")
             if wanId is not None:
 
                 if isinstance(wanId, str):
@@ -1035,7 +1039,7 @@ class NetworkManager(Manager):
             addresses = intf.get('wireguardAddresses')
             for address in addresses:
                 if not valid_ipv4_network(address.get('address')) and not valid_ipv6_network(address.get('address')):
-                    raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address)
+                    raise Exception("Invalid wireguard address: " + intf.get('name') + " " + address.get('address'))
 
             if intf.get("wireguardPeers") is None or intf.get("wireguardPeers") == []:
                 raise Exception("No wireguard peers specified for interface: " + intf.get('name'))
@@ -1047,6 +1051,14 @@ class NetworkManager(Manager):
 
                 if not isinstance(peer.get("publicKey"), str):
                     raise Exception("Specified wireguard peer private key is not a string: " + intf.get('name'))
+
+                host = peer.get('host')
+                if not valid_ipv4_network(host) and not valid_ipv6_network(host) and not valid_hostname(host):
+                    raise Exception("Specified WireGuard Endpoint address is not valid: " + peer)
+
+                port = peer.get('port')
+                if not isinstance(port, int):
+                    raise Exception("WireGuard Endpoint Listen Port not an integer: " + port)
 
                 if peer.get("allowedIps") is None or peer.get("allowedIps") == []:
                     raise Exception("No wireguard peer addresses specified for interface: " + intf.get('name'))
@@ -1208,6 +1220,19 @@ def valid_ipv6_network(address, accept_none=False):
     except:
         return False
 
+def valid_hostname(hostname, accept_none=False):
+    """returns true if hostname (string) is a valid domain name"""
+    if hostname is None and accept_none:
+        return True
+
+    if hostname.endswith('.'):
+        hostname = hostname[:-1]
+
+    if len(hostname) < 1 or len(hostname) > 253:
+        return False
+
+    hostname_segment_re = re.compile('^[a-z0-9]([a-z0-9-]{0,61}[a-z0-9])?$', re.IGNORECASE)
+    return all(hostname_segment_re.match(x) for x in hostname.split('.'))
 
 def openvpn_set_tun_interfaces(settings):
     """
@@ -1221,6 +1246,16 @@ def openvpn_set_tun_interfaces(settings):
     for intf in interfaces:
         if intf.get("type") == "OPENVPN" and intf.get("device") is None:
             intf["device"] = find_lowest_available_tun(interfaces)
+
+def sanitize_wireguard_interfaces(settings):
+    """
+    Make sure that WireGuard devices match names.
+    """
+    interfaces = settings.get('network').get('interfaces')
+    for intf in interfaces:
+        if intf.get("type") == "WIREGUARD":
+            if 'device' not in intf or intf.get("name") is not None:
+                intf["device"] = intf.get("name")
 
 def find_lowest_available_tun(interfaces):
     """

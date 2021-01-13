@@ -120,6 +120,11 @@ class TableManager(Manager):
                 nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
                 nftables_util.clean_rule_actions(chain, chain.get('rules'), table)
 
+                # Version check, use MFW version for the version bump
+                if settings_file.settings['version'] < 3:
+                    nftables_util.fix_port_proto_rules(chain.get('rules'))
+                    nftables_util.fix_MFW_1082_rules(table, chain.get('rules'))
+
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
@@ -328,7 +333,7 @@ def default_nat_rules_table():
                     "op": "==",
                     "value": "6"
                 }, {
-                    "type": "SERVER_PORT",
+                    "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "1234"
                 }],
@@ -762,13 +767,10 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 2,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "4569"
+                    "value": "4569",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -779,13 +781,10 @@ def default_shaping_rules_table():
                 "description": "VoIP (IAX) Traffic",
                 "ruleId": 3,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "4569"
+                    "value": "4569",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -809,13 +808,10 @@ def default_shaping_rules_table():
                 "description": "DNS Priority",
                 "ruleId": 5,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "17"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "53"
+                    "value": "53",
+                    "port_protocol": "17"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -826,13 +822,10 @@ def default_shaping_rules_table():
                 "description": "SSH Priority",
                 "ruleId": 6,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "22"
+                    "value": "22",
+                    "port_protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
@@ -843,13 +836,10 @@ def default_shaping_rules_table():
                 "description": "Openvpn Priority",
                 "ruleId": 7,
                 "conditions": [{
-                    "type": "IP_PROTOCOL",
-                    "op": "==",
-                    "value": "6"
-                }, {
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "1194"
+                    "value": "1194",
+                    "port_Protocol": "6"
                 }],
                 "action": {
                     "type": "SET_PRIORITY",
