@@ -46,6 +46,11 @@ class WireguardManager(Manager):
                 'new': 'insert',
                 'index': 3,
                 'rule': '-o $WG_INTERFACE -j MARK --set-mark {dst_mark} -m comment --comment "Set dst interface mark for wireguard vpn"'
+            }],
+            "mark-dst-intf": [{
+                'new': 'insert',
+                'index': 3,
+                'rule': '-o $WG_INTERFACE -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu -m comment --comment "Perform mss clamping for wireguard vpn"'
             }]
         },
         "nat": {
