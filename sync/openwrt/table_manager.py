@@ -19,18 +19,18 @@ class TableManager(Manager):
             "type": "ACCEPT"
         },
         "conditions": [{
-            "op": "==",
-            "type": "DESTINATION_INTERFACE_ZONE"
+            "type": "DESTINATION_INTERFACE_ZONE",
+            "op": "=="
         },{
+            "type": "DESTINATION_PORT",
+            "port_protocol": "17",
             "op": "==",
-            "type": "DESTINATION_PORT"
+            "value": 51820
         },{
-            "op": "==",
             "type": "IP_PROTOCOL",
+            "op": "==",
             "value": 17
-            }
-        ],
-        # "description": "Allow WireGuard tunnel to",
+        }],
         "enabled": True
     }
     wireguard_description_template = "Allow WireGuard tunnel to {name}[{id}]"
