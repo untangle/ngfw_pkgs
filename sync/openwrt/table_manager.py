@@ -2,7 +2,9 @@
 # pylint: disable=unused-argument
 # pylint: disable=bare-except
 # pylint: disable=no-self-use
+import copy
 import os
+import re
 import stat
 from sync import registrar, Manager
 from sync import nftables_util
@@ -12,13 +14,106 @@ class TableManager(Manager):
     """ReportsManager manages the all the firewall tables"""
     filename_prefix = "/etc/config/nftables-rules.d/2"
 
+    wireguard_access_rule_template = {
+        "action": {
+            "type": "ACCEPT"
+        },
+        "conditions": [{
+            "op": "==",
+            "type": "DESTINATION_INTERFACE_ZONE"
+        },{
+            "op": "==",
+            "type": "DESTINATION_PORT"
+        },{
+            "op": "==",
+            "type": "IP_PROTOCOL",
+            "value": 17
+            }
+        ],
+        # "description": "Allow WireGuard tunnel to",
+        "enabled": True
+    }
+    wireguard_description_template = "Allow WireGuard tunnel to {name}[{id}]"
+    wireguard_description_template_regex = None
+
     def initialize(self):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.filename_prefix + ".*", "restart-nftables-rules", self)
 
+        # Update WireGuard defaults
+        self.wireguard_access_rule_template['description'] = re.search(r'^([^{]+)', self.wireguard_description_template).group(1)
+        # Escape brackets for WireGuard description searches.
+        self.wireguard_description_template_regex = self.wireguard_description_template.translate(
+            str.maketrans({
+                '[': r'\[',
+                ']': r'\]',
+            }))
+
     def sanitize_settings(self, settings_file):
         """sanitizes settings"""
+
+        # Walk interfaces looking for new or modified WireGuard interfaces.
+        access_rules = settings_file.get_settings_by_path("firewall/tables/access/chains/name=access-rules/rules")
+        interfaces = settings_file.settings.get('network').get('interfaces')
+        for interface in interfaces:
+            rule = None
+            add_rule = False
+            if interface.get("type") == "WIREGUARD" and interface.get("wireguardType") == "TUNNEL":
+                if interface.get('new') is not None:
+                    # Build new rule from template.
+                    rule = copy.deepcopy(self.wireguard_access_rule_template)
+                    add_rule = True
+                else:
+                    # Look for existing rule.
+                    find_rule = copy.deepcopy(self.wireguard_access_rule_template)
+                    # Only value that can't change is interfaceId in descripton
+                    find_rule["description"] = self.wireguard_description_template.format(name=".*", id=interface.get("interfaceId"))
+                    rules = settings_file.find_settings_list(access_rules, find_rule)
+                    if len(rules) == 0:
+                        # Could be coming from roaming
+                        rule = copy.deepcopy(self.wireguard_access_rule_template)
+                        add_rule = True
+                    else:
+                        rule = rules[0]
+
+                if rule is not None:
+                    ## Populate rule from interface.
+                    rule["description"] = self.wireguard_description_template.format(name=interface.get("name"), id=interface.get("interfaceId"))
+                    for condition in rule.get("conditions"):
+                        if condition.get("type") == "DESTINATION_INTERFACE_ZONE":
+                            condition["value"] = interface.get("boundInterfaceId") 
+                        elif condition.get("type") == "DESTINATION_PORT":
+                            condition["value"] = interface.get("wireguardPort") 
+
+                    if add_rule is True:
+                        access_rules.insert(0, rule)
+
+        # Look for rules to delete
+        find_delete_rule = copy.deepcopy(self.wireguard_access_rule_template)
+        wg_access_rules = settings_file.find_settings_list(access_rules, find_delete_rule)
+        if len(wg_access_rules) > 0:
+            wg_description_re = re.compile(self.wireguard_description_template_regex.format(name=".*", id="(\d+)"))
+            delete_rules = []
+            for rule in wg_access_rules:
+                matches = wg_description_re.match(rule.get("description"))
+                if matches is not None and matches.lastindex > 0:
+                    interface_found = False
+                    interface_id = int(matches.group(1))
+                    for interface in interfaces:
+                        if interface.get("interfaceId") == interface_id:
+                            interface_found = True
+                            if interface.get("type") == "WIREGUARD" and interface.get("wireguardType") == "ROAMING":
+                                # Found rule but we're now ROAMING.
+                                delete_rules.append(rule)
+
+                    if interface_found == False:
+                        # Interface not found.
+                        delete_rules.append(rule)
+
+            for rule in delete_rules:
+                access_rules.remove(rule)
+
         # Set the rule_id to unique values of every chain
         for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
             for chain in settings_file.settings['firewall']['tables'][table]['chains']:
