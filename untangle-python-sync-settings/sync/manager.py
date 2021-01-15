@@ -11,9 +11,21 @@ class Manager:
         """
         pass
 
+    def sanitize_settings_pre(self, settings_file):
+        """
+        Perform santiization on settings meant to be written back before other calls.
+        """
+        pass
+
     def sanitize_settings(self, settings_file):
         """
         Perform santiization on settings meant to be written back.
+        """
+        pass
+
+    def sanitize_settings_post(self, settings_file):
+        """
+        Perform santiization on settings meant to be written back after other calls.
         """
         pass
 

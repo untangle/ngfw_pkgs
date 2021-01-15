@@ -31,7 +31,7 @@ class NetworkManager(Manager):
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.network_filename, "restart-networking", self)
 
-    def sanitize_settings(self, settings_file):
+    def sanitize_settings_pre(self, settings_file):
         """sanitizes removes blank settings"""
         interfaces = settings_file.settings.get('network').get('interfaces')
         # Remove all "" and 0 and null values
@@ -67,6 +67,13 @@ class NetworkManager(Manager):
 
         # Perform operations on WireGuard interfaces
         sanitize_wireguard_interfaces(settings_file.settings)
+
+    def sanitize_settings_post(self, settings_file):
+        # Clear "new" flag
+        interfaces = settings_file.settings.get('network').get('interfaces')
+        for interface in interfaces:
+            if interface.get('new') is not None:
+                del interface['new']
 
     def validate_settings(self, settings_file):
         """validates settings"""
