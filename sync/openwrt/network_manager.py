@@ -405,8 +405,7 @@ class NetworkManager(Manager):
             allowedIps = []
             ips = peer.get('allowedIps')
             for ip in ips:
-                allowedIps.append("{address}/{prefix}".format(address=ip.get('address'), prefix=ip.get('prefix')))
-            file.write("\tlist allowed_ips '{allowedIps}'\n".format(allowedIps=",".join(allowedIps)))
+                file.write("\tlist allowed_ips '%s'\n" % "{address}/{prefix}".format(address=ip.get('address'), prefix=ip.get('prefix')))
             if peer.get('host') is not None:
                 file.write("\toption endpoint_host '%s'\n" % peer.get('host'))
             if peer.get('port') is not None:
