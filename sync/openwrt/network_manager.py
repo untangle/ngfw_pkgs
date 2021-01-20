@@ -183,6 +183,7 @@ class NetworkManager(Manager):
                 self.write_switch(swi, settings)
 
         self.write_lan_route_rules(settings)
+        self.write_remote_lan_route_rules(settings)
         self.write_route_rules(settings)
 
         file.flush()
@@ -216,6 +217,38 @@ class NetworkManager(Manager):
 
                     priority = priority + 1
 
+    def write_remote_lan_route_rules(self, settings):
+        """
+        Create route rules to ensure local lan to remote lan traffic gets
+        routed correctly.  At the moment this is just traffic destined for
+        a remote lan over a wireguard tunnel.
+        """
+        priority = 4000
+        file = self.network_file
+        file.write("\n")
+
+        interfaces = settings['network']['interfaces']
+        for intf in interfaces:
+            if (intf.get('enabled') and intf.get('type') == 'WIREGUARD'):
+
+                peers = intf.get('wireguardPeers')
+                for peer in peers:
+                    ips = peer.get('allowedIps')
+                    for ip in ips:
+                        address=ip.get('address')
+                        prefix=ip.get('prefix')
+
+                        # Don't write out a route for 'default'
+                        if address == '0.0.0.0' and prefix == 0:
+                            continue
+
+                        file.write("config rule\n")
+                        file.write("\toption dest '%s/%d'\n" % (address, prefix))
+                        file.write("\toption priority '%d'\n" % priority)
+                        file.write("\toption lookup 'wan.%d'\n" % intf.get('interfaceId'))
+                        file.write("\n")
+
+                        priority = priority + 1
 
     def write_route_rules(self, settings):
         """write the route rules"""
