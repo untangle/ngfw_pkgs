@@ -48,28 +48,6 @@ class WireguardManager(Manager):
                 'rule': '-o $WG_INTERFACE -j MARK --set-mark {dst_mark} -m comment --comment "Set dst interface mark for wireguard vpn"'
             }]
         },
-        "nat": {
-            "nat-rules": [{
-                'new': 'add',
-                'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
-            },{
-                'new': 'insert',
-                'rule': '-m mark --mark {wan_mark}/0xffff -j MASQUERADE -m comment --comment "NAT WAN-bound wireguard vpn traffic"'
-            }],
-            "port-forward-rules": [{
-                'new': 'insert',
-                'rule': '-p tcp -d {wireguard_ip_address} --destination-port 443 -j REDIRECT --to-ports 443 -m comment --comment "Send wireguard VPN to apache http"'
-            },{
-                'new': 'insert',
-                'rule': '-p tcp -d {wireguard_ip_address} --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "Send wireguard to apache https"'
-            }]
-        },
-        "filter": {
-            "nat-reverse-filter": [{
-                'new': 'insert',
-                'rule': '-m mark --mark {src_mark} -j RETURN -m comment --comment "Allow wireguard vpn"'
-            }]
-        }
     }
 
     def initialize(self):
