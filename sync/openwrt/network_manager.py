@@ -41,6 +41,10 @@ class NetworkManager(Manager):
                     del intf[k]
                 if intf.get(k, "missing") is None:
                     del intf[k]
+
+            # Never do natIngress
+            intf['natIngress'] = False
+
             # The UI currently doesn't set wan = false for LANS
             # if it is not specified, assume its false
             if intf.get("wan") is None:
