@@ -5,7 +5,7 @@ import datetime
 import traceback
 import string
 import re
-from sync.network_util import NetworkUtil
+from sync.network_util import NetworkUtil, get_is_wireguard
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with iptables rules
@@ -157,13 +157,17 @@ class IptablesUtil:
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
+                network_settings = {'network': NetworkUtil.settings}
                 for interface in interfaces:
                     conditionStr = ""
                     if invert:
                         conditionStr += " ! "
                     if isinstance(interface, (int)):
                         if conditionType == "DST_INTF":
-                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
+                            isWireguard = get_is_wireguard(network_settings, interface)
+                            if isWireguard:
+                                continue
+                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))  
                         else:
                             conditionStr += (" -m connmark --mark 0x%04X/0x00FF " % int(interface))
                     else:
@@ -318,4 +322,119 @@ class IptablesUtil:
                     current_strings = current_strings + [ conditionStr + current for current in orig_current_strings ]
 
         return current_strings;
+        
+    @staticmethod
+    def commands_for_wireguard(conditions, comment=None):
+        commands = []
+        if conditions is None:
+            return commands;
+        begin_comment = '"'
+        if comment is not None:
+            begin_comment += comment
+            begin_comment += ': '
+
+        for condition in conditions:
+            if 'conditionType' not in condition:
+                print("ERROR: Ignoring invalid condition: %s" % str(condition))
+                continue
+            if condition['conditionType'] == "DST_INTF" or condition['conditionType'] == "SRC_INTF":
+                conditionType = condition['conditionType']
+                if 'value' not in condition:
+                    continue
+                value = condition['value']
+                if "any" in value:
+                    continue
+                interfaces = IptablesUtil.interface_condition_string_to_interface_list( value ) + \
+                             IptablesUtil.interface_condition_string_to_virtual_interface_list( value )
+                if interfaces is None:
+                    continue
+                network_settings = {'network': NetworkUtil.settings}
+                for interface in interfaces:
+                    if isinstance(interface, (int)):
+                        isWireguard = get_is_wireguard(network_settings, interface)
+                        if isWireguard:
+                            if conditionType == "DST_INTF":
+                                iptables_table_format_map = {
+                                    # wan_mark is a special case that needs to duplicate the rule
+                                    # for as many wan interfaces are available.
+                                    'wan_mark': '{wan_mark}'
+                                }
+                                iptables_table_chain_rules = {
+                                    "nat": {
+                                        "nat-rules": [{
+                                            'new': 'insert',
+                                            'rule': '-m mark --mark {wan_mark}/0xffff -j MASQUERADE -m comment --comment ' + begin_comment + 'NAT WAN-bound wireguard vpn traffic"'
+                                        }]
+                                    },
+                                }
+                                delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(iptables_table_format_map, iptables_table_chain_rules, need_delete_rules=False)
+                                commands += new_rules
+
+        return commands
+
+    @staticmethod
+    def write_wireguard_iptables_rules(iptables_table_format_map, iptables_table_chain_rules, need_delete_rules=True):
+        """ Write iptables specific rules for wireguard """
+        delete_rule_template = "$IPTABLES -t {table} -D {chain} {rule} >/dev/null 2>&1"
+        wan_marks = []
+        for interface_id in NetworkUtil.wan_list():
+            wan_marks.append(hex((interface_id << 8) + 0x00fa))
+        delete_rules = []
+        new_rules = []
+        for table in sorted(iptables_table_chain_rules.keys()):
+            for chain in sorted(iptables_table_chain_rules[table].keys()):
+                format_map = {'table': table, 'chain': chain}
+                for rule in iptables_table_chain_rules[table][chain]:
+                    updated_rule = rule['rule'].format_map(iptables_table_format_map)
+
+                    format_map['comment'] = None
+                    if 'comment' in rule:
+                        format_map['comment'] = rule['comment']
+                    else:
+                        iptables_rule_comment_re = re.compile(r'--comment "([^"]+)"')
+                        match = re.search(iptables_rule_comment_re, rule['rule'])
+                        if match:
+                            format_map['comment'] = match.group(1)
+
+                    if format_map['comment'] is not None:
+                        if need_delete_rules: 
+                            delete_rules.append('## {comment}'.format_map(format_map)) 
+                        new_rules.append('## {comment}'.format_map(format_map))
+
+                    if '{wan_mark}' in updated_rule:
+                        for wan_mark in wan_marks:
+                            format_map['rule'] = updated_rule.format(wan_mark=wan_mark)
+                            if need_delete_rules:
+                                delete_rules.append(delete_rule_template.format_map(format_map))
+                            new_rules.append(IptablesUtil.create_new_rule(rule, format_map))
+                    else:
+                        format_map['rule'] = updated_rule
+                        if need_delete_rules: 
+                            delete_rules.append(delete_rule_template.format_map(format_map))
+                        new_rules.append(IptablesUtil.create_new_rule(rule, format_map))
+
+                    if need_delete_rules:
+                        delete_rules.append("")
+                    new_rules.append("")
+        return delete_rules, new_rules
+
+    @staticmethod
+    def create_new_rule(rule, format_map):
+        """
+        Create a new (add or insert) iptables rule
+        """
+        add_rule_template = "$IPTABLES -t {table} -A {chain} {rule}"
+        insert_rule_template = "$IPTABLES -t {table} -I {chain} {index} {rule}"
+        template = add_rule_template
+        if 'new' in rule and rule['new'] == 'insert':
+            template = insert_rule_template
+            if 'index' in rule:
+                format_map['index'] = rule['index']
+            else:
+                format_map['index'] = ''
+
+        new_rule = template.format_map(format_map)
+        if 'index' in rule:
+            del rule['index']
+        return new_rule
         

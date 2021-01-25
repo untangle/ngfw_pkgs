@@ -27,7 +27,6 @@ class NatRulesManager(Manager):
         self.write_nat_rules_file(settings_file.settings, prefix)
 
     def write_nat_rule(self, nat_rule):
-
         if 'enabled' in nat_rule and not nat_rule['enabled']:
             return
         if 'conditions' not in nat_rule:
@@ -47,6 +46,7 @@ class NatRulesManager(Manager):
         commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
         iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description)
         commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
+        commands += IptablesUtil.commands_for_wireguard(nat_rule['conditions'], description)
 
         self.file.write("# %s\n" % description)
         for cmd in commands:

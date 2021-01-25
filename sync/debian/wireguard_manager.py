@@ -8,7 +8,7 @@ import sys
 
 from collections import OrderedDict
 from sync.iptables_util import IptablesUtil
-from sync import registrar,Manager,NetworkUtil,Variables
+from sync import registrar,Manager,NetworkUtil,Variables,IptablesUtil
 
 class WireguardManager(Manager):
     """
@@ -18,12 +18,6 @@ class WireguardManager(Manager):
     wireguard_vpn_conf = '/etc/wireguard/wg0.conf'
     wireguard_remote_conf_dir = '/etc/wireguard/untangle'
     wireguard_iptables_script = '/etc/untangle/iptables-rules.d/720-wireguard-vpn'
-
-    delete_rule_template = "$IPTABLES -t {table} -D {chain} {rule} >/dev/null 2>&1"
-    add_rule_template = "$IPTABLES -t {table} -A {chain} {rule}"
-    insert_rule_template = "$IPTABLES -t {table} -I {chain} {index} {rule}"
-
-    iptables_rule_comment_re = re.compile(r'--comment "([^"]+)"')
 
     iptables_table_format_map = {
         'src_mark': '0xf9/0xff',
@@ -179,44 +173,12 @@ class WireguardManager(Manager):
             # Network settings must be specified
             raise Exception("Network settings not specified")
 
-        wan_marks = []
-        for interface_id in NetworkUtil.wan_list():
-            wan_marks.append(hex((interface_id << 8) + 0x00fa))
+        
         
         self.iptables_table_format_map['wireguard_ip_address'] = settings_file.settings.get('addressPool').split('/')[0]
 
-        delete_rules = []
-        new_rules = []
-        for table in sorted(self.iptables_table_chain_rules.keys()):
-            for chain in sorted(self.iptables_table_chain_rules[table].keys()):
-                format_map = {'table': table, 'chain': chain}
-                for rule in self.iptables_table_chain_rules[table][chain]:
-                    updated_rule = rule['rule'].format_map(self.iptables_table_format_map)
-
-                    format_map['comment'] = None
-                    if 'comment' in rule:
-                        format_map['comment'] = rule['comment']
-                    else:
-                        match = re.search(self.iptables_rule_comment_re, rule['rule'])
-                        if match:
-                            format_map['comment'] = match.group(1)
-
-                    if format_map['comment'] is not None:
-                        delete_rules.append('## {comment}'.format_map(format_map))
-                        new_rules.append('## {comment}'.format_map(format_map))
-
-                    if '{wan_mark}' in updated_rule:
-                        for wan_mark in wan_marks:
-                            format_map['rule'] = updated_rule.format(wan_mark=wan_mark)
-                            delete_rules.append(self.delete_rule_template.format_map(format_map))
-                            new_rules.append(self.create_new_rule(rule, format_map))
-                    else:
-                        format_map['rule'] = updated_rule
-                        delete_rules.append(self.delete_rule_template.format_map(format_map))
-                        new_rules.append(self.create_new_rule(rule, format_map))
-
-                    delete_rules.append("")
-                    new_rules.append("")
+        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_format_map, 
+                                                                              self.iptables_table_chain_rules)
 
         self.out_file_name = prefix + self.wireguard_iptables_script
         self.out_file_dir = os.path.dirname(self.out_file_name)
@@ -249,22 +211,5 @@ class WireguardManager(Manager):
         os.chmod(self.out_file_name, os.stat(self.out_file_name).st_mode | stat.S_IEXEC)
 
         print("WireguardManager: Wrote %s" % self.out_file_name)
-
-    def create_new_rule(self, rule, format_map):
-        """
-        Create a new (add or insert) iptables rule
-        """
-        template = self.add_rule_template
-        if 'new' in rule and rule['new'] == 'insert':
-            template = self.insert_rule_template
-            if 'index' in rule:
-                format_map['index'] = rule['index']
-            else:
-                format_map['index'] = ''
-
-        new_rule = template.format_map(format_map)
-        if 'index' in rule:
-            del rule['index']
-        return new_rule
         
 registrar.register_manager(WireguardManager())

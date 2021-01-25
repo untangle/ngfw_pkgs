@@ -140,6 +140,23 @@ def get_interface_by_id(settings, interfaceId):
             return intf
     return None
 
+def get_virtual_interface_by_id(settings, interfaceId):
+    """ returns virtual interface with the given interfaceId """
+    virtualInterfaces = settings.get('network').get('virtualInterfaces')
+    if virtualInterfaces is None:
+        return None
+    for intf in virtualInterfaces:
+        if intf.get('interfaceId') == interfaceId:
+            return intf
+    return None
+
+def get_is_wireguard(settings, interfaceId):
+    """ determine if interface is a wireguard interface """
+    checkInterface = get_virtual_interface_by_id(settings, interfaceId)
+    if checkInterface is not None and checkInterface.get('name') == 'WireGuard VPN':
+        return True
+    return False
+
 def get_policy_by_id(settings, policyId):
     """ 
     @param settings - The Settings json
