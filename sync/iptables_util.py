@@ -97,7 +97,7 @@ class IptablesUtil:
     # Example input: ['conditionType':'SRC_INTF', 'value':'1'] -> ["-m connmark --mark 0x01/0xff"]
     # Example input: ['conditionType':'DST_PORT', 'value':'123'] -> ["-p udp --dport 123", "-p tcp --dport 123"]
     @staticmethod
-    def conditions_to_iptables_string( conditions, comment=None, verbosity=0 ):
+    def conditions_to_iptables_string( conditions, comment=None, verbosity=0, is_nat_rules=False ):
         current_strings = [ "" ];
         if conditions is None:
             return current_strings;
@@ -165,11 +165,16 @@ class IptablesUtil:
                 orig_current_strings = current_strings
                 current_strings = []
                 # split current rules for each intf specified
+                network_settings = {'network': NetworkUtil.settings}
                 for interface in interfaces:
                     conditionStr = ""
                     if invert:
                         conditionStr += " ! "
                     if isinstance(interface, (int)):
+                        if is_nat_rules:
+                            is_wireguard = get_is_wireguard(network_settings, interface)
+                            if is_wireguard:
+                                continue
                         if conditionType == "DST_INTF":
                             conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))  
                         else:
@@ -361,8 +366,8 @@ class IptablesUtil:
                     if isinstance(interface, (int)):
                         isWireguard = get_is_wireguard(network_settings, interface)
                         if isWireguard:
-                            if conditionType == "DST_INTF":
-                                
+                            iptables_table_chain_rules = {}
+                            if conditionType == "DST_INTF":   
                                 iptables_table_chain_rules = {
                                     "nat": {
                                         "nat-rules": [{
@@ -387,19 +392,21 @@ class IptablesUtil:
                                             'rule': '-p tcp -d {wireguard_ip_address} --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "' + begin_comment + 'Send wireguard to apache https"'
                                         }
                                     ]
-                                else:
-                                    iptables_table_chain_rules = {
-                                        "nat": {
-                                            "nat-rules": [{
-                                                'new': 'add',
-                                                'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
-                                            }]
-                                        },
-                                    }
+                            else:
+                                iptables_table_chain_rules = {
+                                    "nat": {
+                                        "nat-rules": [{
+                                            'new': 'add',
+                                            'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
+                                        }]
+                                    },
+                                }
+                            if len(iptables_table_chain_rules.keys()) > 0:
                                 delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(iptables_table_chain_rules, wireguard_ip_address_arg=wireguard_ip_address)
                                 commands += delete_rules
                                 commands += new_rules
 
+        print(commands)
         return commands
 
     @staticmethod

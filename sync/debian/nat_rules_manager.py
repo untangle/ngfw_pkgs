@@ -49,7 +49,7 @@ class NatRulesManager(Manager):
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
         wireguard_commands = []
         commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
-        iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description)
+        iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description, is_nat_rules=True)
         commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
         wireguard_commands = IptablesUtil.commands_for_wireguard(nat_rule['conditions'], description)
 
