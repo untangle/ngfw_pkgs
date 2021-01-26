@@ -15,18 +15,22 @@ class NatRulesManager(Manager):
     interfaces_mark_mask = 0x0000FFFF
     lxc_mark_mask = 0x04000000
 
-    iptables_filename = "/etc/untangle/iptables-rules.d/231-nat-rules"
+    iptables_filename = "/etc/untangle/iptables-rules.d/220-nat-rules"
+    wireguard_iptables_filename = "/etc/untangle/iptables-rules.d/721-wireguard-nat-rules"
     filename = iptables_filename
+    wireguard_filename = wireguard_iptables_filename
     file = None
+    wireguard_file = None
 
     def initialize(self):
         registrar.register_settings_file("network", self)
         registrar.register_file(self.iptables_filename, "restart-iptables", self)
+        registrar.register_file(self.wireguard_iptables_filename, "restart-iptables", self)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         self.write_nat_rules_file(settings_file.settings, prefix)
 
-    def write_nat_rule(self, nat_rule):
+    def write_nat_rule(self, nat_rule, prefix=""):
         if 'enabled' in nat_rule and not nat_rule['enabled']:
             return
         if 'conditions' not in nat_rule:
@@ -43,15 +47,23 @@ class NatRulesManager(Manager):
             return
 
         description = "NAT Rule #%i" % int(nat_rule['ruleId'])
+        wireguard_commands = []
         commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
         iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description)
         commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
-        commands += IptablesUtil.commands_for_wireguard(nat_rule['conditions'], description)
+        wireguard_commands = IptablesUtil.commands_for_wireguard(nat_rule['conditions'], description)
 
         self.file.write("# %s\n" % description)
         for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n")
+
+        if len(wireguard_commands) > 0:
+            for cmd in wireguard_commands:
+                self.wireguard_file.write(cmd + "\n")
+        self.wireguard_file.write("\n")
+        
+            
 
         return
 
@@ -64,7 +76,7 @@ class NatRulesManager(Manager):
             return True
         return False
 
-    def write_nat_rules(self, settings):
+    def write_nat_rules(self, settings, prefix=""):
 
         if settings == None or 'natRules' not in settings:
             print("ERROR: Missing NAT Rules")
@@ -74,7 +86,7 @@ class NatRulesManager(Manager):
 
         for nat_rule in nat_rules:
             try:
-                self.write_nat_rule(nat_rule)
+                self.write_nat_rule(nat_rule, prefix)
             except Exception as e:
                 traceback.print_exc()
 
@@ -197,6 +209,16 @@ class NatRulesManager(Manager):
         self.file.write("\n")
         self.file.write("\n")
 
+        self.wireguard_filename = prefix + self.wireguard_iptables_filename     
+        self.wireguard_file_dir = os.path.dirname(self.wireguard_filename)
+        if not os.path.exists(self.wireguard_file_dir):
+            os.makedirs(self.wireguard_file_dir)
+        self.wireguard_file = open(self.wireguard_filename, "w+")
+        self.wireguard_file.write("## Auto Generated\n")
+        self.wireguard_file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        self.wireguard_file.write("\n")
+        self.wireguard_file.write("\n")
+
         self.file.write("# Create (if needed) and flush nat-rules chain" + "\n")
         self.file.write("${IPTABLES} -t nat -N nat-rules 2>/dev/null" + "\n")
         self.file.write("${IPTABLES} -t nat -F nat-rules >/dev/null 2>&1" + "\n")
@@ -232,7 +254,7 @@ class NatRulesManager(Manager):
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN" + "\n")
         self.file.write("\n")
 
-        self.write_nat_rules(settings)
+        self.write_nat_rules(settings, prefix)
         self.write_interface_nat_options(settings)
         self.write_implicit_nat_rules(settings)
         self.write_lxc_nat_rules(settings)
@@ -240,6 +262,9 @@ class NatRulesManager(Manager):
         self.file.flush()
         self.file.close()
 
+        self.wireguard_file.flush()
+        self.wireguard_file.close()
+        
         print("NatRulesManager: Wrote %s" % self.filename)
 
         return

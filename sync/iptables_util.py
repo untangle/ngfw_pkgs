@@ -387,6 +387,15 @@ class IptablesUtil:
                                             'rule': '-p tcp -d {wireguard_ip_address} --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "' + begin_comment + 'Send wireguard to apache https"'
                                         }
                                     ]
+                                else:
+                                    iptables_table_chain_rules = {
+                                        "nat": {
+                                            "nat-rules": [{
+                                                'new': 'add',
+                                                'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
+                                            }]
+                                        },
+                                    }
                                 delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(iptables_table_chain_rules, wireguard_ip_address_arg=wireguard_ip_address)
                                 commands += delete_rules
                                 commands += new_rules
