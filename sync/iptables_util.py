@@ -5,7 +5,7 @@ import datetime
 import traceback
 import string
 import re
-from sync.network_util import NetworkUtil, get_is_wireguard, get_virtual_interface_by_id
+from sync.network_util import NetworkUtil, get_is_wireguard
 
 # This class is a utility class with utility functions providing
 # useful tools for dealing with iptables rules
@@ -94,6 +94,8 @@ class IptablesUtil:
             
     # This method takes a list of conditions from a rule and translates them into a string containing the iptables conditions
     # It returns a list of strings, because some set of conditions require multiple iptables rules
+    # If nat rule are being processed, there's special logic for skipping wireguard interfaces as those interfaces
+    # have special nat rules and a separate file
     # Example input: ['conditionType':'SRC_INTF', 'value':'1'] -> ["-m connmark --mark 0x01/0xff"]
     # Example input: ['conditionType':'DST_PORT', 'value':'123'] -> ["-p udp --dport 123", "-p tcp --dport 123"]
     @staticmethod
@@ -171,12 +173,13 @@ class IptablesUtil:
                     if invert:
                         conditionStr += " ! "
                     if isinstance(interface, (int)):
+                        # if nat rule are being processed and this is a wireguard interface, skip adding the conditions
                         if is_nat_rules:
                             is_wireguard = get_is_wireguard(network_settings, interface)
                             if is_wireguard:
                                 continue
                         if conditionType == "DST_INTF":
-                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))  
+                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
                         else:
                             conditionStr += (" -m connmark --mark 0x%04X/0x00FF " % int(interface))
                     else:
@@ -334,9 +337,11 @@ class IptablesUtil:
         
     @staticmethod
     def commands_for_wireguard(conditions, comment=None):
+        """ Write out the commands for wireguard interfaces"""
         commands = []
         if conditions is None:
             return commands;
+
         begin_comment = ''
         if comment is not None:
             begin_comment += comment
@@ -346,6 +351,7 @@ class IptablesUtil:
             if 'conditionType' not in condition:
                 print("ERROR: Ignoring invalid condition: %s" % str(condition))
                 continue
+            # these commands are only for if Wireguard VPN is DST_INTF or SRC_INTF
             if condition['conditionType'] == "DST_INTF" or condition['conditionType'] == "SRC_INTF":
                 conditionType = condition['conditionType']
                 if 'value' not in condition:
@@ -364,6 +370,7 @@ class IptablesUtil:
                         if isWireguard:
                             iptables_table_chain_rules = {}
                             if conditionType == "DST_INTF":  
+                                commands += ['if [ -z "$IPTABLES" ] ; then IPTABLES=/sbin/iptables ; fi', ""]
                                 commands += ['WG_INTERFACE=$(ip link show | grep \"' + r'wg[[:digit:]]\+:' + '\" | cut -d\' \' -f2 | cut -d: -f1 | head -1)', ""]
                                 commands += ["WG_ADDRESS=$(cat /etc/wireguard/${WG_INTERFACE}.conf | grep Address | cut -d '=' -f2 | head -1)", ""]
                                 iptables_table_chain_rules = {
@@ -402,7 +409,6 @@ class IptablesUtil:
                                 commands += delete_rules
                                 commands += new_rules
 
-        print(commands)
         return commands
 
     @staticmethod

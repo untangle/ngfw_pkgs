@@ -16,10 +16,12 @@ class NatRulesManager(Manager):
     lxc_mark_mask = 0x04000000
 
     iptables_filename = "/etc/untangle/iptables-rules.d/220-nat-rules"
-    wireguard_iptables_filename = "/etc/untangle/iptables-rules.d/721-wireguard-nat-rules"
     filename = iptables_filename
-    wireguard_filename = wireguard_iptables_filename
     file = None
+
+    # wireguard has nat rules that don't fit in the normal nat rules paradigm, so they go in their own file
+    wireguard_iptables_filename = "/etc/untangle/iptables-rules.d/721-wireguard-nat-rules"
+    wireguard_filename = wireguard_iptables_filename
     wireguard_file = None
 
     def initialize(self):
@@ -58,12 +60,11 @@ class NatRulesManager(Manager):
             self.file.write(cmd + "\n")
         self.file.write("\n")
 
+        # write out any wireguard nat rules to own file
         if len(wireguard_commands) > 0:
             for cmd in wireguard_commands:
                 self.wireguard_file.write(cmd + "\n")
         
-            
-
         return
 
     def interfaces_in_same_bridge_group(self, intf1, intf2):
@@ -208,16 +209,6 @@ class NatRulesManager(Manager):
         self.file.write("\n")
         self.file.write("\n")
 
-        self.wireguard_filename = prefix + self.wireguard_iptables_filename     
-        self.wireguard_file_dir = os.path.dirname(self.wireguard_filename)
-        if not os.path.exists(self.wireguard_file_dir):
-            os.makedirs(self.wireguard_file_dir)
-        self.wireguard_file = open(self.wireguard_filename, "w+")
-        self.wireguard_file.write("## Auto Generated\n")
-        self.wireguard_file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        self.wireguard_file.write("\n")
-        self.wireguard_file.write("\n")
-
         self.file.write("# Create (if needed) and flush nat-rules chain" + "\n")
         self.file.write("${IPTABLES} -t nat -N nat-rules 2>/dev/null" + "\n")
         self.file.write("${IPTABLES} -t nat -F nat-rules >/dev/null 2>&1" + "\n")
@@ -252,6 +243,17 @@ class NatRulesManager(Manager):
         self.file.write("${IPTABLES} -t filter -D nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN >/dev/null 2>&1" + "\n")
         self.file.write("${IPTABLES} -t filter -A nat-reverse-filter -m conntrack --ctstate DNAT -m comment --comment \"Allow port forwarded traffic\" -j RETURN" + "\n")
         self.file.write("\n")
+
+        # separate wireguard nat file
+        self.wireguard_filename = prefix + self.wireguard_iptables_filename     
+        self.wireguard_file_dir = os.path.dirname(self.wireguard_filename)
+        if not os.path.exists(self.wireguard_file_dir):
+            os.makedirs(self.wireguard_file_dir)
+        self.wireguard_file = open(self.wireguard_filename, "w+")
+        self.wireguard_file.write("## Auto Generated\n")
+        self.wireguard_file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        self.wireguard_file.write("\n")
+        self.wireguard_file.write("\n")
 
         self.write_nat_rules(settings, prefix)
         self.write_interface_nat_options(settings)
