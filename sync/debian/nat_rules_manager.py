@@ -15,7 +15,7 @@ class NatRulesManager(Manager):
     interfaces_mark_mask = 0x0000FFFF
     lxc_mark_mask = 0x04000000
 
-    iptables_filename = "/etc/untangle/iptables-rules.d/220-nat-rules"
+    iptables_filename = "/etc/untangle/iptables-rules.d/231-nat-rules"
     filename = iptables_filename
     file = None
 

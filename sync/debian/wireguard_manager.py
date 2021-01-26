@@ -19,15 +19,6 @@ class WireguardManager(Manager):
     wireguard_remote_conf_dir = '/etc/wireguard/untangle'
     wireguard_iptables_script = '/etc/untangle/iptables-rules.d/720-wireguard-vpn'
 
-    iptables_table_format_map = {
-        'src_mark': '0xf9/0xff',
-        'dst_mark': '0xf900/0xff00',
-        'wireguard_ip_address': '',
-        # wan_mark is a special case that needs to duplicate the rule
-        # for as many wan interfaces are available.
-        'wan_mark': '{wan_mark}'
-    }
-
     iptables_table_chain_rules = {
         "mangle": {
             # Set source interface mark 
@@ -172,13 +163,10 @@ class WireguardManager(Manager):
         if bool(NetworkUtil.settings) is False:
             # Network settings must be specified
             raise Exception("Network settings not specified")
+ 
+        wireguard_ip_address = settings_file.settings.get('addressPool').split('/')[0]
 
-        
-        
-        self.iptables_table_format_map['wireguard_ip_address'] = settings_file.settings.get('addressPool').split('/')[0]
-
-        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_format_map, 
-                                                                              self.iptables_table_chain_rules)
+        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_chain_rules, wireguard_ip_address_arg=wireguard_ip_address)
 
         self.out_file_name = prefix + self.wireguard_iptables_script
         self.out_file_dir = os.path.dirname(self.out_file_name)
