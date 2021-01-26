@@ -61,7 +61,6 @@ class NatRulesManager(Manager):
         if len(wireguard_commands) > 0:
             for cmd in wireguard_commands:
                 self.wireguard_file.write(cmd + "\n")
-        self.wireguard_file.write("\n")
         
             
 

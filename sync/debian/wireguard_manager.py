@@ -163,10 +163,8 @@ class WireguardManager(Manager):
         if bool(NetworkUtil.settings) is False:
             # Network settings must be specified
             raise Exception("Network settings not specified")
- 
-        wireguard_ip_address = settings_file.settings.get('addressPool').split('/')[0]
 
-        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_chain_rules, wireguard_ip_address_arg=wireguard_ip_address)
+        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_chain_rules)
 
         self.out_file_name = prefix + self.wireguard_iptables_script
         self.out_file_dir = os.path.dirname(self.out_file_name)
