@@ -314,9 +314,13 @@ class SystemManager(Manager):
 
         for intf in interfaces:
             if 'ethAutoneg' in intf and 'ethSpeed' in intf and 'ethDuplex' in intf:
-                autoneg = 'on' if intf['ethAutoneg'] else 'off'            
-                file.write("/usr/sbin/ethtool -s {} speed {} duplex {} autoneg {}\n"
-                    .format(intf['device'], intf['ethSpeed'], intf['ethDuplex'], autoneg))
+                autoneg = 'on' if intf['ethAutoneg'] else 'off'
+                if autoneg is 'off':       
+                    file.write("/usr/sbin/ethtool -s {} speed {} duplex {} autoneg {}\n"
+                        .format(intf['device'], intf['ethSpeed'], intf['ethDuplex'], autoneg))
+                else:       
+                    file.write("/usr/sbin/ethtool -s {} autoneg {}\n"
+                        .format(intf['device'], autoneg))
       
         file.flush()
         file.close()
