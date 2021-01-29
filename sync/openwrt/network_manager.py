@@ -65,7 +65,7 @@ class NetworkManager(Manager):
             # sync vlan device with vlan name for debuggability's sake
             if intf.get('type') == 'VLAN':
                 intf['device'] = intf.get('name')
-                if intf.get('wan') is not True or intf.get('configType') is not "ADDRESSED":
+                if intf.get('wan') is not True or intf.get('configType') != "ADDRESSED":
                     intf['natEgress'] = False
 
         # Give any OpenVPN interfaces tun devices
