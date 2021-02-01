@@ -129,7 +129,9 @@ class WireguardManager(Manager):
             for network in tunnel.get('networks').split():
                 allowedIps.append(network)
             self.out_file.write("AllowedIPs={allowedIps}\n".format(allowedIps=','.join(allowedIps)))
-            if keepaliveInterval != 0:
+
+            # only enable keepalives for static endpoints
+            if tunnel.get('endpointDynamic') == False and keepaliveInterval != 0:
                 self.out_file.write("PersistentKeepalive={keepaliveInterval}\n".format(keepaliveInterval=keepaliveInterval))
 
             self.out_file.write("\n")
