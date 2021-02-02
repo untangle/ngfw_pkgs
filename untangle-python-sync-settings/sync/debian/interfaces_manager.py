@@ -507,6 +507,10 @@ class InterfacesManager(Manager):
             if symbolicDev.startswith("br.") or configType == 'BRIDGED':
                 file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -m physdev --physdev-out %s -j MARK --set-mark 0x%04X/0x%04X -m comment --comment \"Set dst interface mark for intf %i using physdev\"" % (symbolicDev, systemDev, id << 8, self.dst_interface_mark_mask, id) + "\n")
 
+            # if PPPOE also do mss clamping
+            if intf['v4ConfigType'] == 'PPPOE':
+                file.write("${IPTABLES} -t mangle -A mark-dst-intf -o %s -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu -m comment --comment \"Perform mss clamping for PPPOE intf %s\"" % (systemDev, systemDev) + "\n")
+
         file.write("\n")
 
         lxcInterfaceId = self.get_lxc_interface_id(settings)
