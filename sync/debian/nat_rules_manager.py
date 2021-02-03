@@ -23,6 +23,7 @@ class NatRulesManager(Manager):
     wireguard_iptables_filename = "/etc/untangle/iptables-rules.d/721-wireguard-nat-rules"
     wireguard_filename = wireguard_iptables_filename
     wireguard_file = None
+    added_wireguard = False # only need to add special wireguard nat rules once
 
     def initialize(self):
         registrar.register_settings_file("network", self)
@@ -53,7 +54,8 @@ class NatRulesManager(Manager):
         commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
         iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description, is_nat_rules=True)
         commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
-        wireguard_commands = IptablesUtil.commands_for_wireguard(nat_rule['conditions'], description)
+        if not self.added_wireguard:
+            wireguard_commands = IptablesUtil.commands_for_wireguard(nat_rule['conditions'])
 
         self.file.write("# %s\n" % description)
         for cmd in commands:
@@ -64,6 +66,7 @@ class NatRulesManager(Manager):
         if len(wireguard_commands) > 0:
             for cmd in wireguard_commands:
                 self.wireguard_file.write(cmd + "\n")
+            self.added_wireguard = True
         
         return
 
