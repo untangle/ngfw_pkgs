@@ -188,4 +188,14 @@ add rule inet interface-marks postrouting-interface-marks ct state new jump mark
         print("InterfaceManager: Wrote %s" % filename)
         return
 
+    def sanitize_settings(self, settings_file):
+        # Upgrade 2 -> 3, Add speed/duplex/negotiation options. Default to auto negotiation. 
+        if settings_file.settings['version'] < 3:
+            interfaces = settings_file.settings.get('network').get('interfaces')
+            for intf in interfaces:
+                if intf["type"] == "NIC":
+                    intf['ethSpeed'] = 1000
+                    intf['ethDuplex'] = "full"
+                    intf['ethAutoneg'] = True
+
 registrar.register_manager(InterfaceManager())
