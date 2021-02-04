@@ -173,11 +173,6 @@ class IptablesUtil:
                     if invert:
                         conditionStr += " ! "
                     if isinstance(interface, (int)):
-                        # if nat rule are being processed and this is a wireguard interface, skip adding the conditions
-                        if is_nat_rules:
-                            is_wireguard = get_is_wireguard(network_settings, interface)
-                            if is_wireguard:
-                                continue
                         if conditionType == "DST_INTF":
                             conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
                         else:
@@ -336,16 +331,11 @@ class IptablesUtil:
         return current_strings;
         
     @staticmethod
-    def commands_for_wireguard(conditions, comment=None):
+    def commands_for_wireguard(conditions):
         """ Write out the commands for wireguard interfaces"""
         commands = []
         if conditions is None:
             return commands;
-
-        begin_comment = ''
-        if comment is not None:
-            begin_comment += comment
-            begin_comment += ': '
 
         for condition in conditions:
             if 'conditionType' not in condition:
@@ -369,41 +359,34 @@ class IptablesUtil:
                         isWireguard = get_is_wireguard(network_settings, interface)
                         if isWireguard:
                             iptables_table_chain_rules = {}
-                            if conditionType == "DST_INTF":  
-                                commands += ['if [ -z "$IPTABLES" ] ; then IPTABLES=/sbin/iptables ; fi', ""]
-                                commands += ['WG_INTERFACE=$(ip link show | grep \"' + r'wg[[:digit:]]\+:' + '\" | cut -d\' \' -f2 | cut -d: -f1 | head -1)', ""]
-                                commands += ["WG_ADDRESS=$(cat /etc/wireguard/${WG_INTERFACE}.conf | grep Address | cut -d '=' -f2 | head -1)", ""]
-                                iptables_table_chain_rules = {
-                                    "nat": {
-                                        "nat-rules": [{
+                            commands += ['if [ -z "$IPTABLES" ] ; then IPTABLES=/sbin/iptables ; fi', ""]
+                            commands += ['WG_INTERFACE=$(ip link show | grep \"' + r'wg[[:digit:]]\+:' + '\" | cut -d\' \' -f2 | cut -d: -f1 | head -1)', ""]
+                            commands += ["WG_ADDRESS=$(cat /etc/wireguard/${WG_INTERFACE}.conf | grep Address | cut -d '=' -f2 | head -1)", ""]
+                            iptables_table_chain_rules = {
+                                "nat": {
+                                    "nat-rules": [{
+                                        'new': 'insert',
+                                        'rule': '-m mark --mark {wan_mark}/0xffff -j MASQUERADE -m comment --comment "NAT WAN-bound wireguard vpn traffic"'
+                                    }, {
+                                        'new': 'add',
+                                        'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
+                                    }],
+                                    "port-forward-rules": [{
                                             'new': 'insert',
-                                            'rule': '-m mark --mark {wan_mark}/0xffff -j MASQUERADE -m comment --comment "' + begin_comment + 'NAT WAN-bound wireguard vpn traffic"'
-                                        }],
-                                        "port-forward-rules": [{
-                                                'new': 'insert',
-                                                'rule': '-p tcp -d $WG_ADDRESS --destination-port 443 -j REDIRECT --to-ports 443 -m comment --comment "' + begin_comment + 'Send wireguard VPN to apache http"'
-                                            },{
-                                                'new': 'insert',
-                                                'rule': '-p tcp -d $WG_ADDRESS --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "' + begin_comment + 'Send wireguard to apache https"'
-                                            }
-                                        ]
-                                    },
-                                    "filter": {
-                                        "nat-reverse-filter": [{
+                                            'rule': '-p tcp -d $WG_ADDRESS --destination-port 443 -j REDIRECT --to-ports 443 -m comment --comment "Send wireguard VPN to apache http"'
+                                        },{
                                             'new': 'insert',
-                                            'rule': '-m mark --mark {src_mark} -j RETURN -m comment --comment "' + begin_comment + 'Allow wireguard vpn"'
-                                        }]
-                                    }
+                                            'rule': '-p tcp -d $WG_ADDRESS --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "Send wireguard to apache https"'
+                                        }
+                                    ]
+                                }, 
+                                "filter": {
+                                    "nat-reverse-filter": [{
+                                        'new': 'insert',
+                                        'rule': '-m mark --mark {src_mark} -j RETURN -m comment --comment "Allow wireguard vpn"'
+                                    }]
                                 }
-                            else:
-                                iptables_table_chain_rules = {
-                                    "nat": {
-                                        "nat-rules": [{
-                                            'new': 'add',
-                                            'rule': '-m mark --mark {src_mark} -j MASQUERADE -m comment --comment "nat wireguard vpn traffic to the server"'
-                                        }]
-                                    },
-                                }
+                            }
                             if len(iptables_table_chain_rules.keys()) > 0:
                                 delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(iptables_table_chain_rules)
                                 commands += delete_rules
