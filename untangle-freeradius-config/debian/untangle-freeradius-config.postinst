@@ -1,5 +1,23 @@
-#! /bin/bash
+#!/bin/bash
 
-sed 's/#[ \t]*radutmp/radutmp/g' /etc/freeradius/3.0/sites-available/default > /etc/freeradius/3.0/sites-available/default.bak
-mv /etc/freeradius/3.0/sites-available/default.bak /etc/freeradius/3.0/sites-available/default
+# We want to modify several files included in the freeradius-config
+# package so we put our versions in our own directory and then
+# symlink to them from the expected locations. The freeradius package
+# already uses symlinks from xxx-available to xxx-enabled to turn
+# stuff on and off so this isn't as awful as it first seems.
+
+pushd /etc/freeradius/3.0/sites-enabled
+ln -s -f ../../untangle/default
+ln -s -f ../../untangle/inner-tunnel
+popd
+
+pushd /etc/freeradius/3.0/mods-enabled
+ln -s -f ../../untangle/notify
+ln -s -f ../../untangle/eap
+popd
+
+pushd /etc/freeradius/3.0/mods-config/attr_filter
+ln -s -f ../../../untangle/access_reject
+popd
+
 exit 0
