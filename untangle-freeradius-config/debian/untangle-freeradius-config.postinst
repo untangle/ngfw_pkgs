@@ -6,18 +6,15 @@
 # already uses symlinks from xxx-available to xxx-enabled to turn
 # stuff on and off so this isn't as awful as it first seems.
 
-pushd /etc/freeradius/3.0/sites-enabled
-ln -s -f ../../untangle/default
-ln -s -f ../../untangle/inner-tunnel
-popd
+# create symlinks in /etc/freeradius/3.0/sites-enabled
+ln -s -f ../../untangle/default /etc/freeradius/3.0/sites-enabled/default
+ln -s -f ../../untangle/inner-tunnel /etc/freeradius/3.0/sites-enabled/inner-tunnel
 
-pushd /etc/freeradius/3.0/mods-enabled
-ln -s -f ../../untangle/notify
-ln -s -f ../../untangle/eap
-popd
+# create symlinks in /etc/freeradius/3.0/mods-enabled
+ln -s -f ../../untangle/notify /etc/freeradius/3.0/mods-enabled/notify
+ln -s -f ../../untangle/eap /etc/freeradius/3.0/mods-enabled/eap
 
-pushd /etc/freeradius/3.0/mods-config/attr_filter
-ln -s -f ../../../untangle/access_reject
-popd
+# create symlinks in /etc/freeradius/3.0/mods-config/attr_filter
+ln -s -f ../../../untangle/access_reject /etc/freeradius/3.0/mods-config/attr_filter/access_reject
 
 exit 0
