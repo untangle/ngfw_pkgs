@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-freeradius-config
 Architecture: all
-Depends: ${misc:Depends}, freeradius
+Depends: ${misc:Depends}, freeradius, freeradius-config
 Conflicts: 
 Description: Untangle freeradius config
  The Untangle freeradius configuration.
