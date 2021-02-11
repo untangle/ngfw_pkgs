@@ -211,7 +211,11 @@ def copy_files(dirname):
             " -type d -printf '%P\\n' | while read dir ; do if [ ! -d /$dir ] ; then cp -ar " + \
                 dirname + "/$dir /$dir ; fi ; done"
         result = run_cmd(cmd)
-        cmd = "find " + dirname + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps --remove-destination " + \
+        if not os.path.isfile('/run/.containerenv'):
+            remove_destination = "--remove-destination "
+        else:
+            remove_destination = ""
+        cmd = "find " + dirname + " -type f -printf '%P\\n' | while read file ; do cp --preserve=mode,timestamps " + remove_destination + \
             dirname + "/$file /$file ; done"
         result += run_cmd(cmd)
     else:
