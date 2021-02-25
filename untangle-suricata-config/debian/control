@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-suricata-config
 Architecture: all
-Depends: ${misc:Depends}, systemd, suricata
+Depends: ${misc:Depends}, systemd, suricata, untangle-system-config
 Conflicts: untangle-snort-config
 Replaces: untangle-snort-config
 Provides: untangle-snort-config
