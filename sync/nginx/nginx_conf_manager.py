@@ -16,6 +16,7 @@ class NginxConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         server = {}
+        #TODO: change how defaults are handled with new slimmed down docker?
         basic_server = {
             'ssl_port': '443',
             'port': '80',
@@ -27,8 +28,9 @@ class NginxConfManager(Manager):
         upstream_backend = {
             'upstream_servers': [
                 {
-                    'upstream_server_name': 'localhost'
-                }
+                    'upstream_server_name': 'localhost',
+                    'upstream_server_uid': '-1',
+                },
             ],
             'lb_method': None
         }
@@ -98,7 +100,7 @@ map $http_upgrade $connection_upgrade {
                 raise Exception("Unknown load balancer method specified")
 
         for server in upstream_backend.get('upstream_servers'):
-            file.write("    server " + server['upstream_server_name'] + ";\n")
+            file.write("    server " + server.get('upstream_server_name') + ";\n")
         file.write("}\n")
         file.write("\n")
 
