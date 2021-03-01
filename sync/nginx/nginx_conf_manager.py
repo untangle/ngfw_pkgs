@@ -82,6 +82,7 @@ map $http_upgrade $connection_upgrade {
         file.close()
 
     def write_upstream_backend(self, settings):
+        """write the upstream backend block for nginx"""
         upstream_backend = settings['server']['upstream_backend']
         file = self.nginx_file
         file.write("upstream backend {\n")
@@ -94,10 +95,8 @@ map $http_upgrade $connection_upgrade {
                 file.write("    random;\n")
             elif lb == 'sticky':
                 file.write("    sticky;\n")
-            elif lb != 'round_robin':
-                # if not round robin, then unknown
-                # round robin needs no additional configuration written
-                raise Exception("Unknown load balancer method specified")
+            # round robin needs no additional configuration written
+            # any unknown lb method would also have nothing written out to the nginx file
 
         for server in upstream_backend.get('upstream_servers'):
             file.write("    server " + server.get('upstream_server_name') + ";\n")
@@ -105,6 +104,7 @@ map $http_upgrade $connection_upgrade {
         file.write("\n")
 
     def write_basic_server_conf(self, settings):
+        """write the initial settings of the server block for nginx"""
         basic_server = settings['server']['basic_server']
         file = self.nginx_file
         file.write("server {\n")
@@ -128,6 +128,7 @@ r"""    ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+A
         file.write("\n")
 
     def write_nginx_main_locations(self, settings):
+        """write the main location, healthz, and metrics nginx endpoints"""
         nginx_locations = settings['server']['nginx_locations']
         file = self.nginx_file
         file.write(
