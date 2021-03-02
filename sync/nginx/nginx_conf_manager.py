@@ -35,8 +35,8 @@ class NginxConfManager(Manager):
             'lbMethod': None
         }
         server_ssl = {
-            'proxySslCert': '/etc/nginx/cert/server.crt',
-            'proxySslCertKey': '/etc/nginx/cert/server.key',
+            'proxySslCert': '/etc/nginx/certs/server.crt',
+            'proxySslCertKey': '/etc/nginx/certs/server.key',
             'proxySslVerify': 'off'
         }
         nginx_locations = {
