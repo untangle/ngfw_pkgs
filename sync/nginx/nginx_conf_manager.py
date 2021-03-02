@@ -18,36 +18,36 @@ class NginxConfManager(Manager):
         server = {}
         #TODO: change how defaults are handled with new slimmed down docker?
         basic_server = {
-            'ssl_port': '443',
+            'sslPort': '443',
             'port': '80',
-            'dns_server': '127.0.0.11',
-            'server_name': 'localhost',
+            'dnsServer': '127.0.0.11',
+            'serverName': 'localhost',
             'paranoia': '1',
             'proxy': '1'
         }
         upstream_backend = {
-            'upstream_servers': [
+            'upstreamServers': [
                 {
-                    'upstream_server_name': 'localhost',
-                    'upstream_server_uid': '-1',
+                    'upstreamServerName': 'localhost',
+                    'upstreamServerUid': '-1',
                 },
             ],
-            'lb_method': None
+            'lbMethod': None
         }
         server_ssl = {
-            'proxy_ssl_cert': '/etc/nginx/conf/server.crt',
-            'proxy_ssl_cert_key': '/etc/nginx/conf/server.key',
-            'proxy_ssl_verify': 'off'
+            'proxySslCert': '/etc/nginx/cert/server.crt',
+            'proxySslCertKey': '/etc/nginx/cert/server.key',
+            'proxySslVerify': 'off'
         }
         nginx_locations = {
-            'proxy_timeout': '60s',
-            'metrics_allow_from': '127.0.0.0/24',
-            'metrics_deny_from': 'all',
+            'proxyTimeout': '60s',
+            'metricsAllowFrom': '127.0.0.0/24',
+            'metricsDenyFrom': 'all',
         }
-        server['basic_server'] = basic_server
-        server['upstream_backend'] = upstream_backend
-        server['server_ssl'] = server_ssl
-        server['nginx_locations'] = nginx_locations
+        server['basicServer'] = basic_server
+        server['upstreamBackend'] = upstream_backend
+        server['serverSsl'] = server_ssl
+        server['nginxLocations'] = nginx_locations
         settings_file.settings['server'] = server
 
     def sync_settings(self, settings_file, prefix, delete_list):
@@ -83,12 +83,12 @@ map $http_upgrade $connection_upgrade {
 
     def write_upstream_backend(self, settings):
         """write the upstream backend block for nginx"""
-        upstream_backend = settings['server']['upstream_backend']
+        upstream_backend = settings['server']['upstreamBackend']
         file = self.nginx_file
         file.write("upstream backend {\n")
 
-        if len(upstream_backend.get('upstream_servers')) > 1 and upstream_backend['lb_method'] is not None:
-            lb = upstream_backend['lb_method']
+        if len(upstream_backend.get('upstreamServers')) > 1 and upstream_backend['lbMethod'] is not None:
+            lb = upstream_backend['lbMethod']
             if lb == 'least_connections':
                 file.write("    least_conn;\n")
             elif lb == 'random':
@@ -98,38 +98,38 @@ map $http_upgrade $connection_upgrade {
             # round robin needs no additional configuration written
             # any unknown lb method would also have nothing written out to the nginx file
 
-        for server in upstream_backend.get('upstream_servers'):
-            file.write("    server " + server.get('upstream_server_name') + ";\n")
+        for server in upstream_backend.get('upstreamServers'):
+            file.write("    server " + server.get('upstreamServerName') + ";\n")
         file.write("}\n")
         file.write("\n")
 
     def write_basic_server_conf(self, settings):
         """write the initial settings of the server block for nginx"""
-        basic_server = settings['server']['basic_server']
+        basic_server = settings['server']['basicServer']
         file = self.nginx_file
         file.write("server {\n")
-        file.write("    listen " + basic_server['ssl_port'] + " ssl;\n")
+        file.write("    listen " + basic_server['sslPort'] + " ssl;\n")
         file.write("    listen " + basic_server['port'] + ";\n")
         file.write("\n")
-        file.write("    resolver " + basic_server['dns_server'] + " valid=5s;\n")
-        file.write("    server_name " + basic_server['server_name'] + ";\n")
+        file.write("    resolver " + basic_server['dnsServer'] + " valid=5s;\n")
+        file.write("    server_name " + basic_server['serverName'] + ";\n")
         file.write("\n")
 
-        server_ssl = settings['server']['server_ssl']
+        server_ssl = settings['server']['serverSsl']
         file = self.nginx_file
-        file.write("    ssl_certificate " + server_ssl['proxy_ssl_cert'] + ";\n")
-        file.write("    ssl_certificate_key " + server_ssl['proxy_ssl_cert_key'] + ";\n")
+        file.write("    ssl_certificate " + server_ssl['proxySslCert'] + ";\n")
+        file.write("    ssl_certificate_key " + server_ssl['proxySslCertKey'] + ";\n")
         file.write(
 r"""    ssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;
     ssl_prefer_server_ciphers on;
     ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
 """)
-        file.write("    ssl_verify_client " + server_ssl['proxy_ssl_verify'] + ";\n")
+        file.write("    ssl_verify_client " + server_ssl['proxySslVerify'] + ";\n")
         file.write("\n")
 
     def write_nginx_main_locations(self, settings):
         """write the main location, healthz, and metrics nginx endpoints"""
-        nginx_locations = settings['server']['nginx_locations']
+        nginx_locations = settings['server']['nginxLocations']
         file = self.nginx_file
         file.write(
 r"""    location / {
@@ -145,7 +145,7 @@ r"""    location / {
         proxy_http_version 1.1;
         proxy_buffering off;
 """)
-        file.write("        proxy_connect_timeout " + nginx_locations['proxy_timeout'] + ";\n")
+        file.write("        proxy_connect_timeout " + nginx_locations['proxyTimeout'] + ";\n")
         file.write(
 r"""        proxy_read_timeout 36000s;
         proxy_redirect off;
@@ -162,8 +162,8 @@ r"""        proxy_read_timeout 36000s;
     location /metrics/nginx {
         access_log off;
 """)
-        file.write("        allow " + nginx_locations['metrics_allow_from'] + ";\n")
-        file.write("        deny " + nginx_locations['metrics_deny_from'] + ";\n")
+        file.write("        allow " + nginx_locations['metricsAllowFrom'] + ";\n")
+        file.write("        deny " + nginx_locations['metricsDenyFrom'] + ";\n")
         file.write(
 r"""        proxy_store off;
         stub_status;
