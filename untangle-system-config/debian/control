@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-system-config
 Architecture: all
-Depends: ${misc:Depends}, systemd, debconf, irqbalance, ssh
+Depends: ${misc:Depends}, systemd, debconf, irqbalance, ssh, ca-certificates
 Description: The Untangle system config
  The Untangle system configurator.  Top level configurations not belonging in
  a more specific configurator are here.  Also if this package is present at
