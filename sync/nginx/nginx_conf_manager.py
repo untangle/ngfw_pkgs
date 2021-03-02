@@ -32,7 +32,7 @@ class NginxConfManager(Manager):
                     'upstreamServerUid': '-1',
                 },
             ],
-            'lbMethod': None
+            'lbMethod': "round_robin"
         }
         server_ssl = {
             'proxySslCert': '/etc/nginx/certs/server.crt',
