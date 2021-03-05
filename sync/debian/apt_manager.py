@@ -37,8 +37,9 @@ class AptManager(Manager):
             self.in_file_name = self.out_file_name + '.last'
             os.rename(self.out_file_name, self.in_file_name)
         else:
-            self.in_file_name = self.apt_sources_untangle_file_name
-        
+            # Don't attempt to process non-existant file.
+            return
+
         self.in_file = open(self.in_file_name, "r")
         self.out_file = open(self.out_file_name, "w+")
 
