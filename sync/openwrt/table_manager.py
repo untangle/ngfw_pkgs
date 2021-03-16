@@ -538,7 +538,7 @@ def default_access_rules_table():
                     "type": "DESTINATION_PORT",
                     "op": "==",
                     "value": "53",
-                    "port_protocol": 17
+                    "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
                     "op": "==",
@@ -637,8 +637,42 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Drop All",
+                "description": "Accept HTTP 5455 TP on LANs (TCP/5455)",
                 "ruleId": 18,
+                "conditions": [{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "5455",
+                    "port_protocol": 6
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": 2
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            },  {
+                "enabled": True,
+                "description": "Accept HTTPS 5456 TP on LANs (TCP/5456)",
+                "ruleId": 19,
+                "conditions": [{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "5456",
+                    "port_protocol": 6
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": 2
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }, {
+                "enabled": True,
+                "description": "Drop All",
+                "ruleId": 20,
                 "conditions": [],
                 "action": {
                     "type": "DROP"

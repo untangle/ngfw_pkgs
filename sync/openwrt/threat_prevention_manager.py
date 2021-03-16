@@ -2,11 +2,47 @@
 # pylint: disable=unused-argument
 import os
 import stat
+import json
 from sync import registrar, Manager
 
 class ThreatPreventionManager(Manager):
     """ThreatPreventionManager manages the threat prevention settings"""
     bctid_filename = "/etc/config/bcti.cfg"
+    defaultTPrules = [{
+                "enabled": True,
+                "description": "Accept HTTP 5455 TP on LANs (TCP/5455)",
+                "ruleId": 18,
+                "conditions": [{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "5455",
+                    "port_protocol": 6
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": 2
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            },  {
+                "enabled": True,
+                "description": "Accept HTTPS 5456 TP on LANs (TCP/5456)",
+                "ruleId": 19,
+                "conditions": [{
+                    "type": "DESTINATION_PORT",
+                    "op": "==",
+                    "value": "5456",
+                    "port_protocol": 6
+                }, {
+                    "type": "SOURCE_INTERFACE_TYPE",
+                    "op": "==",
+                    "value": 2
+                }],
+                "action": {
+                    "type": "ACCEPT"
+                }
+            }]
 
     def initialize(self):
         """initialize this module"""
@@ -30,14 +66,38 @@ class ThreatPreventionManager(Manager):
 
     def sanitize_settings(self, settings_file):
         """sanitize threatprevention creates default setting if none exists."""
-        tp = settings_file.settings.get('threatprevention')
-        if tp is None:
+        tpConfig = settings_file.settings.get('threatprevention')
+        if tpConfig is None:
             settings_file.settings['threatprevention'] = {}
             settings_file.settings['threatprevention'] = {
                 "enabled": True,
                 "passList": [],
                 "sensitivity" : "80"
             }
+        tpConfig = settings_file.settings.get('threatprevention')
+
+        # Need to enabled or add default rules to access list
+        rule_enabled = tpConfig['enabled']
+        rule_found = False
+        accessrules = settings_file.settings['firewall']['tables']['access']['chains'][0]['rules']
+
+        for accessrule in accessrules:
+            conditions = accessrule['conditions']
+            if len(conditions):
+                if conditions[0]['type'] == "DESTINATION_PORT" and conditions[0]['value'] == "5455":
+                    accessrule["enabled"] = rule_enabled
+                    rule_found = True
+                if conditions[0]['type'] == "DESTINATION_PORT" and conditions[0]['value'] == "5456":
+                    accessrule["enabled"] = rule_enabled
+                    rule_found = True
+        if not rule_found:
+            # Need insert default rules.
+            # Making an assumption that last rule is the drop all rule..??
+            accessrules[-1:-1] = self.defaultTPrules
+            ruleindex = 1
+            for accessrule in accessrules:
+                accessrule['ruleId'] = ruleindex
+                ruleindex += 1
 
     def get_uid(self):
         "Get the system's uid"
