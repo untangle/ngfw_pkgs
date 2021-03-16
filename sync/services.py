@@ -1,6 +1,8 @@
+"""enabled services for license management"""
 from enum import Enum
 
 class Service:
+    """this class is a struct for holding the settings pieces of an enabled service"""
     name = ""
     settings_pieces = []
 
@@ -12,6 +14,7 @@ class Service:
         return self.settings_pieces
 
 def get_nginx_services():
+    """get the settings pieces of the possible enabled services for nginx(waf)"""
     services = {}
     services["allEnabled"] = Service("allEnabled", None)
     services["loadBalancing"] = Service("loadBalancing", ["server", "upstreamBackend", "lbMethod"])
@@ -22,6 +25,7 @@ def get_nginx_services():
     return services
 
 def get_default_value_json(json_obj, segments):
+    """get the default value of given segments"""
     if len(segments) == 0:
         return json_obj
     elif len(segments) == 1:
@@ -35,6 +39,7 @@ def get_default_value_json(json_obj, segments):
         return get_default_value_json(new_object, new_segments)
 
 def set_settings_value(json_obj, segments, value):
+    """set the settings with a given value given segments"""
     if len(segments) == 0:
         return value
     elif len(segments) == 1:

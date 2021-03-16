@@ -47,17 +47,14 @@ class SettingsManager(Manager):
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
     
     def sanitize_settings(self, settings_file):
-        """santize settings removes any setting that set but not enabled"""
+        """santize settings sets settings to defaults that are set but not enabled"""
         print("%s: Sanitizing settings" % self.__class__.__name__)
         with open(self.enabled_services_filename, 'r') as services_file:
             data=services_file.read()
 
         current_services = json.loads(data)
-        if current_services['allEnabled']:
-            return
 
         # get defaults 
-        #todo: check defaults exists first 
         if os.path.isfile(self.default_filename):
             with open(self.default_filename, 'r') as defaults_file:
                 defaults_bytes = defaults_file.read()
