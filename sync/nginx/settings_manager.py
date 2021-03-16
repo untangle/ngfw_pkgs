@@ -17,7 +17,7 @@ class SettingsManager(Manager):
     default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
-    enabled_services_filename = "/usr/share/untangle/waf/settings/.enabledServices.json"
+    enabled_services_filename = "/usr/share/untangle/.enabledServices.json"
 
     def initialize(self):
         """initialize this module"""
