@@ -3,7 +3,7 @@
 import os
 import json
 import shutil
-from sync import registrar, Manager
+from sync import registrar, Manager, services
 from collections import OrderedDict
 
 # This class is responsible for writing /etc/config/network
@@ -14,8 +14,10 @@ class SettingsManager(Manager):
     This class is responsible for writing the settings file
     and general settings initialization
     """
+    default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
+    enabled_services_filename = "/usr/share/untangle/waf/settings/.enabledServices.json"
 
     def initialize(self):
         """initialize this module"""
@@ -43,6 +45,36 @@ class SettingsManager(Manager):
         file.close()
 
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+    
+    def sanitize_settings(self, settings_file):
+        """santize settings removes any setting that set but not enabled"""
+        print("%s: Sanitizing settings" % self.__class__.__name__)
+        with open(self.enabled_services_filename, 'r') as services_file:
+            data=services_file.read()
+
+        current_services = json.loads(data)
+        if current_services['allEnabled']:
+            return
+
+        # get defaults 
+        #todo: check defaults exists first 
+        if os.path.isfile(self.default_filename):
+            with open(self.default_filename, 'r') as defaults_file:
+                defaults_bytes = defaults_file.read()
+
+            defaults = json.loads(defaults_bytes)
+
+            nginx_services = services.get_nginx_services()
+            for key in current_services.keys():
+                serviceEnabled = current_services[key]
+                if not serviceEnabled:
+                    service_settings_pieces = nginx_services[key].get_settings_pieces()
+                    if service_settings_pieces is not None:
+                        print("%s: Setting general key %s in json to defaults" % (self.__class__.__name__, key))
+                        default = services.get_default_value_json(defaults, service_settings_pieces)
+                        settings_file.settings = services.set_settings_value(settings_file.settings, service_settings_pieces, default)
+        else:
+            print("Defaults do not exist yet, might be creating them")
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
