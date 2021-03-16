@@ -18,6 +18,27 @@ class ThreatPreventionManager(Manager):
 
         self.write_bctid_file(settings_file.settings, prefix)
 
+    def create_settings(self, settings_file, prefix, delete_list, filename):
+        """creates settings"""
+        print("%s: Initializing settings" % self.__class__.__name__)
+        settings_file.settings['threatprevention'] = {}
+        settings_file.settings['threatprevention'] = {
+            "enabled": True,
+            "passList": [],
+            "sensitivity" : "80"
+        }
+
+    def sanitize_settings(self, settings_file):
+        """sanitize threatprevention creates default setting if none exists."""
+        tp = settings_file.settings.get('threatprevention')
+        if tp is None:
+            settings_file.settings['threatprevention'] = {}
+            settings_file.settings['threatprevention'] = {
+                "enabled": True,
+                "passList": [],
+                "sensitivity" : "80"
+            }
+
     def get_uid(self):
         "Get the system's uid"
         file = open("/etc/config/uid", "r")
