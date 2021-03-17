@@ -33,6 +33,43 @@ class TableManager(Manager):
         }],
         "enabled": True
     }
+
+    defaultTPrules = [{
+            "enabled": True,
+            "description": "Accept HTTP 8485 threat prevention on LANs (TCP/8485)",
+            "ruleId": 99,
+            "conditions": [{
+                "type": "DESTINATION_PORT",
+                "op": "==",
+                "value": "8485",
+                "port_protocol": 6
+            }, {
+                "type": "SOURCE_INTERFACE_TYPE",
+                "op": "==",
+                "value": 2
+            }],
+            "action": {
+                "type": "ACCEPT"
+            }
+        },  {
+            "enabled": True,
+            "description": "Accept HTTPS 8486 threat prevention on LANs (TCP/8486)",
+            "ruleId": 99,
+            "conditions": [{
+                "type": "DESTINATION_PORT",
+                "op": "==",
+                "value": "8486",
+                "port_protocol": 6
+            }, {
+                "type": "SOURCE_INTERFACE_TYPE",
+                "op": "==",
+                "value": 2
+            }],
+            "action": {
+                "type": "ACCEPT"
+            }
+        }]
+
     wireguard_description_template = "Allow WireGuard tunnel to {name}[{id}]"
     wireguard_description_template_regex = None
 
@@ -113,6 +150,34 @@ class TableManager(Manager):
 
             for rule in delete_rules:
                 access_rules.remove(rule)
+
+        # deal with threat prevention settings.
+        tpConfig = settings_file.settings.get('threatprevention')
+        if tpConfig is None:
+            settings_file.settings['threatprevention'] = {}
+            settings_file.settings['threatprevention'] = {
+                "enabled": True,
+                "passList": [],
+                "sensitivity" : "80"
+            }
+        tpConfig = settings_file.settings.get('threatprevention')
+
+        # Need to enabled or add default TP rules to access list
+        rule_enabled = tpConfig['enabled']
+        rule_found = False
+        accessrules = settings_file.settings['firewall']['tables']['access']['chains'][0]['rules']
+
+        for accessrule in accessrules:
+            conditions = accessrule['conditions']
+            if len(conditions):
+                if conditions[0]['type'] == "DESTINATION_PORT" and conditions[0]['value'] == "8485":
+                    accessrule["enabled"] = rule_enabled
+                    rule_found = True
+                if conditions[0]['type'] == "DESTINATION_PORT" and conditions[0]['value'] == "8486":
+                    accessrule["enabled"] = rule_enabled
+                    rule_found = True
+        if not rule_found:
+            accessrules[-1:-1] = self.defaultTPrules
 
         # Set the rule_id to unique values of every chain
         for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
@@ -637,12 +702,12 @@ def default_access_rules_table():
                 }
             }, {
                 "enabled": True,
-                "description": "Accept HTTP 5455 TP on LANs (TCP/5455)",
+                "description": "Accept HTTP 8485 threat prevention on LANs (TCP/8485)",
                 "ruleId": 18,
                 "conditions": [{
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "5455",
+                    "value": "8485",
                     "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
@@ -654,12 +719,12 @@ def default_access_rules_table():
                 }
             },  {
                 "enabled": True,
-                "description": "Accept HTTPS 5456 TP on LANs (TCP/5456)",
+                "description": "Accept HTTPS 8486 threat prevention on LANs (TCP/8486)",
                 "ruleId": 19,
                 "conditions": [{
                     "type": "DESTINATION_PORT",
                     "op": "==",
-                    "value": "5456",
+                    "value": "8486",
                     "port_protocol": 6
                 }, {
                     "type": "SOURCE_INTERFACE_TYPE",
