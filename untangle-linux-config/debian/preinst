@@ -1,17 +1,39 @@
 #!/bin/bash
 
+## functions
+first_disk() {
+  lsblk --path --list --noheadings | awk '{print $1 ; exit}'
+}
+
+set_debconf_grub_install_disk() {
+  echo "set grub-pc/install_devices $1" | debconf-communicate
+}
+
+## main
+
 # we don't deal with grub on arm* at all
 uname -m | grep -qE '^arm' && exit 0
 
-installDevice=$(echo "get grub-pc/install_devices" | debconf-communicate | awk '{print $2}')
+grub_install_device=$(echo "get grub-pc/install_devices" | debconf-communicate | awk '{print $2}')
 
-if echo $installDevice | grep -q VBOX_HARDDISK ; then
-  # we're on virtualbox, let's see about fixing #12857
-  if [ ! -e "$installDevice" ] ; then
-    # yep, the install device is gone. grub update will fail, so we'll
-    # assume /dev/sda
-    echo "set grub-pc/install_devices /dev/sda" | debconf-communicate
-  fi
-fi
+case "$grub_install_device" in
+  "")
+    # NGFW-13661: if the current upgrade path includes a new grub
+    # version, an empty install device will fail the entire run.
+    # This only happens for installs based on disk images (OVA, qcow2,
+    # etc), as those performed with d-i correctly seed this debconf
+    # value.
+    # As we can't let the entire run fail, we choose the first disk.
+    set_debconf_grub_install_disk $(first_disk)
+    ;;
+  *VBOX_HARDDISK*)
+    # we're on virtualbox, check if we need to fix #12857
+    if [ ! -e "$grub_install_device" ] ; then
+      # the install device is gone, so the grub update will fail:
+      # let's also choose the first disk.
+      set_debconf_grub_install_disk $(first_disk)
+    fi
+    ;;
+esac
 
 exit 0
