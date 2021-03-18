@@ -1,24 +1,34 @@
-Explanation: main jessie archive
+Explanation: buster main archive
 Package: *
-Pin: release a=testing, o=Debian, l=Debian
-Pin-Priority: 100
+Pin: release n=buster, o=Debian, l=Debian
+Pin-Priority: 750
 
-Explanation: main sid archive, for testing
+Explanation: buster security archive
 Package: *
-Pin: release a=unstable, o=Debian, l=Debian
-Pin-Priority: 100
+Pin: release n=buster, o=Debian, l=Debian-security
+Pin-Priority: 750
 
-Explanation: security archive
+Explanation: buster backports archive
 Package: *
-Pin: release a=testing, o=Debian, l=Debian-security
-Pin-Priority: 100
+Pin: release n=buster-backports, o=Debian Backports, l=Debian Backports
+Pin-Priority: 700
 
-Explanation: volatile archive
+Explanation: bullseye main archive
 Package: *
-Pin: release a=testing, o=volatile.debian.org, l=debian-volatile
-Pin-Priority: 100
+Pin: release n=bullseye, o=Debian, l=Debian
+Pin-Priority: 650
 
-Explanation: backports archive
+Explanation: bullseye security archive
 Package: *
-Pin: release a=jessie-backports, o="Backports.org archive", l="Backports.org archive"
+Pin: release n=bullseye, o=Debian, l=Debian-security
+Pin-Priority: 650
+
+Explanation: bullseye backports archive
+Package: *
+Pin: release n=bullseye-backports, o=Debian Backports, l=Debian Backports
+Pin-Priority: 600
+
+Explanation: sid main archive
+Package: *
+Pin: release n=sid, o=Debian, l=Debian
 Pin-Priority: 100
