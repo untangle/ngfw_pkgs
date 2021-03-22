@@ -2,6 +2,7 @@
 # pylint: disable=unused-argument
 import os
 import stat
+import json
 from sync import registrar, Manager
 
 class ThreatPreventionManager(Manager):
@@ -17,6 +18,16 @@ class ThreatPreventionManager(Manager):
         """syncs settings"""
 
         self.write_bctid_file(settings_file.settings, prefix)
+
+    def create_settings(self, settings_file, prefix, delete_list, filename):
+        """creates settings"""
+        print("%s: Initializing settings" % self.__class__.__name__)
+        settings_file.settings['threatprevention'] = {}
+        settings_file.settings['threatprevention'] = {
+            "enabled": True,
+            "passList": [],
+            "sensitivity" : "80"
+        }
 
     def get_uid(self):
         "Get the system's uid"
