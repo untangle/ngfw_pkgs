@@ -3,6 +3,7 @@
 import os
 import json
 import shutil
+import requests
 from sync import registrar, Manager, services
 from collections import OrderedDict
 
@@ -17,7 +18,9 @@ class SettingsManager(Manager):
     default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
-    enabled_services_filename = "/usr/share/untangle/.enabledServices.json"
+    enabled_services_url = "/api/license/enabledservices"
+    enabled_services_hostname = "localhost"
+    enabled_services_port = "8585"
 
     def initialize(self):
         """initialize this module"""
@@ -49,10 +52,12 @@ class SettingsManager(Manager):
     def sanitize_settings(self, settings_file):
         """santize settings sets settings to defaults that are set but not enabled"""
         print("%s: Sanitizing settings" % self.__class__.__name__)
-        with open(self.enabled_services_filename, 'r') as services_file:
-            data=services_file.read()
+        response = requests.get("http://"+self.enabled_services_hostname+":"+self.enabled_services_port+self.enabled_services_url)
 
-        current_services = json.loads(data)
+        if response.status_code != 200:
+            print("Getting enabled services failed")  
+
+        current_services = response.json()
 
         # get defaults 
         if os.path.isfile(self.default_filename):
