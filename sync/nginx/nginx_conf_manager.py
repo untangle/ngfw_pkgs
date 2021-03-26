@@ -108,6 +108,8 @@ class NginxConfManager(Manager):
         file.write("\tkeepalive_timeout 60s;\n")
         file.write("\tsendfile on;\n")
         file.write("\n")
+        file.write("\tmodsecurity on;\n")
+        file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
         file.write("\tinclude /etc/nginx/conf.d/*.conf;\n")
         file.write("}\n")
         file.flush()
@@ -136,7 +138,7 @@ class NginxConfManager(Manager):
         file.write("error_log /var/log/nginx/error.log warn;\n")
         file.flush()
         file.close()
-        
+
     def write_upstream_backend(self, file, settings):
         """write the upstream backend block for nginx"""
         upstream_backend = settings['server']['upstreamBackend']
