@@ -28,10 +28,6 @@ class NginxConfManager(Manager):
         }
         upstream_backend = {
             'upstreamServers': [
-                {
-                    'upstreamServerName': '',
-                    'upstreamServerUid': '-1',
-                },
             ],
             'lbMethod': "round_robin"
         }
@@ -68,10 +64,14 @@ class NginxConfManager(Manager):
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
         file.write("\n")
-        # Nginx configuration for both HTTP and SSL
-        self.write_http_connection_upgrade(file, settings)
-        self.write_upstream_backend(file, settings)
-        self.write_server_section(file, settings)
+        
+        # If the upstream servers have not been configured yet, only create the redirect page
+        if len(settings['server']['upstreamBackend']['upstreamServers']) is 0:
+            self.write_untangle_default_landing(file)
+        else:
+            self.write_http_connection_upgrade(file, settings)
+            self.write_upstream_backend(file, settings)
+            self.write_basic_server_conf(file, settings)
 
         file.flush()
         file.close()
@@ -96,13 +96,6 @@ class NginxConfManager(Manager):
             file.write("    server " + server.get('upstreamServerName') + ";\n")
         file.write("}\n")
         file.write("\n")
-
-    def write_server_section(self, file, settings):
-        # No upstream server configured, write out default conf file
-        if not settings['server']['upstreamBackend'][0]['upstreamServerName']:
-            self.write_untangle_landing(file, settings)
-        else:
-            self.write_basic_server_conf(file, settings)
 
     def write_basic_server_conf(self, file, settings):
         """write the initial settings of the server block for nginx"""
@@ -131,12 +124,14 @@ class NginxConfManager(Manager):
         file.write("}")
 
     def write_http_connection_upgrade(self, file, settings):
+        """write_http_connection_upgrade creates the http_upgrade logic to upgrade http traffic"""
         file.write("map $http_upgrade $connection_upgrade {\n")
         file.write("\tdefault upgrade;\n")
         file.write("\t\'\' close;\n")
-        file.write("}\n")
+        file.write("\t}\n")
 
     def write_root_loc(self, file, nginx_loc):
+        """write_root_loc writes the root location for the WAF upstream servers"""
         file.write("\tlocation / {\n")
         file.write("\t\tclient_max_body_size 0;\n")
         file.write("\t\tproxy_set_header Host $host;\n")
@@ -156,27 +151,45 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_pass http://backend;\n")
         file.write("\t\tindex index.html index.htm;\n")
         file.write("\t\troot /usr/share/nginx/html;\n")
-        file.write("}\n")
+        file.write("\t}\n")
 
     def write_health_loc(self, file, nginx_locations):  
+        """write_health_loc creates the healthz endpoint for getting nginx health"""
         file.write("\tlocation /healthz {\n")
         file.write("\t\taccess_log off;\n")
         file.write("\t\tadd_header Content-Type text/plain;\n")
         file.write("\t\tclient_max_body_size 0;\n")
-        file.write("}\n")
+        file.write("\t}\n")
 
     def write_metrics_loc(self, file, nginx_locations):
+        """write_metrics_loc creates the metrics location for getting nginx metrics"""
         file.write("\tlocation /metrics/nginx {\n")
         file.write("\t\tallow " + nginx_locations['metricsAllowFrom'] + ";\n")
         file.write("\t\tdeny " + nginx_locations['metricsDenyFrom'] + ";\n")
         file.write("\t\tproxy_store off;\n")
         file.write("\t\tstub_status;\n")
-        file.write("}\n")
+        file.write("\t}\n")
 
     def write_error_pages(self, file, nginx_locations):
+        """write_error_pages creates the http status code response pages"""
         file.write("\terror_page 500 502 503 504  /50x.html;\n")
         file.write("\tlocation = /50x.html {\n")
         file.write("\t\troot /usr/share/nginx/html;\n")
         file.write("\t}\n")
+
+    def write_untangle_default_landing(self, file):
+        """write_untangle_default_landing creates a URI rewrite that redirects all requests to /app/setup, and creates a root location that points to the app/index.html"""
+        file.write("server {\n")
+        file.write("\tlisten 80;\n")
+        file.write("\tlocation / {\n")
+        file.write("\t\trewrite ^ http://$host/app/setup redirect;\n")
+        file.write("\t}\n")
+        file.write("\tlocation /app {\n")
+        file.write("\t\tproxy_pass http://$host:8585;\n")
+        file.write("\t}\n")
+        file.write("\tlocation /api {\n")
+        file.write("\t\tproxy_pass http://$host:8585;\n")
+        file.write("\t}\n")
+        file.write("}\n")
 
 registrar.register_manager(NginxConfManager())
