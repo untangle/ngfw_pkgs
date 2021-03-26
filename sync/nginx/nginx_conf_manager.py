@@ -49,9 +49,11 @@ class NginxConfManager(Manager):
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_nginx_file(settings_file.settings, prefix)
+        self.write_nginx_conf(settings_file.settings, prefix)
+        self.write_nginx_default_conf(settings_file.settings, prefix)
 
-    def write_nginx_file(self, settings, prefix):
+
+    def write_nginx_default_conf(self, settings, prefix):
         """write the nginx default.conf file"""
         filename = prefix + self.nginx_default_filename
         file_dir = os.path.dirname(filename)
@@ -76,6 +78,36 @@ class NginxConfManager(Manager):
         file.flush()
         file.close()
 
+    def write_nginx_conf(self, settings, prefix):
+        filename = prefix + self.nginx_filename
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.nginx_file = open(filename, "w+")
+        file = self.nginx_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        file.write("load_module modules/ngx_http_modsecurity_module.so;\n")
+        file.write("load_module modules/ngx_http_sticky_module.so;\n")
+        file.write("\n")
+        file.write("worker_processes 1;\n")
+        file.write("pid /var/run/nginx.pid;\n")
+        file.write("events {\n")
+        file.write("\tworker_connections 1024;\n")
+        file.write("}\n")
+        file.write("\n")
+        file.write("http {\n")
+        file.write("\tinclude /etc/nginx/mime.types;\n")
+        file.write("\tdefault_type application/octet-stream;\n")
+        file.write("\tkeepalive_timeout 60s;\n")
+        file.write("\tsendfile on;\n")
+        file.write("\n")
+        file.write("\tinclude /etc/nginx/conf.d/*.conf;\n")
+        file.write("}\n")
+        
     def write_upstream_backend(self, file, settings):
         """write the upstream backend block for nginx"""
         upstream_backend = settings['server']['upstreamBackend']
