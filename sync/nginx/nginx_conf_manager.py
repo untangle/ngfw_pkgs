@@ -4,14 +4,16 @@ from sync import registrar, Manager
 
 class NginxConfManager(Manager):
     """NginxConfManager manages the nginx manager settings"""
-    nginx_default_filename="/etc/nginx/conf.d/default.conf"
-    nginx_filename="/etc/nginx/nginx.conf"
+    nginx_main_conf="/etc/nginx/nginx.conf"
+    nginx_default_conf="/etc/nginx/conf.d/default.conf"
+    nginx_logging_conf="/etc/nginx/conf.d/logging.conf"
 
     def initialize(self):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
-        registrar.register_file(self.nginx_default_filename, "restart-nginx", self)
-        registrar.register_file(self.nginx_filename, "restart-nginx", self)
+        registrar.register_file(self.nginx_main_conf, "restart-nginx", self)
+        registrar.register_file(self.nginx_default_conf, "restart-nginx", self)
+        registrar.register_file(self.nginx_logging_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
@@ -51,17 +53,18 @@ class NginxConfManager(Manager):
         """syncs settings"""
         self.write_nginx_conf(settings_file.settings, prefix)
         self.write_nginx_default_conf(settings_file.settings, prefix)
+        self.write_nginx_logging_conf(settings_file.settings, prefix)
 
 
     def write_nginx_default_conf(self, settings, prefix):
         """write the nginx default.conf file"""
-        filename = prefix + self.nginx_default_filename
+        filename = prefix + self.nginx_default_conf
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        self.nginx_file = open(filename, "w+")
-        file = self.nginx_file
+        self.current_file = open(filename, "w+")
+        file = self.current_file
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
@@ -79,13 +82,13 @@ class NginxConfManager(Manager):
         file.close()
 
     def write_nginx_conf(self, settings, prefix):
-        filename = prefix + self.nginx_filename
+        filename = prefix + self.nginx_main_conf
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        self.nginx_file = open(filename, "w+")
-        file = self.nginx_file
+        self.current_file = open(filename, "w+")
+        file = self.current_file
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
@@ -107,6 +110,32 @@ class NginxConfManager(Manager):
         file.write("\n")
         file.write("\tinclude /etc/nginx/conf.d/*.conf;\n")
         file.write("}\n")
+        file.flush()
+        file.close()
+
+    def write_nginx_logging_conf(self, settings, prefix):
+        """write the logging conf file"""
+        filename = prefix + self.nginx_logging_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        file.write("log_format main '$remote_addr - $remote_user [$time_local] \"$request\" '\n")
+        file.write("\t\t'$status $body_bytes_sent \"$http_referer\" '\n")
+        file.write("\t\t'\"$http_user_agent\" \"$http_x_forwarded_for\"';\n")
+        file.write("\n")
+        file.write("access_log /var/log/nginx/access.log main;\n")
+        file.write("access_log /dev/null combined;\n")
+        file.write("\n")
+        file.write("error_log /var/log/nginx/error.log warn;\n")
+        file.flush()
+        file.close()
         
     def write_upstream_backend(self, file, settings):
         """write the upstream backend block for nginx"""
