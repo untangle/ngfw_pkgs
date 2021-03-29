@@ -8,6 +8,7 @@ class NginxConfManager(Manager):
     nginx_default_conf="/etc/nginx/conf.d/default.conf"
     nginx_logging_conf="/etc/nginx/conf.d/logging.conf"
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
+    untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
 
     def initialize(self):
         """initialize this module"""
@@ -16,6 +17,7 @@ class NginxConfManager(Manager):
         registrar.register_file(self.nginx_default_conf, "restart-nginx", self)
         registrar.register_file(self.nginx_logging_conf, "restart-nginx", self)
         registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
+        registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
@@ -57,6 +59,7 @@ class NginxConfManager(Manager):
         self.write_nginx_default_conf(settings_file.settings, prefix)
         self.write_nginx_logging_conf(settings_file.settings, prefix)
         self.write_modsecurity_setup_conf(settings_file.settings, prefix)
+        self.write_untangle_modsec_rules(settings_file.settings, prefix)
 
     def write_nginx_default_conf(self, settings, prefix):
         """write the nginx default.conf file"""
@@ -190,7 +193,63 @@ class NginxConfManager(Manager):
         # crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
         file.write("Include /etc/modsecurity.d/owasp-crs/crs-setup.conf\n")
         # This is the location of all the core rule set conf files
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/*.conf\n")
+        file.write("Include %s\n" % self.untangle_modsec_rules_conf)
+        file.write("\n")
+        file.write("\n")
+        file.flush()
+        file.close()
+
+    def write_untangle_modsec_rules(self, settings, prefix):
+        """write the untangle modsec rules conf file"""
+        filename = prefix + self.untangle_modsec_rules_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        # Initialization is needed always
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
+        # TODO: Here is where we would add IP Allow/Block list imports, and rule exclusions
+        
+        
+        # TODO: Add settings toggles for these generic application exclusions
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
+        
+        # TODO: Add settings toggles for entire rulesets
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-913-SCANNER-DETECTION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-921-PROTOCOL-ATTACK.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-950-DATA-LEAKAGES.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
         file.write("\n")
         file.write("\n")
         file.flush()
