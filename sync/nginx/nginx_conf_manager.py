@@ -4,14 +4,20 @@ from sync import registrar, Manager
 
 class NginxConfManager(Manager):
     """NginxConfManager manages the nginx manager settings"""
-    nginx_default_filename="/etc/nginx/conf.d/default.conf"
-    nginx_filename="/etc/nginx/nginx.conf"
+    nginx_main_conf="/etc/nginx/nginx.conf"
+    nginx_default_conf="/etc/nginx/conf.d/default.conf"
+    nginx_logging_conf="/etc/nginx/conf.d/logging.conf"
+    modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
+    untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
 
     def initialize(self):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
-        registrar.register_file(self.nginx_default_filename, "restart-nginx", self)
-        registrar.register_file(self.nginx_filename, "restart-nginx", self)
+        registrar.register_file(self.nginx_main_conf, "restart-nginx", self)
+        registrar.register_file(self.nginx_default_conf, "restart-nginx", self)
+        registrar.register_file(self.nginx_logging_conf, "restart-nginx", self)
+        registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
+        registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
@@ -49,17 +55,21 @@ class NginxConfManager(Manager):
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
-        self.write_nginx_file(settings_file.settings, prefix)
+        self.write_nginx_conf(settings_file.settings, prefix)
+        self.write_nginx_default_conf(settings_file.settings, prefix)
+        self.write_nginx_logging_conf(settings_file.settings, prefix)
+        self.write_modsecurity_setup_conf(settings_file.settings, prefix)
+        self.write_untangle_modsec_rules(settings_file.settings, prefix)
 
-    def write_nginx_file(self, settings, prefix):
+    def write_nginx_default_conf(self, settings, prefix):
         """write the nginx default.conf file"""
-        filename = prefix + self.nginx_default_filename
+        filename = prefix + self.nginx_default_conf
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
 
-        self.nginx_file = open(filename, "w+")
-        file = self.nginx_file
+        self.current_file = open(filename, "w+")
+        file = self.current_file
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n")
 
@@ -73,6 +83,175 @@ class NginxConfManager(Manager):
             self.write_upstream_backend(file, settings)
             self.write_basic_server_conf(file, settings)
 
+        file.flush()
+        file.close()
+
+    def write_nginx_conf(self, settings, prefix):
+        filename = prefix + self.nginx_main_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        file.write("load_module modules/ngx_http_modsecurity_module.so;\n")
+        file.write("load_module modules/ngx_http_sticky_module.so;\n")
+        file.write("\n")
+        file.write("worker_processes 1;\n")
+        file.write("pid /var/run/nginx.pid;\n")
+        file.write("events {\n")
+        file.write("\tworker_connections 1024;\n")
+        file.write("}\n")
+        file.write("\n")
+        file.write("http {\n")
+        file.write("\tinclude /etc/nginx/mime.types;\n")
+        file.write("\tdefault_type application/octet-stream;\n")
+        file.write("\tkeepalive_timeout 60s;\n")
+        file.write("\tsendfile on;\n")
+        file.write("\n")
+        file.write("\tmodsecurity on;\n")
+        file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
+        file.write("\tinclude /etc/nginx/conf.d/*.conf;\n")
+        file.write("}\n")
+        file.flush()
+        file.close()
+
+    def write_nginx_logging_conf(self, settings, prefix):
+        """write the logging conf file"""
+        filename = prefix + self.nginx_logging_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        file.write("log_format main '$remote_addr - $remote_user [$time_local] \"$request\" '\n")
+        file.write("\t\t'$status $body_bytes_sent \"$http_referer\" '\n")
+        file.write("\t\t'\"$http_user_agent\" \"$http_x_forwarded_for\"';\n")
+        file.write("\n")
+        file.write("access_log /var/log/nginx/access.log main;\n")
+        file.write("access_log /dev/null combined;\n")
+        file.write("\n")
+        file.write("error_log /var/log/nginx/error.log warn;\n")
+        file.flush()
+        file.close()
+
+    def write_modsecurity_setup_conf(self, settings, prefix):
+        """write_modsecurity_setup_conf writes out the modsecurity setup conf file"""
+        filename = prefix + self.modsecurity_setup_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("\n")
+        file.write("\n")
+        # Load the modsecurity.conf default file
+        file.write("Include /etc/modsecurity.d/modsecurity.conf\n")
+        # Override the modsecurity.conf properties
+        file.write("SecRuleEngine on\n")
+        file.write("SecRequestBodyAccess on\n")
+        file.write("\n")
+        file.write("SecRequestBodyLimit 13107200\n")
+        file.write("SecRequestBodyNoFilesLimit 131072\n")
+        file.write("SecRequestBodyLimitAction Reject\n")
+        file.write("\n")
+        file.write("SecPcreMatchLimit 100000\n")
+        file.write("SecPcreMatchLimitRecursion 100000\n")
+        file.write("\n")
+        file.write("SecResponseBodyAccess on\n")
+        file.write("SecResponseBodyMimeType text/plain text/html text/xml\n")
+        file.write("SecResponseBodyLimit 1048576\n")
+        file.write("SecResponseBodyLimitAction ProcessPartial\n")
+        file.write("SecTmpDir /tmp/\n")
+        file.write("SecDataDir /tmp/\n")
+        file.write("\n")
+        file.write("SecAuditEngine RelevantOnly\n")
+        file.write("SecAuditLog /var/log/untangle_modsec_audit.log\n")
+        file.write("SecAuditLogFormat json\n")
+        file.write("SecAuditLogParts ABIJDEFHKZ\n")
+        file.write("SecAuditLogRelevantStatus \"^(?:5|4(?!04))\"\n")
+        file.write("SecAuditLogType Serial\n")
+        file.write("SecAuditLogStorageDir /var/log/modsecurity/audit\n")
+        file.write("\n")
+        file.write("SecArgumentSeparator &\n")
+        file.write("SecCookieFormat 0\n")
+        file.write("SecUnicodeMapFile unicode.mapping 20127\n")
+        file.write("SecStatusEngine On\n")
+        file.write("\n")
+        # crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
+        file.write("Include /etc/modsecurity.d/owasp-crs/crs-setup.conf\n")
+        # This is the location of all the core rule set conf files
+        file.write("Include %s\n" % self.untangle_modsec_rules_conf)
+        file.write("\n")
+        file.write("\n")
+        file.flush()
+        file.close()
+
+    def write_untangle_modsec_rules(self, settings, prefix):
+        """write the untangle modsec rules conf file"""
+        filename = prefix + self.untangle_modsec_rules_conf
+        file_dir = os.path.dirname(filename)
+        if not os.path.exists(file_dir):
+            os.makedirs(file_dir)
+
+        self.current_file = open(filename, "w+")
+        file = self.current_file
+        file.write("## Auto Generated\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+
+        file.write("\n")
+        # Initialization is needed always
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
+        # TODO: Here is where we would add IP Allow/Block list imports, and rule exclusions
+        
+        
+        # TODO: Add settings toggles for these generic application exclusions
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
+        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
+        
+        # TODO: Add settings toggles for entire rulesets
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-913-SCANNER-DETECTION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-921-PROTOCOL-ATTACK.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-950-DATA-LEAKAGES.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
+        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
+        file.write("\n")
+        file.write("\n")
         file.flush()
         file.close()
 
