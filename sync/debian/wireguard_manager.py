@@ -28,11 +28,12 @@ class WireguardManager(Manager):
                 'rule': '-i $WG_INTERFACE -j MARK --set-mark {src_mark} -m comment --comment "Set src interface mark for wireguard vpn"'
             }],
             "mark-dst-intf": [{
+                # Mark destination interface mark
                 'new': 'insert',
                 'index': 3,
                 'rule': '-o $WG_INTERFACE -j MARK --set-mark {dst_mark} -m comment --comment "Set dst interface mark for wireguard vpn"'
-            }],
-            "mark-dst-intf": [{
+            }, {
+                # MSS clamping rule for wireguard tunnels
                 'new': 'insert',
                 'index': 3,
                 'rule': '-o $WG_INTERFACE -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu -m comment --comment "Perform mss clamping for wireguard vpn"'
