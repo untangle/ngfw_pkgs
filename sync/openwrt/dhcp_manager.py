@@ -115,6 +115,7 @@ class DhcpManager(Manager):
         file.write("\toption nonwildcard '0'\n")
         file.write("\toption localservice '0'\n")
         file.write("\toption dhcpleasemax '5000'\n")
+        file.write("\toption dnsforwardmax '512'\n")
         file.write("\toption leasefile '/tmp/dhcp.leases'\n")
         file.write("\toption resolvfile '/tmp/resolv.conf.auto'\n")
         file.write("\tlist addnhosts '/tmp/hosts.untangle'\n")
