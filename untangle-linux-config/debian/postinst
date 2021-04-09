@@ -134,8 +134,13 @@ if [ ! -f /etc/ssl/certs/java/cacerts ] ; then
 fi
 
 # enable serial console
-deb-systemd-helper enable serial-getty@ttyS0.service
-deb-systemd-invoke start serial-getty@ttyS0.service
+if [ `tty` = "/dev/ttyS0" ]; then
+  deb-systemd-helper enable serial-getty@ttyS0.service
+  deb-systemd-invoke start serial-getty@ttyS0.service
+else 
+  deb-systemd-invoke stop serial-getty@ttyS0.service
+  deb-systemd-helper disable serial-getty@ttyS0.service
+fi
 
 # enable textui on serial console for zsh or bash shell when root logs in
 if ! grep -q ttyS0 /root/.zshrc ; then
