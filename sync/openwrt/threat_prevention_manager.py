@@ -26,7 +26,8 @@ class ThreatPreventionManager(Manager):
         settings_file.settings['threatprevention'] = {
             "enabled": True,
             "passList": [],
-            "sensitivity" : "25"
+            "sensitivity" : "25",
+            "redirect" : False,
         }
 
     def get_uid(self):
