@@ -87,10 +87,14 @@ nft add set ip nat tp_redirect "{ type ct_id; flags timeout; timeout 15m; gc-int
 nft add chain nat tp-prerouting "{ type nat hook prerouting priority -100; }"
 nft add rule nat tp-prerouting ct id @tp_redirect ip protocol {icmp, udp} drop
 """)
-        lan_ip = os.popen("ifconfig | grep -Eo 'inet (addr:)?([0-9]*\.){3}[0-9]*' | grep -Eo '([0-9]*\.){3}[0-9]*' | head -1").read().rstrip()
-        redirect = settings.get('threatprevention').get('redirect')
 
-        print(f"lan_ip {lan_ip}, redirect {redirect}")
+        interfaces = settings.get('network').get('interfaces')
+        for interface in interfaces:
+            if interface.get("type") == "NIC" and not interface.get("wan"):
+                lan_ip = interface.get("v4StaticAddress")
+                break
+
+        redirect = settings.get('threatprevention').get('redirect')
 
         if redirect:
             file.write(r"""
