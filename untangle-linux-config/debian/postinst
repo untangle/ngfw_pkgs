@@ -135,10 +135,12 @@ fi
 
 # enable serial console
 findserial=""
-if [ -f /dev/ttyS0 ]; then
+if [ -e /dev/ttyS0 ]; then
+  echo "Found /dev/ttyS0"
   findserial=`cat /proc/tty/driver/serial | grep -vi unknown | grep -vi serinfo`
 fi
 if [ ! -z "$findserial" ]; then
+  deb-systemd-helper unmask serial-getty@ttyS0.service
   deb-systemd-helper enable serial-getty@ttyS0.service
   deb-systemd-invoke start serial-getty@ttyS0.service
 else 
