@@ -117,6 +117,7 @@ class DnsMasqManager(Manager):
         if (settings.get('dhcpAuthoritative') == True):
             file.write("dhcp-authoritative\n")
         file.write("dhcp-lease-max=5000\n")  # should this be configurable?
+        file.write("dns-forward-max=512\n")
         file.write("\n")
 
         # Enable DHCP on internal NICs (where configured)
