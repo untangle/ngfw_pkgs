@@ -34,6 +34,7 @@ class DhcpManager(Manager):
         self.write_enter_hook(settings_file.settings, prefix)
         self.write_pre_network_hook(settings_file.settings, prefix)
         self.write_dhcp_ddclient_file(settings_file.settings, prefix)
+        self.write_dhcp_conf_file(settings_file.settings, prefix)
 
         # 14.0 delete obsolete file (can be removed in 14.1)
         delete_list.append("/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook")
