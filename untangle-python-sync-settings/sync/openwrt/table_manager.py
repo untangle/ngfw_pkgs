@@ -158,12 +158,13 @@ class TableManager(Manager):
             settings_file.settings['threatprevention'] = {
                 "enabled": True,
                 "passList": [],
-                "sensitivity" : "25"
+                "sensitivity" : "25",
+                "redirect": False,
             }
         tpConfig = settings_file.settings.get('threatprevention')
 
         # Need to enabled or add default TP rules to access list
-        rule_enabled = tpConfig['enabled']
+        rule_enabled = tpConfig['redirect'] and tpConfig['enabled']
         rule_found = False
         accessrules = settings_file.settings['firewall']['tables']['access']['chains'][0]['rules']
 
