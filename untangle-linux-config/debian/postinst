@@ -134,12 +134,13 @@ if [ ! -f /etc/ssl/certs/java/cacerts ] ; then
 fi
 
 # enable serial console
-findserial=""
+ret=1
 if [ -e /dev/ttyS0 ]; then
   echo "Found /dev/ttyS0"
-  findserial=`cat /proc/tty/driver/serial | grep -vi unknown | grep -vi serinfo`
+  stty < /dev/ttyS0
+  ret=$?
 fi
-if [ ! -z "$findserial" ]; then
+if [ $ret -eq 0 ]; then
   deb-systemd-helper unmask serial-getty@ttyS0.service
   deb-systemd-helper enable serial-getty@ttyS0.service
   deb-systemd-invoke start serial-getty@ttyS0.service
