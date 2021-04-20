@@ -32,6 +32,9 @@ class NginxConfManager(Manager):
             'paranoia': '1',
             'proxy': '1'
         }
+        setupWizard = {
+                'completed': False
+        }
         upstream_backend = {
             'upstreamServers': [
             ],
@@ -48,6 +51,7 @@ class NginxConfManager(Manager):
             'metricsDenyFrom': 'all',
         }
         server['basicServer'] = basic_server
+        server['setupWizard'] = setupWizard
         server['upstreamBackend'] = upstream_backend
         server['serverSsl'] = server_ssl
         server['nginxLocations'] = nginx_locations
