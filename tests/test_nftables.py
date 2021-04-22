@@ -246,31 +246,35 @@ conditions_tests = [
 
     [[{"type": "CLIENT_PORT","op":"==","value": "1234"}], "dict sessions ct id client_port int 1234"],
     [[{"type": "CLIENT_PORT","op":"!=","value": "1234"}], "dict sessions ct id client_port int != 1234"],
-    [[{"type": "CLIENT_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id client_port int 1235-1236"],
-    [[{"type": "CLIENT_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id client_port int != 1235-1236"],
-    [[{"type": "CLIENT_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id client_port int {1234,1235-1236}"],
-    [[{"type": "CLIENT_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id client_port int != {1234,1235-1236}"],
+    [[{"type": "CLIENT_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id client_port int >= 1235 dict sessions ct id client_port int <= 1236"],
+    [[{"type": "CLIENT_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id client_port int < 1235 dict sessions ct id client_port int > 1236"],
+    # Not supported at this time.
+    # [[{"type": "CLIENT_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id client_port int {1234,1235-1236}"],
+    # [[{"type": "CLIENT_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id client_port int != {1234,1235-1236}"],
 
     [[{"type": "SERVER_PORT","op":"==","value": "1234"}], "dict sessions ct id server_port int 1234"],
     [[{"type": "SERVER_PORT","op":"!=","value": "1234"}], "dict sessions ct id server_port int != 1234"],
-    [[{"type": "SERVER_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id server_port int 1235-1236"],
-    [[{"type": "SERVER_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id server_port int != 1235-1236"],
-    [[{"type": "SERVER_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id server_port int {1234,1235-1236}"],
-    [[{"type": "SERVER_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id server_port int != {1234,1235-1236}"],
+    [[{"type": "SERVER_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id server_port int >= 1235 dict sessions ct id server_port int <= 1236"],
+    [[{"type": "SERVER_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id server_port int < 1235 dict sessions ct id server_port int > 1236"],
+    # Not supported at this time.
+    # [[{"type": "SERVER_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id server_port int {1234,1235-1236}"],
+    # [[{"type": "SERVER_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id server_port int != {1234,1235-1236}"],
 
     [[{"type": "LOCAL_PORT","op":"==","value": "1234"}], "dict sessions ct id local_port int 1234"],
     [[{"type": "LOCAL_PORT","op":"!=","value": "1234"}], "dict sessions ct id local_port int != 1234"],
-    [[{"type": "LOCAL_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id local_port int 1235-1236"],
-    [[{"type": "LOCAL_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id local_port int != 1235-1236"],
-    [[{"type": "LOCAL_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id local_port int {1234,1235-1236}"],
-    [[{"type": "LOCAL_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id local_port int != {1234,1235-1236}"],
+    [[{"type": "LOCAL_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id local_port int >= 1235 dict sessions ct id local_port int <= 1236"],
+    [[{"type": "LOCAL_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id local_port int < 1235 dict sessions ct id local_port int > 1236"],
+    # Not supported at this time.
+    # [[{"type": "LOCAL_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id local_port int {1234,1235-1236}"],
+    # [[{"type": "LOCAL_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id local_port int != {1234,1235-1236}"],
 
     [[{"type": "REMOTE_PORT","op":"==","value": "1234"}], "dict sessions ct id remote_port int 1234"],
     [[{"type": "REMOTE_PORT","op":"!=","value": "1234"}], "dict sessions ct id remote_port int != 1234"],
-    [[{"type": "REMOTE_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id remote_port int 1235-1236"],
-    [[{"type": "REMOTE_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id remote_port int != 1235-1236"],
-    [[{"type": "REMOTE_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id remote_port int {1234,1235-1236}"],
-    [[{"type": "REMOTE_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id remote_port int != {1234,1235-1236}"],
+    [[{"type": "REMOTE_PORT","op":"==","value": "1235-1236"}], "dict sessions ct id remote_port int >= 1235 dict sessions ct id remote_port int <= 1236"],
+    [[{"type": "REMOTE_PORT","op":"!=","value": "1235-1236"}], "dict sessions ct id remote_port int < 1235 dict sessions ct id remote_port int > 1236"],
+    # Not supported at this time.
+    # [[{"type": "REMOTE_PORT","op":"==","value": "1234,1235-1236"}], "dict sessions ct id remote_port int {1234,1235-1236}"],
+    # [[{"type": "REMOTE_PORT","op":"!=","value": "1234,1235-1236"}], "dict sessions ct id remote_port int != {1234,1235-1236}"],
 
     [[{"type": "CLIENT_ADDRESS","op":"==","value": "1.2.3.4"}], "dict sessions ct id client_address ipv4_addr 1.2.3.4"],
     [[{"type": "CLIENT_ADDRESS","op":"!=","value": "1.2.3.4"}], "dict sessions ct id client_address ipv4_addr != 1.2.3.4"],
