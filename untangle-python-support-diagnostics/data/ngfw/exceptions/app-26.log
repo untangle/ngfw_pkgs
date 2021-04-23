@@ -1,0 +1,912 @@
+Apr  3 12:38:54 localhost app-26: [AppBase] <> INFO  killMatchingSessions()
+Apr  3 12:38:54 localhost app-26: [VirusBlockerBaseApp] <> INFO  Loading Settings...
+Apr  3 12:38:54 localhost app-26: [AppBase] <> INFO  Starting   virus-blocker [26] ...
+Apr  3 12:38:54 localhost app-26: [AppBase] <> INFO  Started    virus-blocker [26] ...
+Apr  3 12:39:10 localhost app-26: [VirusHttpHandler] <TCP103935311414243> INFO  urlCache add: test.untangle.com/virus/eicar.zip = EICAR-Test-File
+Apr  3 12:39:10 localhost app-26: [VirusHttpHandler] <TCP103935311414243> INFO  Virus found: test.untangle.com/virus/eicar.zip = EICAR-Test-File
+Apr  3 12:39:11 localhost app-26: [VirusHttpHandler] <TCP103935311414247> INFO  urlCache add: test.untangle.com/virus/virus.exe = Worm.Generic.22916
+Apr  3 12:39:11 localhost app-26: [VirusHttpHandler] <TCP103935311414247> INFO  Virus found: test.untangle.com/virus/virus.exe = Worm.Generic.22916
+Apr  3 12:39:12 localhost app-26: [VirusHttpHandler] <TCP103935311414252> INFO  urlCache add: test.untangle.com/virus/fedexvirus.zip = MemScan:Trojan.Crypt.JJ
+Apr  3 12:39:12 localhost app-26: [VirusHttpHandler] <TCP103935311414252> INFO  Virus found: test.untangle.com/virus/fedexvirus.zip = MemScan:Trojan.Crypt.JJ
+Apr  3 12:39:12 localhost app-26: [VirusHttpHandler] <TCP103935311414256> INFO  urlCache hit: test.untangle.com/virus/virus.exe -> Worm.Generic.22916
+Apr  3 12:39:13 localhost app-26: [VirusHttpHandler] <TCP103935311414258> INFO  urlCache hit: test.untangle.com/virus/virus.exe -> Worm.Generic.22916
+Apr  3 12:39:13 localhost app-26: [AppBase] <> INFO  killMatchingSessions()
+Apr  3 12:39:13 localhost app-26: [AppBase] <> INFO  killMatchingSessions()
+Apr  3 13:02:17 localhost app-26: [AppBase] <> INFO  Stopping   virus-blocker [26] ...
+Apr  3 13:02:17 localhost app-26: [AppBase] <> INFO  Stopped    virus-blocker [26] ...
+Apr  3 13:02:17 localhost app-26: [AppBase] <> INFO  Destroying virus-blocker [26] ...
+Apr  3 13:02:17 localhost app-26: [AppBase] <> INFO  Destroyed  virus-blocker [26] ...
+May  5 08:58:12 localhost app-26: [WireguardVpnApp] <> INFO  Initializing Settings...
+May  5 08:58:12 localhost app-26: [WireguardVpnApp] <> INFO  Creating the default settings...
+May  5 08:58:12 localhost app-26: [WireguardVpnApp] <> WARN  com.untangle.app.wireguard_vpn.WireguardVpnManager@712c0b00
+May  5 08:58:12 localhost app-26: [WireguardVpnApp] <> WARN  com.untangle.app.wireguard_vpn.WireguardVpnManager@712c0b00
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  Stopping Wireguard interface and tunnels
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' is not a WireGuard interface
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> ERROR Failed calling Wireguard start script (return code: 1)
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  Starting Wireguard interface and tunnels
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.59.222.1 dev wg0
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 08:58:14 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 08:58:14 localhost app-26: [WireguardVpnApp] <> INFO  Loading Settings...
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  Stopping Wireguard interface and tunnels
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  Starting Wireguard interface and tunnels
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.59.222.1 dev wg0
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.59.222.3/32 dev wg0
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:10:44 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:11:02 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> INFO  Starting Wireguard interface and tunnels
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' already exists
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> ERROR Failed calling Wireguard start script (return code: 1)
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:11:02 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:11:02 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+May  5 09:11:22 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+May  5 09:11:22 localhost app-26: [WireguardVpnMonitor] <> INFO  WireguardVpn monitor was interrupted
+May  5 09:11:22 localhost app-26: [WireguardVpnManager] <> INFO  Stopping Wireguard interface and tunnels
+May  5 09:11:22 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May  5 09:11:22 localhost app-26: [WireguardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May  5 09:11:22 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:11:22 localhost app-26: [WireguardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May  5 09:11:22 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+May  5 09:11:22 localhost app-26: [AppBase] <> INFO  Destroying wireguard-vpn [26] ...
+May  5 09:11:22 localhost app-26: [AppBase] <> INFO  Destroyed  wireguard-vpn [26] ...
+May 28 08:08:45 localhost app-26: [WireGuardVpnApp] <> INFO  Initializing Settings...
+May 28 08:08:45 localhost app-26: [WireGuardVpnApp] <> INFO  Creating the default settings...
+May 28 08:08:45 localhost app-26: [WireGuardVpnApp] <> WARN  192.168.252.60
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' is not a WireGuard interface
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> ERROR Failed calling WireGuard start script (return code: 1)
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 28 08:08:47 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' already exists
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> ERROR Failed calling WireGuard start script (return code: 1)
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 08:08:47 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+May 28 11:37:40 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+May 28 11:37:40 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+May 28 11:37:40 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 28 11:37:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 28 11:37:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 28 11:37:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 11:37:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 28 11:37:40 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+May 28 11:37:44 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 29 10:52:17 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 29 14:08:59 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 08:06:48 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 08:06:48 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 08:06:48 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 08:33:13 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 11:35:48 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 11:35:48 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 11:35:48 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 14:05:09 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 14:05:09 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 14:05:09 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 14:05:09 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:05:14 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:05:14 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 14:39:26 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:39:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:39:26 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 14:39:30 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 14:39:30 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 14:39:30 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 14:39:30 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:39:31 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 14:39:31 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:08:19 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:19 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:08:24 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:24 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:24 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:08:51 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:51 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:51 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:08:56 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:08:56 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:08:56 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:08:56 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:57 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:08:57 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:34 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:09:41 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:19 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:19 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:10:23 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:10:23 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:10:23 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:10:23 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:24 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:24 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:10:40 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:40 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:10:44 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:10:44 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:10:44 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:10:44 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:45 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:10:45 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:19 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:11:39 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:12:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:12:44 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:12:44 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:13:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:17 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:17 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:17 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:14:21 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:14:21 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:14:21 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:14:21 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:22 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:14:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:15:47 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:15:47 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:15:47 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:15:51 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:15:51 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:15:52 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:15:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:15:53 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:15:53 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:15:53 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:16:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:16:12 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:12 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:55 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:16:55 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:16:56 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:22 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:22 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:17:27 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:17:27 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:17:27 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:27 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:27 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:17:53 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:17:53 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:17:53 localhost app-26: [WireGuardVpnApp] <> WARN  DO CHANGE
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:17:54 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:02 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:19:02 localhost app-26: [WireGuardVpnApp] <> WARN  51821
+Jun  1 15:19:02 localhost app-26: [WireGuardVpnApp] <> WARN  DO CHANGE
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:05 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:12 localhost app-26: [WireGuardVpnApp] <> WARN  51821
+Jun  1 15:19:12 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:19:12 localhost app-26: [WireGuardVpnApp] <> WARN  DO CHANGE
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnApp] <> WARN  DO CHANGE
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:19:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:19:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:19:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:24 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:20:24 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:20:24 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:20:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:20:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:20:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:25 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:20:29 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:20:29 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:20:29 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:20:29 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:30 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:30 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:20:48 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:01 localhost app-26: [WireGuardVpnApp] <> WARN  51820
+Jun  1 15:21:01 localhost app-26: [WireGuardVpnApp] <> WARN  51821
+Jun  1 15:21:01 localhost app-26: [WireGuardVpnApp] <> WARN  DO CHANGE
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:04 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:17 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:21:17 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:21:17 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:21:18 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:18 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:21:18 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:18 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:18 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:21:22 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:21:22 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:21:22 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:21:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:21:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:23 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:23 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:21:43 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:25 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:25 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:25 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:35:30 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:35:30 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:35:30 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:31 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:31 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:35:57 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:57 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:35:57 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:36:11 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:11 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:11 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:22 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:28 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:28 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:28 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:36:40 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:40 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:40 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:36:50 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:12 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:13 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:51 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:51 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:51 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:39:57 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:39:57 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:39:57 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:39:57 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:58 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:39:58 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:40:25 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:40:25 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:40:25 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:40:26 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:40:26 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:40:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:26 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:26 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:40:31 localhost app-26: [AppBase] <> INFO  No valid license for: wireguard-vpn
+Jun  1 15:40:31 localhost app-26: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+Jun  1 15:40:31 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:40:31 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:40:32 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:40:33 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:33 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:33 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  1 15:40:52 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:52 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:52 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  1 15:40:58 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Jun  1 15:40:58 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.14.225.1 dev wg0
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 10.14.225.3/32 dev wg0
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:59 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  1 15:40:59 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Jun  2 10:14:35 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  2 10:14:35 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Jun  2 10:14:35 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Jun  2 10:14:35 localhost app-26: [AppBase] <> INFO  Destroying wireguard-vpn [26] ...
+Jun  2 10:14:35 localhost app-26: [AppBase] <> INFO  Destroyed  wireguard-vpn [26] ...
+Sep  4 09:47:15 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> WARN  No settings found - Initializing new settings.
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 0, Uncategorized, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 1, Real Estate, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 2, Computer and Internet Security, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 3, Financial Services, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 4, Business and Economy, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 5, Computer and Internet Info, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 6, Auctions, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 7, Shopping, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 8, Cult and Occult, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 9, Travel, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 10, Abused Drugs, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 11, Adult and Pornography, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 12, Home and Garden, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 13, Military, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 14, Social Networking, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 15, Dead Sites, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 16, Individual Stock Advice and Tools, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 17, Training and Tools, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 18, Dating, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 19, Sex Education, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 20, Religion, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 21, Entertainment and Arts, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 22, Personal sites and Blogs, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 23, Legal, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 24, Local Information, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 25, Streaming Media, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 26, Job Search, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 27, Gambling, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 28, Translation, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 29, Reference and Research, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 30, Shareware and Freeware, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 31, Peer to Peer, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 32, Marijuana, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 33, Hacking, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 34, Games, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 35, Philosophy and Political Advocacy, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 36, Weapons, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 37, Pay to Surf, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 38, Hunting and Fishing, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 39, Society, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 40, Educational Institutions, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 41, Online Greeting Cards, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 42, Sports, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 43, Swimsuits and Intimate Apparel, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 44, Questionable, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 45, Kids, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 46, Hate and Racism, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 47, Personal Storage, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 48, Violence, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 49, Keyloggers and Monitoring, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 50, Search Engines, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 51, Internet Portals, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 52, Web Advertisements, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 53, Cheating, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 54, Gross, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 55, Web-based Email, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 56, Malware Sites, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 57, Phishing and Other Frauds, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 58, Proxy Avoidance and Anonymizers, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 59, Spyware and Adware, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 60, Music, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 61, Government, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 62, Nudity, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 63, News and Media, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 64, Illegal, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 65, Content Delivery Networks, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 66, Internet Communications, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 67, Bot Nets, true, true )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 68, Abortion, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 69, Health and Medicine, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 71, SPAM URLs, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 74, Dynamically Generated Content, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 75, Parked Domains, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 76, Alcohol and Tobacco, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 78, Image and Video Search, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 79, Fashion and Beauty, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 80, Recreation and Hobbies, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 81, Motor Vehicles, false, false )
+Sep  4 09:47:15 localhost app-26: [WebFilterBase] <> INFO  Adding Category: ( 82, Web Hosting, false, false )
+Sep  4 09:47:15 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 09:47:17 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 09:54:50 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 09:54:57 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 09:55:02 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 09:55:02 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 09:55:04 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 09:56:12 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 09:56:19 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 09:56:23 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 09:56:24 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 09:56:25 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 09:57:20 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 09:57:27 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 09:57:31 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 09:57:31 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 09:57:32 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 09:58:38 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 09:58:45 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 09:58:49 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 09:58:49 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 09:58:51 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 10:08:33 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 10:08:40 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 10:08:45 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 10:08:45 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 10:08:46 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 10:13:33 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 10:13:41 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep  4 10:13:47 localhost app-26: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Sep  4 10:13:47 localhost app-26: [AppBase] <> INFO  Starting   web-filter [26] ...
+Sep  4 10:13:48 localhost app-26: [AppBase] <> INFO  Started    web-filter [26] ...
+Sep  4 13:54:01 localhost app-26: [AppBase] <> INFO  Stopping   web-filter [26] ...
+Sep  4 13:54:08 localhost app-26: [AppBase] <> INFO  Stopped    web-filter [26] ...
+Sep 18 14:01:52 localhost app-26: [IntrusionPreventionApp] <> INFO  Loading settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/intrusion-prevention/settings_26.js
+Sep 18 14:01:52 localhost app-26: [IntrusionPreventionApp] <> WARN  No settings found - Initializing new settings.
+Sep 18 14:02:14 localhost app-26: [AppBase] <> INFO  Starting   intrusion-prevention [26] ...
+Sep 18 14:02:19 localhost app-26: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 18 14:02:19 localhost app-26: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Fri 18 Sep 2020 02:02:19 PM EDT] suricata is running. Inserting rules.
+Sep 18 14:02:19 localhost app-26: [AppBase] <> INFO  Started    intrusion-prevention [26] ...
+Sep 18 14:02:23 localhost app-26: [AppBase] <> INFO  Stopping   intrusion-prevention [26] ...
+Sep 18 14:02:27 localhost app-26: [AppBase] <> INFO  Destroying intrusion-prevention [26] ...
+Sep 18 14:02:27 localhost app-26: [AppBase] <> INFO  Destroyed  intrusion-prevention [26] ...
+Sep 18 14:02:44 localhost app-26: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 18 14:02:44 localhost app-26: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Fri 18 Sep 2020 02:02:44 PM EDT] Suricata is not running - not inserting rules for suricata
+Sep 18 14:02:44 localhost app-26: [AppBase] <> INFO  Stopped    intrusion-prevention [26] ...
+Oct 27 09:15:51 localhost app-26: [WireGuardVpnApp] <> INFO  Initializing Settings...
+Oct 27 09:15:51 localhost app-26: [WireGuardVpnApp] <> INFO  Creating the default settings...
+Oct 27 09:15:51 localhost app-26: [WireGuardVpnApp] <> WARN  /192.168.252.60
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnApp] <> INFO  Loading Settings...
+Oct 27 09:15:55 localhost app-26: [AppBase] <> INFO  Starting   wireguard-vpn [26] ...
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 10.120.108.1 dev wg0
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Oct 27 09:15:55 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Oct 27 09:15:55 localhost app-26: [AppBase] <> INFO  Started    wireguard-vpn [26] ...
+Oct 27 11:25:15 localhost app-26: [AppBase] <> INFO  Stopping   wireguard-vpn [26] ...
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Oct 27 11:25:15 localhost app-26: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+Oct 27 11:25:15 localhost app-26: [AppBase] <> INFO  Stopped    wireguard-vpn [26] ...
+Oct 27 11:25:15 localhost app-26: [AppBase] <> INFO  Destroying wireguard-vpn [26] ...
+Oct 27 11:25:15 localhost app-26: [AppBase] <> INFO  Destroyed  wireguard-vpn [26] ...

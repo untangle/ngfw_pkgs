@@ -1,0 +1,33 @@
+[INFO: Wed Sep 23 14:36:48 EDT 2020] Adding iptables rules for ppp0
+[INFO: Wed Sep 23 14:38:03 EDT 2020] Removing iptables rules for ppp0
+iptables: No chain/target/match by that name.
+iptables: No chain/target/match by that name.
+[INFO: Wed Sep 23 14:38:09 EDT 2020] Adding iptables rules for ppp0
+[INFO: Wed Sep 23 22:14:38 EDT 2020] Removing iptables rules for ppp0
+iptables: No chain/target/match by that name.
+iptables: No chain/target/match by that name.
+[INFO: Thu Sep 24 09:41:57 EDT 2020] Adding iptables rules for ppp0
+[INFO: Thu Sep 24 13:18:58 EDT 2020] Removing iptables rules for ppp0
+[INFO: Tue Sep 29 14:46:58 EDT 2020] Adding iptables rules for ppp0
+[INFO: Tue Sep 29 22:23:28 EDT 2020] Removing iptables rules for ppp0
+iptables: No chain/target/match by that name.
+iptables: No chain/target/match by that name.
+[INFO: Tue Oct  6 11:41:39 EDT 2020] Adding iptables rules for ppp0
+/etc/ppp/ip-up.d/untangle-l2tp: 36: /etc/ppp/ip-up.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Tue Oct  6 11:50:01 EDT 2020] Removing iptables rules for ppp0
+/etc/ppp/ip-down.d/untangle-l2tp: 36: /etc/ppp/ip-down.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Tue Oct  6 12:09:41 EDT 2020] Adding iptables rules for ppp0
+/etc/ppp/ip-up.d/untangle-l2tp: 36: /etc/ppp/ip-up.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Tue Oct  6 12:11:23 EDT 2020] Removing iptables rules for ppp0
+/etc/ppp/ip-down.d/untangle-l2tp: 36: /etc/ppp/ip-down.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Tue Oct  6 12:13:05 EDT 2020] Adding iptables rules for ppp0
+/etc/ppp/ip-up.d/untangle-l2tp: 36: /etc/ppp/ip-up.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Tue Oct  6 12:15:33 EDT 2020] Removing iptables rules for ppp0
+/etc/ppp/ip-down.d/untangle-l2tp: 36: /etc/ppp/ip-down.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found
+[INFO: Mon Oct 26 15:05:07 EDT 2020] Adding iptables rules for ppp0
+[INFO: Mon Oct 26 15:10:05 EDT 2020] Removing iptables rules for ppp0
+[INFO: Mon Oct 26 15:10:47 EDT 2020] Adding iptables rules for ppp0
+[INFO: Mon Oct 26 15:11:00 EDT 2020] Removing iptables rules for ppp0
+[INFO: Mon Oct 26 15:15:32 EDT 2020] Adding iptables rules for ppp0
+[INFO: Mon Oct 26 22:52:01 EDT 2020] Removing iptables rules for ppp0
+/etc/ppp/ip-down.d/untangle-l2tp: 36: /etc/ppp/ip-down.d/untangle-l2tp: /usr/share/untangle/bin/ipsec-virtual-user-event: not found

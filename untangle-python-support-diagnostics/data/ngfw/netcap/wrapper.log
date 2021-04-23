@@ -1,0 +1,1106 @@
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Nov  3 08:06:55 hostname uvmwrapper: ==============================
+Nov  3 08:06:55 hostname uvmwrapper:        UVM Launching
+Nov  3 08:06:55 hostname uvmwrapper: ==============================
+Nov  3 08:06:55 hostname uvmwrapper: untangle-vm launched (pid: 1234)
+Nov  3 08:06:55 hostname uvmwrapper: untangle-vm monitoring (pid: 1234)
+Nov  3 15:27:18 untangle uvmwrapper: Caught SIGINT: initiating shutdown (pid: 1234)
+Nov  3 15:27:19 untangle uvmwrapper: ==============================
+Nov  3 15:27:19 untangle uvmwrapper:        UVM Stopped
+Nov  3 15:27:19 untangle uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Nov  3 13:51:24 untangle uvmwrapper: ==============================
+Nov  3 13:51:24 untangle uvmwrapper:        UVM Launching
+Nov  3 13:51:24 untangle uvmwrapper: ==============================
+Nov  3 13:51:24 untangle uvmwrapper: untangle-vm launched (pid: 2189)
+Nov  3 13:51:24 untangle uvmwrapper: untangle-vm monitoring (pid: 2189)
+Nov  3 15:52:11 untangle uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2189)
+Nov  3 15:52:12 untangle uvmwrapper: ==============================
+Nov  3 15:52:12 untangle uvmwrapper:        UVM Stopped
+Nov  3 15:52:12 untangle uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Nov  3 15:54:02 untangle uvmwrapper: ==============================
+Nov  3 15:54:02 untangle uvmwrapper:        UVM Launching
+Nov  3 15:54:02 untangle uvmwrapper: ==============================
+Nov  3 15:54:02 untangle uvmwrapper: untangle-vm launched (pid: 2300)
+Nov  3 15:54:02 untangle uvmwrapper: untangle-vm monitoring (pid: 2300)
+Nov  3 15:58:39 untangle uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2300)
+Nov  3 15:58:40 untangle uvmwrapper: ==============================
+Nov  3 15:58:40 untangle uvmwrapper:        UVM Stopped
+Nov  3 15:58:40 untangle uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Nov  3 16:03:31 untangle uvmwrapper: ==============================
+Nov  3 16:03:31 untangle uvmwrapper:        UVM Launching
+Nov  3 16:03:31 untangle uvmwrapper: ==============================
+Nov  3 16:03:31 untangle uvmwrapper: untangle-vm launched (pid: 2215)
+Nov  3 16:03:31 untangle uvmwrapper: untangle-vm monitoring (pid: 2215)
+Nov  4 11:02:58 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2215)
+Nov  4 11:03:11 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2215)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Nov  7 18:38:50 burnside uvmwrapper: ==============================
+Nov  7 18:38:50 burnside uvmwrapper:        UVM Launching
+Nov  7 18:38:50 burnside uvmwrapper: ==============================
+Nov  7 18:38:50 burnside uvmwrapper: untangle-vm launched (pid: 2189)
+Nov  7 18:38:50 burnside uvmwrapper: untangle-vm monitoring (pid: 2189)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Jan 25 01:12:35 burnside uvmwrapper: ==============================
+Jan 25 01:12:35 burnside uvmwrapper:        UVM Launching
+Jan 25 01:12:35 burnside uvmwrapper: ==============================
+Jan 25 01:12:35 burnside uvmwrapper: untangle-vm launched (pid: 2306)
+Jan 25 01:12:35 burnside uvmwrapper: untangle-vm monitoring (pid: 2306)
+Jul  2 20:30:00 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2306)
+Jul  2 20:30:23 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2306)
+Jul  2 20:30:24 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2306)
+Jul  2 20:30:24 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2306)
+Jul  2 20:30:31 burnside uvmwrapper: ==============================
+Jul  2 20:30:31 burnside uvmwrapper:        UVM Launching
+Jul  2 20:30:31 burnside uvmwrapper: ==============================
+Jul  2 20:30:31 burnside uvmwrapper: untangle-vm launched (pid: 11701)
+Jul  2 20:30:31 burnside uvmwrapper: untangle-vm monitoring (pid: 11701)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Aug 13 07:37:05 burnside uvmwrapper: ==============================
+Aug 13 07:37:05 burnside uvmwrapper:        UVM Launching
+Aug 13 07:37:05 burnside uvmwrapper: ==============================
+Aug 13 07:37:05 burnside uvmwrapper: untangle-vm launched (pid: 2190)
+Aug 13 07:37:05 burnside uvmwrapper: untangle-vm monitoring (pid: 2190)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Aug 24 06:49:22 burnside uvmwrapper: ==============================
+Aug 24 06:49:22 burnside uvmwrapper:        UVM Launching
+Aug 24 06:49:22 burnside uvmwrapper: ==============================
+Aug 24 06:49:22 burnside uvmwrapper: untangle-vm launched (pid: 2205)
+Aug 24 06:49:22 burnside uvmwrapper: untangle-vm monitoring (pid: 2205)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Sep  8 06:41:29 burnside uvmwrapper: ==============================
+Sep  8 06:41:29 burnside uvmwrapper:        UVM Launching
+Sep  8 06:41:29 burnside uvmwrapper: ==============================
+Sep  8 06:41:29 burnside uvmwrapper: untangle-vm launched (pid: 2329)
+Sep  8 06:41:29 burnside uvmwrapper: untangle-vm monitoring (pid: 2329)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Sep 22 07:22:47 burnside uvmwrapper: ==============================
+Sep 22 07:22:47 burnside uvmwrapper:        UVM Launching
+Sep 22 07:22:47 burnside uvmwrapper: ==============================
+Sep 22 07:22:47 burnside uvmwrapper: untangle-vm launched (pid: 2196)
+Sep 22 07:22:47 burnside uvmwrapper: untangle-vm monitoring (pid: 2196)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Dec 24 15:23:33 burnside uvmwrapper: ==============================
+Dec 24 15:23:33 burnside uvmwrapper:        UVM Launching
+Dec 24 15:23:33 burnside uvmwrapper: ==============================
+Dec 24 15:23:33 burnside uvmwrapper: untangle-vm launched (pid: 2298)
+Dec 24 15:23:33 burnside uvmwrapper: untangle-vm monitoring (pid: 2298)
+Aug 10 12:07:32 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2298)
+Aug 10 12:07:54 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2298)
+Aug 10 12:07:55 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2298)
+Aug 10 12:07:55 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2298)
+Aug 10 12:08:16 burnside uvmwrapper: ==============================
+Aug 10 12:08:16 burnside uvmwrapper:        UVM Launching
+Aug 10 12:08:16 burnside uvmwrapper: ==============================
+Aug 10 12:08:16 burnside uvmwrapper: untangle-vm launched (pid: 20468)
+Aug 10 12:08:16 burnside uvmwrapper: untangle-vm monitoring (pid: 20468)
+Aug 10 17:07:51 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 20468)
+Aug 10 17:08:12 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 20468)
+Aug 10 17:08:12 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 20468)
+Aug 10 17:08:12 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 20468)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Aug 10 17:14:07 burnside uvmwrapper: ==============================
+Aug 10 17:14:07 burnside uvmwrapper:        UVM Launching
+Aug 10 17:14:07 burnside uvmwrapper: ==============================
+Aug 10 17:14:07 burnside uvmwrapper: untangle-vm launched (pid: 30556)
+Aug 10 17:14:07 burnside uvmwrapper: untangle-vm monitoring (pid: 30556)
+Aug 10 23:15:00 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 30556)
+Aug 10 23:15:21 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 30556)
+Aug 10 23:15:21 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 30556)
+Aug 10 23:15:21 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 30556)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+Aug 10 23:19:09 burnside uvmwrapper: ==============================
+Aug 10 23:19:09 burnside uvmwrapper:        UVM Launching
+Aug 10 23:19:09 burnside uvmwrapper: ==============================
+Aug 10 23:19:09 burnside uvmwrapper: untangle-vm launched (pid: 22605)
+Aug 10 23:19:09 burnside uvmwrapper: untangle-vm monitoring (pid: 22605)
+Aug 11 10:25:08 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 22605)
+Aug 11 10:25:13 burnside uvmwrapper: ==============================
+Aug 11 10:25:13 burnside uvmwrapper:        UVM Stopped
+Aug 11 10:25:13 burnside uvmwrapper: ==============================
+Aug 11 10:25:14 burnside uvmwrapper: ==============================
+Aug 11 10:25:14 burnside uvmwrapper:        UVM Launching
+Aug 11 10:25:14 burnside uvmwrapper: ==============================
+Aug 11 10:25:14 burnside uvmwrapper: untangle-vm launched (pid: 22632)
+Aug 11 10:25:14 burnside uvmwrapper: untangle-vm monitoring (pid: 22632)
+Aug 11 10:29:12 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 22632)
+Aug 11 10:29:19 burnside uvmwrapper: ==============================
+Aug 11 10:29:19 burnside uvmwrapper:        UVM Stopped
+Aug 11 10:29:19 burnside uvmwrapper: ==============================
+Aug 11 10:29:19 burnside uvmwrapper: ==============================
+Aug 11 10:29:19 burnside uvmwrapper:        UVM Launching
+Aug 11 10:29:19 burnside uvmwrapper: ==============================
+Aug 11 10:29:19 burnside uvmwrapper: untangle-vm launched (pid: 25609)
+Aug 11 10:29:19 burnside uvmwrapper: untangle-vm monitoring (pid: 25609)
+Aug 11 10:35:40 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 25609)
+Aug 11 10:35:45 burnside uvmwrapper: ==============================
+Aug 11 10:35:45 burnside uvmwrapper:        UVM Stopped
+Aug 11 10:35:45 burnside uvmwrapper: ==============================
+Aug 11 10:35:46 burnside uvmwrapper: ==============================
+Aug 11 10:35:46 burnside uvmwrapper:        UVM Launching
+Aug 11 10:35:46 burnside uvmwrapper: ==============================
+Aug 11 10:35:46 burnside uvmwrapper: untangle-vm launched (pid: 29183)
+Aug 11 10:35:46 burnside uvmwrapper: untangle-vm monitoring (pid: 29183)
+Aug 11 21:23:31 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 29183)
+Aug 11 21:23:37 burnside uvmwrapper: ==============================
+Aug 11 21:23:37 burnside uvmwrapper:        UVM Stopped
+Aug 11 21:23:37 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Aug 11 21:24:39 burnside uvmwrapper: ==============================
+Aug 11 21:24:39 burnside uvmwrapper:        UVM Launching
+Aug 11 21:24:39 burnside uvmwrapper: ==============================
+Aug 11 21:24:39 burnside uvmwrapper: untangle-vm launched (pid: 3504)
+Aug 11 21:24:39 burnside uvmwrapper: untangle-vm monitoring (pid: 3504)
+Aug 13 01:05:33 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 3504)
+Aug 13 01:05:38 burnside uvmwrapper: ==============================
+Aug 13 01:05:38 burnside uvmwrapper:        UVM Stopped
+Aug 13 01:05:38 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    Maximum virtual size     -> 6000000
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Aug 13 01:30:33 burnside uvmwrapper: ==============================
+Aug 13 01:30:33 burnside uvmwrapper:        UVM Launching
+Aug 13 01:30:33 burnside uvmwrapper: ==============================
+Aug 13 01:30:33 burnside uvmwrapper: untangle-vm launched (pid: 26190)
+Aug 13 01:30:33 burnside uvmwrapper: untangle-vm monitoring (pid: 26190)
+Aug 14 01:02:49 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 26190)
+Aug 14 01:02:50 burnside uvmwrapper: ==============================
+Aug 14 01:02:50 burnside uvmwrapper:        UVM Stopped
+Aug 14 01:02:50 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Aug 14 01:08:55 burnside uvmwrapper: ==============================
+Aug 14 01:08:55 burnside uvmwrapper:        UVM Launching
+Aug 14 01:08:55 burnside uvmwrapper: ==============================
+Aug 14 01:08:55 burnside uvmwrapper: untangle-vm launched (pid: 24712)
+Aug 14 01:08:55 burnside uvmwrapper: untangle-vm monitoring (pid: 24712)
+Aug 17 01:08:15 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 24712)
+Aug 17 01:08:22 burnside uvmwrapper: ==============================
+Aug 17 01:08:22 burnside uvmwrapper:        UVM Stopped
+Aug 17 01:08:22 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Aug 17 01:12:53 burnside uvmwrapper: ==============================
+Aug 17 01:12:53 burnside uvmwrapper:        UVM Launching
+Aug 17 01:12:53 burnside uvmwrapper: ==============================
+Aug 17 01:12:53 burnside uvmwrapper: untangle-vm launched (pid: 32397)
+Aug 17 01:12:53 burnside uvmwrapper: untangle-vm monitoring (pid: 32397)
+Aug 20 01:03:03 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 32397)
+Aug 20 01:03:21 burnside uvmwrapper: ==============================
+Aug 20 01:03:21 burnside uvmwrapper:        UVM Stopped
+Aug 20 01:03:21 burnside uvmwrapper: ==============================
+Aug 20 01:04:00 burnside uvmwrapper: ==============================
+Aug 20 01:04:00 burnside uvmwrapper:        UVM Launching
+Aug 20 01:04:00 burnside uvmwrapper: ==============================
+Aug 20 01:04:00 burnside uvmwrapper: untangle-vm launched (pid: 22683)
+Aug 20 01:04:00 burnside uvmwrapper: untangle-vm monitoring (pid: 22683)
+Sep 19 01:02:49 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 22683)
+Sep 19 01:02:57 burnside uvmwrapper: ==============================
+Sep 19 01:02:57 burnside uvmwrapper:        UVM Stopped
+Sep 19 01:02:57 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Sep 19 01:06:00 burnside uvmwrapper: ==============================
+Sep 19 01:06:00 burnside uvmwrapper:        UVM Launching
+Sep 19 01:06:00 burnside uvmwrapper: ==============================
+Sep 19 01:06:00 burnside uvmwrapper: untangle-vm launched (pid: 23486)
+Sep 19 01:06:00 burnside uvmwrapper: untangle-vm monitoring (pid: 23486)
+Oct 23 01:03:20 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 23486)
+Oct 23 01:03:33 burnside uvmwrapper: ==============================
+Oct 23 01:03:33 burnside uvmwrapper:        UVM Stopped
+Oct 23 01:03:33 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Oct 23 01:08:28 burnside uvmwrapper: ==============================
+Oct 23 01:08:28 burnside uvmwrapper:        UVM Launching
+Oct 23 01:08:28 burnside uvmwrapper: ==============================
+Oct 23 01:08:28 burnside uvmwrapper: untangle-vm launched (pid: 15869)
+Oct 23 01:08:28 burnside uvmwrapper: untangle-vm monitoring (pid: 15869)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Dec 10 07:59:15 burnside uvmwrapper: ==============================
+Dec 10 07:59:15 burnside uvmwrapper:        UVM Launching
+Dec 10 07:59:15 burnside uvmwrapper: ==============================
+Dec 10 07:59:15 burnside uvmwrapper: untangle-vm launched (pid: 3550)
+Dec 10 07:59:15 burnside uvmwrapper: untangle-vm monitoring (pid: 3550)
+Dec 10 10:16:58 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 3550)
+Dec 10 10:17:02 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 3550)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Dec 10 10:33:02 burnside uvmwrapper: ==============================
+Dec 10 10:33:02 burnside uvmwrapper:        UVM Launching
+Dec 10 10:33:02 burnside uvmwrapper: ==============================
+Dec 10 10:33:02 burnside uvmwrapper: untangle-vm launched (pid: 3565)
+Dec 10 10:33:02 burnside uvmwrapper: untangle-vm monitoring (pid: 3565)
+Jan  9 01:03:18 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 3565)
+Jan  9 01:03:36 burnside uvmwrapper: ==============================
+Jan  9 01:03:36 burnside uvmwrapper:        UVM Stopped
+Jan  9 01:03:36 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Jan  9 01:06:47 burnside uvmwrapper: ==============================
+Jan  9 01:06:47 burnside uvmwrapper:        UVM Launching
+Jan  9 01:06:47 burnside uvmwrapper: ==============================
+Jan  9 01:06:47 burnside uvmwrapper: untangle-vm launched (pid: 122592)
+Jan  9 01:06:47 burnside uvmwrapper: untangle-vm monitoring (pid: 122592)
+Jan 12 01:00:30 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 122592)
+Jan 12 01:00:40 burnside uvmwrapper: ==============================
+Jan 12 01:00:40 burnside uvmwrapper:        UVM Stopped
+Jan 12 01:00:40 burnside uvmwrapper: ==============================
+Jan 12 01:01:20 burnside uvmwrapper: ==============================
+Jan 12 01:01:20 burnside uvmwrapper:        UVM Launching
+Jan 12 01:01:20 burnside uvmwrapper: ==============================
+Jan 12 01:01:20 burnside uvmwrapper: untangle-vm launched (pid: 117390)
+Jan 12 01:01:20 burnside uvmwrapper: untangle-vm monitoring (pid: 117390)
+Feb 12 01:04:11 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 117390)
+Feb 12 01:04:22 burnside uvmwrapper: ==============================
+Feb 12 01:04:22 burnside uvmwrapper:        UVM Stopped
+Feb 12 01:04:22 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Feb 12 01:09:21 burnside uvmwrapper: ==============================
+Feb 12 01:09:21 burnside uvmwrapper:        UVM Launching
+Feb 12 01:09:21 burnside uvmwrapper: ==============================
+Feb 12 01:09:21 burnside uvmwrapper: untangle-vm launched (pid: 34533)
+Feb 12 01:09:21 burnside uvmwrapper: untangle-vm monitoring (pid: 34533)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Apr 29 13:34:52 burnside uvmwrapper: ==============================
+Apr 29 13:34:52 burnside uvmwrapper:        UVM Launching
+Apr 29 13:34:52 burnside uvmwrapper: ==============================
+Apr 29 13:34:52 burnside uvmwrapper: untangle-vm launched (pid: 3605)
+Apr 29 13:34:52 burnside uvmwrapper: untangle-vm monitoring (pid: 3605)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Apr 30 13:45:45 burnside uvmwrapper: ==============================
+Apr 30 13:45:45 burnside uvmwrapper:        UVM Launching
+Apr 30 13:45:45 burnside uvmwrapper: ==============================
+Apr 30 13:45:45 burnside uvmwrapper: untangle-vm launched (pid: 3604)
+Apr 30 13:45:45 burnside uvmwrapper: untangle-vm monitoring (pid: 3604)
+Jun 29 01:04:05 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 3604)
+Jun 29 01:04:09 burnside uvmwrapper: ==============================
+Jun 29 01:04:09 burnside uvmwrapper:        UVM Stopped
+Jun 29 01:04:09 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Jun 29 01:11:33 burnside uvmwrapper: ==============================
+Jun 29 01:11:33 burnside uvmwrapper:        UVM Launching
+Jun 29 01:11:33 burnside uvmwrapper: ==============================
+Jun 29 01:11:33 burnside uvmwrapper: untangle-vm launched (pid: 103535)
+Jun 29 01:11:33 burnside uvmwrapper: untangle-vm monitoring (pid: 103535)
+Oct 13 01:04:48 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 103535)
+Oct 13 01:05:01 burnside uvmwrapper: ==============================
+Oct 13 01:05:01 burnside uvmwrapper:        UVM Stopped
+Oct 13 01:05:01 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Oct 13 01:10:07 burnside uvmwrapper: ==============================
+Oct 13 01:10:07 burnside uvmwrapper:        UVM Launching
+Oct 13 01:10:07 burnside uvmwrapper: ==============================
+Oct 13 01:10:07 burnside uvmwrapper: untangle-vm launched (pid: 11620)
+Oct 13 01:10:07 burnside uvmwrapper: untangle-vm monitoring (pid: 11620)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Dec 27 08:15:40 burnside uvmwrapper: ==============================
+Dec 27 08:15:40 burnside uvmwrapper:        UVM Launching
+Dec 27 08:15:40 burnside uvmwrapper: ==============================
+Dec 27 08:15:40 burnside uvmwrapper: untangle-vm launched (pid: 3816)
+Dec 27 08:15:40 burnside uvmwrapper: untangle-vm monitoring (pid: 3816)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Jan  4 08:49:28 burnside uvmwrapper: ==============================
+Jan  4 08:49:28 burnside uvmwrapper:        UVM Launching
+Jan  4 08:49:28 burnside uvmwrapper: ==============================
+Jan  4 08:49:28 burnside uvmwrapper: untangle-vm launched (pid: 3825)
+Jan  4 08:49:28 burnside uvmwrapper: untangle-vm monitoring (pid: 3825)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Jan  4 10:50:14 burnside uvmwrapper: ==============================
+Jan  4 10:50:14 burnside uvmwrapper:        UVM Launching
+Jan  4 10:50:14 burnside uvmwrapper: ==============================
+Jan  4 10:50:14 burnside uvmwrapper: untangle-vm launched (pid: 3809)
+Jan  4 10:50:14 burnside uvmwrapper: untangle-vm monitoring (pid: 3809)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Jul 19 05:05:11 burnside uvmwrapper: ==============================
+Jul 19 05:05:11 burnside uvmwrapper:        UVM Launching
+Jul 19 05:05:11 burnside uvmwrapper: ==============================
+Jul 19 05:05:11 burnside uvmwrapper: untangle-vm launched (pid: 3761)
+Jul 19 05:05:11 burnside uvmwrapper: untangle-vm monitoring (pid: 3761)
+Jan  9 01:03:11 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 3761)
+Jan  9 01:03:18 burnside uvmwrapper: ==============================
+Jan  9 01:03:18 burnside uvmwrapper:        UVM Stopped
+Jan  9 01:03:18 burnside uvmwrapper: ==============================
+Jan  9 01:05:04 burnside uvmwrapper: ==============================
+Jan  9 01:05:04 burnside uvmwrapper:        UVM Launching
+Jan  9 01:05:04 burnside uvmwrapper: ==============================
+Jan  9 01:05:04 burnside uvmwrapper: untangle-vm launched (pid: 53360)
+Jan  9 01:05:04 burnside uvmwrapper: untangle-vm monitoring (pid: 53360)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+Feb 21 01:02:35 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 53360)
+Feb 21 01:02:50 burnside uvmwrapper: ==============================
+Feb 21 01:02:50 burnside uvmwrapper:        UVM Stopped
+Feb 21 01:02:50 burnside uvmwrapper: ==============================
+Feb 21 01:04:34 burnside uvmwrapper: ==============================
+Feb 21 01:04:34 burnside uvmwrapper:        UVM Launching
+Feb 21 01:04:34 burnside uvmwrapper: ==============================
+Feb 21 01:04:34 burnside uvmwrapper: untangle-vm launched (pid: 91712)
+Feb 21 01:04:34 burnside uvmwrapper: untangle-vm monitoring (pid: 91712)
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+run-parts: executing /etc/untangle/startup.d/40autologin
+Apr 26 01:09:46 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 91712)
+Apr 26 01:09:56 burnside uvmwrapper: ==============================
+Apr 26 01:09:56 burnside uvmwrapper:        UVM Stopped
+Apr 26 01:09:56 burnside uvmwrapper: ==============================
+run-parts: executing /etc/untangle/startup.d/10postgres
+  Customizing HW-related settings for postgres
+    Using settings for 4+ gigabytes of memory
+run-parts: executing /etc/untangle/startup.d/20spamassassin
+  Customizing HW-related settings for spamassassin
+    8 children
+run-parts: executing /etc/untangle/startup.d/25clamav
+  Customizing HW-related settings for clamav
+  Enabling extra signatures
+run-parts: executing /etc/untangle/startup.d/30uvm
+  Customizing HW-related settings for untangle-vm
+    Maximum heap size        -> 2000m
+    GC safety factor         -> 10
+    GC minimum cycle         -> 2
+    Session limit            -> 0
+    Reports queue limit      -> 4000000
+run-parts: executing /etc/untangle/startup.d/40autologin
+Apr 26 01:15:01 burnside uvmwrapper: ==============================
+Apr 26 01:15:01 burnside uvmwrapper:        UVM Launching
+Apr 26 01:15:01 burnside uvmwrapper: ==============================
+Apr 26 01:15:01 burnside uvmwrapper: untangle-vm launched (pid: 95275)
+Apr 26 01:15:01 burnside uvmwrapper: untangle-vm monitoring (pid: 95275)
+Aug  5 01:32:43 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 95275)
+Aug  5 01:33:05 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 95275)
+Aug  5 01:33:05 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 95275)
+Aug  5 01:33:05 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 95275)
+Aug  5 01:33:08 burnside uvmwrapper: ==============================
+Aug  5 01:33:08 burnside uvmwrapper:        UVM Stopped
+Aug  5 01:33:08 burnside uvmwrapper: ==============================
+Aug  5 01:59:21 burnside uvmwrapper: ==============================
+Aug  5 01:59:21 burnside uvmwrapper:        UVM Launching
+Aug  5 01:59:21 burnside uvmwrapper: ==============================
+Aug  5 01:59:21 burnside uvmwrapper: untangle-vm launched (pid: 2233)
+Aug  5 01:59:21 burnside uvmwrapper: untangle-vm monitoring (pid: 2233)
+Aug  7 07:05:50 burnside uvmwrapper: ==============================
+Aug  7 07:05:50 burnside uvmwrapper:        UVM Launching
+Aug  7 07:05:50 burnside uvmwrapper: ==============================
+Aug  7 07:05:51 burnside uvmwrapper: untangle-vm launched (pid: 2491)
+Aug  7 07:05:51 burnside uvmwrapper: untangle-vm monitoring (pid: 2491)
+Aug 12 01:13:00 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2491)
+Aug 12 01:13:07 burnside uvmwrapper: ==============================
+Aug 12 01:13:07 burnside uvmwrapper:        UVM Stopped
+Aug 12 01:13:07 burnside uvmwrapper: ==============================
+Aug 12 01:17:45 burnside uvmwrapper: ==============================
+Aug 12 01:17:45 burnside uvmwrapper:        UVM Launching
+Aug 12 01:17:45 burnside uvmwrapper: ==============================
+Aug 12 01:17:45 burnside uvmwrapper: untangle-vm launched (pid: 38149)
+Aug 12 01:17:45 burnside uvmwrapper: untangle-vm monitoring (pid: 38149)
+Aug 28 01:01:47 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 38149)
+Aug 28 01:01:54 burnside uvmwrapper: ==============================
+Aug 28 01:01:54 burnside uvmwrapper:        UVM Stopped
+Aug 28 01:01:54 burnside uvmwrapper: ==============================
+Aug 28 01:06:39 burnside uvmwrapper: ==============================
+Aug 28 01:06:39 burnside uvmwrapper:        UVM Launching
+Aug 28 01:06:39 burnside uvmwrapper: ==============================
+Aug 28 01:06:39 burnside uvmwrapper: untangle-vm launched (pid: 93954)
+Aug 28 01:06:39 burnside uvmwrapper: untangle-vm monitoring (pid: 93954)
+Nov  3 14:17:06 burnside uvmwrapper: ==============================
+Nov  3 14:17:06 burnside uvmwrapper:        UVM Launching
+Nov  3 14:17:06 burnside uvmwrapper: ==============================
+Nov  3 14:17:06 burnside uvmwrapper: untangle-vm launched (pid: 2522)
+Nov  3 14:17:06 burnside uvmwrapper: untangle-vm monitoring (pid: 2522)
+Nov  3 14:17:06 burnside uvmwrapper: ==============================
+Nov  3 14:17:06 burnside uvmwrapper:        UVM Launching
+Nov  3 14:17:06 burnside uvmwrapper: ==============================
+Nov  3 14:17:06 burnside uvmwrapper: untangle-vm launched (pid: 2522)
+Nov  3 14:17:06 burnside uvmwrapper: untangle-vm monitoring (pid: 2522)
+Dec  8 01:16:42 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2522)
+Dec  8 01:16:51 burnside uvmwrapper: ==============================
+Dec  8 01:16:51 burnside uvmwrapper:        UVM Stopped
+Dec  8 01:16:51 burnside uvmwrapper: ==============================
+Dec  8 01:23:53 burnside uvmwrapper: ==============================
+Dec  8 01:23:53 burnside uvmwrapper:        UVM Launching
+Dec  8 01:23:53 burnside uvmwrapper: ==============================
+Dec  8 01:23:53 burnside uvmwrapper: untangle-vm launched (pid: 74171)
+Dec  8 01:23:53 burnside uvmwrapper: untangle-vm monitoring (pid: 74171)
+Jan 29 01:03:15 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 74171)
+Jan 29 01:03:36 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 74171)
+Jan 29 01:03:37 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 74171)
+Jan 29 01:03:37 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 74171)
+Jan 29 01:03:37 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 74171)
+Jan 29 01:03:37 burnside uvmwrapper: ==============================
+Jan 29 01:03:37 burnside uvmwrapper:        UVM Stopped
+Jan 29 01:03:37 burnside uvmwrapper: ==============================
+Jan 29 01:09:00 burnside uvmwrapper: ==============================
+Jan 29 01:09:00 burnside uvmwrapper:        UVM Launching
+Jan 29 01:09:00 burnside uvmwrapper: ==============================
+Jan 29 01:09:00 burnside uvmwrapper: untangle-vm launched (pid: 94417)
+Jan 29 01:09:00 burnside uvmwrapper: untangle-vm monitoring (pid: 94417)
+Feb  1 15:13:57 burnside uvmwrapper: ==============================
+Feb  1 15:13:57 burnside uvmwrapper:        UVM Launching
+Feb  1 15:13:57 burnside uvmwrapper: ==============================
+Feb  1 15:13:58 burnside uvmwrapper: untangle-vm launched (pid: 2522)
+Feb  1 15:13:58 burnside uvmwrapper: untangle-vm monitoring (pid: 2522)
+Mar 20 08:30:47 burnside uvmwrapper: ==============================
+Mar 20 08:30:47 burnside uvmwrapper:        UVM Launching
+Mar 20 08:30:47 burnside uvmwrapper: ==============================
+Mar 20 08:30:47 burnside uvmwrapper: untangle-vm launched (pid: 2477)
+Mar 20 08:30:47 burnside uvmwrapper: untangle-vm monitoring (pid: 2477)
+Apr  9 01:15:08 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2477)
+Apr  9 01:15:18 burnside uvmwrapper: ==============================
+Apr  9 01:15:18 burnside uvmwrapper:        UVM Stopped
+Apr  9 01:15:18 burnside uvmwrapper: ==============================
+Apr  9 01:20:41 burnside uvmwrapper: ==============================
+Apr  9 01:20:41 burnside uvmwrapper:        UVM Launching
+Apr  9 01:20:41 burnside uvmwrapper: ==============================
+Apr  9 01:20:41 burnside uvmwrapper: untangle-vm launched (pid: 108053)
+Apr  9 01:20:41 burnside uvmwrapper: untangle-vm monitoring (pid: 108053)
+Jul 22 01:04:41 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 108053)
+Jul 22 01:04:46 burnside uvmwrapper: ==============================
+Jul 22 01:04:46 burnside uvmwrapper:        UVM Stopped
+Jul 22 01:04:46 burnside uvmwrapper: ==============================
+Jul 22 01:04:46 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 0)
+Jul 22 01:12:13 burnside uvmwrapper: ==============================
+Jul 22 01:12:13 burnside uvmwrapper:        UVM Launching
+Jul 22 01:12:13 burnside uvmwrapper: ==============================
+Jul 22 01:12:13 burnside uvmwrapper: untangle-vm launched (pid: 10444)
+Jul 22 01:12:13 burnside uvmwrapper: untangle-vm monitoring (pid: 10444)
+Aug 20 01:01:24 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 10444)
+Aug 20 01:01:41 burnside uvmwrapper: ==============================
+Aug 20 01:01:41 burnside uvmwrapper:        UVM Stopped
+Aug 20 01:01:41 burnside uvmwrapper: ==============================
+Aug 20 01:01:41 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 0)
+Aug 20 01:06:06 burnside uvmwrapper: ==============================
+Aug 20 01:06:06 burnside uvmwrapper:        UVM Launching
+Aug 20 01:06:06 burnside uvmwrapper: ==============================
+Aug 20 01:06:06 burnside uvmwrapper: untangle-vm launched (pid: 100241)
+Aug 20 01:06:06 burnside uvmwrapper: untangle-vm monitoring (pid: 100241)
+Sep 14 01:01:53 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 100241)
+Sep 14 01:02:07 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 100241)
+Sep 14 01:02:07 burnside uvmwrapper: ==============================
+Sep 14 01:02:07 burnside uvmwrapper:        UVM Stopped
+Sep 14 01:02:07 burnside uvmwrapper: ==============================
+Sep 14 01:06:29 burnside uvmwrapper: ==============================
+Sep 14 01:06:29 burnside uvmwrapper:        UVM Launching
+Sep 14 01:06:29 burnside uvmwrapper: ==============================
+Sep 14 01:06:29 burnside uvmwrapper: untangle-vm launched (pid: 116315)
+Sep 14 01:06:29 burnside uvmwrapper: untangle-vm monitoring (pid: 116315)
+Oct  7 15:35:18 burnside uvmwrapper: ==============================
+Oct  7 15:35:18 burnside uvmwrapper:        UVM Launching
+Oct  7 15:35:18 burnside uvmwrapper: ==============================
+Oct  7 15:35:19 burnside uvmwrapper: untangle-vm launched (pid: 2490)
+Oct  7 15:35:19 burnside uvmwrapper: untangle-vm monitoring (pid: 2490)
+Mar  6 01:03:08 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2490)
+Mar  6 01:03:19 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2490)
+Mar  6 01:03:20 burnside uvmwrapper: ==============================
+Mar  6 01:03:20 burnside uvmwrapper:        UVM Stopped
+Mar  6 01:03:20 burnside uvmwrapper: ==============================
+Mar  6 01:12:13 burnside uvmwrapper: ==============================
+Mar  6 01:12:13 burnside uvmwrapper:        UVM Launching
+Mar  6 01:12:13 burnside uvmwrapper: ==============================
+Mar  6 01:12:13 burnside uvmwrapper: untangle-vm launched (pid: 2436)
+Mar  6 01:12:13 burnside uvmwrapper: untangle-vm monitoring (pid: 2436)
+Mar 21 01:01:46 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2436)
+Mar 21 01:02:02 burnside uvmwrapper: ==============================
+Mar 21 01:02:02 burnside uvmwrapper:        UVM Stopped
+Mar 21 01:02:02 burnside uvmwrapper: ==============================
+Mar 21 01:02:02 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 0)
+Mar 21 01:04:08 burnside uvmwrapper: ==============================
+Mar 21 01:04:08 burnside uvmwrapper:        UVM Launching
+Mar 21 01:04:08 burnside uvmwrapper: ==============================
+Mar 21 01:04:08 burnside uvmwrapper: untangle-vm launched (pid: 23692)
+Mar 21 01:04:08 burnside uvmwrapper: untangle-vm monitoring (pid: 23692)
+May 14 10:47:47 burnside uvmwrapper: ==============================
+May 14 10:47:47 burnside uvmwrapper:        UVM Launching
+May 14 10:47:47 burnside uvmwrapper: ==============================
+May 14 10:47:48 burnside uvmwrapper: untangle-vm launched (pid: 2418)
+May 14 10:47:48 burnside uvmwrapper: untangle-vm monitoring (pid: 2418)
+Jun 15 01:17:26 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2418)
+Jun 15 01:17:30 burnside uvmwrapper: ==============================
+Jun 15 01:17:30 burnside uvmwrapper:        UVM Stopped
+Jun 15 01:17:30 burnside uvmwrapper: ==============================
+Jun 15 01:45:44 burnside uvmwrapper: ==============================
+Jun 15 01:45:44 burnside uvmwrapper:        UVM Launching
+Jun 15 01:45:44 burnside uvmwrapper: ==============================
+Jun 15 01:45:45 burnside uvmwrapper: untangle-vm launched (pid: 2233)
+Jun 15 01:45:45 burnside uvmwrapper: untangle-vm monitoring (pid: 2233)
+Jun 24 01:00:40 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2233)
+Jun 24 01:01:02 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2233)
+Jun 24 01:01:02 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2233)
+Jun 24 01:01:02 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2233)
+Jun 24 01:02:50 burnside uvmwrapper: ==============================
+Jun 24 01:02:50 burnside uvmwrapper:        UVM Launching
+Jun 24 01:02:50 burnside uvmwrapper: ==============================
+Jun 24 01:02:50 burnside uvmwrapper: untangle-vm launched (pid: 74074)
+Jun 24 01:02:50 burnside uvmwrapper: untangle-vm monitoring (pid: 74074)
+Jul  2 14:37:33 burnside uvmwrapper: ==============================
+Jul  2 14:37:33 burnside uvmwrapper:        UVM Launching
+Jul  2 14:37:33 burnside uvmwrapper: ==============================
+Jul  2 14:37:34 burnside uvmwrapper: untangle-vm launched (pid: 2250)
+Jul  2 14:37:34 burnside uvmwrapper: untangle-vm monitoring (pid: 2250)
+Jul  7 18:05:37 burnside uvmwrapper: ==============================
+Jul  7 18:05:37 burnside uvmwrapper:        UVM Launching
+Jul  7 18:05:37 burnside uvmwrapper: ==============================
+Jul  7 18:05:38 burnside uvmwrapper: untangle-vm launched (pid: 2257)
+Jul  7 18:05:38 burnside uvmwrapper: untangle-vm monitoring (pid: 2257)
+Jul 13 09:17:12 burnside uvmwrapper: ==============================
+Jul 13 09:17:12 burnside uvmwrapper:        UVM Launching
+Jul 13 09:17:12 burnside uvmwrapper: ==============================
+Jul 13 09:17:12 burnside uvmwrapper: untangle-vm launched (pid: 54149)
+Jul 13 09:17:12 burnside uvmwrapper: untangle-vm monitoring (pid: 54149)
+Aug 30 01:01:54 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 54149)
+Aug 30 01:02:16 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 54149)
+Aug 30 01:02:16 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 54149)
+Aug 30 01:02:16 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 54149)
+Aug 30 01:02:17 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 54149)
+Aug 30 01:06:47 burnside uvmwrapper: ==============================
+Aug 30 01:06:47 burnside uvmwrapper:        UVM Launching
+Aug 30 01:06:47 burnside uvmwrapper: ==============================
+Aug 30 01:06:47 burnside uvmwrapper: untangle-vm launched (pid: 35672)
+Aug 30 01:06:47 burnside uvmwrapper: untangle-vm monitoring (pid: 35672)
+Sep  4 15:51:01 burnside uvmwrapper: ==============================
+Sep  4 15:51:01 burnside uvmwrapper:        UVM Launching
+Sep  4 15:51:01 burnside uvmwrapper: ==============================
+Sep  4 15:51:02 burnside uvmwrapper: untangle-vm launched (pid: 2253)
+Sep  4 15:51:02 burnside uvmwrapper: untangle-vm monitoring (pid: 2253)
+Sep  8 09:35:42 burnside uvmwrapper: ==============================
+Sep  8 09:35:42 burnside uvmwrapper:        UVM Launching
+Sep  8 09:35:42 burnside uvmwrapper: ==============================
+Sep  8 09:35:42 burnside uvmwrapper: untangle-vm launched (pid: 27584)
+Sep  8 09:35:42 burnside uvmwrapper: untangle-vm monitoring (pid: 27584)
+Sep  8 11:12:21 burnside uvmwrapper: *** untangle-vm unexpectedly exited ( exit code:0 exit signal:134 )
+Sep  8 11:12:22 burnside uvmwrapper: *** copied /var/log/uvm/console.log to /var/log/uvm/console.log.crash ***
+Sep  8 11:12:22 burnside uvmwrapper: *** copied /var/log/uvm/uvm.log to /var/log/uvm/uvm.log.crash ***
+Sep  8 11:12:22 burnside uvmwrapper: *** copied /var/log/uvm/gc.log to /var/log/uvm/gc.log.crash ***
+Sep  8 11:12:28 burnside uvmwrapper: untangle-vm not found (pid: 27584), monitoring stopped
+Sep  8 11:12:52 burnside uvmwrapper: ==============================
+Sep  8 11:12:52 burnside uvmwrapper:        UVM Launching
+Sep  8 11:12:52 burnside uvmwrapper: ==============================
+Sep  8 11:12:52 burnside uvmwrapper: untangle-vm launched (pid: 73568)
+Sep  8 11:12:52 burnside uvmwrapper: untangle-vm monitoring (pid: 73568)
+Sep  9 18:13:13 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 73568)
+Sep  9 18:13:24 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 73568)
+Sep  9 18:13:24 burnside uvmwrapper: ==============================
+Sep  9 18:13:24 burnside uvmwrapper:        UVM Stopped
+Sep  9 18:13:24 burnside uvmwrapper: ==============================
+Sep  9 18:18:49 burnside uvmwrapper: ==============================
+Sep  9 18:18:49 burnside uvmwrapper:        UVM Launching
+Sep  9 18:18:49 burnside uvmwrapper: ==============================
+Sep  9 18:18:49 burnside uvmwrapper: untangle-vm launched (pid: 30261)
+Sep  9 18:18:49 burnside uvmwrapper: untangle-vm monitoring (pid: 30261)
+Oct  5 07:02:14 burnside uvmwrapper: ==============================
+Oct  5 07:02:14 burnside uvmwrapper:        UVM Launching
+Oct  5 07:02:14 burnside uvmwrapper: ==============================
+Oct  5 07:02:16 burnside uvmwrapper: untangle-vm launched (pid: 2272)
+Oct  5 07:02:16 burnside uvmwrapper: untangle-vm monitoring (pid: 2272)
+Oct  5 07:40:41 burnside uvmwrapper: ==============================
+Oct  5 07:40:41 burnside uvmwrapper:        UVM Launching
+Oct  5 07:40:41 burnside uvmwrapper: ==============================
+Oct  5 07:40:43 burnside uvmwrapper: untangle-vm launched (pid: 2277)
+Oct  5 07:40:43 burnside uvmwrapper: untangle-vm monitoring (pid: 2277)
+Oct  7 01:01:12 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2277)
+Oct  7 01:01:34 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2277)
+Oct  7 01:01:34 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2277)
+Oct  7 01:01:34 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2277)
+Oct  7 01:01:34 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2277)
+Oct  7 01:01:35 burnside uvmwrapper: ==============================
+Oct  7 01:01:35 burnside uvmwrapper:        UVM Stopped
+Oct  7 01:01:35 burnside uvmwrapper: ==============================
+Oct  7 01:06:33 burnside uvmwrapper: ==============================
+Oct  7 01:06:33 burnside uvmwrapper:        UVM Launching
+Oct  7 01:06:33 burnside uvmwrapper: ==============================
+Oct  7 01:06:33 burnside uvmwrapper: untangle-vm launched (pid: 13905)
+Oct  7 01:06:33 burnside uvmwrapper: untangle-vm monitoring (pid: 13905)
+Oct  7 01:07:20 burnside uvmwrapper: *** untangle-vm unexpectedly exited ( exit code:0 exit signal:134 )
+Oct  7 01:07:21 burnside uvmwrapper: *** copied /var/log/uvm/console.log to /var/log/uvm/console.log.crash ***
+Oct  7 01:07:21 burnside uvmwrapper: *** copied /var/log/uvm/uvm.log to /var/log/uvm/uvm.log.crash ***
+Oct  7 01:07:21 burnside uvmwrapper: *** copied /var/log/uvm/gc.log to /var/log/uvm/gc.log.crash ***
+Oct  7 01:07:24 burnside uvmwrapper: untangle-vm not found (pid: 13905), monitoring stopped
+Oct  7 01:07:51 burnside uvmwrapper: ==============================
+Oct  7 01:07:51 burnside uvmwrapper:        UVM Launching
+Oct  7 01:07:51 burnside uvmwrapper: ==============================
+Oct  7 01:07:51 burnside uvmwrapper: untangle-vm launched (pid: 15304)
+Oct  7 01:07:51 burnside uvmwrapper: untangle-vm monitoring (pid: 15304)
+Oct 30 01:02:31 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 15304)
+Oct 30 01:02:53 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 15304)
+Oct 30 01:02:53 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 15304)
+Oct 30 01:02:53 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 15304)
+Oct 30 01:02:53 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 15304)
+Oct 30 01:03:22 burnside uvmwrapper: ==============================
+Oct 30 01:03:22 burnside uvmwrapper:        UVM Launching
+Oct 30 01:03:22 burnside uvmwrapper: ==============================
+Oct 30 01:03:22 burnside uvmwrapper: untangle-vm launched (pid: 2259)
+Oct 30 01:03:22 burnside uvmwrapper: untangle-vm monitoring (pid: 2259)
+Nov 16 01:01:59 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2259)
+Nov 16 01:02:21 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 2259)
+Nov 16 01:02:21 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2259)
+Nov 16 01:02:21 burnside uvmwrapper: Caught SIGTERM: initiating shutdown (pid: 2259)
+Nov 16 01:11:21 burnside uvmwrapper: ==============================
+Nov 16 01:11:21 burnside uvmwrapper:        UVM Launching
+Nov 16 01:11:21 burnside uvmwrapper: ==============================
+Nov 16 01:11:22 burnside uvmwrapper: untangle-vm launched (pid: 2260)
+Nov 16 01:11:22 burnside uvmwrapper: untangle-vm monitoring (pid: 2260)
+Jan  5 15:20:26 burnside uvmwrapper: ==============================
+Jan  5 15:20:26 burnside uvmwrapper:        UVM Launching
+Jan  5 15:20:26 burnside uvmwrapper: ==============================
+Jan  5 15:20:26 burnside uvmwrapper: untangle-vm launched (pid: 103161)
+Jan  5 15:20:26 burnside uvmwrapper: untangle-vm monitoring (pid: 103161)
+Jan  5 15:24:09 burnside uvmwrapper: Caught SIGINT: initiating shutdown (pid: 103161)
+Jan  5 15:24:19 burnside uvmwrapper: ==============================
+Jan  5 15:24:19 burnside uvmwrapper:        UVM Stopped
+Jan  5 15:24:19 burnside uvmwrapper: ==============================
+Jan  5 15:24:21 burnside uvmwrapper: ==============================
+Jan  5 15:24:21 burnside uvmwrapper:        UVM Launching
+Jan  5 15:24:21 burnside uvmwrapper: ==============================
+Jan  5 15:24:21 burnside uvmwrapper: untangle-vm launched (pid: 106138)
+Jan  5 15:24:21 burnside uvmwrapper: untangle-vm monitoring (pid: 106138)

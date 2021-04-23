@@ -1,0 +1,1095 @@
+Sep 25 09:20:10 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:20:10 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:20:10 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:23:48 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Sep 25 09:23:48 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Sep 25 09:24:10 localhost app-77: [AppBase] <> WARN  Exception fetching trial license. Ignoring...
+Sep 25 09:24:10 localhost app-77:       java.lang.Exception: Unable to fetch trial license: DNS lookup failed.
+Sep 25 09:24:10 localhost app-77:       com.untangle.app.license.LicenseManagerImpl.requestTrialLicense(LicenseManagerImpl.java:493)
+Sep 25 09:24:10 localhost app-77:       com.untangle.uvm.app.AppBase.init(AppBase.java:857)
+Sep 25 09:24:10 localhost app-77:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Sep 25 09:24:10 localhost app-77:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Sep 25 09:24:10 localhost app-77:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Sep 25 09:24:10 localhost app-77:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Sep 25 09:24:10 localhost app-77:       java.base/java.lang.Thread.run(Thread.java:834)
+Sep 25 09:24:11 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:24:11 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:24:12 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:27:24 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Sep 25 09:27:24 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Sep 25 09:27:46 localhost app-77: [AppBase] <> WARN  Exception fetching trial license. Ignoring...
+Sep 25 09:27:46 localhost app-77:       java.lang.Exception: Unable to fetch trial license: DNS lookup failed.
+Sep 25 09:27:46 localhost app-77:       com.untangle.app.license.LicenseManagerImpl.requestTrialLicense(LicenseManagerImpl.java:493)
+Sep 25 09:27:46 localhost app-77:       com.untangle.uvm.app.AppBase.init(AppBase.java:857)
+Sep 25 09:27:46 localhost app-77:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Sep 25 09:27:46 localhost app-77:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Sep 25 09:27:46 localhost app-77:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Sep 25 09:27:46 localhost app-77:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Sep 25 09:27:46 localhost app-77:       java.base/java.lang.Thread.run(Thread.java:834)
+Sep 25 09:27:46 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:27:47 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:27:47 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:31:02 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Sep 25 09:31:02 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Sep 25 09:31:25 localhost app-77: [AppBase] <> WARN  Exception fetching trial license. Ignoring...
+Sep 25 09:31:25 localhost app-77:       java.lang.Exception: Unable to fetch trial license: DNS lookup failed.
+Sep 25 09:31:25 localhost app-77:       com.untangle.app.license.LicenseManagerImpl.requestTrialLicense(LicenseManagerImpl.java:493)
+Sep 25 09:31:25 localhost app-77:       com.untangle.uvm.app.AppBase.init(AppBase.java:857)
+Sep 25 09:31:25 localhost app-77:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Sep 25 09:31:25 localhost app-77:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Sep 25 09:31:25 localhost app-77:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Sep 25 09:31:25 localhost app-77:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Sep 25 09:31:25 localhost app-77:       java.base/java.lang.Thread.run(Thread.java:834)
+Sep 25 09:31:27 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:31:28 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:31:28 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:33:44 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:33:45 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:33:59 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Sep 25 09:33:59 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Sep 25 09:34:42 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:34:43 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:34:43 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:34:44 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 1
+Sep 25 09:34:45 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:37:49 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:37:49 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:38:03 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:38:03 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:38:03 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:38:04 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:40:37 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:40:37 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:40:51 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:40:51 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:40:51 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:40:52 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:42:12 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:42:13 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:42:25 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:42:26 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:42:26 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:42:27 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:45:27 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:45:28 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:45:42 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:45:43 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:45:43 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:45:44 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:52:35 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:52:36 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:52:48 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:52:48 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:52:48 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:52:49 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:53:27 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:53:27 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:53:40 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:53:40 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:53:40 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:53:41 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:55:50 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:55:51 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:56:05 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:56:05 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:56:05 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:56:06 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:56:31 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:56:31 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:56:46 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:56:46 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:56:46 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:56:48 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:57:56 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:57:56 localhost app-77: [ApplicationControlEventHandler] <UDP104925901750283> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 09:57:57 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:58:10 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:58:10 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:58:10 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:58:11 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 09:59:17 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 09:59:19 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 09:59:31 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 09:59:31 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 09:59:31 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 09:59:32 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:00:26 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:00:26 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563762> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563775> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563834> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563749> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563763> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563791> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563757> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563781> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563758> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563797> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563773> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563744> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563799> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563792> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563806> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563807> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563803> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563782> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563800> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563805> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563804> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563780> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563779> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563776> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563778> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563777> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563787> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563785> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563824> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563783> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563826> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563784> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563827> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563790> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563833> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563830> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563839> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563837> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563838> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563825> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563835> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563831> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:00:27 localhost app-77: [ApplicationControlApp] <UDP104925912563831> ERROR socketStartup()
+Sep 25 10:00:27 localhost app-77:       java.lang.NullPointerException
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlApp.socketStartup(ApplicationControlApp.java:291)
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.socketRecycle(ApplicationControlEventHandler.java:845)
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.privateCommand(ApplicationControlEventHandler.java:717)
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.daemonCommand(ApplicationControlEventHandler.java:617)
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.cleanupActiveSession(ApplicationControlEventHandler.java:563)
+Sep 25 10:00:27 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.handleUDPFinalized(ApplicationControlEventHandler.java:208)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.Dispatcher.dispatchUDPFinalized(Dispatcher.java:659)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.AppUDPSessionImpl.closeFinal(AppUDPSessionImpl.java:455)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.AppSessionImpl.raze(AppSessionImpl.java:522)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.NetcapHook.razeSessions(NetcapHook.java:780)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:494)
+Sep 25 10:00:27 localhost app-77:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563788> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563829> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563819> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563814> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563813> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563811> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563832> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563818> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563828> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563809> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563823> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563822> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563740> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563836> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563820> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563761> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563743> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563737> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563808> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563754> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563722> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563815> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563742> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563767> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563771> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563760> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563748> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563821> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563789> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563774> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563768> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563801> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563739> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563766> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563786> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563751> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563745> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563753> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563725> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563769> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563798> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563738> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563747> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563723> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563724> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563759> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563770> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563810> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563764> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:27 localhost app-77: [ApplicationControlEventHandler] <UDP104925912563796> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:00:40 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:00:41 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:00:44 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:00:45 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:02:51 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:02:52 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:03:06 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:03:06 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:03:06 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:03:07 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:06:10 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:06:10 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:06:31 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:06:32 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:06:32 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:06:33 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:08:15 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:08:15 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:08:35 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:08:36 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:08:39 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:08:40 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:12:53 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:12:54 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:13:09 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:13:10 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:13:10 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:15:09 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041298> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041271> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041268> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041296> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041284> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041288> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041287> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041267> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041286> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041257> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041283> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041280> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041215> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041251> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041212> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041247> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041258> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041279> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041281> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041289> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041333> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041224> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041330> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041209> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041211> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041204> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041214> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041323> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041317> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041336> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041210> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041335> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041334> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041332> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041207> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041315> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041329> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041328> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041312> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041331> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041320> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041318> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041325> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041327> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041324> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041253> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041321> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041322> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041260> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041270> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041272> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041308> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041273> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041276> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041294> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041297> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041299> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041309> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041304> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041313> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:10 localhost app-77: [ApplicationControlEventHandler] <UDP104925966041303> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:15:26 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:15:26 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:15:27 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:16:42 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954506> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954508> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954511> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954330> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954088> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954310> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954507> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954286> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954277> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954027> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954276> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954357> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954289> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954365> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954498> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954360> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954320> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954502> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954497> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954555> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [AppSessionImpl] <UDP104925974954309> WARN  Exception in Finalized
+Sep 25 10:16:43 localhost app-77:       java.lang.NullPointerException
+Sep 25 10:16:43 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.socketRecycle(ApplicationControlEventHandler.java:840)
+Sep 25 10:16:43 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.privateCommand(ApplicationControlEventHandler.java:717)
+Sep 25 10:16:43 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.daemonCommand(ApplicationControlEventHandler.java:617)
+Sep 25 10:16:43 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.cleanupActiveSession(ApplicationControlEventHandler.java:563)
+Sep 25 10:16:43 localhost app-77:       com.untangle.app.application_control.ApplicationControlEventHandler.handleUDPFinalized(ApplicationControlEventHandler.java:208)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.Dispatcher.dispatchUDPFinalized(Dispatcher.java:659)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.AppUDPSessionImpl.closeFinal(AppUDPSessionImpl.java:455)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.AppSessionImpl.raze(AppSessionImpl.java:522)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.NetcapHook.razeSessions(NetcapHook.java:780)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:494)
+Sep 25 10:16:43 localhost app-77:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954298> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954500> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954552> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954553> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954288> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954557> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954509> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954303> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954545> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954245> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954270> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954265> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954048> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954550> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954236> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954496> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954065> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954231> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954224> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954544> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954123> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954149> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954551> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954499> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954548> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954196> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954125> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954546> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954510> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954144> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954216> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954505> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954223> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954542> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954539> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954151> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954024> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954537> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954464> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954119> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954098> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954029> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954102> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954554> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954077> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954525> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954607> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954478> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954583> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954530> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954547> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954487> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954536> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954526> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954543> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954501> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954531> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954541> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954549> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954556> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954586> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954534> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954585> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954131> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954584> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954089> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954578> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954092> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954579> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954580> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954588> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954528> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954587> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954568> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954560> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954602> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954617> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954610> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954618> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954083> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954074> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954569> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954570> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954577> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954613> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954608> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954575> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954603> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954538> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954615> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954616> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954565> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954619> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954622> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954612> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954609> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954564> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954620> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954589> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954572> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954028> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954529> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954623> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954621> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954595> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954533> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954624> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954573> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954591> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954606> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954601> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954594> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954604> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954598> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954597> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954076> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954038> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954067> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954069> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954057> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954035> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954061> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954051> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954095> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954136> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954142> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954087> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954099> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954105> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954084> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954130> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954107> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954139> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954060> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954129> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954128> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954050> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954085> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954143> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954072> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954086> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954091> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954022> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954054> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954031> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954090> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954037> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954132> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954108> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954111> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954110> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954106> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954135> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954053> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954126> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954114> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954164> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954155> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954026> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954159> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954169> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954030> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954173> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954079> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954148> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954073> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954202> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954075> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954204> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954120> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954197> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954121> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954201> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954170> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954182> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954230> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954185> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954161> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954180> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954154> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954234> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954228> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954232> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954152> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954237> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954189> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954218> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954177> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954203> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954220> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954208> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954096> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954156> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954179> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954210> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954158> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954207> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954183> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954188> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954034> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954186> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954160> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954163> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954062> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954184> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954147> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954192> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954239> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954116> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954133> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954194> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954064> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954162> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954221> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954068> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954070> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954058> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954056> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954235> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954049> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954222> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954172> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954215> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954217> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954209> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954174> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954124> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954193> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954178> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954190> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954229> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954206> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954198> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954122> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954134> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954017> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954200> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954145> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954146> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954157> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954153> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954165> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954166> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954225> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954175> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954219> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954211> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954167> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954118> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954112> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954227> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954113> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954168> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954226> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954115> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954176> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954059> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954233> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954213> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954264> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954268> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954266> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954104> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954258> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954293> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954242> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954295> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954257> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954301> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954262> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954260> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954290> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954297> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954250> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954283> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954254> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954363> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954299> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954255> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954366> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954281> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954285> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954241> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954240> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954267> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954246> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954331> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954271> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954253> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954269> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954329> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954249> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954296> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954353> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954256> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954302> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954259> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954333> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954359> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954279> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954322> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954291> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954323> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954263> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954305> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954280> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954287> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954261> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954251> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954327> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954284> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954362> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954248> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954252> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954274> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954324> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954346> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954243> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954272> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954314> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954352> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954300> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954350> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954315> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954273> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954278> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954312> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954294> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954344> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954100> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954313> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954052> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954318> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954292> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954023> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954316> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954282> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954109> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954328> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954081> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954334> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954275> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954311> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954335> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954321> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954355> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954020> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954317> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954332> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954307> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954326> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954082> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954238> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954117> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954304> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954325> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954094> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954361> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954306> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954308> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954367> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954354> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954345> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954364> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954358> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954347> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954212> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954078> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954181> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954337> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954349> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954093> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954205> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954338> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954394> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954348> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954343> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954214> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954397> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954336> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954339> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954342> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954103> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954383> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954395> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954377> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954393> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954387> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954386> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954340> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954382> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954374> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954392> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954371> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954426> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954378> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:43 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954429> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954463> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954398> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954381> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954424> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954385> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954417> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954368> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954389> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954445> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954422> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954379> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954428> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954411> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954372> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954427> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954454> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954405> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954376> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954438> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954456> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954423> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954421> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954443> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954369> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954425> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954441> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954410> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954440> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954449> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954437> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954373> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954462> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954407> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954447> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954415> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954457> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954436> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954412> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954459> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954419> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954452> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954403> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954404> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954408> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954433> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954402> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954439> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954414> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954409> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954489> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954406> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954401> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954491> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954420> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954460> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954494> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954493> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954451> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954430> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954444> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954375> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954492> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954482> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954432> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954097> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954486> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954370> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954481> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954472> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954467> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954485> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954391> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954479> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954390> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954475> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954473> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954466> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954384> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954488> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954477> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954469> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954434> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954396> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954399> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954442> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954490> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954453> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954480> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954468> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954455> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954523> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954448> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954137> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954461> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954458> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954465> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:44 localhost app-77: [ApplicationControlEventHandler] <UDP104925974954495> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:16:57 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:16:57 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:16:57 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:16:58 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:30:22 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049612> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049610> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049614> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049613> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049615> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049620> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049609> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049611> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049623> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049621> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049617> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049630> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049616> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049618> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [ApplicationControlEventHandler] <UDP104925981049619> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:30:23 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:30:37 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:30:38 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:30:38 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:30:39 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:34:13 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:34:13 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:34:28 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:34:28 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:34:28 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:34:29 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:37:00 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:37:01 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:37:16 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:37:16 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:37:17 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:37:18 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:41:43 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871882> WARN  Recycling daemon socket connection: read() indicated disconnect
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871831> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871821> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871892> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871883> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871893> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871838> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871834> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871836> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871832> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871833> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871846> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871847> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871845> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871844> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871876> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871879> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871843> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871855> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871886> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871852> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871841> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871875> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871850> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871842> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871840> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871865> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871853> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871869> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871851> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871861> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871894> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871848> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871849> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871880> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871860> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871866> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871859> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871858> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871857> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:41:44 localhost app-77: [ApplicationControlEventHandler] <UDP104926060871872> WARN  Recycling daemon socket connection: Connection refused
+Sep 25 10:42:00 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:42:01 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:42:01 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 10:44:34 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 10:44:35 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 10:44:50 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 10:44:50 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 10:44:51 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 10:44:52 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 11:00:55 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 11:00:56 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 11:01:09 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 11:01:09 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 11:01:09 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 11:01:10 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 11:02:37 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 11:02:38 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 11:02:50 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 11:02:50 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 11:02:50 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 11:02:51 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 11:03:21 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 11:03:21 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 11:03:34 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 11:03:34 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 11:03:34 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 11:03:35 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:20:01 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:20:02 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:20:15 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:20:15 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:20:15 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:20:16 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:21:45 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:21:46 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:21:58 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:21:58 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:21:58 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:21:59 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:22:38 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:22:39 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:22:51 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:22:51 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:22:51 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:22:52 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:23:34 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:23:35 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:23:50 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:23:51 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:23:52 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:23:53 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:24:19 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:24:19 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:24:32 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:24:32 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:24:33 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:24:34 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:25:58 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:25:59 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:26:12 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:26:13 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:26:13 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:26:14 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 12:26:50 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 12:26:51 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 12:27:04 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 12:27:05 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 12:27:05 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 12:27:06 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 13:12:18 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 13:12:19 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 13:12:32 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 13:12:33 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 13:12:33 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 13:12:34 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 1
+Sep 25 13:12:35 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 13:14:47 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 13:14:47 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Sep 25 13:14:58 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/application-control/settings_77.js
+Sep 25 13:15:01 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Sep 25 13:15:02 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Sep 25 13:15:03 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Sep 25 13:22:15 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Sep 25 13:22:16 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Oct  2 08:05:03 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Oct  2 08:05:07 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Oct  2 08:05:08 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Oct 14 08:37:29 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Oct 14 08:37:29 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Oct 14 08:38:00 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Oct 14 08:38:00 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Oct 14 08:38:00 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Oct 14 16:44:31 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Oct 14 16:44:31 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Oct 14 16:44:45 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Oct 14 16:44:46 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Oct 14 16:44:46 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Oct 14 16:47:11 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Oct 14 16:47:11 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Oct 15 12:41:37 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Oct 15 12:41:37 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Oct 15 12:42:07 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Oct 15 12:42:07 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Oct 15 12:42:07 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Oct 15 12:42:08 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Oct 15 12:44:24 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Oct 15 12:44:25 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Oct 22 09:42:23 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Oct 22 09:42:23 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Oct 22 09:43:05 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Oct 22 09:43:06 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Oct 22 09:43:06 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 11 11:26:12 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 11 11:26:12 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 11 11:26:50 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 11 11:26:50 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 11 11:26:50 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 17 12:18:02 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 17 12:18:02 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 17 12:18:34 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 17 12:18:34 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 17 12:18:34 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 17 12:19:02 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Nov 17 12:19:06 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Nov 17 12:19:34 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 17 12:19:34 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 17 12:19:53 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 17 12:19:53 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 17 12:19:53 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Nov 17 12:19:54 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 23 17:24:17 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Nov 23 17:24:23 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Nov 23 17:33:53 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 23 17:33:53 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 23 17:34:17 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 23 17:34:17 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 23 17:34:17 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 23 18:09:32 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Nov 23 18:09:33 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Nov 23 18:13:22 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 23 18:13:22 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 23 18:13:38 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 23 18:13:39 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 23 18:13:39 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Nov 23 18:13:40 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 24 08:49:12 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Nov 24 08:49:12 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Nov 24 08:49:47 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Nov 24 08:49:47 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Nov 24 08:49:47 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Nov 30 17:23:26 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Nov 30 17:23:32 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...
+Dec  7 11:06:22 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Dec  7 11:06:22 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Dec  7 11:06:45 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Dec  7 11:06:45 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Dec  7 11:06:45 localhost app-77: [ApplicationControlApp] <> INFO  Waiting for daemon connection... 0
+Dec  7 11:06:46 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Dec  9 10:53:53 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Dec  9 10:53:53 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Dec  9 10:54:30 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Dec  9 10:54:30 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Dec  9 10:54:30 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Dec  9 14:27:33 localhost app-77: [AppBase] <> INFO  No valid license for: application-control
+Dec  9 14:27:33 localhost app-77: [AppBase] <> INFO  Requesting trial for: application-control
+Dec  9 14:27:56 localhost app-77: [ApplicationControlApp] <> INFO  Loaded settings from /usr/share/untangle/settings/application-control/settings_77.js
+Dec  9 14:27:57 localhost app-77: [AppBase] <> INFO  Starting   application-control [77] ...
+Dec  9 14:27:57 localhost app-77: [AppBase] <> INFO  Started    application-control [77] ...
+Dec  9 16:36:36 localhost app-77: [AppBase] <> INFO  Stopping   application-control [77] ...
+Dec  9 16:36:36 localhost app-77: [AppBase] <> INFO  Stopped    application-control [77] ...

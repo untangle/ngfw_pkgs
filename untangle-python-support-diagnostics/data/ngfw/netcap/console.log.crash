@@ -1,0 +1,134 @@
+Oct  7 00:00:47 burnside uvmconsole: [145173.657s][info][gc] GC(7650) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 21.332ms
+Oct  7 00:02:10 burnside uvmconsole: [145256.749s][info][gc] GC(7651) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 12.197ms
+Oct  7 00:06:01 burnside uvmconsole: [145487.021s][info][gc] GC(7652) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 12.738ms
+Oct  7 00:08:26 burnside uvmconsole: [145632.078s][info][gc] GC(7653) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 12.245ms
+Oct  7 00:11:36 burnside uvmconsole: [145822.882s][info][gc] GC(7654) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 14.357ms
+Oct  7 00:14:51 burnside uvmconsole: [146017.015s][info][gc] GC(7655) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 12.886ms
+Oct  7 00:17:51 burnside uvmconsole: [146197.020s][info][gc] GC(7656) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 13.069ms
+Oct  7 00:20:39 burnside uvmconsole: [146365.126s][info][gc] GC(7657) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 13.824ms
+Oct  7 00:22:56 burnside uvmconsole: [146502.633s][info][gc] GC(7658) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 12.798ms
+Oct  7 00:24:23 burnside uvmconsole: [146589.371s][info][gc] GC(7659) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 13.087ms
+Oct  7 00:26:07 burnside uvmconsole: [146693.409s][info][gc] GC(7660) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 13.049ms
+Oct  7 00:29:12 burnside uvmconsole: [146878.334s][info][gc] GC(7661) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 12.251ms
+Oct  7 00:31:21 burnside uvmconsole: [147007.125s][info][gc] GC(7662) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 12.820ms
+Oct  7 00:33:05 burnside uvmconsole: [147111.647s][info][gc] GC(7663) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 14.337ms
+Oct  7 00:35:08 burnside uvmconsole: [147234.349s][info][gc] GC(7664) Pause Young (Normal) (G1 Evacuation Pause) 109M->50M(129M) 12.122ms
+Oct  7 00:38:17 burnside uvmconsole: [147423.249s][info][gc] GC(7665) Pause Young (Normal) (G1 Evacuation Pause) 108M->51M(129M) 13.344ms
+Oct  7 00:40:25 burnside uvmconsole: [147551.525s][info][gc] GC(7666) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 13.156ms
+Oct  7 00:42:19 burnside uvmconsole: [147665.942s][info][gc] GC(7667) Pause Young (Normal) (G1 Evacuation Pause) 109M->50M(129M) 11.464ms
+Oct  7 00:44:51 burnside uvmconsole: [147817.738s][info][gc] GC(7668) Pause Young (Normal) (G1 Evacuation Pause) 109M->51M(129M) 11.566ms
+Oct  7 00:46:49 burnside uvmconsole: [147935.079s][info][gc] GC(7669) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 12.195ms
+Oct  7 00:49:00 burnside uvmconsole: [148066.581s][info][gc] GC(7670) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 12.429ms
+Oct  7 00:51:11 burnside uvmconsole: [148197.014s][info][gc] GC(7671) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 11.135ms
+Oct  7 00:53:30 burnside uvmconsole: [148336.060s][info][gc] GC(7672) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 11.814ms
+Oct  7 00:55:12 burnside uvmconsole: [148438.464s][info][gc] GC(7673) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 12.730ms
+Oct  7 00:57:01 burnside uvmconsole: [148547.758s][info][gc] GC(7674) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 17.389ms
+Oct  7 00:58:21 burnside uvmconsole: [148627.565s][info][gc] GC(7675) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 13.217ms
+Oct  7 00:58:41 burnside uvmconsole: [148647.823s][info][gc] GC(7676) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 11.623ms
+Oct  7 00:59:02 burnside uvmconsole: [148668.655s][info][gc] GC(7677) Pause Young (Normal) (G1 Evacuation Pause) 110M->51M(129M) 13.404ms
+Oct  7 00:59:21 burnside uvmconsole: [148687.293s][info][gc] GC(7678) Pause Young (Normal) (G1 Evacuation Pause) 111M->50M(129M) 12.501ms
+Oct  7 00:59:44 burnside uvmconsole: [148710.132s][info][gc] GC(7679) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 12.807ms
+Oct  7 01:00:03 burnside uvmconsole: [148729.000s][info][gc] GC(7680) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 9.936ms
+Oct  7 01:00:21 burnside uvmconsole: [148747.438s][info][gc] GC(7681) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 11.457ms
+Oct  7 01:00:42 burnside uvmconsole: [148768.689s][info][gc] GC(7682) Pause Young (Normal) (G1 Evacuation Pause) 111M->50M(129M) 20.289ms
+Oct  7 01:01:02 burnside uvmconsole: [148788.393s][info][gc] GC(7683) Pause Young (Normal) (G1 Evacuation Pause) 110M->50M(129M) 21.477ms
+Oct  7 01:01:12 burnside uvmconsole: UVM shutdown initiated...
+Oct  7 01:01:34 burnside uvmconsole: 10-07 01:01:34.342021| NETCAP: Netcap Cleaning up...
+Oct  7 01:01:34 burnside uvmconsole: 10-07 01:01:34.473105| ERROR:./libnetcap/src/netcap_sesstable.c:98:WARNING: 6 entries left in session id table
+Oct  7 01:01:34 burnside uvmconsole: 10-07 01:01:34.483303| NETCAP: Cleaned.
+Oct  7 01:01:34 burnside uvmconsole: [148820.562s][info][gc] GC(7684) Pause Young (Normal) (G1 Evacuation Pause) 113M->50M(129M) 21.134ms
+Oct  7 01:01:34 burnside uvmconsole: UVM shutdown complete.
+Oct  7 01:06:33 burnside uvmconsole: [0.115s][info][gc] Using G1
+Oct  7 01:06:34 burnside uvmconsole: UVM starting... (java: 11.0.8)
+Oct  7 01:06:36 burnside uvmconsole: [3.024s][info][gc] GC(0) Pause Young (Normal) (G1 Evacuation Pause) 15M->5M(34M) 37.357ms
+Oct  7 01:06:37 burnside uvmconsole: [4.111s][info][gc] GC(1) Pause Young (Normal) (G1 Evacuation Pause) 11M->5M(34M) 44.516ms
+Oct  7 01:06:37 burnside uvmconsole: 10-07 01:06:37.733810| NETCAP 2.4.0-0 Initialized (kernel: 4.19.0-8-untangle-amd64)
+Oct  7 01:06:37 burnside uvmconsole: 10-07 01:06:37.770566| ConntrackD listening for conntrack updates...
+Oct  7 01:06:38 burnside uvmconsole: [5.088s][info][gc] GC(2) Pause Young (Concurrent Start) (G1 Humongous Allocation) 16M->9M(34M) 17.742ms
+Oct  7 01:06:38 burnside uvmconsole: [5.088s][info][gc] GC(3) Concurrent Cycle
+Oct  7 01:06:38 burnside uvmconsole: [5.165s][info][gc] GC(3) Pause Remark 12M->12M(34M) 8.928ms
+Oct  7 01:06:38 burnside uvmconsole: [5.183s][info][gc] GC(3) Pause Cleanup 12M->12M(34M) 0.613ms
+Oct  7 01:06:38 burnside uvmconsole: [5.186s][info][gc] GC(3) Concurrent Cycle 97.282ms
+Oct  7 01:06:39 burnside uvmconsole: [6.334s][info][gc] GC(4) Pause Young (Normal) (G1 Evacuation Pause) 20M->9M(34M) 13.142ms
+Oct  7 01:06:40 burnside uvmconsole: WARNING: An illegal reflective access operation has occurred
+Oct  7 01:06:40 burnside uvmconsole: WARNING: Illegal reflective access by org.xbill.DNS.ResolverConfig (file:/usr/share/java/uvm/dnsjava-2.1.6.jar) to method sun.net.dns.ResolverConfiguration.open()
+Oct  7 01:06:40 burnside uvmconsole: WARNING: Please consider reporting this to the maintainers of org.xbill.DNS.ResolverConfig
+Oct  7 01:06:40 burnside uvmconsole: WARNING: Use --illegal-access=warn to enable warnings of further illegal reflective access operations
+Oct  7 01:06:40 burnside uvmconsole: WARNING: All illegal access operations will be denied in a future release
+Oct  7 01:06:41 burnside uvmconsole: [7.800s][info][gc] GC(5) Pause Young (Concurrent Start) (G1 Evacuation Pause) 19M->9M(34M) 24.272ms
+Oct  7 01:06:41 burnside uvmconsole: [7.802s][info][gc] GC(6) Concurrent Cycle
+Oct  7 01:06:41 burnside uvmconsole: [7.849s][info][gc] GC(6) Pause Remark 10M->10M(34M) 6.376ms
+Oct  7 01:06:41 burnside uvmconsole: [7.868s][info][gc] GC(6) Pause Cleanup 10M->10M(34M) 0.481ms
+Oct  7 01:06:41 burnside uvmconsole: [7.871s][info][gc] GC(6) Concurrent Cycle 68.155ms
+Oct  7 01:06:41 burnside uvmconsole: Oct 07, 2020 1:06:41 AM org.apache.coyote.AbstractProtocol destroy
+Oct  7 01:06:41 burnside uvmconsole: INFO: Destroying ProtocolHandler ["http-nio-8080"]
+Oct  7 01:06:42 burnside uvmconsole: [8.937s][info][gc] GC(7) Pause Young (Normal) (G1 Evacuation Pause) 20M->10M(41M) 16.997ms
+Oct  7 01:06:43 burnside uvmconsole: [9.684s][info][gc] GC(8) Pause Young (Normal) (G1 Evacuation Pause) 24M->11M(41M) 21.090ms
+Oct  7 01:06:44 burnside uvmconsole: [11.163s][info][gc] GC(9) Pause Young (Normal) (G1 Evacuation Pause) 25M->12M(41M) 19.586ms
+Oct  7 01:06:45 burnside uvmconsole: [12.011s][info][gc] GC(10) Pause Young (Concurrent Start) (G1 Evacuation Pause) 26M->12M(41M) 10.776ms
+Oct  7 01:06:45 burnside uvmconsole: [12.011s][info][gc] GC(11) Concurrent Cycle
+Oct  7 01:06:45 burnside uvmconsole: [12.079s][info][gc] GC(11) Pause Remark 14M->14M(41M) 10.973ms
+Oct  7 01:06:45 burnside uvmconsole: [12.106s][info][gc] GC(11) Pause Cleanup 15M->15M(41M) 0.487ms
+Oct  7 01:06:45 burnside uvmconsole: [12.108s][info][gc] GC(11) Concurrent Cycle 96.498ms
+Oct  7 01:06:45 burnside uvmconsole: UVM startup complete: "Today vegetables...tomorrow the world!"
+Oct  7 01:06:46 burnside uvmconsole: [13.050s][info][gc] GC(12) Pause Young (Normal) (G1 Evacuation Pause) 26M->13M(41M) 31.542ms
+Oct  7 01:06:47 burnside uvmconsole: [14.205s][info][gc] GC(13) Pause Young (Concurrent Start) (G1 Evacuation Pause) 27M->14M(50M) 19.727ms
+Oct  7 01:06:47 burnside uvmconsole: [14.205s][info][gc] GC(14) Concurrent Cycle
+Oct  7 01:06:47 burnside uvmconsole: [14.356s][info][gc] GC(14) Pause Remark 17M->17M(50M) 11.897ms
+Oct  7 01:06:47 burnside uvmconsole: [14.402s][info][gc] GC(14) Pause Cleanup 18M->18M(50M) 0.495ms
+Oct  7 01:06:47 burnside uvmconsole: [14.404s][info][gc] GC(14) Concurrent Cycle 199.310ms
+Oct  7 01:06:48 burnside uvmconsole: [15.109s][info][gc] GC(15) Pause Young (Normal) (G1 Evacuation Pause) 32M->16M(50M) 22.433ms
+Oct  7 01:06:48 burnside uvmconsole: [15.400s][info][gc] GC(16) Pause Young (Concurrent Start) (G1 Humongous Allocation) 23M->17M(50M) 21.103ms
+Oct  7 01:06:48 burnside uvmconsole: [15.401s][info][gc] GC(17) Concurrent Cycle
+Oct  7 01:06:49 burnside uvmconsole: [15.785s][info][gc] GC(17) Pause Remark 30M->30M(50M) 60.772ms
+Oct  7 01:06:49 burnside uvmconsole: [15.963s][info][gc] GC(17) Pause Cleanup 39M->39M(50M) 0.600ms
+Oct  7 01:06:49 burnside uvmconsole: [15.972s][info][gc] GC(17) Concurrent Cycle 571.767ms
+Oct  7 01:06:49 burnside uvmconsole: [16.171s][info][gc] GC(18) Pause Young (Normal) (G1 Evacuation Pause) 43M->22M(50M) 16.849ms
+Oct  7 01:06:50 burnside uvmconsole: [16.778s][info][gc] GC(19) Pause Young (Concurrent Start) (G1 Evacuation Pause) 34M->26M(60M) 55.183ms
+Oct  7 01:06:50 burnside uvmconsole: [16.780s][info][gc] GC(20) Concurrent Cycle
+Oct  7 01:06:50 burnside uvmconsole: [17.159s][info][gc] GC(20) Pause Remark 32M->32M(60M) 30.705ms
+Oct  7 01:06:50 burnside uvmconsole: [17.323s][info][gc] GC(20) Pause Cleanup 34M->34M(60M) 0.531ms
+Oct  7 01:06:50 burnside uvmconsole: [17.325s][info][gc] GC(20) Concurrent Cycle 544.911ms
+Oct  7 01:06:50 burnside uvmconsole: [17.497s][info][gc] GC(21) Pause Young (Normal) (G1 Evacuation Pause) 40M->28M(60M) 30.078ms
+Oct  7 01:06:51 burnside uvmconsole: [17.525s][info][gc] GC(22) Pause Young (Concurrent Start) (G1 Humongous Allocation) 28M->28M(60M) 9.767ms
+Oct  7 01:06:51 burnside uvmconsole: [17.526s][info][gc] GC(23) Concurrent Cycle
+Oct  7 01:06:51 burnside uvmconsole: [17.798s][info][gc] GC(24) Pause Young (Normal) (G1 Evacuation Pause) 49M->35M(60M) 22.428ms
+Oct  7 01:06:51 burnside uvmconsole: [17.833s][info][gc] GC(23) Pause Remark 35M->35M(60M) 19.307ms
+Oct  7 01:06:51 burnside uvmconsole: [17.999s][info][gc] GC(23) Pause Cleanup 39M->39M(60M) 0.754ms
+Oct  7 01:06:51 burnside uvmconsole: [18.031s][info][gc] GC(23) Concurrent Cycle 505.461ms
+Oct  7 01:06:51 burnside uvmconsole: [18.269s][info][gc] GC(25) Pause Young (Normal) (G1 Evacuation Pause) 44M->36M(79M) 22.834ms
+Oct  7 01:06:52 burnside uvmconsole: [19.145s][info][gc] GC(26) Pause Young (Concurrent Start) (G1 Humongous Allocation) 43M->37M(79M) 55.341ms
+Oct  7 01:06:52 burnside uvmconsole: [19.146s][info][gc] GC(27) Concurrent Cycle
+Oct  7 01:06:53 burnside uvmconsole: [19.874s][info][gc] GC(27) Pause Remark 46M->44M(79M) 25.987ms
+Oct  7 01:06:53 burnside uvmconsole: [20.151s][info][gc] GC(27) Pause Cleanup 45M->45M(79M) 0.718ms
+Oct  7 01:06:53 burnside uvmconsole: [20.167s][info][gc] GC(27) Concurrent Cycle 1021.812ms
+Oct  7 01:06:54 burnside uvmconsole: [21.199s][info][gc] GC(28) Pause Young (Normal) (G1 Evacuation Pause) 51M->37M(79M) 80.519ms
+Oct  7 01:06:55 burnside uvmconsole: [21.595s][info][gc] GC(29) Pause Young (Concurrent Start) (G1 Evacuation Pause) 54M->38M(79M) 69.833ms
+Oct  7 01:06:55 burnside uvmconsole: [21.595s][info][gc] GC(30) Concurrent Cycle
+Oct  7 01:06:55 burnside uvmconsole: [22.085s][info][gc] GC(30) Pause Remark 46M->44M(79M) 22.882ms
+Oct  7 01:06:55 burnside uvmconsole: [22.365s][info][gc] GC(30) Pause Cleanup 48M->48M(79M) 0.500ms
+Oct  7 01:06:55 burnside uvmconsole: [22.368s][info][gc] GC(30) Concurrent Cycle 772.934ms
+Oct  7 01:06:56 burnside uvmconsole: [22.681s][info][gc] GC(31) Pause Young (Normal) (G1 Evacuation Pause) 53M->37M(157M) 52.205ms
+Oct  7 01:06:57 burnside uvmconsole: [24.225s][info][gc] GC(32) Pause Young (Normal) (G1 Evacuation Pause) 88M->38M(157M) 25.339ms
+Oct  7 01:06:59 burnside uvmconsole: [25.935s][info][gc] GC(33) Pause Young (Normal) (G1 Evacuation Pause) 106M->38M(157M) 66.847ms
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # A fatal error has been detected by the Java Runtime Environment:
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: #  SIGSEGV (0xb) at pc=0x00007fcf88ce2aa0, pid=13905, tid=14121
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # JRE version: OpenJDK Runtime Environment (11.0.8+10) (build 11.0.8+10-post-Debian-1deb10u1)
+Oct  7 01:07:04 burnside uvmconsole: # Java VM: OpenJDK 64-Bit Server VM (11.0.8+10-post-Debian-1deb10u1, mixed mode, sharing, tiered, compressed oops, g1 gc, linux-amd64)
+Oct  7 01:07:04 burnside uvmconsole: # Problematic frame:
+Oct  7 01:07:04 burnside uvmconsole: # V  [libjvm.so+0xb06aa0]
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # Core dump will be written. Default location: /tmp/core
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # An error report file with more information is saved as:
+Oct  7 01:07:04 burnside uvmconsole: # /tmp/hs_err_pid13905.log
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # Compiler replay data is saved as:
+Oct  7 01:07:04 burnside uvmconsole: # /tmp/replay_pid13905.log
+Oct  7 01:07:04 burnside uvmconsole: #
+Oct  7 01:07:04 burnside uvmconsole: # If you would like to submit a bug report, please visit:
+Oct  7 01:07:04 burnside uvmconsole: #   https://bugs.debian.org/openjdk-11
+Oct  7 01:07:04 burnside uvmconsole: #

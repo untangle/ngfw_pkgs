@@ -1,0 +1,842 @@
+May 22 12:21:48 localhost app-15: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> WARN  No settings found - Initializing new settings.
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 0, Uncategorized, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 1, Real Estate, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 2, Computer and Internet Security, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 3, Financial Services, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 4, Business and Economy, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 5, Computer and Internet Info, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 6, Auctions, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 7, Shopping, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 8, Cult and Occult, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 9, Travel, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 10, Abused Drugs, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 11, Adult and Pornography, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 12, Home and Garden, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 13, Military, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 14, Social Networking, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 15, Dead Sites, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 16, Individual Stock Advice and Tools, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 17, Training and Tools, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 18, Dating, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 19, Sex Education, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 20, Religion, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 21, Entertainment and Arts, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 22, Personal sites and Blogs, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 23, Legal, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 24, Local Information, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 25, Streaming Media, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 26, Job Search, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 27, Gambling, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 28, Translation, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 29, Reference and Research, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 30, Shareware and Freeware, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 31, Peer to Peer, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 32, Marijuana, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 33, Hacking, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 34, Games, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 35, Philosophy and Political Advocacy, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 36, Weapons, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 37, Pay to Surf, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 38, Hunting and Fishing, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 39, Society, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 40, Educational Institutions, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 41, Online Greeting Cards, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 42, Sports, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 43, Swimsuits and Intimate Apparel, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 44, Questionable, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 45, Kids, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 46, Hate and Racism, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 47, Personal Storage, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 48, Violence, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 49, Keyloggers and Monitoring, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 50, Search Engines, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 51, Internet Portals, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 52, Web Advertisements, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 53, Cheating, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 54, Gross, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 55, Web-based Email, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 56, Malware Sites, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 57, Phishing and Other Frauds, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 58, Proxy Avoidance and Anonymizers, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 59, Spyware and Adware, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 60, Music, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 61, Government, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 62, Nudity, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 63, News and Media, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 64, Illegal, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 65, Content Delivery Networks, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 66, Internet Communications, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 67, Bot Nets, true, true )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 68, Abortion, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 69, Health and Medicine, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 71, SPAM URLs, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 74, Dynamically Generated Content, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 75, Parked Domains, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 76, Alcohol and Tobacco, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 78, Image and Video Search, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 79, Fashion and Beauty, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 80, Recreation and Hobbies, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 81, Motor Vehicles, false, false )
+May 22 12:21:48 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 82, Web Hosting, false, false )
+May 22 12:21:48 localhost app-15: [AppBase] <> INFO  Starting   web-filter [15] ...
+May 22 12:21:50 localhost app-15: [AppBase] <> INFO  Started    web-filter [15] ...
+May 22 12:40:17 localhost app-15: [AppBase] <> INFO  Stopping   web-filter [15] ...
+May 22 12:40:24 localhost app-15: [AppBase] <> INFO  Stopped    web-filter [15] ...
+May 22 12:40:28 localhost app-15: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+May 22 12:40:28 localhost app-15: [AppBase] <> INFO  Starting   web-filter [15] ...
+May 22 12:40:29 localhost app-15: [AppBase] <> INFO  Started    web-filter [15] ...
+May 26 08:05:50 localhost app-15: [AppBase] <> INFO  Stopping   web-filter [15] ...
+May 26 08:05:57 localhost app-15: [AppBase] <> INFO  Stopped    web-filter [15] ...
+May 26 08:06:01 localhost app-15: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+May 26 08:06:01 localhost app-15: [AppBase] <> INFO  Starting   web-filter [15] ...
+May 26 08:06:01 localhost app-15: [AppBase] <> INFO  Started    web-filter [15] ...
+May 26 11:19:23 localhost app-15: [AppBase] <> INFO  Stopping   web-filter [15] ...
+May 26 11:19:30 localhost app-15: [AppBase] <> INFO  Stopped    web-filter [15] ...
+May 26 11:19:30 localhost app-15: [AppBase] <> INFO  Destroying web-filter [15] ...
+May 26 11:19:30 localhost app-15: [AppBase] <> INFO  Destroyed  web-filter [15] ...
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> WARN  No settings found - Initializing new settings.
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 0, Uncategorized, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 1, Real Estate, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 2, Computer and Internet Security, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 3, Financial Services, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 4, Business and Economy, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 5, Computer and Internet Info, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 6, Auctions, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 7, Shopping, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 8, Cult and Occult, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 9, Travel, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 10, Abused Drugs, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 11, Adult and Pornography, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 12, Home and Garden, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 13, Military, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 14, Social Networking, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 15, Dead Sites, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 16, Individual Stock Advice and Tools, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 17, Training and Tools, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 18, Dating, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 19, Sex Education, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 20, Religion, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 21, Entertainment and Arts, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 22, Personal sites and Blogs, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 23, Legal, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 24, Local Information, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 25, Streaming Media, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 26, Job Search, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 27, Gambling, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 28, Translation, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 29, Reference and Research, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 30, Shareware and Freeware, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 31, Peer to Peer, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 32, Marijuana, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 33, Hacking, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 34, Games, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 35, Philosophy and Political Advocacy, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 36, Weapons, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 37, Pay to Surf, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 38, Hunting and Fishing, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 39, Society, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 40, Educational Institutions, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 41, Online Greeting Cards, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 42, Sports, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 43, Swimsuits and Intimate Apparel, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 44, Questionable, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 45, Kids, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 46, Hate and Racism, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 47, Personal Storage, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 48, Violence, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 49, Keyloggers and Monitoring, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 50, Search Engines, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 51, Internet Portals, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 52, Web Advertisements, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 53, Cheating, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 54, Gross, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 55, Web-based Email, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 56, Malware Sites, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 57, Phishing and Other Frauds, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 58, Proxy Avoidance and Anonymizers, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 59, Spyware and Adware, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 60, Music, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 61, Government, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 62, Nudity, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 63, News and Media, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 64, Illegal, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 65, Content Delivery Networks, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 66, Internet Communications, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 67, Bot Nets, true, true )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 68, Abortion, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 69, Health and Medicine, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 71, SPAM URLs, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 74, Dynamically Generated Content, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 75, Parked Domains, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 76, Alcohol and Tobacco, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 78, Image and Video Search, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 79, Fashion and Beauty, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 80, Recreation and Hobbies, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 81, Motor Vehicles, false, false )
+May 26 11:19:45 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 82, Web Hosting, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> WARN  No settings found - Initializing new settings.
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 0, Uncategorized, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 1, Real Estate, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 2, Computer and Internet Security, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 3, Financial Services, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 4, Business and Economy, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 5, Computer and Internet Info, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 6, Auctions, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 7, Shopping, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 8, Cult and Occult, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 9, Travel, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 10, Abused Drugs, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 11, Adult and Pornography, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 12, Home and Garden, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 13, Military, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 14, Social Networking, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 15, Dead Sites, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 16, Individual Stock Advice and Tools, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 17, Training and Tools, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 18, Dating, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 19, Sex Education, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 20, Religion, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 21, Entertainment and Arts, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 22, Personal sites and Blogs, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 23, Legal, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 24, Local Information, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 25, Streaming Media, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 26, Job Search, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 27, Gambling, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 28, Translation, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 29, Reference and Research, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 30, Shareware and Freeware, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 31, Peer to Peer, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 32, Marijuana, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 33, Hacking, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 34, Games, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 35, Philosophy and Political Advocacy, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 36, Weapons, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 37, Pay to Surf, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 38, Hunting and Fishing, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 39, Society, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 40, Educational Institutions, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 41, Online Greeting Cards, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 42, Sports, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 43, Swimsuits and Intimate Apparel, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 44, Questionable, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 45, Kids, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 46, Hate and Racism, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 47, Personal Storage, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 48, Violence, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 49, Keyloggers and Monitoring, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 50, Search Engines, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 51, Internet Portals, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 52, Web Advertisements, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 53, Cheating, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 54, Gross, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 55, Web-based Email, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 56, Malware Sites, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 57, Phishing and Other Frauds, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 58, Proxy Avoidance and Anonymizers, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 59, Spyware and Adware, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 60, Music, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 61, Government, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 62, Nudity, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 63, News and Media, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 64, Illegal, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 65, Content Delivery Networks, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 66, Internet Communications, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 67, Bot Nets, true, true )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 68, Abortion, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 69, Health and Medicine, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 71, SPAM URLs, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 74, Dynamically Generated Content, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 75, Parked Domains, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 76, Alcohol and Tobacco, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 78, Image and Video Search, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 79, Fashion and Beauty, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 80, Recreation and Hobbies, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 81, Motor Vehicles, false, false )
+May 26 11:28:58 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 82, Web Hosting, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> WARN  No settings found - Initializing new settings.
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 0, Uncategorized, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 1, Real Estate, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 2, Computer and Internet Security, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 3, Financial Services, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 4, Business and Economy, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 5, Computer and Internet Info, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 6, Auctions, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 7, Shopping, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 8, Cult and Occult, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 9, Travel, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 10, Abused Drugs, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 11, Adult and Pornography, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 12, Home and Garden, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 13, Military, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 14, Social Networking, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 15, Dead Sites, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 16, Individual Stock Advice and Tools, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 17, Training and Tools, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 18, Dating, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 19, Sex Education, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 20, Religion, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 21, Entertainment and Arts, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 22, Personal sites and Blogs, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 23, Legal, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 24, Local Information, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 25, Streaming Media, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 26, Job Search, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 27, Gambling, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 28, Translation, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 29, Reference and Research, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 30, Shareware and Freeware, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 31, Peer to Peer, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 32, Marijuana, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 33, Hacking, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 34, Games, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 35, Philosophy and Political Advocacy, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 36, Weapons, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 37, Pay to Surf, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 38, Hunting and Fishing, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 39, Society, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 40, Educational Institutions, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 41, Online Greeting Cards, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 42, Sports, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 43, Swimsuits and Intimate Apparel, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 44, Questionable, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 45, Kids, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 46, Hate and Racism, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 47, Personal Storage, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 48, Violence, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 49, Keyloggers and Monitoring, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 50, Search Engines, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 51, Internet Portals, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 52, Web Advertisements, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 53, Cheating, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 54, Gross, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 55, Web-based Email, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 56, Malware Sites, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 57, Phishing and Other Frauds, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 58, Proxy Avoidance and Anonymizers, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 59, Spyware and Adware, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 60, Music, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 61, Government, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 62, Nudity, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 63, News and Media, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 64, Illegal, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 65, Content Delivery Networks, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 66, Internet Communications, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 67, Bot Nets, true, true )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 68, Abortion, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 69, Health and Medicine, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 71, SPAM URLs, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 74, Dynamically Generated Content, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 75, Parked Domains, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 76, Alcohol and Tobacco, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 78, Image and Video Search, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 79, Fashion and Beauty, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 80, Recreation and Hobbies, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 81, Motor Vehicles, false, false )
+May 26 11:42:03 localhost app-15: [WebFilterBase] <> INFO  Adding Category: ( 82, Web Hosting, false, false )
+Aug  7 12:43:13 localhost app-15: [ReportsApp] <> INFO  Loading Settings...
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Creating Schema: 
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Ports" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/top-ports-by-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/top-client-by-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Session Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/shield-all-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Session Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/shield-blocked-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/top-username-by-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/sessions-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/sessions-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/top-hostname-by-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Servers" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/shield/reports/top-server-by-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/phish-blocker-all-email-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/email-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Phish Ratio" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/spam-ratio.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (phish)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/email-usage-spam.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (clean)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/email-usage-clean.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Phish Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/phish-blocker-all-phish-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Phish Blocker Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Quarantined Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/phish-blocker-quarantined-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Phish Sender Addresses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/top-spam-sender-hosts.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Phish Recipients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/top-spam-receivers.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/phish-blocker/reports/email-usage-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Session Timeout User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-session-timeout.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Passed Session Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-pass-rule-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Session Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-all-rule-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-all-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "User Logout User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-user-logout.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Login Success User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-login-success.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Captive Portal Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Admin Logout User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-admin-logout.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/top-blocked-clients.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Captured Session Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-capture-rule-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Login Failure User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-login-failure.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Active Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/top-active-users.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Idle Timeout User Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/captive-portal-idle-timeout.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Activity Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/captive-portal/reports/event-summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Spam Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/spam-blocker-lite-all-spam-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/email-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Spam Ratio" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/spam-ratio.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (spam)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/email-usage-spam.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (clean)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/email-usage-clean.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Spam Blocker Lite Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Quarantined Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/spam-blocker-lite-quarantined-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Spam Sender Addresses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/top-spam-sender-hosts.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/spam-blocker-lite-all-email-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tarpit Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/spam-blocker-lite-tarpit-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Spam Recipients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/top-spam-receivers.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker-lite/reports/email-usage-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tunnel Traffic Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/wireguardvpn-statistics.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WireGuard VPN Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WireGuard VPN Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/wireguardvpn-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Connection Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/wireguardvpn-connect-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Remote Clients (by usage)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/top-traffic-by-endpoint.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WireGuard VPN Bandwidth Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wireguard-vpn/reports/bandwidth-usage.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/web-usage-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-email-servers.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-infected-email-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Scanned Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-web-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-scanned-web-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-email-clients.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-scanned-ftp-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-web-virus.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/email-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-scanned-email-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-clean-email-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-ftp-virus.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-email-virus.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-clean-web-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-ftp-clients.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-web-hosts.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-web-clients.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-infected-web-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/email-usage-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker Lite Email Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/summary-email.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-infected-ftp-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/top-ftp-servers.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/ftp-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/web-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker Lite FTP Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/summary-ftp.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/ftp-usage-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/virus-blocker-lite-clean-ftp-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/ftp-usage-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker Lite Web Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/summary-web.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/web-usage-blocked.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker-lite/reports/email-usage-scanned.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Traffic By Policy" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/policy-manager/reports/traffic-by-policy.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Policy Manager Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/policy-manager/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions By Policy" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/policy-manager/reports/sessions-by-policy.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Policy Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/policy-manager/reports/usage-by-policy.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/policy-manager/reports/policy-manager-all-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions By Interface" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-balancer/reports/sessions-by-inteface.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bytes By Interface" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-balancer/reports/bytes-by-interface.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WAN Balancer Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-balancer/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Backup Usage (failed)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/configuration-backup/reports/backup-usage-failed.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Configuration Backup Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/configuration-backup/reports/summary.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Backup Usage (success)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/configuration-backup/reports/backup-usage-passed.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Backup Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/configuration-backup/reports/configuration-backup-backup-events.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Backup Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/configuration-backup/reports/backup-usage-all.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Data Usage (by interface)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-data-total.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bypassed Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-bypassed-sessions.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Devices Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/devices-updates.json]
+Aug  7 12:43:13 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions Per Hour" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/sessions-per-hour.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Port Forwarded Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-port-forwarded-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Client Addresses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/top-clients-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hosts Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/hosts-updates.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hosts Updates" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/host-table-updates.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Data Rx-Usage (by interface)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-data-rx.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Settings Changes" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/administration-settings-changes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions Per Minute" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/sessions-per-minute.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hosts Additions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/host-table-additions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Admin Logins" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/admin-logins.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Network Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Users Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/users-updates.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Penalty Box Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/hosts-penalty-box.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Server Addresses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/top-servers-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Devices Additions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/devices-additions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "NATd Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-natd-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/sessions-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-all-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top IP Protocols" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/top-protocols-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Data Usage per Day (by interface)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-data-total-by-day.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-blocked-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Server Status Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/server-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Data Tx-Usage (by interface)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-data-tx.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Server Countries" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/top-country-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hosts Active" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/host-table-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Settings Changes" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/settings-changes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Server Ports" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/top-port-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Interface Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/interface-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Admin Login Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/administration-logins.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Devices Updates" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/devices-updates-report.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Session Minutes" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-all-session-minutes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/network-scanned-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bandwidth Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/untangle-vm/reports/bandwidth-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "OpenVPN Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/openvpn-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Statistic Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/openvpn-statistics.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by usage)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/top-username-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "OpenVPN Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "OpenVPN Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/openvpn-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Connection Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/openvpn-connect-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "OpenVPN Bandwidth Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/reports/bandwidth-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "API Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/directory-connector/reports/api-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Directory Connector Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/directory-connector/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "API Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/directory-connector/reports/api-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-all-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Abandoned Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-abandoned-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Untrusted Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-untrusted-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Ignored Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-ignored-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "SSL Inspector Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions Inspected" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/sessions-inspected.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Inspected Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-inspected-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Sessions Scanned" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/sessions-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Inspected Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/top-sites-by-inspected.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Ignored Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/top-sites-by-ignored.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ssl-inspector/reports/ssl-inspector-blocked-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Applications" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-application-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (by sessions)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-category-by-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Applications (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-application-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Applications Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-application-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-client-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-hostname-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/application-control-blocked-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-username-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Application Control Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-client-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/sessions-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/sessions-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-hostname-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Classified Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/application-control-classified-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-username-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/application-control-all-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions (flagged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/sessions-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/application-control-flagged-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Applications" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-application-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Applications (by sessions)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control/reports/top-application-by-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/email-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Spam Ratio" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/spam-ratio.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (spam)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/email-usage-spam.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (clean)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/email-usage-clean.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Spam Blocker Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tarpit Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/spam-blocker-tarpit-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Spam Sender Addresses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/top-spam-sender-hosts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Quarantined Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/spam-blocker-quarantined-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Spam Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/spam-blocker-all-spam-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/spam-blocker-all-email-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Spam Recipients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/top-spam-receivers.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/spam-blocker/reports/email-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Ports (by sent bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-port-by-sent.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by sent bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-hostname-by-sent.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-hostname-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Priorities Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-priority-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Application (by received bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-application-by-received.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Applications Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-application-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Quota Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/quota-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by received bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-hostname-by-received.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Application (by sent bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-application-by-sent.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bandwidth Control Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Prioritized Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/bandwidth-control-prioritized-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Server Port Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-port-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-hostname-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/bandwidth-control-all-sessions.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-client-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Ports (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-port-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-category-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bypassed (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/bypassed-by-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Priorities (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-priority-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-username-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-username-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Category (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-category-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Ports (by received bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-port-by-received.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Countries (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-country-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-client-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Countries Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-country-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Application (by total bytes)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/top-application-by-bytes.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Bandwidth Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/bandwidth-control/reports/bandwidth-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Ad Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/ad-blocker-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Ad Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/top-sites-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Ad Blocker Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Ad Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/ad-blocker-blocked-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Cookie Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/ad-blocker-cookie-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Ads Blocked" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ad-blocker/reports/web-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Cache Size Statistics" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-cache/reports/size-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Cache Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-cache/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Cache Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-cache/reports/web-cache-webcache-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Cache Hit-Miss Statistics" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-cache/reports/cache-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tunnel Connection Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/ipsec-vpn-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Tunnel Traffic" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/tunnel-traffic-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Protocols" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/top-sessions-by-protocol.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "IPsec VPN Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "L2TP/Xauth Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/ipsec-vpn-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Upload Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/top-users-by-upload.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Download Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/top-users-by-download.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hourly Tunnel Traffic" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/tunnel-time-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tunnel Traffic Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/ipsec-tunnel-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Active Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/ipsec-vpn/reports/top-sessions-by-user.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-clean-ftp-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/web-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-email-servers.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Scanned Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-web-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-email-clients.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-scanned-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-clean-email-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-web-virus.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/email-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-infected-email-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-ftp-virus.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Top Blocked Viruses" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-email-virus.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-infected-ftp-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-ftp-clients.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-web-hosts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-web-clients.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Infected Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-infected-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/email-usage-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Email Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-scanned-email-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker Email Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/summary-email.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Clean Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-clean-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Ftp Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/virus-blocker-scanned-ftp-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/top-ftp-servers.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/ftp-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/web-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker FTP Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/summary-ftp.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/ftp-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "FTP Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/ftp-usage-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Virus Blocker Web Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/summary-web.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/web-usage-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Email Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/virus-blocker/reports/email-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Alerts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/top-alerts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Memory Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/memory.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Disk Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/disk.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Alert Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/all-alert-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Swap Usage Bytes" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/swap.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Swap Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/swap-percent.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "CPU Load" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/cpu.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Highest Active Hosts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/active.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Alerts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/reports/reports/alerts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-category-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Content (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-content-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All HTTPS Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-all-https-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-blocked-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-client-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-sites-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-flagged-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-hostname-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-usage-all-area.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-hostname-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-username-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-username-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Filter Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-client-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Categories" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-category-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Sites (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-sites-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-hostname-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Searches" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-queries.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-all-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Unblocked Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-unblocked-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-username-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-sites-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-domains-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All HTTP Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-all-http-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-client-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Searches" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-queries-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-blocked-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-hostname-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Sites (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-sites-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (flagged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-usage-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Searches" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-queries-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Unblocked Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-unblocked-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-all-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Categories" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-category-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-domains-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-username-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-category-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-client-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-usage-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/web-filter-flagged-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-domains-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Content (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-content-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Domains" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-domains-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Domains" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-filter/reports/top-domains-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination Ports (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-port-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination Ports (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-port-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Signatures (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-signatures-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source IP Addresses (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-ip-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Classtypes (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-classtypes-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source Ports (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-port-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Protocols (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-protocols-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Classtypes (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-classtypes-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-categories-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Protocols (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-protocols-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Intrusion Prevention Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Logged Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/intrusion-prevention-logged-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination IP Addresses (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-ip-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source Ports (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-port-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Intrusion Detection (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/ips-usage-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source IP Addresses (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-ip-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Protocols (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-protocols-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Rules (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-rules-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Rules (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-rules-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination IP Addresses (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-ip-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Rules (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-rules-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source IP Addresses (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-ip-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-categories-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/intrusion-prevention-blocked-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Signatures (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-signatures-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Classtypes (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-classtypes-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/intrusion-prevention-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Intrusion Detection (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/ips-usage-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Intrusion Detection (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/ips-usage-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination Ports (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-port-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Source Ports (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-source-port-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Signatures (all)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-signatures-all.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (logged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-categories-by-logged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Destination IP Addresses (blocked)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/intrusion-prevention/reports/top-destination-ip-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Tunnel Traffic" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/tunnel-vpn/reports/tunnel-traffic-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tunnel VPN Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/tunnel-vpn/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Tunnel Stat Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/tunnel-vpn/reports/tunnel-vpn-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Connection Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/tunnel-vpn/reports/tunnel-vpn-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Hourly Tunnel Traffic" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/tunnel-vpn/reports/tunnel-time-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Protocols" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-blocked-sessions-by-protocol.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Logged Hosts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-logged-hosts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Application Control Lite Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Logged Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-logged-users.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Hosts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-blocked-hosts.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Logged Protocols" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-logged-sessions-by-protocol.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/application-control-lite-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Detection Statistics" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/detection-stats.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/application-control-lite-blocked-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Users" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/application-control-lite/reports/top-blocked-users.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-category-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (scanned)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-usage-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Content (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-content-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-hostname-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-usage-all-area.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-hostname-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-username-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Monitor Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-client-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Categories" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-category-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All HTTPS Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-all-https-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All HTTP Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-all-http-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Sites (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-sites-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Searches" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-queries.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-all-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-username-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Sites" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-sites-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-domains-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-client-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Search Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-flagged-query-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Hostnames (by requests)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-hostname-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Sites (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-sites-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Usage (flagged)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-usage-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Searches" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-queries-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-flagged-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-domains-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Usernames (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-username-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/web-monitor-all-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Categories (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-category-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Clients (by size)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-client-by-size.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Domains Usage" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-domains-usage.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Content (by request)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-content-by-request.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Domains" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/web-monitor/reports/top-domains-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Outage Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/wan-failover-outage-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WAN Failover Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Failed Test Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/wan-failover-failed-test-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Success Test Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/wan-failover-success-test-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Test Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/wan-failover-test-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WAN Disconnect Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/failures-by-wan.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "WAN Interface Outages" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/wan-failover/reports/wan-failover-outages.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Server Ports" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-port-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-client-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Flagged Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/firewall-flagged-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-hostname-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Scanned Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-hostname-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Scanned Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-username-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-username-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Firewall Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-client-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Scanned Sessions" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/sessions-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Blocked Hostnames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-hostname-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Usernames" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-username-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/firewall-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/firewall-blocked-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Flagged Server Ports" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-port-by-flagged.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Scanned Server Ports" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-port-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Top Scanned Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/firewall/reports/top-client-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Threats (by server)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-threat-by-blocked-server.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Blocked Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-blocked-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "All Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-all-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-client-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Scanned Categories" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-category-by-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Threats (by client)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-threat-by-scanned-client.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Traffic Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Countries" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-country-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Traffic Summary" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-summary.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Countries (by server)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-country-by-blocked-server.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Categories (by server)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-category-by-scanned-server.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Countries (by client)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-country-by-blocked-client.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Clients" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-client-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Servers" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-server-by-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Categories (by server)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-category-by-blocked-server.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Scanned Hosts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-session.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Threats" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-threat-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Categories" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-category-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web All Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-all-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Scanned Threats" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-threat-by-scanned.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Categories (by client)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-category-by-scanned-client.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Scanned Threats (by server)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-threat-by-scanned-server.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Categories (by client)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-category-by-blocked-client.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Server" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-server-by-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Blocked Web Events" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-blocked-web-events.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Web Top Blocked Hosts" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/web-top-blocked.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Report Entries Update: Adding  "Non-Web Top Blocked Threats (by client)" [/root/development/github/ngfw_src/dist/usr/share/untangle/lib/threat-prevention/reports/non-web-top-threat-by-blocked-client.json]
+Aug  7 12:43:14 localhost app-15: [ReportsManagerImpl] <> INFO  Creating Schema: 
+Aug  7 12:43:15 localhost app-15: [AppBase] <> INFO  Starting   reports [15] ...
+Aug  7 12:43:18 localhost app-15: [ReportsApp] <> INFO  Creating Tables: 
+Aug  7 12:43:18 localhost app-15: [ReportsApp] <> INFO  Tables: 
+Aug  7 12:43:18 localhost app-15: [AppBase] <> INFO  Started    reports [15] ...
+Aug  7 12:43:34 localhost app-15: [ReportsApp] <> INFO  forceFlush() ...
+Aug  7 12:43:36 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventStats 10263 events,     7 statements [ 5852 ms] [ 1754 event/s] [ 0.57 avg] [    8s delay] [12236 pending]
+Aug  7 12:43:36 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventMap    HttpRequestEvent[3390,1224ms,0.36avg] WebFilterEvent[3389,1155ms,0.34avg] HttpResponseEvent[3380,890ms,0.26avg] SessionEvent[50,187ms,3.74avg] SessionNatEvent[49,16ms,0.33avg] InterfaceStatEvent[3,12ms,4.00avg] SessionStatsEvent[2,9ms,4.50avg]
+Aug  7 12:43:36 localhost app-15: [EventWriterImpl] <> INFO  forceFlush() ...
+Aug  7 12:43:41 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventStats 12962 events,     8 statements [ 5110 ms] [ 2537 event/s] [ 0.39 avg] [    6s delay] [15256 pending]
+Aug  7 12:43:41 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventMap    WebFilterEvent[4275,1191ms,0.28avg] HttpRequestEvent[4274,1197ms,0.28avg] HttpResponseEvent[4263,1275ms,0.30avg] SessionEvent[50,15ms,0.30avg] SessionStatsEvent[48,12ms,0.25avg] SessionNatEvent[48,22ms,0.46avg] InterfaceStatEvent[3,6ms,2.00avg] SystemStatEvent[1,16ms,16.00avg]
+Aug  7 12:43:41 localhost app-15: [EventWriterImpl] <> INFO  forceFlush() complete.
+Aug  7 12:43:41 localhost app-15: [ReportEntry] <> INFO  endDate not specified, using now plus 1 min: '2020-08-07 12:44:41'
+Aug  7 12:43:41 localhost app-15: [ReportsManagerImpl] <> INFO  Getting Events for : (Web Filter) All Web Events
+Aug  7 12:43:41 localhost app-15: [ReportsManagerImpl] <> INFO  Statement          : SELECT * FROM reports.http_events WHERE  time_stamp >= '2020-08-07 00:00:00'  and  time_stamp <= '2020-08-07 12:44:41'  ORDER BY time_stamp DESC LIMIT 1000
+Aug  7 12:43:42 localhost app-15: [ReportsManagerImpl] <> INFO  Query Time         :  1035 ms
+Aug  7 12:44:04 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventStats 48408 events,     8 statements [12773 ms] [ 3790 event/s] [ 0.26 avg] [   15s delay] [24123 pending]
+Aug  7 12:44:04 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventMap    HttpResponseEvent[15974,4747ms,0.30avg] HttpRequestEvent[15968,3553ms,0.22avg] WebFilterEvent[15967,2332ms,0.15avg] SessionStatsEvent[167,55ms,0.33avg] SessionEvent[165,35ms,0.21avg] SessionNatEvent[164,33ms,0.20avg] InterfaceStatEvent[3,2ms,0.67avg]
+Aug  7 12:44:31 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventStats 50000 events,     9 statements [16807 ms] [ 2975 event/s] [ 0.34 avg] [   23s delay] [29745 pending]
+Aug  7 12:44:31 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventMap    HttpResponseEvent[16379,4351ms,0.27avg] HttpRequestEvent[16371,4811ms,0.29avg] WebFilterEvent[16371,6224ms,0.38avg] SessionMinuteEvent[336,50ms,0.15avg] SessionStatsEvent[182,18ms,0.10avg] SessionEvent[178,34ms,0.19avg] SessionNatEvent[177,21ms,0.12avg] InterfaceStatEvent[6,11ms,1.83avg]
+Aug  7 12:44:35 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventStats 29745 events,     8 statements [ 4385 ms] [ 6783 event/s] [ 0.15 avg] [   17s delay] [    6 pending]
+Aug  7 12:44:35 localhost app-15: [EventWriterImpl] <> INFO  persist(): EventMap    HttpResponseEvent[9805,1547ms,0.16avg] HttpRequestEvent[9799,1318ms,0.13avg] WebFilterEvent[9799,1313ms,0.13avg] SessionStatsEvent[146,18ms,0.12avg] SessionEvent[95,14ms,0.15avg] SessionNatEvent[95,11ms,0.12avg] InterfaceStatEvent[6,1ms,0.17avg]
+Aug  7 12:44:38 localhost app-15: [AppBase] <> INFO  Stopping   reports [15] ...
+Aug  7 12:44:38 localhost app-15: [AppBase] <> INFO  Stopped    reports [15] ...
+Aug  7 12:44:38 localhost app-15: [AppBase] <> INFO  Destroying reports [15] ...
+Aug  7 12:44:39 localhost app-15: [AppBase] <> INFO  Destroyed  reports [15] ...
+Sep 18 12:49:28 localhost app-15: [IntrusionPreventionApp] <> INFO  Loading settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/intrusion-prevention/settings_15.js
+Sep 18 12:49:28 localhost app-15: [IntrusionPreventionApp] <> WARN  No settings found - Initializing new settings.
+Sep 18 12:49:28 localhost app-15: [IntrusionPreventionApp] <> WARN  reconfigure: intrusion-prevention-create-config: Unable to read settings
+Sep 18 12:52:18 localhost app-15: [AppBase] <> INFO  Starting   intrusion-prevention [15] ...
+Sep 18 12:52:23 localhost app-15: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 18 12:52:23 localhost app-15: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Fri 18 Sep 2020 12:52:23 PM EDT] suricata is running. Inserting rules.
+Sep 18 12:52:23 localhost app-15: [AppBase] <> INFO  Started    intrusion-prevention [15] ...
+Sep 18 12:52:30 localhost app-15: [AppBase] <> INFO  Stopping   intrusion-prevention [15] ...
+Sep 18 12:52:47 localhost app-15: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 18 12:52:47 localhost app-15: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Fri 18 Sep 2020 12:52:47 PM EDT] Suricata is not running - not inserting rules for suricata
+Sep 18 12:52:47 localhost app-15: [AppBase] <> INFO  Stopped    intrusion-prevention [15] ...
+Sep 18 12:52:47 localhost app-15: [AppBase] <> INFO  Destroying intrusion-prevention [15] ...
+Sep 18 12:52:47 localhost app-15: [AppBase] <> INFO  Destroyed  intrusion-prevention [15] ...
+Oct  5 15:31:31 localhost app-15: [ThreatPreventionApp] <> WARN  No settings found - Initializing new settings.
+Oct  5 15:31:31 localhost app-15: [ThreatPreventionApp] <> INFO  Creating the default settings...
+Oct  5 15:31:31 localhost app-15: [AppBase] <> INFO  killMatchingSessions()
+Oct  5 15:31:31 localhost app-15: [AppBase] <> INFO  killMatchingSessions()
+Oct  5 15:31:31 localhost app-15: [AppBase] <> INFO  Starting   threat-prevention [15] ...
+Oct  5 15:31:31 localhost app-15: [AppBase] <> INFO  killMatchingSessions()
+Oct  5 15:31:32 localhost app-15: [AppBase] <> INFO  killMatchingSessions()
+Oct  5 15:31:32 localhost app-15: [AppBase] <> INFO  Started    threat-prevention [15] ...
+Oct  7 10:53:00 localhost app-15: [AppBase] <> INFO  Stopping   threat-prevention [15] ...
+Oct  7 10:53:00 localhost app-15: [AppBase] <> INFO  killMatchingSessions()
+Oct  7 10:53:00 localhost app-15: [AppBase] <> INFO  Stopped    threat-prevention [15] ...
+Oct  7 10:53:00 localhost app-15: [AppBase] <> INFO  Destroying threat-prevention [15] ...
+Oct  7 10:53:00 localhost app-15: [AppBase] <> INFO  Destroyed  threat-prevention [15] ...

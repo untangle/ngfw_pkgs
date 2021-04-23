@@ -1,0 +1,40 @@
+Sep 21 15:03:50 localhost app-34: [OpenVpnAppImpl] <> INFO  Initializing Settings...
+Sep 21 15:03:50 localhost app-34: [OpenVpnManager] <> INFO  Writing File: /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/720-openvpn
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Building CA cert and key...
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Generating a RSA private key
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: ............................................................++++
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: ......++++
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: writing new private key to '/root/development/github/ngfw_src/dist/usr/share/untangle/settings/openvpn/ca.key'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: -----
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Building CA cert and key... done
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Building Server cert and key...
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Ignoring -days; not generating a certificate
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Generating a RSA private key
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: ...............................................................................................++++
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: .....................................++++
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: writing new private key to '/root/development/github/ngfw_src/dist/usr/share/untangle/settings/openvpn/server.key'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: -----
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Using configuration from /root/development/github/ngfw_src/dist/usr/share/untangle/lib/openvpn/openssl.cnf
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Check that the request matches the signature
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Signature ok
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: The Subject's Distinguished Name is as follows
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: commonName            :PRINTABLE:'server'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: countryName           :PRINTABLE:'CO'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: stateOrProvinceName   :PRINTABLE:'ST'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: localityName          :PRINTABLE:'L'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: organizationName      :PRINTABLE:'O'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: organizationalUnitName:PRINTABLE:'OU'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: dnQualifier           :PRINTABLE:'server'
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Certificate is to be certified until Sep 19 19:03:52 2030 GMT (3650 days)
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: 
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Write out database with 1 new entries
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Data Base Updated
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/openvpn-generate-certs: Building Server cert and key... done
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  OpenVPN Settings require an update...
+Sep 21 15:03:52 localhost app-34: [OpenVpnManager] <> INFO  Writing File: /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/720-openvpn
+Sep 21 15:03:52 localhost app-34: [OpenVpnAppImpl] <> INFO  Loading Settings...

@@ -1,0 +1,1032 @@
+Jun 29 01:11:49 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jun 29 01:11:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jun 29 01:11:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jun 29 01:12:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jun 29 01:12:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jun 29 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jun 29 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jun 29 01:12:11 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jun 29 01:12:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jun 29 01:12:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jun 29 01:12:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jun 29 01:12:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jun 29 01:12:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jun 29 01:12:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jun 29 01:12:17 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul  4 05:24:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 124 hours 11 minutes)
+Jul 17 04:33:20 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 311 hours 8 minutes)
+Aug 25 06:32:27 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 937 hours 58 minutes)
+Aug 30 02:53:29 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 116 hours 20 minutes)
+Sep  4 07:28:30 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 124 hours 34 minutes)
+Sep 14 07:33:32 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 240 hours 4 minutes)
+Sep 18 12:40:32 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 101 hours 6 minutes)
+Sep 23 09:19:33 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 116 hours 38 minutes)
+Sep 28 21:44:34 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 24 minutes)
+Oct  2 09:38:34 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 83 hours 53 minutes)
+Oct 12 00:03:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 230 hours 24 minutes)
+Oct 12 07:01:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 6 hours 52 minutes)
+Oct 12 09:36:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 2 hours 34 minutes)
+Oct 12 15:56:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 6 hours 19 minutes)
+Oct 12 23:59:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 8 hours 2 minutes)
+Oct 13 01:01:36 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1 hours 0 minutes)
+Oct 13 01:04:51 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Oct 13 01:04:59 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Oct 13 01:10:32 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct 13 01:10:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Oct 13 01:10:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Oct 13 01:10:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Oct 13 01:10:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Oct 13 01:10:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Oct 13 01:10:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Oct 13 01:10:43 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct 13 01:10:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Oct 13 01:10:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Oct 13 01:10:54 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Oct 13 01:10:54 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Oct 13 01:10:54 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Oct 13 01:10:54 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Oct 13 01:10:54 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Oct 14 08:36:54 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 31 hours 25 minutes)
+Oct 15 00:17:54 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 40 minutes)
+Oct 16 15:16:54 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 58 minutes)
+Oct 18 21:42:55 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 25 minutes)
+Oct 19 21:10:55 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 27 minutes)
+Oct 21 20:09:55 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 58 minutes)
+Oct 25 02:17:56 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 78 hours 7 minutes)
+Oct 26 01:41:56 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 23 minutes)
+Oct 27 01:03:57 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 21 minutes)
+Oct 28 16:12:57 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 39 hours 8 minutes)
+Oct 29 15:41:57 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 28 minutes)
+Oct 30 15:07:57 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 25 minutes)
+Oct 31 22:09:57 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 31 hours 1 minutes)
+Nov  6 09:57:58 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 47 minutes)
+Nov  8 00:47:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 49 minutes)
+Nov  8 00:57:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 9 minutes)
+Nov  8 01:28:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 30 minutes)
+Nov  9 16:22:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 52 minutes)
+Nov 10 07:57:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 34 minutes)
+Nov 11 15:14:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 31 hours 16 minutes)
+Nov 12 14:36:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 21 minutes)
+Nov 16 11:49:00 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 93 hours 9 minutes)
+Nov 24 22:34:02 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 202 hours 44 minutes)
+Nov 25 22:04:02 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 29 minutes)
+Dec  4 01:15:03 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 195 hours 10 minutes)
+Dec  5 16:10:04 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 54 minutes)
+Dec  7 06:59:04 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 48 minutes)
+Dec  8 15:53:05 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 32 hours 53 minutes)
+Dec  9 07:30:05 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Dec 12 05:54:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 70 hours 23 minutes)
+Dec 13 05:26:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 31 minutes)
+Dec 13 21:05:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 38 minutes)
+Dec 14 20:34:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 28 minutes)
+Dec 15 20:04:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 29 minutes)
+Dec 16 11:41:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Dec 17 03:18:06 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Dec 22 07:44:07 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 124 hours 25 minutes)
+Dec 25 21:35:08 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 85 hours 50 minutes)
+Dec 26 13:12:08 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Dec 27 08:15:58 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Dec 27 08:16:08 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Dec 27 08:16:08 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Dec 27 08:16:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Dec 27 08:16:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Dec 27 08:16:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Dec 27 08:16:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Dec 27 08:16:09 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Dec 27 08:16:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Dec 27 08:16:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Dec 27 08:16:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Dec 27 08:16:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Dec 27 08:16:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Dec 27 08:16:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Dec 27 08:16:17 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Dec 28 15:22:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 31 hours 5 minutes)
+Dec 29 07:00:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 37 minutes)
+Dec 31 05:57:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 56 minutes)
+Dec 31 21:38:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 40 minutes)
+Jan  1 21:09:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 30 minutes)
+Jan  4 03:51:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 41 minutes)
+Jan  4 08:49:46 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan  4 08:49:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  4 08:49:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  4 08:49:56 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  4 08:49:56 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  4 08:49:56 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  4 08:49:56 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  4 08:49:56 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan  4 08:50:03 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  4 08:50:03 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  4 08:50:03 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  4 08:50:03 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  4 08:50:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  4 08:50:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  4 08:50:04 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jan  4 10:50:32 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan  4 10:50:40 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  4 10:50:40 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  4 10:50:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  4 10:50:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  4 10:50:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  4 10:50:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  4 10:50:41 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan  4 10:50:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  4 10:50:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  4 10:50:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  4 10:50:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  4 10:50:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  4 10:50:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  4 10:50:49 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul 19 05:05:26 localhost app-22: [AppBase] <> INFO  No valid license for: ipsec-vpn
+Jul 19 05:05:26 localhost app-22: [AppBase] <> INFO  Requesting trial for: ipsec-vpn
+Jul 19 05:05:38 localhost app-22: [AppBase] <> WARN  Exception fetching trial license. Ignoring...
+Jul 19 05:05:38 localhost app-22:       java.lang.Exception: Unable to fetch trial license: javax.net.ssl.SSLHandshakeException: sun.security.validator.ValidatorException: PKIX path validation failed: java.security.cert.CertPathValidatorException: timestamp check failed
+Jul 19 05:05:38 localhost app-22:       com.untangle.app.license.LicenseManagerImpl.requestTrialLicense(LicenseManagerImpl.java:433)
+Jul 19 05:05:38 localhost app-22:       com.untangle.uvm.app.AppBase.init(AppBase.java:568)
+Jul 19 05:05:38 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:168)
+Jul 19 05:05:38 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:269)
+Jul 19 05:05:38 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:799)
+Jul 19 05:05:38 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:384)
+Jul 19 05:05:38 localhost app-22:       java.lang.Thread.run(Thread.java:748)
+Jul 19 05:05:39 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jul 19 05:05:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jul 19 05:05:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jul 19 05:05:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jul 19 05:05:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jul 19 05:05:51 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jul 19 05:05:51 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jul 19 05:05:51 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jul 19 05:05:51 localhost app-22: [AppBase] <> WARN  Exception in preStart(). Reverting to INITIALIZED state.
+Jul 19 05:05:51 localhost app-22:       java.lang.RuntimeException: Unable to start ipsec-vpn service: invalid license
+Jul 19 05:05:51 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.preStart(IpsecVpnApp.java:264)
+Jul 19 05:05:51 localhost app-22:       com.untangle.uvm.app.AppBase.start(AppBase.java:615)
+Jul 19 05:05:51 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:169)
+Jul 19 05:05:51 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:269)
+Jul 19 05:05:51 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:799)
+Jul 19 05:05:51 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:384)
+Jul 19 05:05:51 localhost app-22:       java.lang.Thread.run(Thread.java:748)
+Jan  9 01:05:22 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan  9 01:05:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  9 01:05:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  9 01:05:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  9 01:05:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  9 01:05:35 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  9 01:05:35 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  9 01:05:35 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan  9 01:05:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Jan  9 01:05:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Jan  9 01:05:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 0
+Jan  9 01:05:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Jan  9 01:05:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Jan  9 01:05:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Jan  9 01:05:43 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jan 10 23:48:43 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 42 minutes)
+Jan 11 00:01:43 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 12 minutes)
+Jan 16 20:57:44 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 140 hours 52 minutes)
+Jan 17 20:20:44 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 22 minutes)
+Jan 25 15:21:45 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 186 hours 58 minutes)
+Jan 26 14:45:45 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 23 minutes)
+Jan 31 19:12:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 124 hours 26 minutes)
+Feb 17 00:00:48 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 388 hours 47 minutes)
+Feb 17 23:38:48 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 33 minutes)
+Feb 21 01:02:38 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Feb 21 01:02:46 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Feb 21 01:04:53 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Feb 21 01:05:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Feb 21 01:05:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Feb 21 01:05:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 1
+Feb 21 01:05:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Feb 21 01:05:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Feb 21 01:05:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Feb 21 01:05:01 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 1
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Feb 21 01:05:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Feb 21 01:05:11 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Feb 22 00:32:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 26 minutes)
+Feb 22 23:54:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 21 minutes)
+Feb 24 22:48:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 53 minutes)
+Feb 25 22:15:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 26 minutes)
+Feb 26 21:39:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 23 minutes)
+Feb 27 21:09:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 29 minutes)
+Mar  4 02:22:13 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 101 hours 12 minutes)
+Mar  5 17:19:13 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 56 minutes)
+Mar 10 06:42:14 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 109 hours 22 minutes)
+Mar 10 22:20:14 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 37 minutes)
+Mar 12 22:17:14 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 56 minutes)
+Mar 15 10:48:14 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 60 hours 30 minutes)
+Mar 18 01:06:15 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 62 hours 16 minutes)
+Mar 20 00:05:15 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 58 minutes)
+Mar 21 07:29:15 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 31 hours 23 minutes)
+Mar 22 06:56:16 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 26 minutes)
+Mar 22 22:38:16 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 41 minutes)
+Mar 24 13:40:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 39 hours 1 minutes)
+Mar 25 13:05:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 24 minutes)
+Mar 26 04:42:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Mar 26 20:23:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 40 minutes)
+Mar 27 00:05:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 3 hours 41 minutes)
+Mar 27 16:15:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 36 minutes)
+Mar 28 15:40:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 24 minutes)
+Mar 30 22:09:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 28 minutes)
+Apr  2 04:58:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 48 minutes)
+Apr  4 11:29:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 30 minutes)
+Apr  6 10:18:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 48 minutes)
+Apr 11 22:29:19 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 10 minutes)
+Apr 12 22:02:20 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 23 hours 32 minutes)
+Apr 14 20:51:21 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 48 minutes)
+Apr 19 11:09:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 110 hours 17 minutes)
+Apr 20 02:54:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 15 hours 43 minutes)
+Apr 22 09:33:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 54 hours 38 minutes)
+Apr 25 23:42:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 86 hours 8 minutes)
+Apr 26 00:03:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 20 minutes)
+Apr 26 01:09:49 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Apr 26 01:09:54 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Apr 26 01:15:26 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Apr 26 01:15:31 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Apr 26 01:15:31 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Apr 26 01:15:31 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 1
+Apr 26 01:15:31 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Apr 26 01:15:32 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Apr 26 01:15:32 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Apr 26 01:15:32 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 0
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/710-ipsec: 
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 1
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/711-xauth: 
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 0
+Apr 26 01:15:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle-netd/iptables-rules.d/712-gre: 
+Apr 26 01:15:37 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+May  2 05:30:38 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 148 hours 14 minutes)
+May  4 20:00:38 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 62 hours 29 minutes)
+May  9 01:17:39 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 101 hours 16 minutes)
+May 12 15:08:39 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 85 hours 50 minutes)
+May 14 06:04:39 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 55 minutes)
+May 15 21:04:39 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 38 hours 59 minutes)
+May 21 09:53:40 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 48 minutes)
+May 27 13:57:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 148 hours 3 minutes)
+May 31 02:49:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 84 hours 51 minutes)
+May 31 03:15:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 22 minutes)
+May 31 03:44:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 24 minutes)
+May 31 04:04:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 18 minutes)
+May 31 04:12:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 6 minutes)
+May 31 04:52:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 16 minutes)
+May 31 05:20:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 16 minutes)
+May 31 05:57:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 23 minutes)
+May 31 06:10:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 7 minutes)
+May 31 06:28:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 9 minutes)
+May 31 06:48:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 10 minutes)
+May 31 07:20:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 16 minutes)
+May 31 08:02:41 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 11 minutes)
+Jun  3 22:23:42 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 86 hours 12 minutes)
+Jun  5 13:27:42 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 39 hours 3 minutes)
+Jun 16 07:08:43 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 257 hours 40 minutes)
+Jun 21 19:54:44 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 45 minutes)
+Jun 23 18:49:44 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 54 minutes)
+Jun 29 07:18:45 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 132 hours 28 minutes)
+Jul  3 20:26:45 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 109 hours 7 minutes)
+Jul  6 10:51:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 62 hours 24 minutes)
+Jul 14 21:33:47 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 202 hours 41 minutes)
+Jul 21 17:27:48 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 163 hours 53 minutes)
+Aug  3 04:14:49 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 298 hours 46 minutes)
+Aug  3 12:06:49 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 7 hours 43 minutes)
+Aug  4 00:17:49 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 12 hours 10 minutes)
+Aug  5 01:32:45 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug  5 01:32:52 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Aug  5 01:59:45 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug  5 01:59:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug  5 01:59:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug  5 01:59:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug  5 01:59:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug  5 01:59:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug  5 01:59:53 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug  5 01:59:53 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug  5 01:59:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug  5 01:59:58 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug  7 07:06:11 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug  7 07:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug  7 07:06:17 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug  7 07:06:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug  7 07:06:20 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug  8 00:20:20 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 17 hours 13 minutes)
+Aug 11 00:02:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 71 hours 41 minutes)
+Aug 12 01:13:03 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug 12 01:13:05 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Aug 12 01:17:59 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug 12 01:18:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 12 01:18:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 12 01:18:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 12 01:18:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 12 01:18:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 12 01:18:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 12 01:18:05 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug 12 01:18:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 12 01:18:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 12 01:18:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 12 01:18:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 12 01:18:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 12 01:18:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 12 01:18:10 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug 28 01:01:49 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug 28 01:01:52 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Aug 28 01:06:53 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug 28 01:06:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 28 01:06:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 28 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 28 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 28 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 28 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 28 01:07:00 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug 28 01:07:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 28 01:07:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 28 01:07:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 28 01:07:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 28 01:07:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 28 01:07:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 28 01:07:05 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug 28 18:15:56 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 28 18:16:01 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 28 18:16:01 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug 28 18:16:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 28 18:16:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 28 18:16:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 28 18:16:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 28 18:16:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 28 18:16:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 28 18:16:05 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug 31 00:01:05 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 53 hours 44 minutes)
+Oct 30 01:54:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1441 hours 48 minutes)
+Nov  1 15:55:17 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 61 hours 58 minutes)
+Nov 27 10:58:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 620 hours 1 minutes)
+Nov 29 09:24:22 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 46 hours 24 minutes)
+Nov 29 13:29:35 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Nov 29 13:29:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Nov 29 13:29:41 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Nov 29 13:29:44 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Nov 29 13:29:44 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Nov 30 14:42:45 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 7 hours 22 minutes)
+Dec  5 00:03:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 105 hours 19 minutes)
+Dec  6 03:34:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 27 hours 29 minutes)
+Dec  8 01:16:44 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Dec  8 01:16:46 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Dec  8 01:24:06 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Dec  8 01:24:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Dec  8 01:24:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Dec  8 01:24:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Dec  8 01:24:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Dec  8 01:24:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Dec  8 01:24:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Dec  8 01:24:12 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Dec  8 01:24:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Dec  8 01:24:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Dec  8 01:24:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Dec  8 01:24:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Dec  8 01:24:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Dec  8 01:24:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Dec  8 01:24:22 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jan 15 03:56:29 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 914 hours 31 minutes)
+Jan 20 00:01:30 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 116 hours 4 minutes)
+Jan 29 01:03:18 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jan 29 01:03:24 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jan 29 01:09:15 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan 29 01:09:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan 29 01:09:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan 29 01:09:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan 29 01:09:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan 29 01:09:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan 29 01:09:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan 29 01:09:21 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan 29 01:09:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan 29 01:09:25 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Feb  1 15:14:20 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Feb  1 15:14:24 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Feb  1 15:14:24 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Feb  1 15:14:28 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Feb  1 15:14:28 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Feb  1 15:29:28 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 14 minutes)
+Feb 12 15:07:33 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 263 hours 36 minutes)
+Mar 20 08:31:11 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar 20 08:31:18 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar 20 08:31:18 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar 20 08:31:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar 20 08:31:21 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Apr  1 14:47:23 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 294 hours 15 minutes)
+Apr  9 00:03:24 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 177 hours 14 minutes)
+Apr  9 01:15:11 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Apr  9 01:15:15 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Apr  9 01:20:54 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Apr  9 01:21:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Apr  9 01:21:00 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Apr  9 01:21:04 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Apr  9 01:21:04 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+May 21 08:09:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1014 hours 47 minutes)
+Jul 18 11:51:21 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1395 hours 41 minutes)
+Jul 22 01:12:26 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul 22 01:12:33 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul 22 01:12:33 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jul 22 01:12:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul 22 01:12:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul 22 01:12:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul 22 01:12:37 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul 22 01:12:38 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul 22 01:12:38 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul 22 01:12:38 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug  8 01:15:40 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 408 hours 2 minutes)
+Aug 20 01:01:27 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug 20 01:01:32 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Aug 20 01:06:19 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 20 01:06:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 20 01:06:25 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 20 01:06:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 20 01:06:29 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug 24 00:00:30 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 94 hours 53 minutes)
+Sep  7 17:53:32 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 353 hours 48 minutes)
+Sep 14 01:01:56 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Sep 14 01:02:00 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Sep 14 01:06:42 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Sep 14 01:06:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep 14 01:06:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep 14 01:06:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep 14 01:06:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep 14 01:06:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep 14 01:06:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep 14 01:06:49 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep 14 01:06:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep 14 01:06:52 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Sep 18 00:00:53 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 94 hours 53 minutes)
+Oct  5 17:50:55 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 425 hours 45 minutes)
+Oct  7 15:35:38 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct  7 15:35:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 15:35:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 15:35:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 15:35:42 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 15:35:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 15:35:43 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 15:35:43 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 15:35:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 15:35:47 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Nov 29 09:35:56 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1266 hours 59 minutes)
+Dec 15 03:18:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 377 hours 13 minutes)
+Dec 16 15:18:59 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 35 hours 59 minutes)
+Jan  3 14:39:04 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 430 hours 59 minutes)
+Jan  3 15:11:04 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 0 hours 9 minutes)
+Jan  3 16:24:04 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 1 hours 6 minutes)
+Jan 23 02:43:08 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 466 hours 16 minutes)
+Feb 10 20:04:12 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 449 hours 16 minutes)
+Mar  3 02:30:16 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 510 hours 23 minutes)
+Mar  6 01:03:11 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Mar  6 01:03:16 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Mar  6 01:12:34 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Mar  6 01:12:40 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar  6 01:12:40 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar  6 01:12:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar  6 01:12:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar  6 01:12:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar  6 01:12:41 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar  6 01:12:41 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar  6 01:12:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar  6 01:12:45 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Mar  7 00:02:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 22 hours 49 minutes)
+Mar 11 21:24:47 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 116 hours 13 minutes)
+Mar 21 00:00:49 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 218 hours 35 minutes)
+Mar 21 01:01:50 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Mar 21 01:01:56 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Mar 21 01:04:23 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Mar 21 01:04:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar 21 01:04:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar 21 01:04:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar 21 01:04:29 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar 21 01:04:30 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar 21 01:04:30 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar 21 01:04:30 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Mar 21 01:04:34 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Mar 21 01:04:34 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+May 14 10:48:11 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+May 14 10:48:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+May 14 10:48:17 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+May 14 10:48:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+May 14 10:48:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+May 14 10:48:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+May 14 10:48:20 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+May 14 10:48:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+May 14 10:48:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+May 14 10:48:21 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+May 19 05:42:21 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 114 hours 53 minutes)
+Jun  2 04:51:24 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 335 hours 4 minutes)
+Jun 15 01:08:27 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 308 hours 16 minutes)
+Jun 15 01:46:12 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jun 15 01:46:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jun 15 01:46:21 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jun 15 01:46:27 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jun 15 01:46:27 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jun 23 21:52:29 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 212 hours 5 minutes)
+Jun 24 01:00:44 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jun 24 01:00:54 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jun 24 01:03:07 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jun 24 01:03:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun 24 01:03:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jun 24 01:03:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jun 24 01:03:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jun 24 01:03:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jun 24 01:03:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jun 24 01:03:16 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jun 24 01:03:22 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jun 24 01:03:22 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul  2 13:53:12 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jul  2 13:53:26 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jul  2 14:38:01 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jul  2 14:38:08 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul  2 14:38:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul  2 14:38:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul  2 14:38:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul  2 14:38:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul  2 14:38:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul  2 14:38:09 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul  2 14:38:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul  2 14:38:16 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul  7 16:05:57 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jul  7 16:06:11 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jul  7 18:06:04 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul  7 18:06:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul  7 18:06:12 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul  7 18:06:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul  7 18:06:18 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul 12 10:09:55 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jul 12 10:10:03 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jul 13 09:17:32 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jul 13 09:17:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul 13 09:17:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul 13 09:17:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul 13 09:17:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul 13 09:17:46 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul 13 09:17:46 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul 13 09:17:46 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jul 13 09:17:51 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jul 13 09:17:51 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jul 13 09:17:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jul 13 09:17:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jul 13 09:17:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jul 13 09:17:52 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jul 13 09:17:52 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jul 16 00:08:53 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 62 hours 50 minutes)
+Aug  9 13:12:58 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 588 hours 22 minutes)
+Aug 28 00:01:02 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 442 hours 47 minutes)
+Aug 30 01:01:58 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug 30 01:02:09 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Aug 30 01:07:03 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Aug 30 01:07:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 30 01:07:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 30 01:07:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 30 01:07:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 30 01:07:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 30 01:07:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 30 01:07:11 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Aug 30 01:07:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Aug 30 01:07:15 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Aug 30 23:16:32 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Aug 30 23:16:33 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Sep  4 15:58:57 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Sep  4 15:59:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  4 15:59:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  4 15:59:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  4 15:59:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  4 15:59:05 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  4 15:59:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  4 15:59:06 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  4 15:59:10 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  4 15:59:10 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Sep  6 16:45:14 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Sep  6 16:45:15 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Sep  8 09:35:58 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Sep  8 09:36:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  8 09:36:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  8 09:36:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  8 09:36:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  8 09:36:07 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  8 09:36:07 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  8 09:36:07 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  8 09:36:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  8 09:36:13 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Sep  8 11:13:09 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Sep  8 11:13:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  8 11:13:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  8 11:13:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  8 11:13:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  8 11:13:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  8 11:13:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  8 11:13:15 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  8 11:13:21 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  8 11:13:21 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Sep  9 18:13:15 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Sep  9 18:13:19 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Sep  9 18:19:07 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  9 18:19:13 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  9 18:19:13 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Sep  9 18:19:16 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Sep  9 18:19:16 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Sep 10 00:01:16 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 5 hours 41 minutes)
+Sep 14 12:37:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 108 hours 30 minutes)
+Sep 16 00:38:18 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 36 hours 0 minutes)
+Oct  3 11:12:21 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 418 hours 32 minutes)
+Oct  5 07:02:40 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  5 07:02:47 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  5 07:02:47 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  5 07:02:50 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  5 07:02:50 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Oct  5 07:41:06 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct  5 07:41:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  5 07:41:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  5 07:41:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  5 07:41:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  5 07:41:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  5 07:41:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  5 07:41:15 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  5 07:41:17 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  5 07:41:17 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Oct  7 00:01:46 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 34 hours 12 minutes)
+Oct  7 01:01:14 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Oct  7 01:01:17 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Oct  7 01:06:51 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct  7 01:06:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 01:06:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 01:06:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 01:06:57 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 01:06:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 01:06:58 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 01:06:58 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 01:07:00 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 01:07:00 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Oct  7 01:08:08 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct  7 01:08:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 01:08:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 01:08:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 01:08:14 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 01:08:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 01:08:15 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 01:08:15 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct  7 01:08:25 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct  7 01:08:25 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Oct 10 22:08:26 localhost app-22: [IpsecVpnTimer] <> WARN  Attempting restart for inactive tunnel UT1_New-Tunnel-to-Mackays-Truro (UPTIME = 92 hours 59 minutes)
+Oct 30 01:02:34 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Oct 30 01:02:45 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Oct 30 01:13:01 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Oct 30 01:13:06 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Oct 30 01:13:06 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Oct 30 01:13:06 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Oct 30 01:13:06 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Oct 30 01:13:06 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Oct 30 01:13:06 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Oct 30 01:13:06 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.postInit(IpsecVpnApp.java:388)
+Oct 30 01:13:06 localhost app-22:       com.untangle.uvm.app.AppBase.init(AppBase.java:865)
+Oct 30 01:13:06 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Oct 30 01:13:06 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Oct 30 01:13:06 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Oct 30 01:13:06 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Oct 30 01:13:06 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct 30 01:13:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct 30 01:13:09 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Oct 30 01:13:10 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Oct 30 01:13:10 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Oct 30 01:13:10 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Oct 30 01:13:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Oct 30 01:13:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Oct 30 01:13:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Oct 30 01:13:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.preStart(IpsecVpnApp.java:419)
+Oct 30 01:13:10 localhost app-22:       com.untangle.uvm.app.AppBase.start(AppBase.java:909)
+Oct 30 01:13:10 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:246)
+Oct 30 01:13:10 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Oct 30 01:13:10 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Oct 30 01:13:10 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Oct 30 01:13:10 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 30 01:13:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Oct 30 01:13:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Oct 30 01:13:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Oct 30 01:13:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Oct 30 01:13:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Oct 30 01:13:12 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Oct 30 01:13:12 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Nov 16 01:02:02 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Nov 16 01:02:12 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Nov 16 01:11:59 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Nov 16 01:12:03 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Nov 16 01:12:03 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Nov 16 01:12:03 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Nov 16 01:12:03 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Nov 16 01:12:03 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Nov 16 01:12:03 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Nov 16 01:12:03 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.postInit(IpsecVpnApp.java:388)
+Nov 16 01:12:03 localhost app-22:       com.untangle.uvm.app.AppBase.init(AppBase.java:865)
+Nov 16 01:12:03 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Nov 16 01:12:03 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Nov 16 01:12:03 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Nov 16 01:12:03 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Nov 16 01:12:03 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Nov 16 01:12:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Nov 16 01:12:06 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Nov 16 01:12:08 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Nov 16 01:12:08 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Nov 16 01:12:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Nov 16 01:12:09 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Nov 16 01:12:09 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Nov 16 01:12:10 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Nov 16 01:12:10 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Nov 16 01:12:10 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Nov 16 01:12:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Nov 16 01:12:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Nov 16 01:12:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Nov 16 01:12:10 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.preStart(IpsecVpnApp.java:419)
+Nov 16 01:12:10 localhost app-22:       com.untangle.uvm.app.AppBase.start(AppBase.java:909)
+Nov 16 01:12:10 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:246)
+Nov 16 01:12:10 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Nov 16 01:12:10 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Nov 16 01:12:10 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Nov 16 01:12:10 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Nov 16 01:12:11 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Nov 16 01:12:11 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Dec 25 08:52:54 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Dec 25 08:53:06 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jan  5 15:20:47 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan  5 15:20:49 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Jan  5 15:20:49 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Jan  5 15:20:49 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Jan  5 15:20:49 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Jan  5 15:20:49 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Jan  5 15:20:49 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Jan  5 15:20:49 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.postInit(IpsecVpnApp.java:388)
+Jan  5 15:20:49 localhost app-22:       com.untangle.uvm.app.AppBase.init(AppBase.java:865)
+Jan  5 15:20:49 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Jan  5 15:20:49 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Jan  5 15:20:49 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Jan  5 15:20:49 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Jan  5 15:20:49 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan  5 15:20:55 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan  5 15:20:55 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan  5 15:20:57 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Jan  5 15:20:57 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Jan  5 15:20:57 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Jan  5 15:20:57 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Jan  5 15:20:57 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Jan  5 15:20:57 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Jan  5 15:20:57 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.preStart(IpsecVpnApp.java:419)
+Jan  5 15:20:57 localhost app-22:       com.untangle.uvm.app.AppBase.start(AppBase.java:909)
+Jan  5 15:20:57 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:246)
+Jan  5 15:20:57 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Jan  5 15:20:57 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Jan  5 15:20:57 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Jan  5 15:20:57 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan  5 15:20:59 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan  5 15:20:59 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...
+Jan  5 15:24:11 localhost app-22: [AppBase] <> INFO  Stopping   ipsec-vpn [22] ...
+Jan  5 15:24:11 localhost app-22: [AppBase] <> INFO  Stopped    ipsec-vpn [22] ...
+Jan  5 15:24:39 localhost app-22: [IpsecVpnApp] <> INFO  Loaded settings from: /usr/share/untangle/settings/ipsec-vpn/settings_22.js
+Jan  5 15:24:42 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Jan  5 15:24:42 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Jan  5 15:24:42 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Jan  5 15:24:42 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Jan  5 15:24:42 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Jan  5 15:24:42 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Jan  5 15:24:42 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.postInit(IpsecVpnApp.java:388)
+Jan  5 15:24:42 localhost app-22:       com.untangle.uvm.app.AppBase.init(AppBase.java:865)
+Jan  5 15:24:42 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:245)
+Jan  5 15:24:42 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Jan  5 15:24:42 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Jan  5 15:24:42 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Jan  5 15:24:42 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Jan  5 15:24:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan  5 15:24:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan  5 15:24:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan  5 15:24:45 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan  5 15:24:46 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan  5 15:24:46 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan  5 15:24:46 localhost app-22: [AppBase] <> INFO  Starting   ipsec-vpn [22] ...
+Jan  5 15:24:46 localhost app-22: [IpsecVpnManager] <> ERROR IpsecVpnManager.generateConfig()
+Jan  5 15:24:46 localhost app-22:       java.lang.NumberFormatException: Invalid CIDR format '', should be: xx.xx.xx.xx/xx
+Jan  5 15:24:46 localhost app-22:       com.untangle.app.ipsec_vpn.AddressCalculator.<init>(AddressCalculator.java:39)
+Jan  5 15:24:46 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnScriptWriter.write_GRE_script(IpsecVpnScriptWriter.java:231)
+Jan  5 15:24:46 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnManager.generateConfig(IpsecVpnManager.java:123)
+Jan  5 15:24:46 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.reconfigure(IpsecVpnApp.java:506)
+Jan  5 15:24:46 localhost app-22:       com.untangle.app.ipsec_vpn.IpsecVpnApp.preStart(IpsecVpnApp.java:419)
+Jan  5 15:24:46 localhost app-22:       com.untangle.uvm.app.AppBase.start(AppBase.java:909)
+Jan  5 15:24:46 localhost app-22:       com.untangle.uvm.app.AppBase.resumeState(AppBase.java:246)
+Jan  5 15:24:46 localhost app-22:       com.untangle.uvm.app.AppBase.loadClass(AppBase.java:373)
+Jan  5 15:24:46 localhost app-22:       com.untangle.uvm.AppManagerImpl$3.run(AppManagerImpl.java:1128)
+Jan  5 15:24:46 localhost app-22:       com.untangle.uvm.UvmContextImpl$1.run(UvmContextImpl.java:654)
+Jan  5 15:24:46 localhost app-22:       java.base/java.lang.Thread.run(Thread.java:834)
+Jan  5 15:24:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 0
+Jan  5 15:24:48 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/710-ipsec: 
+Jan  5 15:24:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 1
+Jan  5 15:24:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/711-xauth: 
+Jan  5 15:24:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 0
+Jan  5 15:24:49 localhost app-22: [IpsecVpnApp] <> INFO  /etc/untangle/iptables-rules.d/712-gre: 
+Jan  5 15:24:49 localhost app-22: [AppBase] <> INFO  Started    ipsec-vpn [22] ...

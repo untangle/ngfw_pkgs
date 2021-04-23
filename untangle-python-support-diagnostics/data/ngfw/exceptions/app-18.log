@@ -1,0 +1,427 @@
+Sep 18 12:57:25 localhost app-18: [IntrusionPreventionApp] <> INFO  Loading settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/intrusion-prevention/settings_18.js
+Sep 18 12:57:25 localhost app-18: [IntrusionPreventionApp] <> WARN  No settings found - Initializing new settings.
+Sep 18 12:57:25 localhost app-18: [IntrusionPreventionApp] <> WARN  reconfigure: intrusion-prevention-create-config: Unable to read settings
+Sep 18 12:57:26 localhost app-18: [IntrusionPreventionApp] <> WARN  reconfigure: intrusion-prevention-create-config: Unable to read settings
+Sep 18 12:59:06 localhost app-18: [AppBase] <> INFO  Destroying intrusion-prevention [18] ...
+Sep 18 12:59:06 localhost app-18: [AppBase] <> INFO  Destroyed  intrusion-prevention [18] ...
+Oct  8 09:18:56 localhost app-18: [ThreatPreventionApp] <> WARN  No settings found - Initializing new settings.
+Oct  8 09:18:56 localhost app-18: [ThreatPreventionApp] <> INFO  Creating the default settings...
+Oct  8 09:18:56 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct  8 09:18:56 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct  8 09:18:56 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct  8 09:18:56 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct  8 09:18:57 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct  8 09:18:57 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 14 16:47:19 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 14 16:47:19 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 14 16:47:19 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 14 16:47:19 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 14 16:47:20 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 14 16:47:20 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 15 12:30:16 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 15 12:30:16 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 15 12:30:16 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:32:57 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 15 12:32:57 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:32:57 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 15 12:32:57 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:32:58 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:32:58 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 15 12:41:03 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 15 12:41:03 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:41:03 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 15 12:45:07 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 15 12:45:07 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:45:07 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 15 12:45:07 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:45:09 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 15 12:45:09 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 19 09:18:48 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:21:07 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:21:39 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:32:21 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 19 09:32:28 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:32:28 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 19 09:32:30 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 19 09:32:30 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:32:31 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:32:31 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 19 09:54:12 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://blog.rotapost.ru
+Oct 19 09:54:12 localhost app-18: [WebrootQuery] <> WARN  apiDaemon: answer contains error: [{"ip":"","ERROR":"invalid IP address"}]#015#012
+Oct 19 09:54:12 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://blog.rotapost.ru
+Oct 19 09:54:12 localhost app-18: [WebrootQuery] <> WARN  apiDirect: 
+Oct 19 09:54:12 localhost app-18:       org.json.JSONException: JSONObject["results"] not found.
+Oct 19 09:54:12 localhost app-18:       org.json.JSONObject.get(JSONObject.java:422)
+Oct 19 09:54:12 localhost app-18:       org.json.JSONObject.getJSONArray(JSONObject.java:498)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.webroot.WebrootQuery.apiDirect(WebrootQuery.java:628)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:670)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:54:12 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:54:12 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:54:12 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:54:12 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:54:12 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:54:12 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:54:12 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:54:12 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:54:12 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:54:12 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:54:12 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:54:12 localhost app-18: [WebrootQuery] <> WARN  getIpHistory: 
+Oct 19 09:54:12 localhost app-18:       java.lang.NullPointerException
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:674)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:54:12 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:54:12 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:54:12 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:54:12 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:54:12 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:54:12 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:54:12 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:54:12 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:54:12 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:54:12 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:54:12 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:54:12 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:54:12 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:54:12 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:54:12 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:54:15 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://blog.rotapost.ru
+Oct 19 09:54:15 localhost app-18: [WebrootQuery] <> WARN  apiDaemon: answer contains error: [{"ip":"","ERROR":"invalid IP address"}]#015#012
+Oct 19 09:54:15 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://blog.rotapost.ru
+Oct 19 09:54:15 localhost app-18: [WebrootQuery] <> WARN  Unable to determine expiration: org.json.JSONException: JSONArray[0] not found.
+Oct 19 09:54:15 localhost app-18: [WebrootQuery] <> WARN  apiDirect: 
+Oct 19 09:54:15 localhost app-18:       org.json.JSONException: JSONObject["results"] not found.
+Oct 19 09:54:15 localhost app-18:       org.json.JSONObject.get(JSONObject.java:422)
+Oct 19 09:54:15 localhost app-18:       org.json.JSONObject.getJSONArray(JSONObject.java:498)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.webroot.WebrootQuery.apiDirect(WebrootQuery.java:628)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:670)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:54:15 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:54:15 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:54:15 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:54:15 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:54:15 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:54:15 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:54:15 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:54:15 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:54:15 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:54:15 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:54:15 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:54:15 localhost app-18: [WebrootQuery] <> WARN  getIpHistory: 
+Oct 19 09:54:15 localhost app-18:       java.lang.NullPointerException
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:674)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:54:15 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:54:15 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:54:15 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:54:15 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:54:15 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:54:15 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:54:15 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:54:15 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:54:15 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:54:15 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:54:15 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:54:15 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:54:15 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:54:15 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:54:15 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:55:29 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://account.paypal-inc.tribesiren.com
+Oct 19 09:55:29 localhost app-18: [WebrootQuery] <> WARN  apiDaemon: answer contains error: [{"ip":"","ERROR":"invalid IP address"}]#015#012
+Oct 19 09:55:29 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://account.paypal-inc.tribesiren.com
+Oct 19 09:55:29 localhost app-18: [WebrootQuery] <> WARN  Unable to determine expiration: org.json.JSONException: JSONArray[0] not found.
+Oct 19 09:55:29 localhost app-18: [WebrootQuery] <> WARN  apiDirect: 
+Oct 19 09:55:29 localhost app-18:       org.json.JSONException: JSONObject["results"] not found.
+Oct 19 09:55:29 localhost app-18:       org.json.JSONObject.get(JSONObject.java:422)
+Oct 19 09:55:29 localhost app-18:       org.json.JSONObject.getJSONArray(JSONObject.java:498)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.webroot.WebrootQuery.apiDirect(WebrootQuery.java:628)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:670)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:55:29 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:55:29 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:55:29 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:55:29 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:55:29 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:55:29 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:55:29 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:55:29 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:55:29 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:55:29 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:55:29 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:55:29 localhost app-18: [WebrootQuery] <> WARN  getIpHistory: 
+Oct 19 09:55:29 localhost app-18:       java.lang.NullPointerException
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:674)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 09:55:29 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 09:55:29 localhost app-18:       jdk.internal.reflect.GeneratedMethodAccessor581.invoke(Unknown Source)
+Oct 19 09:55:29 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 09:55:29 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 09:55:29 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 09:55:29 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 09:55:29 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 09:55:29 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 09:55:29 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 09:55:29 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 09:55:29 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 09:55:29 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 09:55:29 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 09:55:29 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 09:55:29 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 09:58:07 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches(ExpiredPolicyMatcher) Shutdown  session[105039810029932]: TCP| 192.168.252.51:44948 -> 18.235.119.118:443
+Oct 19 09:58:07 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches(ExpiredPolicyMatcher) shutdown 1 sessions.
+Oct 19 09:59:40 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105039810030273]: TCP| 192.168.252.51:44986 -> 18.235.119.118:443
+Oct 19 09:59:40 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 19 09:59:40 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 19 09:59:40 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105039810030273]: TCP| 192.168.252.51:44986 -> 18.235.119.118:443
+Oct 19 09:59:40 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 19 09:59:47 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:59:47 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 19 09:59:52 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 19 09:59:52 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:59:52 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 19 09:59:52 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:59:53 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 19 09:59:53 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 19 10:00:17 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://account.paypal-inc.tribesiren.com
+Oct 19 10:00:17 localhost app-18: [WebrootQuery] <> WARN  apiDaemon: answer contains error: [{"ip":"","ERROR":"invalid IP address"}]#015#012
+Oct 19 10:00:17 localhost app-18: [ThreatPreventionApp] <> WARN  resolveAddresses: Unable to resolve: http://account.paypal-inc.tribesiren.com
+Oct 19 10:00:18 localhost app-18: [WebrootQuery] <> WARN  apiDirect: 
+Oct 19 10:00:18 localhost app-18:       org.json.JSONException: JSONObject["results"] not found.
+Oct 19 10:00:18 localhost app-18:       org.json.JSONObject.get(JSONObject.java:422)
+Oct 19 10:00:18 localhost app-18:       org.json.JSONObject.getJSONArray(JSONObject.java:498)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.webroot.WebrootQuery.apiDirect(WebrootQuery.java:628)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:670)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 10:00:18 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 10:00:18 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 10:00:18 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 10:00:18 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 10:00:18 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 10:00:18 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 10:00:18 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 10:00:18 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 10:00:18 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 19 10:00:18 localhost app-18: [WebrootQuery] <> WARN  getIpHistory: 
+Oct 19 10:00:18 localhost app-18:       java.lang.NullPointerException
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.webroot.WebrootQuery.getIpHistory(WebrootQuery.java:674)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.threat_prevention.ThreatPreventionApp.getReportInfo(ThreatPreventionApp.java:377)
+Oct 19 10:00:18 localhost app-18:       com.untangle.app.reports.ReportsManagerImpl.getReportInfo(ReportsManagerImpl.java:915)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke0(Native Method)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.NativeMethodAccessorImpl.invoke(NativeMethodAccessorImpl.java:62)
+Oct 19 10:00:18 localhost app-18:       java.base/jdk.internal.reflect.DelegatingMethodAccessorImpl.invoke(DelegatingMethodAccessorImpl.java:43)
+Oct 19 10:00:18 localhost app-18:       java.base/java.lang.reflect.Method.invoke(Method.java:566)
+Oct 19 10:00:18 localhost app-18:       org.jabsorb.JSONRPCBridge.call(JSONRPCBridge.java:665)
+Oct 19 10:00:18 localhost app-18:       org.jabsorb.JSONRPCServlet.service(JSONRPCServlet.java:274)
+Oct 19 10:00:18 localhost app-18:       com.untangle.uvm.admin.jabsorb.UtJsonRpcServlet.service(UtJsonRpcServlet.java:121)
+Oct 19 10:00:18 localhost app-18:       javax.servlet.http.HttpServlet.service(HttpServlet.java:741)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.internalDoFilter(ApplicationFilterChain.java:231)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.ApplicationFilterChain.doFilter(ApplicationFilterChain.java:166)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardWrapperValve.invoke(StandardWrapperValve.java:199)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardContextValve.invoke(StandardContextValve.java:96)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.authenticator.AuthenticatorBase.invoke(AuthenticatorBase.java:543)
+Oct 19 10:00:18 localhost app-18:       com.untangle.uvm.TomcatManagerImpl$AdministrationValve.invoke(TomcatManagerImpl.java:508)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardHostValve.invoke(StandardHostValve.java:139)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.valves.ErrorReportValve.invoke(ErrorReportValve.java:81)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.core.StandardEngineValve.invoke(StandardEngineValve.java:87)
+Oct 19 10:00:18 localhost app-18:       org.apache.catalina.connector.CoyoteAdapter.service(CoyoteAdapter.java:343)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.ajp.AjpProcessor.service(AjpProcessor.java:525)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.AbstractProcessorLight.process(AbstractProcessorLight.java:65)
+Oct 19 10:00:18 localhost app-18:       org.apache.coyote.AbstractProtocol$ConnectionHandler.process(AbstractProtocol.java:818)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.net.NioEndpoint$SocketProcessor.doRun(NioEndpoint.java:1623)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.net.SocketProcessorBase.run(SocketProcessorBase.java:49)
+Oct 19 10:00:18 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor.runWorker(ThreadPoolExecutor.java:1128)
+Oct 19 10:00:18 localhost app-18:       java.base/java.util.concurrent.ThreadPoolExecutor$Worker.run(ThreadPoolExecutor.java:628)
+Oct 19 10:00:18 localhost app-18:       org.apache.tomcat.util.threads.TaskThread$WrappingRunnable.run(TaskThread.java:61)
+Oct 19 10:00:18 localhost app-18:       java.base/java.lang.Thread.run(Thread.java:834)
+Oct 22 09:39:24 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 22 09:39:24 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 22 09:39:24 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 22 09:39:24 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 22 09:39:25 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 22 09:39:25 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 22 09:41:50 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 22 09:41:57 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 22 09:41:57 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 26 09:48:54 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 26 09:48:54 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 26 09:48:54 localhost app-18: [AppBase] <> INFO  Starting   threat-prevention [18] ...
+Oct 26 09:48:54 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 26 09:48:56 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 26 09:48:56 localhost app-18: [AppBase] <> INFO  Started    threat-prevention [18] ...
+Oct 26 15:07:56 localhost app-18: [AppBase] <> INFO  Stopping   threat-prevention [18] ...
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506252]: TCP| 192.168.34.2:52624 -> 72.21.81.200:80
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506071]: TCP| 192.168.34.2:52541 -> 52.177.166.224:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506257]: TCP| 192.168.34.2:52625 -> 172.64.135.32:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506308]: TCP| 192.168.252.51:54882 -> 35.174.159.216:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506247]: TCP| 192.168.34.2:52617 -> 204.79.197.219:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402505513]: TCP| 192.168.252.51:44242 -> 54.91.104.85:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506249]: TCP| 192.168.34.2:52621 -> 204.79.197.219:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506248]: TCP| 192.168.34.2:52620 -> 151.101.2.219:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506250]: TCP| 192.168.34.2:52622 -> 52.167.250.154:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 8 sessions.
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506249]: TCP| 192.168.34.2:52621 -> 204.79.197.219:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506248]: TCP| 192.168.34.2:52620 -> 151.101.2.219:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402506250]: TCP| 192.168.34.2:52622 -> 52.167.250.154:443
+Oct 26 15:08:04 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 2 sessions.
+Oct 26 15:08:04 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 26 15:08:04 localhost app-18: [AppBase] <> INFO  Stopped    threat-prevention [18] ...
+Oct 27 08:51:27 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402510998]: TCP| 192.168.252.51:53316 -> 18.210.135.81:443
+Oct 27 08:51:27 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 27 08:51:27 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105101402510998]: TCP| 192.168.252.51:53316 -> 18.210.135.81:443
+Oct 27 08:51:27 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 27 08:51:37 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 27 08:51:37 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 27 08:52:52 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Oct 27 08:52:52 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Oct 27 09:01:31 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105106844549162]: UDP| 192.168.252.51:123 -> 144.172.118.20:123
+Oct 27 09:01:31 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105106844549163]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Oct 27 11:25:15 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105106844549534]: TCP| 192.168.252.51:37184 -> 54.144.87.130:443
+Oct 27 11:25:15 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Oct 27 11:40:25 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105106844549756]: UDP| 192.168.252.51:123 -> 144.172.118.20:123
+Nov 11 11:18:11 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 11 11:18:11 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 11 11:25:38 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105192586477674]: TCP| 192.168.252.51:37702 -> 54.91.104.85:443
+Nov 11 11:25:38 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Nov 11 14:05:43 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 11 14:05:43 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 11 15:28:23 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105193245311569]: UDP| 192.168.252.51:123 -> 71.19.144.140:123
+Nov 11 15:28:23 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105193245310979]: TCP| 192.168.252.51:37780 -> 54.91.104.85:443
+Nov 11 15:28:23 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 1 sessions.
+Nov 12 09:48:12 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 12 09:48:12 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 12 09:51:41 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 12 09:51:41 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 12 12:28:01 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 12 12:28:01 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 16 11:17:15 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 16 11:17:15 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 17 12:16:32 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105220894362831]: UDP| 192.168.252.51:123 -> 172.86.179.85:123
+Nov 17 12:16:32 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105220894362828]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Nov 17 12:16:32 localhost app-18: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[105220894362829]: UDP| 192.168.252.51:123 -> 65.19.178.219:123
+Nov 17 12:16:39 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 17 12:16:39 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 23 17:24:51 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 23 17:24:51 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 23 17:26:18 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 23 17:26:18 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 23 17:28:30 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 23 17:28:30 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 23 18:10:41 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 23 18:10:41 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 30 17:23:58 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 30 17:23:58 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 30 17:43:10 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 30 17:43:10 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Nov 30 17:47:31 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Nov 30 17:47:31 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Dec  7 10:55:12 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Dec  7 10:55:12 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Dec  9 10:37:52 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Dec  9 10:37:52 localhost app-18: [AppBase] <> INFO  killMatchingSessions()
+Dec  9 16:36:46 localhost app-18: [ThreatPreventionApp] <> INFO  Loading Settings...
+Dec  9 16:36:46 localhost app-18: [AppBase] <> INFO  killMatchingSessions()

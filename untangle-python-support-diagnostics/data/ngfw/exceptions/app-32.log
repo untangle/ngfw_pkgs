@@ -1,0 +1,232 @@
+Apr  6 08:28:52 localhost app-32: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Apr  6 08:28:53 localhost app-32: [AppBase] <> INFO  Starting   web-filter [32] ...
+Apr  6 08:28:54 localhost app-32: [AppBase] <> INFO  Started    web-filter [32] ...
+Apr  6 08:28:56 localhost app-32: [AppBase] <> INFO  Stopping   web-filter [32] ...
+Apr  6 08:29:03 localhost app-32: [AppBase] <> INFO  Stopped    web-filter [32] ...
+Apr  6 08:29:03 localhost app-32: [AppBase] <> INFO  Destroying web-filter [32] ...
+Apr  6 08:29:03 localhost app-32: [AppBase] <> INFO  Destroyed  web-filter [32] ...
+May 14 14:54:02 localhost app-32: [WireGuardVpnApp] <> INFO  Initializing Settings...
+May 14 14:54:02 localhost app-32: [WireGuardVpnApp] <> INFO  Creating the default settings...
+May 14 14:54:03 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 14:54:03 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:54:03 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' is not a WireGuard interface
+May 14 14:54:03 localhost app-32: [WireGuardVpnManager] <> ERROR Failed calling WireGuard start script (return code: 1)
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 14 14:54:04 localhost app-32: [AppBase] <> INFO  Starting   wireguard-vpn [32] ...
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: wg-quick: `wg0' already exists
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> ERROR Failed calling WireGuard start script (return code: 1)
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:54:04 localhost app-32: [AppBase] <> INFO  Started    wireguard-vpn [32] ...
+May 14 14:57:27 localhost app-32: [AppBase] <> INFO  Stopping   wireguard-vpn [32] ...
+May 14 14:57:27 localhost app-32: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+May 14 14:57:27 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 14:57:27 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:57:27 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 14:57:27 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:57:27 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:57:27 localhost app-32: [AppBase] <> INFO  Stopped    wireguard-vpn [32] ...
+May 14 14:57:38 localhost app-32: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 14 14:57:38 localhost app-32: [AppBase] <> INFO  Starting   wireguard-vpn [32] ...
+May 14 14:57:38 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:57:39 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:57:39 localhost app-32: [AppBase] <> INFO  Started    wireguard-vpn [32] ...
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 14:59:22 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:00:02 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:34 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:35 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:56 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 15:02:56 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:02:56 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:02:57 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 15:08:42 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:19:58 localhost app-32: [AppBase] <> INFO  Stopping   wireguard-vpn [32] ...
+May 14 16:19:58 localhost app-32: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+May 14 16:19:58 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 16:19:58 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 16:19:58 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 16:19:58 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:19:58 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:19:58 localhost app-32: [AppBase] <> INFO  Stopped    wireguard-vpn [32] ...
+May 14 16:20:09 localhost app-32: [AppBase] <> INFO  No valid license for: wireguard-vpn
+May 14 16:20:09 localhost app-32: [AppBase] <> INFO  Requesting trial for: wireguard-vpn
+May 14 16:20:09 localhost app-32: [WireGuardVpnApp] <> INFO  Loading Settings...
+May 14 16:20:09 localhost app-32: [AppBase] <> INFO  Starting   wireguard-vpn [32] ...
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  Starting WireGuard interface and tunnels
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link add wg0 type wireguard
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] wg setconf wg0 /dev/fd/63
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 address add 172.21.236.1 dev wg0
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link set mtu 1500 up dev wg0
+May 14 16:20:09 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip -4 route add 172.21.236.3/32 dev wg0
+May 14 16:20:10 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:20:10 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:20:10 localhost app-32: [AppBase] <> INFO  Started    wireguard-vpn [32] ...
+May 14 16:22:34 localhost app-32: [AppBase] <> INFO  Stopping   wireguard-vpn [32] ...
+May 14 16:22:34 localhost app-32: [WireGuardVpnMonitor] <> INFO  WireGuardVpn monitor was interrupted
+May 14 16:22:34 localhost app-32: [WireGuardVpnManager] <> INFO  Stopping WireGuard interface and tunnels
+May 14 16:22:34 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: 
+May 14 16:22:34 localhost app-32: [WireGuardVpnManager] <> INFO  /usr/bin/wg-quick: [#] ip link delete dev wg0
+May 14 16:22:34 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:22:34 localhost app-32: [WireGuardVpnManager] <> INFO  /etc/untangle/iptables-rules.d/720-wireguard-vpn: 
+May 14 16:22:34 localhost app-32: [AppBase] <> INFO  Stopped    wireguard-vpn [32] ...
+May 14 16:22:34 localhost app-32: [AppBase] <> INFO  Destroying wireguard-vpn [32] ...
+May 14 16:22:34 localhost app-32: [AppBase] <> INFO  Destroyed  wireguard-vpn [32] ...
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  4 15:32:48 localhost app-32: [IpsecVpnApp] <> INFO  Loaded settings from: /root/development/github/ngfw_src/dist/usr/share/untangle/settings/ipsec-vpn/settings_32.js
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  4 15:32:49 localhost app-32: [AppBase] <> INFO  Starting   ipsec-vpn [32] ...
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  4 15:32:49 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  4 15:32:50 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  4 15:32:50 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  4 15:32:50 localhost app-32: [AppBase] <> INFO  Started    ipsec-vpn [32] ...
+Jun  9 14:33:34 localhost app-32: [AppBase] <> INFO  Stopping   ipsec-vpn [32] ...
+Jun  9 14:33:36 localhost app-32: [AppBase] <> INFO  Stopped    ipsec-vpn [32] ...
+Jun  9 14:33:43 localhost app-32: [IpsecVpnApp] <> INFO  Loaded settings from: /root/development/github/ngfw_src/dist/usr/share/untangle/settings/ipsec-vpn/settings_32.js
+Jun  9 14:33:44 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT1_Example-1
+Jun  9 14:33:44 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT2_Example-2
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  9 14:33:45 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  9 14:33:45 localhost app-32: [AppBase] <> INFO  Starting   ipsec-vpn [32] ...
+Jun  9 14:33:46 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT1_Example-1
+Jun  9 14:33:46 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT2_Example-2
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  9 14:33:47 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  9 14:33:47 localhost app-32: [AppBase] <> INFO  Started    ipsec-vpn [32] ...
+Jun  9 14:34:18 localhost app-32: [AppBase] <> INFO  Stopping   ipsec-vpn [32] ...
+Jun  9 14:34:18 localhost app-32: [AppBase] <> INFO  Stopped    ipsec-vpn [32] ...
+Jun  9 14:34:22 localhost app-32: [IpsecVpnApp] <> INFO  Loaded settings from: /root/development/github/ngfw_src/dist/usr/share/untangle/settings/ipsec-vpn/settings_32.js
+Jun  9 14:34:22 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT1_Example-1
+Jun  9 14:34:22 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT2_Example-2
+Jun  9 14:34:22 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  9 14:34:22 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  9 14:34:23 localhost app-32: [AppBase] <> INFO  Starting   ipsec-vpn [32] ...
+Jun  9 14:34:23 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT1_Example-1
+Jun  9 14:34:23 localhost app-32: [IpsecVpnManager] <> INFO  disconnecting tunnel: UT2_Example-2
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 0
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/710-ipsec: 
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 1
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/711-xauth: 
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 0
+Jun  9 14:34:23 localhost app-32: [IpsecVpnApp] <> INFO  /root/development/github/ngfw_src/dist/etc/untangle/iptables-rules.d/712-gre: 
+Jun  9 14:34:23 localhost app-32: [AppBase] <> INFO  Started    ipsec-vpn [32] ...
+Jun  9 14:35:49 localhost app-32: [AppBase] <> INFO  Stopping   ipsec-vpn [32] ...
+Jun  9 14:35:49 localhost app-32: [AppBase] <> INFO  Stopped    ipsec-vpn [32] ...
+Jun  9 14:35:49 localhost app-32: [AppBase] <> INFO  Destroying ipsec-vpn [32] ...
+Jun  9 14:35:49 localhost app-32: [AppBase] <> INFO  Destroyed  ipsec-vpn [32] ...
+Sep 21 09:54:27 localhost app-32: [IntrusionPreventionApp] <> INFO  Loading settings from /root/development/github/ngfw_src/dist/usr/share/untangle/settings/intrusion-prevention/settings_32.js
+Sep 21 09:54:27 localhost app-32: [IntrusionPreventionApp] <> WARN  No settings found - Initializing new settings.
+Sep 21 09:54:38 localhost app-32: [AppBase] <> INFO  Starting   intrusion-prevention [32] ...
+Sep 21 09:54:43 localhost app-32: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 21 09:54:43 localhost app-32: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Mon 21 Sep 2020 09:54:43 AM EDT] suricata is running. Inserting rules.
+Sep 21 09:54:43 localhost app-32: [AppBase] <> INFO  Started    intrusion-prevention [32] ...
+Sep 21 10:05:37 localhost app-32: [AppBase] <> INFO  Stopping   intrusion-prevention [32] ...
+Sep 21 10:05:38 localhost app-32: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: 
+Sep 21 10:05:38 localhost app-32: [IntrusionPreventionApp] <> INFO  /etc/untangle/iptables-rules.d/740-suricata: [Mon 21 Sep 2020 10:05:38 AM EDT] Suricata is not running - not inserting rules for suricata
+Sep 21 10:05:38 localhost app-32: [AppBase] <> INFO  Stopped    intrusion-prevention [32] ...
+Sep 21 10:05:41 localhost app-32: [AppBase] <> INFO  Destroying intrusion-prevention [32] ...
+Sep 21 10:05:41 localhost app-32: [AppBase] <> INFO  Destroyed  intrusion-prevention [32] ...

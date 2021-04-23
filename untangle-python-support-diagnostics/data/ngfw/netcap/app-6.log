@@ -1,0 +1,937 @@
+Nov 25 06:16:23 localhost app-6: [HttpParserEventHandler] <TCP105218280872991> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.174:35294 -> 173.237.115.64:80]
+Nov 25 06:54:59 localhost app-6: [HttpParserEventHandler] <TCP105218280879389> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:37064 -> 35.190.244.215:80]
+Nov 25 07:19:09 localhost app-6: [RequestLine] <TCP105218280887167> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 07:19:09 localhost app-6: [RequestLine] <TCP105218280887172> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 07:20:00 localhost app-6: [RequestLine] <TCP105218280888064> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 07:20:00 localhost app-6: [RequestLine] <TCP105218280888074> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 08:10:01 localhost app-6: [RequestLine] <TCP105218280910105> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 09:20:03 localhost app-6: [RequestLine] <TCP105218280937771> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 09:20:03 localhost app-6: [RequestLine] <TCP105218280937776> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 09:43:07 localhost app-6: [HttpParserEventHandler] <TCP105218280952007> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1151
+Nov 25 09:44:02 localhost app-6: [HttpParserEventHandler] <TCP105218280952504> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 639
+Nov 25 09:44:02 localhost app-6: [HttpParserEventHandler] <TCP105218280952502> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5651
+Nov 25 09:44:03 localhost app-6: [HttpParserEventHandler] <TCP105218280952543> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2228
+Nov 25 09:44:03 localhost app-6: [HttpParserEventHandler] <TCP105218280952542> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3847
+Nov 25 09:44:03 localhost app-6: [HttpParserEventHandler] <TCP105218280952552> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1382
+Nov 25 09:44:04 localhost app-6: [HttpParserEventHandler] <TCP105218280952574> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 238
+Nov 25 09:44:04 localhost app-6: [HttpParserEventHandler] <TCP105218280952577> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 9138
+Nov 25 09:44:05 localhost app-6: [HttpParserEventHandler] <TCP105218280952584> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 646
+Nov 25 09:44:05 localhost app-6: [HttpParserEventHandler] <TCP105218280952576> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 358
+Nov 25 09:44:05 localhost app-6: [HttpParserEventHandler] <TCP105218280952597> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 767
+Nov 25 09:44:05 localhost app-6: [HttpParserEventHandler] <TCP105218280952596> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5172
+Nov 25 09:44:05 localhost app-6: [HttpParserEventHandler] <TCP105218280952604> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4175
+Nov 25 09:44:06 localhost app-6: [HttpParserEventHandler] <TCP105218280952642> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 7545
+Nov 25 09:44:06 localhost app-6: [HttpParserEventHandler] <TCP105218280952641> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2407
+Nov 25 09:44:06 localhost app-6: [HttpParserEventHandler] <TCP105218280952644> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4536
+Nov 25 09:44:07 localhost app-6: [HttpParserEventHandler] <TCP105218280952652> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 90
+Nov 25 09:44:07 localhost app-6: [HttpParserEventHandler] <TCP105218280952651> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1351
+Nov 25 10:27:35 localhost app-6: [HttpParserEventHandler] <TCP105218280974644> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57821 -> 68.67.160.25:80]
+Nov 25 10:28:49 localhost app-6: [HttpParserEventHandler] <TCP105218280975994> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58222 -> 68.67.160.25:80]
+Nov 25 10:32:01 localhost app-6: [HttpParserEventHandler] <TCP105218280977847> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58502 -> 68.67.160.25:80]
+Nov 25 10:32:33 localhost app-6: [HttpParserEventHandler] <TCP105218280978280> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58645 -> 68.67.160.25:80]
+Nov 25 11:26:20 localhost app-6: [HttpParserEventHandler] <TCP105218281010368> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53580 -> 68.67.179.166:80]
+Nov 25 11:28:57 localhost app-6: [HttpParserEventHandler] <TCP105218281011981> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54119 -> 68.67.161.210:80]
+Nov 25 12:11:38 localhost app-6: [HttpParserEventHandler] <TCP105218281037306> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63222 -> 68.67.160.75:80]
+Nov 25 12:12:45 localhost app-6: [HttpParserEventHandler] <TCP105218281038434> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63538 -> 68.67.160.75:80]
+Nov 25 12:48:38 localhost app-6: [HttpParserEventHandler] <TCP105218281059292> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:58963 -> 68.67.179.166:80]
+Nov 25 14:11:20 localhost app-6: [HttpParserEventHandler] <TCP105218281102215> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:60325 -> 68.67.160.24:80]
+Nov 25 14:34:19 localhost app-6: [RequestLine] <TCP105218281116334> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 14:34:19 localhost app-6: [RequestLine] <TCP105218281116337> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 25 15:40:27 localhost app-6: [HttpParserEventHandler] <TCP105218281151671> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54229 -> 68.67.160.74:80]
+Nov 25 15:41:17 localhost app-6: [HttpParserEventHandler] <TCP105218281152444> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54463 -> 68.67.160.74:80]
+Nov 26 07:16:02 localhost app-6: [HttpParserEventHandler] <TCP105218281170708> WARN  endSession in CHUNK_LENGTH_STATE
+Nov 26 07:20:37 localhost app-6: [RequestLine] <TCP105218281304649> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 26 07:20:37 localhost app-6: [RequestLine] <TCP105218281304653> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 26 07:55:17 localhost app-6: [HttpParserEventHandler] <TCP105218281319235> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57872 -> 68.67.161.182:80]
+Nov 26 07:58:39 localhost app-6: [HttpParserEventHandler] <TCP105218281321707> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58629 -> 68.67.161.182:80]
+Nov 26 08:01:32 localhost app-6: [HttpParserEventHandler] <TCP105218281324038> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62066 -> 68.67.161.207:80]
+Nov 26 08:05:34 localhost app-6: [HttpParserEventHandler] <TCP105218281326047> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62385 -> 68.67.161.182:80]
+Nov 26 08:09:44 localhost app-6: [HttpParserEventHandler] <TCP105218281328045> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62647 -> 68.67.161.182:80]
+Nov 26 08:11:13 localhost app-6: [HttpParserEventHandler] <TCP105218281329305> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 8187
+Nov 26 08:11:13 localhost app-6: [HttpParserEventHandler] <TCP105218281328233> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3897
+Nov 26 08:11:15 localhost app-6: [HttpParserEventHandler] <TCP105218281329397> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2981
+Nov 26 08:13:06 localhost app-6: [HttpParserEventHandler] <TCP105218281330323> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62990 -> 68.67.161.182:80]
+Nov 26 08:13:39 localhost app-6: [HttpParserEventHandler] <TCP105218281330674> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63108 -> 68.67.161.182:80]
+Nov 26 08:15:02 localhost app-6: [HttpParserEventHandler] <TCP105218281331363> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63280 -> 68.67.161.182:80]
+Nov 26 08:19:23 localhost app-6: [HttpParserEventHandler] <TCP105218281333280> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63654 -> 68.67.161.182:80]
+Nov 26 08:21:17 localhost app-6: [HttpParserEventHandler] <TCP105218281334429> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63856 -> 68.67.161.182:80]
+Nov 26 08:22:05 localhost app-6: [HttpParserEventHandler] <TCP105218281334898> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64007 -> 68.67.161.182:80]
+Nov 26 08:23:14 localhost app-6: [RequestLine] <TCP105218281335547> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 26 08:23:14 localhost app-6: [RequestLine] <TCP105218281335552> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 26 08:24:44 localhost app-6: [HttpParserEventHandler] <TCP105218281336262> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64202 -> 68.67.161.182:80]
+Nov 26 08:25:58 localhost app-6: [HttpParserEventHandler] <TCP105218281337145> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55647 -> 68.67.161.182:80]
+Nov 26 08:25:59 localhost app-6: [HttpParserEventHandler] <TCP105218281337170> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55664 -> 104.123.192.237:80]
+Nov 26 08:26:49 localhost app-6: [HttpParserEventHandler] <TCP105218281337914> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55838 -> 68.67.161.182:80]
+Nov 26 08:28:11 localhost app-6: [HttpParserEventHandler] <TCP105218281338617> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56023 -> 68.67.161.182:80]
+Nov 26 09:34:16 localhost app-6: [HttpParserEventHandler] <TCP105218281366778> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.182:33996 -> 75.126.41.226:80]
+Nov 26 11:13:03 localhost app-6: [HttpParserEventHandler] <TCP105218281411424> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3109
+Nov 26 11:36:39 localhost app-6: [HttpParserEventHandler] <TCP105218281422964> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62188 -> 68.67.161.207:80]
+Nov 26 11:38:12 localhost app-6: [HttpParserEventHandler] <TCP105218281424016> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62506 -> 68.67.161.207:80]
+Nov 26 11:39:49 localhost app-6: [HttpParserEventHandler] <TCP105218281425004> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62661 -> 68.67.161.182:80]
+Nov 26 11:42:39 localhost app-6: [HttpParserEventHandler] <TCP105218281426295> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62856 -> 68.67.161.182:80]
+Nov 26 12:20:56 localhost app-6: [HttpParserEventHandler] <TCP105218281445587> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 12897
+Nov 26 17:44:33 localhost app-6: [HttpParserEventHandler] <TCP105218281580208> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 892
+Nov 27 06:55:02 localhost app-6: [HttpParserEventHandler] <TCP105218281681304> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:41888 -> 35.190.245.57:80]
+Nov 27 07:45:20 localhost app-6: [RequestLine] <TCP105218281697530> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 07:45:20 localhost app-6: [RequestLine] <TCP105218281697533> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 08:55:42 localhost app-6: [HttpParserEventHandler] <TCP105218281724826> WARN  endSession in CHUNK_LENGTH_STATE
+Nov 27 10:52:07 localhost app-6: [HttpParserEventHandler] <TCP105218281773052> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59069 -> 68.67.161.208:80]
+Nov 27 11:07:18 localhost app-6: [RequestLine] <TCP105218281779540> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 11:07:19 localhost app-6: [RequestLine] <TCP105218281779544> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 11:20:17 localhost app-6: [HttpParserEventHandler] <TCP105218281784802> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62573 -> 104.244.39.20:80]
+Nov 27 11:20:28 localhost app-6: [HttpParserEventHandler] <TCP105218281784799> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62571 -> 104.244.39.20:80]
+Nov 27 11:20:41 localhost app-6: [HttpParserEventHandler] <TCP105218281784801> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62572 -> 104.244.39.20:80]
+Nov 27 11:20:41 localhost app-6: [HttpParserEventHandler] <TCP105218281784913> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62566 -> 104.244.39.20:80]
+Nov 27 11:20:45 localhost app-6: [HttpParserEventHandler] <TCP105218281784910> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62565 -> 104.244.39.20:80]
+Nov 27 11:21:21 localhost app-6: [HttpParserEventHandler] <TCP105218281785633> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62735 -> 104.244.39.20:80]
+Nov 27 11:21:42 localhost app-6: [HttpParserEventHandler] <TCP105218281785628> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62734 -> 104.244.39.20:80]
+Nov 27 11:21:47 localhost app-6: [HttpParserEventHandler] <TCP105218281785732> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62743 -> 104.244.39.20:80]
+Nov 27 11:22:34 localhost app-6: [HttpParserEventHandler] <TCP105218281785925> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62768 -> 104.244.39.20:80]
+Nov 27 11:22:46 localhost app-6: [HttpParserEventHandler] <TCP105218281785924> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62767 -> 104.244.39.20:80]
+Nov 27 11:23:10 localhost app-6: [HttpParserEventHandler] <TCP105218281786196> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.143:62806 -> 104.244.39.20:80]
+Nov 27 11:29:49 localhost app-6: [HttpParserEventHandler] <TCP105218281789938> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61151 -> 68.67.178.10:80]
+Nov 27 11:54:23 localhost app-6: [HttpParserEventHandler] <TCP105218281798457> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61905 -> 68.67.178.15:80]
+Nov 27 11:55:23 localhost app-6: [HttpParserEventHandler] <TCP105218281799119> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62205 -> 68.67.178.10:80]
+Nov 27 11:57:02 localhost app-6: [HttpParserEventHandler] <TCP105218281800021> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62500 -> 68.67.178.10:80]
+Nov 27 12:04:03 localhost app-6: [HttpParserEventHandler] <TCP105218281803624> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:41202 -> 35.190.244.64:80]
+Nov 27 12:09:56 localhost app-6: [HttpParserEventHandler] <TCP105218281807259> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63561 -> 68.67.160.74:80]
+Nov 27 12:35:05 localhost app-6: [HttpParserEventHandler] <TCP105218281818114> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:44140 -> 35.190.244.142:80]
+Nov 27 12:48:48 localhost app-6: [HttpParserEventHandler] <TCP105218281822829> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52020 -> 68.67.179.121:80]
+Nov 27 12:49:52 localhost app-6: [HttpParserEventHandler] <TCP105218281823928> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52550 -> 68.67.179.121:80]
+Nov 27 12:57:42 localhost app-6: [HttpParserEventHandler] <TCP105218281826749> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52857 -> 68.67.179.121:80]
+Nov 27 12:58:49 localhost app-6: [HttpParserEventHandler] <TCP105218281827551> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53111 -> 68.67.179.121:80]
+Nov 27 13:01:07 localhost app-6: [HttpParserEventHandler] <TCP105218281828509> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53358 -> 68.67.179.121:80]
+Nov 27 13:01:18 localhost app-6: [HttpParserEventHandler] <TCP105218281828706> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:49776 -> 35.190.244.84:80]
+Nov 27 13:20:10 localhost app-6: [HttpParserEventHandler] <TCP105218281835697> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60520 -> 68.67.160.75:80]
+Nov 27 13:29:20 localhost app-6: [HttpParserEventHandler] <TCP105218281838991> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60794 -> 68.67.161.210:80]
+Nov 27 13:30:22 localhost app-6: [HttpParserEventHandler] <TCP105218281839473> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60995 -> 68.67.161.210:80]
+Nov 27 13:31:15 localhost app-6: [HttpParserEventHandler] <TCP105218281840085> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61265 -> 68.67.161.210:80]
+Nov 27 13:32:59 localhost app-6: [HttpParserEventHandler] <TCP105218281840839> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61436 -> 68.67.161.210:80]
+Nov 27 13:33:38 localhost app-6: [HttpParserEventHandler] <TCP105218281841165> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61551 -> 68.67.161.208:80]
+Nov 27 13:34:00 localhost app-6: [HttpParserEventHandler] <TCP105218281841510> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61645 -> 68.67.161.183:80]
+Nov 27 13:34:00 localhost app-6: [HttpParserEventHandler] <TCP105218281841511> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61646 -> 68.67.161.183:80]
+Nov 27 14:16:47 localhost app-6: [HttpParserEventHandler] <TCP105218281856723> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62545 -> 68.67.161.208:80]
+Nov 27 14:18:47 localhost app-6: [HttpParserEventHandler] <TCP105218281858009> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62865 -> 68.67.161.208:80]
+Nov 27 14:19:52 localhost app-6: [HttpParserEventHandler] <TCP105218281858685> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61299 -> 68.67.161.208:80]
+Nov 27 14:24:11 localhost app-6: [HttpParserEventHandler] <TCP105218281861568> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63715 -> 68.67.179.122:80]
+Nov 27 14:24:27 localhost app-6: [HttpParserEventHandler] <TCP105218281861793> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63822 -> 68.67.179.89:80]
+Nov 27 14:24:27 localhost app-6: [HttpParserEventHandler] <TCP105218281861794> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63823 -> 68.67.179.89:80]
+Nov 27 14:33:36 localhost app-6: [HttpParserEventHandler] <TCP105218281866013> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:61209 -> 68.67.179.90:80]
+Nov 27 16:16:39 localhost app-6: [HttpParserEventHandler] <TCP105218281911490> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50479 -> 68.67.160.134:80]
+Nov 27 16:18:38 localhost app-6: [HttpParserEventHandler] <TCP105218281912290> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50633 -> 68.67.179.113:80]
+Nov 27 16:19:24 localhost app-6: [HttpParserEventHandler] <TCP105218281912811> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53824 -> 68.67.179.113:80]
+Nov 27 16:24:16 localhost app-6: [HttpParserEventHandler] <TCP105218281914962> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.117:36026 -> 203.119.215.254:80]
+Nov 27 16:33:51 localhost app-6: [RequestLine] <TCP105218281918245> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 16:33:51 localhost app-6: [RequestLine] <TCP105218281918249> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 27 16:40:47 localhost app-6: [HttpParserEventHandler] <TCP105218281920460> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54578 -> 68.67.160.24:80]
+Nov 27 16:41:43 localhost app-6: [HttpParserEventHandler] <TCP105218281921029> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54804 -> 68.67.160.24:80]
+Nov 27 16:43:34 localhost app-6: [HttpParserEventHandler] <TCP105218281922396> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55039 -> 68.67.160.24:80]
+Nov 27 16:45:04 localhost app-6: [HttpParserEventHandler] <TCP105218281923096> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55212 -> 68.67.160.24:80]
+Nov 27 16:45:20 localhost app-6: [HttpParserEventHandler] <TCP105218281923383> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55363 -> 68.67.160.24:80]
+Nov 27 16:46:03 localhost app-6: [HttpParserEventHandler] <TCP105218281923649> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55473 -> 68.67.161.208:80]
+Nov 27 16:47:04 localhost app-6: [HttpParserEventHandler] <TCP105218281924175> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55682 -> 68.67.161.208:80]
+Nov 27 16:48:39 localhost app-6: [HttpParserEventHandler] <TCP105218281925356> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55842 -> 68.67.161.208:80]
+Nov 27 16:49:18 localhost app-6: [HttpParserEventHandler] <TCP105218281925940> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55974 -> 68.67.161.208:80]
+Nov 27 16:50:55 localhost app-6: [HttpParserEventHandler] <TCP105218281927878> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59141 -> 68.67.161.208:80]
+Nov 30 07:18:03 localhost app-6: [RequestLine] <TCP105218282276715> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 07:18:03 localhost app-6: [RequestLine] <TCP105218282276718> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 07:22:15 localhost app-6: [RequestLine] <TCP105218282279679> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 07:22:15 localhost app-6: [RequestLine] <TCP105218282279682> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 07:24:54 localhost app-6: [RequestLine] <TCP105218282280794> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 07:24:54 localhost app-6: [RequestLine] <TCP105218282280797> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 15:21:33 localhost app-6: [RequestLine] <TCP105218282492870> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 15:21:33 localhost app-6: [RequestLine] <TCP105218282492873> WARN  ignoring bad uri: 216.115.218.197:443
+Nov 30 21:40:52 localhost app-6: [HttpParserEventHandler] <TCP105218282578598> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 593400
+Dec  1 06:30:56 localhost app-6: [RequestLine] <TCP105218282644553> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:30:56 localhost app-6: [RequestLine] <TCP105218282644562> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:31:04 localhost app-6: [RequestLine] <TCP105218282644615> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:31:04 localhost app-6: [RequestLine] <TCP105218282644618> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:31:40 localhost app-6: [RequestLine] <TCP105218282644864> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:31:40 localhost app-6: [RequestLine] <TCP105218282644868> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:32:30 localhost app-6: [RequestLine] <TCP105218282645504> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:32:30 localhost app-6: [RequestLine] <TCP105218282645507> WARN  ignoring bad uri: 173.199.40.127:443
+Dec  1 06:32:43 localhost app-6: [RequestLine] <TCP105218282645625> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:43 localhost app-6: [RequestLine] <TCP105218282645627> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645661> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645662> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645668> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645665> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645637> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645641> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645711> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:44 localhost app-6: [RequestLine] <TCP105218282645714> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:45 localhost app-6: [RequestLine] <TCP105218282645589> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:45 localhost app-6: [RequestLine] <TCP105218282645592> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:45 localhost app-6: [RequestLine] <TCP105218282645598> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:45 localhost app-6: [RequestLine] <TCP105218282645596> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:46 localhost app-6: [RequestLine] <TCP105218282645735> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:46 localhost app-6: [RequestLine] <TCP105218282645738> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:46 localhost app-6: [RequestLine] <TCP105218282645607> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:32:46 localhost app-6: [RequestLine] <TCP105218282645614> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 06:34:03 localhost app-6: [HttpParserEventHandler] <TCP105218282646479> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.198:62695 -> 35.190.245.83:80]
+Dec  1 06:54:07 localhost app-6: [HttpParserEventHandler] <TCP105218282651728> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:46702 -> 35.190.245.150:80]
+Dec  1 07:16:43 localhost app-6: [RequestLine] <TCP105218282665919> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 07:16:43 localhost app-6: [RequestLine] <TCP105218282665922> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 09:38:53 localhost app-6: [HttpParserEventHandler] <TCP105218282733665> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2584
+Dec  1 09:43:04 localhost app-6: [HttpParserEventHandler] <TCP105218282738191> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2820
+Dec  1 09:43:05 localhost app-6: [HttpParserEventHandler] <TCP105218282738224> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2149
+Dec  1 09:43:09 localhost app-6: [HttpParserEventHandler] <TCP105218282738231> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 720
+Dec  1 09:43:35 localhost app-6: [HttpParserEventHandler] <TCP105218282738308> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1468
+Dec  1 09:47:57 localhost app-6: [HttpParserEventHandler] <TCP105218282741647> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2224
+Dec  1 09:48:04 localhost app-6: [HttpParserEventHandler] <TCP105218282741734> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2662
+Dec  1 09:48:04 localhost app-6: [HttpParserEventHandler] <TCP105218282741756> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1438
+Dec  1 18:09:12 localhost app-6: [RequestLine] <TCP105218282929969> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:25 localhost app-6: [RequestLine] <TCP105218282930052> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:25 localhost app-6: [RequestLine] <TCP105218282930062> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:29 localhost app-6: [RequestLine] <TCP105218282930080> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:29 localhost app-6: [RequestLine] <TCP105218282930083> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:31 localhost app-6: [RequestLine] <TCP105218282930093> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:53 localhost app-6: [RequestLine] <TCP105218282930228> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:53 localhost app-6: [RequestLine] <TCP105218282930231> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:53 localhost app-6: [RequestLine] <TCP105218282930235> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:54 localhost app-6: [RequestLine] <TCP105218282930238> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 18:09:57 localhost app-6: [HttpParserEventHandler] <TCP105218282930267> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.198:62558 -> 35.190.244.208:80]
+Dec  1 20:09:09 localhost app-6: [HttpParserEventHandler] <TCP105218282948209> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.198:54833 -> 35.190.245.175:80]
+Dec  1 20:09:47 localhost app-6: [RequestLine] <TCP105218282948492> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:47 localhost app-6: [RequestLine] <TCP105218282948495> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:54 localhost app-6: [RequestLine] <TCP105218282948571> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:54 localhost app-6: [RequestLine] <TCP105218282948574> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:55 localhost app-6: [RequestLine] <TCP105218282948583> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:55 localhost app-6: [RequestLine] <TCP105218282948586> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:56 localhost app-6: [RequestLine] <TCP105218282948597> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:56 localhost app-6: [RequestLine] <TCP105218282948600> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:57 localhost app-6: [RequestLine] <TCP105218282948605> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:57 localhost app-6: [RequestLine] <TCP105218282948608> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:59 localhost app-6: [RequestLine] <TCP105218282948612> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:59 localhost app-6: [RequestLine] <TCP105218282948614> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:59 localhost app-6: [RequestLine] <TCP105218282948620> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:09:59 localhost app-6: [RequestLine] <TCP105218282948623> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:00 localhost app-6: [RequestLine] <TCP105218282948634> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:00 localhost app-6: [RequestLine] <TCP105218282948637> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:01 localhost app-6: [RequestLine] <TCP105218282948640> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:01 localhost app-6: [RequestLine] <TCP105218282948643> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:03 localhost app-6: [RequestLine] <TCP105218282948654> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:03 localhost app-6: [RequestLine] <TCP105218282948657> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:05 localhost app-6: [RequestLine] <TCP105218282948662> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  1 20:10:05 localhost app-6: [RequestLine] <TCP105218282948665> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  2 06:31:39 localhost app-6: [HttpParserEventHandler] <TCP105218283024255> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.162:55001 -> 35.190.245.203:80]
+Dec  2 07:09:42 localhost app-6: [RequestLine] <TCP105218283033440> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  2 07:09:42 localhost app-6: [RequestLine] <TCP105218283033447> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  2 07:13:16 localhost app-6: [RequestLine] <TCP105218283035025> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  2 07:13:16 localhost app-6: [RequestLine] <TCP105218283035028> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  2 07:58:34 localhost app-6: [HttpParserEventHandler] <TCP105218283055354> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1546
+Dec  2 08:14:45 localhost app-6: [HttpParserEventHandler] <TCP105218283063186> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:57086 -> 40.76.211.32:80]
+Dec  2 08:15:30 localhost app-6: [HttpParserEventHandler] <TCP105218283064032> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3031
+Dec  2 08:15:30 localhost app-6: [HttpParserEventHandler] <TCP105218283064036> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2079
+Dec  2 08:15:31 localhost app-6: [HttpParserEventHandler] <TCP105218283064068> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1401
+Dec  2 11:39:13 localhost app-6: [RequestLine] <TCP105218283149794> WARN  ignoring bad uri: 216.115.208.230:443
+Dec  2 11:39:13 localhost app-6: [RequestLine] <TCP105218283149795> WARN  ignoring bad uri: 216.115.208.230:443
+Dec  2 13:27:00 localhost app-6: [HttpParserEventHandler] <TCP105218283197962> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61404 -> 68.67.179.89:80]
+Dec  2 13:27:41 localhost app-6: [HttpParserEventHandler] <TCP105218283199074> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57150 -> 68.67.160.137:80]
+Dec  2 13:29:38 localhost app-6: [HttpParserEventHandler] <TCP105218283200027> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57401 -> 68.67.178.22:80]
+Dec  2 13:29:47 localhost app-6: [HttpParserEventHandler] <TCP105218283200428> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57594 -> 151.101.125.108:80]
+Dec  2 13:30:50 localhost app-6: [HttpParserEventHandler] <TCP105218283201145> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57781 -> 68.67.178.22:80]
+Dec  2 13:32:18 localhost app-6: [HttpParserEventHandler] <TCP105218283202332> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58091 -> 68.67.178.22:80]
+Dec  2 13:33:22 localhost app-6: [HttpParserEventHandler] <TCP105218283202939> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58310 -> 68.67.178.22:80]
+Dec  2 13:37:04 localhost app-6: [HttpParserEventHandler] <TCP105218283204342> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58522 -> 68.67.160.24:80]
+Dec  2 16:55:13 localhost app-6: [HttpParserEventHandler] <TCP105218283279691> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53567 -> 68.67.178.15:80]
+Dec  2 16:56:00 localhost app-6: [HttpParserEventHandler] <TCP105218283280316> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53895 -> 68.67.181.211:80]
+Dec  3 06:20:22 localhost app-6: [HttpParserEventHandler] <TCP105218283396062> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.174:55964 -> 173.237.115.64:80]
+Dec  3 07:17:53 localhost app-6: [RequestLine] <TCP105218283408251> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:17:53 localhost app-6: [RequestLine] <TCP105218283408254> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:38:55 localhost app-6: [HttpParserEventHandler] <TCP105218283423279> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:58380 -> 40.76.211.32:80]
+Dec  3 07:39:02 localhost app-6: [RequestLine] <TCP105218283423320> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:39:02 localhost app-6: [RequestLine] <TCP105218283423323> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:40:47 localhost app-6: [RequestLine] <TCP105218283424633> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:40:47 localhost app-6: [RequestLine] <TCP105218283424639> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:40:49 localhost app-6: [RequestLine] <TCP105218283424677> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 07:40:49 localhost app-6: [RequestLine] <TCP105218283424680> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 08:25:51 localhost app-6: [HttpParserEventHandler] <TCP105218283452691> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55206 -> 68.67.181.202:80]
+Dec  3 08:28:07 localhost app-6: [HttpParserEventHandler] <TCP105218283454073> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55601 -> 68.67.179.173:80]
+Dec  3 08:31:11 localhost app-6: [HttpParserEventHandler] <TCP105218283456040> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55952 -> 68.67.179.173:80]
+Dec  3 09:31:53 localhost app-6: [HttpParserEventHandler] <TCP105218283483889> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:59427 -> 68.67.160.76:80]
+Dec  3 09:48:08 localhost app-6: [HttpParserEventHandler] <TCP105218283491893> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3677
+Dec  3 09:48:08 localhost app-6: [HttpParserEventHandler] <TCP105218283491896> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 633
+Dec  3 09:48:12 localhost app-6: [HttpParserEventHandler] <TCP105218283491976> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1439
+Dec  3 09:48:12 localhost app-6: [HttpParserEventHandler] <TCP105218283491975> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 572
+Dec  3 10:56:49 localhost app-6: [RequestLine] <TCP105218283518083> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 10:56:49 localhost app-6: [RequestLine] <TCP105218283518088> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:04:00 localhost app-6: [RequestLine] <TCP105218283520575> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:04:00 localhost app-6: [RequestLine] <TCP105218283520580> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:37:32 localhost app-6: [HttpParserEventHandler] <TCP105218283533856> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50333 -> 68.67.160.117:80]
+Dec  3 11:39:19 localhost app-6: [RequestLine] <TCP105218283535312> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:39:20 localhost app-6: [RequestLine] <TCP105218283535319> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:40:45 localhost app-6: [HttpParserEventHandler] <TCP105218283536002> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51147 -> 68.67.161.205:80]
+Dec  3 11:41:21 localhost app-6: [HttpParserEventHandler] <TCP105218283536461> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54786 -> 68.67.160.117:80]
+Dec  3 11:43:10 localhost app-6: [HttpParserEventHandler] <TCP105218283537352> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54919 -> 68.67.160.117:80]
+Dec  3 11:43:39 localhost app-6: [RequestLine] <TCP105218283537570> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:43:40 localhost app-6: [RequestLine] <TCP105218283537607> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:43:43 localhost app-6: [HttpParserEventHandler] <TCP105218283537707> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55060 -> 68.67.160.117:80]
+Dec  3 11:46:02 localhost app-6: [HttpParserEventHandler] <TCP105218283538843> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55189 -> 68.67.160.117:80]
+Dec  3 11:46:39 localhost app-6: [HttpParserEventHandler] <TCP105218283539293> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55303 -> 68.67.160.117:80]
+Dec  3 11:54:58 localhost app-6: [RequestLine] <TCP105218283543407> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 11:55:01 localhost app-6: [HttpParserEventHandler] <TCP105218283543439> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.121:51359 -> 216.115.218.197:80]
+Dec  3 12:12:34 localhost app-6: [HttpParserEventHandler] <TCP105218283555365> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53220 -> 68.67.160.186:80]
+Dec  3 12:24:46 localhost app-6: [HttpParserEventHandler] <TCP105218283561441> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64716 -> 68.67.179.155:80]
+Dec  3 12:41:03 localhost app-6: [RequestLine] <TCP105218283569715> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:03 localhost app-6: [RequestLine] <TCP105218283569718> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:05 localhost app-6: [HttpParserEventHandler] <TCP105218283569654> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.121:54608 -> 216.115.218.197:80]
+Dec  3 12:41:21 localhost app-6: [RequestLine] <TCP105218283569842> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:22 localhost app-6: [RequestLine] <TCP105218283569845> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:22 localhost app-6: [RequestLine] <TCP105218283569850> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:22 localhost app-6: [RequestLine] <TCP105218283569853> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:23 localhost app-6: [RequestLine] <TCP105218283569858> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:23 localhost app-6: [RequestLine] <TCP105218283569861> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:25 localhost app-6: [RequestLine] <TCP105218283569871> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:25 localhost app-6: [RequestLine] <TCP105218283569874> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:25 localhost app-6: [RequestLine] <TCP105218283569877> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:25 localhost app-6: [RequestLine] <TCP105218283569880> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569896> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569899> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569903> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569906> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569912> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:27 localhost app-6: [RequestLine] <TCP105218283569909> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:29 localhost app-6: [RequestLine] <TCP105218283569928> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:29 localhost app-6: [RequestLine] <TCP105218283569931> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:29 localhost app-6: [RequestLine] <TCP105218283569941> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:30 localhost app-6: [RequestLine] <TCP105218283569944> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:31 localhost app-6: [HttpParserEventHandler] <TCP105218283569956> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.121:54663 -> 216.115.218.197:80]
+Dec  3 12:41:32 localhost app-6: [HttpParserEventHandler] <TCP105218283569958> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.198:54925 -> 216.115.218.197:80]
+Dec  3 12:41:33 localhost app-6: [RequestLine] <TCP105218283569976> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:33 localhost app-6: [RequestLine] <TCP105218283569979> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:33 localhost app-6: [RequestLine] <TCP105218283569985> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:33 localhost app-6: [RequestLine] <TCP105218283569990> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:41:35 localhost app-6: [HttpParserEventHandler] <TCP105218283570010> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.131:56309 -> 216.115.218.197:80]
+Dec  3 12:41:35 localhost app-6: [HttpParserEventHandler] <TCP105218283570023> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.123:50764 -> 216.115.218.197:80]
+Dec  3 12:41:37 localhost app-6: [HttpParserEventHandler] <TCP105218283570040> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.189:61587 -> 216.115.218.197:80]
+Dec  3 12:41:37 localhost app-6: [HttpParserEventHandler] <TCP105218283570045> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.143:55286 -> 216.115.218.197:80]
+Dec  3 12:41:39 localhost app-6: [HttpParserEventHandler] <TCP105218283570055> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.167:60683 -> 216.115.218.197:80]
+Dec  3 12:41:40 localhost app-6: [HttpParserEventHandler] <TCP105218283570069> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:60254 -> 216.115.218.197:80]
+Dec  3 12:42:07 localhost app-6: [RequestLine] <TCP105218283570267> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:07 localhost app-6: [RequestLine] <TCP105218283570272> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:13 localhost app-6: [RequestLine] <TCP105218283570323> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:13 localhost app-6: [RequestLine] <TCP105218283570326> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:13 localhost app-6: [RequestLine] <TCP105218283570331> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:14 localhost app-6: [RequestLine] <TCP105218283570334> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:20 localhost app-6: [HttpParserEventHandler] <TCP105218283570393> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56856 -> 216.115.218.197:80]
+Dec  3 12:42:21 localhost app-6: [HttpParserEventHandler] <TCP105218283570394> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.189:61597 -> 216.115.218.197:80]
+Dec  3 12:42:23 localhost app-6: [HttpParserEventHandler] <TCP105218283570410> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:60261 -> 216.115.218.197:80]
+Dec  3 12:42:27 localhost app-6: [HttpParserEventHandler] <TCP105218283570478> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56857 -> 216.115.218.197:80]
+Dec  3 12:42:32 localhost app-6: [RequestLine] <TCP105218283570510> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:32 localhost app-6: [RequestLine] <TCP105218283570513> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:32 localhost app-6: [RequestLine] <TCP105218283570517> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:32 localhost app-6: [RequestLine] <TCP105218283570520> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:35 localhost app-6: [RequestLine] <TCP105218283570551> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:35 localhost app-6: [RequestLine] <TCP105218283570554> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:38 localhost app-6: [RequestLine] <TCP105218283570562> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:38 localhost app-6: [RequestLine] <TCP105218283570566> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:47 localhost app-6: [RequestLine] <TCP105218283570624> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:47 localhost app-6: [RequestLine] <TCP105218283570627> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:53 localhost app-6: [RequestLine] <TCP105218283570649> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:42:53 localhost app-6: [RequestLine] <TCP105218283570652> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:43:15 localhost app-6: [RequestLine] <TCP105218283570771> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:43:16 localhost app-6: [RequestLine] <TCP105218283570774> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 12:43:17 localhost app-6: [HttpParserEventHandler] <TCP105218283570777> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56861 -> 216.115.218.197:80]
+Dec  3 12:44:07 localhost app-6: [HttpParserEventHandler] <TCP105218283571366> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56865 -> 216.115.218.197:80]
+Dec  3 12:44:57 localhost app-6: [HttpParserEventHandler] <TCP105218283571817> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56868 -> 216.115.218.197:80]
+Dec  3 12:45:27 localhost app-6: [HttpParserEventHandler] <TCP105218283572071> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:56879 -> 216.115.218.197:80]
+Dec  3 12:58:35 localhost app-6: [HttpParserEventHandler] <TCP105218283579288> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:49632 -> 68.67.161.210:80]
+Dec  3 13:01:31 localhost app-6: [HttpParserEventHandler] <TCP105218283580677> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53347 -> 68.67.161.210:80]
+Dec  3 13:02:04 localhost app-6: [HttpParserEventHandler] <TCP105218283581059> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53482 -> 68.67.161.210:80]
+Dec  3 13:04:07 localhost app-6: [HttpParserEventHandler] <TCP105218283582220> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53628 -> 68.67.161.210:80]
+Dec  3 13:05:40 localhost app-6: [HttpParserEventHandler] <TCP105218283583199> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53888 -> 68.67.161.210:80]
+Dec  3 13:23:12 localhost app-6: [HttpParserEventHandler] <TCP105218283589616> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54214 -> 68.67.161.210:80]
+Dec  3 13:34:31 localhost app-6: [HttpParserEventHandler] <TCP105218283593700> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54723 -> 68.67.179.133:80]
+Dec  3 13:35:24 localhost app-6: [HttpParserEventHandler] <TCP105218283594272> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54933 -> 68.67.179.133:80]
+Dec  3 13:39:54 localhost app-6: [HttpParserEventHandler] <TCP105218283596485> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55264 -> 68.67.179.133:80]
+Dec  3 13:41:16 localhost app-6: [HttpParserEventHandler] <TCP105218283597505> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55474 -> 68.67.179.133:80]
+Dec  3 13:41:51 localhost app-6: [HttpParserEventHandler] <TCP105218283597823> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55535 -> 68.67.179.133:80]
+Dec  3 13:43:00 localhost app-6: [HttpParserEventHandler] <TCP105218283598731> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58674 -> 68.67.178.10:80]
+Dec  3 13:44:01 localhost app-6: [HttpParserEventHandler] <TCP105218283599707> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58793 -> 68.67.178.10:80]
+Dec  3 13:44:52 localhost app-6: [HttpParserEventHandler] <TCP105218283600138> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58884 -> 68.67.178.10:80]
+Dec  3 13:45:59 localhost app-6: [HttpParserEventHandler] <TCP105218283600697> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59022 -> 68.67.178.10:80]
+Dec  3 13:47:44 localhost app-6: [HttpParserEventHandler] <TCP105218283602155> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52057 -> 68.67.178.10:80]
+Dec  3 13:48:37 localhost app-6: [HttpParserEventHandler] <TCP105218283602657> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52159 -> 68.67.178.10:80]
+Dec  3 14:06:34 localhost app-6: [HttpParserEventHandler] <TCP105218283610715> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54310 -> 68.67.181.211:80]
+Dec  3 14:12:40 localhost app-6: [HttpParserEventHandler] <TCP105218283614669> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:51494 -> 68.67.160.76:80]
+Dec  3 15:53:54 localhost app-6: [RequestLine] <TCP105218283658448> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 15:53:54 localhost app-6: [RequestLine] <TCP105218283658451> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  3 19:17:34 localhost app-6: [HttpParserEventHandler] <TCP105218283713137> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:37629 -> 203.119.201.255:80]
+Dec  3 19:18:18 localhost app-6: [HttpParserEventHandler] <TCP105218283713393> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:36775 -> 198.11.132.93:80]
+Dec  3 19:18:26 localhost app-6: [HttpParserEventHandler] <TCP105218283713572> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:37696 -> 203.119.201.255:80]
+Dec  3 19:28:02 localhost app-6: [HttpParserEventHandler] <TCP105218283715806> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:37781 -> 203.119.201.255:80]
+Dec  3 19:40:23 localhost app-6: [HttpParserEventHandler] <TCP105218283717727> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:37806 -> 203.119.201.255:80]
+Dec  3 20:16:49 localhost app-6: [HttpParserEventHandler] <TCP105218283725374> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:41363 -> 203.119.216.122:80]
+Dec  3 20:32:00 localhost app-6: [HttpParserEventHandler] <TCP105218283729902> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2874842242
+Dec  3 20:39:27 localhost app-6: [HttpParserEventHandler] <TCP105218283731604> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2724756229
+Dec  3 21:18:08 localhost app-6: [HttpParserEventHandler] <TCP105218283739279> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:41406 -> 203.119.216.122:80]
+Dec  3 23:14:25 localhost app-6: [HttpParserEventHandler] <TCP105218283761313> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:41430 -> 203.119.216.122:80]
+Dec  3 23:43:55 localhost app-6: [HttpParserEventHandler] <TCP105218283772407> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:41467 -> 203.119.216.122:80]
+Dec  3 23:45:23 localhost app-6: [HttpParserEventHandler] <TCP105218283772642> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:37053 -> 198.11.132.93:80]
+Dec  3 23:49:49 localhost app-6: [HttpParserEventHandler] <TCP105218283773285> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.116:54797 -> 203.119.215.254:80]
+Dec  4 07:13:19 localhost app-6: [RequestLine] <TCP105218283837168> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 07:13:19 localhost app-6: [RequestLine] <TCP105218283837171> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 07:21:37 localhost app-6: [RequestLine] <TCP105218283839803> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 07:21:37 localhost app-6: [RequestLine] <TCP105218283839806> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 08:41:18 localhost app-6: [HttpParserEventHandler] <TCP105218283870611> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.120:59642 -> 173.237.115.10:80]
+Dec  4 08:42:31 localhost app-6: [HttpParserEventHandler] <TCP105218283871086> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:49804 -> 216.115.218.197:80]
+Dec  4 08:42:32 localhost app-6: [HttpParserEventHandler] <TCP105218283871090> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:49807 -> 216.115.218.197:80]
+Dec  4 10:01:56 localhost app-6: [RequestLine] <TCP105218283901576> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 10:01:56 localhost app-6: [RequestLine] <TCP105218283901581> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 11:27:12 localhost app-6: [RequestLine] <TCP105218283932900> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 11:27:13 localhost app-6: [RequestLine] <TCP105218283932904> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 11:30:08 localhost app-6: [HttpParserEventHandler] <TCP105218283934845> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62035 -> 68.67.178.15:80]
+Dec  4 11:30:26 localhost app-6: [HttpParserEventHandler] <TCP105218283935358> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62311 -> 68.67.178.15:80]
+Dec  4 11:37:39 localhost app-6: [HttpParserEventHandler] <TCP105218283938523> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62717 -> 68.67.160.137:80]
+Dec  4 11:40:30 localhost app-6: [HttpParserEventHandler] <TCP105218283939805> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62955 -> 68.67.160.137:80]
+Dec  4 11:41:51 localhost app-6: [HttpParserEventHandler] <TCP105218283940729> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63145 -> 68.67.160.137:80]
+Dec  4 11:42:14 localhost app-6: [HttpParserEventHandler] <TCP105218283941209> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63306 -> 68.67.160.114:80]
+Dec  4 11:42:40 localhost app-6: [HttpParserEventHandler] <TCP105218283941499> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63437 -> 68.67.160.114:80]
+Dec  4 11:44:17 localhost app-6: [HttpParserEventHandler] <TCP105218283942523> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63564 -> 68.67.160.114:80]
+Dec  4 11:45:03 localhost app-6: [HttpParserEventHandler] <TCP105218283943040> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63730 -> 68.67.160.114:80]
+Dec  4 11:46:26 localhost app-6: [HttpParserEventHandler] <TCP105218283943761> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63903 -> 68.67.160.114:80]
+Dec  4 11:48:55 localhost app-6: [HttpParserEventHandler] <TCP105218283945310> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64102 -> 68.67.179.121:80]
+Dec  4 12:03:21 localhost app-6: [RequestLine] <TCP105218283952928> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 12:03:21 localhost app-6: [RequestLine] <TCP105218283952931> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 13:03:24 localhost app-6: [HttpParserEventHandler] <TCP105218283985345> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51320 -> 68.67.160.134:80]
+Dec  4 13:05:06 localhost app-6: [HttpParserEventHandler] <TCP105218283985900> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51466 -> 68.67.160.134:80]
+Dec  4 13:10:59 localhost app-6: [HttpParserEventHandler] <TCP105218283989049> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64030 -> 68.67.161.183:80]
+Dec  4 13:11:50 localhost app-6: [HttpParserEventHandler] <TCP105218283989545> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64196 -> 68.67.161.183:80]
+Dec  4 13:24:25 localhost app-6: [RequestLine] <TCP105218283998202> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 13:24:25 localhost app-6: [RequestLine] <TCP105218283998206> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 13:25:55 localhost app-6: [HttpParserEventHandler] <TCP105218283999169> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50552 -> 68.67.161.207:80]
+Dec  4 13:53:13 localhost app-6: [HttpParserEventHandler] <TCP105218284011321> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60783 -> 68.67.179.133:80]
+Dec  4 14:11:39 localhost app-6: [HttpParserEventHandler] <TCP105218284019802> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61343 -> 68.67.179.166:80]
+Dec  4 14:15:15 localhost app-6: [RequestLine] <TCP105218284022294> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:15:15 localhost app-6: [RequestLine] <TCP105218284022297> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:15:17 localhost app-6: [RequestLine] <TCP105218284022321> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:15:17 localhost app-6: [RequestLine] <TCP105218284022324> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:15:58 localhost app-6: [RequestLine] <TCP105218284023051> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:15:59 localhost app-6: [RequestLine] <TCP105218284023054> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:16:00 localhost app-6: [RequestLine] <TCP105218284023063> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:16:00 localhost app-6: [RequestLine] <TCP105218284023066> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 14:45:56 localhost app-6: [HttpParserEventHandler] <TCP105218284040357> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58058 -> 68.67.161.205:80]
+Dec  4 15:27:40 localhost app-6: [HttpParserEventHandler] <TCP105218284061632> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56551 -> 68.67.181.207:80]
+Dec  4 15:28:29 localhost app-6: [HttpParserEventHandler] <TCP105218284062171> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56678 -> 68.67.181.207:80]
+Dec  4 15:29:16 localhost app-6: [HttpParserEventHandler] <TCP105218284062697> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56754 -> 68.67.181.207:80]
+Dec  4 15:30:02 localhost app-6: [HttpParserEventHandler] <TCP105218284063047> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56788 -> 68.67.181.207:80]
+Dec  4 15:30:49 localhost app-6: [HttpParserEventHandler] <TCP105218284063445> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56838 -> 68.67.181.207:80]
+Dec  4 15:31:28 localhost app-6: [HttpParserEventHandler] <TCP105218284063770> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56908 -> 68.67.181.207:80]
+Dec  4 15:33:34 localhost app-6: [HttpParserEventHandler] <TCP105218284064563> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57034 -> 68.67.181.207:80]
+Dec  4 15:34:41 localhost app-6: [HttpParserEventHandler] <TCP105218284065132> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62767 -> 68.67.181.207:80]
+Dec  4 15:57:25 localhost app-6: [RequestLine] <TCP105218284075114> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 15:57:25 localhost app-6: [RequestLine] <TCP105218284075117> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  4 16:15:58 localhost app-6: [HttpParserEventHandler] <TCP105218284084349> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:49154 -> 68.67.161.205:80]
+Dec  4 16:21:13 localhost app-6: [HttpParserEventHandler] <TCP105218284086764> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:49332 -> 68.67.161.205:80]
+Dec  4 17:07:12 localhost app-6: [HttpParserEventHandler] <TCP105218284100520> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.143:49164 -> 216.115.218.197:80]
+Dec  4 17:07:13 localhost app-6: [HttpParserEventHandler] <TCP105218284100603> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.143:49165 -> 216.115.218.197:80]
+Dec  7 07:49:38 localhost app-6: [RequestLine] <TCP105218284504005> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  7 07:49:38 localhost app-6: [RequestLine] <TCP105218284504013> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  7 09:23:31 localhost app-6: [RequestLine] <TCP105218284560071> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  7 09:23:31 localhost app-6: [RequestLine] <TCP105218284560074> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  7 10:16:27 localhost app-6: [HttpParserEventHandler] <TCP105218284592811> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 7024
+Dec  7 10:16:27 localhost app-6: [HttpParserEventHandler] <TCP105218284592814> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 6915
+Dec  7 11:46:50 localhost app-6: [HttpParserEventHandler] <TCP105218284631898> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53617 -> 68.67.179.113:80]
+Dec  7 11:48:36 localhost app-6: [HttpParserEventHandler] <TCP105218284633246> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54034 -> 68.67.179.113:80]
+Dec  7 11:50:01 localhost app-6: [HttpParserEventHandler] <TCP105218284633979> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54218 -> 68.67.179.113:80]
+Dec  7 11:50:39 localhost app-6: [HttpParserEventHandler] <TCP105218284634408> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54404 -> 68.67.179.113:80]
+Dec  7 12:56:05 localhost app-6: [HttpParserEventHandler] <TCP105218284669991> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56137 -> 68.67.179.123:80]
+Dec  7 12:59:15 localhost app-6: [HttpParserEventHandler] <TCP105218284671918> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56749 -> 68.67.179.123:80]
+Dec  7 13:05:47 localhost app-6: [HttpParserEventHandler] <TCP105218284675437> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57681 -> 68.67.179.87:80]
+Dec  7 13:09:49 localhost app-6: [HttpParserEventHandler] <TCP105218284677104> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57978 -> 68.67.179.87:80]
+Dec  7 14:06:19 localhost app-6: [HttpParserEventHandler] <TCP105218284702547> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:57236 -> 68.67.160.186:80]
+Dec  7 14:07:15 localhost app-6: [HttpParserEventHandler] <TCP105218284703455> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:57671 -> 68.67.160.117:80]
+Dec  7 14:49:18 localhost app-6: [HttpParserEventHandler] <TCP105218284725778> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4601
+Dec  7 15:07:53 localhost app-6: [HttpParserEventHandler] <TCP105218284738262> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59999 -> 68.67.160.137:80]
+Dec  7 15:44:41 localhost app-6: [HttpParserEventHandler] <TCP105218284758119> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60803 -> 68.67.181.211:80]
+Dec  7 15:49:27 localhost app-6: [HttpParserEventHandler] <TCP105218284761005> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57662 -> 68.67.161.206:80]
+Dec  7 15:53:14 localhost app-6: [HttpParserEventHandler] <TCP105218284763471> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58173 -> 68.67.161.206:80]
+Dec  7 15:55:12 localhost app-6: [HttpParserEventHandler] <TCP105218284764887> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.133:56300 -> 31.222.75.198:80]
+Dec  7 16:00:32 localhost app-6: [HttpParserEventHandler] <TCP105218284767082> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58509 -> 68.67.160.186:80]
+Dec  7 16:01:30 localhost app-6: [HttpParserEventHandler] <TCP105218284767736> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58691 -> 68.67.160.186:80]
+Dec  7 16:32:26 localhost app-6: [RequestLine] <TCP105218284779770> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  7 16:32:27 localhost app-6: [RequestLine] <TCP105218284779774> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 07:21:24 localhost app-6: [RequestLine] <TCP105218284923784> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 07:21:24 localhost app-6: [RequestLine] <TCP105218284923787> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 07:26:21 localhost app-6: [RequestLine] <TCP105218284925602> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 07:26:21 localhost app-6: [RequestLine] <TCP105218284925605> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 07:54:03 localhost app-6: [HttpParserEventHandler] <TCP105218284937705> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:60769 -> 68.67.160.74:80]
+Dec  8 07:56:25 localhost app-6: [HttpParserEventHandler] <TCP105218284940180> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:61017 -> 68.67.160.74:80]
+Dec  8 07:57:52 localhost app-6: [HttpParserEventHandler] <TCP105218284941863> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:61277 -> 68.67.160.74:80]
+Dec  8 08:22:17 localhost app-6: [HttpParserEventHandler] <TCP105218284954063> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4487
+Dec  8 08:23:05 localhost app-6: [HttpParserEventHandler] <TCP105218284954085> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5143
+Dec  8 08:23:06 localhost app-6: [HttpParserEventHandler] <TCP105218284954588> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2274
+Dec  8 08:25:43 localhost app-6: [HttpParserEventHandler] <TCP105218284955926> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2049
+Dec  8 08:25:46 localhost app-6: [HttpParserEventHandler] <TCP105218284955998> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1222
+Dec  8 08:27:56 localhost app-6: [HttpParserEventHandler] <TCP105218284957558> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 8799
+Dec  8 08:27:57 localhost app-6: [HttpParserEventHandler] <TCP105218284957606> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5952
+Dec  8 08:27:57 localhost app-6: [HttpParserEventHandler] <TCP105218284957579> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 976
+Dec  8 08:27:57 localhost app-6: [HttpParserEventHandler] <TCP105218284957625> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5893
+Dec  8 08:27:58 localhost app-6: [HttpParserEventHandler] <TCP105218284957631> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 6402
+Dec  8 08:27:58 localhost app-6: [HttpParserEventHandler] <TCP105218284957630> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2502
+Dec  8 08:27:59 localhost app-6: [HttpParserEventHandler] <TCP105218284957659> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 7570
+Dec  8 08:28:08 localhost app-6: [HttpParserEventHandler] <TCP105218284957877> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2929
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957905> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2553
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957925> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2772
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957934> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2855
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957933> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5892
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957932> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4987
+Dec  8 08:28:09 localhost app-6: [HttpParserEventHandler] <TCP105218284957940> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 544
+Dec  8 08:28:10 localhost app-6: [HttpParserEventHandler] <TCP105218284957951> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3333
+Dec  8 08:28:10 localhost app-6: [HttpParserEventHandler] <TCP105218284957885> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1324
+Dec  8 08:28:10 localhost app-6: [HttpParserEventHandler] <TCP105218284957963> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4145
+Dec  8 08:29:52 localhost app-6: [HttpParserEventHandler] <TCP105218284959039> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1346
+Dec  8 08:29:52 localhost app-6: [HttpParserEventHandler] <TCP105218284959041> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4827
+Dec  8 08:29:52 localhost app-6: [HttpParserEventHandler] <TCP105218284959057> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 6272
+Dec  8 09:42:14 localhost app-6: [HttpParserEventHandler] <TCP105218284996165> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49188 -> 34.76.17.250:80]
+Dec  8 09:42:29 localhost app-6: [RequestLine] <TCP105218284996514> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 09:42:29 localhost app-6: [RequestLine] <TCP105218284996519> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  8 09:45:17 localhost app-6: [HttpParserEventHandler] <TCP105218284998280> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49190 -> 34.76.17.250:80]
+Dec  8 09:45:20 localhost app-6: [HttpParserEventHandler] <TCP105218284998318> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49191 -> 104.199.39.43:80]
+Dec  8 09:48:11 localhost app-6: [HttpParserEventHandler] <TCP105218285000150> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49192 -> 34.76.17.250:80]
+Dec  8 09:48:13 localhost app-6: [HttpParserEventHandler] <TCP105218285000166> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49193 -> 34.77.187.227:80]
+Dec  8 09:59:55 localhost app-6: [HttpParserEventHandler] <TCP105218285005984> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49194 -> 34.76.17.250:80]
+Dec  8 09:59:57 localhost app-6: [HttpParserEventHandler] <TCP105218285006007> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49195 -> 34.77.187.227:80]
+Dec  8 10:50:31 localhost app-6: [HttpParserEventHandler] <TCP105218285029862> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59959 -> 68.67.178.10:80]
+Dec  8 10:50:57 localhost app-6: [HttpParserEventHandler] <TCP105218285030459> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60209 -> 68.67.160.25:80]
+Dec  8 10:50:57 localhost app-6: [HttpParserEventHandler] <TCP105218285030458> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60208 -> 68.67.160.25:80]
+Dec  8 10:51:37 localhost app-6: [HttpParserEventHandler] <TCP105218285030848> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60352 -> 68.67.160.25:80]
+Dec  8 10:52:27 localhost app-6: [HttpParserEventHandler] <TCP105218285031457> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60483 -> 68.67.160.25:80]
+Dec  8 12:54:13 localhost app-6: [HttpParserEventHandler] <TCP105218285097936> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64784 -> 68.67.179.122:80]
+Dec  8 13:08:22 localhost app-6: [HttpParserEventHandler] <TCP105218285102524> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49243 -> 34.76.17.250:80]
+Dec  8 13:08:23 localhost app-6: [HttpParserEventHandler] <TCP105218285102530> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49244 -> 34.77.187.227:80]
+Dec  8 13:13:33 localhost app-6: [HttpParserEventHandler] <TCP105218285104614> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49245 -> 34.76.17.250:80]
+Dec  8 13:13:35 localhost app-6: [HttpParserEventHandler] <TCP105218285104655> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49246 -> 34.77.187.227:80]
+Dec  8 13:17:34 localhost app-6: [HttpParserEventHandler] <TCP105218285106402> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60648 -> 68.67.179.122:80]
+Dec  8 13:22:12 localhost app-6: [HttpParserEventHandler] <TCP105218285108232> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61067 -> 68.67.179.122:80]
+Dec  8 13:30:38 localhost app-6: [HttpParserEventHandler] <TCP105218285111246> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49248 -> 34.76.17.250:80]
+Dec  8 13:30:40 localhost app-6: [HttpParserEventHandler] <TCP105218285111258> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49249 -> 34.77.187.227:80]
+Dec  8 13:38:11 localhost app-6: [HttpParserEventHandler] <TCP105218285113779> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49250 -> 34.76.17.250:80]
+Dec  8 13:38:13 localhost app-6: [HttpParserEventHandler] <TCP105218285113791> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49251 -> 34.77.187.227:80]
+Dec  8 13:39:40 localhost app-6: [HttpParserEventHandler] <TCP105218285114155> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49252 -> 34.76.17.250:80]
+Dec  8 13:39:41 localhost app-6: [HttpParserEventHandler] <TCP105218285114166> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49253 -> 34.77.187.227:80]
+Dec  8 14:12:16 localhost app-6: [HttpParserEventHandler] <TCP105218285128744> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61919 -> 68.67.161.206:80]
+Dec  8 14:12:41 localhost app-6: [HttpParserEventHandler] <TCP105218285129401> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62264 -> 68.67.161.206:80]
+Dec  8 14:17:46 localhost app-6: [HttpParserEventHandler] <TCP105218285131922> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62486 -> 68.67.161.206:80]
+Dec  8 14:23:17 localhost app-6: [HttpParserEventHandler] <TCP105218285134441> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62737 -> 68.67.161.206:80]
+Dec  8 14:27:00 localhost app-6: [HttpParserEventHandler] <TCP105218285135955> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63046 -> 68.67.161.206:80]
+Dec  8 14:43:55 localhost app-6: [HttpParserEventHandler] <TCP105218285144272> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63361 -> 68.67.179.90:80]
+Dec  8 14:46:06 localhost app-6: [HttpParserEventHandler] <TCP105218285146434> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:55373 -> 68.67.179.90:80]
+Dec  8 15:32:04 localhost app-6: [HttpParserEventHandler] <TCP105218285164291> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:57774 -> 63.34.227.238:80]
+Dec  8 15:41:30 localhost app-6: [HttpParserEventHandler] <TCP105218285168630> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56817 -> 68.67.161.205:80]
+Dec  8 15:43:15 localhost app-6: [HttpParserEventHandler] <TCP105218285169506> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57044 -> 68.67.161.205:80]
+Dec  8 15:44:03 localhost app-6: [HttpParserEventHandler] <TCP105218285170010> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57222 -> 68.67.179.113:80]
+Dec  8 15:44:03 localhost app-6: [HttpParserEventHandler] <TCP105218285170009> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57221 -> 68.67.179.113:80]
+Dec  8 15:46:10 localhost app-6: [HttpParserEventHandler] <TCP105218285170872> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57386 -> 68.67.161.205:80]
+Dec  8 15:48:32 localhost app-6: [HttpParserEventHandler] <TCP105218285171896> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57617 -> 68.67.161.205:80]
+Dec  8 15:52:46 localhost app-6: [HttpParserEventHandler] <TCP105218285173367> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:57827 -> 68.67.161.205:80]
+Dec  8 15:56:21 localhost app-6: [HttpParserEventHandler] <TCP105218285174620> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58023 -> 68.67.161.205:80]
+Dec  8 15:59:36 localhost app-6: [HttpParserEventHandler] <TCP105218285176540> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58237 -> 68.67.161.205:80]
+Dec  8 16:37:26 localhost app-6: [HttpParserEventHandler] <TCP105218285192095> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58991 -> 68.67.161.183:80]
+Dec  8 19:59:04 localhost app-6: [HttpParserEventHandler] <TCP105218285232117> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 64338
+Dec  9 06:29:02 localhost app-6: [HttpParserEventHandler] <TCP105218285321860> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.174:35716 -> 173.237.115.10:80]
+Dec  9 07:12:47 localhost app-6: [RequestLine] <TCP105218285335018> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 07:12:47 localhost app-6: [RequestLine] <TCP105218285335022> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 08:14:56 localhost app-6: [RequestLine] <TCP105218285367685> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 08:14:56 localhost app-6: [RequestLine] <TCP105218285367689> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 08:29:11 localhost app-6: [RequestLine] <TCP105218285377895> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 08:29:11 localhost app-6: [RequestLine] <TCP105218285377902> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 09:20:16 localhost app-6: [HttpParserEventHandler] <TCP105218285402940> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1697
+Dec  9 09:20:16 localhost app-6: [HttpParserEventHandler] <TCP105218285402946> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 464
+Dec  9 09:20:16 localhost app-6: [HttpParserEventHandler] <TCP105218285402948> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2285
+Dec  9 09:20:16 localhost app-6: [HttpParserEventHandler] <TCP105218285402945> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1080
+Dec  9 09:20:16 localhost app-6: [HttpParserEventHandler] <TCP105218285402947> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 899
+Dec  9 09:27:58 localhost app-6: [HttpParserEventHandler] <TCP105218285406487> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2272
+Dec  9 09:27:59 localhost app-6: [HttpParserEventHandler] <TCP105218285406831> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5951
+Dec  9 09:27:59 localhost app-6: [HttpParserEventHandler] <TCP105218285406834> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 8053
+Dec  9 09:27:59 localhost app-6: [HttpParserEventHandler] <TCP105218285406832> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2973
+Dec  9 09:27:59 localhost app-6: [HttpParserEventHandler] <TCP105218285406856> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 7114
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406894> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1185
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406896> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 172
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406906> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1276
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406905> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 6383
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406913> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 9783
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406914> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3385
+Dec  9 09:28:00 localhost app-6: [HttpParserEventHandler] <TCP105218285406915> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 6781
+Dec  9 09:28:01 localhost app-6: [HttpParserEventHandler] <TCP105218285406931> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 896
+Dec  9 09:28:01 localhost app-6: [HttpParserEventHandler] <TCP105218285406929> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 435
+Dec  9 09:28:02 localhost app-6: [HttpParserEventHandler] <TCP105218285406937> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1436
+Dec  9 09:28:22 localhost app-6: [HttpParserEventHandler] <TCP105218285407268> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3491
+Dec  9 09:28:58 localhost app-6: [HttpParserEventHandler] <TCP105218285407698> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 557
+Dec  9 09:28:58 localhost app-6: [HttpParserEventHandler] <TCP105218285407715> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 172
+Dec  9 09:32:53 localhost app-6: [HttpParserEventHandler] <TCP105218285408662> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 5480
+Dec  9 09:33:44 localhost app-6: [HttpParserEventHandler] <TCP105218285410711> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1589
+Dec  9 10:04:47 localhost app-6: [HttpParserEventHandler] <TCP105218285429017> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60447 -> 68.67.179.154:80]
+Dec  9 10:08:11 localhost app-6: [HttpParserEventHandler] <TCP105218285430825> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:60760 -> 68.67.179.121:80]
+Dec  9 11:32:22 localhost app-6: [HttpParserEventHandler] <TCP105218285468098> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49443 -> 34.76.17.250:80]
+Dec  9 11:32:23 localhost app-6: [HttpParserEventHandler] <TCP105218285468111> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.155:49444 -> 34.77.187.227:80]
+Dec  9 12:18:23 localhost app-6: [HttpParserEventHandler] <TCP105218285492811> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:63648 -> 68.67.179.87:80]
+Dec  9 12:23:26 localhost app-6: [HttpParserEventHandler] <TCP105218285496939> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.164:64533 -> 68.67.179.90:80]
+Dec  9 13:05:10 localhost app-6: [HttpParserEventHandler] <TCP105218285523689> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1021
+Dec  9 14:02:35 localhost app-6: [RequestLine] <TCP105218285546479> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 14:02:35 localhost app-6: [RequestLine] <TCP105218285546482> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 14:14:40 localhost app-6: [RequestLine] <TCP105218285551840> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 14:14:40 localhost app-6: [RequestLine] <TCP105218285551850> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 16:00:36 localhost app-6: [RequestLine] <TCP105218285612500> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 16:00:36 localhost app-6: [RequestLine] <TCP105218285612503> WARN  ignoring bad uri: 216.115.218.197:443
+Dec  9 16:17:24 localhost app-6: [HttpParserEventHandler] <TCP105218285619951> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:47918 -> 35.190.245.199:80]
+Dec  9 16:19:16 localhost app-6: [HttpParserEventHandler] <TCP105218285620728> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64373 -> 68.67.178.10:80]
+Dec 10 02:09:51 localhost app-6: [HttpParserEventHandler] <TCP105218285743959> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.197:55095 -> 216.115.218.197:80]
+Dec 10 02:10:03 localhost app-6: [HttpParserEventHandler] <TCP105218285743992> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.131:50100 -> 216.115.218.197:80]
+Dec 10 02:10:32 localhost app-6: [RequestLine] <TCP105218285744067> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:10:32 localhost app-6: [RequestLine] <TCP105218285744071> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:51 localhost app-6: [RequestLine] <TCP105218285747099> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:51 localhost app-6: [RequestLine] <TCP105218285747102> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:52 localhost app-6: [RequestLine] <TCP105218285747105> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:52 localhost app-6: [RequestLine] <TCP105218285747108> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:52 localhost app-6: [HttpParserEventHandler] <TCP105218285747013> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.143:54360 -> 216.115.218.197:80]
+Dec 10 02:24:52 localhost app-6: [RequestLine] <TCP105218285747089> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:52 localhost app-6: [RequestLine] <TCP105218285747086> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:52 localhost app-6: [RequestLine] <TCP105218285747093> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747096> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747114> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747117> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747121> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747124> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:53 localhost app-6: [RequestLine] <TCP105218285747140> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747143> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747149> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747152> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747127> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747130> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747134> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747137> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747071> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747156> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747074> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:54 localhost app-6: [RequestLine] <TCP105218285747159> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:55 localhost app-6: [RequestLine] <TCP105218285747080> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:55 localhost app-6: [RequestLine] <TCP105218285747077> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:57 localhost app-6: [RequestLine] <TCP105218285747162> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 02:24:57 localhost app-6: [RequestLine] <TCP105218285747165> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 03:03:07 localhost app-6: [RequestLine] <TCP105218285750443> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 03:03:35 localhost app-6: [RequestLine] <TCP105218285750517> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 03:04:51 localhost app-6: [RequestLine] <TCP105218285750752> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 03:04:51 localhost app-6: [RequestLine] <TCP105218285750755> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 07:10:13 localhost app-6: [RequestLine] <TCP105218285780237> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 07:10:13 localhost app-6: [RequestLine] <TCP105218285780241> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 08:44:59 localhost app-6: [HttpParserEventHandler] <TCP105218285820304> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 536
+Dec 10 08:45:01 localhost app-6: [HttpParserEventHandler] <TCP105218285820338> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 483
+Dec 10 08:45:01 localhost app-6: [HttpParserEventHandler] <TCP105218285820333> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 1013
+Dec 10 10:54:11 localhost app-6: [RequestLine] <TCP105218285873211> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 10:54:11 localhost app-6: [RequestLine] <TCP105218285873214> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 11:26:46 localhost app-6: [HttpParserEventHandler] <TCP105218285885053> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50853 -> 68.67.160.76:80]
+Dec 10 11:29:35 localhost app-6: [HttpParserEventHandler] <TCP105218285886286> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51220 -> 68.67.160.76:80]
+Dec 10 11:32:38 localhost app-6: [HttpParserEventHandler] <TCP105218285887620> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51447 -> 68.67.160.76:80]
+Dec 10 11:37:48 localhost app-6: [HttpParserEventHandler] <TCP105218285889825> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:49792 -> 68.67.160.76:80]
+Dec 10 11:42:27 localhost app-6: [HttpParserEventHandler] <TCP105218285891673> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50057 -> 68.67.160.76:80]
+Dec 10 11:50:02 localhost app-6: [HttpParserEventHandler] <TCP105218285894423> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:50334 -> 68.67.160.76:80]
+Dec 10 14:50:24 localhost app-6: [RequestLine] <TCP105218285976002> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 15:22:33 localhost app-6: [HttpParserEventHandler] <TCP105218285992461> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.182:37575 -> 63.34.227.238:80]
+Dec 10 16:00:03 localhost app-6: [RequestLine] <TCP105218286009555> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 16:00:03 localhost app-6: [RequestLine] <TCP105218286009559> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 10 20:26:27 localhost app-6: [HttpParserEventHandler] <TCP105218286067033> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2847835408
+Dec 10 20:56:00 localhost app-6: [HttpParserEventHandler] <TCP105218286074343> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2141301232
+Dec 10 21:07:36 localhost app-6: [HttpParserEventHandler] <TCP105218286076263> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 2118069072
+Dec 11 00:35:42 localhost app-6: [HttpParserEventHandler] <TCP105218286109241> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 261928
+Dec 11 00:49:50 localhost app-6: [HttpParserEventHandler] <TCP105218286112267> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 297395
+Dec 11 01:07:13 localhost app-6: [HttpParserEventHandler] <TCP105218286115860> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 598968
+Dec 11 06:25:03 localhost app-6: [HttpParserEventHandler] <TCP105218286150000> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.175:46796 -> 173.237.115.64:80]
+Dec 11 06:57:03 localhost app-6: [HttpParserEventHandler] <TCP105218286155874> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:43862 -> 35.190.245.66:80]
+Dec 11 07:02:53 localhost app-6: [RequestLine] <TCP105218286157735> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 11 07:02:53 localhost app-6: [RequestLine] <TCP105218286157736> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 11 07:51:03 localhost app-6: [RequestLine] <TCP105218286173166> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 07:51:03 localhost app-6: [RequestLine] <TCP105218286173169> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 07:51:32 localhost app-6: [RequestLine] <TCP105218286173334> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 07:51:32 localhost app-6: [RequestLine] <TCP105218286173339> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 07:57:09 localhost app-6: [HttpParserEventHandler] <TCP105218286175886> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.168:62236 -> 68.67.179.133:80]
+Dec 11 07:59:49 localhost app-6: [HttpParserEventHandler] <TCP105218286177478> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.168:62814 -> 68.67.179.133:80]
+Dec 11 08:05:44 localhost app-6: [HttpParserEventHandler] <TCP105218286182333> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.168:58940 -> 68.67.179.133:80]
+Dec 11 08:44:40 localhost app-6: [RequestLine] <TCP105218286195668> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 08:44:40 localhost app-6: [RequestLine] <TCP105218286195671> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 09:11:12 localhost app-6: [HttpParserEventHandler] <TCP105218286206463> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:64385 -> 64.15.49.2:80]
+Dec 11 09:11:12 localhost app-6: [HttpParserEventHandler] <TCP105218286206464> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:64386 -> 64.15.49.2:80]
+Dec 11 09:11:14 localhost app-6: [HttpParserEventHandler] <TCP105218286206472> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:64387 -> 64.15.49.2:80]
+Dec 11 09:21:04 localhost app-6: [HttpParserEventHandler] <TCP105218286210313> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:64514 -> 64.15.49.2:80]
+Dec 11 09:21:04 localhost app-6: [HttpParserEventHandler] <TCP105218286210314> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:64515 -> 64.15.49.2:80]
+Dec 11 09:58:14 localhost app-6: [HttpParserEventHandler] <TCP105218286229248> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:65222 -> 64.15.49.2:80]
+Dec 11 09:58:14 localhost app-6: [HttpParserEventHandler] <TCP105218286229247> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.170:65221 -> 64.15.49.2:80]
+Dec 11 12:04:32 localhost app-6: [HttpParserEventHandler] <TCP105218286285041> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49863 -> 34.76.17.250:80]
+Dec 11 12:04:34 localhost app-6: [HttpParserEventHandler] <TCP105218286285057> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49864 -> 34.77.187.227:80]
+Dec 11 12:09:52 localhost app-6: [HttpParserEventHandler] <TCP105218286288088> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49865 -> 34.76.17.250:80]
+Dec 11 12:09:53 localhost app-6: [HttpParserEventHandler] <TCP105218286288117> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49866 -> 34.77.187.227:80]
+Dec 11 12:50:36 localhost app-6: [HttpParserEventHandler] <TCP105218286308567> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.168:60288 -> 68.67.181.211:80]
+Dec 11 13:15:44 localhost app-6: [HttpParserEventHandler] <TCP105218286321338> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51534 -> 68.67.160.76:80]
+Dec 11 13:17:44 localhost app-6: [HttpParserEventHandler] <TCP105218286322571> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52038 -> 68.67.160.186:80]
+Dec 11 13:18:11 localhost app-6: [HttpParserEventHandler] <TCP105218286322958> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52222 -> 68.67.160.186:80]
+Dec 11 13:18:23 localhost app-6: [HttpParserEventHandler] <TCP105218286323096> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52260 -> 68.67.160.186:80]
+Dec 11 13:19:16 localhost app-6: [HttpParserEventHandler] <TCP105218286323763> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52528 -> 68.67.160.186:80]
+Dec 11 13:20:49 localhost app-6: [HttpParserEventHandler] <TCP105218286324789> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52753 -> 68.67.181.207:80]
+Dec 11 13:21:50 localhost app-6: [HttpParserEventHandler] <TCP105218286325430> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52907 -> 68.67.181.207:80]
+Dec 11 13:23:23 localhost app-6: [HttpParserEventHandler] <TCP105218286326200> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53106 -> 68.67.181.207:80]
+Dec 11 13:25:21 localhost app-6: [HttpParserEventHandler] <TCP105218286327023> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54715 -> 68.67.181.207:80]
+Dec 11 14:52:55 localhost app-6: [HttpParserEventHandler] <TCP105218286372352> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64683 -> 68.67.161.175:80]
+Dec 11 16:34:45 localhost app-6: [HttpParserEventHandler] <TCP105218286412300> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61186 -> 68.67.178.15:80]
+Dec 11 16:35:07 localhost app-6: [HttpParserEventHandler] <TCP105218286412674> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61325 -> 68.67.178.15:80]
+Dec 11 16:35:09 localhost app-6: [HttpParserEventHandler] <TCP105218286412774> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61381 -> 104.123.192.237:80]
+Dec 11 16:36:56 localhost app-6: [HttpParserEventHandler] <TCP105218286413359> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61548 -> 68.67.178.15:80]
+Dec 11 16:39:05 localhost app-6: [HttpParserEventHandler] <TCP105218286413875> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61661 -> 68.67.178.15:80]
+Dec 11 16:40:19 localhost app-6: [HttpParserEventHandler] <TCP105218286414270> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61822 -> 68.67.178.15:80]
+Dec 11 16:41:10 localhost app-6: [HttpParserEventHandler] <TCP105218286414663> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61989 -> 68.67.178.15:80]
+Dec 11 16:44:18 localhost app-6: [HttpParserEventHandler] <TCP105218286415716> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62632 -> 68.67.178.15:80]
+Dec 11 16:55:44 localhost app-6: [HttpParserEventHandler] <TCP105218286418970> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62896 -> 68.67.181.202:80]
+Dec 11 16:56:45 localhost app-6: [HttpParserEventHandler] <TCP105218286419720> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:63260 -> 68.67.181.202:80]
+Dec 11 17:53:12 localhost app-6: [RequestLine] <TCP105218286432458> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 17:53:12 localhost app-6: [RequestLine] <TCP105218286432462> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 23:56:26 localhost app-6: [RequestLine] <TCP105218286502957> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 11 23:56:26 localhost app-6: [RequestLine] <TCP105218286502960> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 06:38:06 localhost app-6: [HttpParserEventHandler] <TCP105218286765083> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.175:55870 -> 173.237.115.64:80]
+Dec 14 07:19:40 localhost app-6: [RequestLine] <TCP105218286783445> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 07:19:40 localhost app-6: [RequestLine] <TCP105218286783448> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 07:39:12 localhost app-6: [RequestLine] <TCP105218286798489> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 07:39:12 localhost app-6: [RequestLine] <TCP105218286798496> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 08:06:58 localhost app-6: [HttpParserEventHandler] <TCP105218286814992> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59399 -> 68.67.160.25:80]
+Dec 14 08:07:18 localhost app-6: [HttpParserEventHandler] <TCP105218286815543> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:59721 -> 68.67.160.25:80]
+Dec 14 08:35:58 localhost app-6: [HttpParserEventHandler] <TCP105218286828661> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:58097 -> 68.67.161.183:80]
+Dec 14 10:16:54 localhost app-6: [HttpParserEventHandler] <TCP105218286877954> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.158:50395 -> 68.67.181.211:80]
+Dec 14 10:59:42 localhost app-6: [HttpParserEventHandler] <TCP105218286897789> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54799 -> 68.67.161.212:80]
+Dec 14 11:01:03 localhost app-6: [HttpParserEventHandler] <TCP105218286898689> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:54972 -> 68.67.161.212:80]
+Dec 14 13:08:40 localhost app-6: [HttpParserEventHandler] <TCP105218286953912> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49651 -> 34.77.187.227:80]
+Dec 14 13:10:19 localhost app-6: [HttpParserEventHandler] <TCP105218286954616> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49654 -> 34.77.187.227:80]
+Dec 14 13:17:19 localhost app-6: [HttpParserEventHandler] <TCP105218286957620> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49656 -> 34.77.187.227:80]
+Dec 14 13:30:51 localhost app-6: [HttpParserEventHandler] <TCP105218286965217> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62343 -> 68.67.179.91:80]
+Dec 14 13:31:43 localhost app-6: [HttpParserEventHandler] <TCP105218286965976> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49659 -> 34.76.17.250:80]
+Dec 14 13:31:45 localhost app-6: [HttpParserEventHandler] <TCP105218286965990> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49661 -> 34.77.187.227:80]
+Dec 14 13:32:44 localhost app-6: [HttpParserEventHandler] <TCP105218286967063> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49664 -> 34.77.187.227:80]
+Dec 14 13:38:04 localhost app-6: [HttpParserEventHandler] <TCP105218286970271> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64250 -> 68.67.161.212:80]
+Dec 14 13:38:47 localhost app-6: [HttpParserEventHandler] <TCP105218286970791> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:64493 -> 68.67.161.212:80]
+Dec 14 13:59:18 localhost app-6: [HttpParserEventHandler] <TCP105218286978528> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:51629 -> 68.67.160.26:80]
+Dec 14 14:00:37 localhost app-6: [HttpParserEventHandler] <TCP105218286979950> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52001 -> 68.67.160.26:80]
+Dec 14 14:02:15 localhost app-6: [HttpParserEventHandler] <TCP105218286981434> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52164 -> 68.67.160.26:80]
+Dec 14 14:02:33 localhost app-6: [HttpParserEventHandler] <TCP105218286981699> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52304 -> 68.67.179.121:80]
+Dec 14 14:13:37 localhost app-6: [HttpParserEventHandler] <TCP105218286987178> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52700 -> 68.67.161.208:80]
+Dec 14 14:17:31 localhost app-6: [HttpParserEventHandler] <TCP105218286988989> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52962 -> 68.67.161.205:80]
+Dec 14 14:18:03 localhost app-6: [HttpParserEventHandler] <TCP105218286989367> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53064 -> 68.67.161.205:80]
+Dec 14 14:18:28 localhost app-6: [HttpParserEventHandler] <TCP105218286989653> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:53160 -> 68.67.161.205:80]
+Dec 14 14:19:26 localhost app-6: [HttpParserEventHandler] <TCP105218286990375> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52161 -> 68.67.161.206:80]
+Dec 14 14:19:26 localhost app-6: [HttpParserEventHandler] <TCP105218286990376> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52160 -> 68.67.161.206:80]
+Dec 14 14:21:56 localhost app-6: [HttpParserEventHandler] <TCP105218286991632> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:52499 -> 68.67.161.182:80]
+Dec 14 15:06:16 localhost app-6: [HttpParserEventHandler] <TCP105218287015154> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49700 -> 34.76.17.250:80]
+Dec 14 15:06:17 localhost app-6: [HttpParserEventHandler] <TCP105218287015164> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49701 -> 34.77.187.227:80]
+Dec 14 15:37:33 localhost app-6: [HttpParserEventHandler] <TCP105218287025787> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.117:54437 -> 203.119.216.122:80]
+Dec 14 15:45:52 localhost app-6: [HttpParserEventHandler] <TCP105218287030235> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:62708 -> 68.67.179.153:80]
+Dec 14 16:38:03 localhost app-6: [HttpParserEventHandler] <TCP105218287052041> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56626 -> 68.67.160.134:80]
+Dec 14 17:08:20 localhost app-6: [HttpParserEventHandler] <TCP105218287060298> INFO  Protocol parse exception (request length exceeded). Releasing session: [6 : 192.168.1.164:51436 -> 8.28.7.87:80]
+Dec 14 23:52:29 localhost app-6: [RequestLine] <TCP105218287142052> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 14 23:52:29 localhost app-6: [RequestLine] <TCP105218287142056> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 00:01:19 localhost app-6: [HttpParserEventHandler] <TCP105218287143007> WARN  endSession in CHUNK_LENGTH_STATE
+Dec 15 06:31:25 localhost app-6: [HttpParserEventHandler] <TCP105218287186300> INFO  Protocol parse exception (data trapped). Releasing session: [6 : 192.168.1.175:59010 -> 173.237.115.64:80]
+Dec 15 07:14:59 localhost app-6: [RequestLine] <TCP105218287198952> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 07:14:59 localhost app-6: [RequestLine] <TCP105218287198954> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 07:16:35 localhost app-6: [RequestLine] <TCP105218287199703> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 07:16:35 localhost app-6: [RequestLine] <TCP105218287199734> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 09:53:22 localhost app-6: [HttpParserEventHandler] <TCP105218287278259> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49926 -> 34.76.17.250:80]
+Dec 15 09:54:35 localhost app-6: [HttpParserEventHandler] <TCP105218287278931> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49927 -> 34.76.17.250:80]
+Dec 15 09:54:36 localhost app-6: [HttpParserEventHandler] <TCP105218287278952> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49929 -> 34.77.187.227:80]
+Dec 15 10:11:41 localhost app-6: [HttpParserEventHandler] <TCP105218287286529> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49930 -> 34.76.17.250:80]
+Dec 15 10:11:42 localhost app-6: [HttpParserEventHandler] <TCP105218287286540> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49931 -> 34.77.187.227:80]
+Dec 15 10:33:37 localhost app-6: [HttpParserEventHandler] <TCP105218287198592> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 458497
+Dec 15 10:39:49 localhost app-6: [HttpParserEventHandler] <TCP105218287298164> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 943
+Dec 15 10:45:41 localhost app-6: [HttpParserEventHandler] <TCP105218287301821> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3474
+Dec 15 10:52:11 localhost app-6: [RequestLine] <TCP105218287305017> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 10:52:11 localhost app-6: [RequestLine] <TCP105218287305022> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 10:52:11 localhost app-6: [RequestLine] <TCP105218287305038> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 10:52:11 localhost app-6: [RequestLine] <TCP105218287305041> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 10:52:13 localhost app-6: [RequestLine] <TCP105218287305056> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 10:52:13 localhost app-6: [RequestLine] <TCP105218287305059> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:08:45 localhost app-6: [RequestLine] <TCP105218287345973> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:08:45 localhost app-6: [RequestLine] <TCP105218287345979> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:08:45 localhost app-6: [RequestLine] <TCP105218287345984> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:08:46 localhost app-6: [RequestLine] <TCP105218287345987> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:14:21 localhost app-6: [RequestLine] <TCP105218287349493> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:14:21 localhost app-6: [RequestLine] <TCP105218287349496> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:22:17 localhost app-6: [RequestLine] <TCP105218287353639> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 12:22:17 localhost app-6: [RequestLine] <TCP105218287353644> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:40:08 localhost app-6: [RequestLine] <TCP105218287414758> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:40:09 localhost app-6: [RequestLine] <TCP105218287414773> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:46:02 localhost app-6: [RequestLine] <TCP105218287418814> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:46:02 localhost app-6: [RequestLine] <TCP105218287418820> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:46:07 localhost app-6: [RequestLine] <TCP105218287418857> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 13:46:07 localhost app-6: [RequestLine] <TCP105218287418862> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 15 22:43:53 localhost app-6: [HttpParserEventHandler] <TCP105218287585297> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 151352
+Dec 15 22:43:53 localhost app-6: [HttpParserEventHandler] <TCP105218287585323> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 3539520
+Dec 16 07:03:23 localhost app-6: [RequestLine] <TCP105218287650338> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:08:01 localhost app-6: [HttpParserEventHandler] <TCP105218287652697> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:40932 -> 35.190.245.69:80]
+Dec 16 07:22:29 localhost app-6: [RequestLine] <TCP105218287657237> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:22:29 localhost app-6: [RequestLine] <TCP105218287657240> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:38:56 localhost app-6: [RequestLine] <TCP105218287662944> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:38:56 localhost app-6: [RequestLine] <TCP105218287662952> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:38:58 localhost app-6: [RequestLine] <TCP105218287662963> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 07:38:58 localhost app-6: [RequestLine] <TCP105218287662969> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 09:41:37 localhost app-6: [HttpParserEventHandler] <TCP105218287739524> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 301
+Dec 16 10:18:13 localhost app-6: [RequestLine] <TCP105218287760017> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 10:18:49 localhost app-6: [RequestLine] <TCP105218287760701> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 16 10:18:49 localhost app-6: [RequestLine] <TCP105218287760702> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 16 10:18:55 localhost app-6: [RequestLine] <TCP105218287760768> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 10:18:55 localhost app-6: [RequestLine] <TCP105218287760771> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 16 10:33:04 localhost app-6: [RequestLine] <TCP105218287770341> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 16 10:33:04 localhost app-6: [RequestLine] <TCP105218287770342> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 16 11:46:53 localhost app-6: [HttpParserEventHandler] <TCP105218287806548> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61401 -> 68.67.161.175:80]
+Dec 16 11:47:46 localhost app-6: [HttpParserEventHandler] <TCP105218287807298> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:61797 -> 68.67.161.175:80]
+Dec 16 11:50:18 localhost app-6: [HttpParserEventHandler] <TCP105218287808657> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56414 -> 68.67.161.175:80]
+Dec 16 11:50:54 localhost app-6: [HttpParserEventHandler] <TCP105218287809024> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.157:56561 -> 68.67.161.175:80]
+Dec 16 16:16:08 localhost app-6: [HttpParserEventHandler] <TCP105218287926356> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.162:63492 -> 35.190.244.27:80]
+Dec 17 06:58:48 localhost app-6: [RequestLine] <TCP105218288066949> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 06:58:48 localhost app-6: [RequestLine] <TCP105218288066953> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 07:00:13 localhost app-6: [RequestLine] <TCP105218288067582> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 17 07:00:13 localhost app-6: [RequestLine] <TCP105218288067581> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 17 07:19:27 localhost app-6: [RequestLine] <TCP105218288074441> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 07:19:27 localhost app-6: [RequestLine] <TCP105218288074444> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 08:13:49 localhost app-6: [HttpParserEventHandler] <TCP105218288098101> INFO  Protocol parse exception (buf limit exceeded). Releasing session: [6 : 192.168.1.168:53005 -> 151.101.125.188:80]
+Dec 17 08:15:17 localhost app-6: [HttpParserEventHandler] <TCP105218288101934> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54011 -> 64.15.49.2:80]
+Dec 17 08:15:17 localhost app-6: [HttpParserEventHandler] <TCP105218288101935> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54012 -> 64.15.49.2:80]
+Dec 17 08:15:17 localhost app-6: [HttpParserEventHandler] <TCP105218288101936> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54013 -> 64.15.49.2:80]
+Dec 17 08:15:21 localhost app-6: [HttpParserEventHandler] <TCP105218288101956> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54015 -> 64.15.49.2:80]
+Dec 17 08:15:21 localhost app-6: [HttpParserEventHandler] <TCP105218288101955> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54014 -> 64.15.49.2:80]
+Dec 17 08:15:21 localhost app-6: [HttpParserEventHandler] <TCP105218288101957> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54016 -> 64.15.49.2:80]
+Dec 17 08:15:21 localhost app-6: [HttpParserEventHandler] <TCP105218288101958> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54017 -> 64.15.49.2:80]
+Dec 17 08:15:21 localhost app-6: [HttpParserEventHandler] <TCP105218288101959> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54018 -> 64.15.49.2:80]
+Dec 17 08:15:42 localhost app-6: [HttpParserEventHandler] <TCP105218288102072> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54034 -> 64.15.49.2:80]
+Dec 17 08:15:42 localhost app-6: [HttpParserEventHandler] <TCP105218288102071> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54033 -> 64.15.49.2:80]
+Dec 17 08:15:42 localhost app-6: [HttpParserEventHandler] <TCP105218288102074> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54036 -> 64.15.49.2:80]
+Dec 17 08:15:42 localhost app-6: [HttpParserEventHandler] <TCP105218288102075> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54037 -> 64.15.49.2:80]
+Dec 17 08:15:44 localhost app-6: [HttpParserEventHandler] <TCP105218288102090> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54039 -> 64.15.49.2:80]
+Dec 17 08:15:44 localhost app-6: [HttpParserEventHandler] <TCP105218288102091> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54040 -> 64.15.49.2:80]
+Dec 17 08:15:44 localhost app-6: [HttpParserEventHandler] <TCP105218288102092> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.142:54041 -> 64.15.49.2:80]
+Dec 17 08:27:12 localhost app-6: [HttpParserEventHandler] <TCP105218288105984> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:50461 -> 34.76.17.250:80]
+Dec 17 08:27:13 localhost app-6: [HttpParserEventHandler] <TCP105218288105996> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:50462 -> 34.77.187.227:80]
+Dec 17 08:55:55 localhost app-6: [RequestLine] <TCP105218288116692> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 17 08:55:55 localhost app-6: [RequestLine] <TCP105218288116693> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 17 11:46:26 localhost app-6: [RequestLine] <TCP105218288191448> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 11:46:26 localhost app-6: [RequestLine] <TCP105218288191451> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 11:49:46 localhost app-6: [RequestLine] <TCP105218288192964> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 11:49:47 localhost app-6: [RequestLine] <TCP105218288192978> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 12:46:37 localhost app-6: [RequestLine] <TCP105218288216490> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 12:46:37 localhost app-6: [RequestLine] <TCP105218288216503> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 13:07:43 localhost app-6: [RequestLine] <TCP105218288226027> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 13:07:43 localhost app-6: [RequestLine] <TCP105218288226031> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 17 15:08:42 localhost app-6: [HttpParserEventHandler] <TCP105218288279308> WARN  endSession in CHUNK_LENGTH_STATE
+Dec 17 15:08:42 localhost app-6: [HttpParserEventHandler] <TCP105218288279308> WARN  endSession in CHUNK_LENGTH_STATE
+Dec 17 15:34:49 localhost app-6: [HttpParserEventHandler] <TCP105218288293957> WARN  endSession in CHUNK_LENGTH_STATE
+Dec 18 07:09:40 localhost app-6: [HttpParserEventHandler] <TCP105218288434016> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.137:38360 -> 35.190.244.146:80]
+Dec 18 07:32:04 localhost app-6: [RequestLine] <TCP105218288441987> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 07:37:22 localhost app-6: [RequestLine] <TCP105218288444106> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 07:37:22 localhost app-6: [RequestLine] <TCP105218288444109> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 07:37:56 localhost app-6: [RequestLine] <TCP105218288444299> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 07:37:56 localhost app-6: [RequestLine] <TCP105218288444302> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 07:52:03 localhost app-6: [HttpParserEventHandler] <TCP105218288449467> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 8024
+Dec 18 09:12:51 localhost app-6: [RequestLine] <TCP105218288484374> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 09:12:51 localhost app-6: [RequestLine] <TCP105218288484377> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 11:39:03 localhost app-6: [RequestLine] <TCP105218288548759> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 18 11:39:25 localhost app-6: [RequestLine] <TCP105218288548953> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 18 11:39:25 localhost app-6: [RequestLine] <TCP105218288548954> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 18 11:43:02 localhost app-6: [RequestLine] <TCP105218288550101> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 18 11:43:02 localhost app-6: [RequestLine] <TCP105218288550100> WARN  ignoring bad uri: 216.115.208.230:443
+Dec 18 16:02:23 localhost app-6: [RequestLine] <TCP105218288666569> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 16:02:24 localhost app-6: [RequestLine] <TCP105218288666573> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 19:21:52 localhost app-6: [RequestLine] <TCP105218288712380> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 18 19:21:52 localhost app-6: [RequestLine] <TCP105218288712384> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 07:36:27 localhost app-6: [RequestLine] <TCP105218289046152> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 07:36:27 localhost app-6: [RequestLine] <TCP105218289046155> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 08:05:54 localhost app-6: [RequestLine] <TCP105218289063701> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 08:05:54 localhost app-6: [RequestLine] <TCP105218289063704> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 08:27:14 localhost app-6: [HttpParserEventHandler] <TCP105218289072618> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:58300 -> 108.128.219.141:80]
+Dec 21 10:21:10 localhost app-6: [HttpParserEventHandler] <TCP105218289123888> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:51123 -> 34.77.187.227:80]
+Dec 21 10:44:39 localhost app-6: [HttpParserEventHandler] <TCP105218289135831> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.134:55464 -> 31.222.75.198:80]
+Dec 21 11:02:18 localhost app-6: [HttpParserEventHandler] <TCP105218289142435> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:44799 -> 99.81.89.126:80]
+Dec 21 11:18:14 localhost app-6: [RequestLine] <TCP105218289150233> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:18:14 localhost app-6: [RequestLine] <TCP105218289150238> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:31:29 localhost app-6: [HttpParserEventHandler] <TCP105218289157518> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:44175 -> 99.81.89.126:80]
+Dec 21 11:33:57 localhost app-6: [RequestLine] <TCP105218289158977> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:34:30 localhost app-6: [RequestLine] <TCP105218289159396> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:34:30 localhost app-6: [RequestLine] <TCP105218289159400> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:34:36 localhost app-6: [HttpParserEventHandler] <TCP105218289159491> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:58056 -> 216.115.218.197:80]
+Dec 21 11:35:06 localhost app-6: [HttpParserEventHandler] <TCP105218289159817> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:58064 -> 216.115.218.197:80]
+Dec 21 11:36:06 localhost app-6: [RequestLine] <TCP105218289160432> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:36:07 localhost app-6: [RequestLine] <TCP105218289160435> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:36:13 localhost app-6: [HttpParserEventHandler] <TCP105218289160464> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:58073 -> 216.115.218.197:80]
+Dec 21 11:45:47 localhost app-6: [RequestLine] <TCP105218289166369> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:51:23 localhost app-6: [RequestLine] <TCP105218289168540> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:51:23 localhost app-6: [RequestLine] <TCP105218289168543> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:51:24 localhost app-6: [RequestLine] <TCP105218289168550> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 11:51:24 localhost app-6: [RequestLine] <TCP105218289168553> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 12:49:08 localhost app-6: [RequestLine] <TCP105218289203467> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 12:49:08 localhost app-6: [RequestLine] <TCP105218289203471> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 12:49:13 localhost app-6: [RequestLine] <TCP105218289203547> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 12:49:13 localhost app-6: [RequestLine] <TCP105218289203553> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 12:58:11 localhost app-6: [HttpParserEventHandler] <TCP105218289206770> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.134:56257 -> 31.222.75.198:80]
+Dec 21 13:03:02 localhost app-6: [RequestLine] <TCP105218289208203> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 13:03:02 localhost app-6: [RequestLine] <TCP105218289208207> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 13:03:45 localhost app-6: [RequestLine] <TCP105218289208484> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 13:03:45 localhost app-6: [RequestLine] <TCP105218289208487> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 13:38:24 localhost app-6: [HttpParserEventHandler] <TCP105218289220287> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:45587 -> 54.171.18.123:80]
+Dec 21 14:11:46 localhost app-6: [RequestLine] <TCP105218289234686> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 14:11:47 localhost app-6: [RequestLine] <TCP105218289234691> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 21 15:26:22 localhost app-6: [HttpParserEventHandler] <TCP105218289270863> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:56647 -> 52.210.133.38:80]
+Dec 21 15:55:40 localhost app-6: [HttpParserEventHandler] <TCP105218289286404> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.134:56617 -> 31.222.75.198:80]
+Dec 21 17:37:57 localhost app-6: [HttpParserEventHandler] <TCP105218289321009> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 228767
+Dec 21 17:38:06 localhost app-6: [HttpParserEventHandler] <TCP105218289321029> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 99670
+Dec 22 09:07:14 localhost app-6: [RequestLine] <TCP105218289493921> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 09:07:14 localhost app-6: [RequestLine] <TCP105218289493924> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 09:18:40 localhost app-6: [HttpParserEventHandler] <TCP105218289499396> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:55374 -> 99.81.89.126:80]
+Dec 22 11:12:44 localhost app-6: [HttpParserEventHandler] <TCP105218289545954> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49284 -> 34.77.187.227:80]
+Dec 22 11:13:28 localhost app-6: [HttpParserEventHandler] <TCP105218289546202> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49285 -> 34.76.17.250:80]
+Dec 22 11:13:32 localhost app-6: [HttpParserEventHandler] <TCP105218289546230> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49286 -> 34.77.187.227:80]
+Dec 22 11:30:24 localhost app-6: [HttpParserEventHandler] <TCP105218289552756> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.156:49290 -> 34.77.187.227:80]
+Dec 22 13:20:03 localhost app-6: [RequestLine] <TCP105218289598466> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 13:20:10 localhost app-6: [HttpParserEventHandler] <TCP105218289598490> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:55415 -> 216.115.218.197:80]
+Dec 22 13:20:38 localhost app-6: [HttpParserEventHandler] <TCP105218289598584> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:55417 -> 216.115.218.197:80]
+Dec 22 13:46:49 localhost app-6: [HttpParserEventHandler] <TCP105218289606586> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:55565 -> 216.115.218.197:80]
+Dec 22 15:26:28 localhost app-6: [HttpParserEventHandler] <TCP105218289646050> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.181:46643 -> 34.253.90.52:80]
+Dec 22 15:31:58 localhost app-6: [RequestLine] <TCP105218289648032> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 15:31:58 localhost app-6: [RequestLine] <TCP105218289648043> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 17:25:30 localhost app-6: [RequestLine] <TCP105218289681143> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 17:25:30 localhost app-6: [RequestLine] <TCP105218289681145> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 22:47:56 localhost app-6: [RequestLine] <TCP105218289736275> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 22:50:28 localhost app-6: [RequestLine] <TCP105218289737462> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 22 22:50:28 localhost app-6: [RequestLine] <TCP105218289737465> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 23 08:09:13 localhost app-6: [HttpParserEventHandler] <TCP105218289816461> WARN  endSession in CONTENT_LENGTH_BODY_STATE, length: 4036
+Dec 23 15:24:13 localhost app-6: [RequestLine] <TCP105218289992170> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:29:29 localhost app-6: [RequestLine] <TCP105218290200661> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:29:33 localhost app-6: [HttpParserEventHandler] <TCP105218290200684> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:50009 -> 216.115.218.197:80]
+Dec 24 09:30:33 localhost app-6: [RequestLine] <TCP105218290201033> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:31:32 localhost app-6: [RequestLine] <TCP105218290201417> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:31:35 localhost app-6: [RequestLine] <TCP105218290201414> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:31:42 localhost app-6: [HttpParserEventHandler] <TCP105218290201513> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:50033 -> 216.115.218.197:80]
+Dec 24 09:34:21 localhost app-6: [RequestLine] <TCP105218290202856> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:34:50 localhost app-6: [RequestLine] <TCP105218290203088> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:34:59 localhost app-6: [HttpParserEventHandler] <TCP105218290203220> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:50080 -> 216.115.218.197:80]
+Dec 24 09:38:27 localhost app-6: [RequestLine] <TCP105218290205186> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:43:12 localhost app-6: [RequestLine] <TCP105218290207947> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 09:57:28 localhost app-6: [RequestLine] <TCP105218290215817> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:07:40 localhost app-6: [RequestLine] <TCP105218290220340> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:07:40 localhost app-6: [RequestLine] <TCP105218290220343> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:13:36 localhost app-6: [RequestLine] <TCP105218290222664> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:13:38 localhost app-6: [RequestLine] <TCP105218290222689> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:18:45 localhost app-6: [RequestLine] <TCP105218290224340> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:19:30 localhost app-6: [RequestLine] <TCP105218290224566> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:20:49 localhost app-6: [RequestLine] <TCP105218290224991> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:21:25 localhost app-6: [RequestLine] <TCP105218290225165> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 10:21:35 localhost app-6: [HttpParserEventHandler] <TCP105218290225198> INFO  Protocol parse exception (invalid request method). Releasing session: [6 : 192.168.1.148:50620 -> 216.115.218.197:80]
+Dec 24 13:38:44 localhost app-6: [RequestLine] <TCP105218290303125> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 13:38:44 localhost app-6: [RequestLine] <TCP105218290303129> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 14:11:08 localhost app-6: [RequestLine] <TCP105218290315409> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 24 14:11:08 localhost app-6: [RequestLine] <TCP105218290315412> WARN  ignoring bad uri: 216.115.218.197:443
+Dec 25 08:52:54 localhost app-6: [AppBase] <> INFO  Stopping   http [6] ...
+Dec 25 08:52:55 localhost app-6: [AppBase] <> INFO  Stopped    http [6] ...
+Jan  5 15:20:43 localhost app-6: [HttpImpl] <> INFO  Loading settings from /usr/share/untangle/settings/http/settings_6.js
+Jan  5 15:20:43 localhost app-6: [HttpImpl] <> INFO  Loaded settings from /usr/share/untangle/settings/http/settings_6.js
+Jan  5 15:20:43 localhost app-6: [AppBase] <> INFO  Starting   http [6] ...
+Jan  5 15:20:43 localhost app-6: [AppBase] <> INFO  Started    http [6] ...
+Jan  5 15:24:11 localhost app-6: [AppBase] <> INFO  Stopping   http [6] ...
+Jan  5 15:24:11 localhost app-6: [AppBase] <> INFO  Stopped    http [6] ...
+Jan  5 15:24:35 localhost app-6: [HttpImpl] <> INFO  Loading settings from /usr/share/untangle/settings/http/settings_6.js
+Jan  5 15:24:35 localhost app-6: [HttpImpl] <> INFO  Loaded settings from /usr/share/untangle/settings/http/settings_6.js
+Jan  5 15:24:35 localhost app-6: [AppBase] <> INFO  Starting   http [6] ...
+Jan  5 15:24:35 localhost app-6: [AppBase] <> INFO  Started    http [6] ...

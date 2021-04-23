@@ -1,0 +1,1564 @@
+Apr  6 08:37:02 localhost app-35: [UnblockedSitesMonitor] <> INFO  UnblockedSitesMonitor initializing
+Apr  6 08:37:02 localhost app-35: [AppBase] <> INFO  Starting   web-filter [35] ...
+Apr  6 08:37:03 localhost app-35: [AppBase] <> INFO  Started    web-filter [35] ...
+Apr  6 08:37:28 localhost app-35: [AppBase] <> INFO  Stopping   web-filter [35] ...
+Apr  6 08:37:35 localhost app-35: [AppBase] <> INFO  Stopped    web-filter [35] ...
+Apr  6 08:37:35 localhost app-35: [AppBase] <> INFO  Destroying web-filter [35] ...
+Apr  6 08:37:35 localhost app-35: [AppBase] <> INFO  Destroyed  web-filter [35] ...
+May 15 09:15:42 localhost app-35: [WireGuardVpnApp] <> INFO  Initializing Settings...
+May 15 09:15:42 localhost app-35: [WireGuardVpnApp] <> INFO  Creating the default settings...
+May 15 09:15:42 localhost app-35: [WireGuardVpnApp] <> WARN  192.168.252.60
+Jun 12 13:14:25 localhost app-35: [ThreatPreventionApp] <> WARN  No settings found - Initializing new settings.
+Jun 12 13:14:25 localhost app-35: [ThreatPreventionApp] <> INFO  Creating the default settings...
+Jun 12 13:14:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 12 13:14:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 12 13:14:26 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 12 13:14:26 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 12 13:14:27 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 12 13:14:27 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 15 08:57:09 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 15 08:57:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 08:57:16 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 15 08:57:20 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 15 08:57:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 08:57:20 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 15 08:57:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 08:57:21 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 08:57:21 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 15 14:10:34 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 14:12:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 14:18:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 14:18:52 localhost app-35: [WebrootQuery] <TCP104348112520509> WARN  problem with query ({"url/getinfo":{"urls":["ib.adnxs.com/"],"a1cat":1, "reputation":1}}#015#012), attemping retry
+Jun 15 14:18:52 localhost app-35: [WebrootQuery] <TCP104348112520510> WARN  problem with query ({"url/getinfo":{"urls":["amplify.outbrain.com/"],"a1cat":1, "reputation":1}}#015#012), attemping retry
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112519641]: TCP| 192.168.252.56:49189 -> 69.192.108.12:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112519639]: TCP| 192.168.252.56:49188 -> 23.41.3.37:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521093]: TCP| 192.168.252.56:49773 -> 72.21.91.29:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521105]: TCP| 192.168.252.56:49782 -> 142.250.64.99:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521106]: TCP| 192.168.252.56:49783 -> 72.21.91.29:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521081]: TCP| 192.168.252.56:49764 -> 104.98.115.144:80
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 6 sessions.
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521088]: TCP| 192.168.252.56:49769 -> 44.231.216.202:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521094]: TCP| 192.168.252.56:49774 -> 44.231.216.202:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521109]: TCP| 192.168.252.56:49786 -> 52.40.145.244:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521110]: TCP| 192.168.252.56:49787 -> 172.217.10.132:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521137]: TCP| 192.168.252.56:49792 -> 44.231.216.202:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521139]: TCP| 192.168.252.56:49795 -> 13.35.82.75:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521084]: TCP| 192.168.252.56:49767 -> 13.249.191.44:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521075]: TCP| 192.168.252.56:49757 -> 13.107.21.200:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104348112521074]: TCP| 192.168.252.56:49756 -> 13.107.21.200:443
+Jun 15 14:21:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() shutdown 9 sessions.
+Jun 15 14:24:02 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 15 14:24:34 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:03:10 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 08:03:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:03:17 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 08:03:22 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 08:03:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:03:22 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 08:03:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:03:24 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:03:24 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 08:36:47 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 08:36:54 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:36:54 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 08:36:58 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 08:36:58 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:36:58 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 08:36:58 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:37:00 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:37:00 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 08:46:10 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 08:46:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:17 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 08:46:22 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 08:46:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:22 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 08:46:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:23 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:23 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 08:46:40 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 08:46:48 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:48 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 08:46:52 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 08:46:52 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:52 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 08:46:52 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:53 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:46:53 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 08:47:57 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 08:48:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:19:21 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673042]: UDP| 192.168.252.51:123 -> 198.60.22.240:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673008]: UDP| 192.168.252.51:123 -> 216.229.0.50:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673040]: UDP| 192.168.252.51:123 -> 128.4.24.98:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672983]: UDP| 192.168.252.51:123 -> 206.55.191.142:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672991]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672993]: UDP| 192.168.252.51:123 -> 45.33.84.208:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672996]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673002]: UDP| 192.168.252.51:123 -> 66.228.48.38:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673008]: UDP| 192.168.252.51:123 -> 216.229.0.50:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673040]: UDP| 192.168.252.51:123 -> 128.4.24.98:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672983]: UDP| 192.168.252.51:123 -> 206.55.191.142:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672991]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672993]: UDP| 192.168.252.51:123 -> 45.33.84.208:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733672996]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 16 09:19:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353733673002]: UDP| 192.168.252.51:123 -> 66.228.48.38:123
+Jun 16 09:19:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:19:28 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 09:19:32 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 09:19:32 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:19:32 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 09:19:32 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:19:33 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:19:33 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 09:23:03 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123551]: UDP| 192.168.252.51:123 -> 198.60.22.240:123
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123552]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123556]: UDP| 192.168.252.51:123 -> 216.229.0.50:123
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123551]: UDP| 192.168.252.51:123 -> 198.60.22.240:123
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123552]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 09:23:03 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104353862123556]: UDP| 192.168.252.51:123 -> 216.229.0.50:123
+Jun 16 09:23:10 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:23:10 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 09:23:16 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 09:23:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:23:16 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 09:23:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:23:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 09:23:17 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 13:48:28 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 13:48:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:48:36 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 13:48:40 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 13:48:40 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:48:40 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 13:48:40 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:48:42 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:48:42 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 13:50:52 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 13:50:52 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104354920398871]: UDP| 192.168.252.51:123 -> 206.55.191.142:123
+Jun 16 13:50:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:50:59 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 13:51:04 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 13:51:04 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:51:04 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 13:51:04 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:51:05 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 13:51:05 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 15:09:29 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 15:09:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:09:36 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 15:09:41 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 15:09:41 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:09:41 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 15:09:41 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:09:42 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:09:42 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 15:15:18 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 15:15:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:15:25 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 15:15:30 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 15:15:30 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:15:30 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 15:15:30 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:15:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:15:31 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 15:15:40 localhost app-35: [IPMatcher] <TCP104355261841415> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 16 15:15:40 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionDecisionEngine.checkRequest(ThreatPreventionDecisionEngine.java:293)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionHttpsSniHandler.checkClientRequest(ThreatPreventionHttpsSniHandler.java:326)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionHttpsSniHandler.handleTCPClientChunk(ThreatPreventionHttpsSniHandler.java:104)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchTCPClientChunk(Dispatcher.java:359)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppTCPSessionImpl.readDataCrumb(AppTCPSessionImpl.java:814)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppTCPSessionImpl.handleRead(AppTCPSessionImpl.java:650)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl.readEvent(AppSessionImpl.java:1243)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl.clientEvent(AppSessionImpl.java:929)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl$SessionSocketQueueListener.event(AppSessionImpl.java:1663)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.IncomingSocketQueue.send_event(IncomingSocketQueue.java:133)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.Vector.vector(Native Method)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.Vector.vector(Vector.java:177)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:427)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.NetcapTCPHook.event(NetcapTCPHook.java:61)
+Jun 16 15:15:40 localhost app-35: [AppSessionImpl] <TCP104355261841415> ERROR java.lang.IllegalArgumentException while reading from client
+Jun 16 15:15:40 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (exception)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:318)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionDecisionEngine.checkRequest(ThreatPreventionDecisionEngine.java:293)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionHttpsSniHandler.checkClientRequest(ThreatPreventionHttpsSniHandler.java:326)
+Jun 16 15:15:40 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionHttpsSniHandler.handleTCPClientChunk(ThreatPreventionHttpsSniHandler.java:104)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchTCPClientChunk(Dispatcher.java:359)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppTCPSessionImpl.readDataCrumb(AppTCPSessionImpl.java:814)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppTCPSessionImpl.handleRead(AppTCPSessionImpl.java:650)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl.readEvent(AppSessionImpl.java:1243)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl.clientEvent(AppSessionImpl.java:929)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.AppSessionImpl$SessionSocketQueueListener.event(AppSessionImpl.java:1663)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.IncomingSocketQueue.send_event(IncomingSocketQueue.java:133)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.Vector.vector(Native Method)
+Jun 16 15:15:40 localhost app-35:       com.untangle.jvector.Vector.vector(Vector.java:177)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:427)
+Jun 16 15:15:40 localhost app-35:       com.untangle.uvm.NetcapTCPHook.event(NetcapTCPHook.java:61)
+Jun 16 15:17:55 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 15:18:02 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:18:02 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 15:18:06 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 15:18:06 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:18:06 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 15:18:06 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:18:08 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:18:08 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 15:19:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:25:30 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 15:25:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:25:37 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 15:25:42 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 15:25:42 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:25:42 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 15:25:42 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:25:43 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:25:43 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 16 15:34:25 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 16 15:34:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104355301949516]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 15:34:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104355301949516]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 16 15:34:32 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:34:32 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 16 15:34:36 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 16 15:34:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:34:36 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 16 15:34:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:34:38 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 16 15:34:38 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:38:08 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:38:15 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:38:15 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:38:19 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:38:19 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:38:19 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:38:19 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:38:21 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:38:21 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:39:15 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:39:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:39:22 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:39:28 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:39:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:39:28 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:39:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:39:29 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:39:29 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:42:23 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:42:23 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359366819858]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 17 08:42:30 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:42:30 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:42:35 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:42:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:42:35 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:42:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:42:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:42:37 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:46:51 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:46:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:46:59 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:47:03 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:47:03 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:47:03 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:47:03 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:47:05 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:47:05 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:47:27 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704262> WARN  cpuTime=4631729, userTime=0
+Jun 17 08:47:31 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704264> WARN  cpuTime=136112, userTime=0
+Jun 17 08:47:40 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704265> WARN  cpuTime=107394, userTime=0
+Jun 17 08:47:41 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704266> WARN  cpuTime=298564, userTime=0
+Jun 17 08:47:42 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704267> WARN  cpuTime=148381, userTime=0
+Jun 17 08:47:42 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359396704268> WARN  cpuTime=144860, userTime=0
+Jun 17 08:49:00 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:49:07 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:07 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:49:11 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:49:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:11 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:49:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:12 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:12 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:49:21 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359405092871> WARN  cpuTime=5, userTime=10000000
+Jun 17 08:49:22 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359405092874> WARN  cpuTime=0, userTime=0
+Jun 17 08:49:23 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359405092876> WARN  cpuTime=0, userTime=0
+Jun 17 08:49:23 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359405092878> WARN  cpuTime=0, userTime=0
+Jun 17 08:49:24 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359405092880> WARN  cpuTime=0, userTime=0
+Jun 17 08:49:39 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:49:46 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:46 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:49:51 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:49:51 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:51 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:49:51 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:52 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:49:52 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:50:02 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359407714310> WARN  cpuTime=4444311, userTime=0
+Jun 17 08:50:03 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359407714313> WARN  cpuTime=172418, userTime=0
+Jun 17 08:50:04 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359407714315> WARN  cpuTime=130109, userTime=0
+Jun 17 08:50:05 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359407714317> WARN  cpuTime=150683, userTime=0
+Jun 17 08:50:05 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359407714319> WARN  cpuTime=156319, userTime=0
+Jun 17 08:55:04 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:55:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359407714348]: UDP| 192.168.252.51:123 -> 45.33.84.208:123
+Jun 17 08:55:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:55:11 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:55:15 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:55:15 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:55:15 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:55:15 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:55:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:55:17 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:55:32 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359429013510> WARN  cpuTime=16336710, userTime=10000000
+Jun 17 08:55:37 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359429013513> WARN  cpuTime=114419, userTime=0
+Jun 17 08:55:39 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359429013515> WARN  cpuTime=325013, userTime=0
+Jun 17 08:55:42 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359429013517> WARN  cpuTime=158165, userTime=0
+Jun 17 08:55:48 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359429013519> WARN  cpuTime=137955, userTime=0
+Jun 17 08:56:48 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:56:48 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359429013521]: UDP| 192.168.252.51:123 -> 66.228.48.38:123
+Jun 17 08:56:55 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:56:55 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:56:59 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:56:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:56:59 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:56:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:57:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:57:01 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 08:57:10 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763718> WARN  cpuTime=6920901, userTime=10000000
+Jun 17 08:57:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763721> WARN  cpuTime=117958, userTime=0
+Jun 17 08:57:13 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763723> WARN  cpuTime=130509, userTime=0
+Jun 17 08:57:14 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763725> WARN  cpuTime=134374, userTime=0
+Jun 17 08:57:15 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763727> WARN  cpuTime=107205, userTime=0
+Jun 17 08:57:15 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763729> WARN  cpuTime=128478, userTime=0
+Jun 17 08:57:16 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763731> WARN  cpuTime=147999, userTime=0
+Jun 17 08:57:39 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763733> WARN  cpuTime=210204, userTime=0
+Jun 17 08:57:43 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763735> WARN  cpuTime=98726, userTime=0
+Jun 17 08:57:45 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763737> WARN  cpuTime=135297, userTime=0
+Jun 17 08:57:46 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359435763739> WARN  cpuTime=203120, userTime=0
+Jun 17 08:59:36 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 08:59:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359435763750]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 17 08:59:43 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:59:43 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 08:59:48 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 08:59:48 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:59:48 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 08:59:48 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:59:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 08:59:49 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:02:17 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:02:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359446839313]: UDP| 192.168.252.51:123 -> 216.229.0.50:123
+Jun 17 09:02:24 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:02:24 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:02:29 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:02:29 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:02:29 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:02:29 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:02:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:02:31 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:06:49 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:06:57 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:06:57 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:07:02 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:07:02 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:07:02 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:07:02 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:07:03 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:07:03 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:07:17 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359475216394> WARN  checkRequest: cpuTime=4243061, userTime=0
+Jun 17 09:07:18 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359475216398> WARN  checkRequest: cpuTime=98840, userTime=0
+Jun 17 09:07:19 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359475216400> WARN  checkRequest: cpuTime=114756, userTime=0
+Jun 17 09:07:20 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359475216402> WARN  checkRequest: cpuTime=125004, userTime=0
+Jun 17 09:07:21 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359475216404> WARN  checkRequest: cpuTime=204781, userTime=0
+Jun 17 09:08:39 localhost app-35: [IPMatcher] <UDP_104359475216409> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:08:39 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:08:39 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:123)
+Jun 17 09:08:39 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:73)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:08:39 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:09:45 localhost app-35: [IPMatcher] <UDP_104359475216416> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:09:45 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:09:45 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:123)
+Jun 17 09:09:45 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:73)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:09:45 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:12:43 localhost app-35: [IPMatcher] <UDP_104359475216435> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:12:43 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:12:43 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:123)
+Jun 17 09:12:43 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:73)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:12:43 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:13:43 localhost app-35: [IPMatcher] <UDP_104359475216442> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:13:43 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:13:43 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:123)
+Jun 17 09:13:43 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:73)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:13:43 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:16:24 localhost app-35: [IPMatcher] <UDP_104359475216451> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:16:24 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:16:24 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:123)
+Jun 17 09:16:24 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:73)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:16:24 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:17:03 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:17:10 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:10 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:17:15 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:17:15 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:15 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:17:15 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:16 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:17:31 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:17:38 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:38 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:17:44 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:17:44 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:44 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:17:44 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:45 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:17:45 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:18:11 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359517290505> WARN  checkRequest: cpuTime=17833675, userTime=20000000
+Jun 17 09:18:14 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359517290508> WARN  checkRequest: cpuTime=123835, userTime=0
+Jun 17 09:18:15 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359517290510> WARN  checkRequest: cpuTime=115160, userTime=0
+Jun 17 09:18:25 localhost app-35: [IPMatcher] <UDP_104359517290511> WARN  Unknown IPMatcher range format: "cloudflare-dns.com"
+Jun 17 09:18:25 localhost app-35:       java.lang.IllegalArgumentException: Unknown IPMatcher format: "cloudflare-dns.com" (invalid addr 0)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.app.IPMatcher.initialize(IPMatcher.java:305)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.app.IPMatcher.<init>(IPMatcher.java:109)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.util.UrlMatchingUtil.checkClientList(UrlMatchingUtil.java:134)
+Jun 17 09:18:25 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleNewSessionRequest(ThreatPreventionEventHandler.java:124)
+Jun 17 09:18:25 localhost app-35:       com.untangle.app.threat_prevention.ThreatPreventionEventHandler.handleUDPNewSessionRequest(ThreatPreventionEventHandler.java:74)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.Dispatcher.dispatchUDPNewSessionRequest(Dispatcher.java:315)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.Dispatcher.newSessionInternal(Dispatcher.java:772)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.Dispatcher.newSession(Dispatcher.java:197)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.NetcapUDPHook$UDPNetcapHook.initializeAppSessions(NetcapUDPHook.java:278)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.NetcapHook.run(NetcapHook.java:342)
+Jun 17 09:18:25 localhost app-35:       com.untangle.uvm.NetcapUDPHook.event(NetcapUDPHook.java:63)
+Jun 17 09:19:47 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:19:54 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:19:54 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:19:59 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:19:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:19:59 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:19:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:20:00 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:20:00 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:20:14 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359526203398> WARN  checkRequest: cpuTime=4799724, userTime=10000000
+Jun 17 09:21:13 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:21:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:21:20 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:21:25 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:21:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:21:25 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:21:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:21:27 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:21:27 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:22:33 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359531839501> WARN  checkRequest: cpuTime=3721450, userTime=0
+Jun 17 09:22:35 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359531839505> WARN  checkRequest: cpuTime=253480, userTime=0
+Jun 17 09:22:36 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359531839507> WARN  checkRequest: cpuTime=104903, userTime=0
+Jun 17 09:22:36 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359531839509> WARN  checkRequest: cpuTime=119366, userTime=0
+Jun 17 09:22:37 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359531839511> WARN  checkRequest: cpuTime=116989, userTime=0
+Jun 17 09:25:04 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839519> WARN  handleNewSessionRequest: cpuTime=151434, userTime=10000000
+Jun 17 09:25:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839523> WARN  handleNewSessionRequest: cpuTime=87215, userTime=0
+Jun 17 09:25:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839526> WARN  handleNewSessionRequest: cpuTime=83712, userTime=0
+Jun 17 09:25:06 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839529> WARN  handleNewSessionRequest: cpuTime=102552, userTime=0
+Jun 17 09:25:06 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839534> WARN  handleNewSessionRequest: cpuTime=79028, userTime=0
+Jun 17 09:25:06 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839530> WARN  handleNewSessionRequest: cpuTime=249416, userTime=0
+Jun 17 09:25:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839536> WARN  handleNewSessionRequest: cpuTime=89420, userTime=0
+Jun 17 09:25:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839540> WARN  handleNewSessionRequest: cpuTime=106277, userTime=0
+Jun 17 09:25:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839539> WARN  handleNewSessionRequest: cpuTime=81723, userTime=0
+Jun 17 09:25:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839544> WARN  handleNewSessionRequest: cpuTime=72744, userTime=0
+Jun 17 09:25:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839546> WARN  handleNewSessionRequest: cpuTime=94422, userTime=0
+Jun 17 09:25:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839547> WARN  handleNewSessionRequest: cpuTime=163675, userTime=0
+Jun 17 09:25:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839548> WARN  handleNewSessionRequest: cpuTime=212349, userTime=0
+Jun 17 09:25:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839552> WARN  handleNewSessionRequest: cpuTime=91775, userTime=0
+Jun 17 09:25:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839553> WARN  handleNewSessionRequest: cpuTime=122684, userTime=0
+Jun 17 09:25:10 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359531839556> WARN  handleNewSessionRequest: cpuTime=146335, userTime=0
+Jun 17 09:32:01 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839544]: UDP| 192.168.252.51:123 -> 45.76.244.193:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839547]: UDP| 192.168.252.51:123 -> 108.61.73.243:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839546]: UDP| 192.168.252.51:123 -> 208.79.89.249:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839548]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839519]: UDP| 192.168.252.51:123 -> 199.102.46.79:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839536]: UDP| 192.168.252.51:123 -> 184.105.182.16:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839539]: UDP| 192.168.252.51:123 -> 204.11.201.10:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839540]: UDP| 192.168.252.51:123 -> 104.236.167.15:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839529]: UDP| 192.168.252.51:123 -> 195.21.137.209:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839530]: UDP| 192.168.252.51:123 -> 171.66.97.126:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839534]: UDP| 192.168.252.51:123 -> 216.229.4.69:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839553]: UDP| 192.168.252.51:123 -> 98.191.213.12:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839552]: UDP| 192.168.252.51:123 -> 199.102.46.76:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839523]: UDP| 192.168.252.51:123 -> 66.228.59.187:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839556]: UDP| 192.168.252.51:123 -> 204.2.134.164:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839526]: UDP| 192.168.252.51:123 -> 216.218.254.202:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839530]: UDP| 192.168.252.51:123 -> 171.66.97.126:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839534]: UDP| 192.168.252.51:123 -> 216.229.4.69:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839553]: UDP| 192.168.252.51:123 -> 98.191.213.12:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839552]: UDP| 192.168.252.51:123 -> 199.102.46.76:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839523]: UDP| 192.168.252.51:123 -> 66.228.59.187:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839556]: UDP| 192.168.252.51:123 -> 204.2.134.164:123
+Jun 17 09:32:01 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359531839526]: UDP| 192.168.252.51:123 -> 216.218.254.202:123
+Jun 17 09:32:08 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:32:08 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:32:13 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:32:13 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:32:13 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:32:13 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:32:14 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:32:14 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:32:55 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241284> WARN  handleNewSessionRequest: cpuTime=6727753, userTime=0
+Jun 17 09:32:56 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241287> WARN  handleNewSessionRequest: cpuTime=463974, userTime=0
+Jun 17 09:32:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241289> WARN  handleNewSessionRequest: cpuTime=104536, userTime=0
+Jun 17 09:32:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241292> WARN  handleNewSessionRequest: cpuTime=111151, userTime=0
+Jun 17 09:32:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241293> WARN  handleNewSessionRequest: cpuTime=89442, userTime=0
+Jun 17 09:32:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241291> WARN  handleNewSessionRequest: cpuTime=221977, userTime=0
+Jun 17 09:33:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241297> WARN  handleNewSessionRequest: cpuTime=105101, userTime=0
+Jun 17 09:33:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241298> WARN  handleNewSessionRequest: cpuTime=134561, userTime=0
+Jun 17 09:33:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241299> WARN  handleNewSessionRequest: cpuTime=90549, userTime=0
+Jun 17 09:33:03 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241303> WARN  handleNewSessionRequest: cpuTime=131677, userTime=0
+Jun 17 09:33:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241308> WARN  handleNewSessionRequest: cpuTime=134073, userTime=0
+Jun 17 09:33:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241306> WARN  handleNewSessionRequest: cpuTime=86941, userTime=0
+Jun 17 09:33:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241307> WARN  handleNewSessionRequest: cpuTime=132660, userTime=0
+Jun 17 09:33:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241305> WARN  handleNewSessionRequest: cpuTime=77308, userTime=0
+Jun 17 09:33:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241313> WARN  handleNewSessionRequest: cpuTime=105258, userTime=0
+Jun 17 09:33:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359574241314> WARN  handleNewSessionRequest: cpuTime=97369, userTime=0
+Jun 17 09:35:17 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241297]: UDP| 192.168.252.51:123 -> 98.191.213.12:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241298]: UDP| 192.168.252.51:123 -> 171.66.97.126:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241299]: UDP| 192.168.252.51:123 -> 66.228.59.187:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241303]: UDP| 192.168.252.51:123 -> 45.76.244.193:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241305]: UDP| 192.168.252.51:123 -> 204.11.201.10:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241306]: UDP| 192.168.252.51:123 -> 204.2.134.164:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241307]: UDP| 192.168.252.51:123 -> 104.236.167.15:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241308]: UDP| 192.168.252.51:123 -> 216.229.4.69:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241313]: UDP| 192.168.252.51:123 -> 199.102.46.76:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241314]: UDP| 192.168.252.51:123 -> 108.61.73.243:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241284]: UDP| 192.168.252.51:123 -> 216.218.254.202:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241287]: UDP| 192.168.252.51:123 -> 199.102.46.79:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241289]: UDP| 192.168.252.51:123 -> 208.79.89.249:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241291]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241292]: UDP| 192.168.252.51:123 -> 195.21.137.209:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241293]: UDP| 192.168.252.51:123 -> 184.105.182.16:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241298]: UDP| 192.168.252.51:123 -> 171.66.97.126:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241299]: UDP| 192.168.252.51:123 -> 66.228.59.187:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241303]: UDP| 192.168.252.51:123 -> 45.76.244.193:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241305]: UDP| 192.168.252.51:123 -> 204.11.201.10:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241306]: UDP| 192.168.252.51:123 -> 204.2.134.164:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241307]: UDP| 192.168.252.51:123 -> 104.236.167.15:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241308]: UDP| 192.168.252.51:123 -> 216.229.4.69:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241313]: UDP| 192.168.252.51:123 -> 199.102.46.76:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241314]: UDP| 192.168.252.51:123 -> 108.61.73.243:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241284]: UDP| 192.168.252.51:123 -> 216.218.254.202:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241287]: UDP| 192.168.252.51:123 -> 199.102.46.79:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241289]: UDP| 192.168.252.51:123 -> 208.79.89.249:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241291]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241292]: UDP| 192.168.252.51:123 -> 195.21.137.209:123
+Jun 17 09:35:17 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359574241293]: UDP| 192.168.252.51:123 -> 184.105.182.16:123
+Jun 17 09:35:24 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:35:24 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:35:29 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:35:29 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:35:29 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:35:29 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:35:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:35:31 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:35:44 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151878> WARN  handleNewSessionRequest: cpuTime=1369816, userTime=0
+Jun 17 09:35:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151882> WARN  handleNewSessionRequest: cpuTime=103800, userTime=0
+Jun 17 09:35:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151884> WARN  handleNewSessionRequest: cpuTime=110809, userTime=0
+Jun 17 09:35:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151888> WARN  handleNewSessionRequest: cpuTime=87596, userTime=0
+Jun 17 09:35:47 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151891> WARN  handleNewSessionRequest: cpuTime=320928, userTime=0
+Jun 17 09:35:47 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151894> WARN  handleNewSessionRequest: cpuTime=168372, userTime=0
+Jun 17 09:35:48 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151896> WARN  handleNewSessionRequest: cpuTime=83358, userTime=0
+Jun 17 09:35:48 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151897> WARN  handleNewSessionRequest: cpuTime=153784, userTime=0
+Jun 17 09:35:49 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151901> WARN  handleNewSessionRequest: cpuTime=112191, userTime=0
+Jun 17 09:35:49 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151900> WARN  handleNewSessionRequest: cpuTime=127875, userTime=0
+Jun 17 09:35:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359587151904> WARN  handleNewSessionRequest: cpuTime=104976, userTime=0
+Jun 17 09:37:27 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151894]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151888]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151904]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151891]: UDP| 192.168.252.51:123 -> 185.215.224.214:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151901]: UDP| 192.168.252.51:123 -> 23.152.160.126:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151900]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151897]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151896]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151882]: UDP| 192.168.252.51:123 -> 138.236.128.36:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151888]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151904]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151891]: UDP| 192.168.252.51:123 -> 185.215.224.214:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151901]: UDP| 192.168.252.51:123 -> 23.152.160.126:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151900]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151897]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151896]: UDP| 192.168.252.51:123 -> 52.6.160.3:123
+Jun 17 09:37:27 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359587151882]: UDP| 192.168.252.51:123 -> 138.236.128.36:123
+Jun 17 09:37:34 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:37:34 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:37:41 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:37:41 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:37:41 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:37:41 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:37:42 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:37:42 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:37:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737094> WARN  handleNewSessionRequest: cpuTime=1569543, userTime=0
+Jun 17 09:37:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737096> WARN  handleNewSessionRequest: cpuTime=233757, userTime=0
+Jun 17 09:37:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737100> WARN  handleNewSessionRequest: cpuTime=185143, userTime=0
+Jun 17 09:38:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737102> WARN  handleNewSessionRequest: cpuTime=161640, userTime=0
+Jun 17 09:38:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737104> WARN  handleNewSessionRequest: cpuTime=212338, userTime=0
+Jun 17 09:38:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737108> WARN  handleNewSessionRequest: cpuTime=173320, userTime=0
+Jun 17 09:38:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737112> WARN  handleNewSessionRequest: cpuTime=102167, userTime=0
+Jun 17 09:38:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737111> WARN  handleNewSessionRequest: cpuTime=60984, userTime=0
+Jun 17 09:38:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737113> WARN  handleNewSessionRequest: cpuTime=86517, userTime=0
+Jun 17 09:38:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737115> WARN  handleNewSessionRequest: cpuTime=75340, userTime=0
+Jun 17 09:38:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737122> WARN  handleNewSessionRequest: cpuTime=94466, userTime=0
+Jun 17 09:38:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737121> WARN  handleNewSessionRequest: cpuTime=73956, userTime=0
+Jun 17 09:38:02 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737120> WARN  handleNewSessionRequest: cpuTime=89527, userTime=0
+Jun 17 09:38:03 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359595737127> WARN  handleNewSessionRequest: cpuTime=145559, userTime=0
+Jun 17 09:40:22 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359595737141> WARN  checkRequest: cpuTime=5363661, userTime=0
+Jun 17 09:40:24 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359595737144> WARN  checkRequest: cpuTime=179367, userTime=0
+Jun 17 09:40:25 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359595737145> WARN  checkRequest: cpuTime=220676, userTime=0
+Jun 17 09:40:27 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359595737146> WARN  checkRequest: cpuTime=174056, userTime=0
+Jun 17 09:40:27 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359595737147> WARN  checkRequest: cpuTime=207587, userTime=0
+Jun 17 09:41:04 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737096]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737100]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737102]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737121]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737094]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737127]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737112]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737113]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737115]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737104]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737108]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737111]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737115]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737104]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737108]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:41:04 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359595737111]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:41:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:41:11 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:41:16 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:41:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:41:16 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:41:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:41:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:41:17 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:41:25 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892868> WARN  handleNewSessionRequest: cpuTime=949285, userTime=0
+Jun 17 09:41:26 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892870> WARN  handleNewSessionRequest: cpuTime=86126, userTime=0
+Jun 17 09:41:27 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892875> WARN  handleNewSessionRequest: cpuTime=90694, userTime=0
+Jun 17 09:41:27 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892873> WARN  handleNewSessionRequest: cpuTime=90299, userTime=0
+Jun 17 09:41:27 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892872> WARN  handleNewSessionRequest: cpuTime=69812, userTime=0
+Jun 17 09:41:27 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892874> WARN  handleNewSessionRequest: cpuTime=100121, userTime=0
+Jun 17 09:41:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892881> WARN  handleNewSessionRequest: cpuTime=170003, userTime=0
+Jun 17 09:41:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892880> WARN  handleNewSessionRequest: cpuTime=102828, userTime=0
+Jun 17 09:41:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892882> WARN  handleNewSessionRequest: cpuTime=130107, userTime=0
+Jun 17 09:41:29 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892886> WARN  handleNewSessionRequest: cpuTime=175832, userTime=0
+Jun 17 09:42:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892892> WARN  handleNewSessionRequest: cpuTime=124143, userTime=0
+Jun 17 09:42:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359609892895> WARN  handleNewSessionRequest: cpuTime=108696, userTime=0
+Jun 17 09:44:15 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892880]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892881]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892882]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892868]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892870]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892886]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892872]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892873]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892874]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892875]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892892]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892895]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892881]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892882]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892868]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892870]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892886]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892872]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892873]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892874]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892875]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892892]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:44:15 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359609892895]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:44:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:44:22 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:44:26 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:44:26 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:44:26 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:44:26 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:44:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:44:28 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:44:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344708> WARN  handleNewSessionRequest: cpuTime=1088210, userTime=0
+Jun 17 09:44:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344713> WARN  handleNewSessionRequest: cpuTime=92082, userTime=0
+Jun 17 09:44:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344716> WARN  handleNewSessionRequest: cpuTime=143183, userTime=0
+Jun 17 09:44:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344715> WARN  handleNewSessionRequest: cpuTime=90489, userTime=0
+Jun 17 09:44:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344720> WARN  handleNewSessionRequest: cpuTime=193304, userTime=0
+Jun 17 09:44:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344719> WARN  handleNewSessionRequest: cpuTime=157775, userTime=0
+Jun 17 09:44:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344721> WARN  handleNewSessionRequest: cpuTime=296000, userTime=0
+Jun 17 09:44:51 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344725> WARN  handleNewSessionRequest: cpuTime=86751, userTime=0
+Jun 17 09:44:52 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344727> WARN  handleNewSessionRequest: cpuTime=110261, userTime=0
+Jun 17 09:44:53 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344729> WARN  handleNewSessionRequest: cpuTime=229994, userTime=0
+Jun 17 09:44:54 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344731> WARN  handleNewSessionRequest: cpuTime=89852, userTime=0
+Jun 17 09:44:54 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359622344732> WARN  handleNewSessionRequest: cpuTime=178458, userTime=0
+Jun 17 09:47:21 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344720]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344721]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344727]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344708]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344725]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344715]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344731]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344713]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344729]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344719]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344716]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344732]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:47:21 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359622344732]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:47:28 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:47:28 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:47:33 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:47:33 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:47:33 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:47:33 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:47:34 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:47:34 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:48:06 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599943> WARN  handleNewSessionRequest: cpuTime=2271251, userTime=0
+Jun 17 09:48:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599946> WARN  handleNewSessionRequest: cpuTime=143448, userTime=0
+Jun 17 09:48:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599948> WARN  handleNewSessionRequest: cpuTime=123505, userTime=0
+Jun 17 09:48:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599947> WARN  handleNewSessionRequest: cpuTime=92083, userTime=0
+Jun 17 09:48:11 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599952> WARN  handleNewSessionRequest: cpuTime=87188, userTime=0
+Jun 17 09:48:12 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599954> WARN  handleNewSessionRequest: cpuTime=88890, userTime=0
+Jun 17 09:48:14 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599959> WARN  handleNewSessionRequest: cpuTime=97129, userTime=0
+Jun 17 09:48:15 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599961> WARN  handleNewSessionRequest: cpuTime=101783, userTime=0
+Jun 17 09:48:16 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599963> WARN  handleNewSessionRequest: cpuTime=152886, userTime=0
+Jun 17 09:48:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599966> WARN  handleNewSessionRequest: cpuTime=89279, userTime=0
+Jun 17 09:48:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599965> WARN  handleNewSessionRequest: cpuTime=77167, userTime=0
+Jun 17 09:48:19 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359634599969> WARN  handleNewSessionRequest: cpuTime=87969, userTime=0
+Jun 17 09:48:36 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599961]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599947]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599963]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599946]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599965]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599948]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599966]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599969]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599952]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599954]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599943]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599959]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599952]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599954]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599943]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:48:36 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359634599959]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:48:43 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:48:43 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:48:48 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:48:48 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:48:48 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:48:48 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:48:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:48:49 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:49:03 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449606> WARN  checkRequest: cpuTime=4616035, userTime=0
+Jun 17 09:49:05 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449609> WARN  checkRequest: cpuTime=140052, userTime=0
+Jun 17 09:49:06 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449611> WARN  checkRequest: cpuTime=119713, userTime=0
+Jun 17 09:49:07 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449613> WARN  checkRequest: cpuTime=135362, userTime=0
+Jun 17 09:49:08 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449615> WARN  checkRequest: cpuTime=156534, userTime=0
+Jun 17 09:49:13 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449616> WARN  handleNewSessionRequest: cpuTime=86063, userTime=0
+Jun 17 09:49:16 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449618> WARN  handleNewSessionRequest: cpuTime=91704, userTime=0
+Jun 17 09:49:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449620> WARN  handleNewSessionRequest: cpuTime=111129, userTime=0
+Jun 17 09:49:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449621> WARN  handleNewSessionRequest: cpuTime=136542, userTime=0
+Jun 17 09:49:19 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449624> WARN  handleNewSessionRequest: cpuTime=88861, userTime=0
+Jun 17 09:49:20 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449626> WARN  handleNewSessionRequest: cpuTime=175914, userTime=0
+Jun 17 09:49:21 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449628> WARN  handleNewSessionRequest: cpuTime=487626, userTime=0
+Jun 17 09:49:21 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449631> WARN  checkRequest: cpuTime=139397, userTime=0
+Jun 17 09:49:22 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449632> WARN  handleNewSessionRequest: cpuTime=195016, userTime=0
+Jun 17 09:49:24 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449635> WARN  handleNewSessionRequest: cpuTime=108081, userTime=0
+Jun 17 09:49:24 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449634> WARN  handleNewSessionRequest: cpuTime=77615, userTime=0
+Jun 17 09:49:26 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449638> WARN  handleNewSessionRequest: cpuTime=118285, userTime=0
+Jun 17 09:49:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359639449640> WARN  handleNewSessionRequest: cpuTime=179081, userTime=0
+Jun 17 09:50:09 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449647> WARN  checkRequest: cpuTime=114216, userTime=0
+Jun 17 09:50:10 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359639449649> WARN  checkRequest: cpuTime=146165, userTime=0
+Jun 17 09:50:39 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449621]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449620]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449618]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449616]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449628]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449626]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449624]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449638]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449635]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449634]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449632]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449640]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449621]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449620]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449618]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449616]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449628]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449626]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449624]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449638]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449635]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449634]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449632]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:50:39 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359639449640]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:50:46 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:50:46 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:50:50 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:50:50 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:50:50 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:50:50 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:50:52 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:50:52 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:51:00 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359647510534> WARN  checkRequest: cpuTime=6771331, userTime=0
+Jun 17 09:51:02 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359647510537> WARN  checkRequest: cpuTime=164664, userTime=0
+Jun 17 09:51:26 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510539> WARN  handleNewSessionRequest: cpuTime=107990, userTime=0
+Jun 17 09:51:29 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510541> WARN  handleNewSessionRequest: cpuTime=87856, userTime=0
+Jun 17 09:51:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510544> WARN  handleNewSessionRequest: cpuTime=91595, userTime=0
+Jun 17 09:51:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510543> WARN  handleNewSessionRequest: cpuTime=75076, userTime=0
+Jun 17 09:51:33 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510547> WARN  handleNewSessionRequest: cpuTime=68042, userTime=0
+Jun 17 09:51:35 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510549> WARN  handleNewSessionRequest: cpuTime=155767, userTime=0
+Jun 17 09:51:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510551> WARN  handleNewSessionRequest: cpuTime=89798, userTime=0
+Jun 17 09:51:37 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510556> WARN  handleNewSessionRequest: cpuTime=132452, userTime=0
+Jun 17 09:51:38 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510558> WARN  handleNewSessionRequest: cpuTime=74943, userTime=0
+Jun 17 09:51:39 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510560> WARN  handleNewSessionRequest: cpuTime=212018, userTime=0
+Jun 17 09:51:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510562> WARN  handleNewSessionRequest: cpuTime=127638, userTime=0
+Jun 17 09:51:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359647510564> WARN  handleNewSessionRequest: cpuTime=90581, userTime=0
+Jun 17 09:54:24 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510562]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510547]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510544]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510560]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510551]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510564]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510549]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510539]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510558]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510543]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510556]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:54:24 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359647510541]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:54:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:54:31 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:54:35 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:54:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:54:35 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:54:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:54:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:54:37 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:54:48 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256132> WARN  handleNewSessionRequest: cpuTime=1094049, userTime=0
+Jun 17 09:54:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256134> WARN  handleNewSessionRequest: cpuTime=85800, userTime=0
+Jun 17 09:54:52 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256138> WARN  look at rules
+Jun 17 09:54:52 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256138> WARN  checkRequest: cpuTime=645453, userTime=0
+Jun 17 09:54:53 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256140> WARN  handleNewSessionRequest: cpuTime=83998, userTime=0
+Jun 17 09:54:54 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256142> WARN  handleNewSessionRequest: cpuTime=89510, userTime=0
+Jun 17 09:54:57 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256151> WARN  look at rules
+Jun 17 09:54:57 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256151> WARN  checkRequest: cpuTime=435373, userTime=0
+Jun 17 09:54:57 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256146> WARN  handleNewSessionRequest: cpuTime=105354, userTime=0
+Jun 17 09:54:57 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256144> WARN  handleNewSessionRequest: cpuTime=106414, userTime=0
+Jun 17 09:54:57 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256145> WARN  handleNewSessionRequest: cpuTime=80591, userTime=0
+Jun 17 09:54:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256152> WARN  handleNewSessionRequest: cpuTime=88134, userTime=0
+Jun 17 09:55:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256154> WARN  handleNewSessionRequest: cpuTime=85594, userTime=0
+Jun 17 09:55:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256156> WARN  handleNewSessionRequest: cpuTime=89962, userTime=0
+Jun 17 09:55:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256157> WARN  handleNewSessionRequest: cpuTime=137083, userTime=0
+Jun 17 09:55:03 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256161> WARN  look at rules
+Jun 17 09:55:03 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359662256161> WARN  checkRequest: cpuTime=230968, userTime=0
+Jun 17 09:55:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359662256162> WARN  handleNewSessionRequest: cpuTime=143125, userTime=0
+Jun 17 09:59:11 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256146]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256162]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256145]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256144]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256134]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256132]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256154]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256152]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256142]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256157]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256140]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 09:59:11 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359662256156]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 09:59:18 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:59:18 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 09:59:23 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 09:59:23 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:59:23 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 09:59:23 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:59:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 09:59:25 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 09:59:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130500> WARN  handleNewSessionRequest: cpuTime=915424, userTime=0
+Jun 17 09:59:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130503> WARN  handleNewSessionRequest: cpuTime=86241, userTime=0
+Jun 17 09:59:33 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130505> WARN  handleNewSessionRequest: cpuTime=79756, userTime=0
+Jun 17 09:59:39 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130509> WARN  look at rules
+Jun 17 09:59:39 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130509> WARN  checkRequest: cpuTime=389431, userTime=0
+Jun 17 09:59:41 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130512> WARN  look at rules
+Jun 17 09:59:41 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130512> WARN  checkRequest: cpuTime=288518, userTime=0
+Jun 17 09:59:42 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130514> WARN  look at rules
+Jun 17 09:59:42 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359681130514> WARN  checkRequest: cpuTime=231149, userTime=0
+Jun 17 10:01:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130518> WARN  handleNewSessionRequest: cpuTime=138809, userTime=0
+Jun 17 10:01:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130521> WARN  handleNewSessionRequest: cpuTime=123808, userTime=0
+Jun 17 10:01:35 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130523> WARN  handleNewSessionRequest: cpuTime=236471, userTime=0
+Jun 17 10:01:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130526> WARN  handleNewSessionRequest: cpuTime=203260, userTime=0
+Jun 17 10:01:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130525> WARN  handleNewSessionRequest: cpuTime=149996, userTime=0
+Jun 17 10:01:38 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130529> WARN  handleNewSessionRequest: cpuTime=110254, userTime=0
+Jun 17 10:01:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130531> WARN  handleNewSessionRequest: cpuTime=162696, userTime=0
+Jun 17 10:01:43 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130533> WARN  handleNewSessionRequest: cpuTime=101189, userTime=0
+Jun 17 10:01:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130535> WARN  handleNewSessionRequest: cpuTime=120776, userTime=0
+Jun 17 10:01:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130537> WARN  handleNewSessionRequest: cpuTime=150256, userTime=0
+Jun 17 10:01:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130536> WARN  handleNewSessionRequest: cpuTime=117932, userTime=0
+Jun 17 10:01:47 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359681130539> WARN  handleNewSessionRequest: cpuTime=103435, userTime=0
+Jun 17 10:02:20 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130531]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130529]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130535]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130518]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130533]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130523]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130539]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130521]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130537]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130536]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130526]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:02:20 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359681130525]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:02:27 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:02:27 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:02:31 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:02:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:02:31 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:02:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:02:33 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:02:33 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:02:41 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451270> WARN  checkRequest: cpuTime=6679956, userTime=10000000
+Jun 17 10:02:44 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451273> WARN  checkRequest: cpuTime=192993, userTime=0
+Jun 17 10:02:45 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451275> WARN  checkRequest: cpuTime=242191, userTime=0
+Jun 17 10:02:46 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451277> WARN  checkRequest: cpuTime=111211, userTime=0
+Jun 17 10:03:43 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451282> WARN  handleNewSessionRequest: cpuTime=131526, userTime=0
+Jun 17 10:03:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451285> WARN  handleNewSessionRequest: cpuTime=74495, userTime=0
+Jun 17 10:03:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451287> WARN  handleNewSessionRequest: cpuTime=131525, userTime=0
+Jun 17 10:03:51 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451290> WARN  handleNewSessionRequest: cpuTime=197962, userTime=0
+Jun 17 10:03:51 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451291> WARN  handleNewSessionRequest: cpuTime=63463, userTime=0
+Jun 17 10:03:53 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451294> WARN  handleNewSessionRequest: cpuTime=127917, userTime=0
+Jun 17 10:03:56 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451296> WARN  handleNewSessionRequest: cpuTime=79995, userTime=0
+Jun 17 10:03:57 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451298> WARN  handleNewSessionRequest: cpuTime=114108, userTime=0
+Jun 17 10:03:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451300> WARN  handleNewSessionRequest: cpuTime=132525, userTime=0
+Jun 17 10:04:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451303> WARN  handleNewSessionRequest: cpuTime=126992, userTime=0
+Jun 17 10:04:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451304> WARN  handleNewSessionRequest: cpuTime=88922, userTime=0
+Jun 17 10:04:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359693451302> WARN  handleNewSessionRequest: cpuTime=90825, userTime=0
+Jun 17 10:04:39 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451310> WARN  checkRequest: cpuTime=160465, userTime=0
+Jun 17 10:04:41 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359693451312> WARN  checkRequest: cpuTime=160332, userTime=0
+Jun 17 10:05:23 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:05:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:05:31 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:05:35 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:05:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:05:35 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:05:35 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:05:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:05:36 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:05:46 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509894> WARN  checkRequest: cpuTime=6762357, userTime=10000000
+Jun 17 10:05:47 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509897> WARN  checkRequest: cpuTime=143745, userTime=0
+Jun 17 10:05:48 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509899> WARN  checkRequest: cpuTime=125173, userTime=0
+Jun 17 10:05:55 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509900> WARN  handleNewSessionRequest: cpuTime=341890, userTime=0
+Jun 17 10:06:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509909> WARN  handleNewSessionRequest: cpuTime=86755, userTime=0
+Jun 17 10:06:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509908> WARN  handleNewSessionRequest: cpuTime=64271, userTime=0
+Jun 17 10:06:00 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:06:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509912> WARN  handleNewSessionRequest: cpuTime=85922, userTime=0
+Jun 17 10:06:04 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509915> WARN  look at rules
+Jun 17 10:06:04 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509915> WARN  checkRequest: cpuTime=252777, userTime=0
+Jun 17 10:06:05 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509916> WARN  handleNewSessionRequest: cpuTime=133141, userTime=0
+Jun 17 10:06:06 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509919> WARN  look at rules
+Jun 17 10:06:06 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509919> WARN  checkRequest: cpuTime=243313, userTime=0
+Jun 17 10:06:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509920> WARN  handleNewSessionRequest: cpuTime=62042, userTime=0
+Jun 17 10:06:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509922> WARN  handleNewSessionRequest: cpuTime=83867, userTime=0
+Jun 17 10:06:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509924> WARN  handleNewSessionRequest: cpuTime=160902, userTime=0
+Jun 17 10:06:12 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509927> WARN  handleNewSessionRequest: cpuTime=135790, userTime=0
+Jun 17 10:06:12 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509928> WARN  handleNewSessionRequest: cpuTime=84922, userTime=0
+Jun 17 10:06:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509932> WARN  look at rules
+Jun 17 10:06:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359705509932> WARN  checkRequest: cpuTime=318034, userTime=0
+Jun 17 10:06:14 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509933> WARN  handleNewSessionRequest: cpuTime=143590, userTime=0
+Jun 17 10:06:16 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359705509935> WARN  handleNewSessionRequest: cpuTime=266290, userTime=0
+Jun 17 10:06:29 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509927]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509909]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509908]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509924]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509922]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509920]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509935]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509933]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509900]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509916]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509912]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509928]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509909]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509908]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509924]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509922]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509920]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509935]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509933]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509900]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509916]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509912]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:06:29 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359705509928]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:06:36 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:06:36 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:06:40 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:06:40 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:06:40 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:06:40 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:06:41 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:06:41 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:06:52 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769734> WARN  checkRequest: cpuTime=250497, userTime=0
+Jun 17 10:06:55 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769737> WARN  checkRequest: cpuTime=101132, userTime=0
+Jun 17 10:06:55 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769739> WARN  checkRequest: cpuTime=158911, userTime=0
+Jun 17 10:06:56 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769741> WARN  checkRequest: cpuTime=102679, userTime=0
+Jun 17 10:06:57 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769743> WARN  checkRequest: cpuTime=81702, userTime=0
+Jun 17 10:07:13 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:07:18 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769751> WARN  checkRequest: cpuTime=4222891, userTime=0
+Jun 17 10:07:19 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769753> WARN  checkRequest: cpuTime=182902, userTime=0
+Jun 17 10:07:21 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769755> WARN  checkRequest: cpuTime=390134, userTime=0
+Jun 17 10:07:22 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769757> WARN  checkRequest: cpuTime=122261, userTime=0
+Jun 17 10:07:22 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359709769759> WARN  checkRequest: cpuTime=154268, userTime=0
+Jun 17 10:08:08 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:08:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769761> WARN  handleNewSessionRequest: cpuTime=98366, userTime=0
+Jun 17 10:08:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769764> WARN  handleNewSessionRequest: cpuTime=84364, userTime=0
+Jun 17 10:08:14 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769767> WARN  handleNewSessionRequest: cpuTime=107059, userTime=0
+Jun 17 10:08:14 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769766> WARN  handleNewSessionRequest: cpuTime=80114, userTime=0
+Jun 17 10:08:16 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769770> WARN  handleNewSessionRequest: cpuTime=87937, userTime=0
+Jun 17 10:08:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769773> WARN  handleNewSessionRequest: cpuTime=104358, userTime=0
+Jun 17 10:08:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769772> WARN  handleNewSessionRequest: cpuTime=99247, userTime=0
+Jun 17 10:08:18 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769776> WARN  handleNewSessionRequest: cpuTime=126457, userTime=0
+Jun 17 10:08:20 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769778> WARN  handleNewSessionRequest: cpuTime=115205, userTime=0
+Jun 17 10:08:23 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769781> WARN  handleNewSessionRequest: cpuTime=86325, userTime=0
+Jun 17 10:08:24 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359709769783> WARN  handleNewSessionRequest: cpuTime=88118, userTime=0
+Jun 17 10:08:25 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769764]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769781]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769766]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769767]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769783]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769776]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769761]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769778]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769772]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769773]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769770]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769783]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769776]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769761]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769778]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769772]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769773]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:08:25 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359709769770]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:08:32 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:08:32 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:08:37 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:08:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:08:37 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:08:37 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:08:38 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:08:38 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:08:48 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437446> WARN  checkRequest: cpuTime=153538, userTime=0
+Jun 17 10:08:50 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437449> WARN  checkRequest: cpuTime=82589, userTime=0
+Jun 17 10:08:51 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437451> WARN  checkRequest: cpuTime=72437, userTime=0
+Jun 17 10:08:51 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437453> WARN  checkRequest: cpuTime=79495, userTime=0
+Jun 17 10:08:52 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437455> WARN  checkRequest: cpuTime=106733, userTime=0
+Jun 17 10:08:53 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437457> WARN  checkRequest: cpuTime=74101, userTime=0
+Jun 17 10:09:10 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437465> WARN  checkRequest: cpuTime=97628, userTime=0
+Jun 17 10:09:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437467> WARN  checkRequest: cpuTime=115354, userTime=0
+Jun 17 10:09:13 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437469> WARN  checkRequest: cpuTime=92461, userTime=0
+Jun 17 10:09:13 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359717437471> WARN  checkRequest: cpuTime=111024, userTime=0
+Jun 17 10:10:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437477> WARN  handleNewSessionRequest: cpuTime=105231, userTime=0
+Jun 17 10:10:18 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437480> WARN  handleNewSessionRequest: cpuTime=103375, userTime=0
+Jun 17 10:10:25 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437482> WARN  handleNewSessionRequest: cpuTime=175083, userTime=0
+Jun 17 10:10:25 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437483> WARN  handleNewSessionRequest: cpuTime=135239, userTime=0
+Jun 17 10:10:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437486> WARN  handleNewSessionRequest: cpuTime=87799, userTime=0
+Jun 17 10:10:29 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437488> WARN  handleNewSessionRequest: cpuTime=83034, userTime=0
+Jun 17 10:10:30 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437491> WARN  handleNewSessionRequest: cpuTime=133337, userTime=0
+Jun 17 10:10:30 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437490> WARN  handleNewSessionRequest: cpuTime=131509, userTime=0
+Jun 17 10:10:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437495> WARN  handleNewSessionRequest: cpuTime=103894, userTime=0
+Jun 17 10:10:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437494> WARN  handleNewSessionRequest: cpuTime=163105, userTime=0
+Jun 17 10:10:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437498> WARN  handleNewSessionRequest: cpuTime=91950, userTime=0
+Jun 17 10:10:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359717437501> WARN  handleNewSessionRequest: cpuTime=106004, userTime=0
+Jun 17 10:11:48 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:11:55 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:11:55 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:11:59 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:11:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:11:59 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:11:59 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:12:00 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:12:00 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:12:09 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675718> WARN  checkRequest: cpuTime=161903, userTime=0
+Jun 17 10:12:10 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675721> WARN  checkRequest: cpuTime=148797, userTime=0
+Jun 17 10:12:11 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675723> WARN  checkRequest: cpuTime=75172, userTime=0
+Jun 17 10:12:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675725> WARN  checkRequest: cpuTime=76449, userTime=0
+Jun 17 10:12:12 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675727> WARN  checkRequest: cpuTime=98431, userTime=0
+Jun 17 10:12:13 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675729> WARN  checkRequest: cpuTime=88669, userTime=0
+Jun 17 10:12:14 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359730675731> WARN  checkRequest: cpuTime=91885, userTime=0
+Jun 17 10:12:26 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675732> WARN  handleNewSessionRequest: cpuTime=105347, userTime=0
+Jun 17 10:12:30 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675734> WARN  handleNewSessionRequest: cpuTime=88282, userTime=0
+Jun 17 10:12:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675739> WARN  handleNewSessionRequest: cpuTime=86431, userTime=0
+Jun 17 10:12:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675740> WARN  handleNewSessionRequest: cpuTime=87273, userTime=0
+Jun 17 10:12:39 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675743> WARN  handleNewSessionRequest: cpuTime=227660, userTime=0
+Jun 17 10:12:39 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675744> WARN  handleNewSessionRequest: cpuTime=132904, userTime=0
+Jun 17 10:12:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675747> WARN  handleNewSessionRequest: cpuTime=101820, userTime=0
+Jun 17 10:12:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675748> WARN  handleNewSessionRequest: cpuTime=81223, userTime=0
+Jun 17 10:12:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675749> WARN  handleNewSessionRequest: cpuTime=67830, userTime=0
+Jun 17 10:12:44 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675754> WARN  handleNewSessionRequest: cpuTime=115211, userTime=0
+Jun 17 10:12:44 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675753> WARN  handleNewSessionRequest: cpuTime=189737, userTime=0
+Jun 17 10:12:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675757> WARN  handleNewSessionRequest: cpuTime=235000, userTime=0
+Jun 17 10:14:34 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675767> WARN  handleNewSessionRequest: cpuTime=90422, userTime=0
+Jun 17 10:14:40 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675768> WARN  handleNewSessionRequest: cpuTime=96437, userTime=0
+Jun 17 10:14:48 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675769> WARN  handleNewSessionRequest: cpuTime=147011, userTime=0
+Jun 17 10:14:48 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675770> WARN  handleNewSessionRequest: cpuTime=85506, userTime=0
+Jun 17 10:14:49 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675771> WARN  handleNewSessionRequest: cpuTime=115298, userTime=0
+Jun 17 10:14:49 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675772> WARN  handleNewSessionRequest: cpuTime=78681, userTime=0
+Jun 17 10:14:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675773> WARN  handleNewSessionRequest: cpuTime=100596, userTime=0
+Jun 17 10:14:53 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675774> WARN  handleNewSessionRequest: cpuTime=126260, userTime=0
+Jun 17 10:14:55 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675775> WARN  handleNewSessionRequest: cpuTime=120473, userTime=0
+Jun 17 10:14:56 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675777> WARN  handleNewSessionRequest: cpuTime=113412, userTime=0
+Jun 17 10:14:56 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675776> WARN  handleNewSessionRequest: cpuTime=111894, userTime=0
+Jun 17 10:14:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359730675779> WARN  handleNewSessionRequest: cpuTime=85302, userTime=0
+Jun 17 10:15:09 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675767]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675779]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675777]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675776]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675775]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675774]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675773]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675772]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675771]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675770]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675769]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675768]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675777]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675776]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675775]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675774]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675773]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675772]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675771]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675770]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675769]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:15:09 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359730675768]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:15:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:15:16 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:15:20 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:15:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:15:20 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:15:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:15:22 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:15:22 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:15:29 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848454> WARN  checkRequest: cpuTime=155453, userTime=0
+Jun 17 10:15:31 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848456> WARN  checkRequest: cpuTime=119389, userTime=0
+Jun 17 10:15:32 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848457> WARN  checkRequest: cpuTime=101191, userTime=0
+Jun 17 10:15:33 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848458> WARN  checkRequest: cpuTime=80118, userTime=0
+Jun 17 10:15:34 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848459> WARN  checkRequest: cpuTime=97121, userTime=0
+Jun 17 10:15:35 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359743848460> WARN  checkRequest: cpuTime=101025, userTime=0
+Jun 17 10:16:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848463> WARN  handleNewSessionRequest: cpuTime=116904, userTime=0
+Jun 17 10:16:54 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848466> WARN  handleNewSessionRequest: cpuTime=91232, userTime=0
+Jun 17 10:16:57 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848469> WARN  handleNewSessionRequest: cpuTime=93388, userTime=0
+Jun 17 10:16:58 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848471> WARN  handleNewSessionRequest: cpuTime=109739, userTime=0
+Jun 17 10:17:00 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848473> WARN  handleNewSessionRequest: cpuTime=90836, userTime=0
+Jun 17 10:17:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848475> WARN  handleNewSessionRequest: cpuTime=150785, userTime=0
+Jun 17 10:17:03 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848477> WARN  handleNewSessionRequest: cpuTime=81888, userTime=0
+Jun 17 10:17:04 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848479> WARN  handleNewSessionRequest: cpuTime=144691, userTime=0
+Jun 17 10:17:04 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848480> WARN  handleNewSessionRequest: cpuTime=92489, userTime=0
+Jun 17 10:17:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848483> WARN  handleNewSessionRequest: cpuTime=110316, userTime=0
+Jun 17 10:17:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848485> WARN  handleNewSessionRequest: cpuTime=76514, userTime=0
+Jun 17 10:17:11 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359743848487> WARN  handleNewSessionRequest: cpuTime=86463, userTime=0
+Jun 17 10:18:04 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848477]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848479]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848473]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848475]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848469]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848485]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848471]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848487]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848480]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848466]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:18:05 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359743848483]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:18:12 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:18:12 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:18:16 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:18:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:18:16 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:18:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:18:18 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:18:18 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:18:28 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382790> WARN  checkRequest: cpuTime=115451, userTime=0
+Jun 17 10:18:30 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382793> WARN  checkRequest: cpuTime=72767, userTime=0
+Jun 17 10:18:31 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382795> WARN  checkRequest: cpuTime=84904, userTime=0
+Jun 17 10:18:32 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382797> WARN  checkRequest: cpuTime=86284, userTime=0
+Jun 17 10:18:33 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382799> WARN  checkRequest: cpuTime=90787, userTime=0
+Jun 17 10:18:33 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382801> WARN  checkRequest: cpuTime=97870, userTime=0
+Jun 17 10:18:34 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382803> WARN  checkRequest: cpuTime=198689, userTime=0
+Jun 17 10:18:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382806> WARN  handleNewSessionRequest: cpuTime=120406, userTime=0
+Jun 17 10:19:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382813> WARN  handleNewSessionRequest: cpuTime=82635, userTime=0
+Jun 17 10:19:08 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382812> WARN  handleNewSessionRequest: cpuTime=172046, userTime=0
+Jun 17 10:19:09 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382816> WARN  handleNewSessionRequest: cpuTime=126886, userTime=0
+Jun 17 10:19:11 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382819> WARN  handleNewSessionRequest: cpuTime=80668, userTime=0
+Jun 17 10:19:11 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382818> WARN  handleNewSessionRequest: cpuTime=155005, userTime=0
+Jun 17 10:19:11 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359755382823> WARN  checkRequest: cpuTime=192235, userTime=0
+Jun 17 10:19:13 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382824> WARN  handleNewSessionRequest: cpuTime=95849, userTime=0
+Jun 17 10:19:14 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382826> WARN  handleNewSessionRequest: cpuTime=84035, userTime=0
+Jun 17 10:19:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382829> WARN  handleNewSessionRequest: cpuTime=101625, userTime=0
+Jun 17 10:19:21 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382831> WARN  handleNewSessionRequest: cpuTime=84158, userTime=0
+Jun 17 10:19:22 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382833> WARN  handleNewSessionRequest: cpuTime=90001, userTime=0
+Jun 17 10:19:23 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382835> WARN  handleNewSessionRequest: cpuTime=223815, userTime=0
+Jun 17 10:21:07 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382845> WARN  handleNewSessionRequest: cpuTime=90077, userTime=0
+Jun 17 10:21:17 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382847> WARN  handleNewSessionRequest: cpuTime=202627, userTime=0
+Jun 17 10:21:21 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382848> WARN  handleNewSessionRequest: cpuTime=146326, userTime=0
+Jun 17 10:21:22 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382849> WARN  handleNewSessionRequest: cpuTime=97793, userTime=0
+Jun 17 10:21:23 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382850> WARN  handleNewSessionRequest: cpuTime=93224, userTime=0
+Jun 17 10:21:26 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382851> WARN  handleNewSessionRequest: cpuTime=147568, userTime=0
+Jun 17 10:21:27 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382852> WARN  handleNewSessionRequest: cpuTime=118735, userTime=0
+Jun 17 10:21:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382853> WARN  handleNewSessionRequest: cpuTime=105188, userTime=0
+Jun 17 10:21:29 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382854> WARN  handleNewSessionRequest: cpuTime=90593, userTime=0
+Jun 17 10:21:31 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382855> WARN  handleNewSessionRequest: cpuTime=92724, userTime=0
+Jun 17 10:21:35 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382856> WARN  handleNewSessionRequest: cpuTime=2288088, userTime=0
+Jun 17 10:21:36 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359755382857> WARN  handleNewSessionRequest: cpuTime=333033, userTime=0
+Jun 17 10:22:45 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:22:45 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359755382856]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:22:45 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359755382857]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:22:45 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359755382856]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:22:45 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359755382857]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:22:52 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:22:52 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:22:56 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:22:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:22:56 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:22:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:22:57 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:22:57 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:23:22 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732868> WARN  handleNewSessionRequest: cpuTime=952683, userTime=0
+Jun 17 10:23:28 localhost app-35: [ThreatPreventionDecisionEngine] <TCP104359773732872> WARN  checkRequest: cpuTime=110239, userTime=0
+Jun 17 10:23:28 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732874> WARN  handleNewSessionRequest: cpuTime=85176, userTime=0
+Jun 17 10:23:33 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732878> WARN  handleNewSessionRequest: cpuTime=81991, userTime=0
+Jun 17 10:23:33 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732876> WARN  handleNewSessionRequest: cpuTime=193107, userTime=0
+Jun 17 10:23:33 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732877> WARN  handleNewSessionRequest: cpuTime=81541, userTime=0
+Jun 17 10:23:34 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732882> WARN  handleNewSessionRequest: cpuTime=81462, userTime=0
+Jun 17 10:23:37 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732884> WARN  handleNewSessionRequest: cpuTime=83353, userTime=0
+Jun 17 10:23:41 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732886> WARN  handleNewSessionRequest: cpuTime=141947, userTime=0
+Jun 17 10:23:43 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732889> WARN  handleNewSessionRequest: cpuTime=131685, userTime=0
+Jun 17 10:23:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732891> WARN  handleNewSessionRequest: cpuTime=88001, userTime=0
+Jun 17 10:23:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732893> WARN  handleNewSessionRequest: cpuTime=79262, userTime=0
+Jun 17 10:23:50 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732895> WARN  handleNewSessionRequest: cpuTime=227125, userTime=0
+Jun 17 10:25:32 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732899> WARN  handleNewSessionRequest: cpuTime=124520, userTime=0
+Jun 17 10:25:38 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732900> WARN  handleNewSessionRequest: cpuTime=109176, userTime=0
+Jun 17 10:25:43 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732901> WARN  handleNewSessionRequest: cpuTime=86859, userTime=0
+Jun 17 10:25:43 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732902> WARN  handleNewSessionRequest: cpuTime=89518, userTime=0
+Jun 17 10:25:45 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732903> WARN  handleNewSessionRequest: cpuTime=80460, userTime=0
+Jun 17 10:25:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732905> WARN  handleNewSessionRequest: cpuTime=63757, userTime=0
+Jun 17 10:25:46 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732904> WARN  handleNewSessionRequest: cpuTime=50774, userTime=0
+Jun 17 10:25:51 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732906> WARN  handleNewSessionRequest: cpuTime=69996, userTime=0
+Jun 17 10:25:52 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732907> WARN  handleNewSessionRequest: cpuTime=104989, userTime=0
+Jun 17 10:25:54 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732908> WARN  handleNewSessionRequest: cpuTime=76467, userTime=0
+Jun 17 10:25:59 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732910> WARN  handleNewSessionRequest: cpuTime=193873, userTime=0
+Jun 17 10:26:01 localhost app-35: [ThreatPreventionEventHandler] <UDP_104359773732911> WARN  handleNewSessionRequest: cpuTime=67330, userTime=0
+Jun 17 10:26:37 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732900]: UDP| 192.168.252.51:123 -> 64.142.54.12:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732901]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732902]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732903]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732899]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732908]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732910]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732911]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732904]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732905]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732906]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732907]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732901]: UDP| 192.168.252.51:123 -> 44.190.6.254:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732902]: UDP| 192.168.252.51:123 -> 131.216.7.51:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732903]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732899]: UDP| 192.168.252.51:123 -> 199.102.46.75:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732908]: UDP| 192.168.252.51:123 -> 34.199.166.126:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732910]: UDP| 192.168.252.51:123 -> 199.223.248.98:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732911]: UDP| 192.168.252.51:123 -> 208.88.126.235:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732904]: UDP| 192.168.252.51:123 -> 23.131.160.7:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732905]: UDP| 192.168.252.51:123 -> 208.67.72.43:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732906]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 10:26:37 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359773732907]: UDP| 192.168.252.51:123 -> 68.233.45.146:123
+Jun 17 10:26:44 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:26:44 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 10:26:49 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 10:26:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:26:49 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 10:26:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:26:50 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 10:26:50 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 10:27:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:46:17 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:47:07 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:48:51 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:50:05 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:51:45 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:52:19 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003437]: UDP| 192.168.252.51:123 -> 72.30.35.88:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003468]: UDP| 192.168.252.51:123 -> 38.229.71.1:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003532]: UDP| 192.168.252.51:123 -> 162.159.200.1:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003471]: UDP| 192.168.252.51:123 -> 204.2.134.163:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003534]: UDP| 192.168.252.51:123 -> 66.228.58.20:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003529]: UDP| 192.168.252.51:123 -> 45.33.103.94:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003499]: UDP| 192.168.252.51:123 -> 104.194.8.227:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003463]: UDP| 192.168.252.51:123 -> 162.159.200.123:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003526]: UDP| 192.168.252.51:123 -> 34.194.39.113:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003485]: UDP| 192.168.252.51:123 -> 204.2.134.164:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003516]: UDP| 192.168.252.51:123 -> 47.144.196.17:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003545]: UDP| 192.168.252.51:123 -> 129.250.35.251:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003514]: UDP| 192.168.252.51:123 -> 184.105.182.16:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003509]: UDP| 192.168.252.51:123 -> 23.31.21.163:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003540]: UDP| 192.168.252.51:123 -> 192.81.135.252:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003504]: UDP| 192.168.252.51:123 -> 72.30.35.89:123
+Jun 17 13:52:19 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104359789003536]: UDP| 192.168.252.51:123 -> 173.255.192.10:123
+Jun 17 13:52:26 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:52:26 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 13:52:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  cloudflare-dns.com
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  account.paypal-inc.tribesiren.com
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  69.89.207.99
+Jun 17 13:52:31 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 13:52:31 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  cloudflare-dns.com
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  account.paypal-inc.tribesiren.com
+Jun 17 13:52:31 localhost app-35: [ThreatPreventionEventHandler] <> WARN  69.89.207.99
+Jun 17 13:52:32 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:52:32 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 13:59:42 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 13:59:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:59:49 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 13:59:54 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  cloudflare-dns.com
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  account.paypal-inc.tribesiren.com
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  69.89.207.99
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  add:69.89.207.99
+Jun 17 13:59:54 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 13:59:54 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  cloudflare-dns.com
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  account.paypal-inc.tribesiren.com
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  69.89.207.99
+Jun 17 13:59:54 localhost app-35: [ThreatPreventionEventHandler] <> WARN  add:69.89.207.99
+Jun 17 13:59:55 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 13:59:55 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 14:00:58 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 14:00:58 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360626814980]: UDP| 192.168.252.51:123 -> 69.89.207.99:123
+Jun 17 14:01:05 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:01:05 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 14:01:10 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 14:01:10 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:01:10 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 14:01:10 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:01:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:01:11 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 14:16:00 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795725]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795741]: UDP| 192.168.252.51:123 -> 72.14.183.239:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795724]: UDP| 192.168.252.51:123 -> 163.237.218.19:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795745]: UDP| 192.168.252.51:123 -> 129.250.35.250:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795744]: UDP| 192.168.252.51:123 -> 72.30.35.88:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795718]: UDP| 192.168.252.51:123 -> 216.229.4.66:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795741]: UDP| 192.168.252.51:123 -> 72.14.183.239:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795724]: UDP| 192.168.252.51:123 -> 163.237.218.19:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795745]: UDP| 192.168.252.51:123 -> 129.250.35.250:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795744]: UDP| 192.168.252.51:123 -> 72.30.35.88:123
+Jun 17 14:16:00 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360631795718]: UDP| 192.168.252.51:123 -> 216.229.4.66:123
+Jun 17 14:16:07 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:16:07 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 14:16:11 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 14:16:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:16:11 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 14:16:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:16:13 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:16:13 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 17 14:17:02 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909191]: UDP| 192.168.252.51:123 -> 129.250.35.250:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909188]: UDP| 192.168.252.51:123 -> 72.14.183.239:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909194]: UDP| 192.168.252.51:123 -> 216.229.4.66:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909193]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909198]: UDP| 192.168.252.51:123 -> 163.237.218.19:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909197]: UDP| 192.168.252.51:123 -> 72.30.35.88:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909188]: UDP| 192.168.252.51:123 -> 72.14.183.239:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909194]: UDP| 192.168.252.51:123 -> 216.229.4.66:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909193]: UDP| 192.168.252.51:123 -> 172.98.193.44:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909198]: UDP| 192.168.252.51:123 -> 163.237.218.19:123
+Jun 17 14:17:02 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104360690909197]: UDP| 192.168.252.51:123 -> 72.30.35.88:123
+Jun 17 14:17:09 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:17:09 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 17 14:17:14 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 17 14:17:14 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:17:14 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 17 14:17:14 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:17:16 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 17 14:17:16 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 18 10:33:49 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 18 10:33:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 19 09:15:43 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 19 09:15:50 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 19 09:15:50 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 19 09:15:56 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 19 09:15:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 19 09:15:56 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 19 09:15:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 19 09:15:57 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 19 09:15:57 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 25 08:31:21 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 25 08:31:21 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 25 08:31:21 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 25 08:31:21 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 25 08:31:23 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 25 08:31:23 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 25 08:44:00 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 25 08:44:08 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 25 08:44:08 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 26 11:13:01 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 26 11:13:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 26 11:13:01 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 26 11:13:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 26 11:13:03 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 26 11:13:03 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 29 08:37:13 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 29 08:37:20 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 08:37:20 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 29 08:37:25 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 29 08:37:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 08:37:25 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 29 08:37:25 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 08:37:27 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 08:37:27 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 29 09:06:01 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 29 09:06:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 09:06:01 localhost app-35: [AppBase] <> INFO  Starting   threat-prevention [35] ...
+Jun 29 09:06:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 09:06:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 29 09:06:01 localhost app-35: [AppBase] <> INFO  Started    threat-prevention [35] ...
+Jun 30 09:06:01 localhost app-35: [AppBase] <> INFO  Stopping   threat-prevention [35] ...
+Jun 30 09:06:08 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 30 09:06:08 localhost app-35: [AppBase] <> INFO  Stopped    threat-prevention [35] ...
+Jun 30 09:58:11 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 30 09:58:11 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 30 11:26:58 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 30 11:26:58 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 30 12:08:56 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 30 12:08:56 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 30 12:29:50 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433800512109]: UDP| 192.168.252.51:123 -> 50.205.244.23:123
+Jun 30 12:29:50 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433800512104]: UDP| 192.168.252.51:123 -> 50.205.244.36:123
+Jun 30 12:29:50 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433800512130]: UDP| 192.168.252.51:123 -> 207.246.85.14:123
+Jun 30 12:30:39 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jun 30 12:30:39 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jun 30 15:05:48 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433885971484]: UDP| 192.168.252.51:123 -> 185.215.224.214:123
+Jun 30 15:05:48 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433885971482]: UDP| 192.168.252.51:123 -> 45.33.84.208:123
+Jun 30 15:05:48 localhost app-35: [SessionTableImpl] <> INFO  shutdownMatches() Shutdown  session[104433885971481]: UDP| 192.168.252.51:123 -> 99.104.170.138:123
+Jul  2 08:29:01 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jul  2 08:29:01 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jul  5 13:27:12 localhost app-35: [ThreatPreventionApp] <> INFO  Loading Settings...
+Jul  5 13:27:12 localhost app-35: [AppBase] <> INFO  killMatchingSessions()
+Jul  5 13:28:15 localhost app-35: [AppBase] <> INFO  Destroying threat-prevention [35] ...
+Jul  5 13:28:15 localhost app-35: [AppBase] <> INFO  Destroyed  threat-prevention [35] ...
+Sep 21 15:03:53 localhost app-35: [WanFailoverApp] <> INFO  Loading Settings...
+Sep 21 15:03:53 localhost app-35: [AppBase] <> INFO  Starting   wan-failover [35] ...
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  reconfigure()
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  wanState reset WAN (1):  null -> true
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "")
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "")
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "") = 0 took 207 ms.
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "") = 0
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh:
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Default WAN : 1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Live    WANs:  1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Dead    WANs: 
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Setting default to uplink.1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] DNS configuration is up-to-date.
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Inserting Balancing rules...
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  Reseting UDP sessions...
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp)
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp) = 0 took 5 ms.
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "")
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "")
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "") = 0 took 66 ms.
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "") = 0
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh:
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Default WAN : 1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Live    WANs:  1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Dead    WANs: 
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Setting default to uplink.1
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] DNS configuration is up-to-date.
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 03:03:53 PM EDT] Inserting Balancing rules...
+Sep 21 15:03:53 localhost app-35: [WanFailoverTesterMonitor] <> INFO  Reseting UDP sessions...
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp)
+Sep 21 15:03:53 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp) = 0 took 6 ms.
+Sep 21 15:03:53 localhost app-35: [AppBase] <> INFO  Started    wan-failover [35] ...
+Sep 21 23:35:58 localhost app-35: [AppBase] <> INFO  Stopping   wan-failover [35] ...
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  reconfigure()
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  wanState reset WAN (1):  null -> true
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "")
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "")
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "") = 0 took 103 ms.
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "") = 0
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh:
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Default WAN : 1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Live    WANs:  1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Dead    WANs: 
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Setting default to uplink.1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] DNS configuration is up-to-date.
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Inserting Balancing rules...
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  Reseting UDP sessions...
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp)
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp) = 0 took 17 ms.
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "")
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "")
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(/root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh 1 " 1" "") = 0 took 77 ms.
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  updateWanStateScript( 1, " 1", "") = 0
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh:
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Default WAN : 1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Live    WANs:  1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Dead    WANs: 
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Setting default to uplink.1
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] DNS configuration is up-to-date.
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  /root/development/github/ngfw_src/dist/usr/share/untangle/bin/wan-failover-set-active-wan.sh: [Mon 21 Sep 2020 11:35:58 PM EDT] Inserting Balancing rules...
+Sep 21 23:35:58 localhost app-35: [WanFailoverTesterMonitor] <> INFO  Reseting UDP sessions...
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp)
+Sep 21 23:35:58 localhost app-35: [ExecManagerImpl] <> INFO  ExecManager.exec(conntrack -D --proto udp) = 0 took 5 ms.
+Sep 21 23:35:58 localhost app-35: [AppBase] <> INFO  Stopped    wan-failover [35] ...

@@ -1,0 +1,83 @@
+2018-08-05T01:53:55-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: /usr/share/untangle/bin/ut-stretch-post-upgrade.sh  112473
+2018-08-05T01:53:55-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:05-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:15-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:25-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:35-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:45-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:54:55-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:05-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:15-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:25-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:35-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:45-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:55:55-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:56:05-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:56:15-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Waiting for upgrade to complete...
+2018-08-05T01:56:25-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Running conversion
+2018-08-05T01:56:25-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: apt-get clean
+2018-08-05T01:56:52-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: sync-settings
+
+
+Changed files:
+/etc/ddclient.conf
+/etc/dhcp/dhclient-exit-hooks.d/ddclient
+/etc/dnsmasq.conf
+/etc/miniupnpd/ip6tables_init.sh
+/etc/miniupnpd/iptables_init.sh
+/etc/miniupnpd/miniupnpd.conf
+/etc/network/interfaces
+New files:
+/etc/dhcp/dhclient-exit-hooks.d/untangle-dhclient-exit-hook
+/etc/dhcp/dhclient-enter-hooks.d/untangle-dhclient-enter-hook
+/etc/ppp/ip-up.d/99-untangle
+/etc/quagga/daemons
+/etc/untangle/post-network-hook.d/030-routes
+/etc/untangle/post-network-hook.d/990-restart-upnp
+/etc/untangle/post-network-hook.d/025-arp
+/etc/untangle/post-network-hook.d/990-restart-radvd
+/etc/untangle/post-network-hook.d/990-restart-ddclient
+/etc/untangle/post-network-hook.d/010-sysctl
+/etc/untangle/post-network-hook.d/960-iptables
+/etc/untangle/post-network-hook.d/990-restart-quagga
+/etc/untangle/post-network-hook.d/200-vrrp
+/etc/untangle/post-network-hook.d/011-kernel
+/etc/untangle/post-network-hook.d/990-restart-dnsmasq
+/etc/untangle/post-network-hook.d/990-restart-softflowd
+/etc/untangle/iptables-rules.d/241-vrrp-rules
+/etc/untangle/iptables-rules.d/300-qos
+/etc/untangle/iptables-rules.d/240-filter-rules
+/etc/untangle/iptables-rules.d/741-upnp
+/etc/untangle/iptables-rules.d/011-helpers
+/etc/untangle/iptables-rules.d/010-flush
+/etc/untangle/iptables-rules.d/220-nat-rules
+/etc/untangle/iptables-rules.d/210-bypass-rules
+/etc/untangle/iptables-rules.d/020-ebtables
+/etc/untangle/iptables-rules.d/230-port-forward-rules
+/etc/untangle/iptables-rules.d/250-admin-port-rules
+/etc/untangle/iptables-rules.d/100-interface-marks
+/etc/untangle/pre-network-hook.d/035-dhcp
+/etc/untangle/pre-network-hook.d/030-routes
+/etc/untangle/pre-network-hook.d/015-ethernet-media
+/etc/untangle/pre-network-hook.d/045-interfaces
+/etc/untangle/pre-network-hook.d/040-pppoe
+/etc/untangle/pre-network-hook.d/001-sethostname
+Deleted files:
+/etc/dhcp/dhclient-exit-hooks.d/netd-dhclient-exit-hook
+/etc/dhcp/dhclient-enter-hooks.d/netd-dhclient-enter-hook
+/etc/ppp/ip-up.d/99-netd
+Required operations: 
+restart-networking
+
+Deleting files...
+Skipping operations pre_commands...
+Copying files...
+Skipping operations post_commands...
+
+Done.
+2018-08-05T01:56:54-03:00 /usr/share/untangle/bin/ut-stretch-post-upgrade.sh: Rebooting in 30 seconds
+wall: cannot get tty name: Inappropriate ioctl for device
+wall: cannot get tty name: Inappropriate ioctl for device
+wall: cannot get tty name: Inappropriate ioctl for device
+wall: cannot get tty name: Inappropriate ioctl for device
+Rebooting...
