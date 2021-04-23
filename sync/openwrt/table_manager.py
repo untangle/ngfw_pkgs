@@ -73,6 +73,9 @@ class TableManager(Manager):
     wireguard_description_template = "Allow WireGuard tunnel to {name}[{id}]"
     wireguard_description_template_regex = None
 
+    dict_int_value_types = ["SERVER_PORT", "CLIENT_PORT", "LOCAL_PORT", "REMOTE_PORT"]
+    dict_value_int_re = re.compile('^([0-9- ]+)$')
+
     def initialize(self):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
@@ -181,6 +184,7 @@ class TableManager(Manager):
             accessrules[-1:-1] = self.defaultTPrules
 
         # Set the rule_id to unique values of every chain
+        # Disable rules that don't match valid dict value expresions
         for table in ['filter', 'port-forward', 'nat', 'access', 'web-filter', 'captive-portal', 'shaping']:
             for chain in settings_file.settings['firewall']['tables'][table]['chains']:
                 nftables_util.create_id_seq(chain, chain.get('rules'), 'ruleIdSeq', 'ruleId')
@@ -190,6 +194,15 @@ class TableManager(Manager):
                 if settings_file.settings['version'] < 3:
                     nftables_util.fix_MFW_1082_rules(table, chain.get('rules'))
                     nftables_util.fix_port_proto_rules(chain.get('rules'))
+
+                for rule in chain.get('rules'):
+                    if rule.get('conditions'):
+                        for condition in rule.get('conditions'):
+                            type = condition.get('type')
+                            if type in TableManager.dict_int_value_types:
+                                matches = TableManager.dict_value_int_re.match(condition.get('value'))
+                                if matches is None:
+                                    rule["enabled"] = False
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""

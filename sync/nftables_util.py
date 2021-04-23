@@ -161,6 +161,21 @@ def condition_dict_expression(table, key, field, typ, op, value):
         raise Exception("Unsupported operation " + str(op) + " for type " + typ)
     if typ in ["ipv4_addr", "ipv6_addr", "int"]:
         val = numerical_val(value)
+        if "-" in val:
+            ##
+            ## Treat a range as a concatenation of two greater-than and less-than
+            ## dict expressions which act as an AND.
+            ##
+            if op == "!=":
+                # Converse is non-inclusive of start/end values.
+                op = "<"
+                right_op = ">"
+            else:
+                # Equal is inclusive of start/end values.
+                op = ">="
+                right_op = "<="
+            vals = val.split('-')
+            val = vals[0] + " " + condition_dict_expression(table, key, field, typ, right_op, vals[1])
     else:
         val = value_str(value)
 
