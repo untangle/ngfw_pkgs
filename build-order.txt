@@ -68,6 +68,7 @@ untangle-spamassassin-update            stretch,buster
 untangle-system-config                  stretch,buster
 untangle-apache2-config                 stretch,buster
 untangle-sync-settings		     	stretch,buster
+untangle-sync-support-diagnostics		     	buster
 untangle-nflogd			     	stretch,buster
 untangle-geoip-database                 stretch,buster
 untangle-squid-config          		stretch,buster

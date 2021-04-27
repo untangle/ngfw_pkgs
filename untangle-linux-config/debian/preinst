@@ -34,6 +34,22 @@ case "$grub_install_device" in
       set_debconf_grub_install_disk $(first_disk)
     fi
     ;;
+  *ata-VMware_Virtual_SATA_Hard_Drive*)
+    # Untangle SATA drive appliance
+    if [ ! -e "$grub_install_device" ] ; then
+      # the install device is gone, so the grub update will fail:
+      # let's also choose the first disk.
+      set_debconf_grub_install_disk $(first_disk)
+    fi
+    ;;
+  *nvme-VMware_Virtual_NVMe_Disk_VMWare_NVME*)
+    # Untangle NVMe drive appliance
+    if [ ! -e "$grub_install_device" ] ; then
+      # the install device is gone, so the grub update will fail:
+      # let's also choose the first disk.
+      set_debconf_grub_install_disk $(first_disk)
+    fi
+    ;;
 esac
 
 exit 0
