@@ -16,6 +16,7 @@ class DhcpManager(Manager):
     based on the settings object passed from sync-settings
     """
     dhcp_filename = "/etc/config/dhcp"
+    dnsmasq_dns_server_template = "\tlist server '{dns_resolver_address}@{device}'\n"
 
     def initialize(self):
         """initialize this module"""
@@ -76,18 +77,22 @@ class DhcpManager(Manager):
         file.write("config dnsmasq\n")
 
         interfaces = settings['network']['interfaces']
-        for intf in interfaces:
-            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'STATIC':
-                if intf.get('v4StaticDNS1') != None:
-                    file.write("\tlist server '%s'\n" % intf.get('v4StaticDNS1'))
-                if intf.get('v4StaticDNS2') != None:
-                    file.write("\tlist server '%s'\n" % intf.get('v4StaticDNS2'))
 
-            if intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'PPPOE' and intf.get('v4PPPoEUsePeerDNS') is False:
+        ## Only enable dns reserver for static Ethernet or PPPoE interfaces,
+        ## if those interfaces are enabled.
+        dnsmasq_dns_server_template = "\tlist server '{dns_resolver_address}@{device}'\n"
+        for intf in interfaces:
+            if intf.get('enabled') == True and intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'STATIC':
+                if intf.get('v4StaticDNS1') != None:
+                    file.write(DhcpManager.dnsmasq_dns_server_template.format(dns_resolver_address=intf.get('v4StaticDNS1'),device=intf.get('device')))
+                if intf.get('v4StaticDNS2') != None:
+                    file.write(DhcpManager.dnsmasq_dns_server_template.format(dns_resolver_address=intf.get('v4StaticDNS2'),device=intf.get('device')))
+
+            if intf.get('enabled') == True and intf.get('configType') == 'ADDRESSED' and intf.get('wan') is True and intf.get('v4ConfigType') == 'PPPOE' and intf.get('v4PPPoEUsePeerDNS') is False:
                 if intf.get('v4PPPoEDNS1') != None:
-                    file.write("\tlist server '%s'\n" % intf.get('v4PPPoEDNS1'))
+                    file.write(DhcpManager.dnsmasq_dns_server_template.format(dns_resolver_address=intf.get('v4PPPoEDNS1'),device=intf.get('device')))
                 if intf.get('v4PPPoEDNS2') != None:
-                    file.write("\tlist server '%s'\n" % intf.get('v4PPPoEDNS2'))
+                    file.write(DhcpManager.dnsmasq_dns_server_template.format(dns_resolver_address=intf.get('v4PPPoEDNS2'),device=intf.get('device')))
 
         if dns.get('localServers') != None:
             for local_server in dns.get('localServers'):
@@ -115,6 +120,7 @@ class DhcpManager(Manager):
         file.write("\toption nonwildcard '0'\n")
         file.write("\toption localservice '0'\n")
         file.write("\toption dhcpleasemax '5000'\n")
+        file.write("\toption dnsforwardmax '512'\n")
         file.write("\toption leasefile '/tmp/dhcp.leases'\n")
         file.write("\toption resolvfile '/tmp/resolv.conf.auto'\n")
         file.write("\tlist addnhosts '/tmp/hosts.untangle'\n")
@@ -137,6 +143,7 @@ class DhcpManager(Manager):
                 if intf.get('dhcpEnabled') is True:
                     if intf.get('v4ConfigType') != 'DISABLED':
                         file.write("\toption interface '%s'\n" % interface_name)
+                        file.write("\toption force 1\n")
                         file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
                                                                                    intf.get('dhcpRangeStart')))
                         file.write("\toption limit '%d'\n" % calc_dhcp_range_limit(intf.get('dhcpRangeStart'), intf.get('dhcpRangeEnd')))
