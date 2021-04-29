@@ -143,6 +143,7 @@ class DhcpManager(Manager):
                 if intf.get('dhcpEnabled') is True:
                     if intf.get('v4ConfigType') != 'DISABLED':
                         file.write("\toption interface '%s'\n" % interface_name)
+                        file.write("\toption force 1\n")
                         file.write("\toption start '%d'\n" % calc_dhcp_range_start(intf.get('v4StaticAddress'), intf.get('v4StaticPrefix'),
                                                                                    intf.get('dhcpRangeStart')))
                         file.write("\toption limit '%d'\n" % calc_dhcp_range_limit(intf.get('dhcpRangeStart'), intf.get('dhcpRangeEnd')))
