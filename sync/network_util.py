@@ -127,7 +127,8 @@ def is_bridge_interface(settings, interface):
     """
     interfaces = settings.get('network').get('interfaces')
     for intf in interfaces:
-        if intf.get('configType') == "BRIDGED" and \
+        if intf.get('enabled') and \
+           intf.get('configType') == "BRIDGED" and \
            intf.get('bridgedTo') == interface.get('interfaceId'):
             return True
     return False
