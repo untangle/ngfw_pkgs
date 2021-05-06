@@ -14,3 +14,4 @@ class IPListsManager(Manager):
         ipLists['ipBlockList'] = []
         settings_file.settings['ipLists'] = ipLists
         
+registrar.register_manager(IPListsManager())
