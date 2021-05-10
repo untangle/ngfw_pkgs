@@ -161,7 +161,7 @@ class TableManager(Manager):
             settings_file.settings['threatprevention'] = {
                 "enabled": True,
                 "passList": [],
-                "sensitivity" : "25",
+                "sensitivity" : 20,
                 "redirect": False,
             }
         tpConfig = settings_file.settings.get('threatprevention')
