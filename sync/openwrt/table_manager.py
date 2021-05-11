@@ -19,17 +19,12 @@ class TableManager(Manager):
             "type": "ACCEPT"
         },
         "conditions": [{
-            "type": "DESTINATION_INTERFACE_ZONE",
+            "type": "SOURCE_INTERFACE_ZONE",
             "op": "=="
         },{
             "type": "DESTINATION_PORT",
             "port_protocol": "17",
-            "op": "==",
-            "value": 51820
-        },{
-            "type": "IP_PROTOCOL",
-            "op": "==",
-            "value": 17
+            "op": "=="
         }],
         "enabled": True
     }
@@ -121,7 +116,7 @@ class TableManager(Manager):
                     ## Populate rule from interface.
                     rule["description"] = self.wireguard_description_template.format(name=interface.get("name"), id=interface.get("interfaceId"))
                     for condition in rule.get("conditions"):
-                        if condition.get("type") == "DESTINATION_INTERFACE_ZONE":
+                        if condition.get("type") == "SOURCE_INTERFACE_ZONE":
                             condition["value"] = interface.get("boundInterfaceId") 
                         elif condition.get("type") == "DESTINATION_PORT":
                             condition["value"] = interface.get("wireguardPort") 
@@ -161,7 +156,7 @@ class TableManager(Manager):
             settings_file.settings['threatprevention'] = {
                 "enabled": True,
                 "passList": [],
-                "sensitivity" : "25",
+                "sensitivity" : 20,
                 "redirect": False,
             }
         tpConfig = settings_file.settings.get('threatprevention')
