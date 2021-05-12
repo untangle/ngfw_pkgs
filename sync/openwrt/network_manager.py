@@ -592,7 +592,7 @@ class NetworkManager(Manager):
         self.write_macaddr(file, intf.get('macaddr'))
         self.write_interface_v4_config(intf, settings)
 
-        if intf.get('v4Aliases') is not None and intf.get('v4ConfigType') == "STATIC":
+        if intf.get('v4Aliases') is not None:
             for idx, alias in enumerate(intf.get('v4Aliases')):
                 self.write_interface_v4_alias(intf, alias, (idx+1), settings)
 
