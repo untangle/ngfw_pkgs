@@ -123,7 +123,8 @@ class DhcpManager(Manager):
         file.write("\toption dnsforwardmax '512'\n")
         file.write("\toption leasefile '/tmp/dhcp.leases'\n")
         file.write("\toption resolvfile '/tmp/resolv.conf.auto'\n")
-        file.write("\tlist addnhosts '/tmp/hosts.untangle'\n")
+        # comment out using /tmp/hosts.untangle until it's populated
+        file.write("\t#list addnhosts '/tmp/hosts.untangle'\n")
 
         file.write("\n")
 
