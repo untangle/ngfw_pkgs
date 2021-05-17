@@ -91,6 +91,7 @@ class TableManager(Manager):
         # Walk interfaces looking for new or modified WireGuard interfaces.
         access_rules = settings_file.get_settings_by_path("firewall/tables/access/chains/name=access-rules/rules")
         interfaces = settings_file.settings.get('network').get('interfaces')
+        wireguard_delete_rules = []
         for interface in interfaces:
             rule = None
             add_rule = False
@@ -110,7 +111,9 @@ class TableManager(Manager):
                         rule = copy.deepcopy(self.wireguard_access_rule_template)
                         add_rule = True
                     else:
-                        rule = rules[0]
+                        # Delete all matching rules except first; we will modify it.
+                        wireguard_delete_rules = rules
+                        rule = wireguard_delete_rules.pop(0)
 
                 if rule is not None:
                     ## Populate rule from interface.
@@ -129,7 +132,6 @@ class TableManager(Manager):
         wg_access_rules = settings_file.find_settings_list(access_rules, find_delete_rule)
         if len(wg_access_rules) > 0:
             wg_description_re = re.compile(self.wireguard_description_template_regex.format(name=".*", id="(\d+)"))
-            delete_rules = []
             for rule in wg_access_rules:
                 matches = wg_description_re.match(rule.get("description"))
                 if matches is not None and matches.lastindex > 0:
@@ -140,13 +142,13 @@ class TableManager(Manager):
                             interface_found = True
                             if interface.get("type") == "WIREGUARD" and interface.get("wireguardType") == "ROAMING":
                                 # Found rule but we're now ROAMING.
-                                delete_rules.append(rule)
+                                wireguard_delete_rules.append(rule)
 
                     if interface_found == False:
                         # Interface not found.
-                        delete_rules.append(rule)
+                        wireguard_delete_rules.append(rule)
 
-            for rule in delete_rules:
+            for rule in wireguard_delete_rules:
                 access_rules.remove(rule)
 
         # deal with threat prevention settings.
