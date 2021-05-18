@@ -159,8 +159,7 @@ class SystemManager(Manager):
 
         if enabled:
             file.write("%i %i * * %i /usr/bin/upgrade.sh >/dev/null 2>&1\n" % (minute, hour, day))
-
-        file.write("0 */12 * * * /usr/bin/fetch-licenses.sh >/dev/null 2>&1\n")
+            
         file.flush()
         file.close()
 
