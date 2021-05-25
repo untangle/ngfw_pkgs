@@ -359,7 +359,6 @@ class IptablesUtil:
                         isWireguard = get_is_wireguard(network_settings, interface)
                         if isWireguard:
                             iptables_table_chain_rules = {}
-                            commands += ['if [ -z "$IPTABLES" ] ; then IPTABLES=/sbin/iptables ; fi', ""]
                             iptables_table_chain_rules = {
                                 "nat": {
                                     "nat-rules": [],
