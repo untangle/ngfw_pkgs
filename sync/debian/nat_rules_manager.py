@@ -23,7 +23,7 @@ class NatRulesManager(Manager):
     wireguard_iptables_filename = "/etc/untangle/iptables-rules.d/721-wireguard-nat-rules"
     wireguard_filename = wireguard_iptables_filename
     wireguard_file = None
-    added_wireguard = False # only need to add special wireguard nat rules once
+    wireguard_commands = []
 
     def initialize(self):
         registrar.register_settings_file("network", self)
@@ -54,19 +54,12 @@ class NatRulesManager(Manager):
         commands = IptablesUtil.conditions_to_prep_commands(nat_rule['conditions'], description)
         iptables_conditions = IptablesUtil.conditions_to_iptables_string(nat_rule['conditions'], description, is_nat_rules=True)
         commands += ["${IPTABLES} -t nat -A nat-rules " + ipt + target for ipt in iptables_conditions]
-        if not self.added_wireguard:
-            wireguard_commands = IptablesUtil.commands_for_wireguard(nat_rule['conditions'])
+        self.wireguard_commands = self.wireguard_commands + IptablesUtil.commands_for_wireguard(nat_rule['conditions'])
 
         self.file.write("# %s\n" % description)
         for cmd in commands:
             self.file.write(cmd + "\n")
         self.file.write("\n")
-
-        # write out any wireguard nat rules to own file
-        if len(wireguard_commands) > 0:
-            for cmd in wireguard_commands:
-                self.wireguard_file.write(cmd + "\n")
-            self.added_wireguard = True
         
         return
 
@@ -92,6 +85,12 @@ class NatRulesManager(Manager):
                 self.write_nat_rule(nat_rule, prefix)
             except Exception as e:
                 traceback.print_exc()
+
+        # write out any wireguard nat rules to own file
+        if len(self.wireguard_commands) > 0:
+            self.wireguard_commands = ['if [ -z "$IPTABLES" ] ; then IPTABLES=/sbin/iptables ; fi', ""] + self.wireguard_commands
+            for cmd in self.wireguard_commands:
+                self.wireguard_file.write(cmd + "\n")
 
     def write_ingress_nat_rules(self, intf, interfaces):
 
