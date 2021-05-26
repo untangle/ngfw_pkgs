@@ -24,6 +24,8 @@ def get_hidden_interfaces():
         "cznic,turris-omnia": ["eth0", "eth1"],
         "globalscale,espressobin": ["eth0"],
         "globalscale,espressobin-v7-emmc": ["eth0"],
+        "caswell-caf-0262": ["wwan1", "wwan2"],
+        "untangle-inc-default-string": ["wwan1", "wwan2"],
     }.get(board_name, [])
 
 def get_wan_interfaces():
