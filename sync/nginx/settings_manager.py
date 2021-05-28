@@ -67,14 +67,14 @@ class SettingsManager(Manager):
             defaults = json.loads(defaults_bytes)
 
             nginx_services = services.get_nginx_services()
-            for key in current_services.keys():
-                serviceEnabled = current_services[key]
-                if not serviceEnabled:
-                    service_settings_pieces = nginx_services[key].get_settings_pieces()
-                    if service_settings_pieces is not None:
-                        print("%s: Setting general key %s in json to defaults" % (self.__class__.__name__, key))
-                        default = services.get_default_value_json(defaults, service_settings_pieces)
-                        settings_file.settings = services.set_settings_value(settings_file.settings, service_settings_pieces, default)
+            if current_services:
+                for service in current_services:
+                    if not service.get('IsEnabled'):
+                        service_settings_pieces = service.get('Name').get_settings_pieces()
+                        if service_settings_pieces is not None:
+                            print("%s: Setting service name %s in json to defaults" % (self.__class__.__name__, service.get('Name')))
+                            default = services.get_default_value_json(defaults, service_settings_pieces)
+                            settings_file.settings = services.set_settings_value(settings_file.settings, service_settings_pieces, default)
         else:
             print("Defaults do not exist yet, might be creating them")
 
