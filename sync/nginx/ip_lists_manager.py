@@ -1,5 +1,5 @@
 """This class is responsible for writing out the IP Block/Allow lists"""
-from sync import registrar, manager
+from sync import registrar, Manager
 
 class IPListsManager(Manager):
     ip_allow_list = "/etc/ipAllowList"
