@@ -12,4 +12,3 @@ from .manager import Manager
 
 from . import registrar
 from . import managers
-from . import services

@@ -4,7 +4,7 @@ import os
 import json
 import shutil
 import requests
-from sync import registrar, Manager, services
+from sync import registrar, Manager
 from collections import OrderedDict
 
 # This class is responsible for writing /etc/config/network
@@ -18,9 +18,6 @@ class SettingsManager(Manager):
     default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
-    enabled_services_url = "/api/license/enabledservices"
-    enabled_services_hostname = "localhost"
-    enabled_services_port = "8585"
 
     def initialize(self):
         """initialize this module"""
@@ -52,31 +49,6 @@ class SettingsManager(Manager):
     def sanitize_settings(self, settings_file):
         """santize settings sets settings to defaults that are set but not enabled"""
         print("%s: Sanitizing settings" % self.__class__.__name__)
-        response = requests.get("http://"+self.enabled_services_hostname+":"+self.enabled_services_port+self.enabled_services_url)
-
-        if response.status_code != 200:
-            print("Getting enabled services failed")  
-
-        current_services = response.json()
-
-        # get defaults 
-        if os.path.isfile(self.default_filename):
-            with open(self.default_filename, 'r') as defaults_file:
-                defaults_bytes = defaults_file.read()
-
-            defaults = json.loads(defaults_bytes)
-
-            nginx_services = services.get_nginx_services()
-            if current_services:
-                for service in current_services:
-                    if not service.get('IsEnabled'):
-                        service_settings_pieces = service.get('Name').get_settings_pieces()
-                        if service_settings_pieces is not None:
-                            print("%s: Setting service name %s in json to defaults" % (self.__class__.__name__, service.get('Name')))
-                            default = services.get_default_value_json(defaults, service_settings_pieces)
-                            settings_file.settings = services.set_settings_value(settings_file.settings, service_settings_pieces, default)
-        else:
-            print("Defaults do not exist yet, might be creating them")
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
