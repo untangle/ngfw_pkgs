@@ -16,7 +16,8 @@ class IPListsManager(Manager):
 
     def sanitize_settings(self, settings_file):
         """sanitizes settings for ip lists"""
-        if "ipLists" in settings_file.settings:
+        print("%s: Sanitizing settings" % self.__class__.__name__)
+        if "ipLists" not in settings_file.settings:
             settings_file = self.create_iplists_settings(settings_file)
 
     def create_iplists_settings(self, settings_file):
