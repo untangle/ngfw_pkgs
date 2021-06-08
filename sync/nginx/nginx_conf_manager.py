@@ -368,10 +368,10 @@ class NginxConfManager(Manager):
         file.write("\t\trewrite ^ http://$host/app/setup redirect;\n")
         file.write("\t}\n")
         file.write("\tlocation /app {\n")
-        file.write("\t\tproxy_pass http://$host:8585;\n")
+        file.write("\t\tproxy_pass http://localhost:8585;\n")
         file.write("\t}\n")
         file.write("\tlocation /api {\n")
-        file.write("\t\tproxy_pass http://$host:8585;\n")
+        file.write("\t\tproxy_pass http://localhost:8585;\n")
         file.write("\t}\n")
         file.write("}\n")
 
