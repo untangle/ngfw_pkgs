@@ -12,9 +12,18 @@ class IPListsManager(Manager):
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
+        settings_file = self.create_iplists_settings(settings_file)
+
+    def sanitize_settings(self, settings_file):
+        """sanitizes settings for ip lists"""
+        if "ipLists" in settings_file.settings:
+            settings_file = self.create_iplists_settings(settings_file)
+
+    def create_iplists_settings(self, settings_file):
         ipLists = {}
         ipLists['ipAllowList'] = []
         ipLists['ipBlockList'] = []
         settings_file.settings['ipLists'] = ipLists
+        return settings_file
         
 registrar.register_manager(IPListsManager())
