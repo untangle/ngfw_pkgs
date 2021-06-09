@@ -1,7 +1,7 @@
 """This class is responsible for writing out the IP Block/Allow lists"""
 from sync import registrar, Manager
 
-class IPListsManager(Manager):
+class ModsecRulesManager(Manager):
     ip_allow_list = "/etc/ipAllowList"
     
     def initialize(self):
@@ -21,10 +21,11 @@ class IPListsManager(Manager):
             settings_file = self.create_iplists_settings(settings_file)
 
     def create_iplists_settings(self, settings_file):
+        """create iplists settings in settings_file. Empty arrays for both block and allow list"""
         ipLists = {}
         ipLists['ipAllowList'] = []
         ipLists['ipBlockList'] = []
         settings_file.settings['ipLists'] = ipLists
         return settings_file
         
-registrar.register_manager(IPListsManager())
+registrar.register_manager(ModsecRulesManager())
