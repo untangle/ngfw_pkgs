@@ -43,7 +43,8 @@ class NginxConfManager(Manager):
         server_ssl = {
             'proxySslCert': '/etc/nginx/certs/server.crt',
             'proxySslCertKey': '/etc/nginx/certs/server.key',
-            'proxySslVerify': 'off'
+            'proxySslVerify': 'off',
+            'enabled': False,
         }
         nginx_locations = {
             'proxyTimeout': '60s',
@@ -283,10 +284,29 @@ class NginxConfManager(Manager):
     def write_basic_server_conf(self, file, settings):
         """write the initial settings of the server block for nginx"""
         basic_server = settings['server']['basicServer']
-        file.write("server {\n")
-        file.write("\tlisten " + basic_server['sslPort'] + " ssl;\n")
-        file.write("\tlisten " + basic_server['port'] + ";\n")
-        file.write("\n")
+        sslEnabled = settings['server']['serverSsl']['enabled']
+
+        if sslEnabled:
+            # write redirect section before 443 listener
+            file.write("server {\n")
+            file.write("\tlisten " + basic_server['port'] + " default_server;\n")
+            file.write("\tlisten [::]:" + basic_server['port'] + " default_server;\n")
+            file.write("\tserver_name _;\n")
+            file.write("\treturn 301 https://$host$request_uri;\n")
+            file.write("\n")
+            file.write("}")
+            file.write("\n")
+            file.write("\n")
+
+            file.write("server {\n")
+            file.write("\tlisten " + basic_server['sslPort'] + " ssl;\n")
+            file.write("\n")
+        else:
+            # write regular server section and listen on both ports
+            file.write("server {\n")
+            file.write("\tlisten " + basic_server['sslPort'] + " ssl;\n")
+            file.write("\tlisten " + basic_server['port'] + ";\n")
+            file.write("\n")
         file.write("\tresolver " + basic_server['dnsServer'] + " valid=5s;\n")
         file.write("\tserver_name " + basic_server['serverName'] + ";\n")
         file.write("\n")
@@ -300,7 +320,7 @@ class NginxConfManager(Manager):
         file.write("\tssl_verify_client " + server_ssl['proxySslVerify'] + ";\n")
         file.write("\n")
         nginx_locations = settings['server']['nginxLocations']
-        self.write_root_loc(file, nginx_locations)
+        self.write_root_loc(file, nginx_locations, sslEnabled)
         self.write_health_loc(file, nginx_locations)
         self.write_metrics_loc(file, nginx_locations)
         self.write_error_pages(file, nginx_locations)
@@ -313,7 +333,7 @@ class NginxConfManager(Manager):
         file.write("\t\'\' close;\n")
         file.write("\t}\n")
 
-    def write_root_loc(self, file, nginx_loc):
+    def write_root_loc(self, file, nginx_loc, sslEnabled):
         """write_root_loc writes the root location for the WAF upstream servers"""
         file.write("\tlocation / {\n")
         file.write("\t\tclient_max_body_size 0;\n")
@@ -331,7 +351,10 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_read_timeout 36000s;\n")
         file.write("\t\tproxy_redirect off;\n")
         file.write("\t\tproxy_pass_header Authorization;\n")
-        file.write("\t\tproxy_pass http://backend;\n")
+        if sslEnabled:
+            file.write("\t\tproxy_pass https://backend;\n")
+        else:
+            file.write("\t\tproxy_pass http://backend;\n")
         file.write("\t\tindex index.html index.htm;\n")
         file.write("\t\troot /usr/share/nginx/html;\n")
         file.write("\t}\n")

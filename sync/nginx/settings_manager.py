@@ -50,6 +50,13 @@ class SettingsManager(Manager):
         """santize settings sets settings to defaults that are set but not enabled"""
         print("%s: Sanitizing settings" % self.__class__.__name__)
 
+        serverSettings = settings_file.settings.get('server')
+
+        sslSettings = serverSettings['serverSsl']
+        if (sslSettings.get('enabled') is None):
+            # Add SSL Enabled field if our defaults predate this version
+            sslSettings['enabled'] = False
+
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
         # orig_settings_filename = settings_file.settings["filename"]
