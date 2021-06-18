@@ -20,6 +20,8 @@ class InterfacesManager(Manager):
     both_interfaces_mark_mask = 0xffff
     interfaces_file = None
 
+    force_link_drivers = ["igc"]
+
     def initialize(self):
         registrar.register_settings_file("network", self)
         registrar.register_file(self.interfaces_filename, "restart-networking", self)
@@ -87,6 +89,7 @@ class InterfacesManager(Manager):
 
         self.interfaces_file.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'), interface_settings.get('v4ConfigType')))
         self.interfaces_file.write("auto %s\n" % devName)
+        self.interfaces_file.write("allow-hotplug %s\n" % devName)
 
         # find the minimum MTU of all devs in bridge (if its a bridge)
         bridgeMinMtu = None
@@ -103,6 +106,7 @@ class InterfacesManager(Manager):
                                     bridgeMinMtu = int(devSettings.get('mtu'))
 
         self.interfaces_file.write("iface %s inet %s\n" % (devName, configString))
+        self.write_interface_force_link(devName)
         self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
 
         # load 8021q
@@ -204,7 +208,9 @@ class InterfacesManager(Manager):
         devName = interface_settings.get('symbolicDev')
         self.interfaces_file.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId'))
         self.interfaces_file.write("auto %s\n" % devName)
+        self.interfaces_file.write("allow-hotplug %s\n" % devName)
         self.interfaces_file.write("iface %s inet manual\n" % devName)
+        self.write_interface_force_link(devName)
         self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
         self.interfaces_file.write("\tpost-up ifconfig %s 0.0.0.0 up || true\n" % devName)
         self.interfaces_file.write("\n\n")
@@ -259,6 +265,19 @@ class InterfacesManager(Manager):
                 self.interfaces_file.write("\tuntangle_v6_netmask %s\n" % alias.get('staticNetmask'))
                 self.interfaces_file.write("\n")
                 count = count+1
+
+    def write_interface_force_link(self, devName):
+        """
+        If driver is known to have link issues, apply link force in post up.
+        """
+        driver = None
+        try:
+            driver = os.path.basename(os.readlink("/sys/class/net/%s/device/driver" % devName))
+        except Exception:
+            # Not a problem if we can't determine
+            return
+        if driver in InterfacesManager.force_link_drivers:
+            self.interfaces_file.write("\tpost-up ip link set %s down && sleep 1 && ip link set %s up\n" % (devName, devName))
 
     def check_interface_settings(self, interface_settings):
         if interface_settings.get('systemDev') == None:
