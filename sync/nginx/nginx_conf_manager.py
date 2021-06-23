@@ -23,7 +23,6 @@ class NginxConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         server = {}
-        #TODO: change how defaults are handled with new slimmed down docker?
         basic_server = {
             'sslPort': '443',
             'port': '80',
@@ -209,6 +208,7 @@ class NginxConfManager(Manager):
         file.write("\n")
         # crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
         file.write("Include /etc/modsecurity.d/owasp-crs/crs-setup.conf\n")
+        #file.write("Include %s\n" % self.untangle_crs_setup_conf)
         # This is the location of all the core rule set conf files
         file.write("Include %s\n" % self.untangle_modsec_rules_conf)
         file.write("\n")
