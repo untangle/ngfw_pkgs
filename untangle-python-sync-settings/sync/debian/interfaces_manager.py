@@ -291,8 +291,8 @@ class InterfacesManager(Manager):
             if driver in InterfacesManager.force_link_drivers:
                 bridge_command = ""
                 if is_bridge:
-                    bridge_command = " && ip link set %s address %s" % (dev, lowest_mac_address)
-                self.interfaces_file.write("\tpost-up ip link set %s down && sleep 1 && ip link set %s up%s\n" % (dev, dev, bridge_command))
+                    bridge_command = "ip link set %s address %s; " % (dev, lowest_mac_address)
+                self.interfaces_file.write("\tpost-up if [ \"$(cat /sys/class/net/%s/carrier)\" = \"0\" ]; then ip link set %s down; ip addr flush dev %s; ip link set %s up; %s fi\n" % (dev, dev, dev, dev, bridge_command))
 
     def get_lowest_mac_address(self, devs):
         """
