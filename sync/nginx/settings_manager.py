@@ -3,7 +3,6 @@
 import os
 import json
 import shutil
-import requests
 from sync import registrar, Manager
 from collections import OrderedDict
 

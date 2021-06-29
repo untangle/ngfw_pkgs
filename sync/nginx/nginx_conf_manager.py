@@ -7,8 +7,6 @@ class NginxConfManager(Manager):
     nginx_main_conf="/etc/nginx/nginx.conf"
     nginx_default_conf="/etc/nginx/conf.d/default.conf"
     nginx_logging_conf="/etc/nginx/conf.d/logging.conf"
-    modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
-    untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
 
     def initialize(self):
         """initialize this module"""
@@ -16,14 +14,11 @@ class NginxConfManager(Manager):
         registrar.register_file(self.nginx_main_conf, "restart-nginx", self)
         registrar.register_file(self.nginx_default_conf, "restart-nginx", self)
         registrar.register_file(self.nginx_logging_conf, "restart-nginx", self)
-        registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
-        registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         server = {}
-        #TODO: change how defaults are handled with new slimmed down docker?
         basic_server = {
             'sslPort': '443',
             'port': '80',
@@ -63,8 +58,6 @@ class NginxConfManager(Manager):
         self.write_nginx_conf(settings_file.settings, prefix)
         self.write_nginx_default_conf(settings_file.settings, prefix)
         self.write_nginx_logging_conf(settings_file.settings, prefix)
-        self.write_modsecurity_setup_conf(settings_file.settings, prefix)
-        self.write_untangle_modsec_rules(settings_file.settings, prefix)
 
     def write_nginx_default_conf(self, settings, prefix):
         """write the nginx default.conf file"""
@@ -157,117 +150,6 @@ class NginxConfManager(Manager):
         file.write("\t\t'\"http_x_forwarded_for\":\"$http_x_forwarded_for\"'\n")
         file.write("\t'}';\n")
         file.write("access_log /var/log/nginx/untangle_access.log json_combined;\n")
-        file.write("\n")
-        file.flush()
-        file.close()
-
-    def write_modsecurity_setup_conf(self, settings, prefix):
-        """write_modsecurity_setup_conf writes out the modsecurity setup conf file"""
-        filename = prefix + self.modsecurity_setup_conf
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        self.current_file = open(filename, "w+")
-        file = self.current_file
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n")
-        file.write("\n")
-        # Load the modsecurity.conf default file
-        file.write("Include /etc/modsecurity.d/modsecurity.conf\n")
-        # Override the modsecurity.conf properties
-        file.write("SecRuleEngine on\n")
-        file.write("SecRequestBodyAccess on\n")
-        file.write("\n")
-        file.write("SecRequestBodyLimit 13107200\n")
-        file.write("SecRequestBodyNoFilesLimit 131072\n")
-        file.write("SecRequestBodyLimitAction Reject\n")
-        file.write("\n")
-        file.write("SecPcreMatchLimit 100000\n")
-        file.write("SecPcreMatchLimitRecursion 100000\n")
-        file.write("\n")
-        file.write("SecResponseBodyAccess on\n")
-        file.write("SecResponseBodyMimeType text/plain text/html text/xml\n")
-        file.write("SecResponseBodyLimit 1048576\n")
-        file.write("SecResponseBodyLimitAction ProcessPartial\n")
-        file.write("SecTmpDir /tmp/\n")
-        file.write("SecDataDir /tmp/\n")
-        file.write("\n")
-        file.write("SecAuditEngine RelevantOnly\n")
-        file.write("SecAuditLog /var/log/untangle_modsec_audit.log\n")
-        file.write("SecAuditLogFormat json\n")
-        file.write("SecAuditLogParts ABIJDEFHKZ\n")
-        file.write("SecAuditLogRelevantStatus \"^(?:5|4(?!04))\"\n")
-        file.write("SecAuditLogType Serial\n")
-        file.write("SecAuditLogStorageDir /var/log/modsecurity/audit\n")
-        file.write("\n")
-        file.write("SecArgumentSeparator &\n")
-        file.write("SecCookieFormat 0\n")
-        file.write("SecUnicodeMapFile unicode.mapping 20127\n")
-        file.write("SecStatusEngine On\n")
-        file.write("\n")
-        # crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
-        file.write("Include /etc/modsecurity.d/owasp-crs/crs-setup.conf\n")
-        # This is the location of all the core rule set conf files
-        file.write("Include %s\n" % self.untangle_modsec_rules_conf)
-        file.write("\n")
-        file.write("\n")
-        file.flush()
-        file.close()
-
-    def write_untangle_modsec_rules(self, settings, prefix):
-        """write the untangle modsec rules conf file"""
-        filename = prefix + self.untangle_modsec_rules_conf
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        self.current_file = open(filename, "w+")
-        file = self.current_file
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-
-        file.write("\n")
-        # Initialization is needed always
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
-        # TODO: Here is where we would add IP Allow/Block list imports, and rule exclusions
-        
-        
-        # TODO: Add settings toggles for these generic application exclusions
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf\n")
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf\n")
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf\n")
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
-        file.write("#Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
-        
-        # TODO: Add settings toggles for entire rulesets
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-913-SCANNER-DETECTION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-921-PROTOCOL-ATTACK.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-950-DATA-LEAKAGES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
-        file.write("\n")
         file.write("\n")
         file.flush()
         file.close()
