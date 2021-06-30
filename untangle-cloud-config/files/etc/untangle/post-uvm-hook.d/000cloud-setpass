@@ -14,7 +14,7 @@ get_instance_identifier() {
     *Azure*)
       url="http://169.254.169.254/metadata/instance/compute/name?api-version=2017-08-01&format=text"
       ;;
-    *Amazon|EC2*)
+    *Amazon*)
       url="http://169.254.169.254/latest/meta-data/instance-id"
       ;;
   esac
