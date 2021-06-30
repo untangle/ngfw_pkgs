@@ -7,6 +7,7 @@ class ModsecurityConfManager(Manager):
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
     untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
     untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
+    untangle_exclusion_file="/etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9999-UNTANGLE-EXCLUSION.conf"
     # map is ID to an array of ifSeen and ifEnabled. Start out with false for ifSeen and true of ifEnabled
     default_rule_sets_map = {
         "905": [False, True],
@@ -629,6 +630,7 @@ class ModsecurityConfManager(Manager):
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
+        file.write("#Include " + self.untangle_exclusion_file + "\n")
         
         # Rulesets - will need to add settings toggles
         toggles = settings["ruleSets"]
