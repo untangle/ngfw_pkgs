@@ -51,7 +51,6 @@ class NginxConfManager(Manager):
         server['upstreamBackend'] = upstream_backend
         server['serverSsl'] = server_ssl
         server['nginxLocations'] = nginx_locations
-        server['ruleSets'] = {}
         settings_file.settings['server'] = server
 
     def sync_settings(self, settings_file, prefix, delete_list):

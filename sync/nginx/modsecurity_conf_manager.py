@@ -7,6 +7,31 @@ class ModsecurityConfManager(Manager):
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
     untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
     untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
+    # map is ID to an array of ifSeen and ifEnabled. Start out with false for ifSeen and true of ifEnabled
+    default_rule_sets_map = {
+        "905": [False, True],
+        "910": [False, True],
+        "911": [False, True],
+        "912": [False, True],
+        "913": [False, True],
+        "920": [False, True],
+        "921": [False, True], 
+        "930": [False, True],
+        "931": [False, True],
+        "932": [False, True],
+        "933": [False, True],
+        "934": [False, True],
+        "941": [False, True],
+        "942": [False, True],
+        "943": [False, True],
+        "944": [False, True],
+        "949": [False, True],
+        "950": [False, True],
+        "951": [False, True],
+        "952": [False, True],
+        "953": [False, True],
+        "954": [False, True],
+    }
 
     def initialize(self):
         """Initialize this module"""
@@ -36,6 +61,7 @@ class ModsecurityConfManager(Manager):
         }
 
         settings_file.settings['globalModsec'] = global_settings
+        settings_file.settings['ruleSets'] = self.default_rule_sets_map
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync the settings"""
@@ -606,8 +632,19 @@ class ModsecurityConfManager(Manager):
         
         # Rulesets - will need to add settings toggles
         toggles = settings["ruleSets"]
-        print(toggles)
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
+        # process toggles first to check for existence and unknown ids
+        ruleSetsMap = self.default_rule_sets_map
+
+        for toggle, value in toggles.items():
+            if toggle in ruleSetsMap:
+                ruleSetsMap[toggle] = [True, value]
+            else:
+                print ("Unknown ruleset seen from API")
+
+        if any(ruleSet[1] == False for ruleSet in ruleSetsMap):
+            print("Missing ruleset seen from API")
+
+        file.write(("" if ruleSetsMap["905"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
@@ -629,6 +666,8 @@ class ModsecurityConfManager(Manager):
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
+
+        # always include following
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
         file.write("\n")
