@@ -89,7 +89,6 @@ class InterfacesManager(Manager):
 
         self.interfaces_file.write("## Interface %i IPv4 (%s)\n" % (interface_settings.get('interfaceId'), interface_settings.get('v4ConfigType')))
         self.interfaces_file.write("auto %s\n" % devName)
-        self.interfaces_file.write("allow-hotplug %s\n" % devName)
 
         # find the minimum MTU of all devs in bridge (if its a bridge)
         bridgeMinMtu = None
@@ -211,7 +210,6 @@ class InterfacesManager(Manager):
         devName = interface_settings.get('symbolicDev')
         self.interfaces_file.write("## Interface %i (DISABLED)\n" % interface_settings.get('interfaceId'))
         self.interfaces_file.write("auto %s\n" % devName)
-        self.interfaces_file.write("allow-hotplug %s\n" % devName)
         self.interfaces_file.write("iface %s inet manual\n" % devName)
         self.write_interface_force_link(devName)
         self.interfaces_file.write("\tpre-up echo 1 > /proc/sys/net/ipv6/conf/$IFACE/disable_ipv6 || true" + "\n")
@@ -292,7 +290,7 @@ class InterfacesManager(Manager):
                 bridge_command = ""
                 if is_bridge:
                     bridge_command = "ip link set %s address %s; " % (dev, lowest_mac_address)
-                self.interfaces_file.write("\tpost-up if [ \"$(cat /sys/class/net/%s/carrier)\" = \"0\" ]; then ip link set %s down; ip addr flush dev %s; ip link set %s up; %s fi\n" % (dev, dev, dev, dev, bridge_command))
+                self.interfaces_file.write("\tpost-up sleep 5; if [ \"$(cat /sys/class/net/%s/carrier)\" = \"0\" ]; then ip link set %s down; ip addr flush dev %s; ip link set %s up; for script in /etc/network/if-up.d/*; do $script; done; %s fi\n" % (dev, dev, dev, dev, bridge_command))
 
     def get_lowest_mac_address(self, devs):
         """
