@@ -33,7 +33,7 @@ class ModsecurityConfManager(Manager):
         "953": [False, True],
         "954": [False, True],
     }
-
+    
     def initialize(self):
         """Initialize this module"""
         registrar.register_settings_file("settings", self)
@@ -62,14 +62,12 @@ class ModsecurityConfManager(Manager):
         }
 
         settings_file.settings['globalModsec'] = global_settings
-        settings_file.settings['ruleSets'] = {ruleSetId: self.default_rule_sets_map[ruleSetId][1] for ruleSetId in self.default_rule_sets_map.keys()}
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync the settings"""
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_untangle_crs_setup_conf(settings_file.settings, prefix)
         self.write_modsecurity_setup_conf(settings_file.settings, prefix)
-        self.write_untangle_modsec_rules(settings_file.settings, prefix)
 
     def write_untangle_crs_setup_conf(self, settings, prefix):
         """write the untangle crs setup file"""
@@ -600,78 +598,6 @@ class ModsecurityConfManager(Manager):
         file.write("Include %s\n" % self.untangle_modsec_crs_rules_conf)
         # This is the location of custom untangle rules
         file.write("Include %s\n" % self.untangle_modsec_rules_conf)
-        file.write("\n")
-        file.write("\n")
-        file.flush()
-        file.close()
-
-    def write_untangle_modsec_rules(self, settings, prefix):
-        """write the untangle modsec rules conf file"""
-        filename = prefix + self.untangle_modsec_crs_rules_conf
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        self.current_file = open(filename, "w+")
-        file = self.current_file
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-
-        file.write("\n")
-        # Initialization is needed always
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
-        # TODO: Here is where we would add IP Allow/Block list imports, and rule exclusions
-        
-        
-        # Application exclusions included by default, enabled in configuration
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
-        file.write("#Include " + self.untangle_exclusion_file + "\n")
-        
-        # Rulesets - will need to add settings toggles
-        toggles = settings["ruleSets"]
-        # process toggles first to check for existence and unknown ids
-        ruleSetsMap = self.default_rule_sets_map
-
-        for toggle, value in toggles.items():
-            if toggle in ruleSetsMap:
-                ruleSetsMap[toggle] = [True, value]
-            else:
-                print ("Unknown ruleset seen from API")
-
-        if any(ruleSet[1] == False for ruleSet in ruleSetsMap):
-            print("Missing ruleset seen from API")
-
-        file.write(("" if ruleSetsMap["905"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
-        file.write(("" if ruleSetsMap["910"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
-        file.write(("" if ruleSetsMap["911"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
-        file.write(("" if ruleSetsMap["912"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
-        file.write(("" if ruleSetsMap["913"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-913-SCANNER-DETECTION.conf\n")
-        file.write(("" if ruleSetsMap["920"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf\n")
-        file.write(("" if ruleSetsMap["921"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-921-PROTOCOL-ATTACK.conf\n")
-        file.write(("" if ruleSetsMap["930"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf\n")
-        file.write(("" if ruleSetsMap["931"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf\n")
-        file.write(("" if ruleSetsMap["932"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf\n")
-        file.write(("" if ruleSetsMap["933"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf\n")
-        file.write(("" if ruleSetsMap["934"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf\n")
-        file.write(("" if ruleSetsMap["941"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf\n")
-        file.write(("" if ruleSetsMap["942"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf\n")
-        file.write(("" if ruleSetsMap["943"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf\n")
-        file.write(("" if ruleSetsMap["944"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf\n")
-        file.write(("" if ruleSetsMap["949"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf\n")
-        file.write(("" if ruleSetsMap["950"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-950-DATA-LEAKAGES.conf\n")
-        file.write(("" if ruleSetsMap["951"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf\n")
-        file.write(("" if ruleSetsMap["952"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
-        file.write(("" if ruleSetsMap["953"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
-        file.write(("" if ruleSetsMap["954"][1] else "#") + "Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
-
-        # always include following
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
         file.write("\n")
         file.write("\n")
         file.flush()
