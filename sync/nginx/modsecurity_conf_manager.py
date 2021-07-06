@@ -46,7 +46,7 @@ class ModsecurityConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         global_settings = {
-            'enabledExclusionLists': ['wordpress'],
+            'enabledExclusionLists': [],
             'allowedHttpMethods': ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
             'geoIP': {
                 'enabled': True,
