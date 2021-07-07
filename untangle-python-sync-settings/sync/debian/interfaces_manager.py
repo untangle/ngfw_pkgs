@@ -106,7 +106,7 @@ class InterfacesManager(Manager):
 
         self.interfaces_file.write("iface %s inet %s\n" % (devName, configString))
         if is_bridge:
-            self.write_interface_force_link(bridged_interfaces_str, is_bridge)
+            self.write_interface_force_link(bridged_interfaces_str)
         else:
             self.write_interface_force_link(devName)
         self.interfaces_file.write("\tuntangle_interface_index %i\n" % interface_settings.get('interfaceId'))
@@ -274,10 +274,6 @@ class InterfacesManager(Manager):
         if type(devName) is not list:
             devName = [devName]
 
-        lowest_mac_address = None
-        if is_bridge:
-            lowest_mac_address = self.get_lowest_mac_address(devName)
-
         for dev in devName:
             driver = None
             try:
@@ -287,35 +283,7 @@ class InterfacesManager(Manager):
                 continue
 
             if driver in InterfacesManager.force_link_drivers:
-                bridge_command = ""
-                if is_bridge:
-                    bridge_command = "ip link set %s address %s; " % (dev, lowest_mac_address)
-                self.interfaces_file.write("\tpost-up sleep 5; if [ \"$(cat /sys/class/net/%s/carrier)\" = \"0\" ]; then ip link set %s down; ip addr flush dev %s; ip link set %s up; for script in /etc/network/if-up.d/*; do $script; done; %s fi\n" % (dev, dev, dev, dev, bridge_command))
-
-    def get_lowest_mac_address(self, devs):
-        """
-        Determine the lowest mac address
-        """
-        lowest_mac_address = None
-        for dev in devs:
-            mac_address = None
-            try:
-                with open( '/sys/class/net/%s/address' % dev, 'r') as file:
-                    mac_address = file.read()
-                mac_address = int(mac_address.replace(':', ''), 16)
-            except Exception:
-                # Can't determine (bad driver?), just keep going
-                continue
-
-            if mac_address is not None:
-                if lowest_mac_address is None or mac_address < lowest_mac_address:
-                    lowest_mac_address = mac_address
-
-        if lowest_mac_address is not None:
-            mac_hex = "{:012x}".format(lowest_mac_address)
-            lowest_mac_address = ":".join(mac_hex[i:i+2] for i in range(0, len(mac_hex), 2))
-
-        return lowest_mac_address
+                self.interfaces_file.write("\tpost-up sleep 5; if [ \"$(cat /sys/class/net/%s/carrier)\" = \"0\" ]; then ip link set %s down; ip addr flush dev %s; ip link set %s up; for script in /etc/network/if-up.d/*; do $script; done; fi\n" % (dev, dev, dev, dev))
 
     def check_interface_settings(self, interface_settings):
         if interface_settings.get('systemDev') == None:
