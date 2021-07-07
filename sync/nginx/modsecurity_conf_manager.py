@@ -242,7 +242,7 @@ class ModsecurityConfManager(Manager):
         file.write(prepend + "  pass, \\\n")
         file.write(prepend + "  t:none, \\\n")
         file.write(between.join(exclusions))
-        file.write(lastItem)
+        file.write(prepend + lastItem)
 
     def write_modsecurity_crs_http_policy_settings(self, file, settings):
         """Write modsecurity crs configuration items for HTTP policy settings"""
