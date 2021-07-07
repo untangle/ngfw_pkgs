@@ -213,12 +213,27 @@ class ModsecurityConfManager(Manager):
         prepend = "#"
         enabledExclusionsList = settings['globalModsec']['enabledExclusions']
         lastItem = "\"\n"
-        nonLastItem = ", \\\n"
-        lastExclusion = "xenforo"
+        between = ", \\\n"
+        exclusions = []
         if len(enabledExclusionsList) != 0:
             comment = "Enabled exclusions are: " + ",".join(enabledExclusionsList)
             prepend = ""
-            lastExclusion = enabledExclusionsList[-1]
+            if 'Drupal' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_drupal=1")
+            if 'Wordpress' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_wordpress=1") 
+            if 'Nextcloud' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_nextcloud=1")
+            if 'Dokuwiki' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_dokuwiki=1")
+            if 'Cpanel' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_cpanel=1")
+            if 'Xenforo' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_xenforo=1")
+            if 'Phpbb' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_phpbb=1")
+            if 'Phpmyadmin' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_phpmyadmin=1")
         file.write("# " + comment+  "\n") 
         file.write(prepend + "SecAction \\\n")
         file.write(prepend + " \"id:900130, \\\n")
@@ -226,14 +241,8 @@ class ModsecurityConfManager(Manager):
         file.write(prepend + "  nolog, \\\n")
         file.write(prepend + "  pass, \\\n")
         file.write(prepend + "  t:none, \\\n")
-        file.write("  setvar:tx.crs_exclusions_cpanel=1" + (lastItem if 'cpanel' == lastExclusion else nonLastItem) if 'cpanel' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_dokuwiki=1" + (lastItem if 'dokuwiki' == lastExclusion else nonLastItem) if 'dokuwiki' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_drupal=1" + (lastItem if 'drupal' == lastExclusion else nonLastItem) if 'drupal' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_nextcloud=1" + (lastItem if 'nextcloud' == lastExclusion else nonLastItem) if 'nextcloud' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_phpbb=1" + (lastItem if 'phpbb' == lastExclusion else nonLastItem) if 'phpbb' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_phpmyadmin=1" + (lastItem if 'phpbyadmin' == lastExclusion else nonLastItem) if 'phpmyadmin' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_wordpress=1" + (lastItem if 'wordpress' == lastExclusion else nonLastItem) if 'wordpress' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_xenforo=1\"\n" if 'xenforo' in enabledExclusionsList else "")
+        file.write(between.join(exclusions))
+        file.write(lastItem)
 
     def write_modsecurity_crs_http_policy_settings(self, file, settings):
         """Write modsecurity crs configuration items for HTTP policy settings"""
