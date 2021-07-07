@@ -46,7 +46,7 @@ class ModsecurityConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         global_settings = {
-            'enabledExclusionLists': [],
+            'enabledExclusions': [],
             'allowedHttpMethods': ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
             'geoIP': {
                 'enabled': True,
@@ -211,7 +211,7 @@ class ModsecurityConfManager(Manager):
 
         comment = "By default, no exclusions apply, so rule is commented."
         prepend = "#"
-        enabledExclusionsList = settings['globalModsec']['enabledExclusionLists']
+        enabledExclusionsList = settings['globalModsec']['enabledExclusions']
         lastItem = "\"\n"
         nonLastItem = ", \\\n"
         lastExclusion = "xenforo"
