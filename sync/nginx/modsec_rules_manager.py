@@ -59,6 +59,7 @@ class ModsecRulesManager(Manager):
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync settings"""
+        self.write_ipaccess_to_conf(settings_file, prefix)
         self.write_untangle_exclusion_rules_before(settings_file.settings, prefix)
         self.write_untangle_exclusion_rules_after(settings_file.settings, prefix)
         self.write_untangle_modsec_rules(settings_file.settings, prefix)
@@ -69,11 +70,7 @@ class ModsecRulesManager(Manager):
         ipLists['ipAllowList'] = []
         ipLists['ipBlockList'] = []
         settings_file.settings['ipLists'] = ipLists
-        settings_file.settings['disabledRules'] = []
         return settings_file
-
-    def sync_settings(self, settings_file, prefix, delete_list):
-        self.write_ipaccess_to_conf(settings_file, prefix)
 
     def write_ipaccess_to_conf(self, settings_file, prefix):
         """write out the ip block and allow lists to the conf file"""

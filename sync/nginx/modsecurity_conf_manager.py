@@ -5,42 +5,16 @@ from sync import registrar, Manager
 class ModsecurityConfManager(Manager):
     untangle_crs_setup_conf = "/etc/modsecurity.d/owasp-crs/untangle-crs-setup.conf"
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
-    untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    
+    # registered and synced elsewhere
     untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
-    untangle_exclusion_file="/etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9999-UNTANGLE-EXCLUSION.conf"
-    # map is ID to an array of ifSeen and ifEnabled. Start out with false for ifSeen and true of ifEnabled
-    default_rule_sets_map = {
-        "905": [False, True],
-        "910": [False, True],
-        "911": [False, True],
-        "912": [False, True],
-        "913": [False, True],
-        "920": [False, True],
-        "921": [False, True], 
-        "930": [False, True],
-        "931": [False, True],
-        "932": [False, True],
-        "933": [False, True],
-        "934": [False, True],
-        "941": [False, True],
-        "942": [False, True],
-        "943": [False, True],
-        "944": [False, True],
-        "949": [False, True],
-        "950": [False, True],
-        "951": [False, True],
-        "952": [False, True],
-        "953": [False, True],
-        "954": [False, True],
-    }
+    untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
     
     def initialize(self):
         """Initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.untangle_crs_setup_conf, "restart-nginx", self)
         registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
-        registrar.register_file(self.untangle_modsec_crs_rules_conf, "restart-nginx", self)
-        registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
