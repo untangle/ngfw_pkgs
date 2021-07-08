@@ -5,13 +5,15 @@ from sync import registrar, Manager
 class ModsecurityConfManager(Manager):
     untangle_crs_setup_conf = "/etc/modsecurity.d/owasp-crs/untangle-crs-setup.conf"
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
-    untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
 
     def initialize(self):
         """Initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.untangle_crs_setup_conf, "restart-nginx", self)
         registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
+        registrar.register_file(self.untangle_modsec_crs_rules_conf, "restart-nginx", self)
         registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
@@ -568,6 +570,8 @@ class ModsecurityConfManager(Manager):
         # untangle-crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
         file.write("Include %s\n" % self.untangle_crs_setup_conf)
         # This is the location of all the core rule set conf files
+        file.write("Include %s\n" % self.untangle_modsec_crs_rules_conf)
+        # This is the location of custom untangle rules
         file.write("Include %s\n" % self.untangle_modsec_rules_conf)
         file.write("\n")
         file.write("\n")
@@ -576,7 +580,7 @@ class ModsecurityConfManager(Manager):
 
     def write_untangle_modsec_rules(self, settings, prefix):
         """write the untangle modsec rules conf file"""
-        filename = prefix + self.untangle_modsec_rules_conf
+        filename = prefix + self.untangle_modsec_crs_rules_conf
         file_dir = os.path.dirname(filename)
         if not os.path.exists(file_dir):
             os.makedirs(file_dir)
