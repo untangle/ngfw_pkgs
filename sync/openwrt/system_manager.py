@@ -13,7 +13,6 @@ class SystemManager(Manager):
     watchdog_disabler_filename = "/etc/config/startup.d/030-disable-watchdog"
     rpfilter_disabler_filename = "/etc/config/startup.d/040-disable-rpfilter"
     hostname_setter_filename = "/etc/config/startup.d/050-hostname"
-    wizard_status_filename = "/etc/config/wizard-status.json"
     reload_system_filename = "/etc/config/startup.d/zzz-reload-system"
     nic_setter_filename = "/etc/config/startup.d/060-nic-settings"
     cron_filename = "/etc/crontabs/root"
@@ -25,7 +24,6 @@ class SystemManager(Manager):
         registrar.register_file(self.watchdog_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.rpfilter_disabler_filename, "startup-scripts", self)
         registrar.register_file(self.hostname_setter_filename, "startup-scripts", self)
-        registrar.register_file(self.wizard_status_filename, "restart-pyconnector", self)
         registrar.register_file(self.reload_system_filename, "startup-scripts", self)
         registrar.register_file(self.cron_filename, "restart-cron", self)
         registrar.register_file(self.nic_setter_filename, "restart-nic-setting", self)
@@ -84,8 +82,6 @@ class SystemManager(Manager):
 
         self.write_cron_file(settings_file.settings, prefix)
 
-        self.write_wizard_status(settings_file.settings, prefix)
-
         self.write_system_reloader(prefix)
 
         network = settings_file.settings.get('network')
@@ -134,22 +130,6 @@ class SystemManager(Manager):
         os.chmod(filename, os.stat(filename).st_mode | stat.S_IEXEC)
         print("SystemManager: Wrote %s" % filename)
 
-    def write_wizard_status(self, settings, prefix):
-        """Write the wizard status in /etc/config/wizard-status.json"""
-        filename = prefix + self.wizard_status_filename
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        file = open(filename, "w+")
-
-        file.write(json.dumps(settings['system']['setupWizard'].get('completed')))
-        file.write('\n')
-
-        file.flush()
-        file.close()
-
-        print("SystemManager: Wrote %s" % filename)
 
     def write_cron_file(self, settings, prefix):
         """Write the cron file"""
@@ -179,8 +159,7 @@ class SystemManager(Manager):
 
         if enabled:
             file.write("%i %i * * %i /usr/bin/upgrade.sh >/dev/null 2>&1\n" % (minute, hour, day))
-
-        file.write("0 */12 * * * /usr/bin/fetch-licenses.sh >/dev/null 2>&1\n")
+            
         file.flush()
         file.close()
 

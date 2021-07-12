@@ -39,6 +39,21 @@ class WireguardManager(Manager):
                 'rule': '-o $WG_INTERFACE -p tcp --tcp-flags SYN,RST SYN -j TCPMSS --clamp-mss-to-pmtu -m comment --comment "Perform mss clamping for wireguard vpn"'
             }]
         },
+        "nat": {
+            "port-forward-rules": [{
+                'new': 'insert',
+                'rule': '-p tcp -d {wireguard_ip_address} --destination-port 443 -j REDIRECT --to-ports 443 -m comment --comment "Send wireguard VPN to apache http"'
+            },{
+                'new': 'insert',
+                'rule': '-p tcp -d {wireguard_ip_address} --destination-port 80 -j REDIRECT --to-ports 80 -m comment --comment "Send wireguard to apache https"'
+            }]
+        },
+        "filter": {
+            "nat-reverse-filter": [{
+                'new': 'insert',
+                'rule': '-m mark --mark {src_mark} -j RETURN -m comment --comment "Allow wireguard vpn"'
+            }]
+        }
     }
 
     def initialize(self):
@@ -172,7 +187,8 @@ class WireguardManager(Manager):
             # Network settings must be specified
             raise Exception("Network settings not specified")
 
-        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_chain_rules)
+        wireguard_ip_address = settings_file.settings.get('addressPool').split('/')[0]
+        delete_rules, new_rules = IptablesUtil.write_wireguard_iptables_rules(self.iptables_table_chain_rules, wireguard_ip_address)
 
         self.out_file_name = prefix + self.wireguard_iptables_script
         self.out_file_dir = os.path.dirname(self.out_file_name)

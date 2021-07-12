@@ -130,6 +130,13 @@ class SettingsFile:
                 setting_value = setting[compare_key]
                 if compare_value_type != type(setting_value):
                     # Values are not same type.
+                    if type(setting_value) is list:
+                        # Special case: If setting is a list and we're not, see
+                        # if our compare is inside it.
+                        # This is to fix the case of port_protocol which is usually
+                        # written as a string from us, but made into a list from the UI.
+                        if str(compare_value) in list(map(str,setting_value)):
+                            return True
                     return False
 
                 if compare_value_type is collections.OrderedDict:
