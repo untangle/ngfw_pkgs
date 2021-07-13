@@ -539,9 +539,7 @@ class ModsecurityConfManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n")
-        file.write("\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
         # Load the modsecurity.conf default file
         file.write("Include /etc/modsecurity.d/modsecurity.conf\n")
         # Override the modsecurity.conf properties

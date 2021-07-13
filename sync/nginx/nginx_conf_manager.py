@@ -69,9 +69,7 @@ class NginxConfManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-
-        file.write("\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
         
         # If the upstream servers have not been configured yet, only create the redirect page
         if len(settings['server']['upstreamBackend']['upstreamServers']) is 0:
@@ -93,9 +91,8 @@ class NginxConfManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
-        file.write("\n")
         file.write("load_module modules/ngx_http_modsecurity_module.so;\n")
         file.write("load_module modules/ngx_http_sticky_module.so;\n")
         file.write("load_module modules/ngx_http_geoip2_module.so;\n")
@@ -132,9 +129,8 @@ class NginxConfManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
-        file.write("\n")
         file.write("log_format json_combined escape=json\n")
         file.write("\t'{'\n")
         file.write("\t\t'\"remote_addr\":\"$remote_addr\",'\n")

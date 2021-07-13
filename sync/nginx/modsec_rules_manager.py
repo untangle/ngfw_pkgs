@@ -123,9 +123,7 @@ class ModsecRulesManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n")
-        file.write("\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
         file.flush()
         file.close()
@@ -140,14 +138,11 @@ class ModsecRulesManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
         if len(settings['disabledRules']) > 0:
             for rule in settings['disabledRules']:
                 file.write("SecRuleRemoveById " + rule + "\n")
-
-        file.write("\n")
-        file.write("\n")
 
         file.flush()
         file.close()
@@ -162,9 +157,8 @@ class ModsecRulesManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
-        file.write("\n")
         # Initialization is needed always
         file.write("Include " + self.untangle_exclusion_file_before + "\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
@@ -218,8 +212,7 @@ class ModsecRulesManager(Manager):
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
         file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
         file.write("Include " + self.untangle_exclusion_file_after + "\n")
-        file.write("\n")
-        file.write("\n")
+        file.write("\n\n")
         file.flush()
         file.close()
         
