@@ -5,22 +5,22 @@ from sync import registrar, Manager
 class ModsecurityConfManager(Manager):
     untangle_crs_setup_conf = "/etc/modsecurity.d/owasp-crs/untangle-crs-setup.conf"
     modsecurity_setup_conf="/etc/modsecurity.d/setup.conf"
-    untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    
+    # registered and synced elsewhere
     untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
-
+    untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    
     def initialize(self):
         """Initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.untangle_crs_setup_conf, "restart-nginx", self)
         registrar.register_file(self.modsecurity_setup_conf, "restart-nginx", self)
-        registrar.register_file(self.untangle_modsec_crs_rules_conf, "restart-nginx", self)
-        registrar.register_file(self.untangle_modsec_rules_conf, "restart-nginx", self)
 
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
         global_settings = {
-            'enabledExclusionLists': ['wordpress'],
+            'enabledExclusions': [],
             'allowedHttpMethods': ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
             'geoIP': {
                 'enabled': True,
@@ -42,7 +42,6 @@ class ModsecurityConfManager(Manager):
         print("%s: Syncing settings" % self.__class__.__name__)
         self.write_untangle_crs_setup_conf(settings_file.settings, prefix)
         self.write_modsecurity_setup_conf(settings_file.settings, prefix)
-        self.write_untangle_modsec_rules(settings_file.settings, prefix)
 
     def write_untangle_crs_setup_conf(self, settings, prefix):
         """write the untangle crs setup file"""
@@ -186,14 +185,29 @@ class ModsecurityConfManager(Manager):
 
         comment = "By default, no exclusions apply, so rule is commented."
         prepend = "#"
-        enabledExclusionsList = settings['globalModsec']['enabledExclusionLists']
+        enabledExclusionsList = settings['globalModsec']['enabledExclusions']
         lastItem = "\"\n"
-        nonLastItem = ", \\\n"
-        lastExclusion = "xenforo"
+        between = ", \\\n"
+        exclusions = []
         if len(enabledExclusionsList) != 0:
             comment = "Enabled exclusions are: " + ",".join(enabledExclusionsList)
             prepend = ""
-            lastExclusion = enabledExclusionsList[-1]
+            if 'Drupal' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_drupal=1")
+            if 'Wordpress' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_wordpress=1") 
+            if 'Nextcloud' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_nextcloud=1")
+            if 'Dokuwiki' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_dokuwiki=1")
+            if 'Cpanel' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_cpanel=1")
+            if 'Xenforo' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_xenforo=1")
+            if 'Phpbb' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_phpbb=1")
+            if 'Phpmyadmin' in enabledExclusionsList:
+                exclusions.append("  setvar:tx.crs_exclusions_phpmyadmin=1")
         file.write("# " + comment+  "\n") 
         file.write(prepend + "SecAction \\\n")
         file.write(prepend + " \"id:900130, \\\n")
@@ -201,14 +215,8 @@ class ModsecurityConfManager(Manager):
         file.write(prepend + "  nolog, \\\n")
         file.write(prepend + "  pass, \\\n")
         file.write(prepend + "  t:none, \\\n")
-        file.write("  setvar:tx.crs_exclusions_cpanel=1" + (lastItem if 'cpanel' == lastExclusion else nonLastItem) if 'cpanel' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_dokuwiki=1" + (lastItem if 'dokuwiki' == lastExclusion else nonLastItem) if 'dokuwiki' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_drupal=1" + (lastItem if 'drupal' == lastExclusion else nonLastItem) if 'drupal' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_nextcloud=1" + (lastItem if 'nextcloud' == lastExclusion else nonLastItem) if 'nextcloud' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_phpbb=1" + (lastItem if 'phpbb' == lastExclusion else nonLastItem) if 'phpbb' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_phpmyadmin=1" + (lastItem if 'phpbyadmin' == lastExclusion else nonLastItem) if 'phpmyadmin' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_wordpress=1" + (lastItem if 'wordpress' == lastExclusion else nonLastItem) if 'wordpress' in enabledExclusionsList else "")
-        file.write("  setvar:tx.crs_exclusions_xenforo=1\"\n" if 'xenforo' in enabledExclusionsList else "")
+        file.write(between.join(exclusions))
+        file.write(prepend + lastItem)
 
     def write_modsecurity_crs_http_policy_settings(self, file, settings):
         """Write modsecurity crs configuration items for HTTP policy settings"""
@@ -531,9 +539,7 @@ class ModsecurityConfManager(Manager):
         self.current_file = open(filename, "w+")
         file = self.current_file
         file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-        file.write("\n")
-        file.write("\n")
+        file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
         # Load the modsecurity.conf default file
         file.write("Include /etc/modsecurity.d/modsecurity.conf\n")
         # Override the modsecurity.conf properties
@@ -573,62 +579,6 @@ class ModsecurityConfManager(Manager):
         file.write("Include %s\n" % self.untangle_modsec_crs_rules_conf)
         # This is the location of custom untangle rules
         file.write("Include %s\n" % self.untangle_modsec_rules_conf)
-        file.write("\n")
-        file.write("\n")
-        file.flush()
-        file.close()
-
-    def write_untangle_modsec_rules(self, settings, prefix):
-        """write the untangle modsec rules conf file"""
-        filename = prefix + self.untangle_modsec_crs_rules_conf
-        file_dir = os.path.dirname(filename)
-        if not os.path.exists(file_dir):
-            os.makedirs(file_dir)
-
-        self.current_file = open(filename, "w+")
-        file = self.current_file
-        file.write("## Auto Generated\n")
-        file.write("## DO NOT EDIT. Changes will be overwritten.\n")
-
-        file.write("\n")
-        # Initialization is needed always
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-901-INITIALIZATION.conf\n")
-        # TODO: Here is where we would add IP Allow/Block list imports, and rule exclusions
-        
-        
-        # Application exclusions included by default, enabled in configuration
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9001-DRUPAL-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9002-WORDPRESS-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9003-NEXTCLOUD-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9004-DOKUWIKI-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9005-CPANEL-EXCLUSION-RULES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-903.9006-XENFORO-EXCLUSION-RULES.conf\n")
-        
-        # Rulesets - will need to add settings toggles
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-905-COMMON-EXCEPTIONS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-910-IP-REPUTATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-911-METHOD-ENFORCEMENT.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-912-DOS-PROTECTION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-913-SCANNER-DETECTION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-920-PROTOCOL-ENFORCEMENT.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-921-PROTOCOL-ATTACK.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-930-APPLICATION-ATTACK-LFI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-931-APPLICATION-ATTACK-RFI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-932-APPLICATION-ATTACK-RCE.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-933-APPLICATION-ATTACK-PHP.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-934-APPLICATION-ATTACK-NODEJS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-941-APPLICATION-ATTACK-XSS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-942-APPLICATION-ATTACK-SQLI.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-943-APPLICATION-ATTACK-SESSION-FIXATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-944-APPLICATION-ATTACK-JAVA.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/REQUEST-949-BLOCKING-EVALUATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-950-DATA-LEAKAGES.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-951-DATA-LEAKAGES-SQL.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-952-DATA-LEAKAGES-JAVA.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-953-DATA-LEAKAGES-PHP.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-954-DATA-LEAKAGES-IIS.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-959-BLOCKING-EVALUATION.conf\n")
-        file.write("Include /etc/modsecurity.d/owasp-crs/rules/RESPONSE-980-CORRELATION.conf\n")
         file.write("\n")
         file.write("\n")
         file.flush()
