@@ -19,6 +19,11 @@ class ModsecurityConfManager(Manager):
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
+
+        settings_file.settings['globalModsec'] = default_global_settings()
+
+    def default_global_settings(self):
+        """generates the default global settings"""
         global_settings = {
             'enabledExclusions': [],
             'allowedHttpMethods': ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
@@ -35,7 +40,14 @@ class ModsecurityConfManager(Manager):
             }
         }
 
-        settings_file.settings['globalModsec'] = global_settings
+        return global_settings
+
+    def sanitize_settings(self, settings_file):
+        """sanitizes settings for modsecurity conf"""
+        print("%s: Sanitizing settings" % self.__class__.__name__)
+
+        if 'globalModsec' not in settings_file.settings:
+            settings_file.settings['globalModsec'] = default_global_settings()
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync the settings"""
