@@ -57,6 +57,9 @@ class ModsecRulesManager(Manager):
         if "ipLists" not in settings_file.settings:
             settings_file = self.create_iplists_settings(settings_file)
 
+        if 'ruleSets' not in settings_file.settings:
+            settings_file.settings['ruleSets'] = {ruleSetId: self.default_rule_sets_map[ruleSetId][1] for ruleSetId in self.default_rule_sets_map.keys()}
+
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync settings"""
         self.write_ipaccess_to_conf(settings_file, prefix)
@@ -140,7 +143,7 @@ class ModsecRulesManager(Manager):
         file.write("## Auto Generated\n")
         file.write("## DO NOT EDIT. Changes will be overwritten.\n\n\n")
 
-        if len(settings['disabledRules']) > 0:
+        if 'disabledRules' in settings and len(settings['disabledRules']) > 0:
             for rule in settings['disabledRules']:
                 file.write("SecRuleRemoveById " + rule + "\n")
 
