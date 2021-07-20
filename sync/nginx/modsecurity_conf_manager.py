@@ -20,7 +20,7 @@ class ModsecurityConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
-        settings_file.settings['globalModsec'] = default_global_settings()
+        settings_file.settings['globalModsec'] = self.default_global_settings()
 
     def default_global_settings(self):
         """generates the default global settings"""
@@ -47,7 +47,7 @@ class ModsecurityConfManager(Manager):
         print("%s: Sanitizing settings" % self.__class__.__name__)
 
         if 'globalModsec' not in settings_file.settings:
-            settings_file.settings['globalModsec'] = default_global_settings()
+            settings_file.settings['globalModsec'] = self.default_global_settings()
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync the settings"""
