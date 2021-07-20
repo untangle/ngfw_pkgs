@@ -21,7 +21,7 @@ Vcs-Browser: https://github.com/untangle/ngfw_pkgs.git
 
 Package: untangle-python3-sync-settings
 Architecture: all
-Depends: ${misc:Depends}, python, ${misc:Depends}, ${python3:Depends}
+Depends: ${misc:Depends}, python3, ${misc:Depends}, ${python3:Depends}
 Description: Library for manipulating Untangle system settings (Python 3)
  This module is a library for manipulating Untangle system settings.
  .
