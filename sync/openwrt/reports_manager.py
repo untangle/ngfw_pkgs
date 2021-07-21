@@ -58,18 +58,14 @@ def default_dashboard_settings():
             "isReport": False,
             "interval": 0
         }, {
+            "name": "Interface Usage",
+            "interval": 30
+        },{
             "name": "Network Layout",
             "isReport": False,
             "interval": 0
         }, {
-            "name": "WAN Routing",
-            "isReport": True,
-            "interval": 30
-        }, {
-            "name": "Interface Usage",
-            "interval": 30
-        }, {
-            "name": "Interface Average Active Latency",
+            "name": "Interface Average Latency",
             "interval": 30
         }, {
             "name": "Top Applications by Bandwidth",
@@ -78,7 +74,8 @@ def default_dashboard_settings():
             "name": "Top Applications Bandwidth by Time",
             "interval": 30
         }, {
-            "name": "Session Count Summary",
+            "name": "WAN Routing",
+            "isReport": True,
             "interval": 30
         }]
     }
