@@ -1,7 +1,6 @@
 """This class is responsible for writing out the IP Block/Allow lists"""
 import os
 from sync import registrar, Manager
-import os
 import netaddr
 
 class ModsecRulesManager(Manager):

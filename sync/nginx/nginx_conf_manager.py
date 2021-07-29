@@ -268,10 +268,7 @@ class NginxConfManager(Manager):
 
     def write_error_pages(self, file, nginx_locations):
         """write_error_pages creates the http status code response pages"""
-        file.write("\terror_page 500 502 503 504  /50x.html;\n")
-        file.write("\tlocation = /50x.html {\n")
-        file.write("\t\troot /usr/share/nginx/html;\n")
-        file.write("\t}\n")
+        file.write('\tinclude /etc/modsecurity.d/errors.conf;\n')
 
     def write_untangle_default_landing(self, file):
         """write_untangle_default_landing creates a URI rewrite that redirects all requests to /app/setup, and creates a root location that points to the app/index.html"""
