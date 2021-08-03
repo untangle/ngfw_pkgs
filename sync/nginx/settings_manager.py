@@ -29,6 +29,7 @@ class SettingsManager(Manager):
 
         #Get version
         settings_file.settings['version'] = get_version(self.version_filename)
+        self.default_timezone(settings_file.settings)
 
         filename = prefix + filepath
         file_dir = os.path.dirname(filename)
@@ -56,6 +57,8 @@ class SettingsManager(Manager):
             # Add SSL Enabled field if our defaults predate this version
             sslSettings['enabled'] = False
 
+        self.default_timezone(settings_file.settings)
+
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
         # orig_settings_filename = settings_file.settings["filename"]
@@ -66,6 +69,12 @@ class SettingsManager(Manager):
             os.makedirs(file_dir)
         shutil.copyfile(orig_settings_filename, filename)
         print("%s: Wrote %s" % (self.__class__.__name__, filename))
+
+
+    def default_timezone(self, settings):
+        """applies the default timezone"""
+        if 'timezone' not in settings:
+            settings['timezone'] = 'UTC'
 
 registrar.register_manager(SettingsManager())
 
