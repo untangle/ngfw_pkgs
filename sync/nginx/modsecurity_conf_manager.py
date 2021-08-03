@@ -20,34 +20,48 @@ class ModsecurityConfManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
-        settings_file.settings['globalModsec'] = self.default_global_settings()
+        settings_file.settings['globalModsec'] = self.default_global_settings(settings_file.settings['globalModsec'] if 'globalModsec' in settings_file.settings else None)
 
-    def default_global_settings(self):
+    def default_global_settings(self, global_settings):
         """generates the default global settings"""
-        global_settings = {
-            'enabledExclusions': [],
-            'allowedHttpMethods': ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE'],
-            'geoIP': {
+        
+        if global_settings == None:
+            global_settings = {}
+
+        if 'engineState' not in global_settings:
+            global_settings['engineState'] = {
+                'enabled': True
+            }
+
+        if 'enabledExclusions' not in global_settings:
+            global_settings['enabledExclusions'] = []
+
+        if 'allowedHttpMethods' not in global_settings:
+            global_settings['allowedHttpMethods'] = ['GET', 'HEAD', 'POST', 'OPTIONS', 'PUT', 'PATCH', 'DELETE']
+
+        if 'geoIP' not in global_settings:
+            global_settings['geoIP'] = {
                 'enabled': True,
                 'database': '/usr/share/untangle/waf/database/GeoLite2-Country.mmdb'
-            },
-            'blockCountries': [],
-            'dosProtection': {
+            }
+
+        if 'blockCountries' not in global_settings:
+            global_settings['blockCountries'] = []
+
+        if 'dosProtection' not in global_settings:
+            global_settings['dosProtection'] = {
                 'enabled': False,
                 'burstTime': 60,
                 'counterThreshold': 100,
                 'blockTimeout': 600
             }
-        }
 
         return global_settings
 
     def sanitize_settings(self, settings_file):
         """sanitizes settings for modsecurity conf"""
         print("%s: Sanitizing settings" % self.__class__.__name__)
-
-        if 'globalModsec' not in settings_file.settings:
-            settings_file.settings['globalModsec'] = self.default_global_settings()
+        settings_file.settings['globalModsec'] = self.default_global_settings(settings_file.settings['globalModsec'] if 'globalModsec' in settings_file.settings else None)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """sync the settings"""
@@ -555,7 +569,7 @@ class ModsecurityConfManager(Manager):
         # Load the modsecurity.conf default file
         file.write("Include /etc/modsecurity.d/modsecurity.conf\n")
         # Override the modsecurity.conf properties
-        file.write("SecRuleEngine on\n")
+        file.write("SecRuleEngine on\n" if settings['globalModsec']['engineState']['enabled'] else "SecRuleEngine off\n")
         file.write("SecRequestBodyAccess on\n")
         file.write("\n")
         file.write("SecRequestBodyLimit 13107200\n")

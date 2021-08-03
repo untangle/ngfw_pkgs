@@ -283,6 +283,7 @@ class NginxConfManager(Manager):
         file.write("\tlocation /api {\n")
         file.write("\t\tproxy_pass http://localhost:8585;\n")
         file.write("\t}\n")
+        self.write_error_pages(file, [])
         file.write("}\n")
 
 registrar.register_manager(NginxConfManager())
