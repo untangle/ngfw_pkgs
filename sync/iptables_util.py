@@ -46,15 +46,16 @@ class IptablesUtil:
     def interface_condition_string_to_virtual_interface_list( value ):
         """
         Not actual interfaces but should "behave" like interfaces, namely
-        IPSec traffic.
+        IPsec traffic.
         """
         virtual_intfs = []
 
         for substr in value.split(","):
             if substr == "non_wan" or \
                substr == "ipsec":
-                ## Ipsec
-                virtual_intfs.append("-m policy --pol ipsec --dir in")
+                # NGFW-13754 For IPsec we add a unique interface ID value that will be detected
+                # and converted into the corresponding policy module condition
+                virtual_intfs.append(99999)
 
         return virtual_intfs
 
@@ -174,9 +175,15 @@ class IptablesUtil:
                         conditionStr += " ! "
                     if isinstance(interface, (int)):
                         if conditionType == "DST_INTF":
-                            conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
+                            if interface == 99999:
+                                conditionStr += (" -m policy --pol ipsec --dir out ")
+                            else:
+                                conditionStr += (" -m connmark --mark 0x%04X/0xFF00 " % (int(interface) << 8))
                         else:
-                            conditionStr += (" -m connmark --mark 0x%04X/0x00FF " % int(interface))
+                            if interface == 99999:
+                                conditionStr += (" -m policy --pol ipsec --dir in ")
+                            else:
+                                conditionStr += (" -m connmark --mark 0x%04X/0x00FF " % int(interface))
                     else:
                         conditionStr += interface
                     current_strings = current_strings + [ current + conditionStr for current in orig_current_strings ]
@@ -349,8 +356,7 @@ class IptablesUtil:
                 value = condition['value']
                 if "any" in value:
                     continue
-                interfaces = IptablesUtil.interface_condition_string_to_interface_list( value ) + \
-                             IptablesUtil.interface_condition_string_to_virtual_interface_list( value )
+                interfaces = IptablesUtil.interface_condition_string_to_interface_list( value )
                 if interfaces is None:
                     continue
                 network_settings = {'network': NetworkUtil.settings}
