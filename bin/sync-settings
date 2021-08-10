@@ -49,10 +49,12 @@ class Options(object):
         self.settings_file_names = []
         if os.path.isfile('/etc/debian_version'):
             self.os_name = 'debian'
-        elif os.path.isfile('/etc/alpine-release'):
-            self.os_name = 'alpine'
         elif os.path.isfile('/etc/openwrt_version'):
             self.os_name = 'openwrt'
+
+        if os.path.isfile('/etc/alpine-release') or os.path.isdir('/usr/share/untangle/waf/'):
+            self.os_name = 'alpine'
+
         if self.os_name == 'openwrt':
             self.default_settings_filename = '/etc/config/settings.json'
         elif self.os_name == 'alpine':
