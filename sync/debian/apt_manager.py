@@ -88,11 +88,13 @@ class AptManager(Manager):
         # Debian code name
         self.parameters["debian_code_name"] = self.get_debian_code_name()
         if self.parameters["debian_code_name"] is None:
+            print("Unable to determine debian_code_name")
             return False
 
         # NGFW pubversion
         self.parameters["pubversion"] = self.get_pubversion()
         if self.parameters["pubversion"] is None:
+            print("Unable to determine pubversion")
             return False
 
         # UID for user name
