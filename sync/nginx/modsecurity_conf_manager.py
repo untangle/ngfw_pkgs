@@ -9,6 +9,7 @@ class ModsecurityConfManager(Manager):
     # registered and synced elsewhere
     untangle_modsec_rules_conf="/etc/modsecurity.d/untangle-modsec-rules.conf"
     untangle_modsec_crs_rules_conf="/etc/modsecurity.d/untangle-crs-rules.conf"
+    untangle_modsec_exceptions_conf="/etc/modsecurity.d/untangle-modsec-exceptions.conf"
     
     def initialize(self):
         """Initialize this module"""
@@ -601,6 +602,8 @@ class ModsecurityConfManager(Manager):
         file.write("\n")
         # untangle-crs-setup.conf has the core rule set initialization conf info (also see the activate-rules.sh script)
         file.write("Include %s\n" % self.untangle_crs_setup_conf)
+        # This is the location of all custom rule exceptions
+        file.write("Include %s\n" % self.untangle_modsec_exceptions_conf)
         # This is the location of all the core rule set conf files
         file.write("Include %s\n" % self.untangle_modsec_crs_rules_conf)
         # This is the location of custom untangle rules
