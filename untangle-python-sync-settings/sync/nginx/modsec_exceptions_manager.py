@@ -169,8 +169,12 @@ class ModsecExceptionsManager(Manager):
         i.e. request methods should be uppercase
         """
         value = condition['value']
-        if condition['type'] == 'REQUEST_METHOD':
+        condition_type = condition['type']
+        if condition_type == 'REQUEST_METHOD':
             value = value.upper()
+        if condition_type == 'REMOTE_ADDR':
+            # strip spaces from comma delimited list. 1.1.1.1, 2.2.2.2 => 1.1.1.1,2.2.2.2
+            value = (',').join(map(lambda x: x.strip(), value.split(',')))
         return value
 
         
