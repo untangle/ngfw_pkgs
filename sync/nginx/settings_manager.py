@@ -17,6 +17,8 @@ class SettingsManager(Manager):
     default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
+    waf_commit_filename = "/usr/share/untangle/waf/settings/waf-commit-hash"
+    ui_commit_filename = "/usr/share/untangle/waf/settings/ui-commit-hash"
 
     def initialize(self):
         """initialize this module"""
@@ -27,8 +29,7 @@ class SettingsManager(Manager):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
 
-        #Get version
-        settings_file.settings['version'] = get_version(self.version_filename)
+        self.set_versions(settings_file.settings)
         self.default_timezone(settings_file.settings)
 
         filename = prefix + filepath
@@ -76,16 +77,22 @@ class SettingsManager(Manager):
         if 'timezone' not in settings:
             settings['timezone'] = 'UTC'
 
+    def set_versions(self, settings):
+        """gets the build version and hashes"""
+        settings['version'] = get_text_file_value(self.version_filename, "0.0")
+        settings['wafCommitHash'] = get_text_file_value(self.waf_commit_filename, "0000000")
+        settings['uiCommitHash'] = get_text_file_value(self.ui_commit_filename, "0000000")
+
 registrar.register_manager(SettingsManager())
 
-def get_version(version_filename):
-    version = "0.0"
-    version_file = open(version_filename, "r")
-    if version_file.mode == "r":
-        version = version_file.read().strip()
+def get_text_file_value(filename, default_value):
+    value = default_value
+    text_file = open(filename, "r")
+    if text_file.mode == "r":
+        value = text_file.read().strip()
     else:
-        print("ERROR: failed to open version file")
+        print(f"ERROR: failed to open text file: {filename}")
 
-    version_file.close()
+    text_file.close()
 
-    return version
+    return value
