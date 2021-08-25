@@ -15,7 +15,7 @@ untangle-database-config		stretch,buster
 untangle-lxc-client			stretch,buster
 untangle-hardware-turris-omnia		stretch,buster
 untangle-firmware-common		stretch,buster
-untangle-stunnel-config	             	stretch,buster
+untangle-stunnel-config	                stretch,buster
 untangle-hardware-lanner-u25            stretch,buster
 untangle-hardware-lanner-u25w           stretch,buster
 untangle-hardware-lanner-u50            stretch,buster
@@ -33,7 +33,7 @@ untangle-hardware-caswell-z6            stretch,buster
 untangle-hardware-caswell-z12           stretch,buster
 untangle-hardware-caswell-z20           stretch,buster
 untangle-hardware-jetway-u50w           stretch,buster
-untangle-hardware-asus-ac88u	     	stretch,buster
+untangle-hardware-asus-ac88u	        stretch,buster
 untangle-hardware-linksys-wrt1900acs    stretch,buster
 untangle-hardware-qotom-u25x            stretch,buster
 untangle-hardware-qotom-u25xw           stretch,buster
@@ -55,7 +55,7 @@ untangle-development-runtime            stretch,buster
 untangle-gateway                        stretch,buster
 untangle-extra-utils                    stretch,buster
 untangle-update-manager                 stretch,buster
-untangle-archive-keyring 		stretch,buster
+untangle-archive-keyring                stretch,buster
 untangle-nsis-addons                    stretch,buster
 untangle-postgresql-config              stretch,buster
 untangle-hardware-config                stretch,buster
@@ -67,8 +67,9 @@ untangle-snmpd-config                   stretch,buster
 untangle-spamassassin-update            stretch,buster
 untangle-system-config                  stretch,buster
 untangle-apache2-config                 stretch,buster
-untangle-sync-settings		     	stretch,buster
-untangle-nflogd			     	stretch,buster
+untangle-sync-settings		        stretch,buster
+untangle-nflogd			        stretch,buster
 untangle-geoip-database                 stretch,buster
-untangle-squid-config          		stretch,buster
+untangle-squid-config                   stretch,buster
 untangle-freeradius-config		buster
+untangle-region-eu                      buster
