@@ -8,7 +8,9 @@ Standards-Version: 3.9.8
 
 Package: untangle-region-eu
 Architecture: all
-Depends: ${misc:Depends}, systemd
+Depends: ${misc:Depends},
+        systemd,
+        untangle-vm
 Description: The Untangle EU region
  Provides geographicl region specfic settings for the system.
 
