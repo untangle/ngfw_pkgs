@@ -1,0 +1,14 @@
+Source: untangle-region-eu
+Section: admin
+Priority: optional
+Maintainer: Chris Blaise <cblaise@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-region-eu
+Architecture: all
+Depends: ${misc:Depends}, systemd
+Description: The Untangle EU region
+ Provides geographicl region specfic settings for the system.
+
