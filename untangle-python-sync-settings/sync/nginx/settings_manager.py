@@ -24,6 +24,9 @@ class SettingsManager(Manager):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.settings_filename, None, self)
+        registrar.register_file(self.version_filename, None, self)
+        registrar.register_file(self.waf_commit_filename, None, self)
+        registrar.register_file(self.ui_commit_filename, None, self)
 
     def create_settings(self, settings_file, prefix, delete_list, filepath):
         """creates settings"""
@@ -59,6 +62,7 @@ class SettingsManager(Manager):
             sslSettings['enabled'] = False
 
         self.default_timezone(settings_file.settings)
+        self.set_versions(settings_file.settings)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
