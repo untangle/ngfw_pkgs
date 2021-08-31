@@ -1,0 +1,9 @@
+#! /bin/bash
+
+#DEBHELPER#
+
+# Remove current urls settings file to ensure its re-created
+URLS_SETTINGS_FILE_NAME=/usr/share/untangle/conf/uris.js
+if [ -f $URLS_SETTINGS_FILE_NAME ] ; then
+    rm -f $URLS_SETTINGS_FILE_NAME
+fi
