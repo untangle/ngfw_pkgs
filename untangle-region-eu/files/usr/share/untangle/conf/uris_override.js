@@ -77,6 +77,16 @@
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://sshrelay.untangle.com/"
+            },
+            {
+                "javaClass": "com.untangle.uvm.UriTranslation",
+                "uri": "https://www.untangle.com/api/v1",
+                "host": "eu-untangle.com"
+            },
+            {
+                "javaClass": "com.untangle.uvm.UriTranslation",
+                "uri": "https://www.untangle.com/cmd",
+                "host": "eu-untangle.com"
             }
         ]
     },
