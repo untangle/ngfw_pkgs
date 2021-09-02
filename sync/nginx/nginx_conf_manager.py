@@ -112,7 +112,7 @@ class NginxConfManager(Manager):
         file.write("\tmodsecurity on;\n")
         file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
         file.write("\tinclude /etc/nginx/conf.d/*.conf;\n")
-        file.write("\tgeoip2 /usr/share/untangle/waf/database/GeoLite2-Country.mmdb {\n")
+        file.write("\tgeoip2 /var/cache/untangle-geoip/GeoLite2-City.mmdb {\n")
         file.write("\t\t$geoip2_data_country_code default=XU country iso_code;\n")
         file.write("\t}\n")
         file.write("}\n")

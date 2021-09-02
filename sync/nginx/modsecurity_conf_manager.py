@@ -43,7 +43,7 @@ class ModsecurityConfManager(Manager):
         if 'geoIP' not in global_settings:
             global_settings['geoIP'] = {
                 'enabled': True,
-                'database': '/usr/share/untangle/waf/database/GeoLite2-Country.mmdb'
+                'database': '/var/cache/untangle-geoip/GeoLite2-City.mmdb'
             }
 
         if 'blockCountries' not in global_settings:
