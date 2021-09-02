@@ -52,13 +52,13 @@ class Options(object):
         elif os.path.isfile('/etc/openwrt_version'):
             self.os_name = 'openwrt'
 
-        if os.path.isfile('/etc/alpine-release') or os.path.isdir('/usr/share/untangle/waf/'):
-            self.os_name = 'alpine'
+        if os.path.isdir('/etc/untangle-waf/'):
+            self.os_name = 'untangle-waf'
 
         if self.os_name == 'openwrt':
             self.default_settings_filename = '/etc/config/settings.json'
-        elif self.os_name == 'alpine':
-            self.default_settings_filename = '/usr/share/untangle/waf/settings/settings.json'
+        elif self.os_name == 'untangle-waf':
+            self.default_settings_filename = '/etc/untangle-waf/settings.json'
         else:
             self.default_settings_filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.restart_services = True
@@ -208,7 +208,7 @@ def copy_files(dirname):
     Copy the files from dirname into the root filesystem
     """
     global opts
-    if opts.os_name == 'debian' or opts.os_name == 'alpine':
+    if opts.os_name == 'debian' or opts.os_name == 'untangle-waf':
         # First copy all the directories that do not exist
         # then copy remaining files
         # We do this to keep the original permission/ownership on directories, but
@@ -497,7 +497,7 @@ def main():
         import sync.debian as _
     elif opts.os_name == 'openwrt':
         import sync.openwrt as _
-    elif opts.os_name == 'alpine':
+    elif opts.os_name == 'untangle-waf':
         import sync.nginx as _
     else:
         print("\nUnknown OS: " + opts.os_name)
