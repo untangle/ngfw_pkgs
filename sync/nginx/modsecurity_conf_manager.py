@@ -573,7 +573,7 @@ class ModsecurityConfManager(Manager):
         file.write("SecRuleEngine on\n" if settings['globalModsec']['engineState']['enabled'] else "SecRuleEngine off\n")
         file.write("SecRequestBodyAccess on\n")
         file.write("\n")
-        file.write("SecRequestBodyLimit 13107200\n")
+        file.write("SecRequestBodyLimit %s\n", int(settings['server']['advancedOptions']['client_max_body_size'])*1000000)
         file.write("SecRequestBodyNoFilesLimit 131072\n")
         file.write("SecRequestBodyLimitAction Reject\n")
         file.write("\n")

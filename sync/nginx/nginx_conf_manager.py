@@ -63,11 +63,17 @@ class NginxConfManager(Manager):
             'metricsAllowFrom': '127.0.0.0/24',
             'metricsDenyFrom': 'all',
         }
+        # use underscores here so UI translations work
+        advancedOptions = [
+            { 'name': 'client_max_body_size', 'value': '1', 'units': 'MB' }, #used in modsecurity also
+            { 'name': 'client_timeout', 'value': '60', 'units': 's' }
+        ] 
         server['basicServer'] = basic_server
         server['setupWizard'] = setupWizard
         server['upstreamBackend'] = upstream_backend
         server['serverSsl'] = server_ssl
         server['nginxLocations'] = nginx_locations
+        server['advancedOptions'] = advancedOptions
         settings_file.settings['server'] = server
 
     def sync_settings(self, settings_file, prefix, delete_list):
@@ -127,6 +133,12 @@ class NginxConfManager(Manager):
         file.write("\tdefault_type application/octet-stream;\n")
         file.write("\tkeepalive_timeout 60s;\n")
         file.write("\tsendfile on;\n")
+        file.write("\n")
+        file.write("\tclient_max_body_size \%sM;\n", settings['server']['advancedOptions']['client_max_body_size'])
+        file.write("\tproxy_read_timeout %s;\n", settings['server']['advancedOptions']['client_timeout'])
+        file.write("\tproxy_connect_timeout %s;\n", settings['server']['advancedOptions']['client_timeout'])
+        file.write("\tproxy_send_timeout %s;\n", settings['server']['advancedOptions']['client_timeout'])
+        file.write("\tset_timeout %s;\n", settings['server']['advancedOptions']['client_timeout'])
         file.write("\n")
         file.write("\tmodsecurity on;\n")
         file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
