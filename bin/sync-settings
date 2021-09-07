@@ -52,13 +52,13 @@ class Options(object):
         elif os.path.isfile('/etc/openwrt_version'):
             self.os_name = 'openwrt'
 
-        if os.path.isdir('/etc/untangle-waf/'):
+        if os.path.isdir('/usr/share/untangle/waf/'):
             self.os_name = 'untangle-waf'
 
         if self.os_name == 'openwrt':
             self.default_settings_filename = '/etc/config/settings.json'
         elif self.os_name == 'untangle-waf':
-            self.default_settings_filename = '/etc/untangle-waf/settings.json'
+            self.default_settings_filename = '/usr/share/untangle/waf/settings/settings.json'
         else:
             self.default_settings_filename = '/usr/share/untangle/settings/untangle-vm/network.js'
         self.restart_services = True
