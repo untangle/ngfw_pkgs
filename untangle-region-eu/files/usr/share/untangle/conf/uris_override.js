@@ -68,7 +68,7 @@
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://untangle.com/api/v1/appliance/OnSettingsUpdate",
-                "host": "eu-untangle.com"
+                "host": "eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
@@ -81,12 +81,12 @@
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://www.untangle.com/api/v1",
-                "host": "eu-untangle.com"
+                "host": "eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://www.untangle.com/cmd",
-                "host": "eu-untangle.com"
+                "host": "eu.untangle.com"
             }
         ]
     },
