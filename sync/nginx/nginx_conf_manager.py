@@ -36,8 +36,8 @@ class NginxConfManager(Manager):
             'lbMethod': "round_robin"
         }
         server_ssl = {
-            'proxySslCert': '/etc/nginx/certs/server.crt',
-            'proxySslCertKey': '/etc/nginx/certs/server.key',
+            'proxySslCert': '/usr/share/untangle/certs/server.crt',
+            'proxySslCertKey': '/usr/share/untangle/certs/server.key',
             'proxySslVerify': 'off',
             'enabled': False,
         }
