@@ -279,7 +279,7 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_http_version 1.1;\n")
         file.write("\t\tproxy_buffering off;\n")
 
-        timeout = settings['server']['advanced_options']['clientTimeout']['value'] + 's'
+        timeout = settings['server']['advancedOptions']['clientTimeout']['value'] + 's'
         file.write("\t\tproxy_read_timeout %s;\n" % timeout)
         file.write("\t\tproxy_connect_timeout %s;\n" % timeout)
         file.write("\t\tproxy_send_timeout %s;\n" % timeout)
