@@ -1,5 +1,6 @@
 """This class is responsible for managing the nginx configuration for WAF"""
 import os
+import uuid
 from sync import registrar, Manager
 
 class NginxConfManager(Manager):
@@ -33,7 +34,23 @@ class NginxConfManager(Manager):
         upstream_backend = {
             'upstreamServers': [
             ],
-            'lbMethod': "round_robin"
+            'lbMethod': "sticky",
+            'listenerPorts': [
+                {
+                    'listenerID': str(uuid.uuid4()),
+                    'listenerPort': '80',
+                    'upstreamPort': '80',
+                    'listenerProtocol': 'http',
+                    'upstreamProtocol': 'http'
+                },
+                {
+                    'listenerID': str(uuid.uuid4()),
+                    'listenerPort': '443',
+                    'upstreamPort': '443',
+                    'listenerProtocol': 'https',
+                    'upstreamProtocol': 'https'
+                }
+            ]
         }
         server_ssl = {
             'proxySslCert': '/etc/nginx/certs/server.crt',
@@ -76,8 +93,10 @@ class NginxConfManager(Manager):
             self.write_untangle_default_landing(file)
         else:
             self.write_http_connection_upgrade(file, settings)
-            self.write_upstream_backend(file, settings)
-            self.write_basic_server_conf(file, settings)
+            # for each listener, write out upstream and backend
+            for listener in settings['server']['upstreamBackend']['listenerPorts']:
+                self.write_upstream_backend(file, settings, listener)
+                self.write_basic_server_conf(file, settings, listener)
 
         file.flush()
         file.close()
@@ -150,10 +169,10 @@ class NginxConfManager(Manager):
         file.flush()
         file.close()
 
-    def write_upstream_backend(self, file, settings):
+    def write_upstream_backend(self, file, settings, listener):
         """write the upstream backend block for nginx"""
         upstream_backend = settings['server']['upstreamBackend']
-        file.write("upstream backend {\n")
+        file.write("\nupstream backend_"  + listener['listenerID'] + " {\n")
 
         if len(upstream_backend.get('upstreamServers')) > 1 and upstream_backend['lbMethod'] is not None:
             lb = upstream_backend['lbMethod']
@@ -166,55 +185,46 @@ class NginxConfManager(Manager):
             # round robin needs no additional configuration written
             # any unknown lb method would also have nothing written out to the nginx file
 
-        for server in upstream_backend.get('upstreamServers'):
-            file.write("    server " + server.get('upstreamServerName') + ";\n")
+        for server in upstream_backend['upstreamServers']:
+            file.write(f"\tserver {server['upstreamServerName']}:{listener['upstreamPort']};\n")
+
         file.write("}\n")
         file.write("\n")
 
-    def write_basic_server_conf(self, file, settings):
-        """write the initial settings of the server block for nginx"""
+    def write_basic_server_conf(self, file, settings, listener):
+        """write the settings of the server block for a listener"""
+        
+        # open server block
+        file.write("\nserver {\n")
+
+        # if https, write out ssl port listeners and ssl settings
+        if listener['listenerProtocol'] == 'https':
+            file.write(f"\tlisten [::]:{listener['listenerPort']} ssl;\n") 
+            file.write(f"\tlisten {listener['listenerPort']} ssl;\n") 
+            self.write_ssl_settings(file, settings, listener)
+
+        # if http, write out http port listeners
+        elif listener['listenerProtocol'] == 'http':
+            file.write(f"\tlisten [::]:{listener['listenerPort']};\n") 
+            file.write(f"\tlisten {listener['listenerPort']};\n")
+
+        file.write("\n")
+
+        # write out generic server info
         basic_server = settings['server']['basicServer']
-        sslEnabled = settings['server']['serverSsl']['enabled']
-
-        if sslEnabled:
-            # write redirect section before 443 listener
-            file.write("server {\n")
-            file.write("\tlisten " + basic_server['port'] + " default_server;\n")
-            file.write("\tlisten [::]:" + basic_server['port'] + " default_server;\n")
-            file.write("\tserver_name _;\n")
-            file.write("\treturn 301 https://$host$request_uri;\n")
-            file.write("\n")
-            file.write("}")
-            file.write("\n")
-            file.write("\n")
-
-            file.write("server {\n")
-            file.write("\tlisten " + basic_server['sslPort'] + " ssl;\n")
-            file.write("\n")
-        else:
-            # write regular server section and listen on both ports
-            file.write("server {\n")
-            file.write("\tlisten " + basic_server['sslPort'] + " ssl;\n")
-            file.write("\tlisten " + basic_server['port'] + ";\n")
-            file.write("\n")
         file.write("\tresolver " + basic_server['dnsServer'] + " valid=5s;\n")
-        file.write("\tserver_name " + basic_server['serverName'] + ";\n")
-        file.write("\n")
+        file.write("\tserver_name " + basic_server['serverName'] + ";\n\n")
 
-        server_ssl = settings['server']['serverSsl']
-        file.write("\tssl_certificate " + server_ssl['proxySslCert'] + ";\n")
-        file.write("\tssl_certificate_key " + server_ssl['proxySslCertKey'] + ";\n")
-        file.write("\tssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;\n")
-        file.write("\tssl_prefer_server_ciphers on;\n")
-        file.write("\tssl_protocols TLSv1 TLSv1.1 TLSv1.2;\n")
-        file.write("\tssl_verify_client " + server_ssl['proxySslVerify'] + ";\n")
-        file.write("\n")
+        # write root, health, metrics and error locations
         nginx_locations = settings['server']['nginxLocations']
-        self.write_root_loc(file, nginx_locations, sslEnabled)
+        self.write_root_loc(file, nginx_locations, settings, listener)
         self.write_health_loc(file, nginx_locations)
         self.write_metrics_loc(file, nginx_locations)
         self.write_error_pages(file, nginx_locations)
+
+        # close server block
         file.write("}")
+        
 
     def write_http_connection_upgrade(self, file, settings):
         """write_http_connection_upgrade creates the http_upgrade logic to upgrade http traffic"""
@@ -223,10 +233,11 @@ class NginxConfManager(Manager):
         file.write("\t\'\' close;\n")
         file.write("\t}\n")
 
-    def write_root_loc(self, file, nginx_loc, sslEnabled):
+    def write_root_loc(self, file, nginx_loc, settings, listener):
         """write_root_loc writes the root location for the WAF upstream servers"""
         file.write("\tlocation / {\n")
         file.write("\t\tclient_max_body_size 0;\n")
+        # write proxy headers
         file.write("\t\tproxy_set_header Host $host;\n")
         file.write("\t\tproxy_set_header Proxy \"\";\n")
         file.write("\t\tproxy_set_header Upgrade $connection_upgrade;\n")
@@ -241,10 +252,11 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_read_timeout 36000s;\n")
         file.write("\t\tproxy_redirect off;\n")
         file.write("\t\tproxy_pass_header Authorization;\n")
-        if sslEnabled:
-            file.write("\t\tproxy_pass https://backend;\n")
-        else:
-            file.write("\t\tproxy_pass http://backend;\n")
+        
+        # write proxy_pass to upstream server
+        file.write(f"\t\tproxy_pass {listener['upstreamProtocol']}://backend_{listener['listenerID']};\n")
+
+        # write root location
         file.write("\t\tindex index.html index.htm;\n")
         file.write("\t\troot /usr/share/nginx/html;\n")
         file.write("\t}\n")
@@ -285,5 +297,15 @@ class NginxConfManager(Manager):
         file.write("\t}\n")
         self.write_error_pages(file, [])
         file.write("}\n")
+
+    def write_ssl_settings(self, file, settings, listener):
+        """writes the ssl information for a server listener"""
+        server_ssl = settings['server']['serverSsl']
+        file.write("\tssl_certificate " + server_ssl['proxySslCert'] + ";\n")
+        file.write("\tssl_certificate_key " + server_ssl['proxySslCertKey'] + ";\n")
+        file.write("\tssl_ciphers ECDH+AESGCM:DH+AESGCM:ECDH+AES256:DH+AES256:ECDH+AES128:DH+AES:ECDH+3DES:DH+3DES:RSA+AESGCM:RSA+AES:RSA+3DES:!aNULL:!MD5:!DSS;\n")
+        file.write("\tssl_prefer_server_ciphers on;\n")
+        file.write("\tssl_protocols TLSv1 TLSv1.1 TLSv1.2;\n")
+        file.write("\tssl_verify_client " + server_ssl['proxySslVerify'] + ";\n")
 
 registrar.register_manager(NginxConfManager())
