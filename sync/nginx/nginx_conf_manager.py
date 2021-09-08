@@ -155,7 +155,7 @@ class NginxConfManager(Manager):
         file.write("\tkeepalive_timeout 60s;\n")
         file.write("\tsendfile on;\n")
         file.write("\n")
-        file.write("\tclient_max_body_size %sM;\n" % settings['server']['advancedOptions']['client_max_body_size']['value'])
+        file.write("\tclient_max_body_size %sM;\n" % settings['server']['advancedOptions']['clientMaxBodySize']['value'])
         file.write("\n")
         file.write("\tmodsecurity on;\n")
         file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
@@ -279,7 +279,7 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_http_version 1.1;\n")
         file.write("\t\tproxy_buffering off;\n")
 
-        timeout = settings['server']['advanced_options']['client_timeout']['value'] + 's'
+        timeout = settings['server']['advanced_options']['clientTimeout']['value'] + 's'
         file.write("\t\tproxy_read_timeout %s;\n" % timeout)
         file.write("\t\tproxy_connect_timeout %s;\n" % timeout)
         file.write("\t\tproxy_send_timeout %s;\n" % timeout)
