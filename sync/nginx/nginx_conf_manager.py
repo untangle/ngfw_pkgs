@@ -78,7 +78,6 @@ class NginxConfManager(Manager):
 
         if 'nginxLocations' not in server_settings:
             nginx_locations = {
-                'proxyTimeout': '60s',
                 'metricsAllowFrom': '127.0.0.0/24',
                 'metricsDenyFrom': 'all',
             }
@@ -158,10 +157,6 @@ class NginxConfManager(Manager):
         file.write("\tsendfile on;\n")
         file.write("\n")
         file.write("\tclient_max_body_size %sM;\n" % settings['server']['advancedOptions']['client_max_body_size']['value'])
-        file.write("\tproxy_read_timeout %s;\n" % settings['server']['advancedOptions']['client_timeout']['value'])
-        file.write("\tproxy_connect_timeout %s;\n" % settings['server']['advancedOptions']['client_timeout']['value'])
-        file.write("\tproxy_send_timeout %s;\n" % settings['server']['advancedOptions']['client_timeout']['value'])
-        file.write("\tsend_timeout %s;\n" % settings['server']['advancedOptions']['client_timeout']['value'])
         file.write("\n")
         file.write("\tmodsecurity on;\n")
         file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
@@ -284,8 +279,12 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_set_header X-Forwarded-Proto $scheme;\n")
         file.write("\t\tproxy_http_version 1.1;\n")
         file.write("\t\tproxy_buffering off;\n")
-        file.write("\t\tproxy_connect_timeout " + nginx_loc['proxyTimeout'] + ";\n")
-        file.write("\t\tproxy_read_timeout 36000s;\n")
+
+        timeout = settings['server']['advanced_options']['client_timeout']['value'] + 's'
+        file.write("\t\tproxy_read_timeout %s;\n" % timeout)
+        file.write("\t\tproxy_connect_timeout %s;\n" % timeout)
+        file.write("\t\tproxy_send_timeout %s;\n" % timeout)
+        file.write("\t\tsend_timeout %s;\n" % timeout)
         file.write("\t\tproxy_redirect off;\n")
         file.write("\t\tproxy_pass_header Authorization;\n")
         
