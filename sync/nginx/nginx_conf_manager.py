@@ -83,11 +83,10 @@ class NginxConfManager(Manager):
             }
             server_settings['nginxLocations'] = nginx_locations
 
-        # use underscores here so UI translations work
         if 'advancedOptions' not in server_settings:
             advancedOptions = {
-                'client_max_body_size': {'value': '10', 'units': 'MB' }, #used in modsecurity also
-                'client_timeout': {'value': '60', 'units': 'seconds' }
+                'clientMaxBodySize': {'name': 'client_max_body_size', 'value': '10', 'units': 'MB' }, #used in modsecurity also
+                'clientTimeout': {'name': 'client_timeout', 'value': '60', 'units': 'seconds' }
             }
             server_settings['advancedOptions'] = advancedOptions
         
