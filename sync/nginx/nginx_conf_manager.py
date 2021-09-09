@@ -69,10 +69,9 @@ class NginxConfManager(Manager):
 
         if 'serverSsl' not in server_settings:
             server_ssl = {
-                'proxySslCert': '/etc/nginx/certs/server.crt',
-                'proxySslCertKey': '/etc/nginx/certs/server.key',
-                'proxySslVerify': 'off',
-                'enabled': False,
+                'proxySslCert': '/etc/nginx/certs/server.pem',
+                'proxySslCertKey': '/etc/nginx/certs/server.pem',
+                'proxySslVerify': 'off'
             }
             server_settings['serverSsl'] = server_ssl
 
