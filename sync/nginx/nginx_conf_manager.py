@@ -89,6 +89,13 @@ class NginxConfManager(Manager):
                 'clientTimeout': {'name': 'client_timeout', 'value': '60', 'units': 'seconds' }
             }
             server_settings['advancedOptions'] = advancedOptions
+        else:
+            current_options = server_settings['advancedOptions']
+            if 'clientMaxBodySize' not in current_options:
+                current_options['clientMaxBodySize'] = {'name': 'client_max_body_size', 'value': '10', 'units': 'MB' }
+            if 'clientTimeout' not in current_options:
+                current_options['clientTimeout'] = {'name': 'client_timeout', 'value': '60', 'units': 'seconds' }
+            server_settings['advancedOptions'] = current_options
         
         return server_settings
 
