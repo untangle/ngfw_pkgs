@@ -19,56 +19,90 @@ class NginxConfManager(Manager):
     def create_settings(self, settings_file, prefix, delete_list, filename):
         """creates settings"""
         print("%s: Initializing settings" % self.__class__.__name__)
-        server = {}
-        basic_server = {
-            'sslPort': '443',
-            'port': '80',
-            'dnsServer': '127.0.0.11',
-            'serverName': 'localhost',
-            'paranoia': '1',
-            'proxy': '1'
-        }
-        setupWizard = {
-                'completed': False
-        }
-        upstream_backend = {
-            'upstreamServers': [
-            ],
-            'lbMethod': "sticky",
-            'listenerPorts': [
-                {
-                    'listenerID': str(uuid.uuid4()),
-                    'listenerPort': '80',
-                    'upstreamPort': '80',
-                    'listenerProtocol': 'http',
-                    'upstreamProtocol': 'http'
-                },
-                {
-                    'listenerID': str(uuid.uuid4()),
-                    'listenerPort': '443',
-                    'upstreamPort': '443',
-                    'listenerProtocol': 'https',
-                    'upstreamProtocol': 'https'
-                }
-            ]
-        }
-        server_ssl = {
-            'proxySslCert': '/etc/nginx/certs/server.crt',
-            'proxySslCertKey': '/etc/nginx/certs/server.key',
-            'proxySslVerify': 'off',
-            'enabled': False,
-        }
-        nginx_locations = {
-            'proxyTimeout': '60s',
-            'metricsAllowFrom': '127.0.0.0/24',
-            'metricsDenyFrom': 'all',
-        }
-        server['basicServer'] = basic_server
-        server['setupWizard'] = setupWizard
-        server['upstreamBackend'] = upstream_backend
-        server['serverSsl'] = server_ssl
-        server['nginxLocations'] = nginx_locations
-        settings_file.settings['server'] = server
+        settings_file.settings['server'] = self.default_server_settings(settings_file.settings['server'] if 'server' in settings_file.settings else None)
+
+    def default_server_settings(self, server_settings):
+        """generates the default server settings"""
+
+        if server_settings == None:
+            server_settings = {}
+
+        if 'basicServer' not in server_settings:
+            basic_server = {
+                'sslPort': '443',
+                'port': '80',
+                'dnsServer': '127.0.0.11',
+                'serverName': 'localhost',
+                'paranoia': '1',
+                'proxy': '1'
+            }
+            server_settings['basicServer'] = basic_server
+
+        if 'setupWizard' not in server_settings:
+            setupWizard = {
+                    'completed': False
+            }
+            server_settings['setupWizard'] = setupWizard
+
+        if 'upstreamBackend' not in server_settings:
+            upstream_backend = {
+                'upstreamServers': [],
+                'lbMethod': "sticky",
+                'listenerPorts': [
+                    {
+                        'listenerID': str(uuid.uuid4()),
+                        'listenerPort': '80',
+                        'upstreamPort': '80',
+                        'listenerProtocol': 'http',
+                        'upstreamProtocol': 'http'
+                    },
+                    {
+                        'listenerID': str(uuid.uuid4()),
+                        'listenerPort': '443',
+                        'upstreamPort': '443',
+                        'listenerProtocol': 'https',
+                        'upstreamProtocol': 'https'
+                    }
+                ]
+            }
+            server_settings['upstreamBackend'] = upstream_backend
+
+        if 'serverSsl' not in server_settings:
+            server_ssl = {
+                'proxySslCert': '/etc/nginx/certs/server.crt',
+                'proxySslCertKey': '/etc/nginx/certs/server.key',
+                'proxySslVerify': 'off',
+                'enabled': False,
+            }
+            server_settings['serverSsl'] = server_ssl
+
+        if 'nginxLocations' not in server_settings:
+            nginx_locations = {
+                'metricsAllowFrom': '127.0.0.0/24',
+                'metricsDenyFrom': 'all',
+            }
+            server_settings['nginxLocations'] = nginx_locations
+
+        if 'advancedOptions' not in server_settings:
+            advancedOptions = {
+                'clientMaxBodySize': {'name': 'client_max_body_size', 'value': '10', 'units': 'MB' }, #used in modsecurity also
+                'clientTimeout': {'name': 'client_timeout', 'value': '60', 'units': 'seconds' }
+            }
+            server_settings['advancedOptions'] = advancedOptions
+        else:
+            current_options = server_settings['advancedOptions']
+            if 'clientMaxBodySize' not in current_options:
+                current_options['clientMaxBodySize'] = {'name': 'client_max_body_size', 'value': '10', 'units': 'MB' }
+            if 'clientTimeout' not in current_options:
+                current_options['clientTimeout'] = {'name': 'client_timeout', 'value': '60', 'units': 'seconds' }
+            server_settings['advancedOptions'] = current_options
+        
+        return server_settings
+
+    def sanitize_settings(self, settings_file):
+        """sanitizes settings for nginx conf"""
+        print("%s: Sanitizing settings" % self.__class__.__name__)
+        settings_file.settings['server'] = self.default_server_settings(settings_file.settings['server'] if 'server' in settings_file.settings else None)
 
     def sync_settings(self, settings_file, prefix, delete_list):
         """syncs settings"""
@@ -127,6 +161,8 @@ class NginxConfManager(Manager):
         file.write("\tdefault_type application/octet-stream;\n")
         file.write("\tkeepalive_timeout 60s;\n")
         file.write("\tsendfile on;\n")
+        file.write("\n")
+        file.write("\tclient_max_body_size %sM;\n" % settings['server']['advancedOptions']['clientMaxBodySize']['value'])
         file.write("\n")
         file.write("\tmodsecurity on;\n")
         file.write("\tmodsecurity_rules_file /etc/modsecurity.d/setup.conf;\n")
@@ -249,8 +285,12 @@ class NginxConfManager(Manager):
         file.write("\t\tproxy_set_header X-Forwarded-Proto $scheme;\n")
         file.write("\t\tproxy_http_version 1.1;\n")
         file.write("\t\tproxy_buffering off;\n")
-        file.write("\t\tproxy_connect_timeout " + nginx_loc['proxyTimeout'] + ";\n")
-        file.write("\t\tproxy_read_timeout 36000s;\n")
+
+        timeout = settings['server']['advancedOptions']['clientTimeout']['value'] + 's'
+        file.write("\t\tproxy_read_timeout %s;\n" % timeout)
+        file.write("\t\tproxy_connect_timeout %s;\n" % timeout)
+        file.write("\t\tproxy_send_timeout %s;\n" % timeout)
+        file.write("\t\tsend_timeout %s;\n" % timeout)
         file.write("\t\tproxy_redirect off;\n")
         file.write("\t\tproxy_pass_header Authorization;\n")
         
