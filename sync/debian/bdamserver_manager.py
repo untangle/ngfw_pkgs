@@ -22,6 +22,16 @@ class BdamserverManager(Manager):
         # operation to restart badadmserver
         registrar.register_file(self.bdadmserver_conf_file_name, "restart-bdamserver", self)
 
+    def get_uid(self):
+        "Get the system's uid"
+        try:
+            file = open("/usr/share/untangle/conf/uid", "r")
+            uid = file.read().rstrip("\n")
+            file.close()
+        except Exception as e:
+            uid = None
+        return uid
+
     def sync_settings(self, settings_file, prefix, delete_list):
         """
         Synchronize our file by modifying.
@@ -58,7 +68,11 @@ class BdamserverManager(Manager):
                             new_uri = copy.deepcopy(uri)
                             uri['path'] = path
                             new_uri = UriUtil.build_uri(self.update_uri, uri)
-                            line = "{config_option}{new_uri}\n".format(config_option=config_option,new_uri=new_uri) 
+                            uid = self.get_uid()
+                            if "++" not in str(new_uri) and uid is not None:
+                                line = "{config_option}{new_uri}++{uid}\n".format(config_option=config_option,new_uri=new_uri,uid=uid)
+                            else:
+                                line = "{config_option}{new_uri}\n".format(config_option=config_option,new_uri=new_uri)
 
             if write_line == True:
                 self.out_file.write(line)
