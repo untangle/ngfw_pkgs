@@ -17,16 +17,14 @@ class SettingsManager(Manager):
     default_filename = "/usr/share/untangle/waf/settings/defaults.json"
     settings_filename = "/usr/share/untangle/waf/settings/current.json"
     version_filename = "/usr/share/untangle/waf/settings/version"
-    waf_commit_filename = "/usr/share/untangle/waf/settings/waf-commit-hash"
-    ui_commit_filename = "/usr/share/untangle/waf/settings/ui-commit-hash"
+    ui_version_filename = "/usr/share/untangle/waf/settings/ui-version"
 
     def initialize(self):
         """initialize this module"""
         registrar.register_settings_file("settings", self)
         registrar.register_file(self.settings_filename, None, self)
         registrar.register_file(self.version_filename, None, self)
-        registrar.register_file(self.waf_commit_filename, None, self)
-        registrar.register_file(self.ui_commit_filename, None, self)
+        registrar.register_file(self.ui_version_filename, None, self)
 
     def create_settings(self, settings_file, prefix, delete_list, filepath):
         """creates settings"""
@@ -83,17 +81,30 @@ class SettingsManager(Manager):
 
     def set_versions(self, settings):
         """gets the build version and hashes"""
-        settings['version'] = get_text_file_value(self.version_filename, "0.0")
-        settings['wafCommitHash'] = get_text_file_value(self.waf_commit_filename, "0000000")
-        settings['uiCommitHash'] = get_text_file_value(self.ui_commit_filename, "0000000")
+        settings['version'] = get_semver_from_file(self.version_filename, "0.0", "major.minor.patch")
+        settings['wafCommitHash'] = get_semver_from_file(self.version_filename, "0000000", "build")
+        settings['uiCommitHash'] = get_semver_from_file(self.ui_version_filename, "0000000", "build")
 
 registrar.register_manager(SettingsManager())
 
-def get_text_file_value(filename, default_value):
+def get_semver_from_file(filename, default_value, semver_spec):
+    """get_semver_from_file will retrieve the semver component from a file"""
+
     value = default_value
     text_file = open(filename, "r")
     if text_file.mode == "r":
         value = text_file.read().strip()
+
+        # Split everything up to 3rd occurence in the version, and join them back together
+        # IE: 1.0.0.20210806T115009.a045ea9-1buster becomes 1.0.0
+        if semver_spec == "major.minor.patch":
+            value = ".".join(value.split(".", 3)[:3])
+
+        # Split everything up to 4th and 5th occurence in the version, and join them back together
+        # IE: 1.0.0.20210806T115009.a045ea9-1buster becomes 20210806T115009.a045ea9-1buster
+        if semver_spec == "build":
+            value = ".".join(value.split(".", 5)[3:5])
+
     else:
         print(f"ERROR: failed to open text file: {filename}")
 
