@@ -69,10 +69,9 @@ class NginxConfManager(Manager):
 
         if 'serverSsl' not in server_settings:
             server_ssl = {
-                'proxySslCert': '/usr/share/untangle/certs/server.crt',
-                'proxySslCertKey': '/usr/share/untangle/certs/server.key',
-                'proxySslVerify': 'off',
-                'enabled': False,
+                'proxySslCert': '/usr/share/untangle/certs/server.pem',
+                'proxySslCertKey': '/usr/share/untangle/certs/server.pem',
+                'proxySslVerify': 'off'
             }
             server_settings['serverSsl'] = server_ssl
 
