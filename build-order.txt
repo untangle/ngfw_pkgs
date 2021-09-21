@@ -3,7 +3,6 @@ untangle-vendor-vendor1			stretch,buster
 untangle-hardware-azure-byol		stretch,buster
 untangle-hardware-azure-payg		stretch,buster
 untangle-suricata-config		stretch,buster
-untangle-python-runtests		stretch,buster
 untangle-pyconnector			stretch,buster
 untangle-development-kernel		stretch,buster
 untangle-root				stretch,buster
