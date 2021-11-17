@@ -1,7 +1,21 @@
-#! /bin/bash
+#!/bin/bash
 
 deb-systemd-invoke restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+# Add the Realtek 88x2ce module using dkms
+/usr/sbin/dkms add realtek-88x2ce/5.12.1.6-3
+/usr/sbin/dkms build realtek-88x2ce/5.12.1.6-3
+/usr/sbin/dkms install realtek-88x2ce/5.12.1.6-3
+
+MODULE_CONFIG=/etc/modules-load.d/realtek-88x2ce.conf
+mkdir -p /etc/modules-load.d
+echo "# Realtek 88x2CE WiFi module and dependencies" > $MODULE_CONFIG
+echo "cfg80211" >> $MODULE_CONFIG
+echo "88x2ce" >> $MODULE_CONFIG
+
+# Update the initramfs image
+update-initramfs -u
 
 exit 0

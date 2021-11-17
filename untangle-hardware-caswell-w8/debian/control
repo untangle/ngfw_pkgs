@@ -9,7 +9,6 @@ Standards-Version: 3.9.8
 Package: untangle-hardware-caswell-z6
 Architecture: all
 Depends: ${misc:Depends}, systemd, firmware-atheros, untangle-hardware-config
-Description: The Untangle hardware config
- Provides the mechanism for other packages to register startup
- actions, to load hardware-related settings at boot time.
-
+Description: The Untangle Caswell w8 package
+ This package installs the hardware specific features
+ required on the Caswell w8 appliances.
