@@ -1,4 +1,4 @@
-Source: untangle-hardware-caswell-z6
+Source: untangle-hardware-caswell-w8
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
@@ -6,7 +6,7 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: systemd, debhelper (>= 10)
 Standards-Version: 3.9.8
 
-Package: untangle-hardware-caswell-z6
+Package: untangle-hardware-caswell-w8
 Architecture: all
 Depends: ${misc:Depends}, systemd, firmware-atheros, untangle-hardware-config
 Description: The Untangle Caswell w8 package
