@@ -1,0 +1,14 @@
+Source: untangle-hardware-caswell-w4
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10), dkms
+Standards-Version: 3.9.8
+
+Package: untangle-hardware-caswell-w4
+Architecture: all
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, dkms
+Description: The Untangle Caswell w4 package
+ This package installs the hardware specific features
+ required on the Caswell w4 appliances.

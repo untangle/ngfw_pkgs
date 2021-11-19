@@ -27,6 +27,8 @@ untangle-hardware-portwell-u150         stretch,buster
 untangle-hardware-portwell-u500         stretch,buster
 untangle-hardware-portwell-m1500        stretch,buster
 untangle-hardware-portwell-m3000        stretch,buster
+untangle-hardware-caswell-w4            stretch,buster
+untangle-hardware-caswell-w8            stretch,buster
 untangle-hardware-caswell-z6            stretch,buster
 untangle-hardware-caswell-z12           stretch,buster
 untangle-hardware-caswell-z20           stretch,buster
