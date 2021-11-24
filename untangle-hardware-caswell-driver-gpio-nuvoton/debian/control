@@ -1,0 +1,14 @@
+Source: untangle-hardware-caswell-driver-gpio-nuvoton
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10), dkms
+Standards-Version: 3.9.8
+
+Package: untangle-hardware-caswell-driver-gpio-nuvoton
+Architecture: all
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, dkms
+Description: The Untangle Caswell gpio nuvoto driver package
+ This package installs the hardware specific support for LEDs on
+ Caswell appliances with Nuvoton Super I/O device

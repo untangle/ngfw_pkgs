@@ -1,0 +1,23 @@
+#!/bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+DRIVER_BASE_NAME=gpio-nuvoton
+DRIVER_VERSION=1.9.3
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+# Add the GPIO Nuvoton super I/O module using dkms
+/usr/sbin/dkms add ${DRIVER_BASE_NAME}/${DRIVER_VERSION}
+/usr/sbin/dkms build ${DRIVER_BASE_NAME}/${DRIVER_VERSION}
+/usr/sbin/dkms install ${DRIVER_BASE_NAME}/${DRIVER_VERSION}
+
+MODULE_CONFIG=/etc/modules-load.d/${DRIVER_BASE_NAME}.conf
+mkdir -p /etc/modules-load.d
+echo "# GPIO Nuvoton module and dependencies" > ${MODULE_CONFIG}
+echo "${DRIVER_BASE_NAME}" >> ${MODULE_CONFIG}
+
+# Update the initramfs image
+update-initramfs -u
+
+exit 0

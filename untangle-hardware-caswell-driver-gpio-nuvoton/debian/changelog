@@ -1,0 +1,5 @@
+untangle-hardware-caswell-driver-gpio-nuvoton (0.1.0-1) stable; urgency=low
+
+  * Initial release
+
+ -- Chris Blaise <cblaise@untangle.com>  Wed, 24 Nov 2021 10:00:00 -0700

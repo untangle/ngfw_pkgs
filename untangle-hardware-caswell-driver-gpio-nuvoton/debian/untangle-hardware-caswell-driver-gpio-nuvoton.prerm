@@ -1,0 +1,17 @@
+#!/bin/bash
+
+DRIVER_BASE_NAME=gpio-nuvoton
+DRIVER_VERSION=1.9.3
+
+# Remove the GPIO Nuvoton module from dkms
+/usr/sbin/dkms uninstall ${DRIVER_BASE_NAME}/${DRIVER_VERSION}
+/usr/sbin/dkms remove ${DRIVER_BASE_NAME}/${DRIVER_VERSION} --all
+
+# Remove the modules-load config file
+MODULE_CONFIG=/etc/modules-load.d/${DRIVER_BASE_NAME}.conf
+rm -f ${MODULE_CONFIG}
+
+# Update the initramfs image
+update-initramfs -u
+
+exit 0

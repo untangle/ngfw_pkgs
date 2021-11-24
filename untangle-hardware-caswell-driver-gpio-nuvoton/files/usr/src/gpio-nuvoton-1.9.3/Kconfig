@@ -1,0 +1,6 @@
+config GPIO_NUVOTON
+	tristate "GPIO Nuvoton Super I/O"
+	default m
+	---help---
+	  GPIO Nuvoton Super I/O for LEDS, factory reset
+
