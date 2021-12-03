@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-caswell-driver-gpio-nuvoton
 Architecture: all
-Depends: ${misc:Depends}, systemd, untangle-hardware-config, dkms
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, dkms, untangle-button-led-monitor
 Description: The Untangle Caswell gpio nuvoto driver package
  This package installs the hardware specific support for LEDs on
  Caswell appliances with Nuvoton Super I/O device
