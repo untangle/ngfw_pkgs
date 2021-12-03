@@ -1,0 +1,6 @@
+#! /bin/bash
+
+SERVICE_NAME=ut-button-led-monitor
+systemctl enable $SERVICE_NAME
+
+exit 0
