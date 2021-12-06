@@ -42,6 +42,7 @@ untangle-hardware-qotom-u50x            stretch,buster
 untangle-hardware-qotom-u50xw           stretch,buster
 untangle-hardware-qotom-z4              stretch,buster
 untangle-hardware-qotom-z4w             stretch,buster
+untangle-button-led-monitor             buster
 untangle-bootsplash                     stretch,buster
 untangle-kernel-modules-buster-arm64	buster
 untangle-kernel-modules-buster-armhf	buster

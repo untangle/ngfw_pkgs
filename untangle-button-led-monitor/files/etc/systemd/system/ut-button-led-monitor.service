@@ -1,0 +1,13 @@
+[Unit]
+Description=Button/LED monitor
+After=network.target
+
+[Service]
+Type=forking
+ExecStart=/usr/share/untangle/bin/ut-button-led-monitor.py --start
+ExecStop=/usr/share/untangle/bin/ut-button-led-monitor.py --stop
+PIDFile=/tmp/ut-button-led-monitor.pid
+Restart=always
+
+[Install]
+WantedBy=multi-user.target

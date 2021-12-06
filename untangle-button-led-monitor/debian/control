@@ -1,0 +1,17 @@
+Source: untangle-button-led-monitor
+Section: admin
+Priority: optional
+Maintainer: Chris Blaise <cblaise@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends:
+ debhelper (>= 10),
+ dkms
+Standards-Version: 3.9.8
+
+Package: untangle-button-led-monitor
+Architecture: all
+Depends: ${misc:Depends},
+        systemd,
+        python3-pyinotify
+Description: The Untangle button and LED monitor/manager
+ The Untangle button and LED monitor/manager

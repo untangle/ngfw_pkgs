@@ -7,6 +7,7 @@ GRTAGS
 GSYMS
 GTAGS
 core
+!untangle-hardware-caswell-w4/files/usr/src/realtek-88x2ce-5.12.1.6-3/core
 debootstrap.log
 *.buildinfo
 .pybuild
