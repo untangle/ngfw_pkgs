@@ -2,11 +2,11 @@ Source: untangle-nflogd
 Section: admin
 Priority: optional
 Maintainer: Michael Hotz <mahotz@untangle.com>
-Build-Depends: debhelper (>= 10), libc6 (>= 2.3.2), fakeroot, libnetfilter-log1 (>= 1.0.0), libnetfilter-log-dev (>= 1.0.0), libstdc++-6-dev | libstdc++-7-dev
+Build-Depends: debhelper (>= 10), libc6 (>= 2.3.2), fakeroot, libnetfilter-log1 (>= 1.0.0), libnetfilter-log-dev (>= 1.0.0), libstdc++-6-dev | libstdc++-7-dev | libstdc++-10-dev
 Standards-Version: 3.9.8
 
 Package: untangle-nflogd
 Architecture: any
-Depends: ${misc:Depends}, libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.1.1) | libstdc++7-pic, libnetfilter-log1 (>= 1.0.0), ${misc:Depends}, systemd-sysv
+Depends: ${misc:Depends}, libc6 (>= 2.4), libgcc1 (>= 1:4.1.1), libstdc++6 (>= 4.1.1) | libstdc++7-pic | libstdc++-10-pic, libnetfilter-log1 (>= 1.0.0), ${misc:Depends}, systemd-sysv
 Description: The Untangle NetFilter Log Daemon
  A daemon that handles iptables NFLOG target packets.
