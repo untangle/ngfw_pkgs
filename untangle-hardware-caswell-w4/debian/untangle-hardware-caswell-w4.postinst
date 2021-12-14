@@ -18,4 +18,7 @@ echo "88x2ce" >> $MODULE_CONFIG
 # Update the initramfs image
 update-initramfs -u
 
+# Update grub for serial boot
+update-grub
+
 exit 0

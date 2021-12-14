@@ -4,4 +4,7 @@ deb-systemd-invoke restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
+# Update grub for serial boot
+update-grub
+
 exit 0
