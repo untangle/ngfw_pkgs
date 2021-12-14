@@ -2,7 +2,7 @@ Source: untangle-nflogd
 Section: admin
 Priority: optional
 Maintainer: Michael Hotz <mahotz@untangle.com>
-Build-Depends: debhelper (>= 10), libc6 (>= 2.3.2), fakeroot, libnetfilter-log1 (>= 1.0.0), libnetfilter-log-dev (>= 1.0.0), libstdc++-6-dev | libstdc++-7-dev | libstdc++-10-dev
+Build-Depends: debhelper (>= 10), libnetfilter-log-dev (>= 1.0.0), libstdc++-6-dev | libstdc++-7-dev | libstdc++-10-dev
 Standards-Version: 3.9.8
 
 Package: untangle-nflogd
