@@ -48,6 +48,7 @@ untangle-kernel-modules-buster-arm64	buster
 untangle-kernel-modules-buster-armhf	buster
 untangle-kernel-modules-buster-i386	buster
 untangle-kernel-modules-buster-amd64	buster
+untangle-kernel-modules-bullseye-amd64	bullseye
 untangle-debconf-manager                buster,bullseye
 untangle-clamav-config                  buster,bullseye
 untangle-client-local                   buster,bullseye
