@@ -1,0 +1,5 @@
+untangle-kernel-modules-bullseye-arm64 (0-0) stable; urgency=low
+
+  * auto build
+
+ -- Sebastien Delafond <sdelafond@gmail.com>  Tue, 14 Dec 2021 11:46:42 +0100
