@@ -22,6 +22,7 @@ from untangle_button_led_monitor import *
 # Load extensions
 #
 Monitors = []
+Buttons = []
 for path in glob.glob("/usr/lib/python3/*/*/untangle_button_led_monitor"):
     path_parts = path.split("/")
     imported_module = importlib.import_module(".".join(path_parts[-2:]))
@@ -29,6 +30,8 @@ for path in glob.glob("/usr/lib/python3/*/*/untangle_button_led_monitor"):
         globals().update({name: getattr(imported_module, name)})
         if 'Monitor' in name:
             Monitors.append(globals()[name]())
+        elif 'Button' in name:
+            Buttons.append(globals()[name]())
 
 class ExitHooks(object):
     """
@@ -73,10 +76,14 @@ class GracefulKiller:
 
     def exit_gracefully(self, *args):
         """
-        Shut down monitors
+        Shut down various services
         """
+        ## Shut down monitors
         for monitor in Monitors:
             monitor.stop()
+        ## Shut down buttons
+        for button in Buttons:
+            button.stop()
 
         sys.exit(None)
 
@@ -205,12 +212,17 @@ class Daemon:
         for monitor in Monitors:
             monitor.start()
 
+        # Start buttons
+        for button in Buttons:
+            button.start()
+
         loop_interval = 1
         while True:
             if Settings.Debug is True:
                 Logger.message(f'----------[top of loop - {loop_interval}s]')
             FileWatcher.check()
             NetlinkWatcher.check()
+            # NOTE: Input watcher calls button checkers.
             InputWatcher.check()
 
             for monitor in Monitors:
