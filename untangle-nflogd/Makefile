@@ -19,7 +19,7 @@ LDLIBS += -lpthread -ldl -lnetfilter_log
 OBJFILES := $(patsubst src/%.cpp,src/%.o,$(wildcard src/*.cpp))
 
 nflogd : $(OBJFILES)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LDLIBS) -o $@ $^
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
 install: nflogd
 	mkdir -p $(DESTDIR)/usr/bin
