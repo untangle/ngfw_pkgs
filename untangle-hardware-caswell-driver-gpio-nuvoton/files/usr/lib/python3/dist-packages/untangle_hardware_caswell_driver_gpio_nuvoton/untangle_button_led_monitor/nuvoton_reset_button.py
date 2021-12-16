@@ -139,7 +139,8 @@ class NuvotonResetButton(Button):
                     status_input = input.split("x")
                     # Get the button status based on the status bit set or not.
                     current_status_button = (int(status_input[1],16) >> self.status_bit) & 1
-                    Logger.message("current status_button = " + str(current_status_button))
+                    if Settings.Debug:
+                        Logger.message("current status_button = " + str(current_status_button))
                     if current_status_button == 1:
                         # Button pressed.  It will stay in this state forever,
                         # but we want to measure how long its being pressed.
