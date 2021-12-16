@@ -112,15 +112,11 @@ class NuvotonResetButton(Button):
             with open(self.paths["direction"], "w") as gpio_export_file:
                 gpio_export_file.write("{clear} 0\n".format(**self.pins))
 
-            # Yes, the bash source sets  clear twice on output.
             with open(self.paths["output"], "w") as gpio_export_file:
                 gpio_export_file.write("{clear} 0\n".format(**self.pins))
-            with open(self.paths["output"], "w") as gpio_export_file:
-                gpio_export_file.write("{clear} 1\n".format(**self.pins))
         except:
             Logger.message("Cannot write", sys.exc_info(), target="log")
 
-        ## !! indicate to keep opening file....
         InputWatcher.register(self.paths["input"], self.check_input)
         return
 
@@ -142,8 +138,9 @@ class NuvotonResetButton(Button):
                     # The #0110 is some kind of whitespace; button value is in the hex number
                     status_input = input.split("x")
                     # Get the button status based on the status bit set or not.
-                    current_status_button = (int(status_input[1]) >> self.status_bit) & 1
-                    if current_status_button == 0:
+                    current_status_button = (int(status_input[1],16) >> self.status_bit) & 1
+                    Logger.message("current status_button = " + str(current_status_button))
+                    if current_status_button == 1:
                         # Button pressed.  It will stay in this state forever,
                         # but we want to measure how long its being pressed.
                         # So clear it and if it hasn't been released, the next check
@@ -151,15 +148,13 @@ class NuvotonResetButton(Button):
                         # Then we can act upon length of button press.
                         with open(self.paths["output"], "w") as gpio_export_file:
                             gpio_export_file.write("{clear} 0\n".format(**self.pins))
-                        with open(self.paths["output"], "w") as gpio_export_file:
-                            gpio_export_file.write("{clear} 1\n".format(**self.pins))
                     break;
         except:
             Logger.message("Cannot read", sys.exc_info(), target="log")
 
         current_seconds = time.time()
         time_diff_seconds = 0
-        if current_status_button == 0:
+        if current_status_button == 1:
             # Button is in pressed state
             self.status_button = current_status_button
             if self.status_button_time is None:
@@ -177,13 +172,11 @@ class NuvotonResetButton(Button):
                 ## Factory
                 self.action = "factory"
 
-        if current_status_button != 0 and self.action is not None:
+        if current_status_button == 0 and self.action is not None:
             # Only act upon action after button release.
             if self.action == "reboot":
-                Logger.message("reboot");
                 self.reboot()
             elif self.action == "factory":
-                Logger.message("factory reset");
                 self.factory_reset()
 
         # Nuvoton driver isn't smart enough to let us just keep
