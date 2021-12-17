@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-caswell-w4
 Architecture: all
-Depends: ${misc:Depends}, systemd, untangle-hardware-config, dkms, untangle-hardware-caswell-driver-gpio-nuvoton
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-serial-config, dkms, untangle-hardware-caswell-driver-gpio-nuvoton
 Description: The Untangle Caswell w4 package
  This package installs the hardware specific features
  required on the Caswell w4 appliances.
