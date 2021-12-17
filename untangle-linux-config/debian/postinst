@@ -150,17 +150,17 @@ else
   deb-systemd-helper mask serial-getty@ttyS0.service
 fi
 
-# enable textui on serial console for zsh or bash shell when root logs in
-if ! grep -q ttyS0 /root/.zshrc ; then
-    echo 'if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.zshrc
-else
-    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.zshrc
-fi
-if ! grep -q ttyS0 /root/.bashrc ; then
-    echo 'if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi' >> /root/.bashrc
-else
-    sed -e 's|.*ttyS0.*|if [ `tty` = "/dev/ttyS0" ] ; then read ; /usr/share/untangle/bin/ut-textui.py ; fi|' -i /root/.bashrc
-fi
+# Update rc files
+RC_FILES="/root/.zshrc /root/.bashrc"
+for file in $RC_FILES; do
+    # Remove previous call to start ut-textui on serial interfaces
+    sed -e '/ut-textui.py/d' -i $file
+
+    # Remove current call to run serial interface script
+    sed -e '/untangle_serialrc/d' -i $file
+    # Add call to run serial interface script
+    echo ". /root/.untangle_serialrc" >> $file
+done
 
 # 14.0.0 upgrade fix
 # overwrite shitty miniupnp scripts

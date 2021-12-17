@@ -1,0 +1,5 @@
+if [ `tty` = "/dev/ttyS0" ] ; then 
+   imagingScript="/usr/share/untangle/bin/appliance_imaging_script.sh"
+   [ -x $imagingScript ] && $imagingScript 
+   /usr/share/untangle/bin/ut-textui.py 
+fi
