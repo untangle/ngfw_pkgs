@@ -75,3 +75,4 @@ untangle-geoip-database                 stretch,buster
 untangle-squid-config                   stretch,buster
 untangle-freeradius-config		buster
 untangle-region-eu                      buster
+untangle-serial-config                   buster

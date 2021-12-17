@@ -1,0 +1,10 @@
+#! /bin/bash
+
+# Update grub for serial boot
+update-grub
+
+# Update systemd
+systemctl daemon-reload
+systemctl restart serial-getty@ttyS0.service
+
+exit 0

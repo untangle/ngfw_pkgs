@@ -1,0 +1,13 @@
+Source: untangle-serial-config
+Section: admin
+Priority: optional
+Maintainer: Chris Blaise <cblaise@untangle.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-serial-config
+Architecture: all
+Depends: ${misc:Depends}, systemd
+Description: The Untangle serial port package
+ This package configures the system for exclusive use with a serial port.
