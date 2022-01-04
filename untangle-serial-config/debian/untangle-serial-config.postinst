@@ -4,9 +4,9 @@
 update-grub
 
 # Update systemd
-systemctl daemon-reload
 if [ `tty` != "/dev/ttyS0" ] ; then
     # Only restart serial connection if we're not in serial mode.  Otherwise we could interrupt a running script.
+    systemctl daemon-reload
     systemctl restart serial-getty@ttyS0.service
 fi
 
