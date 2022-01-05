@@ -4,4 +4,11 @@ deb-systemd-invoke restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
+# if no network settings then initilize with defaults and sync
+if [ ! -f /usr/share/untangle/settings/untangle-vm/network.js ] ; then
+   mkdir -p /usr/share/untangle/settings/untangle-vm
+   cp /usr/share/untangle/conf/appliance-network-config.js /usr/share/untangle/settings/untangle-vm/network.js
+   /usr/bin/sync-settings -vv
+fi
+
 exit 0
