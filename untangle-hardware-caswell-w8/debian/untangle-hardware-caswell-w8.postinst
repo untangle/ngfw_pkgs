@@ -11,7 +11,6 @@ if [ ! -f /usr/share/untangle/conf/appliance-network-config-flag ] ; then
     /bin/date > /usr/share/untangle/conf/appliance-network-config-flag
     mkdir -p /usr/share/untangle/settings/untangle-vm
     cp /usr/share/untangle/conf/appliance-network-config.js /usr/share/untangle/settings/untangle-vm/network.js
-    /usr/bin/sync-settings -vv
 fi
 
 exit 0
