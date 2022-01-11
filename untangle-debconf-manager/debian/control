@@ -7,7 +7,6 @@ Standards-Version: 3.9.8
 
 Package: untangle-debconf-manager
 Architecture: all
-Pre-Depends: python
 Description: Untangle Debconf Manager
  The Untangle Manager for the debconf database.
  .
