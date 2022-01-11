@@ -7,7 +7,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-apache2-config
 Architecture: all
-Depends: ${misc:Depends}, apache2, libapache2-mod-jk, libapache2-mod-python, python-psycopg2, bsdmainutils, fonts-font-awesome, untangle-extjs
+Depends: ${misc:Depends}, apache2, libapache2-mod-jk, libapache2-mod-python, python-psycopg2 | python3-psycopg2, bsdmainutils, fonts-font-awesome, untangle-extjs
 Pre-Depends: systemd, untangle-debconf-manager
 Description: The Untangle Apache2 config
  The Untangle Apache2 configuration utilities.
