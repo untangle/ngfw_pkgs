@@ -34,13 +34,13 @@ for entry in entries:
   if entry.count(dljEntryName) == 0:
     otherEntries.append(entry)
   elif entry.count("\nValue: true\n") > 0:
-    print "DLJ was already accepted, doing nothing."
+    print("DLJ was already accepted, doing nothing.")
     sys.exit(0)
 
 # if we made it here...
-print "DLJ was not accepted:"
-print "  --> making a copy of debconf.dat in " + debconfCopy
+print("DLJ was not accepted:")
+print("  --> making a copy of debconf.dat in " + debconfCopy)
 shutil.copyfile(debconf, debconfCopy)
-print "  --> accepting DLJ"
+print("  --> accepting DLJ")
 open(debconf, "w").write("\n".join(otherEntries) + dljEntryAccepted)
-print "  --> all done"
+print("  --> all done")
