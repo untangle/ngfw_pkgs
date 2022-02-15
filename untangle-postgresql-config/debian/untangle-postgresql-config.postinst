@@ -1,8 +1,10 @@
 #! /bin/bash
 
 if grep -qE '^11\.' /etc/debian_version ; then
+  PG_VERSION_OLD="11"
   PG_VERSION="13"
 else
+  PG_VERSION_OLD="9.6"
   PG_VERSION="11"
 fi
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
@@ -46,8 +48,8 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# 15.1 conversion: migrate from 9.6 to 11.0 (NGFW-12624)
-/usr/share/untangle/bin/postgresql-upgrade-cluster.sh 9.6 $PG_VERSION
+# conversion during Debian migration
+/usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
 
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql.service
