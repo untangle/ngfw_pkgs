@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-firmware-common
 Architecture: all
-Depends: ${misc:Depends}, systemd, rdate, mtd-utils, kmod, udev, python
+Depends: ${misc:Depends}, systemd, rdate, mtd-utils, kmod, udev, python3
 Conflicts: untangle-hardware-asus-ac88u (<= 12.2.0~vcs20161112~), untangle-hardware-linksys-wrt1900acs (<= 12.2.0~vcs20161112~)
 Description: The Untangle hardware config
  Provides the mechanism for other packages to register startup
