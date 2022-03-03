@@ -1,10 +1,10 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 # This script reads the current interface's configuration/status and writes it to the specified file.
-# This is usually called when an IP or configuration changes like when saving new settings or 
+# This is usually called when an IP or configuration changes like when saving new settings or
 # when a different DHCP address is given.
 # The Untangle-vm will read the status file
- 
+
 import sys
 import getopt
 import signal
@@ -100,7 +100,7 @@ obj = {"javaClass":"com.untangle.uvm.network.InterfaceStatus", "interfaceId":int
 
 
 # Parse IPv4 Address, Netmask, Prefix Length
-for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].decode("ascii").split('\n'):
     if re.search(r'\sinet\s.*', line):
 
         segments = line.split()
@@ -126,7 +126,7 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
             continue
 
 # Parse IPv6 Address, Prefix Length
-for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].decode("ascii").split('\n'):
     if re.search(r'\sinet6\s.*', line):
 
         segments = line.split()
@@ -148,33 +148,33 @@ for line in subprocess.Popen(("ip addr show %s scope global" % dev).split(), std
             continue
 
 # Parse IPv4 Gateway
-for line in subprocess.Popen(("ip route show table uplink.%i" % interfaceId).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip route show table uplink.%i" % interfaceId).split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].decode("ascii").split('\n'):
     if re.search(r'default via.*', line):
 
         segments = line.split()
         if len( segments ) < 3:
             print("ERROR: invalid ip route show output: \"%s\"" % line)
             continue
-        
+
         if ( re.match( ipRegex, segments[2] ) ):
             obj['v4Gateway'] = segments[2]
-        
+
 # Parse IPv6 Gateway
 # XXX table main? table uplink.X?
-for line in subprocess.Popen(("ip -6 route show table main").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].split('\n'):
+for line in subprocess.Popen(("ip -6 route show table main").split(), stdout=subprocess.PIPE, stderr=subprocess.STDOUT).communicate()[0].decode("ascii").split('\n'):
     if re.search(r'default via.*', line):
 
         segments = line.split()
         if len( segments ) < 3:
             print("ERROR: invalid ip route show output: \"%s\"" % line)
             continue
-        
+
         obj['v6Gateway'] = segments[2]
 
 
 # Parse DNS (read from dnsmasq.conf)
 count=1
-for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq.d/*"], stdout=subprocess.PIPE).communicate()[0].split('\n'):
+for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq.d/*"], stdout=subprocess.PIPE).communicate()[0].decode("ascii").split('\n'):
     if re.search(r'server=.*\suplink.%i\s*$' % interfaceId, line):
 
         if count > 2:
@@ -185,7 +185,7 @@ for line in subprocess.Popen(["/bin/sh","-c","cat /etc/dnsmasq.conf /etc/dnsmasq
         if len( segments ) < 2:
             print("ERROR: invalid dnsmasq.conf output: \"%s\"" % line)
             continue
-        
+
         if ( re.match( ipRegex, segments[1] ) ):
             obj['v4Dns%i' % count] = segments[1]
             count = count +1
