@@ -7,6 +7,10 @@ rm -f /etc/network/interfaces.d/lxcbr0
 rm -rf /etc/untangle/lxc-client.d
 rm -f /etc/init.d/untangle-lxc-client
 
+# prevent lxc-net from spawning a dnsmasq instance that conflicts with
+# our uvm-managed one
+perl -i -pe 's/(?<=^USE_LXC_BRIDGE=).*/false/' /etc/default/lxc-net
+
 # disable the service from auto-starting
 # NGFW-11687
 deb-systemd-helper disable untangle-lxc-client.service
