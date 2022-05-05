@@ -1,5 +1,0 @@
-untangle-kernel-modules-buster-arm64 (0-0) stable; urgency=low
-
-  * auto build
-
- -- Sebastien Delafond <sdelafond@gmail.com>  Wed, 30 Jan 2019 11:33:37 +0100
