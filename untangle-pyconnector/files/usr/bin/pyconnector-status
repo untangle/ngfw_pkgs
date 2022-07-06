@@ -22,14 +22,14 @@ def check_pyconnector_status():
      return False
 
 if not check_pyconnector_running():
-     print "Not Running"
+     print("Not Running")
      sys.exit(1)
 
 if not check_pyconnector_status():
-     print "Not Connected"
+     print("Not Connected")
      sys.exit(1)
 
-print "Connected"
+print("Connected")
 sys.exit(0)
 
 
