@@ -19,6 +19,10 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
+                "uri": "https://auth.untangle.com/v1/CheckTokenAccess"
+            },
+            {
+                "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://telemetry.untangle.com/ngfw/v1/infection"
             },
             {
