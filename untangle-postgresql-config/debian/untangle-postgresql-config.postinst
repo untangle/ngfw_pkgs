@@ -1,5 +1,7 @@
 #! /bin/bash
 
+set -xu
+
 if grep -qE '^11\.' /etc/debian_version ; then
   PG_VERSION_OLD="11"
   PG_VERSION="13"
