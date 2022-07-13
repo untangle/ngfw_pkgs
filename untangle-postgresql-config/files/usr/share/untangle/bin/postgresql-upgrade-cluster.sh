@@ -22,7 +22,7 @@ log() {
 }
 
 ## main
-if [ $VERSION_OLD = $VERSION_NEW ] || [ ! -d $PG_VAR_DIR_OLD ] ; then
+if [ $VERSION_OLD = $VERSION_NEW ] || [ ! -d $PG_VAR_DIR_OLD ] || [ ! -d $PG_VAR_DIR_NEW ]; then
   exit 0
 fi
 
@@ -42,13 +42,13 @@ if [ $? != 0 ] ; then
   status="FAILURE"
 else
   status="SUCCESS"
+  # remove old cluster and associated files
+  pg_dropcluster $VERSION_OLD main
+  rm -fr $PG_VAR_DIR_OLD
+  log "dropped old cluster"
 fi
 popd
 
 log "conversion result: $status"
 
-# remove old cluster and associated files
-pg_dropcluster $VERSION_OLD main
-rm -fr $PG_VAR_DIR_OLD
-log "dropped old cluster"
 
