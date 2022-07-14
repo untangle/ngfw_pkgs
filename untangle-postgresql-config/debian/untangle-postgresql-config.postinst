@@ -17,7 +17,11 @@ PG_CONF="${PG_ETC_DIR}/postgresql.conf"
 PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
 createDB() {
-  # re-create cluster with older cluster's locale (#12847)
+  # re-create cluster with older cluster's locale (#12847)  
+  # enable en_US.UTF-8
+  sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
+  locale-gen
+
   locale=${1:-"en_US.UTF-8"}
   echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
   deb-systemd-invoke stop postgresql
@@ -29,29 +33,23 @@ createDB() {
 
 if [ -z "$2" ] ; then
     # this is a new install
-    
-    # enable en_US.UTF-8
-    sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
-    locale-gen
-
-    # create en_US.UTF-8 regardless of system locale
-    createDB "en_US.UTF-8"
+    createDB
 
 elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then 
     # database does not exist for whatever reason, just create it
-
-    # enable en_US.UTF-8
-    sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
-    locale-gen
-
-    # create en_US.UTF-8 regardless of system locale
-    createDB "en_US.UTF-8"
+    createDB
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# conversion during Debian migration
-/usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
+if [ ! $PG_VERSION_OLD = $PG_VERSION ]; then
+    # Remove the default created cluster before migrating
+    pg_dropcluster --stop $VERSION_NEW main
+    # Create a new one with proper locales
+    createDB 
+    # conversion during Debian migration
+    /usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
+fi
 
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql.service
