@@ -43,8 +43,6 @@ fi
 DATE=$(date '+%Y%m%d%H%M%S')
 
 if [ ! $PG_VERSION_OLD = $PG_VERSION ]; then
-    # Remove the default created cluster before migrating
-    pg_dropcluster --stop $VERSION_NEW main
     # Create a new one with proper locales
     createDB 
     # conversion during Debian migration
