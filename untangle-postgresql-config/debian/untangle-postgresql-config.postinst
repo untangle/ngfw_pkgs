@@ -11,6 +11,7 @@ else
 fi
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
 PG_CONF="${PG_ETC_DIR}/postgresql.conf"
@@ -42,9 +43,10 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-if [ ! $PG_VERSION_OLD = $PG_VERSION ]; then
+# If the PG_VAR_DIR_OLD exists, we need to upgrade the database
+if [ ! $PG_VERSION_OLD = $PG_VERSION ] && [ -d "${PG_VAR_DIR_OLD}" ]; then
     # Create a new one with proper locales
-    createDB 
+    createDB
     # conversion during Debian migration
     /usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
 fi
