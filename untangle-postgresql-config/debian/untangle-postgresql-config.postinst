@@ -36,20 +36,15 @@ if [ -z "$2" ] ; then
     # this is a new install
     createDB
 
-elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then 
+elif [ ! -d "${PG_VAR_DIR}/main/base" ] || [ -d "${PG_VAR_DIR_OLD}" ]; then 
     # database does not exist for whatever reason, just create it
     createDB
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# If the PG_VAR_DIR_OLD exists, we need to upgrade the database
-if [ ! $PG_VERSION_OLD = $PG_VERSION ] && [ -d "${PG_VAR_DIR_OLD}" ]; then
-    # Create a new one with proper locales
-    createDB
-    # conversion during Debian migration
-    /usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
-fi
+# conversion during Debian migration
+/usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
 
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql.service
