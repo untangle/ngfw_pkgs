@@ -11,13 +11,18 @@ else
 fi
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
+PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
 PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
 PG_CONF="${PG_ETC_DIR}/postgresql.conf"
 PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
 createDB() {
-  # re-create cluster with older cluster's locale (#12847)
+  # re-create cluster with older cluster's locale (#12847)  
+  # enable en_US.UTF-8
+  sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
+  locale-gen
+
   locale=${1:-"en_US.UTF-8"}
   echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
   deb-systemd-invoke stop postgresql
@@ -29,23 +34,11 @@ createDB() {
 
 if [ -z "$2" ] ; then
     # this is a new install
-    
-    # enable en_US.UTF-8
-    sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
-    locale-gen
+    createDB
 
-    # create en_US.UTF-8 regardless of system locale
-    createDB "en_US.UTF-8"
-
-elif [ ! -d "${PG_VAR_DIR}/main/base" ] ; then 
+elif [ ! -d "${PG_VAR_DIR}/main/base" ] || [ -d "${PG_VAR_DIR_OLD}" ]; then 
     # database does not exist for whatever reason, just create it
-
-    # enable en_US.UTF-8
-    sed -i -e "s/.*en_US.UTF-8 UTF-8.*/en_US.UTF-8 UTF-8/" /etc/locale.gen
-    locale-gen
-
-    # create en_US.UTF-8 regardless of system locale
-    createDB "en_US.UTF-8"
+    createDB
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
