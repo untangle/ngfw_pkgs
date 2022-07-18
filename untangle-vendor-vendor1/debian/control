@@ -41,7 +41,7 @@ Conflicts:
   libxfce4util7,
   libxfconf-0-2,
   ncurses-term,
-  openjdk-11-jre,
+  openjdk-17-jre,
   rxvt-unicode,
   rxvt-unicode-ml,
   untangle-app-ad-blocker,
