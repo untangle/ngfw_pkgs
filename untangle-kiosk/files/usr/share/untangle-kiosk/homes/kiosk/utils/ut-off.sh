@@ -2,6 +2,7 @@
 
 /usr/bin/zenity \
     --question \
+    --no-wrap \
     --title "Power off" \
     --text "Are you sure you want to shut down the Server?"
 

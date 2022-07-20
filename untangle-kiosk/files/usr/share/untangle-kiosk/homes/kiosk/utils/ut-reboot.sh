@@ -2,6 +2,7 @@
 
 /usr/bin/zenity \
     --question \
+    --no-wrap \
     --title "Reboot" \
     --text "Are you sure you want to reboot the Server?"
 
