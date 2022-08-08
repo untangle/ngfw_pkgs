@@ -20,9 +20,6 @@
                 "enabled": false
             },
             "fast": {
-                "enabled": false
-            },
-            "unified2-alert": {
                 "enabled": true
             },
             "stats": {
