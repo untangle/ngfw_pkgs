@@ -1,0 +1,23 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+if [ -z "$2"] ; then
+    ##
+    ## On initial install:
+    ##
+    ## Properly map nics.
+    /usr/share/untangle/bin/ut-remap-nics.sh \
+        "eth0 eth1 eth15 eth2 eth17 eth3 eth18 eth4 eth19 eth10  eth6 eth12  eth7 eth13  eth8 eth14  eth9  eth5 eth11 eth16 eth20" \
+        "eth0 eth1 eth2  eth3 eth4  eth5 eth6  eth7  eth8  eth9 eth10 eth11 eth12 eth13 eth14 eth15 eth16 eth17 eth18 eth19 eth20"
+
+    ## Change Interface names to physical port numbers.
+    sed --in-place \
+        --follow-symlinks \
+        -r 's/^([[:space:]]+)"name": "Interface ([[:digit:]]+)"/echo "\1\\"name\\":" \\"Interface $((\2-1))\\"/ge' \
+        /usr/share/untangle/settings/untangle-vm/network.js
+fi
+
+exit 0
