@@ -1,4 +1,4 @@
-Source: untangle-hardware-caswell-z20
+Source: untangle-hardware-caswell-q20
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
@@ -6,7 +6,7 @@ Uploaders: Untangle Buildbot <buildbot@untangle.com>
 Build-Depends: systemd, debhelper (>= 10)
 Standards-Version: 3.9.8
 
-Package: untangle-hardware-caswell-z20
+Package: untangle-hardware-caswell-q20
 Architecture: all
 Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-portwell-lcd
 Description: The Untangle hardware config
