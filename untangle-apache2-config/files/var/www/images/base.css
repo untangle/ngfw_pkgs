@@ -267,10 +267,10 @@ header img {
 }
 
 .form-login input:focus {
-    border-color: #67BD4A;
+    border-color: #16325b;
     outline: 0;
-    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(103,189,74,.6);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(103,189,74,.6);
+    -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(22,50,91,.8);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(22,50,91,.8);
 }
 
 input#username {
@@ -306,13 +306,13 @@ input#password:focus {
     border: 1px solid transparent;
     border-radius: 4px;
     outline: none;
-    background-color: #67BD4A;
+    background-color: #16325b;
     color: #FFF;
     transition: all ease-in-out .15s;
 }
 
 .form-login button:hover {
-    background-color: rgba(103,189,74,.8);
+    background-color: rgba(22,50,91,.8);
 }
 .form-login button:active {
     -webkit-box-shadow: inset 0 3px 5px rgba(0,0,0,.125);
