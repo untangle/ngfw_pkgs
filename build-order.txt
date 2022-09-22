@@ -31,6 +31,7 @@ untangle-hardware-caswell-driver-gpio-nuvoton buster,bullseye
 untangle-hardware-caswell-w4            buster,bullseye
 untangle-hardware-caswell-w8            buster,bullseye
 untangle-hardware-caswell-q8            buster,bullseye
+untangle-hardware-caswell-q8w           buster,bullseye
 untangle-hardware-caswell-q6            buster,bullseye
 untangle-hardware-caswell-q12           buster,bullseye
 untangle-hardware-caswell-q20           buster,bullseye
