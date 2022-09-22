@@ -33,6 +33,11 @@ untangle-hardware-caswell-w8            bullseye
 untangle-hardware-caswell-z6            bullseye
 untangle-hardware-caswell-z12           bullseye
 untangle-hardware-caswell-z20           bullseye
+untangle-hardware-caswell-q6            bullseye
+untangle-hardware-caswell-q8            bullseye
+untangle-hardware-caswell-q8w           bullseye
+untangle-hardware-caswell-q12           bullseye
+untangle-hardware-caswell-q20           bullseye
 untangle-hardware-jetway-u50w           bullseye
 untangle-hardware-asus-ac88u	        bullseye
 untangle-hardware-linksys-wrt1900acs    bullseye

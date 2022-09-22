@@ -1,0 +1,16 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+# when installing the package for the first time copy and sync the
+# default network configuration and create our flag file
+if [ ! -f /usr/share/untangle/conf/appliance-network-config-flag ] ; then
+    mkdir -p /usr/share/untangle/conf
+    /bin/date > /usr/share/untangle/conf/appliance-network-config-flag
+    mkdir -p /usr/share/untangle/settings/untangle-vm
+    cp /usr/share/untangle/conf/appliance-network-config.js /usr/share/untangle/settings/untangle-vm/network.js
+fi
+
+exit 0
