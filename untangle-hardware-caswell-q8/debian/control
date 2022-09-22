@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-hardware-caswell-q8
 Architecture: all
-Depends: ${misc:Depends}, systemd, firmware-atheros, untangle-hardware-config, untangle-hardware-caswell-driver-gpio-nuvoton
+Depends: ${misc:Depends}, systemd, untangle-hardware-config, untangle-hardware-caswell-driver-gpio-nuvoton
 Description: The Untangle Caswell Q8 package
  This package installs the hardware specific features
  required on the Caswell Q8 appliances.
