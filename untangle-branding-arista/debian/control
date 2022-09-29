@@ -1,0 +1,12 @@
+Source: untangle-branding-arista
+Section: admin
+Priority: optional
+Maintainer: Chris Blaise <cblaise@arista.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper (>= 10)
+Standards-Version: 3.9.8
+
+Package: untangle-branding-arista
+Architecture: all
+Depends: ${misc:Depends}, systemd
+Description: Out-of-band branding of NGFW for Q-model series for 16.5.

@@ -1,0 +1,9 @@
+GRUB_DEFAULT=saved
+GRUB_SAVEDEFAULT=true
+GRUB_TIMEOUT=5
+GRUB_DISTRIBUTOR="Arista"
+GRUB_CMDLINE_LINUX_DEFAULT="quiet splash"
+GRUB_CMDLINE_LINUX="net.ifnames=0 ramdisk_size=100000 lang=us apm=power-off nomce nodhcp nofstab panic=5"
+GRUB_DISABLE_SUBMENU=y
+GRUB_GFXMODE=1024x768
+GRUB_DISABLE_RECOVERY="true"
