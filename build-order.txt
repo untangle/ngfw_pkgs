@@ -1,3 +1,4 @@
+untangle-branding-arista                buster
 untangle-cloud-config			buster,bullseye
 untangle-vendor-vendor1			buster,bullseye
 untangle-hardware-azure-byol		buster,bullseye
