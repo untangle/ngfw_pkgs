@@ -4,7 +4,7 @@ deb-systemd-invoke restart untangle-hardware-config
 
 rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
-if [ -z "$2"] ; then
+if [ -z "$2" ] ; then
     ##
     ## On initial install:
     ##
