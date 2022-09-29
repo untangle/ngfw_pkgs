@@ -9,4 +9,4 @@ Standards-Version: 3.9.8
 Package: untangle-branding-arista
 Architecture: all
 Depends: ${misc:Depends}, systemd
-Description: Out-of-band branding for NGFW for Q-model series for 16.5.
+Description: Out-of-band branding of NGFW for Q-model series for 16.5.
