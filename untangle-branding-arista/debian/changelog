@@ -1,19 +1,5 @@
-untangle-branding-arista (16.6.0..-1buster) current; urgency=medium
-
-  * auto build
-
- -- Untangle Buildbot <buildbot@untangle.com>  
-
-untangle-branding-arista (16.6.0..-1buster) current; urgency=medium
-
-  * auto build
-
- -- Untangle Buildbot <buildbot@untangle.com>  
-
 untangle-branding-arista (0.1.0-1) stable; urgency=low
 
   * Initial release
 
  -- Chris Blaise <cblaise@untangle.com>  Thu, 29 Sep 2022 05:48:37 -0800
-
-
