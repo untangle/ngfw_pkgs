@@ -1,0 +1,7 @@
+#! /bin/bash
+
+deb-systemd-invoke restart untangle-hardware-config
+
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+exit 0
