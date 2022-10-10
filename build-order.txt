@@ -33,6 +33,7 @@ untangle-hardware-caswell-w8            bullseye
 untangle-hardware-caswell-z6            bullseye
 untangle-hardware-caswell-z12           bullseye
 untangle-hardware-caswell-z20           bullseye
+untangle-hardware-caswell-q4            bullseye
 untangle-hardware-caswell-q6            bullseye
 untangle-hardware-caswell-q8            bullseye
 untangle-hardware-caswell-q8w           bullseye
