@@ -2,8 +2,8 @@
 
 DIRECTORY=/usr/share/untangle-suricata-config/
 
-if [ ! -d ${DIRECTORY}/current/rules ] ; then
-    tar -xzf ${DIRECTORY}/suricatasignatures4.tar.gz -C /usr/share/untangle-suricata-config/current 
+if [ ! -d ${DIRECTORY}/current/rules ] && [ -f ${DIRECTORY}/suricatasignatures4.tar.gz ] ; then
+    tar -xzf ${DIRECTORY}/suricatasignatures4.tar.gz -C /usr/share/untangle-suricata-config/current
 fi
 
 # the intrusion-prevention app will start suricata
@@ -12,7 +12,7 @@ systemctl --no-block stop suricata || true
 deb-systemd-helper disable suricata.service
 
 # Override the suricata package logrotate config so as to avoid having .backup log files created
-# The /usr/share/untangle-suricata-config/logrotate.conf file is the same as the default suricata logrotate file 
+# The /usr/share/untangle-suricata-config/logrotate.conf file is the same as the default suricata logrotate file
 # except it adds the delaycompress config item
 # delaycompress allows it so the copytruncate and compress config items do not conflict with each other hence causing .backup log files
 cp -f /usr/share/untangle-suricata-config/logrotate.conf /etc/logrotate.d/suricata
