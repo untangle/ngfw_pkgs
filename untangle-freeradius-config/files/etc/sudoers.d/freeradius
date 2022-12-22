@@ -1,0 +1,2 @@
+# This allows FreeRadius to notify uvm of user/mac associations after authentication.
+freerad ALL=NOPASSWD: /usr/share/untangle/bin/ut-radius-notify
