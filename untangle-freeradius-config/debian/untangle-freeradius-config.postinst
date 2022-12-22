@@ -26,4 +26,11 @@ ln -s -f ../../untangle/eap /etc/freeradius/3.0/mods-enabled/eap
 # create symlinks in /etc/freeradius/3.0/mods-config/attr_filter
 ln -s -f ../../../untangle/access_reject /etc/freeradius/3.0/mods-config/attr_filter/access_reject
 
+# Update freeradius.service file completely to relax (comment out)
+# some security restrictions that prevent the update script from running.
+SERVICE_FILENAME=freeradius.service
+sed \
+  -e 's/^\(NoNewPrivileges\|ProtectKernelModules\|ProtectKernelTunables\|SystemCallArchitectures\)/#\1/' \
+  /lib/systemd/system/$SERVICE_FILENAME > /etc/systemd/system/$SERVICE_FILENAME
+
 exit 0
