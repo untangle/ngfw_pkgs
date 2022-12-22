@@ -41,7 +41,7 @@ exec notify {
 	#  field, so things like the following example will
 	#  work.
 	#
-	program = "/usr/share/untangle/bin/ut-radius-notify %{User-Name} %{Calling-Station-Id}"
+	program = "/bin/sudo /usr/share/untangle/bin/ut-radius-notify %{User-Name} %{Calling-Station-Id}"
 
 	#
 	#  The attributes which are placed into the
