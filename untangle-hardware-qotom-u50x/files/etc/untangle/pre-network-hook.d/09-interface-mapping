@@ -46,9 +46,6 @@ while getopts "d:i:l:t:v:" flag; do
 done
 shift $((OPTIND-1))
 
-#echo "TEST=$TEST"
-#exit
-
 ##
 ## Log message
 ##
