@@ -46,6 +46,9 @@ while getopts "d:i:l:t:v:" flag; do
 done
 shift $((OPTIND-1))
 
+#echo "TEST=$TEST"
+#exit
+
 ##
 ## Log message
 ##
@@ -112,7 +115,8 @@ function build_current_mac_names
 		log_message $LOG_MESSAGE_PRIORITY_DEBUG "$__function_name: add $mac_address, $name to current and original"
 		CURRENT_MAC_NAMES[$mac_address]=$name
 		ORIGINAL_MAC_NAMES[$mac_address]=$name
-	done < <(find /sys/class/net -mindepth 1 -maxdepth 1 ! -name lo -printf "%P;" -execdir cat {}/address \;)
+	done < <(find /sys/class/net -mindepth 1 -maxdepth 1 -name eth* -printf "%P;" -execdir cat {}/address \;)
+
 }
 
 ##
@@ -327,6 +331,11 @@ for mac_address in "${!TARGET_MAC_NAMES[@]}"; do
 	if [ "$current_name" = "$target_name" ]; then
    		continue
 	fi
+	if [ "$current_name" = "" ]; then
+		log_message $LOG_MESSAGE_PRIORITY_ANY "final mapping: target wants to map to mac_address=$mac_address, but not found on current system"
+		continue
+	fi
+	log_message $LOG_MESSAGE_PRIORITY_DEBUG "final mapping: switch current_name=$current_name to target_name=$target_name"
 	switch_nic $current_name $target_name
 done
 
