@@ -287,6 +287,12 @@ input#password:focus {
     background-position: 5px -108px;
 }
 
+input#totp {
+    background: #FFF url(auth_icons.png) no-repeat 5px -144px;
+}
+input#totp:focus {
+    background-position: 5px -180px;
+}
 
 .form-login button {
     font-family: 'Roboto', sans-serif;
