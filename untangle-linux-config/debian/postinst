@@ -171,4 +171,15 @@ echo -e '#!/bin/sh\nexit 0\n' > /etc/miniupnpd/ip6tables_init.sh
 # before we reboot
 deb-systemd-helper enable untangle-linux-config.service
 
+#
+# Ensure all efis are synced to the latest generated version.
+# Otherwise, some BIOSes configured to boot from one of these EFIs
+# will fail to boot and be unrecoverable without user intervention.
+#
+EFI_PATH=/boot/efi/EFI
+latest_efi=$(find $EFI_PATH -type f | xargs ls -tr | tail -1)
+for path in `find $EFI_PATH/* -type d`; do
+        cp -a $latest_efi $path 2>/dev/null
+done
+
 exit 0
