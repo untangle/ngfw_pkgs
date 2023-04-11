@@ -2,12 +2,11 @@
 
 set -xu
 
-if grep -qE '^11\.' /etc/debian_version ; then
+PG_VERSION=$(psql --version | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
+if [ $PG_VERSION == "13" ]; then
   PG_VERSION_OLD="11"
-  PG_VERSION="13"
 else
   PG_VERSION_OLD="9.6"
-  PG_VERSION="11"
 fi
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
