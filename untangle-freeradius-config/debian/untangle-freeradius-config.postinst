@@ -14,6 +14,11 @@ then
     mkdir /etc/freeradius/3.0/sites-enabled
     chown freerad:freerad /etc/freeradius/3.0/sites-enabled
 fi
+if [ ! -d /var/log/freeradius ]
+then
+    mkdir /var/log/freeradius
+fi
+chown -R freerad.adm /var/log/freeradius 
 
 # create symlinks in /etc/freeradius/3.0/sites-enabled
 ln -s -f ../../untangle/default /etc/freeradius/3.0/sites-enabled/default
