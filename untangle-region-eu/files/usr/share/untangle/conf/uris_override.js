@@ -80,7 +80,8 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://sshrelay.untangle.com/"
+                "uri": "https://sshrelay.untangle.com/",
+                "host": "sshrelay-eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
