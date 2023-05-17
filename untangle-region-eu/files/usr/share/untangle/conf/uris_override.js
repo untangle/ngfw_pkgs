@@ -85,12 +85,12 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://www.untangle.com/api/v1",
+                "uri": "https://www.edge.arista.com/api/v1",
                 "host": "eu.edge.arista.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://www.untangle.com/cmd",
+                "uri": "https://launchpad.edge.arista.com/",
                 "host": "eu.edge.arista.com"
             }
         ]
