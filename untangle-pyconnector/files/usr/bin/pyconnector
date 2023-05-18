@@ -24,7 +24,7 @@ import ssl
 from ssl import SSLContext, TLSVersion
 import platform
 
-UNTANGLE_CMD_PORTS = [80, 443, 993, 4443, 587, 995, 8080, 53, 25]
+UNTANGLE_CMD_PORTS = [80, 443, 993, 4443, 587, 995, 8080, 53]
 UNTANGLE_CMD_SERVERS = ["cmd.untangle.com"]
 # UNTANGLE_CMD_SERVERS = ["dev-cmd.untangle.com"]
 RETRY_TIME_LONG = 10
