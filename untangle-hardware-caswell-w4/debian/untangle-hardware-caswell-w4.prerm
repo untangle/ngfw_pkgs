@@ -1,14 +1,3 @@
 #!/bin/bash
 
-# Remove the Realtek 88x2ce module from dkms
-/usr/sbin/dkms uninstall realtek-88x2ce/5.12.1.6-3
-/usr/sbin/dkms remove realtek-88x2ce/5.12.1.6-3 --all
-
-# Remove the modules-load config file
-MODULE_CONFIG=/etc/modules-load.d/realtek-88x2ce.conf
-rm -f $MODULE_CONFIG
-
-# Update the initramfs image
-update-initramfs -u
-
 exit 0
