@@ -44,7 +44,7 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "bd.untangle.com/"
+                "uri": "http://bd.untangle.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
