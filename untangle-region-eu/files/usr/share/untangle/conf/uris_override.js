@@ -7,80 +7,80 @@
         "list": [
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://ids.untangle.com/suricatasignatures.tar.gz"
+                "uri": "https://ids.untangle.com/suricatasignatures.tar.gz" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://labs.untangle.com/Utility/v1/mac"
+                "uri": "https://labs.untangle.com/Utility/v1/mac" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://auth-relay.untangle.com/callback.php"
+                "uri": "https://auth-relay.untangle.com/callback.php" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://auth.untangle.com/v1/CheckTokenAccess"
+                "uri": "https://auth.untangle.com/v1/CheckTokenAccess" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://telemetry.untangle.com/ngfw/v1/infection"
+                "uri": "https://telemetry.untangle.com/ngfw/v1/infection" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://updates.untangle.com/"
+                "uri": "http://updates.untangle.com/" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://cmd.untangle.com/",
-                "host": "cmd-eu.untangle.com"
+                "uri": "https://launchpad.edge.arista.com",
+                "host": "eu.edge.arista.com" // is this valid? launchpad.eu.edge.arista.com doesn't exist
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://license.untangle.com/license.php"
+                "uri": "https://license.untangle.com/license.php" // no valid edge.arista address (note: this def won't be changed, license not yet available)
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://classify.untangle.com/v1/md5s"
+                "uri": "https://classify.untangle.com/v1/md5s" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://bd.untangle.com/"
+                "uri": "https://edge.arista.com/ng-firewall/free-trial" // resolved to this. Correct address?
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://boxbackup.untangle.com/boxbackup/backup.php",
+                "uri": "https://boxbackup.untangle.com/boxbackup/backup.php", // no valid edge.arista address
                 "host": "boxbackup-eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://boxbackup.untangle.com/api/index.php",
+                "uri": "https://boxbackup.untangle.com/api/index.php", // no valid edge.arista address
                 "host": "boxbackup-eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://downloads.untangle.com/download.php"
+                "uri": "https://downloads.untangle.com/download.php" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://translations.untangle.com/"
+                "uri": "http://translations.untangle.com/" // no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://queue.untangle.com/",
+                "uri": "https://queue.untangle.com/", // no valid edge.arista address
                 "host": "queue-eu.untangle.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://untangle.com/api/v1/appliance/OnSettingsUpdate",
-                "host": "eu.untangle.com"
+                "uri": "https://edge.arista.com/api/v1/appliance/OnSettingsUpdate",
+                "host": "eu.edge.arista.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://supssh.untangle.com/"
+                "uri": "https://supssh.untangle.com/" // untangle address doesn't resolve, AND no valid edge.arista address
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://sshrelay.untangle.com/",
+                "uri": "https://sshrelay.untangle.com/", // no valid edge.arista address
                 "host": "sshrelay-eu.untangle.com"
             },
             {
