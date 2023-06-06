@@ -31,7 +31,7 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://cmd.untangle.com/",
+                "uri": "https://launchpad.edge.arista.com",
                 "host": "cmd-eu.untangle.com"
             },
             {
@@ -71,8 +71,8 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://untangle.com/api/v1/appliance/OnSettingsUpdate",
-                "host": "eu.untangle.com"
+                "uri": "https://edge.arista.com/api/v1/appliance/OnSettingsUpdate",
+                "host": "eu.edge.arista.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
