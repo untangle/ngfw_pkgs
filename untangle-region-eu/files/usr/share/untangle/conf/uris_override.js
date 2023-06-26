@@ -36,6 +36,11 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
+                "uri": "https://cmd.untangle.com/",
+                "host": "cmd-eu.untangle.com"
+            },
+            {
+                "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://license.untangle.com/license.php"
             },
             {
