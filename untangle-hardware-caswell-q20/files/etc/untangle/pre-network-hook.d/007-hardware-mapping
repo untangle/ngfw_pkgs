@@ -1,0 +1,11 @@
+#!/bin/dash
+
+# Check that names have altname to validate our rename.
+# Only perform if directory is empty
+if [ "$(ip link | grep altname | wc -l)" != "0" ] && \
+   [ "$(ls -1 /etc/systemd/network/*.link 2>/dev/null | wc -l)" = "0" ] ; then
+    # Empty map directory - create
+    /usr/share/untangle/bin/hardware-remap-nics.sh \
+        "    enp3s0 enp4s0f0 enp7s0f0  enp4s0f1  enp7s0f1 enp4s0f2  enp7s0f2 enp4s0f3  enp7s0f3   enp6s0f0 enp5s0f0  enp6s0f1 enp5s0f1  enp6s0f2 enp5s0f2  enp6s0f3 enp5s0f3 enp2s0f0  enp2s0f1  enp2s0f2   enp2s0f3" \
+        "    eth0       eth1     eth2      eth3      eth4     eth5      eth6     eth7      eth8       eth9    eth10     eth11    eth12     eth13    eth14     eth15    eth16    eth17     eth18     eth19      eth20"
+fi
