@@ -1,5 +1,12 @@
 #!/bin/dash
 
+if [ -f /usr/share/untangle/conf/hardware-kernel-remap ]; then
+    rm -f /etc/systemd/network/*
+    rm -f /usr/share/untangle/conf/hardware-kernel-remap
+    sync
+    nohup /usr/bin/uvm-restart reboot >> /var/log/uvm/restart.log 2>&1 &
+fi
+
 # Check that names have altname to validate our rename.
 # Only perform if directory is empty
 if [ "$(ip link | grep altname | wc -l)" != "0" ] && \
