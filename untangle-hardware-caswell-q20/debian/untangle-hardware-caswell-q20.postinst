@@ -23,7 +23,7 @@ else
     # Upgrade.
     # Force reboot to force proper NIC mapping
     touch /usr/share/untangle/conf/hardware-kernel-remap
-
+    sync
 fi
 
 exit 0
