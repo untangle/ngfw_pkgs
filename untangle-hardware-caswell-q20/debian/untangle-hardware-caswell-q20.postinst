@@ -22,10 +22,7 @@ if [ -z "$2" ] ; then
 else
     # Upgrade.
     # Force reboot to force proper NIC mapping
-    rm -f /etc/systemd/network/*
-
-    echo "Rebooting to fix Q20 nic mapping..."
-    nohup /usr/bin/uvm-restart reboot >> /var/log/uvm/restart.log 2>&1 &
+    touch /usr/share/untangle/conf/hardware-kernel-remap
 
 fi
 
