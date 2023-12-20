@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# Temporary script to disable Energy Efficient Ethernet setting for all Ethernet adaptors
+# This should later be moved into the set-link-media.sh script.
+for device in `grep deviceName /usr/share/untangle/settings/untangle-vm/network.js | sed -r 's/.*"deviceName": "([^"]+)",/\1/'`; do
+    ethtool --set-eee $device eee off
+done
