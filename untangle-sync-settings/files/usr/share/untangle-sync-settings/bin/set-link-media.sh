@@ -2,7 +2,7 @@
 
 # This script sets the link media for a given NIC
 
-if [ $# != 2 ]; then
+if [ $# != 3 ]; then
     echo "USAGE: $0 <nic> <mode>"
     echo "\t mode: auto|10-full-duplex|10-half-duplex|100-full-duplex|100-half-duplex|1000-full-duplex"
     exit 0
@@ -31,6 +31,7 @@ set_ethernet_media()
 {
     local t_nic=$1
     local t_media=$2
+    local t_eee=$3
     local t_speed
     local t_duplex
 
@@ -38,6 +39,14 @@ set_ethernet_media()
         echo "$0 didn't specify nic."
         return 0
     fi
+
+    if [ "${t_eee}" = "True" ] ; then
+        t_eee=on
+    else
+        t_eee=off
+    fi
+    echo "setting eee to ${t_eee}"
+    ethtool --show-eee ${t_nic} && ethtool --set-eee ${t_nic} eee ${t_eee}
 
     case "${t_media}" in
         "10-full-duplex")
