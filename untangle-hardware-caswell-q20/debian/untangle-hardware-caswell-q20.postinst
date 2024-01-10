@@ -26,4 +26,11 @@ else
     sync
 fi
 
+# Between 17.0 and 17.1, we needed a quick Q20 fix to disable EEE.
+# In 17.1, NGFW disables EEE by default, so this is no longer neccessary.
+DISABLE_EEE_FILENAME=/etc/untangle/pre-network-hook.d/016-disable-eee
+if [ -f $DISABLE_EEE_FILENAME ] ; then
+    rm -f $DISABLE_EEE_FILENAME
+fi
+
 exit 0
