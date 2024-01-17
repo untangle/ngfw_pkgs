@@ -2,8 +2,11 @@
 
 DIRECTORY=/usr/share/untangle-suricata-config/
 
-if [ ! -d ${DIRECTORY}/current/rules ] && [ -f ${DIRECTORY}/suricatasignatures4.tar.gz ] ; then
-    tar -xzf ${DIRECTORY}/suricatasignatures4.tar.gz -C /usr/share/untangle-suricata-config/current
+if [ ! -d ${DIRECTORY}/current/rules ] ; then
+    signature_filename=$(find /usr/share/untangle-suricata-config/ -name suricatasignatures*.tar.gz | head -1)
+    if [ "${signature_filename}" != "" ]; then
+        tar -xzf ${signature_filename} -C /usr/share/untangle-suricata-config/current
+    fi
 fi
 
 # the intrusion-prevention app will start suricata
