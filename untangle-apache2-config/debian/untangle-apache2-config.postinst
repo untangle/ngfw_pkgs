@@ -13,7 +13,7 @@ if ! grep -qE '^9\.' /etc/debian_version ; then
 fi
 
 # disable SSLv2 and SSLv3 (bug #12028)
-sed -e 's/SSLProtocol all.*/SSLProtocol all -SSLv2 -SSLv3 -TLSv1/' -i /etc/apache2/mods-available/ssl.conf
+sed -e 's/SSLProtocol all.*/SSLProtocol all -SSLv2 -SSLv3 -TLSv1 -TLSv1.1/' -i /etc/apache2/mods-available/ssl.conf
 
 # Relax restrictions on certificate hash requirements (bug #NGFW-13096)
 sed -e 's/SSLCipherSuite .*/SSLCipherSuite ALL:@SECLEVEL=0/' -i /etc/apache2/mods-available/ssl.conf
