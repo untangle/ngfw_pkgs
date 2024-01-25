@@ -22,7 +22,6 @@ rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
 
 # Files that we've added in previous versions that should now be removed
 REMOVE_FILES=( \
-/etc/untangle/pre-network-hook.d/016-disable-eee \
 /etc/untangle/pre-network-hook.d/09-interface-mapping \
 /etc/untangle/pre-network-hook.d/007-hardware-mapping \
 /etc/untangle/pre-network-hook.d/016-disable-eee \
