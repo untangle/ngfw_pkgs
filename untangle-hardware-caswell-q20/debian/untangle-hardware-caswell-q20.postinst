@@ -2,8 +2,6 @@
 
 deb-systemd-invoke restart untangle-hardware-config
 
-rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
-
 if [ -z "$2" ] ; then
     ## On initial install
     ## Properly map nics.
@@ -19,18 +17,23 @@ if [ -z "$2" ] ; then
         --follow-symlinks \
         -r 's/^([[:space:]]+)"name": "Interface ([[:digit:]]+)"/echo "\1\\"name\\":" \\"Interface $((\2-1))\\"/ge' \
         /usr/share/untangle/settings/untangle-vm/network.js
-else
-    # Upgrade.
-    # Force reboot to force proper NIC mapping
-    touch /usr/share/untangle/conf/hardware-kernel-remap
-    sync
 fi
 
-# Between 17.0 and 17.1, we needed a quick Q20 fix to disable EEE.
-# In 17.1, NGFW disables EEE by default, so this is no longer neccessary.
-DISABLE_EEE_FILENAME=/etc/untangle/pre-network-hook.d/016-disable-eee
-if [ -f $DISABLE_EEE_FILENAME ] ; then
-    rm -f $DISABLE_EEE_FILENAME
-fi
+rm -f /etc/init.d/${DPKG_MAINTSCRIPT_PACKAGE}
+
+# Files that we've added in previous versions that should now be removed
+REMOVE_FILES=( \
+/etc/untangle/pre-network-hook.d/09-interface-mapping \
+/etc/untangle/pre-network-hook.d/007-hardware-mapping \
+/etc/untangle/pre-network-hook.d/016-disable-eee \
+)
+
+for filename in "${REMOVE_FILES[@]}"; do
+    # Add wildcard to remove both the actual filename
+    # as well as filename.dpkg-new and other potential Debian artifacts
+    rm -f ${filename}*
+done
+
+sync
 
 exit 0
