@@ -1,8 +1,11 @@
 #!/bin/bash
 
+# List block devices with filter expression to exclude floppy, ROM and part devices
+alias list_blk='lsblk --path --list --noheadings | grep -v "/dev/fd\| rom \| part " | awk "{print $1 ; exit}"'
+
 ## functions
 first_disk() {
-  lsblk --path --list --noheadings | grep -v " rom \| part " | awk '{print $1 ; exit}'
+  list_blk
 }
 
 set_debconf_grub_install_disk() {
@@ -19,7 +22,7 @@ disk_found() {
      if [ "$disk" = "$install_disk" ]; then
        found=1
      fi
-   done < <(lsblk --path --list --noheadings | grep -v " rom \| part " | awk '{print $1}')
+   done < <(list_blk)
 
    return $found
 }
