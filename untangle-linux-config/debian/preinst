@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# Enables aliases in bash script
+shopt -s expand_aliases
+
 # List block devices with filter expression to exclude floppy, ROM and part devices
 alias list_blk='lsblk --path --list --noheadings | grep -v "/dev/fd\| rom \| part " | awk "{print $1 ; exit}"'
 
