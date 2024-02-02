@@ -3,6 +3,7 @@
 DATABASE_TARBALL=GeoLite2-City.mmdb.tar.gz
 cd /var/cache/untangle-geoip
 tar --strip-components=1 -xzf $DATABASE_TARBALL $(tar -tzf $DATABASE_TARBALL  | grep mmdb)
+rm -f $DATABASE_TARBALL
 cd -
 
 exit 0
