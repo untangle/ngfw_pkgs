@@ -91,7 +91,7 @@
                     "javaClass":"com.untangle.app.intrusion_prevention.IntrusionPreventionRuleCondition",
                     "type":"SYSTEM_MEMORY",
                     "comparator":">=",
-                    "value":"2147483648"
+                    "value":"4294967296"
                 },{
                     "javaClass":"com.untangle.app.intrusion_prevention.IntrusionPreventionRuleCondition",
                     "type":"CLASSTYPE",
