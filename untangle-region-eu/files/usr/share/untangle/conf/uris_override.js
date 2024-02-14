@@ -97,6 +97,10 @@
                 "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://launchpad.edge.arista.com/",
                 "host": "eu.edge.arista.com"
+            },
+            {
+                "javaClass": "com.untangle.uvm.UriTranslation",
+                "uri": "https://wiki.edge.arista.com/get.php",
             }
         ]
     },
