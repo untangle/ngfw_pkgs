@@ -101,6 +101,11 @@
         ]
     },
     "dhcpAuthoritative": true,
+    "dhcpMaxLeases": 5000,
+    "dhcpRelays": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
     "dnsSettings": {
         "javaClass": "com.untangle.uvm.network.DnsSettings",
         "localServers": {
@@ -119,7 +124,7 @@
         "javaClass": "java.util.LinkedList",
         "list": []
     },
-    "hostName": "untangle",
+    "hostName": "arista",
     "httpPort": 80,
     "httpsPort": 443,
     "accessRules": {
