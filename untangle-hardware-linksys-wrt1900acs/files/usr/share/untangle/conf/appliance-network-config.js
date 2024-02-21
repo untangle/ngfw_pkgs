@@ -111,6 +111,11 @@
         ]
     },
     "dhcpAuthoritative": true,
+    "dhcpMaxLeases": 5000,
+    "dhcpRelays": {
+        "javaClass": "java.util.LinkedList",
+        "list": []
+    },
     "dnsSettings": {
         "javaClass": "com.untangle.uvm.network.DnsSettings",
         "localServers": {
@@ -129,7 +134,7 @@
         "javaClass": "java.util.LinkedList",
         "list": []
     },
-    "hostName": "untangle",
+    "hostName": "arista",
     "httpPort": 80,
     "httpsPort": 443,
     "accessRules": {
@@ -527,6 +532,7 @@
                 "configType": "ADDRESSED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
+                "dhcpType": "DISABLED",
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -573,6 +579,7 @@
                 "configType": "ADDRESSED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": true,
+                "dhcpType": "SERVER",
                 "dhcpLeaseDuration": 86400,
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
@@ -624,6 +631,7 @@
                 "configType": "BRIDGED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
+                "dhcpType": "DISABLED",
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
@@ -675,6 +683,7 @@
                 "configType": "BRIDGED",
                 "dhcpDnsOverride": "",
                 "dhcpEnabled": false,
+                "dhcpType": "DISABLED",
                 "dhcpOptions": {
                     "javaClass": "java.util.LinkedList",
                     "list": []
