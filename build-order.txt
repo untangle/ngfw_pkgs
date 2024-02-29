@@ -80,3 +80,4 @@ untangle-squid-config                   bullseye
 untangle-freeradius-config		bullseye
 untangle-region-eu                      bullseye
 untangle-serial-config			bullseye
+untangle-vue-ui			                    bullseye
