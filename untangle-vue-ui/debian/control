@@ -2,9 +2,9 @@ Source: untangle-vue-ui
 Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
-Build-Depends: node (>= 10)
+Build-Depends: debhelper (>= 10)
 
 Package: untangle-vue-ui
 Architecture: all
-Depends: ${misc:Depends}
+Depends: ${misc:Depends}, node
 Description: Untangle Vue UI
