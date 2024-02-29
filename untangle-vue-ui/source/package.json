@@ -1,0 +1,45 @@
+{
+  "name": "mfw-ui",
+  "version": "0.1.0",
+  "private": true,
+  "license": "PRIVATE",
+  "scripts": {
+    "serve": "vue-cli-service serve",
+    "build": "vue-cli-service build",
+    "build:components": "./build-ngfw-components.sh",
+    "lint": "vue-cli-service lint",
+    "report": "vue-cli-service build --report",
+    "format": "prettier --write \"{,!(node_modules)/**/}*.{js,vue}\"",
+    "clean": "rimraf ./node_modules/.cache"
+  },
+  "dependencies": {
+    "axios": "^0.21.1",
+    "eslint-plugin-sort-keys-fix": "^1.1.2",
+    "extglob": "^3.0.0",
+    "highcharts": "^9.1.2",
+    "lodash": "^4.17.21",
+    "nanomatch": "^1.2.13",
+    "vee-validate": "^3.4.10",
+    "vue": "^2.6.14",
+    "vue-grid-layout": "^2.3.12",
+    "vue-i18n": "^8.24.5",
+    "vue-router": "^3.5.2",
+    "vuedraggable": "^2.24.3",
+    "vuetify": "^2.5.6",
+    "vuex": "^3.6.2",
+    "vuntangle": "untangle/vuntangle"
+  },
+  "devDependencies": {
+    "@sentry/webpack-plugin": "^1.15.1",
+    "@vue/cli-plugin-babel": "^4.5.13",
+    "@vue/cli-plugin-eslint": "^4.5.13",
+    "@vue/cli-service": "^4.5.13",
+    "eslint": "^7.30.0",
+    "prettier": "^2.3.2",
+    "rimraf": "^3.0.2",
+    "sass": "~1.32.13",
+    "sass-loader": "^10.2.0",
+    "vue-cli-plugin-vuetify": "^2.4.1",
+    "vue-template-compiler": "^2.6.14"
+  }
+}
