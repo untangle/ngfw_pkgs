@@ -16,4 +16,4 @@ copy:
 	cp -r ./source/dist/. $(DESTDIR)
 	rm -rf ./source/dist
 
-.PHONY: build install dir prepare yarn copy
+.PHONY: build install dir yarn copy
