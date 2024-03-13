@@ -3,7 +3,7 @@ Section: admin
 Priority: optional
 Maintainer: Sebastien Delafond <sdelafond@gmail.com>
 Uploaders: Untangle Buildbot <buildbot@untangle.com>
-Build-Depends: systemd, debhelper (>= 10)
+Build-Depends: systemd, debhelper, nodejs, npm, yarnpkg (>= 10)
 Standards-Version: 3.9.8
 
 Package: untangle-vue-ui
