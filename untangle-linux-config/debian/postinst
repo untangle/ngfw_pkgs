@@ -5,7 +5,9 @@ set -x
 bin_sym_link=/bin
 # NGFW-13296 create /bin symlink if missing/broken
 if [ ! -L ${bin_sym_link} ] || [ ! -e ${bin_sym_link} ] ; then
-  ln -s /usr/bin ${bin_sym_link}
+  cd /
+  ln -s usr/bin ${bin_sym_link}
+  cd -
 fi
 
 # we don't deal with grub on arm* at all
