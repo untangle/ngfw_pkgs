@@ -2,7 +2,7 @@ DESTDIR ?= /usr/share/untangle/web/vue
 
 build:
 
-install: dir yarn copy
+install: dir yarn dist
 
 dir:
 	mkdir -p $(DESTDIR)
@@ -12,8 +12,8 @@ yarn:
 	yarnpkg install; \
 	yarnpkg build
 
-copy:
+dist: yarn
 	cp -r ./source/dist/. $(DESTDIR)
 	rm -rf ./source/dist
 
-.PHONY: build install dir yarn copy
+.PHONY: build install dir yarn dist
