@@ -1,0 +1,31 @@
+@import 'variables';
+
+// import roboto fonts
+@import '~vuntangle/src/scss/roboto-fonts';
+
+.ut-app-bar,
+.ut-app-menu {
+  background-color: $arista-blue !important;
+}
+
+// vertically center chips on v-autocomplete
+.v-select--chips--small {
+  .v-select__selections {
+    padding-top: 9px !important;
+  }
+}
+
+.arista-loader {
+  height: 32px;
+  width: 32px;
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  margin-left: -16px;
+  margin-top: -25px;
+  color: $aristaMediumBlue;
+}
+
+.drawer-content-menu {
+  box-shadow: none;
+}

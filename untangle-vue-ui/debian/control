@@ -1,0 +1,12 @@
+Source: untangle-vue-ui
+Section: admin
+Priority: optional
+Maintainer: Sebastien Delafond <sdelafond@gmail.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Build-Depends: systemd, debhelper, nodejs, npm, yarnpkg
+Standards-Version: 3.9.8
+
+Package: untangle-vue-ui
+Architecture: all
+Depends: ${misc:Depends}
+Description: Untangle Vue UI
