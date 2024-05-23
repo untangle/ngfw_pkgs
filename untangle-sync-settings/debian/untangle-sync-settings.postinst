@@ -44,7 +44,6 @@ deb-systemd-helper disable softflowd.service
 #deb-systemd-helper disable ospfd.service
 #deb-systemd-helper disable ospf6d.service
 #deb-systemd-helper disable bgpd.service
-apt install frr
 
 # disable 0000usepeerdns pppoe script, we will handle usepeerdns option
 # bug #11185
