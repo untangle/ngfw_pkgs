@@ -40,10 +40,11 @@ deb-systemd-helper disable softflowd.service
 
 # disable dynamic routing daemons
 # It will be started via the post-network scripts if needed
-deb-systemd-helper disable zebra.service
-deb-systemd-helper disable ospfd.service
-deb-systemd-helper disable ospf6d.service
-deb-systemd-helper disable bgpd.service
+#deb-systemd-helper disable zebra.service
+#deb-systemd-helper disable ospfd.service
+#deb-systemd-helper disable ospf6d.service
+#deb-systemd-helper disable bgpd.service
+apt install frr
 
 # disable 0000usepeerdns pppoe script, we will handle usepeerdns option
 # bug #11185
