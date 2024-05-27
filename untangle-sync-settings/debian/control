@@ -8,9 +8,9 @@ Standards-Version: 3.9.8
 
 Package: untangle-sync-settings
 Architecture: all
-Conflicts: untangle-netd
-Replaces: untangle-netd
-Provides: untangle-netd
+Conflicts: untangle-netd, quagga
+Replaces: untangle-netd, quagga
+Provides: untangle-netd, quagga
 Depends: ${misc:Depends}, bridge-utils,
          crda,
          dash,
