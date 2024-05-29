@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-sync-settings
 Architecture: all
-Conflicts: untangle-netd
+Conflicts: untangle-netd, quagga
 Replaces: untangle-netd
 Provides: untangle-netd
 Depends: ${misc:Depends}, bridge-utils,
@@ -30,7 +30,7 @@ Depends: ${misc:Depends}, bridge-utils,
          ndisc6,
          psmisc,
 	 python3,
-	 quagga | frr(>=7.5.1),
+	 frr,
          radvd,
 	 systemd,
 	 untangle-python3-sync-settings,
