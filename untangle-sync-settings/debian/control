@@ -8,7 +8,7 @@ Standards-Version: 3.9.8
 
 Package: untangle-sync-settings
 Architecture: all
-Conflicts: untangle-netd
+Conflicts: untangle-netd, quagga-core
 Replaces: untangle-netd
 Provides: untangle-netd
 Depends: ${misc:Depends}, bridge-utils,
@@ -29,11 +29,11 @@ Depends: ${misc:Depends}, bridge-utils,
          libnfnetlink0 (>= 1.0.1),
          ndisc6,
          psmisc,
-	 python3,
-	 quagga,
+         python3,
+         frr,
          radvd,
-	 systemd,
-	 untangle-python3-sync-settings,
+         systemd,
+         untangle-python3-sync-settings,
          vlan,
          wireless-regdb,
          wireless-tools,
