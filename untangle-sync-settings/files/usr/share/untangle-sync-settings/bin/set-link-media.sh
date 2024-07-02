@@ -1,4 +1,6 @@
 #!/bin/dash
+SCRIPT_NAME=$(basename $0)
+SCRIPT_NAME_NO_EXTENSION=${SCRIPT_NAME%.*}
 
 # This script sets the link media for a given NIC
 
@@ -27,6 +29,37 @@ is_media_unset()
     ${ETHTOOL} ${t_nic} | awk -v IGNORECASE=1 "/auto-negotiation: off/ { matches++ }; /speed: ${t_speed}m/ { matches++ } ; /duplex: ${t_duplex}/ { matches++ } ;  END { if ( matches == 3 ) exit 1 }"
 }
 
+# Some drivers do not handle EEE toggle properly and will cause a kernel panic.
+# If the following file exists and contains the string to ignore from lspci, don't perform eee operations on the matching nic.
+# For example:
+# $ lspci
+# ...
+# 01:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07)
+# 02:00.0 Network controller: Intel Corporation Wireless 3160 (rev 83)
+# 03:00.0 Ethernet controller: Realtek Semiconductor Co., Ltd. RTL8111/8168/8411 PCI Express Gigabit Ethernet Controller (rev 07
+#
+# Specifying the string "Realtek" would match those nics but not the Intel wireless nic. 
+IS_IGNORE_EEE_VENDOR_FILENAME=/usr/share/untangle/conf/flags/${SCRIPT_NAME_NO_EXTENSION}--is_ignore_eee_vendor
+is_ignore_eee_vendor()
+{
+    local t_nic=$1
+
+    if [ -f $IS_IGNORE_EEE_VENDOR_FILENAME ] ; then
+        # Vendor substring
+        vendor_match=$(cat $IS_IGNORE_EEE_VENDOR_FILENAME)
+        # nic's physical identifer in lspci (e.g.,01:00.0)
+        physical_device_target=$(readlink /sys/class/net/${t_nic}/device)
+        physical_device=${physical_device_target#*:}
+	    lspci_match=$(lspci | grep "^${physical_device}")
+        if [ -z "${lspci_match##*"$vendor_match"*}" ]; then
+            # Substring match on vendor for this physical device
+            return 0
+        fi
+    fi
+    return 1
+
+}
+
 set_ethernet_media()
 {
     local t_nic=$1
@@ -45,8 +78,12 @@ set_ethernet_media()
     else
         t_eee=off
     fi
-    echo "setting eee to ${t_eee}"
-    ethtool --show-eee ${t_nic} && ethtool --set-eee ${t_nic} eee ${t_eee}
+    #echo "setting eee to ${t_eee}"
+    is_ignore_eee_vendor ${t_nic}
+    if [ $? -ne 0 ] ; then
+        # Process
+        ethtool --show-eee ${t_nic} && ethtool --set-eee ${t_nic} eee ${t_eee}
+    fi
 
     case "${t_media}" in
         "10-full-duplex")
