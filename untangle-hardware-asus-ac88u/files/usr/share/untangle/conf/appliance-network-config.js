@@ -506,6 +506,38 @@
                 "ruleId": 13
             },
             {
+                "blocked": false,
+                "conditions": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": [
+                        {
+                            "conditionType": "PROTOCOL",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "UDP"
+                        },
+                        {
+                            "conditionType": "DST_PORT",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "51820"
+                        },
+                        {
+                            "conditionType": "SRC_INTF",
+                            "invert": false,
+                            "javaClass": "com.untangle.uvm.network.FilterRuleCondition",
+                            "value": "wan"
+                        }
+                    ]
+                },
+                "description": "Allow WireGuard",
+                "enabled": true,
+                "ipv6Enabled": true,
+                "javaClass": "com.untangle.uvm.network.FilterRule",
+                "readOnly": true,
+                "ruleId": 21
+            },
+            {
                 "blocked": true,
                 "conditions": {
                     "javaClass": "java.util.LinkedList",
@@ -1015,6 +1047,32 @@
     "virtualInterfaces": {
         "javaClass": "java.util.LinkedList",
         "list": [
+            {
+                "configType": "DISABLED",
+                "interfaceId": 249,
+                "isVirtualInterface": true,
+                "isVlanInterface": false,
+                "isWan": false,
+                "isWirelessInterface": false,
+                "javaClass": "com.untangle.uvm.network.InterfaceSettings",
+                "name": "WireGuard VPN",
+                "v4Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v4ConfigType": "AUTO",
+                "v6Aliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "v6ConfigType": "DISABLED",
+                "vrrpAliases": {
+                    "javaClass": "java.util.LinkedList",
+                    "list": []
+                },
+                "wirelessMode": "AP",
+                "wirelessVisibility": 0
+            },
             {
                 "configType": "DISABLED",
                 "interfaceId": 250,
