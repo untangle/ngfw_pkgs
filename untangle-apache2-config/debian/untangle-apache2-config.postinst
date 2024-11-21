@@ -94,6 +94,9 @@ a2dismod $A2DISMOD_OPTS userdir
 /usr/sbin/a2dismod $A2DISMOD_OPTS mpm_prefork
 /usr/sbin/a2enmod mpm_worker
 
+# Disable status module
+/usr/sbin/a2dismod $A2DISMOD_OPTS status
+
 # enable UVM site
 a2dissite default >/dev/null 2>&1 # wheezy
 a2dissite 000-default >/dev/null 2>&1 # jessie
