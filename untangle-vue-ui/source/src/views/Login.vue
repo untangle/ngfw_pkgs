@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex justify-center">
+  <v-container class="d-flex">
     <div class="d-flex flex-column align-center mt-15">
       <v-img :src="require(`@/assets/${logo}`)" width="240" height="40" contain />
       <p class="aristaBlue--text font-weight-bold text-h6">NGFW</p>
