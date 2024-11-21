@@ -11,7 +11,7 @@ dir:
 
 yarn:
 	cd ./source; \
-	yarnpkg install; \
+	yarnpkg --force --network-concurrency 1; \
 	yarnpkg build
 
 dist: yarn
