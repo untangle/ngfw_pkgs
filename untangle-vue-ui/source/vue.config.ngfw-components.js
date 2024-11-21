@@ -9,6 +9,13 @@ module.exports = {
   },
 
   filenameHashing: false, // do not hash until dynamically JSP update
+
+  configureWebpack: {
+    resolve: {
+      fallback: { 'url': false, 'util': false },
+    },
+  },
+
   chainWebpack: config => {
     // don't need html
     config.plugins.delete('html')

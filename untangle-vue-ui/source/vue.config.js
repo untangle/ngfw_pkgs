@@ -5,7 +5,7 @@ module.exports = {
   transpileDependencies: ['vuntangle', 'ip6'],
   publicPath: process.env.VUE_APP_BASE_URL,
   devServer: {
-    public: 'ngfw-ui.untangle.com:9090',
+    public: 'ngfw-ui.untangle.com',
     port: 9090,
     proxy: {
       // proxy URLs to backend development server
@@ -18,6 +18,9 @@ module.exports = {
     },
   },
   configureWebpack: {
+    resolve: {
+      fallback: { 'url': false, 'util': false },
+    },
     // output: {
     //   filename: `vue-app.js`,
     //   chunkFilename: `chunk-vendors.js`,

@@ -1,1 +1,1 @@
-module.exports = require('vuntangle/src/config/eslint')
+module.exports = require('vuntangle/eslint')
