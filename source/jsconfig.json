@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+      "@/*": ["./src/*"],
+      "~~/*": ["./src/*"],
+      "@@/*": ["./src/*"]
+    },
+    "module": "esnext",
+    "target": "esnext"
+  },
+  "exclude": ["node_modules", "dist", "docker_output", ".idea", ".vscode"]
+}
