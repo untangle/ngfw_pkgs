@@ -2,6 +2,7 @@
   <settings-dns ref="dns" :settings="dnsSettings">
     <template #actions="{ newSettings, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings)">{{ $t('save123') }}</u-btn>
+      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings)">{{ $t('save') }}</u-btn>
     </template>
   </settings-dns>
 </template>

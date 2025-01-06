@@ -208,6 +208,16 @@
               { name: 'settings', to: { name: 'component', params: { componentName: 'NgfwSettings' } } },
             ],
           },
+          {
+            name: 'services',
+            icon: 'mdi-apps',
+            active: false,
+            // match: '/services/DynamicBlockLists',
+            // group: 'services',
+            items: [
+              { name: 'DynamicBlockLists', to: { name: 'component', params: { componentName: 'DynamicBlockLists' } } },
+            ],
+          },
         ],
         reportsNavItems: [
           {
