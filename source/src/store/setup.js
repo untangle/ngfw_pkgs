@@ -1,90 +1,70 @@
-import vuntangle from '@/plugins/vuntangle'
+import api from '@/plugins/api'
+import router from '@/router'
 
-const getDefaultState = () => ({
-  setupWizardData: null, // Holds the wizard data (could be steps, configurations, etc.)
-  currentStep: 1, // Keeps track of the current step
+const state = () => ({
+  steps: [],
 })
 
 const getters = {
-  setupWizardData: state => state.setupWizardData,
-  currentStep: state => state.currentStep,
-  currentStepData: state => stepNumber => {
-    // Assuming you have a specific data structure for each step
-    return state.setupWizardData ? state.setupWizardData[stepNumber] : null
-  },
-}
+  steps: (state, getters, rootState, rootGetters) => {
+    const steps = ['license', 'system', 'wan']
 
-const mutations = {
-  RESET: state => Object.assign(state, getDefaultState()),
+    const interfaces = rootGetters['settings/interfaces']
+    const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
+    const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
 
-  SET_SETUP_WIZARD_DATA: (state, value) => {
-    state.setupWizardData = value
-  },
+    if (lteStep >= 0) steps.push('lte')
+    if (wifiStep >= 0) steps.push('wifi')
 
-  SET_CURRENT_STEP: (state, stepNumber) => {
-    state.currentStep = stepNumber
-  },
-
-  UPDATE_STEP_DATA: (state, { stepNumber, data }) => {
-    if (state.setupWizardData && state.setupWizardData[stepNumber]) {
-      state.setupWizardData[stepNumber] = data
-    }
+    return steps
   },
 }
 
 const actions = {
-  async fetchSetupWizardData({ commit, state }) {
-    if (state.setupWizardData !== null) return
-    commit('SET_FETCHING', true, { root: true })
-    const data = await window.rpc.setupWizard.getWizardData() // Replace with your API call
-    commit('SET_FETCHING', false, { root: true })
-    if (data) {
-      commit('SET_SETUP_WIZARD_DATA', data)
+  async getStatus({ commit }) {
+    const status = await api.get('/api/settings/system/setupWizard')
+    commit('settings/SET_SETUP_WIZARD', status, { root: true })
+    return status
+  },
+  async setStatus({ commit, getters, rootGetters }, currentStep) {
+    const steps = getters.steps
+    const completedStep = rootGetters['settings/setupWizard'].step
+    const nextStep = steps[steps.indexOf(currentStep) + 1]
+    if (!completedStep || currentStep === completedStep) {
+      const completed = steps[steps.length - 1] === currentStep
+      const status = {
+        completed,
+      }
+      // the step must not be included in config if status is completed
+      if (!completed) {
+        status.step = nextStep
+      }
+      const response = await api.post('/api/settings/system/setupWizard', status)
+      if (response.result) {
+        commit('settings/SET_SETUP_WIZARD', status, { root: true })
+        if (completed) {
+          router.push('/')
+        } else {
+          return nextStep
+        }
+      }
+    } else {
+      return nextStep
     }
   },
-
-  saveSetupWizardData({ commit }, { stepNumber, data }) {
-    return new Promise((resolve, reject) => {
-      commit('SET_FETCHING', true, { root: true })
-      window.rpc.setupWizard.saveWizardData(
-        (response, exception) => {
-          commit('SET_FETCHING', false, { root: true })
-          if (exception) {
-            vuntangle.toast.add(exception.message, 'error')
-            reject(exception)
-            return
-          }
-          commit('UPDATE_STEP_DATA', { stepNumber, data }) // Updates the data for the current step
-          vuntangle.toast.add(vuntangle.$t('saved_successfully', ['Wizard Data']))
-          resolve()
-        },
-        { stepNumber, data },
-      ) // Send step-specific data
-    })
-  },
-
-  // Optional action to go to the next step
-  nextStep({ commit, state }) {
-    const nextStep = state.currentStep + 1
-    commit('SET_CURRENT_STEP', nextStep)
-  },
-
-  // Optional action to go to the previous step
-  previousStep({ commit, state }) {
-    const prevStep = state.currentStep - 1
-    commit('SET_CURRENT_STEP', prevStep)
-  },
-
-  // Optionally reset the wizard
-  resetSetupWizard({ commit }) {
-    commit('RESET')
+  async resetStatus({ state, commit }) {
+    const status = { completed: false }
+    const response = await api.post('/api/settings/system/setupWizard', status)
+    if (response.result) {
+      commit('settings/SET_SETUP_WIZARD', status, { root: true })
+      return state.steps[0]
+    }
   },
 }
 
 export default {
   namespaced: true,
-  state: getDefaultState,
+  state,
   getters,
-  mutations,
   actions,
 }
