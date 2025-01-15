@@ -5,7 +5,7 @@ import License from '@/components/setup/License.vue'
 // import Wan from '@/components/setup/Wan.vue'
 // import Lte from '@/components/setup/Lte.vue'
 // import Wifi from '@/components/setup/Wifi.vue'
-// import Complete from '@/components/setup/Complete.vue'
+import Complete from '@/components/setup/Complete.vue'
 
 export default [
   {
@@ -19,7 +19,7 @@ export default [
       //   { name: 'setup-wan', path: 'wan', component: Wan, meta: { layout: SetupLayout } },
       //   { name: 'setup-lte', path: 'lte', component: Lte, meta: { layout: SetupLayout } },
       //   { name: 'setup-wifi', path: 'wifi', component: Wifi, meta: { layout: SetupLayout } },
-      //   { name: 'setup-complete', path: 'complete', component: Complete, meta: { layout: SetupLayout } },
+      { name: 'setup-complete', path: 'complete', component: Complete, meta: { layout: SetupLayout } },
     ],
   },
 ]
