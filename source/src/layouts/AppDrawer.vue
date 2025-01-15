@@ -15,7 +15,7 @@
     <v-list dense nav>
       <template v-if="mini">
         <!--Mini Menu Activated-->
-        <!-- <v-list-item v-for="item in rootNavItems" :key="item.to" :to="item.to">
+        <v-list-item v-for="item in rootNavItems" :key="item.to" :to="item.to">
           <v-tooltip right content-class="root-nav-tooltip">
             <template #activator="{ on }">
               <v-list-item-content @mouseenter="reportsMiniActive = false" v-on="on">
@@ -26,16 +26,16 @@
             </template>
             <span class="text-uppercase">{{ $t(item.name) }}</span>
           </v-tooltip>
-        </v-list-item> -->
+        </v-list-item>
       </template>
       <template v-else>
         <!--Expanded Menu Activated-->
-        <!-- <v-list-item v-for="item in rootNavItems" :key="item.to" :to="item.to" @mouseenter="reportsMiniActive = false">
+        <v-list-item v-for="item in rootNavItems" :key="item.to" :to="item.to" @mouseenter="reportsMiniActive = false">
           <v-list-item-icon class="mr-4 justify-center align-self-center`">
             <v-icon dense v-text="item.icon" />
           </v-list-item-icon>
           <v-list-item-title class="text-uppercase">{{ $t(item.name) }}</v-list-item-title>
-        </v-list-item> -->
+        </v-list-item>
       </template>
 
       <v-divider class="my-2" />
@@ -110,39 +110,22 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        // rootNavItems: [
-        // { name: 'dashboard', to: { name: 'home' }, icon: 'mdi-view-dashboard' },
-        // { name: 'clients', to: { name: 'clients' }, icon: 'mdi-server-network' },
-        // { name: 'active_sessions', to: { name: 'active-sessions' }, icon: 'mdi-table-network' },
-        // { name: 'reports', to: { name: 'reports' }, icon: 'mdi-chart-areaspline' },
-        // ],
+        rootNavItems: [
+          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          // { name: 'clients', to: { name: 'clients' }, icon: 'mdi-server-network' },
+          // { name: 'active_sessions', to: { name: 'active-sessions' }, icon: 'mdi-table-network' },
+          // { name: 'reports', to: { name: 'reports' }, icon: 'mdi-chart-areaspline' },
+        ],
 
         settingsNavItems: [
           {
             name: 'network',
             icon: 'mdi-lan',
             active: false,
+            match: '/settings/network',
             items: [
-              // { name: 'interfaces', to: '/settings/network/interfaces' },
-              // { name: 'dhcp', to: '/settings/network/dhcp' },
-              {
-                name: 'dhcp',
-                to: {
-                  name: 'component',
-                  params: {
-                    componentName: 'NgfwDhcp',
-                  },
-                },
-              },
-              {
-                name: 'dns',
-                to: {
-                  name: 'component',
-                  params: {
-                    componentName: 'NgfwDns',
-                  },
-                },
-              },
+              { name: 'dhcp', to: '/settings/network/dhcp' },
+              { name: 'dns', to: '/settings/network/dns' },
               // { name: 'port_forward', to: '/settings/network/port-forward' },
               // { name: 'shaping', to: '/settings/network/shaping' },
               // { name: 'nat', to: '/settings/network/nat' },
@@ -155,18 +138,18 @@
             active: false,
             match: '/settings/routing',
             items: [
-              {
-                name: 'static-routes',
-                to: {
-                  name: 'component',
-                  params: {
-                    componentName: 'NgfwStaticRoutes',
-                  },
-                },
-              },
+              { name: 'static_routes', to: '/settings/routing/routes' },
+              // {
+              //   name: 'static-routes',
+              //   to: {
+              //     name: 'component',
+              //     params: {
+              //       componentName: 'NgfwStaticRoutes',
+              //     },
+              //   },
+              // },
               // { name: 'wan_policies', to: '/settings/routing/wan-policies' },
               // { name: 'wan_rules', to: '/settings/routing/wan-rules' },
-              // { name: 'static_routes', to: '/settings/routing/routes' },
             ],
           },
           // {
@@ -204,8 +187,10 @@
               // { name: 'settings', to: '/settings/system/settings' },
               // { name: 'upgrade', to: '/settings/system/upgrade' },
               // { name: 'logging', to: '/settings/system/logging' },
-              { name: 'about', to: { name: 'component', params: { componentName: 'NgfwAbout' } } },
-              { name: 'settings', to: { name: 'component', params: { componentName: 'NgfwSettings' } } },
+              { name: 'settings', to: '/settings/system/settings' },
+              { name: 'about', to: '/settings/system/about' },
+              // { name: 'about', to: { name: 'component', params: { componentName: 'NgfwAbout' } } },
+              // { name: 'settings', to: { name: 'component', params: { componentName: 'NgfwSettings' } } },
             ],
           },
           {
@@ -215,7 +200,8 @@
             // match: '/services/DynamicBlockLists',
             // group: 'services',
             items: [
-              { name: 'DynamicBlockLists', to: { name: 'component', params: { componentName: 'DynamicBlockLists' } } },
+              { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }, // uncomment for development
+              // { name: 'DynamicBlockLists', to: { name: 'component', params: { componentName: 'DynamicBlockLists' } } },
             ],
           },
         ],

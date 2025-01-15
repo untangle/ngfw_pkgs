@@ -3,6 +3,7 @@ import VueRouter, { isNavigationFailure, NavigationFailureType } from 'vue-route
 import { UPageNotFound } from 'vuntangle'
 import setup from './setup'
 import auth from './auth'
+import setting from './setting'
 import Dashboard from '@/components/Dashboard/Main'
 
 // import Login from '@/views/Login.vue'
@@ -68,7 +69,7 @@ const baseRoutes = [
   },
 ]
 
-const routes = baseRoutes.concat(auth, setup, {
+const routes = baseRoutes.concat(auth, setup, setting, {
   path: '*',
   name: 'page-not-found',
   component: UPageNotFound,
