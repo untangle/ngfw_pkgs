@@ -1,12 +1,13 @@
 <template>
   <blank-layout v-if="embedded || $route.name === 'login'" />
+  <setup-layout v-else-if="$route.name.indexOf('setup') > -1" />
   <default-layout v-else />
 </template>
 <script>
-  import { BlankLayout, DefaultLayout } from '@/layouts'
+  import { BlankLayout, DefaultLayout, SetupLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, BlankLayout },
+    components: { DefaultLayout, BlankLayout, SetupLayout },
 
     data() {
       return {
