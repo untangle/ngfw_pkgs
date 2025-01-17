@@ -5,10 +5,11 @@
 </template>
 <script>
   import { NgfwAbout, NgfwDns, NgfwDhcp, NgfwStaticRoutes, NgfwSettings } from '@/ngfw'
+  import { DynamicBlockLists } from '@/services'
   import store from '@/store'
 
   export default {
-    components: { NgfwAbout, NgfwDns, NgfwDhcp, NgfwStaticRoutes, NgfwSettings },
+    components: { NgfwAbout, NgfwDns, NgfwDhcp, NgfwStaticRoutes, NgfwSettings, DynamicBlockLists },
 
     async beforeRouteEnter(to, from, next) {
       await store.dispatch('settings/fetchNetworkSettings')
