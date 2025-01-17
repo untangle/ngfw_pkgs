@@ -37,19 +37,28 @@
 </template>
 
 <script>
-  import store from '@/store'
+  // import store from '@/store'
 
   export default {
     computed: {
       steps() {
-        return store.getters['setup/steps']
+        // return store.getters['setup/steps']
+        return ['license', 'system', 'network', 'internet', 'interface', 'autoupgrades', 'complete']
       },
+
       status() {
-        return store.getters['settings/setupWizard']
+        // return store.getters['settings/setupWizard']
+        return {
+          'completed': true,
+        }
       },
       currentStep() {
         return this.status?.step || this.steps[0]
       },
+    },
+    mounted() {
+      // console.log('Steps:', this.steps)
+      // console.log('status:', this.status)
     },
   }
 </script>
