@@ -1,10 +1,6 @@
 <template>
   <v-container class="text-center" style="max-width: 800px">
-    <h1 class="font-weight-light">{{ $t('welcome') }},</h1>
-    <h2 class="font-weight-light">{{ $t('setup_thanks') }}</h2>
-
-    <v-divider class="mt-6 mb-6" />
-
+    <br />
     <p>{{ $t('setup_review_license') }}</p>
 
     <p>
@@ -22,7 +18,6 @@
 </template>
 
 <script>
-  import store from '@/store'
   import uris from '@/util/uris'
 
   export default {
@@ -34,18 +29,18 @@
       this.setEulaSrc()
     },
     methods: {
+      async onContinue() {
+        try {
+          await Promise.resolve()
+          // Navigate to the setup license page
+          this.$router.push('/setup/system')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
       // checks if the box has online access and load remote or local eula
       async setEulaSrc() {
         this.remoteEulaSrc = await uris.translate(uris.list.legal)
-      },
-
-      async onContinue() {
-        store.commit('SET_LOADER', true)
-        const nextStep = await store.dispatch('setup/setStatus', 'license')
-        store.commit('SET_LOADER', false)
-        if (nextStep) {
-          this.$router.push(`/setup/${nextStep}`)
-        }
       },
     },
   }

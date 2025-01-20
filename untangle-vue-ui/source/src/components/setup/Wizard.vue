@@ -7,7 +7,7 @@
     <p>{{ `A wizard will guide you through the initial setup and configuration of the Arista Server.` }}</p>
 
     <div>
-      <u-btn style="text-transform: none" @click="onContinue">{{ `Run Setup Wizard` }}</u-btn>
+      <u-btn :small="false" @click="onContinue">{{ `Run Setup Wizard` }}</u-btn>
     </div>
   </v-container>
 </template>
@@ -23,6 +23,17 @@
     computed: {
       logo() {
         return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
+      },
+    },
+    methods: {
+      async onContinue() {
+        try {
+          await Promise.resolve()
+          // Navigate to the setup license page
+          this.$router.push('/setup/license')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
       },
     },
   }
