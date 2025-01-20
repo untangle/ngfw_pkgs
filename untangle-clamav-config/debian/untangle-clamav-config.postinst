@@ -8,6 +8,7 @@ if [ "$1" = "configure" ] ; then
 fi
 
 CLAMAV_CONF_FILE=/etc/clamav/clamd.conf
+CLAMAV_SOCKET_DIR=/etc/systemd/system/clamav-daemon.socket.d
 
 setOption() {
   if grep -qE "^$1" $CLAMAV_CONF_FILE ; then
@@ -24,14 +25,59 @@ if dpkg --compare-versions "$oldVersion" le 16.0~ ; then
   cp -f /usr/share/untangle-clamav-config/clamd.conf.buster $CLAMAV_CONF_FILE
 fi
 
+unsetOption() {
+   perl -pi -e "s/\b$1\b/#$1/g" $CLAMAV_CONF_FILE
+
+}
+
+#for upgrades from >=17.3 clamav version is upgraded
+if dpkg --compare-versions "$oldVersion" ge 17.3~ ; then
+#Socket communication done by daemon-socket service, comment configuration in /etc/clamav/clamd.conf
+  unsetOption TCPAddr
+  unsetOption TCPSocket
+  unsetOption LocalSocket
+  mkdir -p  $CLAMAV_SOCKET_DIR
+
+#Socket communication done by daemon-socket service, Adding configuration file for the same
+  if [[ ! -f $CLAMAV_SOCKET_DIR/override.conf ]]; then
+    touch "$CLAMAV_SOCKET_DIR/override.conf"
+    cat <<EOL >> "$CLAMAV_SOCKET_DIR/override.conf"
+[Socket]
+ListenStream=
+ListenStream=/run/clamav/clamd.ctl
+ListenStream=127.0.0.1:3310
+EOL
+  fi
+
+  #adding new systemd override file
+  systemctl daemon-reload
+fi
+
 # options we need
-setOption TCPAddr 127.0.0.1
-setOption TCPSocket 3310 
+#setOption TCPAddr 127.0.0.1
+#setOption TCPSocket 3310
 setOption MaxFileSize 100M
 setOption StreamMaxLength 100M
 
 # disable clamav at startup (apps start as necessary)
 deb-systemd-helper disable clamav-daemon.service
-deb-systemd-helper disable clamav-freshclam.service
+
+SERVICE_NAME="clamav-freshclam"
+IS_RUNNING="active (running)"
+
+#Ensure freshclam.service service is running after update (if it is already started)
+#This is required for fresh install as daemon service is dependant on daily.cvd and main.cvd
+#These files are not present during first installation.
+#This command will add those files to /var/lib/clamav path, during package install or upgrade.
+if systemctl is-active --quiet $SERVICE_NAME && \
+      systemctl status $SERVICE_NAME | grep -q "$IS_RUNNING"; then
+      systemctl stop clamav-freshclam.service
+      /usr/bin/freshclam --foreground=true
+      systemctl start clamav-freshclam.service
+else
+      /usr/bin/freshclam --foreground=true
+      deb-systemd-helper disable clamav-freshclam.service
+fi
+
 
 exit 0
