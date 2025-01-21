@@ -17,33 +17,36 @@
     </div>
 
     <!-- Network Cards Table -->
-    <table class="network-table">
-      <thead>
-        <tr>
-          <th>Name</th>
-          <th>Device</th>
-          <th>Status</th>
-          <th>MAC Address</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr v-for="row in gridData" :key="row.physicalDev">
-          <td>{{ row.name }}</td>
-          <td>
-            <select v-model="row.deviceName">
-              <option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-                {{ device.physicalDev }}
-              </option>
-            </select>
-          </td>
-          <td>
-            <span :class="statusIcon(row.connected)" class="status-dot"></span>
-            {{ statusText(row) }}
-          </td>
-          <td>{{ row.macAddress }}</td>
-        </tr>
-      </tbody>
-    </table>
+    <div class="network-table-container">
+      <table class="network-table">
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Device</th>
+            <th>Status</th>
+            <th>MAC Address</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="row in gridData" :key="row.physicalDev">
+            <td>{{ row.name }}</td>
+            <td>
+              <select v-model="row.deviceName">
+                <option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
+                  {{ device.physicalDev }}
+                </option>
+              </select>
+            </td>
+            <td>
+              <span :class="statusIcon(row.connected)" class="status-dot"></span>
+              {{ statusText(row) }}
+            </td>
+            <td>{{ row.macAddress }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
     <!-- Warning Message -->
     <div v-if="gridData.length < 2" class="inline-warning">
       <span class="warning-icon"></span>
@@ -107,26 +110,33 @@
 
 <style scoped>
   .network-cards-panel {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
     margin: 20px;
   }
+
   .description {
     margin-bottom: 20px;
     text-align: left;
   }
+
   .step-text {
     margin-left: 20px;
     display: inline-block;
   }
+
   .button-container {
     display: flex;
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 20px;
   }
+
   .internet-button {
     background-color: #007bff;
     color: white;
@@ -138,35 +148,48 @@
     display: flex;
     align-items: center;
   }
+
   .internet-button .arrow {
     margin-left: 8px;
     font-size: 18px;
   }
+
   .internet-button:hover {
     background-color: #0056b3;
   }
+
+  .network-table-container {
+    flex-grow: 1;
+    overflow-y: auto;
+    margin-top: 20px;
+  }
+
   .network-table {
     border-collapse: collapse;
     width: 100%;
-    margin-top: 20px;
   }
+
   .network-table th,
   .network-table td {
     border: 1px solid #ddd;
     text-align: left;
     padding: 8px;
   }
+
   .network-table th {
     background-color: #f4f4f4;
   }
+
   .network-table tr:nth-child(even) {
     background-color: #f9f9f9;
   }
+
   .inline-warning {
     display: flex;
     align-items: flex-start;
     margin-top: 10px;
   }
+
   .status-dot {
     display: inline-block;
     width: 12px;
@@ -174,12 +197,15 @@
     border-radius: 50%;
     margin-right: 8px;
   }
+
   .status-connected {
     background-color: green;
   }
+
   .status-disconnected {
     background-color: gray;
   }
+
   .warning-icon {
     display: inline-block;
     width: 12px;

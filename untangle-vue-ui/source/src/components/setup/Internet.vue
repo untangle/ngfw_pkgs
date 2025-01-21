@@ -1,5 +1,5 @@
 <template>
-  <div class="setup-wizard">
+  <div class="setup-wizard network-cards-panel">
     <h3 class="title">Configure the Internet Connection</h3>
     <p class="error-message">No Internet Connection! Click on 'Test Connectivity' to verify.</p>
 
@@ -58,7 +58,9 @@
             <span>{{ wan.v4AutoDns2 }}</span>
           </div>
         </div>
-        <button class="renew-button" @click="renewDHCP">Renew DHCP</button>
+        <div class="button-margin">
+          <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Renew DHCP` }}</u-btn>
+        </div>
       </div>
 
       <!-- PPPoE Configuration Fields -->
@@ -69,8 +71,9 @@
         <label>Password</label>
         <input v-model="wan.v4PPPoEPassword" type="password" />
       </div>
-
-      <button class="test-button" @click="testConnectivity">Test Connectivity</button>
+      <div class="button-margin">
+        <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Test Connectivity` }}</u-btn>
+      </div>
     </div>
   </div>
 </template>
@@ -139,10 +142,23 @@
 
 <style scoped>
   .setup-wizard {
-    max-width: 800px;
+    max-width: auto;
     margin: 0 auto;
     font-family: Arial, sans-serif;
+    height: 100vh; /* Full viewport height */
+    justify-content: center; /* Horizontally center the content */
+    align-items: center; /* Vertically center the content */
     padding: 20px;
+  }
+
+  .network-cards-panel {
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin: 20px;
+    overflow-y: auto; /* Allow scrolling if needed */
+    flex-grow: 1; /* Ensure it takes up remaining space */
   }
 
   .title {
@@ -193,7 +209,7 @@
   input[type='text'],
   input[type='password'],
   select {
-    width: 100%;
+    width: 30%;
     padding: 8px;
     margin-top: 5px;
     border: 1px solid #ccc;
@@ -217,15 +233,13 @@
   button.renew-button {
     margin-top: 20px;
     padding: 10px 20px;
-    background-color: #42b983;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    cursor: pointer;
   }
 
   button.renew-button:hover {
     background-color: #35495e;
+  }
+  .button-margin {
+    padding: 2px;
   }
 
   .status-grid {

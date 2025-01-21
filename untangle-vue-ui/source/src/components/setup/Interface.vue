@@ -107,36 +107,55 @@
 
 <style scoped>
   .internal-network {
-    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    align-items: center; /* Horizontally center the content */
+    margin: 20px 20px 10px 20px; /* Reduced bottom margin to 10px */
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    margin: 20px;
+    height: calc(100vh - 40px); /* Ensure the height fits within the viewport, considering margins */
+    overflow: hidden; /* Hide any overflow */
   }
+
+  .form-container {
+    width: 100%; /* Ensure the form container takes full width */
+    max-width: 900px; /* Set a max-width for the content */
+    padding: 20px;
+    overflow: hidden; /* Prevent any internal scrolling */
+  }
+
   .router-section,
   .bridge-section {
     margin-bottom: 20px;
     text-align: left;
   }
+
   .radio-group {
     margin-bottom: 10px;
   }
+
   .info-text {
     margin: 10px 0;
     font-size: 14px;
     color: #555;
   }
+
   .form-field {
+    width: 70%; /* Ensure form fields take the full width available */
     margin: 10px 0;
     display: flex;
     align-items: center;
     gap: 10px;
   }
+
   .form-field label {
     font-weight: bold;
     flex: 0 0 150px;
   }
+
   .form-field input,
   .form-field select {
     flex: 1;
@@ -144,11 +163,13 @@
     border: 1px solid #ccc;
     border-radius: 3px;
   }
+
   .config-image {
     margin-top: 10px;
     max-width: 200px;
     height: auto;
   }
+
   .save-button {
     display: block;
     margin: 20px auto;
@@ -160,6 +181,7 @@
     cursor: pointer;
     font-size: 16px;
   }
+
   .save-button:hover {
     background-color: #0056b3;
   }
