@@ -1,10 +1,23 @@
 <template>
   <v-container class="text-center custom-margin" style="max-width: 800px">
-    <v-img :src="require(`@/assets/${logo}`)" contain style="padding-bottom: 10%" />
+    <div
+      class="d-flex flex-column align-center mb-2"
+      style="padding-top: 80px; padding-bottom: 0px; margin-bottom: 800px"
+    >
+      <v-img
+        :src="require('@/assets/BrandingLogo.png')"
+        contain
+        width="400"
+        height="100"
+        transition="false"
+        style="margin-bottom: 0"
+      />
+    </div>
+    <!-- <v-img :src="require(`@/assets/${logo}`)" contain width="240" height="40" transition="false" /> -->
     <h1>{{ `${localesEn?.Thanks_for_choosing} ${rpc?.oemShortName}!` }}</h1>
 
     <!-- Resume Wizard -->
-    <div v-if="!rpc.remote">
+    <div v-if="!rpc?.remote">
       <p>
         {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
       </p>
@@ -89,8 +102,8 @@
 </script>
 
 <style scoped>
+  /* Button container for spacing */
   .custom-margin {
     margin-top: 10px;
   }
-  /* Button container for spacing */
 </style>
