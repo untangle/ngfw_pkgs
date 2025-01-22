@@ -1,6 +1,6 @@
 <template>
   <v-card width="650" class="mx-auto mt-4" flat>
-    <h2 class="font-weight-light">{{ `Configure the Server` }}</h2>
+    <h2 class="font-weight-light faint-color text-h4">{{ `Configure the Server` }}</h2>
     <br />
     <br />
     <ValidationObserver v-slot="{ passes }">
@@ -8,7 +8,7 @@
         <div class="custom-margin">
           <h2 class="font-weight-light">{{ `Admin Account` }}</h2>
           <br />
-          <label>Choose a password for the admin account</label>
+          <label class="font-weight-light faint-color">Choose a password for the admin account</label>
           <br />
           <label>Password:</label>
           <ValidationProvider v-slot="{ errors }" name="password" rules="required">
@@ -30,12 +30,15 @@
           <ValidationProvider>
             <u-text-field />
           </ValidationProvider>
+          <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label>
         </div>
         <br />
         <div>
           <h2 class="font-weight-light">{{ `Install Type` }}</h2>
           <br />
-          <label>Install type determines the optimal default settings for this deployment.</label>
+          <label class="font-weight-light faint-color"
+            >Install type determines the optimal default settings for this deployment.</label
+          >
           <br />
           <label>Choose Type:</label>
           <ValidationProvider v-slot="{ errors }" name="chooseType" rules="required">
@@ -67,7 +70,10 @@
 </template>
 <style scoped>
   .custom-margin {
-    margin-right: 20px;
+    margin-right: 80px;
+  }
+  .faint-color {
+    color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity */
   }
 </style>
 <script>

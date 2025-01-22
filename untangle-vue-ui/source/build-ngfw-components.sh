@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-REMOTE_NGFW_WEBFOLDER="/var/www/vue/";
+REMOTE_NGFW_WEBFOLDER="/usr/share/untangle/web/vue/";
 
 echo "building NGFW components...";
 

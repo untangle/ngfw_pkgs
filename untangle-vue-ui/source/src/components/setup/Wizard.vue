@@ -6,8 +6,10 @@
 
     <p>{{ `A wizard will guide you through the initial setup and configuration of the Arista Server.` }}</p>
 
-    <div>
-      <u-btn :small="false" @click="onContinue">{{ `Run Setup Wizard` }}</u-btn>
+    <div class="button-container">
+      <u-btn :small="false" style="margin: 20px 0" @click="onContinue">{{ `Run Setup Wizard` }}</u-btn>
+      <!-- <u-btn :small="false" style="margin: 20px 0" @click="onContinue">{{ `Resume Setup Wizard` }}</u-btn>
+      <u-btn :small="false" style="margin: 20px 0" @click="onContinue">{{ `Restart` }}</u-btn> -->
     </div>
   </v-container>
 </template>
@@ -15,6 +17,12 @@
 <style scoped>
   .custom-margin {
     margin-top: 10px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
   }
 </style>
 

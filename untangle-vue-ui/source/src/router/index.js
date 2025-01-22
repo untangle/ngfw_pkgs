@@ -88,8 +88,12 @@ router.beforeEach((to, from, next) => {
       if (window.rpc) {
         const startUpInfo = window.rpc.UvmContext.getWebuiStartupInfo()
         Object.assign(window.rpc, startUpInfo)
-        if (to.name === 'login') next({ name: 'home' })
-        else next()
+        if (!from.name && to.name.includes('setup-') && to.name !== 'setup-wizard') {
+          next({ name: 'setup-wizard' })
+        } else if (to.name === 'login') next({ name: 'home' })
+        else {
+          next()
+        }
       }
     } catch (ex) {
       if (to.name !== 'login') next({ name: 'login' })
