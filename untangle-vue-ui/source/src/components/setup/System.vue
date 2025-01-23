@@ -11,21 +11,19 @@
           <label class="font-weight-light faint-color">Choose a password for the admin account</label>
           <br />
           <label>Password:</label>
-          <ValidationProvider v-slot="{ errors }" name="password" rules="required">
-            <u-text-field
-              :type="passwordReveal ? 'text' : 'password'"
-              :error-messages="errors"
-              @click:append="passwordReveal = !passwordReveal"
-            />
+          <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
+            <u-password v-model="newPassword" :errors="errors" />
           </ValidationProvider>
+          <br />
           <label>Confirm Password:</label>
-          <ValidationProvider v-slot="{ errors }" name="confirmPassword" rules="required">
-            <u-text-field
-              :type="passwordReveal ? 'text' : 'password'"
-              :error-messages="errors"
-              @click:append="passwordReveal = !passwordReveal"
-            />
+          <ValidationProvider
+            v-slot="{ errors }"
+            name="confirmPassword"
+            :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
+          >
+            <u-password v-model="newPasswordConfirm" :errors="errors" />
           </ValidationProvider>
+          <br />
           <label>Adding Email:</label>
           <ValidationProvider>
             <u-text-field />
@@ -41,23 +39,35 @@
           >
           <br />
           <label>Choose Type:</label>
-          <ValidationProvider v-slot="{ errors }" name="chooseType" rules="required">
-            <u-text-field list="chooseTypes" :error-messages="errors" />
-            <datalist id="chooseTypes">
-              <option value="Higher Education" />
-              <option value="School" />
-            </datalist>
+          <ValidationProvider v-slot="{ errors }" rules="required">
+            <v-autocomplete
+              v-model="selectedType"
+              :items="typeOptions"
+              outlined
+              dense
+              hide-details
+              return-object
+              :error-messages="errors"
+              placeholder="Select Type"
+            >
+              <template v-if="errors.length" #append>
+                <u-errors-tooltip :errors="errors" />
+              </template>
+            </v-autocomplete>
           </ValidationProvider>
           <h2 class="font-weight-light">{{ `Timezone` }}</h2>
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <u-text-field list="timezones" />
-            <datalist id="timezones">
-              <option value="(~UTC+00.00) Etc/UTC" />
-              <option value="PST" />
-              <option value="EST" />
-              <option value="CET" />
-            </datalist>
-            <span class="text-danger">{{ errors[0] }}</span>
+          <ValidationProvider ref="tz" v-slot="{ errors }" rules="required">
+            <v-autocomplete
+              :value="tz.displayName"
+              :items="timeZones"
+              outlined
+              dense
+              hide-details
+              return-object
+              :error-messages="errors"
+              @input="val => (tz = { displayName: val ? val.value : '', value: val ? val.openwrt : '' })"
+            >
+            </v-autocomplete>
           </ValidationProvider>
         </div>
       </div>
@@ -77,20 +87,74 @@
   }
 </style>
 <script>
+  import store from '@/store'
   export default {
     data: () => ({
-      password: '',
-      confirmPassword: '',
+      newPassword: null,
+      newPasswordConfirm: null,
+      tz: { ...store.getters['settings/timeZoneObject'] },
+      loading: false,
       chooseType: '',
+      selectedType: '',
+      typeOptions: [
+        'School',
+        'Higher Education',
+        'State & Local Government',
+        'Federal Government',
+        'Nonprofit',
+        'Hospitality & Retail',
+        'Healthcare',
+        'Banking & Financial',
+        'Home',
+        'Student',
+        'Other',
+      ],
     }),
-    error: false,
-    passwordReveal: false,
-
+    computed: {
+      timeZones() {
+        return this.$vuntangle.dates.timeZones.filter(timeZone => 'openwrt' in timeZone)
+      },
+      passwordRequired() {
+        return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
+      },
+    },
     methods: {
-      async onContinue() {},
-      validatePassword(e) {
-        console.log(this)
-        e.preventDefault()
+      async onContinue() {
+        store.commit('SET_LOADER', true)
+
+        // save admin account password if one was given
+        let accountResponse = true
+        if (this.newPassword) {
+          const credentials = store.getters['settings/credentials']
+          const account = credentials.find(account => account.username === 'admin')
+
+          if (account) {
+            // if admin account found, just update password
+            account.passwordCleartext = this.newPassword
+          } else {
+            // else add the new `admin` account to the credentials
+            credentials.push({
+              username: 'admin',
+              passwordCleartext: this.newPassword,
+            })
+          }
+          accountResponse = await store.dispatch('settings/setAccounts', credentials)
+        }
+
+        // save timezone
+        const tzResponse = await store.dispatch('settings/setTimezone', this.tz)
+
+        // if saving account or timezone fails do not jump to the next step
+        if (!accountResponse.success || !tzResponse.success) {
+          store.commit('SET_LOADER', false)
+          return
+        }
+
+        const nextStep = await store.dispatch('setup/setStatus', 'system')
+        store.commit('SET_LOADER', false)
+        if (nextStep) {
+          this.$router.push(`/setup/${nextStep}`)
+        }
       },
     },
   }
