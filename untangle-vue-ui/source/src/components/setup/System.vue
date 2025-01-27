@@ -26,9 +26,12 @@
           <br />
           <label>Adding Email:</label>
           <ValidationProvider>
-            <u-text-field />
+            <u-text-field v-model="adminEmail" />
           </ValidationProvider>
           <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label>
+          <div class="button-container">
+            <u-btn :small="false" style="margin: 8px 0" @click="onClickLicense">{{ `License` }}</u-btn>
+          </div>
         </div>
         <br />
         <div>
@@ -41,7 +44,7 @@
           <label>Choose Type:</label>
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-autocomplete
-              v-model="selectedType"
+              v-model="installType"
               :items="typeOptions"
               outlined
               dense
@@ -55,30 +58,46 @@
               </template>
             </v-autocomplete>
           </ValidationProvider>
-          <h2 class="font-weight-light">{{ `Timezone` }}</h2>
-          <ValidationProvider ref="tz" v-slot="{ errors }" rules="required">
+          <br />
+          <label>Timezone</label>
+          <!-- <h2 class="font-weight-light">{{ `Timezone` }}</h2> -->
+          <ValidationProvider v-slot="{ errors }" rules="required">
             <v-autocomplete
-              :value="tz.displayName"
-              :items="timeZones"
+              :value="timezone"
+              :items="timezones"
               outlined
               dense
               hide-details
               return-object
               :error-messages="errors"
-              @input="val => (tz = { displayName: val ? val.value : '', value: val ? val.openwrt : '' })"
             >
             </v-autocomplete>
           </ValidationProvider>
+          <br />
+          <br />
+          <div class="button-container-right">
+            <u-btn :small="false" style="margin: 8px 0" @click="passes(onContinue)">{{ `Network Cards` }}</u-btn>
+          </div>
         </div>
       </div>
 
       <br />
-
-      <u-btn :small="false" @click="passes(onContinue)">{{ `Network Cards` }}</u-btn>
     </ValidationObserver>
   </v-card>
 </template>
 <style scoped>
+  .button-container {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1300px;
+  }
+  .button-container-right {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    gap: 1300px;
+  }
   .custom-margin {
     margin-right: 80px;
   }
@@ -87,74 +106,134 @@
   }
 </style>
 <script>
+  import Util from '@/util/setupUtil'
   import store from '@/store'
   export default {
+    props: {
+      rpc: {
+        type: Object,
+        required: true,
+      },
+    },
     data: () => ({
+      adminEmail: '',
+      timezoneID: '',
+      timezone: '',
+      timezones: '',
       newPassword: null,
       newPasswordConfirm: null,
       tz: { ...store.getters['settings/timeZoneObject'] },
       loading: false,
-      chooseType: '',
-      selectedType: '',
+      installType: '',
       typeOptions: [
-        'School',
-        'Higher Education',
-        'State & Local Government',
-        'Federal Government',
-        'Nonprofit',
-        'Hospitality & Retail',
-        'Healthcare',
-        'Banking & Financial',
-        'Home',
-        'Student',
-        'Other',
+        { value: 'school', text: 'School' },
+        { value: 'college', text: 'Higher Education' },
+        { value: 'government', text: 'State & Local Government' },
+        { value: 'fedgovernment', text: 'Federal Government' },
+        { value: 'nonprofit', text: 'Nonprofit' },
+        { value: 'retail', text: 'Hospitality & Retail' },
+        { value: 'healthcare', text: 'Healthcare' },
+        { value: 'financial', text: 'Banking & Financial' },
+        { value: 'home', text: 'Home' },
+        { value: 'student', text: 'Student' },
+        { value: 'other', text: 'Other' },
       ],
     }),
     computed: {
-      timeZones() {
-        return this.$vuntangle.dates.timeZones.filter(timeZone => 'openwrt' in timeZone)
-      },
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
     },
-    methods: {
-      async onContinue() {
-        store.commit('SET_LOADER', true)
+    created() {
+      // Set up the RPC client and fetch relevant data
+      const rpcResponseForSetup = Util.setRpcJsonrpc('setup') // setup/JSONRPC
+      console.log('Responce', rpcResponseForSetup)
 
-        // save admin account password if one was given
-        let accountResponse = true
-        if (this.newPassword) {
-          const credentials = store.getters['settings/credentials']
-          const account = credentials.find(account => account.username === 'admin')
-
-          if (account) {
-            // if admin account found, just update password
-            account.passwordCleartext = this.newPassword
-          } else {
-            // else add the new `admin` account to the credentials
-            credentials.push({
-              username: 'admin',
-              passwordCleartext: this.newPassword,
-            })
+      this.adminEmail = rpcResponseForSetup?.adminEmail
+      this.timezoneID = rpcResponseForSetup?.timezoneID
+      this.timezones = []
+      const jsonStr = rpcResponseForSetup.timezones.replace(/'/g, '"')
+      const timezonesArray = JSON.parse(jsonStr)
+      if (timezonesArray) {
+        for (let i = 0; i < timezonesArray.length; i++) {
+          const timezone = '(' + timezonesArray[i][1] + ') ' + timezonesArray[i][0]
+          // const displayName = rpcResponseForSetup.timezones[i][1]
+          this.timezones.push(timezone)
+          if (this.timezoneID === timezonesArray[i][0]) {
+            this.timezone = timezone
           }
-          accountResponse = await store.dispatch('settings/setAccounts', credentials)
         }
-
-        // save timezone
-        const tzResponse = await store.dispatch('settings/setTimezone', this.tz)
-
-        // if saving account or timezone fails do not jump to the next step
-        if (!accountResponse.success || !tzResponse.success) {
-          store.commit('SET_LOADER', false)
-          return
+      }
+    },
+    methods: {
+      async onClickLicense() {
+        try {
+          await Promise.resolve()
+          // Navigate to the setup wizard page
+          this.$router.push('/setup/license/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
         }
+      },
+      async onContinue() {
+        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+        console.log(rpcResponseForSetup)
 
-        const nextStep = await store.dispatch('setup/setStatus', 'system')
-        store.commit('SET_LOADER', false)
-        if (nextStep) {
-          this.$router.push(`/setup/${nextStep}`)
+        try {
+          window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // to avoid invalid security nonce
+          // console.log(window.rpc.setup)
+          if (this.timezoneID !== this.timezone) {
+            console.log('timeZone', this.timezone)
+            const timezoneId = this.timezone.split(' ')[1]
+            await window.rpc.setup.setTimeZone(timezoneId)
+            console.log('Timezone updated successfully.', timezoneId)
+          }
+          await this.saveAdminPassword()
+          // alert('Settings saved successfully.')
+        } catch (error) {
+          console.error('Error saving settings:', error)
+          alert('Failed to save settings. Please try again.')
         }
+      },
+
+      async saveAdminPassword() {
+        try {
+          console.log('Attempting to update admin password...')
+          console.log('RPC Context:', window.rpc.setup)
+
+          // Update admin password
+          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType)
+          console.log('Admin password updated successfully.', this.newPassword)
+          console.log('Confirm password', this.newPasswordConfirm)
+          console.log('Install Type', this.installType)
+
+          // Authenticate the updated password
+          await new Promise((resolve, reject) => {
+            Util.authenticate(this.newPassword, (error, success) => {
+              console.log('Authentication error:', error)
+              console.log('Authentication success:', success)
+              this.$router.push('/setup/network')
+              if (error || !success) {
+                console.error('Authentication failed after password update:', error)
+                reject(new Error('Authentication failed after password update.'))
+              } else {
+                console.log('Authentication successful after password update.')
+                resolve()
+                this.showInterfaces = true
+              }
+            })
+          })
+        } catch (error) {
+          console.error('Error saving admin password or authenticating:', error)
+          throw error
+        }
+        // try {
+        //   await Promise.resolve()
+        //   // Navigate to the setup license page
+        //   this.$router.push('/setup/network')
+        // } catch (error) {
+        //   console.error('Failed to navigate:', error)
+        // }
       },
     },
   }

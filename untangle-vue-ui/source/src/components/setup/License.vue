@@ -24,7 +24,7 @@
 
 <script>
   import uris from '@/util/uris'
-
+  // import store from '@/store'
   export default {
     data: () => ({
       paragraphStyle: {
@@ -47,12 +47,19 @@
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
+        // store.commit('SET_LOADER', true)
+        // this.$router.push(`/setup/system/`)
+        // const nextStep = await store.dispatch('setup/setStatus', 'license')
+        // store.commit('SET_LOADER', false)
+        // if (nextStep) {
+        //   this.$router.push(`/setup/${nextStep}`)
+        // }
       },
       async onClickDisagree() {
         try {
           await Promise.resolve()
-          // Navigate to the setup license page
-          this.$router.push('/setup/')
+          // Navigate to the setup wizard page
+          this.$router.push('/wizard/')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }

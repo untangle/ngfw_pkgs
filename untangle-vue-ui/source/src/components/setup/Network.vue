@@ -61,6 +61,10 @@
         </label>
       </div>
     </div>
+    <div class="button-container">
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickServerSettings">{{ `License` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickInternetConnection">{{ `Network Cards` }}</u-btn>
+    </div>
   </div>
 </template>
 
@@ -90,6 +94,24 @@
       }
     },
     methods: {
+      async onClickServerSettings() {
+        try {
+          await Promise.resolve()
+          // Navigate to the setup wizard page
+          this.$router.push('/setup/system/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
+      async onClickInternetConnection() {
+        try {
+          await Promise.resolve()
+          // Navigate to the setup wizard page
+          this.$router.push('/setup/internet/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
       statusText(row) {
         const connectedText =
           row.connected === 'CONNECTED' ? 'Connected' : row.connected === 'DISCONNECTED' ? 'Disconnected' : 'Unknown'
@@ -100,15 +122,21 @@
         return status === 'CONNECTED' ? 'status-connected' : 'status-disconnected'
       },
 
-      onClickInternetConnection() {
-        console.log('Internet Connection button clicked')
-        // Perform any static action or navigation if required.
-      },
+      // onClickInternetConnection() {
+      //   console.log('Internet Connection button clicked')
+      //   // Perform any static action or navigation if required.
+      // },
     },
   }
 </script>
 
 <style scoped>
+  .button-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1300px;
+  }
   .network-cards-panel {
     display: flex;
     flex-direction: column;
