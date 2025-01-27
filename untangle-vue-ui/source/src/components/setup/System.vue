@@ -63,7 +63,7 @@
           <!-- <h2 class="font-weight-light">{{ `Timezone` }}</h2> -->
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-autocomplete
-              :value="timezone"
+              v-model="timezone"
               :items="timezones"
               outlined
               dense
@@ -177,7 +177,9 @@
       },
       async onContinue() {
         const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+        const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
         console.log(rpcResponseForSetup)
+        console.log('Responce rpcResponseForAdmin', rpcResponseForAdmin)
 
         try {
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // to avoid invalid security nonce
@@ -202,10 +204,10 @@
           console.log('RPC Context:', window.rpc.setup)
 
           // Update admin password
-          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType)
+          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
           console.log('Admin password updated successfully.', this.newPassword)
           console.log('Confirm password', this.newPasswordConfirm)
-          console.log('Install Type', this.installType)
+          console.log('Install Type', this.installType.value)
 
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
