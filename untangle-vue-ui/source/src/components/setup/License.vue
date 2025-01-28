@@ -58,6 +58,7 @@
       async onClickDisagree() {
         try {
           await Promise.resolve()
+          localStorage.clear()
           // Navigate to the setup wizard page
           this.$router.push('/wizard/')
         } catch (error) {

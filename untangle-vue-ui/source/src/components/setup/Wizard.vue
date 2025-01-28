@@ -94,6 +94,7 @@
       async resetWizard() {
         try {
           await Promise.resolve()
+          localStorage.clear()
           this.$router.push('/setup/license')
         } catch (error) {
           console.error('Failed to navigate:', error)

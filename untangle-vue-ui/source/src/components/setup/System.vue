@@ -4,11 +4,14 @@
     <br />
     <br />
     <ValidationObserver v-slot="{ passes }">
-      <div class="d-flex">
+      <div class="parent-container">
         <div class="custom-margin">
           <h2 class="font-weight-light">{{ `Admin Account` }}</h2>
           <br />
-          <label class="font-weight-light faint-color">Choose a password for the admin account</label>
+          <label class="font-weight-light faint-color"
+            >Choose a password for the <strong>admin</strong><br />
+            account</label
+          >
           <br />
           <label>Password:</label>
           <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
@@ -29,12 +32,13 @@
             <u-text-field v-model="adminEmail" />
           </ValidationProvider>
           <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label>
-          <div class="button-container">
-            <u-btn :small="false" style="margin: 8px 0" @click="onClickLicense">{{ `License` }}</u-btn>
-          </div>
+          <u-btn :small="false" style="margin: 8px 0x" class="custom-btn" @click="onClickLicense">
+            <span class="arrow-icon-left">←</span>
+            <span class="button-text">{{ `License` }}</span>
+          </u-btn>
         </div>
         <br />
-        <div>
+        <div class="custom-margin">
           <h2 class="font-weight-light">{{ `Install Type` }}</h2>
           <br />
           <label class="font-weight-light faint-color"
@@ -60,7 +64,6 @@
           </ValidationProvider>
           <br />
           <label>Timezone</label>
-          <!-- <h2 class="font-weight-light">{{ `Timezone` }}</h2> -->
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-autocomplete
               v-model="timezone"
@@ -73,41 +76,74 @@
             >
             </v-autocomplete>
           </ValidationProvider>
+          <label class="empty-label"> </label>
           <br />
           <br />
-          <div class="button-container-right">
-            <u-btn :small="false" style="margin: 8px 0" @click="passes(onContinue)">{{ `Network Cards` }}</u-btn>
-          </div>
+          <br />
+          <br />
+          <br />
+          <u-btn :small="false" style="margin: 8px 0" class="custom-btn" @click="passes(onContinue)">
+            {{ `Network Cards` }}<span class="arrow-icon-right">→</span>
+          </u-btn>
         </div>
       </div>
-
-      <br />
     </ValidationObserver>
   </v-card>
 </template>
 <style scoped>
-  .button-container {
-    display: flex;
-    justify-content: flex-start;
-    align-items: center;
-    gap: 1300px;
+  .parent-container {
+    display: flex; /* Enables flexbox layout */
+    gap: 20px; /* Adds 20px space between the child divs */
   }
-  .button-container-right {
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
-    gap: 1300px;
+  h2.font-weight-light {
+    font-weight: bold; /* Or try 'bold' for a stronger weight */
+  }
+  .arrow-icon-left,
+  .arrow-icon-right {
+    font-weight: bold;
+    font-size: 50px;
+    display: inline-block;
+    vertical-align: middle;
+    margin-bottom: 17px;
+  }
+
+  .arrow-icon-left {
+    margin-left: -100px;
+    margin-right: -20px;
+  }
+  .button-text {
+    margin-left: 65px;
+    margin-right: -10px;
+    display: inline-block;
+  }
+
+  .arrow-icon-right {
+    margin-left: 10px;
+    margin-right: -30px;
+  }
+  .custom-btn {
+    margin: 5px 0; /* Margin for spacing between buttons */
+    width: 300px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
+    font-size: 16px; /* Text size */
+    border-radius: 5px; /* Optional: rounded corners */
+    text-align: center; /* Center text */
+  }
+  .empty-label {
+    display: block; /* Ensures the label takes up space and is on its own line */
+    height: 13px; /* Set a specific height if needed */
+    background-color: white; /* Set a background color or any style */
   }
   .custom-margin {
-    margin-right: 80px;
+    width: 300px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
   }
   .faint-color {
-    color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity */
+    color: rgba(0, 0, 0, 25); /* Adjust the color and opacity */
   }
 </style>
 <script>
   import Util from '@/util/setupUtil'
-  import store from '@/store'
   export default {
     props: {
       rpc: {
@@ -120,9 +156,8 @@
       timezoneID: '',
       timezone: '',
       timezones: '',
-      newPassword: null,
-      newPasswordConfirm: null,
-      tz: { ...store.getters['settings/timeZoneObject'] },
+      newPassword: localStorage.getItem('newPassword') || null,
+      newPasswordConfirm: localStorage.getItem('newPassword') || null,
       loading: false,
       installType: '',
       typeOptions: [
@@ -144,10 +179,31 @@
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
     },
+    watch: {
+      newPassword(newVal) {
+        // Store the password in localStorage whenever it changes
+        if (newVal) {
+          localStorage.setItem('newPassword', newVal)
+        } else {
+          localStorage.removeItem('newPassword') // Remove if the value is empty
+        }
+      },
+      installType(newValue) {
+        // Save the installType to localStorage whenever it changes
+        if (newValue) {
+          localStorage.setItem('installType', JSON.stringify(newValue))
+        }
+      },
+    },
     created() {
       // Set up the RPC client and fetch relevant data
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup') // setup/JSONRPC
       console.log('Responce', rpcResponseForSetup)
+
+      const savedInstallType = localStorage.getItem('installType')
+      if (savedInstallType) {
+        this.installType = JSON.parse(savedInstallType)
+      }
 
       this.adminEmail = rpcResponseForSetup?.adminEmail
       this.timezoneID = rpcResponseForSetup?.timezoneID
@@ -229,13 +285,6 @@
           console.error('Error saving admin password or authenticating:', error)
           throw error
         }
-        // try {
-        //   await Promise.resolve()
-        //   // Navigate to the setup license page
-        //   this.$router.push('/setup/network')
-        // } catch (error) {
-        //   console.error('Failed to navigate:', error)
-        // }
       },
     },
   }
