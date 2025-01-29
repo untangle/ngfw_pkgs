@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex, { Store } from 'vuex'
+import VuexPersistence from 'vuex-persist'
 import settings from './settings'
 import setup from './setup'
 import auth from './auth'
@@ -38,6 +39,10 @@ const mutations = {
       state.cachedComponents.splice(index, 1)
     }
   },
+  SET_SHOW_STEP(state, value) {
+    console.log('Setting showStep to:', value) // Log the value being set
+    state.currentStep = value
+  },
 }
 
 const actions = {
@@ -49,7 +54,31 @@ const actions = {
     commit('RESET')
     commit('settings/RESET')
   },
+
+  setShowStep({ commit }, value) {
+    commit('SET_SHOW_STEP', value)
+  },
 }
+
+const getters = {
+  steps: (state, getters, rootState, rootGetters) => {
+    const steps = ['license', 'system', 'wan']
+
+    const interfaces = rootGetters['settings/interfaces']
+    const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
+    const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
+
+    if (lteStep >= 0) steps.push('lte')
+    if (wifiStep >= 0) steps.push('wifi')
+
+    return steps
+  },
+  currentStep: state => state.currentStep,
+}
+
+const vuexPersistence = new VuexPersistence({
+  storage: window.localStorage,
+})
 
 export default new Store({
   modules: {
@@ -58,6 +87,8 @@ export default new Store({
     setup,
   },
   state: getDefaultState,
+  getters,
   mutations,
   actions,
+  plugins: [vuexPersistence.plugin],
 })

@@ -1,49 +1,67 @@
 <template>
-  <v-container class="text-center" style="max-width: 600px">
-    <h1 class="d-flex font-weight-light text-center faint-color">
-      License
-      <v-spacer />
-    </h1>
-    <br />
-    <p>{{ $t('setup_review_license') }}</p>
+  <div>
+    <div>
+      <SetupLayout />
+      <v-container class="text-center" style="max-width: 600px">
+        <h1 class="d-flex font-weight-light text-center faint-color">
+          License
+          <v-spacer />
+        </h1>
+        <br />
+        <p>{{ $t('setup_review_license') }}</p>
 
-    <p :style="paragraphStyle">
-      {{ $t('setup_license_available_at') }} <a :href="remoteEulaSrc" target="_blank">{{ remoteEulaSrc }}</a>
-    </p>
-    <p>
-      <b>{{ $t('setup_legal_links_available_at') }}</b>
-    </p>
+        <p :style="paragraphStyle">
+          {{ $t('setup_license_available_at') }} <a :href="remoteEulaSrc" target="_blank">{{ remoteEulaSrc }}</a>
+        </p>
+        <p>
+          <b>{{ $t('setup_legal_links_available_at') }}</b>
+        </p>
 
-    <div class="button-container">
-      <!-- <u-btn :small="false" text>Disagree</u-btn> -->
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickDisagree">Disagree</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onContinue">Agree</u-btn>
+        <div class="button-container">
+          <u-btn :small="false" style="margin: 8px 0" @click="onClickDisagree">Disagree</u-btn>
+          <u-btn :small="false" style="margin: 8px 0" @click="onContinue">Agree</u-btn>
+        </div>
+      </v-container>
     </div>
-  </v-container>
+  </div>
 </template>
 
 <script>
+  import { mapGetters, mapActions } from 'vuex' // Import mapGetters to map currentStep
   import uris from '@/util/uris'
-  // import store from '@/store'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+  // import System from '@/components/setup/System.vue'
+  // import Wizard from '@/components/setup/Wizard.vue'
+
   export default {
+    name: 'License',
+    components: {
+      SetupLayout,
+      // System,
+      // Wizard,
+    },
     data: () => ({
-      paragraphStyle: {
-        marginTop: '5px',
-        wordWrap: 'break-word',
-        textAlign: 'center',
-      },
       remoteEulaSrc: null,
       eulaSrc: null,
     }),
+    computed: {
+      ...mapGetters('setup', ['currentStep']), // Map currentStep from Vuex store
+    },
+    watch: {
+      // Watch for changes in currentStep
+      currentStep(newValue) {
+        console.log('currentStep updated in License.vue:', newValue)
+      },
+    },
     mounted() {
       this.setEulaSrc()
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       async onContinue() {
         try {
-          await Promise.resolve()
-          // Navigate to the setup license page
-          this.$router.push('/setup/system')
+          await this.setShowStep('System') // Change currentStep to 'System' using Vuex action
+          console.log('Navigating to System setup, currentStep is:', this.currentStep) // Log currentStep when navigating
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -57,21 +75,19 @@
       },
       async onClickDisagree() {
         try {
-          await Promise.resolve()
-          localStorage.clear()
-          // Navigate to the setup wizard page
-          this.$router.push('/wizard/')
+          await this.setShowStep('Wizard') // Change currentStep to 'Wizard' using Vuex action
+          console.log('Navigating to Wizard setup')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
       },
-      // checks if the box has online access and load remote or local eula
       async setEulaSrc() {
         this.remoteEulaSrc = await uris.translate(uris.list.legal)
       },
     },
   }
 </script>
+
 <style scoped>
   .faint-color {
     color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity */

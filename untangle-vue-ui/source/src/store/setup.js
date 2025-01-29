@@ -3,6 +3,7 @@ import router from '@/router'
 
 const state = () => ({
   steps: [],
+  currentStep: 'wizard',
 })
 
 const getters = {
@@ -18,6 +19,7 @@ const getters = {
 
     return steps
   },
+  currentStep: state => state.currentStep, // Getter for currentStep (showStep)
 }
 
 const actions = {
@@ -60,6 +62,15 @@ const actions = {
       return state.steps[0]
     }
   },
+  setShowStep({ commit }, value) {
+    commit('SET_SHOW_STEP', value) // Commit mutation to set currentStep
+  },
+}
+const mutations = {
+  SET_SHOW_STEP(state, value) {
+    console.log('Setting showStep to:', value) // Log the value being set
+    state.currentStep = value // Mutate currentStep
+  },
 }
 
 export default {
@@ -67,4 +78,5 @@ export default {
   state,
   getters,
   actions,
+  mutations,
 }
