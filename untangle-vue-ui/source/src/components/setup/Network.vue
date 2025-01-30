@@ -1,7 +1,8 @@
 <template>
   <div class="network-cards-panel">
-    <h1>Network Cards</h1>
-    <p>Identify Network Cards</p>
+    <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
+    <br />
+    <p>This step identifies the external, internal, and other network cards.</p>
 
     <!-- Description -->
     <div class="description">
@@ -10,7 +11,8 @@
         <span class="step-text">Plug an active cable into one network card to determine which network card it is.</span
         ><br />
         <strong>Step 2:</strong>
-        <span class="step-text">Drag and drop the network card to map it to the desired interface.</span><br />
+        <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
+        <br />
         <strong>Step 3:</strong>
         <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
       </p>
@@ -28,18 +30,18 @@
           </tr>
         </thead>
         <tbody>
-          <tr v-for="row in gridData" :key="row.physicalDev">
+          <tr v-for="row in gridData" :key="row.deviceName">
             <td>{{ row.name }}</td>
             <td>
               <select v-model="row.deviceName">
-                <option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-                  {{ device.physicalDev }}
+                <option v-for="device in deviceStore" :key="device" :value="device">
+                  {{ device }}
                 </option>
               </select>
             </td>
             <td>
-              <span :class="statusIcon(row.connected)" class="status-dot"></span>
-              {{ statusText(row) }}
+              <span :class="statusIcon(row.connected.split(' ')[0])" class="status-dot"></span>
+              {{ row.connected }}
             </td>
             <td>{{ row.macAddress }}</td>
           </tr>
@@ -62,38 +64,70 @@
       </div>
     </div>
     <div class="button-container">
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickServerSettings">{{ `License` }}</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickInternetConnection">{{ `Network Cards` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickServerSettings">{{ `Server Settings` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickInternetConnection">{{ `Internet Connection` }}</u-btn>
     </div>
   </div>
 </template>
 
 <script>
+  import { groupBy, keys } from 'lodash'
+  import Util from '@/util/setupUtil'
+
   export default {
     name: 'NetworkCardsPanel',
+    props: {
+      rpc: {
+        type: Object,
+        required: true,
+      },
+    },
     data() {
       return {
-        gridData: [
-          {
-            name: 'eth0',
-            deviceName: 'eth0',
-            connected: 'CONNECTED',
-            macAddress: '00:1A:2B:3C:4D:5E',
-            physicalDev: 'eth0',
-          },
-          {
-            name: 'eth1',
-            deviceName: 'eth1',
-            connected: 'DISCONNECTED',
-            macAddress: '00:1A:2B:3C:4D:5F',
-            physicalDev: 'eth1',
-          },
-        ], // Hardcoded grid data
-        deviceStore: [{ physicalDev: 'eth0' }, { physicalDev: 'eth1' }], // Hardcoded device store
+        gridData: [],
+        deviceStore: [],
         interfacesForceContinue: false,
       }
     },
+    created() {
+      this.fetchDeviceStatus()
+    },
     methods: {
+      async fetchDeviceStatus() {
+        try {
+          const rpcResponseForAdmin = Util.setRpcJsonrpc('admin') // admin/JSONRPC
+          console.log('networkSetting :', window.rpc.networkManager)
+          const result2 = await rpcResponseForAdmin.networkManager.getDeviceStatus()
+
+          const networkSettings = await rpcResponseForAdmin?.networkManager?.getNetworkSettings()
+
+          const networkByInterfaceId = groupBy(networkSettings.interfaces.list, 'physicalDev')
+
+          console.log('networkSettingsInterfaces :', networkByInterfaceId)
+
+          console.log('result2 :', result2)
+          if (!result2 || !result2.list) {
+            console.error('Error: No device status data received')
+            return
+          }
+          // Map devices to gridData (network card table rows)cd
+          this.gridData = result2.list.map(device => {
+            const interfaceDevices = networkByInterfaceId[device.deviceName]
+            console.log('interfaceDevices', interfaceDevices)
+            const connectedStatus = device.connected ? device.connected.toLowerCase() : 'disconnected'
+            const formattedDuplex = device.duplex.toLowerCase().replace('_', '-')
+            return {
+              name: interfaceDevices ? interfaceDevices[0].name : 'Unknown',
+              deviceName: device.deviceName,
+              connected: `${connectedStatus} ${device.mbit} ${formattedDuplex} ${device.vendor}`,
+              macAddress: device.macAddress || 'N/A', // Default to 'N/A' if no MAC address
+            }
+          })
+          this.deviceStore = keys(networkByInterfaceId)
+        } catch (error) {
+          console.log('Failed to fetch device statuc:', error)
+        }
+      },
       async onClickServerSettings() {
         try {
           await Promise.resolve()
@@ -112,14 +146,9 @@
           console.error('Failed to navigate:', error)
         }
       },
-      statusText(row) {
-        const connectedText =
-          row.connected === 'CONNECTED' ? 'Connected' : row.connected === 'DISCONNECTED' ? 'Disconnected' : 'Unknown'
-        return `${connectedText}`
-      },
 
       statusIcon(status) {
-        return status === 'CONNECTED' ? 'status-connected' : 'status-disconnected'
+        return status === 'connected' ? 'status-connected' : 'status-disconnected'
       },
 
       // onClickInternetConnection() {
@@ -135,7 +164,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1300px;
+    gap: 1200px;
   }
   .network-cards-panel {
     display: flex;
