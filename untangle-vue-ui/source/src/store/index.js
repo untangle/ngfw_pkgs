@@ -43,6 +43,10 @@ const mutations = {
     console.log('Setting showStep to:', value) // Log the value being set
     state.currentStep = value
   },
+  SET_SHOW_PREVIOUS_STEP(state, value) {
+    console.log('Setting  previous show Step to:', value) // Log the value being set
+    state.previousStep = value // Mutate currentStep
+  },
 }
 
 const actions = {
@@ -57,6 +61,9 @@ const actions = {
 
   setShowStep({ commit }, value) {
     commit('SET_SHOW_STEP', value)
+  },
+  setShowPreviousStep({ commit }, value) {
+    commit('SET_SHOW_PREVIOUS_STEP', value) // Commit mutation to set currentStep
   },
 }
 

@@ -42,6 +42,7 @@
     },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
 
       async setEulaSrc() {
         this.remoteEulaSrc = await uris.translate(uris.list.legal)
@@ -50,6 +51,7 @@
       async onContinue() {
         try {
           await this.setShowStep('System') // Transition to System step
+          await this.setShowPreviousStep('System')
         } catch (error) {
           console.error('Failed to navigate to System step:', error)
         }

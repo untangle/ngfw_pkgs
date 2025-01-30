@@ -36,6 +36,12 @@
         }
       },
     },
+    async beforeMount() {
+      // If the page is refreshed, force set currentStep to 'Wizard'
+      if (this.currentStep === 'License' || this.currentStep === 'System') {
+        await this.setShowStep('Wizard') // Reset step to 'Wizard'
+      }
+    },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map Vuex action to change step
 
