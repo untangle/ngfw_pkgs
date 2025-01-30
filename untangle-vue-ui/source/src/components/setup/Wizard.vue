@@ -1,143 +1,65 @@
 <template>
   <div>
-    <!-- Render License component when showLicense is true -->
-    <!-- <License v-if="showLicense" /> -->
-    <License v-if="currentStep === 'License'" />
-
-    <!-- Render the rest of the content when showLicense is false -->
-    <div v-else>
-      <v-container class="text-center custom-margin" style="max-width: 800px">
-        <div
-          class="d-flex flex-column align-center mb-2"
-          style="padding-top: 80px; padding-bottom: 0px; margin-bottom: 800px"
-        >
-          <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" class="branding-logo" />
-        </div>
-        <h1>{{ `${localesEn?.Thanks_for_choosing} ${rpc?.oemShortName}!` }}</h1>
-
-        <!-- Resume Wizard -->
-        <div v-if="!rpc?.remote">
-          <p>
-            {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
-          </p>
-          <div class="button-container">
-            <u-btn v-if="resuming" :small="false" class="custom-btn" @click="resumeWizard">{{
-              `${localesEn?.Run_Setup_Wizard}`
-            }}</u-btn>
-            <u-btn :small="false" class="custom-btn" @click="resetWizard">
-              {{ !resuming ? 'Run Setup Wizard' : 'Restart' }}
-            </u-btn>
-          </div>
-        </div>
-
-        <div v-else>
-          <p v-if="remoteReachable">
-            {{ `${localesEn?.To_continue_you_must_log_account_online}` }}
-          </p>
-          <p v-if="remoteReachable === false">
-            {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
-          </p>
-
-          <u-btn v-if="remoteReachable === false" :small="false" @click="onContinue">{{
-            `${localesEn?.Run_Setup_Wizard}`
-          }}</u-btn>
-
-          <div v-if="remoteReachable" class="button-container">
-            <u-btn :small="false" class="custom-btn" @click="login">Login</u-btn>
-            <u-btn :small="false" class="custom-btn" @click="createAccount">Create Account</u-btn>
-          </div>
-        </div>
-      </v-container>
-    </div>
+    <!-- Dynamically render components based on currentStep -->
+    <component :is="currentStepComponent" />
   </div>
 </template>
 
 <script>
-  import { mapGetters, mapActions } from 'vuex' // Import map helpers
-  import Util from '@/util/setupUtil' // Assuming Util is in the utils directory
-  import locales from '@/locales/en' // Import the locale from the locales/en.js file
+  import { mapGetters, mapActions } from 'vuex'
   import License from '@/components/setup/License.vue' // Import License component
+  import System from '@/components/setup/System.vue' // Import System component
+  import SetupLayout from '@/layouts/SetupLayout.vue' // Import Layout component
+  import SetupSelect from '@/components/setup/SetupSelect.vue' // Import System component
 
   export default {
     name: 'Wizard',
     components: {
       License,
-    },
-    data() {
-      return {
-        showLicense: false, // To control rendering of License component
-        rpc: null,
-        localesEn: locales || null,
-        remoteReachable: null,
-        resuming: false,
-        presentStepFromStore: null,
-      }
+      System,
+      SetupLayout,
+      SetupSelect,
     },
     computed: {
-      ...mapGetters('setup', ['currentStep']),
-
-      logo() {
-        return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
+      ...mapGetters('setup', ['currentStep']), // Get currentStep from Vuex
+      // Dynamically choose the component based on currentStep
+      currentStepComponent() {
+        switch (this.currentStep) {
+          case 'License':
+            return License
+          case 'System':
+            return System
+          case 'Wizard':
+            return SetupSelect
+          default:
+            return SetupSelect
+        }
       },
-    },
-    created() {
-      // Log currentStep from Vuex store
-      console.log('currentStep from Vuex:', this.currentStep) // This should log the value correctly
-      this.presentStepFromStore = this.currentStep
-      this.logCurrentStep() // Log again after ensuring data is available
-
-      // Example: Setting up RPC client
-      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-      console.log(rpcResponseForSetup)
-
-      this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-      this.resuming = rpcResponseForSetup?.wizardSettings?.wizardComplete
-      if (rpcResponseForSetup) {
-        this.rpc = rpcResponseForSetup
-      } else {
-        console.error('RPC setup failed')
-      }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
-
-      // New method to log currentStep from Vuex
-      logCurrentStep() {
-        console.log('currentStep in logCurrentStep method:', this.currentStep) // Log currentStep again to confirm it's updated
-        console.log('this.presentStepFromStore', this.presentStepFromStore)
-      },
+      ...mapActions('setup', ['setShowStep']), // Map Vuex action to change step
 
       async onContinue() {
         try {
-          await Promise.resolve()
-          this.$router.push('/setup/license')
+          // Change the step to 'System' and render the System component
+          await this.setShowStep('System')
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          console.error('Failed to navigate to System step:', error)
         }
       },
-      async resetWizard() {
+
+      async onClickDisagree() {
         try {
-          this.showLicense = true
-          await this.setShowStep('License')
-          console.log(this.showLicense)
+          // If 'Disagree' is clicked, move to the 'Wizard' step
+          await this.setShowStep('Wizard')
         } catch (error) {
-          console.error('Failed to reset:', error)
+          console.error('Failed to navigate to Wizard step:', error)
         }
-      },
-      login() {
-        window.location = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
-      },
-      createAccount() {
-        window.location = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
-      },
-      someMethodToTriggerLicense() {
-        // Trigger License component rendering
-        this.showLicense = true
       },
     },
   }
 </script>
 
 <style scoped>
-  /* Your existing styles here */
+  /* Add custom styles here */
 </style>

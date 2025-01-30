@@ -1,94 +1,99 @@
 <template>
-  <v-card width="650" class="mx-auto mt-4" flat>
-    <h2 class="font-weight-light faint-color text-h4">{{ `Configure the Server` }}</h2>
-    <br />
-    <br />
-    <ValidationObserver v-slot="{ passes }">
-      <div class="parent-container">
-        <div class="custom-margin">
-          <h2 class="font-weight-light">{{ `Admin Account` }}</h2>
-          <br />
-          <label class="font-weight-light faint-color"
-            >Choose a password for the <strong>admin</strong><br />
-            account</label
-          >
-          <br />
-          <label>Password:</label>
-          <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
-            <u-password v-model="newPassword" :errors="errors" />
-          </ValidationProvider>
-          <br />
-          <label>Confirm Password:</label>
-          <ValidationProvider
-            v-slot="{ errors }"
-            name="confirmPassword"
-            :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
-          >
-            <u-password v-model="newPasswordConfirm" :errors="errors" />
-          </ValidationProvider>
-          <br />
-          <label>Adding Email:</label>
-          <ValidationProvider>
-            <u-text-field v-model="adminEmail" />
-          </ValidationProvider>
-          <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label>
-          <u-btn :small="false" style="margin: 8px 0x" class="custom-btn" @click="onClickLicense">
-            <span class="arrow-icon-left">←</span>
-            <span class="button-text">{{ `License` }}</span>
-          </u-btn>
-        </div>
-        <br />
-        <div class="custom-margin">
-          <h2 class="font-weight-light">{{ `Install Type` }}</h2>
-          <br />
-          <label class="font-weight-light faint-color"
-            >Install type determines the optimal default settings for this deployment.</label
-          >
-          <br />
-          <label>Choose Type:</label>
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <v-autocomplete
-              v-model="installType"
-              :items="typeOptions"
-              outlined
-              dense
-              hide-details
-              return-object
-              :error-messages="errors"
-              placeholder="Select Type"
+  <div>
+    <SetupLayout />
+    <v-card width="650" class="mx-auto mt-4" flat>
+      <h2 class="font-weight-light faint-color text-h4">{{ `Configure the Server` }}</h2>
+      <br />
+      <br />
+      <ValidationObserver v-slot="{ passes }">
+        <div class="parent-container">
+          <div class="custom-margin">
+            <h2 class="font-weight-light">{{ `Admin Account` }}</h2>
+            <br />
+            <label class="font-weight-light faint-color"
+              >Choose a password for the <strong>admin</strong><br />
+              account</label
             >
-              <template v-if="errors.length" #append>
-                <u-errors-tooltip :errors="errors" />
-              </template>
-            </v-autocomplete>
-          </ValidationProvider>
-          <br />
-          <label>Timezone</label>
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <v-autocomplete
-              v-model="timezone"
-              :items="timezones"
-              outlined
-              dense
-              hide-details
-              return-object
-              :error-messages="errors"
+            <br />
+            <label>Password:</label>
+            <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
+              <u-password v-model="newPassword" :errors="errors" />
+            </ValidationProvider>
+            <br />
+            <label>Confirm Password:</label>
+            <ValidationProvider
+              v-slot="{ errors }"
+              name="confirmPassword"
+              :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
             >
-            </v-autocomplete>
-          </ValidationProvider>
-          <label class="empty-label"> </label>
+              <u-password v-model="newPasswordConfirm" :errors="errors" />
+            </ValidationProvider>
+            <br />
+            <label>Adding Email:</label>
+            <ValidationProvider>
+              <u-text-field v-model="adminEmail" />
+            </ValidationProvider>
+            <label class="font-weight-light faint-color"
+              >Administrators receive email alerts and report summaries</label
+            >
+            <u-btn :small="false" style="margin: 8px 0x" class="custom-btn" @click="onClickLicense">
+              <span class="arrow-icon-left">←</span>
+              <span class="button-text">{{ `License` }}</span>
+            </u-btn>
+          </div>
           <br />
-          <br />
-          <br />
-          <br />
-          <br />
-          <u-btn :small="false" style="margin: 8px 0" class="custom-btn" @click="passes(onContinue)">
-            {{ `Network Cards` }}<span class="arrow-icon-right">→</span>
-          </u-btn>
+          <div class="custom-margin">
+            <h2 class="font-weight-light">{{ `Install Type` }}</h2>
+            <br />
+            <label class="font-weight-light faint-color"
+              >Install type determines the optimal default settings for this deployment.</label
+            >
+            <br />
+            <label>Choose Type:</label>
+            <ValidationProvider v-slot="{ errors }" rules="required">
+              <v-autocomplete
+                v-model="installType"
+                :items="typeOptions"
+                outlined
+                dense
+                hide-details
+                return-object
+                :error-messages="errors"
+                placeholder="Select Type"
+              >
+                <template v-if="errors.length" #append>
+                  <u-errors-tooltip :errors="errors" />
+                </template>
+              </v-autocomplete>
+            </ValidationProvider>
+            <br />
+            <label>Timezone</label>
+            <ValidationProvider v-slot="{ errors }" rules="required">
+              <v-autocomplete
+                v-model="timezone"
+                :items="timezones"
+                outlined
+                dense
+                hide-details
+                return-object
+                :error-messages="errors"
+              >
+              </v-autocomplete>
+            </ValidationProvider>
+            <label class="empty-label"> </label>
+            <br />
+            <br />
+            <br />
+            <br />
+            <br />
+            <u-btn :small="false" style="margin: 8px 0" class="custom-btn" @click="passes(onContinue)">
+              {{ `Network Cards` }}<span class="arrow-icon-right">→</span>
+            </u-btn>
+          </div>
         </div>
-      </div>
-    </ValidationObserver>
-  </v-card>
+      </ValidationObserver>
+    </v-card>
+  </div>
 </template>
 <style scoped>
   .parent-container {
@@ -143,8 +148,14 @@
   }
 </style>
 <script>
+  import { mapActions } from 'vuex'
   import Util from '@/util/setupUtil'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+
   export default {
+    components: {
+      SetupLayout,
+    },
     props: {
       rpc: {
         type: Object,
@@ -222,11 +233,13 @@
       }
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       async onClickLicense() {
         try {
           await Promise.resolve()
           // Navigate to the setup wizard page
-          this.$router.push('/setup/license/')
+          await this.setShowStep('License')
+          // this.$router.push('/setup/license/')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
