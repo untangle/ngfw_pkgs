@@ -62,7 +62,7 @@ Vue.use(VueRouter)
 
 const baseRoutes = [
   {
-    path: '/',
+    path: '/dashboard',
     name: 'dashboard',
     component: Dashboard,
     meta: { helpContext: 'dashboard' },
@@ -77,7 +77,8 @@ const routes = baseRoutes.concat(auth, setup, setting, wizard, {
 })
 
 const router = new VueRouter({
-  mode: 'history',
+  // mode: 'history',
+  mode: 'hash',
   base: process.env.VUE_APP_BASE_URL,
   routes,
 })

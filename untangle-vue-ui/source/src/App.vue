@@ -2,14 +2,16 @@
   <blank-layout
     v-if="embedded || $route.name === 'login' || $route.name === 'setupwizard' || $route.name === 'wizard'"
   />
-  <setup-layout v-else-if="$route.name.indexOf('setup') > -1" />
+  <!-- <setup-layout v-else-if="$route.name.indexOf('setup') > -1" /> -->
   <default-layout v-else />
 </template>
 <script>
-  import { BlankLayout, DefaultLayout, SetupLayout } from '@/layouts'
+  // SetupLayout
+  import { BlankLayout, DefaultLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, BlankLayout, SetupLayout },
+    // SetupLayout
+    components: { DefaultLayout, BlankLayout },
 
     data() {
       return {
