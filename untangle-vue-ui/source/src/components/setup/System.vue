@@ -29,16 +29,15 @@
               <u-password v-model="newPasswordConfirm" :errors="errors" />
             </ValidationProvider>
             <br />
+            <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label
+            ><br />
             <label>Adding Email:</label>
             <ValidationProvider>
               <u-text-field v-model="adminEmail" />
             </ValidationProvider>
-            <label class="font-weight-light faint-color"
-              >Administrators receive email alerts and report summaries</label
-            >
-            <u-btn :small="false" style="margin: 8px 0x" class="custom-btn" @click="onClickLicense">
-              <span class="arrow-icon-left">←</span>
-              <span class="button-text">{{ `License` }}</span>
+            <br /><br />
+            <u-btn :small="false" style="margin: 8px 0px" class="custom-btn" @click="onClickLicense">
+              {{ `Back` }}
             </u-btn>
           </div>
           <br />
@@ -46,7 +45,7 @@
             <h2 class="font-weight-light">{{ `Install Type` }}</h2>
             <br />
             <label class="font-weight-light faint-color"
-              >Install type determines the optimal default settings for this deployment.</label
+              >Install type determines the optimal default settings for this deployment</label
             >
             <br />
             <label>Choose Type:</label>
@@ -67,7 +66,7 @@
               </v-autocomplete>
             </ValidationProvider>
             <br />
-            <label>Timezone</label>
+            <label>Timezone:</label>
             <ValidationProvider v-slot="{ errors }" rules="required">
               <v-autocomplete
                 v-model="timezone"
@@ -82,12 +81,9 @@
             </ValidationProvider>
             <label class="empty-label"> </label>
             <br />
-            <br />
-            <br />
-            <br />
-            <br />
-            <u-btn :small="false" style="margin: 8px 0" class="custom-btn" @click="passes(onContinue)">
-              {{ `Network Cards` }}<span class="arrow-icon-right">→</span>
+            <br /><br /><br /><br /><br /><br />
+            <u-btn :small="false" style="margin: 8px 180px" class="custom-btn-right" @click="passes(onContinue)">
+              {{ `Next` }}
             </u-btn>
           </div>
         </div>
@@ -96,43 +92,49 @@
   </div>
 </template>
 <style scoped>
+  .network-cards-panel {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin: 20px;
+    margin-left: 300px;
+    margin-right: 300px;
+  }
   .parent-container {
     display: flex; /* Enables flexbox layout */
     gap: 20px; /* Adds 20px space between the child divs */
   }
-  h2.font-weight-light {
+  .child-container {
+    display: flex; /* Enables flexbox layout */
+    gap: 430px; /* Adds 20px space between the child divs */
+  }
+  . h2.font-weight-light {
     font-weight: bold; /* Or try 'bold' for a stronger weight */
-  }
-  .arrow-icon-left,
-  .arrow-icon-right {
-    font-weight: bold;
-    font-size: 50px;
-    display: inline-block;
-    vertical-align: middle;
-    margin-bottom: 17px;
-  }
-
-  .arrow-icon-left {
-    margin-left: -100px;
-    margin-right: -20px;
   }
   .button-text {
     margin-left: 65px;
     margin-right: -10px;
     display: inline-block;
   }
-
-  .arrow-icon-right {
-    margin-left: 10px;
-    margin-right: -30px;
-  }
   .custom-btn {
-    margin: 5px 0; /* Margin for spacing between buttons */
-    width: 300px; /* Fixed width for buttons */
+    margin-left: auto;
+    width: 10px; /* Fixed width for buttons */
     height: 50px; /* Fixed height for buttons */
     font-size: 16px; /* Text size */
     border-radius: 5px; /* Optional: rounded corners */
     text-align: center; /* Center text */
+  }
+  .custom-btn-right {
+    margin-left: auto;
+    width: 10px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
+    font-size: 16px; /* Text size */
+    border-radius: 5px; /* Optional: rounded corners */
+    text-align: right;
   }
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
