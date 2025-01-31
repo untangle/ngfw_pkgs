@@ -154,10 +154,12 @@
         }
       },
       login() {
-        window.location = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
+        // window.location = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
+        window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
       },
       createAccount() {
-        window.location = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
+        // window.location = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
+        window.top.location.href = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
       },
       someMethodToTriggerLicense() {
         // Trigger License component rendering
