@@ -36,7 +36,7 @@
               <u-text-field v-model="adminEmail" />
             </ValidationProvider>
             <br /><br />
-            <u-btn :small="false" style="margin: 8px 0px" class="custom-btn" @click="onClickLicense">
+            <u-btn :small="false" style="margin: 8px 0px" class="custom-btn" @click="onClickBack">
               {{ `Back` }}
             </u-btn>
           </div>
@@ -241,7 +241,8 @@
     },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
-      async onClickLicense() {
+      ...mapActions('setup', ['setShowPreviousStep']),
+      async onClickBack() {
         try {
           await Promise.resolve()
           // Navigate to the setup wizard page
@@ -266,7 +267,7 @@
             await window.rpc.setup.setTimeZone(timezoneId)
             console.log('Timezone updated successfully.', timezoneId)
           }
-          await this.saveAdminPassword()
+          //  await this.saveAdminPassword()
           // alert('Settings saved successfully.')
         } catch (error) {
           console.error('Error saving settings:', error)
@@ -290,7 +291,9 @@
             Util.authenticate(this.newPassword, (error, success) => {
               console.log('Authentication error:', error)
               console.log('Authentication success:', success)
-              this.$router.push('/setup/network')
+              // .$router.push('/setup/network')
+              this.setShowStep('Network')
+              this.setShowPreviousStep('Network')
               if (error || !success) {
                 console.error('Authentication failed after password update:', error)
                 reject(new Error('Authentication failed after password update.'))

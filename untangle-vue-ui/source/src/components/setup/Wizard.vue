@@ -11,6 +11,8 @@
   import System from '@/components/setup/System.vue' // Import System component
   import SetupLayout from '@/layouts/SetupLayout.vue' // Import Layout component
   import SetupSelect from '@/components/setup/SetupSelect.vue' // Import System component
+  import Network from '@/components/setup/Network.vue'
+  import Internet from '@/components/setup/Internet.vue'
 
   export default {
     name: 'Wizard',
@@ -19,18 +21,23 @@
       System,
       SetupLayout,
       SetupSelect,
+      Internet,
     },
     computed: {
       ...mapGetters('setup', ['currentStep']), // Get currentStep from Vuex
       // Dynamically choose the component based on currentStep
       currentStepComponent() {
         switch (this.currentStep) {
+          case 'Wizard':
+            return SetupSelect
           case 'License':
             return License
           case 'System':
             return System
-          case 'Wizard':
-            return SetupSelect
+          case 'Network':
+            return Network
+          case 'Internet':
+            return Internet
           default:
             return SetupSelect
         }
@@ -38,7 +45,12 @@
     },
     async beforeMount() {
       // If the page is refreshed, force set currentStep to 'Wizard'
-      if (this.currentStep === 'License' || this.currentStep === 'System') {
+      if (
+        this.currentStep === 'License' ||
+        this.currentStep === 'System' ||
+        this.currentStep === 'Network' ||
+        this.currentStep === 'Internet'
+      ) {
         await this.setShowStep('Wizard') // Reset step to 'Wizard'
       }
     },

@@ -1,76 +1,86 @@
 <template>
-  <div class="network-cards-panel">
-    <h1>Network Cards</h1>
-    <p>Identify Network Cards</p>
+  <div>
+    <SetupLayout />
+    <div class="network-cards-panel">
+      <h1>Network Cards</h1>
+      <p>Identify Network Cards</p>
 
-    <!-- Description -->
-    <div class="description">
-      <p>
-        <strong>Step 1:</strong>
-        <span class="step-text">Plug an active cable into one network card to determine which network card it is.</span
-        ><br />
-        <strong>Step 2:</strong>
-        <span class="step-text">Drag and drop the network card to map it to the desired interface.</span><br />
-        <strong>Step 3:</strong>
-        <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
-      </p>
-    </div>
-
-    <!-- Network Cards Table -->
-    <div class="network-table-container">
-      <table class="network-table">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Device</th>
-            <th>Status</th>
-            <th>MAC Address</th>
-          </tr>
-        </thead>
-        <tbody>
-          <tr v-for="row in gridData" :key="row.physicalDev">
-            <td>{{ row.name }}</td>
-            <td>
-              <select v-model="row.deviceName">
-                <option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-                  {{ device.physicalDev }}
-                </option>
-              </select>
-            </td>
-            <td>
-              <span :class="statusIcon(row.connected)" class="status-dot"></span>
-              {{ statusText(row) }}
-            </td>
-            <td>{{ row.macAddress }}</td>
-          </tr>
-        </tbody>
-      </table>
-    </div>
-
-    <!-- Warning Message -->
-    <div v-if="gridData.length < 2" class="inline-warning">
-      <span class="warning-icon"></span>
-      <div>
+      <!-- Description -->
+      <div class="description">
         <p>
-          Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs), and
-          fewer than 2 NICs were detected.
+          <strong>Step 1:</strong>
+          <span class="step-text"
+            >Plug an active cable into one network card to determine which network card it is.</span
+          ><br />
+          <strong>Step 2:</strong>
+          <span class="step-text">Drag and drop the network card to map it to the desired interface.</span><br />
+          <strong>Step 3:</strong>
+          <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
         </p>
-        <label>
-          <input v-model="interfacesForceContinue" type="checkbox" />
-          <strong>Continue anyway</strong>
-        </label>
       </div>
-    </div>
-    <div class="button-container">
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickServerSettings">{{ `License` }}</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickInternetConnection">{{ `Network Cards` }}</u-btn>
+
+      <!-- Network Cards Table -->
+      <div class="network-table-container">
+        <table class="network-table">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Device</th>
+              <th>Status</th>
+              <th>MAC Address</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr v-for="row in gridData" :key="row.physicalDev">
+              <td>{{ row.name }}</td>
+              <td>
+                <select v-model="row.deviceName">
+                  <option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
+                    {{ device.physicalDev }}
+                  </option>
+                </select>
+              </td>
+              <td>
+                <span :class="statusIcon(row.connected)" class="status-dot"></span>
+                {{ statusText(row) }}
+              </td>
+              <td>{{ row.macAddress }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Warning Message -->
+      <div v-if="gridData.length < 2" class="inline-warning">
+        <span class="warning-icon"></span>
+        <div>
+          <p>
+            Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs),
+            and fewer than 2 NICs were detected.
+          </p>
+          <label>
+            <input v-model="interfacesForceContinue" type="checkbox" />
+            <strong>Continue anyway</strong>
+          </label>
+        </div>
+      </div>
+      <div class="button-container">
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
+      </div>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+
   export default {
-    name: 'NetworkCardsPanel',
+    name: 'Network',
+    components: {
+      SetupLayout,
+    },
     data() {
       return {
         gridData: [
@@ -94,20 +104,27 @@
       }
     },
     methods: {
-      async onClickServerSettings() {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
+      async onClickBack() {
         try {
           await Promise.resolve()
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
+
           // Navigate to the setup wizard page
-          this.$router.push('/setup/system/')
+          // this.$router.push('/setup/system/')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
       },
-      async onClickInternetConnection() {
+      async onClickNext() {
         try {
           await Promise.resolve()
           // Navigate to the setup wizard page
-          this.$router.push('/setup/internet/')
+          // this.$router.push('/setup/internet/')
+          await this.setShowStep('Internet')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
