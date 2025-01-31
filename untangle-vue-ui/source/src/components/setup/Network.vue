@@ -1,30 +1,34 @@
 <template>
-  <div class="network-cards-panel">
-    <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
-    <br />
-    <p>This step identifies the external, internal, and other network cards.</p>
+  <v-card width="1000" class="mx-auto mt-10" flat>
+    <div class="parent-card">
+      <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
+      <br />
+      <p class="large-font">This step identifies the external, internal, and other network cards.</p>
 
-    <!-- Description -->
-    <div class="description">
-      <p>
-        <strong>Step 1:</strong>
-        <span class="step-text">Plug an active cable into one network card to determine which network card it is.</span
-        ><br />
-        <strong>Step 2:</strong>
-        <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
-        <br />
-        <strong>Step 3:</strong>
-        <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
-      </p>
+      <!-- Description -->
+      <div class="description">
+        <p class="large-font">
+          <strong>Step 1:</strong>
+          <span class="step-text"
+            >Plug an active cable into one network card to determine which network card it is.</span
+          ><br />
+          <strong>Step 2:</strong>
+          <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
+          <br />
+          <strong>Step 3:</strong>
+          <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
+        </p>
+      </div>
     </div>
 
     <!-- Network Cards Table -->
-    <div class="network-table-container">
+    <div class="network-cards-panel">
       <table class="network-table">
         <thead>
           <tr>
             <th>Name</th>
             <th>Device</th>
+            <th>Icon</th>
             <th>Status</th>
             <th>MAC Address</th>
           </tr>
@@ -41,6 +45,8 @@
             </td>
             <td>
               <span :class="statusIcon(row.connected.split(' ')[0])" class="status-dot"></span>
+            </td>
+            <td>
               {{ row.connected }}
             </td>
             <td>{{ row.macAddress }}</td>
@@ -50,6 +56,36 @@
     </div>
 
     <!-- Warning Message -->
+
+    <div class="network-cards-panel">
+      <b-table hover :items="gridData" :fields="tableFields" class="network-table">
+        <!-- Name column -->
+        <template #cell(name)="row">
+          {{ row.item.name }}
+        </template>
+        <!-- Device Column -->
+        <template #cell(deviceName)="row">
+          <b-form-select v-model="row.item.deviceName">
+            <b-form-select-option v-for="device in deviceStore" :key="device" :value="device">
+              {{ device }}
+            </b-form-select-option>
+          </b-form-select>
+        </template>
+        <!-- Icon Column -->
+        <template #cell(statusIcon)="row">
+          <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+        </template>
+        <!-- Status Column -->
+        <template #cell(connected)="row">
+          {{ row.item.connected }}
+        </template>
+        <!-- MAC Address Column -->
+        <template #cell(macAddress)="row">
+          {{ row.item.macAddress }}
+        </template>
+      </b-table>
+    </div>
+
     <div v-if="gridData.length < 2" class="inline-warning">
       <span class="warning-icon"></span>
       <div>
@@ -64,18 +100,27 @@
       </div>
     </div>
     <div class="button-container">
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickServerSettings">{{ `Server Settings` }}</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickInternetConnection">{{ `Internet Connection` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
     </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
+  import Vue from 'vue'
+  import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
   import { groupBy, keys } from 'lodash'
+  // import draggable from 'vuedraggable'
   import Util from '@/util/setupUtil'
+  Vue.component('BTable', BTable)
+  Vue.component('BFormSelect', BFormSelect)
+  Vue.component('BFormSelectOption', BFormSelectOption)
 
   export default {
     name: 'NetworkCardsPanel',
+    // components: {
+    //   draggable,
+    // },
     props: {
       rpc: {
         type: Object,
@@ -87,6 +132,14 @@
         gridData: [],
         deviceStore: [],
         interfacesForceContinue: false,
+        tableFields: [
+          { key: 'drag', label: 'Drag' },
+          { key: 'name', label: 'Name' },
+          { key: 'deviceName', label: 'Device' },
+          { key: 'statusIcon', label: 'Icon' },
+          { key: 'connected', label: 'Status' },
+          { key: 'macAddress', label: 'MAC Address' },
+        ],
       }
     },
     created() {
@@ -99,13 +152,15 @@
           console.log('networkSetting :', window.rpc.networkManager)
           const result2 = await rpcResponseForAdmin.networkManager.getDeviceStatus()
 
-          const networkSettings = await rpcResponseForAdmin?.networkManager?.getNetworkSettings()
+          this.networkSettings = await rpcResponseForAdmin?.networkManager?.getNetworkSettings()
 
-          const networkByInterfaceId = groupBy(networkSettings.interfaces.list, 'physicalDev')
+          const networkByInterfaceId = groupBy(this.networkSettings.interfaces.list, 'physicalDev')
 
-          console.log('networkSettingsInterfaces :', networkByInterfaceId)
+          const networkByDeviceName = groupBy(result2.list, 'deviceName')
 
+          console.log('networkSettingsDeviceName :', networkByDeviceName)
           console.log('result2 :', result2)
+
           if (!result2 || !result2.list) {
             console.error('Error: No device status data received')
             return
@@ -113,7 +168,6 @@
           // Map devices to gridData (network card table rows)cd
           this.gridData = result2.list.map(device => {
             const interfaceDevices = networkByInterfaceId[device.deviceName]
-            console.log('interfaceDevices', interfaceDevices)
             const connectedStatus = device.connected ? device.connected.toLowerCase() : 'disconnected'
             const formattedDuplex = device.duplex.toLowerCase().replace('_', '-')
             return {
@@ -123,12 +177,12 @@
               macAddress: device.macAddress || 'N/A', // Default to 'N/A' if no MAC address
             }
           })
-          this.deviceStore = keys(networkByInterfaceId)
+          this.deviceStore = keys(networkByDeviceName)
         } catch (error) {
           console.log('Failed to fetch device statuc:', error)
         }
       },
-      async onClickServerSettings() {
+      async onClickBack() {
         try {
           await Promise.resolve()
           // Navigate to the setup wizard page
@@ -137,46 +191,75 @@
           console.error('Failed to navigate:', error)
         }
       },
-      async onClickInternetConnection() {
+      async onClickNext() {
         try {
-          await Promise.resolve()
+          // const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+          // // console.log(window.rpc.setup)
+          // if (this.timezoneID !== this.timezone) {
+          //   console.log('timeZone', this.timezone)
+          //   const timezoneId = this.timezone.split(' ')[1]
+          //   await window.rpc.setup.setTimeZone(timezoneId)
+          //   console.log('rpcResponseForAdmin responce:', rpcResponseForAdmin)
+          // }
+          // // alert('Settings saved successfully.')
+          // // if no changes/remapping skip this step
+          // const interfacesMap = {}
+
+          // this.gridData.each(function (currentRow) {
+          //   interfacesMap[currentRow.name] = currentRow.deviceName
+          // })
+
+          // // apply new physicalDev for each interface from initial Network Settings
+          // this.networkSettings.interfaces.list.each(function (intf) {
+          //   if (!intf.isVlanInterface) {
+          //     intf.physicalDev = interfacesMap[intf.name]
+          //   }
+          // })
+
+          // rpcResponseForAdmin.networkManager.setNetworkSettings(this.networkSettings)
           // Navigate to the setup wizard page
+          await Promise.resolve()
+
           this.$router.push('/setup/internet/')
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          console.error('Error saving settings:', error)
+          alert('Failed to save settings. Please try again.')
         }
       },
 
       statusIcon(status) {
-        return status === 'connected' ? 'status-connected' : 'status-disconnected'
+        return status.includes('connected') ? 'status-connected' : 'status-disconnected'
       },
 
       // onClickInternetConnection() {
       //   console.log('Internet Connection button clicked')
       //   // Perform any static action or navigation if required.
       // },
+      // onBeforeDrop: Method to swap columns when dragging
     },
   }
 </script>
 
 <style scoped>
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1200px;
+  .large-font {
+    font-size: 20px; /* Adjust this value as needed */
   }
   .network-cards-panel {
     display: flex;
-    flex-direction: column;
-    height: 100%;
+    width: 96%;
     padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+    border: 2px solid #ccc;
+    border-radius: -5px;
     background-color: #f9f9f9;
     margin: 20px;
   }
-
+  .parent-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    border-radius: 5px;
+    margin: 20px;
+  }
   .description {
     margin-bottom: 20px;
     text-align: left;
@@ -192,6 +275,9 @@
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 20px;
+    margin-right: 18px;
+    margin-left: 600px;
+    gap: 720px;
   }
 
   .internet-button {
@@ -224,12 +310,26 @@
   .network-table {
     border-collapse: collapse;
     width: 100%;
+    box-sizing: border-box;
+  }
+  .network-table select {
+    font-size: 16px; /* Increase the font size of the dropdown text */
+    padding-left: 6px; /* Increase padding inside the select element */
+    padding-right: 10px;
+    height: 60px; /* Increase the height of the select box */
+    width: 100%; /* Optional: Ensures the select spans the full width of its container */
+    box-sizing: border-box; /* Ensures padding is included in the width */
+  }
+
+  .network-table select option {
+    font-size: 16px; /* Increase the font size of the options inside the dropdown */
+    padding: 10px; /* Increase padding for better readability */
   }
 
   .network-table th,
   .network-table td {
-    border: 1px solid #ddd;
-    text-align: left;
+    border: 1px solid #b64a4a;
+    text-align: right;
     padding: 8px;
   }
 
@@ -249,10 +349,13 @@
 
   .status-dot {
     display: inline-block;
+    align-items: center;
     width: 12px;
     height: 12px;
     border-radius: 50%;
-    margin-right: 8px;
+    margin-right: 6px;
+    margin-left: 18px;
+    justify-content: center;
   }
 
   .status-connected {
