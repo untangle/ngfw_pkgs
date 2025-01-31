@@ -16,15 +16,30 @@
           {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
         </p>
         <div class="button-container">
-          <u-btn v-if="resuming" :small="false" class="custom-btn" @click="resumeWizard">{{
-            `${localesEn?.Run_Setup_Wizard}`
-          }}</u-btn>
-          <u-btn :small="false" class="custom-btn" @click="resetWizard">
-            {{ !resuming ? 'Run Setup Wizard' : 'Restart' }}
+          <!-- Check if previousStep is 'Wizard' or 'License' -->
+          <u-btn
+            v-if="previousStep === 'Wizard' || previousStep === 'License'"
+            :small="false"
+            class="custom-btn"
+            @click="resetWizard"
+          >
+            {{ 'Run Setup Wizard' }}
           </u-btn>
+
+          <!-- If previousStep is not 'Wizard' or 'License', show Resume and Restart buttons -->
+          <div v-else class="button-container">
+            <u-btn :small="false" class="custom-btn" @click="resumeWizard">
+              <v-icon left>mdi-play</v-icon>{{ 'Resume' }}
+            </u-btn>
+
+            <u-btn :small="false" class="custom-btn" @click="restartWizard">
+              <v-icon left>mdi-refresh</v-icon>{{ 'Restart' }}
+            </u-btn>
+          </div>
         </div>
       </div>
 
+      <!-- Handle remoteReachable for continuation -->
       <div v-else>
         <p v-if="remoteReachable">
           {{ `${localesEn?.To_continue_you_must_log_account_online}` }}
@@ -33,9 +48,25 @@
           {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
         </p>
 
-        <u-btn v-if="remoteReachable === false" :small="false" @click="onContinue">{{
-          `${localesEn?.Run_Setup_Wizard}`
-        }}</u-btn>
+        <div v-if="remoteReachable === false" class="button-container">
+          <!-- Check if remoteReachable is false, show the onContinue button -->
+
+          <div v-if="previousStep === 'Wizard' || previousStep === 'License'">
+            <u-btn :small="false" class="custom-btn" @click="onContinue">
+              <v-icon left>mdi-play</v-icon>{{ `${localesEn?.Run_Setup_Wizard}` }}
+            </u-btn>
+          </div>
+          <!-- /// -->
+          <div v-else class="button-container">
+            <u-btn :small="false" class="custom-btn" @click="resumeWizard">
+              <v-icon left>mdi-play</v-icon>{{ 'Resume' }}
+            </u-btn>
+
+            <u-btn :small="false" class="custom-btn" @click="restartWizard">
+              <v-icon left>mdi-refresh</v-icon>{{ 'Restart' }}
+            </u-btn>
+          </div>
+        </div>
 
         <div v-if="remoteReachable" class="button-container">
           <u-btn :small="false" class="custom-btn" @click="login">Login</u-btn>
@@ -64,6 +95,7 @@
     },
     computed: {
       ...mapGetters('setup', ['currentStep']),
+      ...mapGetters('setup', ['previousStep']),
 
       logo() {
         return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
@@ -88,18 +120,25 @@
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep', 'setShowPreviousStep']),
 
-      // New method to log currentStep from Vuex
       logCurrentStep() {
-        console.log('currentStep in logCurrentStep method:', this.currentStep) // Log currentStep again to confirm it's updated
-        console.log('this.presentStepFromStore', this.presentStepFromStore)
+        console.log('currentStep in logCurrentStep method:', this.currentStep)
+        console.log('previousStep in logCurrentStep method:', this.previousStep)
       },
 
       async onContinue() {
         try {
-          await Promise.resolve()
-          this.$router.push('/setup/license')
+          // await Promise.resolve()
+          // this.$router.push('/setup/license')
+          try {
+            this.showLicense = true
+            await this.setShowStep('License')
+            await this.setShowPreviousStep('License')
+            // console.log(this.showLicense)
+          } catch (error) {
+            console.error('Failed to reset:', error)
+          }
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -108,7 +147,8 @@
         try {
           this.showLicense = true
           await this.setShowStep('License')
-          console.log(this.showLicense)
+          await this.setShowPreviousStep('License')
+          // console.log(this.showLicense)
         } catch (error) {
           console.error('Failed to reset:', error)
         }
@@ -123,6 +163,23 @@
         // Trigger License component rendering
         this.showLicense = true
       },
+      async resumeWizard() {
+        console.log('currentStep ', this.currentStep) // Log currentStep again to confirm it's updated
+        console.log('previousStep', this.previousStep)
+        await this.setShowStep(this.previousStep)
+      },
+      async restartWizard() {
+        await this.setShowStep('License')
+        await this.setShowPreviousStep('Wizard')
+        console.log(this.previousStep)
+      },
     },
   }
 </script>
+<style scoped>
+  .button-container {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+</style>

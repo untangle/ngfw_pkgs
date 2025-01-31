@@ -148,6 +148,11 @@
   .faint-color {
     color: rgba(0, 0, 0, 25); /* Adjust the color and opacity */
   }
+  .button-container {
+    display: flex;
+    justify-content: flex-end; /* Aligns the button to the right */
+    width: 100%; /* Ensures the container spans the full width */
+  }
 </style>
 <script>
   import { mapActions } from 'vuex'

@@ -4,6 +4,7 @@ import router from '@/router'
 const state = () => ({
   steps: [],
   currentStep: 'wizard',
+  previousStep: 'wizard',
 })
 
 const getters = {
@@ -20,6 +21,7 @@ const getters = {
     return steps
   },
   currentStep: state => state.currentStep, // Getter for currentStep (showStep)
+  previousStep: state => state.previousStep, // Getter for currentStep (showStep)
 }
 
 const actions = {
@@ -65,11 +67,18 @@ const actions = {
   setShowStep({ commit }, value) {
     commit('SET_SHOW_STEP', value) // Commit mutation to set currentStep
   },
+  setShowPreviousStep({ commit }, value) {
+    commit('SET_SHOW_PREVIOUS_STEP', value) // Commit mutation to set currentStep
+  },
 }
 const mutations = {
   SET_SHOW_STEP(state, value) {
     console.log('Setting showStep to:', value) // Log the value being set
     state.currentStep = value // Mutate currentStep
+  },
+  SET_SHOW_PREVIOUS_STEP(state, value) {
+    console.log('Setting  previous show Step to:', value) // Log the value being set
+    state.previousStep = value // Mutate currentStep
   },
 }
 
