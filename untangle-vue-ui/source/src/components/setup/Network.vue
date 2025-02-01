@@ -22,7 +22,7 @@
     </div>
 
     <!-- Network Cards Table -->
-    <div class="network-cards-panel">
+    <!-- <div class="network-cards-panel">
       <table class="network-table">
         <thead>
           <tr>
@@ -53,37 +53,54 @@
           </tr>
         </tbody>
       </table>
-    </div>
+    </div> -->
 
     <!-- Warning Message -->
 
     <div class="network-cards-panel">
-      <b-table hover :items="gridData" :fields="tableFields" class="network-table">
-        <!-- Name column -->
-        <template #cell(name)="row">
-          {{ row.item.name }}
-        </template>
-        <!-- Device Column -->
-        <template #cell(deviceName)="row">
-          <b-form-select v-model="row.item.deviceName">
-            <b-form-select-option v-for="device in deviceStore" :key="device" :value="device">
-              {{ device }}
-            </b-form-select-option>
-          </b-form-select>
-        </template>
-        <!-- Icon Column -->
-        <template #cell(statusIcon)="row">
-          <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-        </template>
-        <!-- Status Column -->
-        <template #cell(connected)="row">
-          {{ row.item.connected }}
-        </template>
-        <!-- MAC Address Column -->
-        <template #cell(macAddress)="row">
-          {{ row.item.macAddress }}
-        </template>
-      </b-table>
+      <draggable
+        v-model="gridData"
+        :group="{ name: 'network-rows', pull: 'clone' }"
+        class="network-table"
+        handle=".drag-handle"
+        :animation="300"
+        @start="onDragStart"
+        @end="onDragEnd"
+        @drag="onDrag"
+        @drop="onDrop"
+      >
+        <b-table hover :items="gridData" :fields="tableFields" class="network-table">
+          <!-- Drag Icon Column -->
+          <template #cell(drag)>
+            <span class="drag-handle" style="cursor: move">&#x2630;</span>
+            <!-- You can change this to an icon -->
+          </template>
+          <!-- Name column -->
+          <template #cell(name)="row">
+            {{ row.item.name }}
+          </template>
+          <!-- Device Column -->
+          <template #cell(deviceName)="row">
+            <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
+              <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
+                {{ device.physicalDev }}
+              </b-form-select-option>
+            </b-form-select>
+          </template>
+          <!-- Icon Column -->
+          <template #cell(statusIcon)="row">
+            <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+          </template>
+          <!-- Status Column -->
+          <template #cell(connected)="row">
+            {{ getConnectedStr(row.item) }}
+          </template>
+          <!-- MAC Address Column -->
+          <template #cell(macAddress)="row">
+            {{ row.item.macAddress }}
+          </template>
+        </b-table>
+      </draggable>
     </div>
 
     <div v-if="gridData.length < 2" class="inline-warning">
@@ -109,18 +126,17 @@
 <script>
   import Vue from 'vue'
   import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
-  import { groupBy, keys } from 'lodash'
-  // import draggable from 'vuedraggable'
+  import { forEach } from 'lodash'
+  import VueDraggable from 'vuedraggable'
   import Util from '@/util/setupUtil'
+  Vue.use(VueDraggable)
+
   Vue.component('BTable', BTable)
   Vue.component('BFormSelect', BFormSelect)
   Vue.component('BFormSelectOption', BFormSelectOption)
 
   export default {
     name: 'NetworkCardsPanel',
-    // components: {
-    //   draggable,
-    // },
     props: {
       rpc: {
         type: Object,
@@ -131,6 +147,10 @@
       return {
         gridData: [],
         deviceStore: [],
+        intfOrderArr: [],
+        intfListLength: 0,
+        networkSettings: null,
+        enableAutoRefresh: true,
         interfacesForceContinue: false,
         tableFields: [
           { key: 'drag', label: 'Drag' },
@@ -142,42 +162,223 @@
         ],
       }
     },
+
     created() {
-      this.fetchDeviceStatus()
+      this.getSettings()
+      this.autoRefreshInterfaces()
     },
     methods: {
-      async fetchDeviceStatus() {
+      // Event handler for when drag starts
+      onDragStart(event) {
+        console.log('Drag Started', event)
+        // You can perform additional actions here, like changing styles or preparing data
+      },
+
+      // Event handler for when drag ends
+      onDragEnd(event) {
+        console.log('Drag Ended', event)
+        // Reset styles or handle any cleanup after drag
+      },
+
+      // Event handler for during drag (as the row is being dragged)
+      onDrag(event) {
+        console.log('Dragging...', event)
+        // You can update state or track drag movements
+      },
+
+      // Event handler for when an item is dropped
+      onDrop(event) {
+        console.log('Item Dropped', event)
+        // Handle the drop logic (e.g., saving changes, updating order)
+      },
+
+      // onBeforeDrop(node, data, overModel, dropPosition, dropHandlers) {
+      //   dropHandlers.wait = true
+
+      //   const sourceRecord = data.records[0]
+      //   const targetRecord = overModel
+
+      //   if (sourceRecord === null || targetRecord === null) {
+      //     dropHandlers.cancelDrop()
+      //     return
+      //   }
+
+      //   // clone phantom records to manipulate (switch) data properly
+      //   const sourceRecordCopy = { ...sourceRecord } // Shallow copy
+      //   const targetRecordCopy = { ...targetRecord }
+      //   sourceRecord.deviceName = targetRecordCopy.deviceName
+      //   sourceRecord.physicalDev = targetRecordCopy.physicalDev
+      //   // sourceRecord.systemDev:   targetRecordCopy.systemDev
+      //   // sourceRecord.symbolicDev: targetRecordCopy.symbolicDev
+      //   sourceRecord.macAddress = targetRecordCopy.macAddress
+      //   sourceRecord.duplex = targetRecordCopy.duplex
+      //   sourceRecord.vendor = targetRecordCopy.vendor
+      //   sourceRecord.mbit = targetRecordCopy.mbit
+      //   sourceRecord.connected = targetRecordCopy.connected
+      //   targetRecord.deviceName = sourceRecordCopy.deviceName
+      //   targetRecord.physicalDev = sourceRecordCopy.physicalDev
+      //   // targetRecord.systemDev = sourceRecordCopy.systemDev
+      //   // targetRecord.symbolicDev = sourceRecordCopy.symbolicDev
+      //   targetRecord.macAddress = sourceRecordCopy.macAddress
+      //   targetRecord.duplex = sourceRecordCopy.duplex
+      //   targetRecord.vendor = sourceRecordCopy.vendor
+      //   targetRecord.mbit = sourceRecordCopy.mbit
+      //   targetRecord.connected = sourceRecordCopy.connected
+      //   dropHandlers.cancelDrop() // cancel drop as we do not want to reorder rows but just to set physicalDev
+      // },
+
+      getConnectedStr(deviceStatus) {
+        const connected = deviceStatus.connected
+        const mbit = deviceStatus.mbit
+        const duplex = deviceStatus.duplex
+        const vendor = deviceStatus.vendor
+        const connectedStr =
+          connected === 'CONNECTED' ? 'connected' : connected === 'DISCONNECTED' ? 'disconnected' : 'unknown'
+        const duplexStr =
+          duplex === 'FULL_DUPLEX' ? 'full-duplex' : duplex === 'HALF_DUPLEX' ? 'half-duplex' : 'unknown'
+        return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
+      },
+      async getSettings() {
         try {
-          const rpcResponseForAdmin = Util.setRpcJsonrpc('admin') // admin/JSONRPC
-          console.log('networkSetting :', window.rpc.networkManager)
-          const result2 = await rpcResponseForAdmin.networkManager.getDeviceStatus()
+          const rpc = Util.setRpcJsonrpc('admin')
+          this.networkSettings = await rpc?.networkManager?.getNetworkSettings()
 
-          this.networkSettings = await rpcResponseForAdmin?.networkManager?.getNetworkSettings()
+          const physicalDevsStore = []
+          this.intfOrderArr = []
 
-          const networkByInterfaceId = groupBy(this.networkSettings.interfaces.list, 'physicalDev')
+          this.intfListLength = this.networkSettings.interfaces.list.length
 
-          const networkByDeviceName = groupBy(result2.list, 'deviceName')
+          const interfaces = []
+          const devices = []
 
-          console.log('networkSettingsDeviceName :', networkByDeviceName)
-          console.log('result2 :', result2)
-
-          if (!result2 || !result2.list) {
-            console.error('Error: No device status data received')
-            return
-          }
-          // Map devices to gridData (network card table rows)cd
-          this.gridData = result2.list.map(device => {
-            const interfaceDevices = networkByInterfaceId[device.deviceName]
-            const connectedStatus = device.connected ? device.connected.toLowerCase() : 'disconnected'
-            const formattedDuplex = device.duplex.toLowerCase().replace('_', '-')
-            return {
-              name: interfaceDevices ? interfaceDevices[0].name : 'Unknown',
-              deviceName: device.deviceName,
-              connected: `${connectedStatus} ${device.mbit} ${formattedDuplex} ${device.vendor}`,
-              macAddress: device.macAddress || 'N/A', // Default to 'N/A' if no MAC address
+          forEach(this.networkSettings.interfaces.list, function (intf) {
+            if (!intf.isVlanInterface) {
+              interfaces.push(intf)
+              devices.push({ physicalDev: intf.physicalDev })
             }
           })
-          this.deviceStore = keys(networkByDeviceName)
+
+          const deviceRecords = await rpc.networkManager.getDeviceStatus()
+
+          const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
+            map[item.deviceName] = item
+            return map
+          }, {})
+
+          // console.log('deviceStatusMap :', deviceStatusMap)
+          forEach(interfaces, intf => {
+            // Check if the physicalDev exists in deviceStatusMap and merge the fields directly into the intf object
+            if (deviceStatusMap[intf.physicalDev]) {
+              Object.keys(deviceStatusMap[intf.physicalDev]).forEach(key => {
+                if (!Object.prototype.hasOwnProperty.call(intf, key)) {
+                  this.$set(intf, key, deviceStatusMap[intf.physicalDev][key])
+                }
+              })
+            }
+          })
+
+          // TODO: check whether this is required for grid
+          // store data is not binded, so grid changes are not affecting the network settings
+          // grid.getStore().loadData(Ext.clone(interfaces));
+          // grid.getStore().commitChanges(); // so the grid is not dirty after initial data load
+
+          this.gridData = interfaces
+          console.log('physicalDevsStore: ', physicalDevsStore)
+
+          forEach(interfaces, function (intf) {
+            physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
+            // me.intfOrderArr.push(Ext.clone(intf));
+          })
+          this.deviceStore = physicalDevsStore
+
+          // update the steps based on interfaces
+          // me.getView().up('setupwizard').fireEvent('syncsteps');
+        } catch (error) {
+          console.log('Failed to fetch device settings:', error)
+        }
+      },
+      // used when mapping from comboboxes
+      setInterfacesMap(row) {
+        const oldValue = row.deviceName
+        const newValue = row.physicalDev
+
+        // Find the source and target records in gridData
+        const sourceRecord = this.gridData.find(currentRow => currentRow.deviceName === oldValue)
+        const targetRecord = this.gridData.find(currentRow => currentRow.deviceName === newValue)
+
+        // make sure sourceRecord & targetRecord are defined
+        if (!sourceRecord || !targetRecord || sourceRecord.name === targetRecord.name) {
+          return
+        }
+
+        // Clone the source and target records to avoid direct mutation
+        const sourceRecordCopy = { ...sourceRecord }
+        const targetRecordCopy = { ...targetRecord }
+
+        // switch data between records (interfaces) - remapping
+        sourceRecord.deviceName = newValue
+        sourceRecord.physicalDev = newValue
+        sourceRecord.macAddress = targetRecordCopy.macAddress
+        sourceRecord.duplex = targetRecordCopy.duplex
+        sourceRecord.vendor = targetRecordCopy.vendor
+        sourceRecord.mbit = targetRecordCopy.mbit
+        sourceRecord.connected = targetRecordCopy.connected
+
+        targetRecord.deviceName = oldValue
+        targetRecord.physicalDev = oldValue
+        targetRecord.macAddress = sourceRecordCopy.macAddress
+        targetRecord.duplex = sourceRecordCopy.duplex
+        targetRecord.vendor = sourceRecordCopy.vendor
+        targetRecord.mbit = sourceRecordCopy.mbit
+        targetRecord.connected = sourceRecordCopy.connected
+      },
+      async autoRefreshInterfaces() {
+        // TODO
+        // if (!me.enableAutoRefresh) { return; }
+        try {
+          const rpc = Util.setRpcJsonrpc('admin') // admin/JSONRPC
+
+          const networkSettings = await rpc?.networkManager?.getNetworkSettings()
+
+          // if (ex) {
+          //   Util.handleException('Unable to refresh the interfaces.'.t())
+          //   return
+          // }
+          const interfaces = []
+
+          this.intfListLength = networkSettings.interfaces.list.length
+
+          networkSettings.interfaces.list.forEach(function (intf) {
+            if (!intf.isVlanInterface) {
+              interfaces.push(intf)
+            }
+          })
+
+          this.gridData = interfaces
+          console.log('grid data list :', this.gridData)
+
+          if (interfaces.length !== this.gridData.length) {
+            // TODO
+            // Ext.MessageBox.alert('New interfaces'.t(), 'There are new interfaces, please restart the wizard.', '');
+          }
+
+          const deviceStatusResult = await rpc.networkManager.getDeviceStatus()
+          const deviceStatusMap = deviceStatusResult.list.reduce((map, item) => {
+            map[item.deviceName] = item
+            return map
+          }, {})
+
+          console.log('Grid data:', this.gridData)
+          this.gridData.forEach(function (row) {
+            const deviceStatus = deviceStatusMap[row.physicalDev]
+            if (deviceStatus !== null) {
+              row.connected = deviceStatus.connected
+            }
+          })
+          // TODO
+          // if (me.enableAutoRefresh) {
+          //     Ext.defer(me.autoRefreshInterfaces, 3000, me);
+          // }
         } catch (error) {
           console.log('Failed to fetch device statuc:', error)
         }
@@ -193,30 +394,28 @@
       },
       async onClickNext() {
         try {
-          // const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-          // // console.log(window.rpc.setup)
-          // if (this.timezoneID !== this.timezone) {
-          //   console.log('timeZone', this.timezone)
-          //   const timezoneId = this.timezone.split(' ')[1]
-          //   await window.rpc.setup.setTimeZone(timezoneId)
-          //   console.log('rpcResponseForAdmin responce:', rpcResponseForAdmin)
-          // }
-          // // alert('Settings saved successfully.')
-          // // if no changes/remapping skip this step
-          // const interfacesMap = {}
+          const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+          console.log('rpcResponseForAdmin responce:', rpcResponseForAdmin)
 
-          // this.gridData.each(function (currentRow) {
-          //   interfacesMap[currentRow.name] = currentRow.deviceName
-          // })
+          const interfacesMap = {}
 
-          // // apply new physicalDev for each interface from initial Network Settings
-          // this.networkSettings.interfaces.list.each(function (intf) {
-          //   if (!intf.isVlanInterface) {
-          //     intf.physicalDev = interfacesMap[intf.name]
-          //   }
-          // })
+          // TODO: how to check the row modification
+          // if (grid.getStore().getModifiedRecords().length === 0) { cb(); return; }
 
-          // rpcResponseForAdmin.networkManager.setNetworkSettings(this.networkSettings)
+          // apply new physicalDev for each interface from initial Network Settings
+          this.gridData.forEach(function (currentRow) {
+            interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
+          })
+
+          // apply new physicalDev for each interface from initial Network Settings
+          this.networkSettings.interfaces.list.forEach(function (intf) {
+            if (!intf.isVlanInterface) {
+              intf.physicalDev = interfacesMap[intf.interfaceId]
+            }
+          })
+
+          console.log('networkSettings :++', this.networkSettings)
+          rpcResponseForAdmin.networkManager.setNetworkSettings(this.networkSettings)
           // Navigate to the setup wizard page
           await Promise.resolve()
 
@@ -228,7 +427,7 @@
       },
 
       statusIcon(status) {
-        return status.includes('connected') ? 'status-connected' : 'status-disconnected'
+        return status === 'CONNECTED' ? 'status-connected' : 'status-disconnected'
       },
 
       // onClickInternetConnection() {
@@ -373,5 +572,11 @@
     background-color: orange;
     border-radius: 50%;
     margin-right: 8px;
+  }
+  /* Drag handle styling */
+  .drag-handle {
+    cursor: move;
+    font-size: 1.5em;
+    color: gray;
   }
 </style>
