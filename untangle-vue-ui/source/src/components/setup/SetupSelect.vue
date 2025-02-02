@@ -154,11 +154,9 @@
         }
       },
       login() {
-        // window.location = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
       },
       createAccount() {
-        // window.location = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
         window.top.location.href = `${this.rpc.remoteUrl}login/create-account/add-appliance/${this.rpc.serverUID}`
       },
       someMethodToTriggerLicense() {
@@ -171,6 +169,8 @@
         await this.setShowStep(this.previousStep)
       },
       async restartWizard() {
+        await this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
+
         await this.setShowStep('License')
         await this.setShowPreviousStep('Wizard')
         console.log(this.previousStep)

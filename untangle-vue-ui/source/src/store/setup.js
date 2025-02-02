@@ -5,6 +5,11 @@ const state = () => ({
   steps: [],
   currentStep: 'wizard',
   previousStep: 'wizard',
+  system: {
+    newPassword: '',
+    newPasswordConfirm: '',
+    installType: '',
+  },
 })
 
 const getters = {
@@ -22,6 +27,9 @@ const getters = {
   },
   currentStep: state => state.currentStep, // Getter for currentStep (showStep)
   previousStep: state => state.previousStep, // Getter for currentStep (showStep)
+  newPassword: state => state.system.newPassword,
+  newPasswordConfirm: state => state.system.newPasswordConfirm,
+  installType: state => state.system.installType, // Getter for installType
 }
 
 const actions = {
@@ -70,6 +78,15 @@ const actions = {
   setShowPreviousStep({ commit }, value) {
     commit('SET_SHOW_PREVIOUS_STEP', value) // Commit mutation to set currentStep
   },
+  setNewPassword({ commit }, password) {
+    commit('SET_NEW_PASSWORD', password)
+  },
+  setNewPasswordConfirm({ commit }, passwordConfirm) {
+    commit('SET_NEW_PASSWORD_CONFIRM', passwordConfirm)
+  },
+  setInstallType({ commit }, installType) {
+    commit('SET_INSTALLTYPE', installType)
+  },
 }
 const mutations = {
   SET_SHOW_STEP(state, value) {
@@ -79,6 +96,25 @@ const mutations = {
   SET_SHOW_PREVIOUS_STEP(state, value) {
     console.log('Setting  previous show Step to:', value) // Log the value being set
     state.previousStep = value // Mutate currentStep
+  },
+  SET_NEW_PASSWORD(state, password) {
+    console.log('Mutation - newPassword:', password) // Log password to check
+    state.system.newPassword = password
+  },
+  SET_NEW_PASSWORD_CONFIRM(state, passwordConfirm) {
+    console.log('Mutation - newPasswordConfirm:', passwordConfirm) // Log passwordConfirm to check
+    state.system.newPasswordConfirm = passwordConfirm
+  },
+  SET_INSTALLTYPE(state, installType) {
+    console.log('Mutation - installType:', installType)
+    state.system.installType = installType
+  },
+  RESET_SYSTEM(state) {
+    state.system = {
+      newPassword: '',
+      newPasswordConfirm: '',
+      installType: '',
+    }
   },
 }
 

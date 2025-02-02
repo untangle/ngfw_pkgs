@@ -10,14 +10,14 @@
           <div class="custom-margin">
             <h2 class="font-weight-light">{{ `Admin Account` }}</h2>
             <br />
-            <label class="font-weight-light faint-color"
-              >Choose a password for the <strong>admin</strong><br />
-              account</label
-            >
+            <label class="font-weight-light faint-color">
+              Choose a password for the <strong>admin</strong><br />
+              account
+            </label>
             <br />
             <label>Password:</label>
             <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
-              <u-password v-model="newPassword" :errors="errors" />
+              <u-password v-model="newPasswordSync" :errors="errors" />
             </ValidationProvider>
             <br />
             <label>Confirm Password:</label>
@@ -26,11 +26,13 @@
               name="confirmPassword"
               :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
             >
-              <u-password v-model="newPasswordConfirm" :errors="errors" />
+              <u-password v-model="newPasswordConfirmSync" :errors="errors" />
             </ValidationProvider>
             <br />
-            <label class="font-weight-light faint-color">Administrators receive email alerts and report summaries</label
-            ><br />
+            <label class="font-weight-light faint-color"
+              >Administrators receive email alerts and report summaries</label
+            >
+            <br />
             <label>Adding Email:</label>
             <ValidationProvider>
               <u-text-field v-model="adminEmail" />
@@ -44,20 +46,19 @@
           <div class="custom-margin">
             <h2 class="font-weight-light">{{ `Install Type` }}</h2>
             <br />
-            <label class="font-weight-light faint-color"
-              >Install type determines the optimal default settings for this deployment</label
-            >
+            <label class="font-weight-light faint-color">
+              Install type determines the optimal default settings for this deployment
+            </label>
             <br />
             <label>Choose Type:</label>
             <ValidationProvider v-slot="{ errors }" rules="required">
               <v-autocomplete
-                v-model="installType"
+                v-model="installTypeSync"
                 :items="typeOptions"
                 outlined
                 dense
                 hide-details
                 return-object
-                :error-messages="errors"
                 placeholder="Select Type"
               >
                 <template v-if="errors.length" #append>
@@ -91,6 +92,125 @@
     </v-card>
   </div>
 </template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+  import Util from '@/util/setupUtil'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+
+  export default {
+    components: {
+      SetupLayout,
+    },
+    data() {
+      return {
+        adminEmail: '',
+        timezoneID: '',
+        timezone: '',
+        timezones: '',
+        loading: false,
+        // installType: '',
+        typeOptions: [
+          { value: 'school', text: 'School' },
+          { value: 'college', text: 'Higher Education' },
+          { value: 'government', text: 'State & Local Government' },
+          { value: 'fedgovernment', text: 'Federal Government' },
+          { value: 'nonprofit', text: 'Nonprofit' },
+          { value: 'retail', text: 'Hospitality & Retail' },
+          { value: 'healthcare', text: 'Healthcare' },
+          { value: 'financial', text: 'Banking & Financial' },
+          { value: 'home', text: 'Home' },
+          { value: 'student', text: 'Student' },
+          { value: 'other', text: 'Other' },
+        ],
+      }
+    },
+    computed: {
+      ...mapGetters('setup', ['newPassword', 'newPasswordConfirm', 'installType']), // Map installType from Vuex
+
+      passwordRequired() {
+        return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
+      },
+      newPasswordSync: {
+        get() {
+          return this.newPassword // Vuex getter
+        },
+        set(value) {
+          this.$store.dispatch('setup/setNewPassword', value) // Vuex action to update password
+        },
+      },
+      newPasswordConfirmSync: {
+        get() {
+          return this.newPasswordConfirm // Vuex getter
+        },
+        set(value) {
+          this.$store.dispatch('setup/setNewPasswordConfirm', value) // Vuex action to update confirm password
+        },
+      },
+      installTypeSync: {
+        get() {
+          return this.installType // Access installType from Vuex
+        },
+        set(value) {
+          this.$store.dispatch('setup/setInstallType', value) // Dispatch action to update installType in Vuex
+        },
+      },
+    },
+    created() {
+      console.log('installType from Vuex:', this.installType) // Should now show the correct initial value
+
+      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+      console.log('Response', rpcResponseForSetup)
+
+      this.adminEmail = rpcResponseForSetup?.adminEmail
+      this.timezoneID = rpcResponseForSetup?.timezoneID
+      this.timezones = []
+
+      const jsonStr = rpcResponseForSetup.timezones.replace(/'/g, '"')
+      const timezonesArray = JSON.parse(jsonStr)
+      if (timezonesArray) {
+        for (let i = 0; i < timezonesArray.length; i++) {
+          const timezone = `(${timezonesArray[i][1]}) ${timezonesArray[i][0]}`
+          this.timezones.push(timezone)
+          if (this.timezoneID === timezonesArray[i][0]) {
+            this.timezone = timezone
+          }
+        }
+      }
+    },
+    methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
+      async onClickBack() {
+        try {
+          await Promise.resolve()
+          await this.setShowStep('License')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
+      async onContinue() {
+        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+        const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+        console.log(rpcResponseForSetup)
+        console.log('Response rpcResponseForAdmin', rpcResponseForAdmin)
+
+        try {
+          window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
+          if (this.timezoneID !== this.timezone) {
+            const timezoneId = this.timezone.split(' ')[1]
+            await window.rpc.setup.setTimeZone(timezoneId)
+            console.log('Timezone updated successfully.', timezoneId)
+          }
+        } catch (error) {
+          console.error('Error saving settings:', error)
+          alert('Failed to save settings. Please try again.')
+        }
+      },
+    },
+  }
+</script>
+
 <style scoped>
   .network-cards-panel {
     display: flex;
@@ -154,161 +274,3 @@
     width: 100%; /* Ensures the container spans the full width */
   }
 </style>
-<script>
-  import { mapActions } from 'vuex'
-  import Util from '@/util/setupUtil'
-  import SetupLayout from '@/layouts/SetupLayout.vue'
-
-  export default {
-    components: {
-      SetupLayout,
-    },
-    props: {
-      rpc: {
-        type: Object,
-        required: true,
-      },
-    },
-    data: () => ({
-      adminEmail: '',
-      timezoneID: '',
-      timezone: '',
-      timezones: '',
-      newPassword: localStorage.getItem('newPassword') || null,
-      newPasswordConfirm: localStorage.getItem('newPassword') || null,
-      loading: false,
-      installType: '',
-      typeOptions: [
-        { value: 'school', text: 'School' },
-        { value: 'college', text: 'Higher Education' },
-        { value: 'government', text: 'State & Local Government' },
-        { value: 'fedgovernment', text: 'Federal Government' },
-        { value: 'nonprofit', text: 'Nonprofit' },
-        { value: 'retail', text: 'Hospitality & Retail' },
-        { value: 'healthcare', text: 'Healthcare' },
-        { value: 'financial', text: 'Banking & Financial' },
-        { value: 'home', text: 'Home' },
-        { value: 'student', text: 'Student' },
-        { value: 'other', text: 'Other' },
-      ],
-    }),
-    computed: {
-      passwordRequired() {
-        return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
-      },
-    },
-    watch: {
-      newPassword(newVal) {
-        // Store the password in localStorage whenever it changes
-        if (newVal) {
-          localStorage.setItem('newPassword', newVal)
-        } else {
-          localStorage.removeItem('newPassword') // Remove if the value is empty
-        }
-      },
-      installType(newValue) {
-        // Save the installType to localStorage whenever it changes
-        if (newValue) {
-          localStorage.setItem('installType', JSON.stringify(newValue))
-        }
-      },
-    },
-    created() {
-      // Set up the RPC client and fetch relevant data
-      const rpcResponseForSetup = Util.setRpcJsonrpc('setup') // setup/JSONRPC
-      console.log('Responce', rpcResponseForSetup)
-
-      const savedInstallType = localStorage.getItem('installType')
-      if (savedInstallType) {
-        this.installType = JSON.parse(savedInstallType)
-      }
-
-      this.adminEmail = rpcResponseForSetup?.adminEmail
-      this.timezoneID = rpcResponseForSetup?.timezoneID
-      this.timezones = []
-      const jsonStr = rpcResponseForSetup.timezones.replace(/'/g, '"')
-      const timezonesArray = JSON.parse(jsonStr)
-      if (timezonesArray) {
-        for (let i = 0; i < timezonesArray.length; i++) {
-          const timezone = '(' + timezonesArray[i][1] + ') ' + timezonesArray[i][0]
-          // const displayName = rpcResponseForSetup.timezones[i][1]
-          this.timezones.push(timezone)
-          if (this.timezoneID === timezonesArray[i][0]) {
-            this.timezone = timezone
-          }
-        }
-      }
-    },
-    methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
-      ...mapActions('setup', ['setShowPreviousStep']),
-      async onClickBack() {
-        try {
-          await Promise.resolve()
-          // Navigate to the setup wizard page
-          await this.setShowStep('License')
-          // this.$router.push('/setup/license/')
-        } catch (error) {
-          console.error('Failed to navigate:', error)
-        }
-      },
-      async onContinue() {
-        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-        const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-        console.log(rpcResponseForSetup)
-        console.log('Responce rpcResponseForAdmin', rpcResponseForAdmin)
-
-        try {
-          window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // to avoid invalid security nonce
-          // console.log(window.rpc.setup)
-          if (this.timezoneID !== this.timezone) {
-            console.log('timeZone', this.timezone)
-            const timezoneId = this.timezone.split(' ')[1]
-            await window.rpc.setup.setTimeZone(timezoneId)
-            console.log('Timezone updated successfully.', timezoneId)
-          }
-          //  await this.saveAdminPassword()
-          // alert('Settings saved successfully.')
-        } catch (error) {
-          console.error('Error saving settings:', error)
-          alert('Failed to save settings. Please try again.')
-        }
-      },
-
-      async saveAdminPassword() {
-        try {
-          console.log('Attempting to update admin password...')
-          console.log('RPC Context:', window.rpc.setup)
-
-          // Update admin password
-          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
-          console.log('Admin password updated successfully.', this.newPassword)
-          console.log('Confirm password', this.newPasswordConfirm)
-          console.log('Install Type', this.installType.value)
-
-          // Authenticate the updated password
-          await new Promise((resolve, reject) => {
-            Util.authenticate(this.newPassword, (error, success) => {
-              console.log('Authentication error:', error)
-              console.log('Authentication success:', success)
-              // .$router.push('/setup/network')
-              this.setShowStep('Network')
-              this.setShowPreviousStep('Network')
-              if (error || !success) {
-                console.error('Authentication failed after password update:', error)
-                reject(new Error('Authentication failed after password update.'))
-              } else {
-                console.log('Authentication successful after password update.')
-                resolve()
-                this.showInterfaces = true
-              }
-            })
-          })
-        } catch (error) {
-          console.error('Error saving admin password or authenticating:', error)
-          throw error
-        }
-      },
-    },
-  }
-</script>

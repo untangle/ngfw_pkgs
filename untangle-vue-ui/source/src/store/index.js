@@ -47,6 +47,12 @@ const mutations = {
     console.log('Setting  previous show Step to:', value) // Log the value being set
     state.previousStep = value // Mutate currentStep
   },
+  SET_NEW_PASSWORD(state, password) {
+    state.system.newPassword = password
+  },
+  SET_NEW_PASSWORD_CONFIRM(state, passwordConfirm) {
+    state.system.newPasswordConfirm = passwordConfirm
+  },
 }
 
 const actions = {
@@ -64,6 +70,12 @@ const actions = {
   },
   setShowPreviousStep({ commit }, value) {
     commit('SET_SHOW_PREVIOUS_STEP', value) // Commit mutation to set currentStep
+  },
+  setNewPassword({ commit }, password) {
+    commit('SET_NEW_PASSWORD', password)
+  },
+  setNewPasswordConfirm({ commit }, passwordConfirm) {
+    commit('SET_NEW_PASSWORD_CONFIRM', passwordConfirm)
   },
 }
 
