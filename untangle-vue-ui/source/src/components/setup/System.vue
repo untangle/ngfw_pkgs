@@ -232,9 +232,7 @@
         }
       },
       async onContinue() {
-        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
         const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-        console.log(rpcResponseForSetup)
         console.log('Responce rpcResponseForAdmin', rpcResponseForAdmin)
 
         try {
