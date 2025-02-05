@@ -1,5 +1,6 @@
 <template>
-  <v-card width="1000" class="mx-auto mt-10" flat>
+  <div width="1000" class="mx-auto mt-10" flat>
+    <SetupLayout />
     <div class="parent-card">
       <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
       <br />
@@ -20,59 +21,71 @@
         </p>
       </div>
     </div>
-    <!-- Warning Message -->
-
+    <!-- Network Cards Table -->
     <div fixed responsive class="network-cards-panel">
-      <b-table
-        hover
-        :items="gridData"
-        :fields="tableFields"
-        thead-class="text-left"
+      <draggable
+        v-model="gridData"
+        :group="{ name: 'network-rows', pull: 'clone' }"
         class="network-table"
-        :bordered="true"
-        :striped="false"
-        :small="false"
+        handle=".drag-handle"
+        :animation="300"
+        @start="onDragStart"
+        @end="onDragEnd"
+        @drag="onDrag"
+        @drop="onDrop"
       >
-        <!-- Drag Icon Column -->
-        <template #cell(drag)="row">
-          <span
-            class="drag-handle"
-            style="cursor: move"
-            draggable="true"
-            @dragstart="dragStart($event, row.item)"
-            @dragover="dragOver($event)"
-            @drop="drop($event, row.item)"
-            @dragend="dragEnd"
-            >&#x2630;</span
-          >
-        </template>
-        <!-- Name column -->
-        <template #cell(name)="row">
-          {{ row.item.name }}
-        </template>
-        <!-- Device Column -->
-        <template #cell(deviceName)="row">
-          <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
-            <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-              {{ device.physicalDev }}
-            </b-form-select-option>
-          </b-form-select>
-        </template>
-        <!-- Icon Column -->
-        <template #cell(statusIcon)="row">
-          <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-        </template>
-        <!-- Status Column -->
-        <template #cell(connected)="row">
-          {{ getConnectedStr(row.item) }}
-        </template>
-        <!-- MAC Address Column -->
-        <template #cell(macAddress)="row">
-          {{ row.item.macAddress }}
-        </template>
-      </b-table>
+        <b-table
+          hover
+          :items="gridData"
+          :fields="tableFields"
+          thead-class="text-left"
+          class="network-table"
+          :bordered="true"
+          :striped="false"
+          :small="false"
+        >
+          <!-- Drag Icon Column -->
+          <template #cell(drag)="row">
+            <span
+              class="drag-handle"
+              style="cursor: move"
+              draggable="true"
+              @dragstart="dragStart($event, row.item)"
+              @dragover="dragOver($event)"
+              @drop="drop($event, row.item)"
+              @dragend="dragEnd"
+              >&#x2630;</span
+            >
+          </template>
+          <!-- Name column -->
+          <template #cell(name)="row">
+            {{ row.item.name }}
+          </template>
+          <!-- Device Column -->
+          <template #cell(deviceName)="row">
+            <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
+              <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
+                {{ device.physicalDev }}
+              </b-form-select-option>
+            </b-form-select>
+          </template>
+          <!-- Icon Column -->
+          <template #cell(statusIcon)="row">
+            <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+          </template>
+          <!-- Status Column -->
+          <template #cell(connected)="row">
+            {{ getConnectedStr(row.item) }}
+          </template>
+          <!-- MAC Address Column -->
+          <template #cell(macAddress)="row">
+            {{ row.item.macAddress }}
+          </template>
+        </b-table>
+      </draggable>
     </div>
 
+    <!-- Warning Message -->
     <div v-if="gridData.length < 2" class="inline-warning">
       <span class="warning-icon"></span>
       <div>
@@ -90,14 +103,16 @@
       <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
       <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   import Vue from 'vue'
   import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
   import { forEach } from 'lodash'
   import VueDraggable from 'vuedraggable'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
   Vue.use(VueDraggable)
 
@@ -106,9 +121,10 @@
   Vue.component('BFormSelectOption', BFormSelectOption)
 
   export default {
-    draggingRow: null,
-    dragStartIndex: null,
-    dragEndIndex: null,
+    name: 'Network',
+    components: {
+      SetupLayout,
+    },
     props: {
       rpc: {
         type: Object,
@@ -137,17 +153,18 @@
         ],
       }
     },
-
     created() {
       this.getSettings()
       this.enableAutoRefresh = true
       setTimeout(this.autoRefreshInterfaces, 3000)
     },
-
     destroyed() {
       this.enableAutoRefresh = false
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
+
       dragStart(event, item) {
         this.tempArray = this.gridData.map(item => ({ ...item }))
         this.draggingItem = item
@@ -349,8 +366,8 @@
       async onClickBack() {
         try {
           await Promise.resolve()
-          // Navigate to the setup wizard page
-          this.$router.push('/setup/system/')
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -379,14 +396,13 @@
 
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
-
-          this.$router.push('/setup/internet/')
+          await this.setShowStep('Internet')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')
         }
       },
-
       statusIcon(status) {
         return status === 'CONNECTED' ? 'status-connected' : 'status-disconnected'
       },

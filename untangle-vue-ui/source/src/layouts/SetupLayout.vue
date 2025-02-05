@@ -1,5 +1,6 @@
 <template>
-  <v-app>
+  <!-- <v-app> -->
+  <div>
     <v-app-bar app dark flat height="120" class="ut-app-bar">
       <v-spacer />
       <div class="d-flex flex-column">
@@ -25,15 +26,16 @@
       </div>
       <v-spacer />
     </v-app-bar>
-
+    <!-- 
     <v-main>
       <router-view />
-    </v-main>
+    </v-main> -->
     <v-overlay v-model="$store.state.pageLoad">
       <v-progress-circular indeterminate size="32" />
     </v-overlay>
     <u-framework-toast />
-  </v-app>
+    <!-- </v-app> -->
+  </div>
 </template>
 
 <script>

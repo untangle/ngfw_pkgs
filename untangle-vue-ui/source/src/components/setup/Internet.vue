@@ -1,86 +1,98 @@
 <template>
-  <div class="setup-wizard network-cards-panel">
-    <h3 class="title">Configure the Internet Connection</h3>
-    <p class="error-message">No Internet Connection! Click on 'Test Connectivity' to verify.</p>
+  <div>
+    <SetupLayout />
+    <div class="setup-wizard network-cards-panel">
+      <h3 class="title">Configure the Internet Connection</h3>
+      <p class="error-message">No Internet Connection! Click on 'Test Connectivity' to verify.</p>
 
-    <div v-if="wan">
-      <!-- Configuration Type Radio Buttons in Single Line -->
-      <div class="config-type">
-        <label class="config-label">Configuration Type</label>
-        <div class="radio-group">
-          <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
-          <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
-          <label> <input v-model="wan.v4ConfigType" type="radio" value="PPPOE" /> PPPoE </label>
+      <div v-if="wan">
+        <!-- Configuration Type Radio Buttons in Single Line -->
+        <div class="config-type">
+          <label class="config-label">Configuration Type</label>
+          <div class="radio-group">
+            <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
+            <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
+            <label> <input v-model="wan.v4ConfigType" type="radio" value="PPPOE" /> PPPoE </label>
+          </div>
         </div>
-      </div>
 
-      <!-- Static Configuration Fields -->
-      <div v-if="wan.v4ConfigType === 'STATIC'" class="static-config">
-        <label>IP Address</label>
-        <input v-model="wan.v4StaticAddress" type="text" />
+        <!-- Static Configuration Fields -->
+        <div v-if="wan.v4ConfigType === 'STATIC'" class="static-config">
+          <label>IP Address</label>
+          <input v-model="wan.v4StaticAddress" type="text" />
 
-        <label>Netmask</label>
-        <select v-model="wan.v4StaticPrefix">
-          <option v-for="(prefix, index) in netmaskList" :key="index" :value="prefix">{{ prefix }}</option>
-        </select>
+          <label>Netmask</label>
+          <select v-model="wan.v4StaticPrefix">
+            <option v-for="(prefix, index) in netmaskList" :key="index" :value="prefix">{{ prefix }}</option>
+          </select>
 
-        <label>Gateway</label>
-        <input v-model="wan.v4StaticGateway" type="text" />
+          <label>Gateway</label>
+          <input v-model="wan.v4StaticGateway" type="text" />
 
-        <label>Primary DNS</label>
-        <input v-model="wan.v4StaticDns1" type="text" />
+          <label>Primary DNS</label>
+          <input v-model="wan.v4StaticDns1" type="text" />
 
-        <label>Secondary DNS</label>
-        <input v-model="wan.v4StaticDns2" type="text" />
-      </div>
+          <label>Secondary DNS</label>
+          <input v-model="wan.v4StaticDns2" type="text" />
+        </div>
 
-      <!-- Auto (DHCP) Configuration Fields -->
-      <div v-if="wan.v4ConfigType === 'AUTO'" class="auto-config">
-        <div class="status-grid">
-          <div class="status-item">
-            <label>IP Address:</label>
-            <span>{{ wan.v4AutoIpAddress }}</span>
+        <!-- Auto (DHCP) Configuration Fields -->
+        <div v-if="wan.v4ConfigType === 'AUTO'" class="auto-config">
+          <div class="status-grid">
+            <div class="status-item">
+              <label>IP Address:</label>
+              <span>{{ wan.v4AutoIpAddress }}</span>
+            </div>
+            <div class="status-item">
+              <label>Netmask:</label>
+              <span>{{ wan.v4AutoNetmask }}</span>
+            </div>
+            <div class="status-item">
+              <label>Gateway:</label>
+              <span>{{ wan.v4AutoGateway }}</span>
+            </div>
+            <div class="status-item">
+              <label>Primary DNS:</label>
+              <span>{{ wan.v4AutoDns1 }}</span>
+            </div>
+            <div class="status-item">
+              <label>Secondary DNS:</label>
+              <span>{{ wan.v4AutoDns2 }}</span>
+            </div>
           </div>
-          <div class="status-item">
-            <label>Netmask:</label>
-            <span>{{ wan.v4AutoNetmask }}</span>
+          <div class="button-margin">
+            <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Renew DHCP` }}</u-btn>
           </div>
-          <div class="status-item">
-            <label>Gateway:</label>
-            <span>{{ wan.v4AutoGateway }}</span>
-          </div>
-          <div class="status-item">
-            <label>Primary DNS:</label>
-            <span>{{ wan.v4AutoDns1 }}</span>
-          </div>
-          <div class="status-item">
-            <label>Secondary DNS:</label>
-            <span>{{ wan.v4AutoDns2 }}</span>
-          </div>
+        </div>
+
+        <!-- PPPoE Configuration Fields -->
+        <div v-if="wan.v4ConfigType === 'PPPOE'" class="pppoe-config">
+          <label>Username</label>
+          <input v-model="wan.v4PPPoEUsername" type="text" />
+
+          <label>Password</label>
+          <input v-model="wan.v4PPPoEPassword" type="password" />
         </div>
         <div class="button-margin">
-          <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Renew DHCP` }}</u-btn>
+          <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Test Connectivity` }}</u-btn>
         </div>
-      </div>
-
-      <!-- PPPoE Configuration Fields -->
-      <div v-if="wan.v4ConfigType === 'PPPOE'" class="pppoe-config">
-        <label>Username</label>
-        <input v-model="wan.v4PPPoEUsername" type="text" />
-
-        <label>Password</label>
-        <input v-model="wan.v4PPPoEPassword" type="password" />
-      </div>
-      <div class="button-margin">
-        <u-btn :small="false" class="renew-button" @click="passes(onContinue)">{{ `Test Connectivity` }}</u-btn>
+        <div class="button-container">
+          <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
+        </div>
       </div>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
   export default {
     name: 'Internet',
+    components: {
+      SetupLayout,
+    },
     data() {
       return {
         isRemoteReachable: null,
@@ -108,6 +120,21 @@
       this.getSettings()
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
+      async onClickBack() {
+        try {
+          await Promise.resolve()
+          await this.setShowStep('Network')
+          await this.setShowPreviousStep('Network')
+
+          // Navigate to the setup wizard page
+          // this.$router.push('/setup/system/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
+      async onClickNext() {},
       checkRemoteReachability() {
         // Simulate the check for remote reachability
         this.isRemoteReachable = true // Example value

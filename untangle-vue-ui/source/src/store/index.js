@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Vuex, { Store } from 'vuex'
+import VuexPersistence from 'vuex-persist'
 import settings from './settings'
 import setup from './setup'
 import auth from './auth'
@@ -38,6 +39,20 @@ const mutations = {
       state.cachedComponents.splice(index, 1)
     }
   },
+  SET_SHOW_STEP(state, value) {
+    console.log('Setting showStep to:', value) // Log the value being set
+    state.currentStep = value
+  },
+  SET_SHOW_PREVIOUS_STEP(state, value) {
+    console.log('Setting  previous show Step to:', value) // Log the value being set
+    state.previousStep = value // Mutate currentStep
+  },
+  SET_NEW_PASSWORD(state, password) {
+    state.system.newPassword = password
+  },
+  SET_NEW_PASSWORD_CONFIRM(state, passwordConfirm) {
+    state.system.newPasswordConfirm = passwordConfirm
+  },
 }
 
 const actions = {
@@ -49,7 +64,40 @@ const actions = {
     commit('RESET')
     commit('settings/RESET')
   },
+
+  setShowStep({ commit }, value) {
+    commit('SET_SHOW_STEP', value)
+  },
+  setShowPreviousStep({ commit }, value) {
+    commit('SET_SHOW_PREVIOUS_STEP', value) // Commit mutation to set currentStep
+  },
+  setNewPassword({ commit }, password) {
+    commit('SET_NEW_PASSWORD', password)
+  },
+  setNewPasswordConfirm({ commit }, passwordConfirm) {
+    commit('SET_NEW_PASSWORD_CONFIRM', passwordConfirm)
+  },
 }
+
+const getters = {
+  steps: (state, getters, rootState, rootGetters) => {
+    const steps = ['license', 'system', 'wan']
+
+    const interfaces = rootGetters['settings/interfaces']
+    const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
+    const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
+
+    if (lteStep >= 0) steps.push('lte')
+    if (wifiStep >= 0) steps.push('wifi')
+
+    return steps
+  },
+  currentStep: state => state.currentStep,
+}
+
+const vuexPersistence = new VuexPersistence({
+  storage: window.localStorage,
+})
 
 export default new Store({
   modules: {
@@ -58,6 +106,8 @@ export default new Store({
     setup,
   },
   state: getDefaultState,
+  getters,
   mutations,
   actions,
+  plugins: [vuexPersistence.plugin],
 })
