@@ -81,8 +81,6 @@
               </v-autocomplete>
             </ValidationProvider>
             <label class="empty-label"> </label>
-            <br />
-            <br /><br /><br /><br /><br /><br />
             <u-btn :small="false" style="margin: 8px 180px" class="custom-btn-right" @click="passes(onContinue)">
               {{ `Next` }}
             </u-btn>
@@ -279,7 +277,7 @@
   }
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
-    height: 13px; /* Set a specific height if needed */
+    height: 183px; /* Set a specific height if needed */
     background-color: white; /* Set a background color or any style */
   }
   .custom-margin {
