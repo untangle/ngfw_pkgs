@@ -165,6 +165,19 @@
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       ...mapActions('setup', ['setShowPreviousStep']),
 
+      onDragStart(event) {
+        console.log('Drag Started', event)
+      },
+      onDragEnd(event) {
+        console.log('Drag Ended', event)
+      },
+      onDrag(event) {
+        console.log('Dragging...', event)
+      },
+      onDrop(event) {
+        console.log('Item Dropped', event)
+      },
+
       dragStart(event, item) {
         this.tempArray = this.gridData.map(item => ({ ...item }))
         this.draggingItem = item
