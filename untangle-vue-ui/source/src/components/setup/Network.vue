@@ -44,6 +44,10 @@
           :striped="false"
           :small="false"
         >
+          <!-- Name column -->
+          <template #cell(name)="row">
+            {{ row.item.name }}
+          </template>
           <!-- Drag Icon Column -->
           <template #cell(drag)="row">
             <span
@@ -54,12 +58,8 @@
               @dragover="dragOver($event)"
               @drop="drop($event, row.item)"
               @dragend="dragEnd"
-              >&#x2630;</span
-            >
-          </template>
-          <!-- Name column -->
-          <template #cell(name)="row">
-            {{ row.item.name }}
+              ><v-icon>mdi-cursor-move</v-icon>
+            </span>
           </template>
           <!-- Device Column -->
           <template #cell(deviceName)="row">
@@ -144,8 +144,8 @@
         interfacesForceContinue: false,
         bordered: true,
         tableFields: [
-          { key: 'drag', label: 'Drag' },
           { key: 'name', label: 'Name' },
+          { key: 'drag', label: 'Drag' },
           { key: 'deviceName', label: 'Device' },
           { key: 'statusIcon', label: 'Icon' },
           { key: 'connected', label: 'Status' },
@@ -409,8 +409,6 @@
 
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
-          await this.setShowStep('Internet')
-          await this.setShowPreviousStep('Internet')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')
