@@ -433,6 +433,18 @@
   .large-font {
     font-size: 17px;
   }
+  .network-cards-Parent {
+    display: flex;
+    width: 100%;
+    padding: 5px;
+    padding-right: 0px;
+    padding-bottom: 200px;
+    border: 2px solid #ebe5e5;
+    border-radius: 5px;
+    background-color: #fcf8f8;
+    margin: 10px;
+    overflow: auto;
+  }
   .network-cards-panel {
     display: flex;
     width: 100%;
@@ -441,7 +453,7 @@
     border: 2px solid #ccc;
     border-radius: 5px;
     background-color: #ebe9e9;
-    margin: 10px;
+    margin: 0px 5px 0px 0px;
     overflow: auto;
   }
   .network-table {
@@ -450,8 +462,7 @@
     border-collapse: collapse;
     box-sizing: border-box;
   }
-  .network-table td,
-  .network-table th {
+  .network-table td .network-table th {
     border: 1px solid #ccc;
     padding: 10px;
     text-align: left;
@@ -461,7 +472,8 @@
     flex-direction: column;
     height: 100%;
     border-radius: 5px;
-    margin: 20px;
+    margin: 10px;
+    margin-bottom: -25px;
   }
   .description {
     margin-bottom: 20px;
@@ -476,9 +488,9 @@
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-right: -10px;
+    margin-right: 0px;
     margin-left: 600px;
-    gap: 560px;
+    gap: 558px;
   }
   .internet-button {
     background-color: #007bff;
