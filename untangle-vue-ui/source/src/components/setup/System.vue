@@ -185,6 +185,7 @@
         try {
           await Promise.resolve()
           await this.setShowStep('License')
+          await this.setShowPreviousStep('License')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -201,6 +202,8 @@
             const timezoneId = this.timezone.split(' ')[1]
             await window.rpc.setup.setTimeZone(timezoneId)
             console.log('Timezone updated successfully.', timezoneId)
+            await this.setShowStep('Network')
+            await this.setShowPreviousStep('Network')
           }
         } catch (error) {
           console.error('Error saving settings:', error)

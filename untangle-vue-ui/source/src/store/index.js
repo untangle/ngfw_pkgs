@@ -80,19 +80,16 @@ const actions = {
 }
 
 const getters = {
-  steps: (state, getters, rootState, rootGetters) => {
-    const steps = ['license', 'system', 'wan']
-
-    const interfaces = rootGetters['settings/interfaces']
-    const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
-    const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
-
-    if (lteStep >= 0) steps.push('lte')
-    if (wifiStep >= 0) steps.push('wifi')
-
-    return steps
-  },
-  currentStep: state => state.currentStep,
+  // steps: (state, getters, rootState, rootGetters) => {
+  //   const steps = ['license', 'system', 'wan']
+  //   const interfaces = rootGetters['settings/interfaces']
+  //   const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
+  //   const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
+  //   if (lteStep >= 0) steps.push('lte')
+  //   if (wifiStep >= 0) steps.push('wifi')
+  //   return steps
+  // },
+  // currentStep: state => state.currentStep,
 }
 
 const vuexPersistence = new VuexPersistence({
