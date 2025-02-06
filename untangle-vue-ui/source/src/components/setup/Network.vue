@@ -1,108 +1,114 @@
 <template>
-  <div width="1000" class="mx-auto mt-10" flat>
-    <SetupLayout />
-    <div class="parent-card">
-      <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
-      <br />
-      <p class="large-font">This step identifies the external, internal, and other network cards.</p>
+  <div>
+    <v-card width="800" class="mx-auto mt-4" flat>
+      <SetupLayout />
+      <div class="parent-card">
+        <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
+        <br />
+        <p class="large-font">This step identifies the external, internal, and other network cards.</p>
 
-      <!-- Description -->
-      <div class="description">
-        <p class="large-font">
-          <strong>Step 1:</strong>
-          <span class="step-text"
-            >Plug an active cable into one network card to determine which network card it is.</span
-          ><br />
-          <strong>Step 2:</strong>
-          <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
-          <br />
-          <strong>Step 3:</strong>
-          <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
-        </p>
+        <!-- Description -->
+        <div class="description">
+          <p class="large-font">
+            <strong>Step 1:</strong>
+            <span class="step-text"
+              >Plug an active cable into one network card to determine which network card it is. </span
+            ><br />
+            <strong>Step 2:</strong>
+            <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
+            <br />
+            <strong>Step 3:</strong>
+            <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
+          </p>
+        </div>
       </div>
-    </div>
-    <!-- Network Cards Table -->
-    <div fixed responsive class="network-cards-panel">
-      <draggable
-        v-model="gridData"
-        :group="{ name: 'network-rows', pull: 'clone' }"
-        class="network-table"
-        handle=".drag-handle"
-        :animation="300"
-        @start="onDragStart"
-        @end="onDragEnd"
-        @drag="onDrag"
-        @drop="onDrop"
-      >
-        <b-table
-          hover
-          :items="gridData"
-          :fields="tableFields"
-          thead-class="text-left"
+      <!-- Network Cards Table -->
+      <div fixed responsive class="network-cards-panel">
+        <draggable
+          v-model="gridData"
+          :group="{ name: 'network-rows', pull: 'clone' }"
           class="network-table"
-          :bordered="true"
-          :striped="false"
-          :small="false"
+          handle=".drag-handle"
+          :animation="300"
+          @start="onDragStart"
+          @end="onDragEnd"
+          @drag="onDrag"
+          @drop="onDrop"
         >
-          <!-- Name column -->
-          <template #cell(name)="row">
-            {{ row.item.name }}
-          </template>
-          <!-- Drag Icon Column -->
-          <template #cell(drag)="row">
-            <span
-              class="drag-handle"
-              style="cursor: move"
-              draggable="true"
-              @dragstart="dragStart($event, row.item)"
-              @dragover="dragOver($event)"
-              @drop="drop($event, row.item)"
-              @dragend="dragEnd"
-              ><v-icon>mdi-cursor-move</v-icon>
-            </span>
-          </template>
-          <!-- Device Column -->
-          <template #cell(deviceName)="row">
-            <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
-              <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-                {{ device.physicalDev }}
-              </b-form-select-option>
-            </b-form-select>
-          </template>
-          <!-- Icon Column -->
-          <template #cell(statusIcon)="row">
-            <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-          </template>
-          <!-- Status Column -->
-          <template #cell(connected)="row">
-            {{ getConnectedStr(row.item) }}
-          </template>
-          <!-- MAC Address Column -->
-          <template #cell(macAddress)="row">
-            {{ row.item.macAddress }}
-          </template>
-        </b-table>
-      </draggable>
-    </div>
-
-    <!-- Warning Message -->
-    <div v-if="gridData.length < 2" class="inline-warning">
-      <span class="warning-icon"></span>
-      <div>
-        <p>
-          Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs), and
-          fewer than 2 NICs were detected.
-        </p>
-        <label>
-          <input v-model="interfacesForceContinue" type="checkbox" />
-          <strong>Continue anyway</strong>
-        </label>
+          <b-table
+            hover
+            :items="gridData"
+            :fields="tableFields"
+            thead-class="text-left"
+            class="network-table"
+            :bordered="true"
+            :striped="false"
+            :small="false"
+          >
+            <!-- Name column -->
+            <template #cell(name)="row">
+              {{ row.item.name }}
+            </template>
+            <!-- Drag Icon Column -->
+            <template #cell(drag)="row">
+              <span
+                class="drag-handle"
+                style="cursor: move"
+                draggable="true"
+                @dragstart="dragStart($event, row.item)"
+                @dragover="dragOver($event)"
+                @drop="drop($event, row.item)"
+                @dragend="dragEnd"
+                ><v-icon>mdi-cursor-move</v-icon>
+              </span>
+            </template>
+            <!-- Device Column -->
+            <template #cell(deviceName)="row">
+              <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
+                <b-form-select-option
+                  v-for="device in deviceStore"
+                  :key="device.physicalDev"
+                  :value="device.physicalDev"
+                >
+                  {{ device.physicalDev }}
+                </b-form-select-option>
+              </b-form-select>
+            </template>
+            <!-- Icon Column -->
+            <template #cell(statusIcon)="row">
+              <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+            </template>
+            <!-- Status Column -->
+            <template #cell(connected)="row">
+              {{ getConnectedStr(row.item) }}
+            </template>
+            <!-- MAC Address Column -->
+            <template #cell(macAddress)="row">
+              {{ row.item.macAddress }}
+            </template>
+          </b-table>
+        </draggable>
       </div>
-    </div>
-    <div class="button-container">
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
-    </div>
+
+      <!-- Warning Message -->
+      <div v-if="gridData.length < 2" class="inline-warning">
+        <span class="warning-icon"></span>
+        <div>
+          <p>
+            Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs),
+            and fewer than 2 NICs were detected.
+          </p>
+          <label>
+            <input v-model="interfacesForceContinue" type="checkbox" />
+            <strong>Continue anyway</strong>
+          </label>
+        </div>
+      </div>
+      <div class="button-container">
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
+      </div>
+    </v-card>
   </div>
 </template>
 
@@ -409,6 +415,8 @@
 
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
+          await this.setShowStep('Internet')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')
@@ -427,8 +435,9 @@
   }
   .network-cards-panel {
     display: flex;
-    width: 90%;
-    padding: 20px;
+    width: 100%;
+    padding: 5px;
+    padding-right: 0px;
     border: 2px solid #ccc;
     border-radius: 5px;
     background-color: #ebe9e9;
@@ -467,9 +476,9 @@
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-right: 90px;
+    margin-right: -10px;
     margin-left: 600px;
-    gap: 660px;
+    gap: 560px;
   }
   .internet-button {
     background-color: #007bff;

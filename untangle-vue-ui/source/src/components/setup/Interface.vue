@@ -1,82 +1,94 @@
 <template>
-  <div class="internal-network">
-    <h1>{{ title }}</h1>
-    <p>{{ description }}</p>
+  <div>
+    <SetupLayout />
+    <div class="internal-network">
+      <h1>{{ title }}</h1>
+      <p>{{ description }}</p>
 
-    <div class="form-container">
-      <!-- Router Section -->
-      <div class="router-section">
-        <div class="radio-group">
-          <input id="router" v-model="internal.configType" type="radio" name="configType" value="ROUTER" checked />
-          <label for="router"
-            ><strong>{{ $t('Router') }}</strong></label
-          >
-        </div>
-        <p class="info-text">
-          {{
-            $t(
-              'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
-            )
-          }}
-        </p>
-        <img src="/skins/simple-gray/images/admin/wizard/router.png" alt="Router" class="config-image" />
-
-        <div class="form-field">
-          <label>{{ $t('Internal Address') }}</label>
-          <input v-model="internal.v4StaticAddress" type="text" disabled />
-        </div>
-
-        <div class="form-field">
-          <label>{{ $t('Internal Netmask') }}</label>
-          <select v-model="internal.v4StaticPrefix" disabled>
-            <option v-for="[prefix, label] in v4NetmaskList" :key="prefix" :value="prefix">
-              {{ label }}
-            </option>
-          </select>
-        </div>
-
-        <div class="form-field">
-          <label>{{ $t('DHCP Server') }}</label>
+      <div class="form-container">
+        <!-- Router Section -->
+        <div class="router-section">
           <div class="radio-group">
-            <label>
-              {{ $t('Enabled') }}
-              <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="SERVER" disabled />
-            </label>
-            <label>
-              {{ $t('Disabled') }}
-              <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="DISABLED" disabled />
-            </label>
+            <input id="router" v-model="internal.configType" type="radio" name="configType" value="ROUTER" checked />
+            <label for="router"
+              ><strong>{{ $t('Router') }}</strong></label
+            >
+          </div>
+          <p class="info-text">
+            {{
+              $t(
+                'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
+              )
+            }}
+          </p>
+          <img src="/skins/simple-gray/images/admin/wizard/router.png" alt="Router" class="config-image" />
+
+          <div class="form-field">
+            <label>{{ $t('Internal Address') }}</label>
+            <input v-model="internal.v4StaticAddress" type="text" disabled />
+          </div>
+
+          <div class="form-field">
+            <label>{{ $t('Internal Netmask') }}</label>
+            <select v-model="internal.v4StaticPrefix" disabled>
+              <option v-for="[prefix, label] in v4NetmaskList" :key="prefix" :value="prefix">
+                {{ label }}
+              </option>
+            </select>
+          </div>
+
+          <div class="form-field">
+            <label>{{ $t('DHCP Server') }}</label>
+            <div class="radio-group">
+              <label>
+                {{ $t('Enabled') }}
+                <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="SERVER" disabled />
+              </label>
+              <label>
+                {{ $t('Disabled') }}
+                <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="DISABLED" disabled />
+              </label>
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Transparent Bridge Section -->
-      <div class="bridge-section">
-        <div class="radio-group">
-          <input id="bridge" v-model="internal.configType" type="radio" name="configType" value="BRIDGED" />
-          <label for="bridge"
-            ><strong>{{ $t('Transparent Bridge') }}</strong></label
-          >
+        <!-- Transparent Bridge Section -->
+        <div class="bridge-section">
+          <div class="radio-group">
+            <input id="bridge" v-model="internal.configType" type="radio" name="configType" value="BRIDGED" />
+            <label for="bridge"
+              ><strong>{{ $t('Transparent Bridge') }}</strong></label
+            >
+          </div>
+          <p class="info-text">
+            {{
+              $t(
+                'This is recommended if the external port is plugged into a firewall/router. This bridges Internal and External and disables DHCP.',
+              )
+            }}
+          </p>
+          <img src="/skins/simple-gray/images/admin/wizard/bridge.png" alt="Bridge" class="config-image" />
         </div>
-        <p class="info-text">
-          {{
-            $t(
-              'This is recommended if the external port is plugged into a firewall/router. This bridges Internal and External and disables DHCP.',
-            )
-          }}
-        </p>
-        <img src="/skins/simple-gray/images/admin/wizard/bridge.png" alt="Bridge" class="config-image" />
-      </div>
 
-      <!-- Save Button -->
-      <!-- <button class="save-button" @click="onSave">{{ $t('Save') }}</button> -->
+        <!-- Save Button -->
+        <!-- <button class="save-button" @click="onSave">{{ $t('Save') }}</button> -->
+      </div>
+    </div>
+    <div class="button-container">
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+      <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
     </div>
   </div>
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
   export default {
     name: 'InternalNetwork',
+    components: {
+      SetupLayout,
+    },
     data() {
       return {
         title: 'Internal Network',
@@ -96,10 +108,28 @@
       }
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowPreviousStep']),
       onSave() {
         // Simply log the internal settings
         console.log('Settings saved:', this.internal)
         alert('Settings saved successfully.')
+      },
+      async onClickBack() {
+        try {
+          await Promise.resolve()
+          await this.setShowStep('Internet')
+          await this.setShowPreviousStep('Internet')
+
+          // Navigate to the setup wizard page
+          // this.$router.push('/setup/system/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
+      async onClickNext() {
+        await this.setShowStep('Autoupgrades')
+        await this.setShowPreviousStep('Autoupgrades')
       },
     },
   }

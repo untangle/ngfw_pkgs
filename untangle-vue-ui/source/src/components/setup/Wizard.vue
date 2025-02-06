@@ -13,6 +13,9 @@
   import SetupSelect from '@/components/setup/SetupSelect.vue' // Import System component
   import Network from '@/components/setup/Network.vue'
   import Internet from '@/components/setup/Internet.vue'
+  import Interface from '@/components/setup/Interface.vue'
+  import Autoupgrades from '@/components/setup/Autoupgrades.vue'
+  import Complete from '@/components/setup/Complete.vue'
 
   export default {
     name: 'Wizard',
@@ -22,6 +25,9 @@
       SetupLayout,
       SetupSelect,
       Internet,
+      Interface,
+      Autoupgrades,
+      Complete,
     },
     computed: {
       ...mapGetters('setup', ['currentStep']), // Get currentStep from Vuex
@@ -38,6 +44,12 @@
             return Network
           case 'Internet':
             return Internet
+          case 'Interface':
+            return Interface
+          case 'Autoupgrades':
+            return Autoupgrades
+          case 'Complete':
+            return Complete
           default:
             return SetupSelect
         }
@@ -49,7 +61,10 @@
         this.currentStep === 'License' ||
         this.currentStep === 'System' ||
         this.currentStep === 'Network' ||
-        this.currentStep === 'Internet'
+        this.currentStep === 'Internet' ||
+        this.currentStep === 'Interface' ||
+        this.currentStep === 'Autoupgrades' ||
+        this.currentStep === 'Complete'
       ) {
         await this.setShowStep('Wizard') // Reset step to 'Wizard'
       }

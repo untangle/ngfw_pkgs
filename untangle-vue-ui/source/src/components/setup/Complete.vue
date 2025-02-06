@@ -1,19 +1,27 @@
 <template>
-  <v-card width="350" class="mx-auto text-center" flat>
-    <v-icon size="128" color="green">mdi-check</v-icon>
+  <div>
+    <SetupLayout />
+    <div class="auto-upgrades">
+      <v-card width="350" class="mx-auto text-center" flat>
+        <v-icon size="128" color="green">mdi-check</v-icon>
 
-    <!-- Ensure the text stays on a single line -->
-    <h2 class="font-weight-light single-line">{{ $t('The Arista Server is configured now') }}</h2>
-    <p>{{ $t('You are now ready to configure the applications.') }}</p>
-    <br />
-    <u-btn :small="false" to="/">{{ $t('Go to dashboard') }}</u-btn>
-  </v-card>
+        <!-- Ensure the text stays on a single line -->
+        <h2 class="font-weight-light single-line">{{ $t('The Arista Server is configured now') }}</h2>
+        <p>{{ $t('You are now ready to configure the applications.') }}</p>
+        <br />
+        <u-btn :small="false" to="/">{{ $t('Go to dashboard') }}</u-btn>
+      </v-card>
+    </div>
+  </div>
 </template>
 
 <script>
   import store from '@/store'
-
+  import SetupLayout from '@/layouts/SetupLayout.vue'
   export default {
+    components: {
+      SetupLayout,
+    },
     data() {
       return {}
     },

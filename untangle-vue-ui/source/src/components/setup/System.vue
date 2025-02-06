@@ -211,7 +211,6 @@
             Util.authenticate(this.newPassword, (error, success) => {
               console.log('Authentication error:', error)
               console.log('Authentication success:', success)
-              this.$router.push('/setup/network')
               if (error || !success) {
                 console.error('Authentication failed after password update:', error)
                 reject(new Error('Authentication failed after password update.'))
