@@ -473,7 +473,7 @@
     height: 100%;
     border-radius: 5px;
     margin: 10px;
-    margin-bottom: -25px;
+    margin-bottom: -5px;
   }
   .description {
     margin-bottom: 20px;
