@@ -1,78 +1,73 @@
 {
-    "dnsTestHost": "updates.untangle.com",
+    "dnsTestHost": "updates.edge.arista.com",
     "javaClass": "com.untangle.uvm.UriManagerSettings",
-    "tcpTestHost": "updates.untangle.com",
+    "tcpTestHost": "updates.edge.arista.com",
     "uriTranslations": {
         "javaClass": "java.util.LinkedList",
         "list": [
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://ids.untangle.com/suricatasignatures.tar.gz"
+                "uri": "https://ids.edge.arista.com/suricatasignatures.tar.gz"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://labs.untangle.com/Utility/v1/mac"
+                "uri": "https://labs.edge.arista.com/Utility/v1/mac"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://auth-relay.untangle.com/callback.php"
+                "uri": "https://auth-relay.edge.arista.com/callback.php"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://auth.untangle.com/v1/CheckTokenAccess"
+                "uri": "https://auth.edge.arista.com/v1/CheckTokenAccess"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://telemetry.untangle.com/ngfw/v1/infection"
+                "uri": "https://telemetry.edge.arista.com/ngfw/v1/infection"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://updates.untangle.com/"
+                "uri": "http://updates.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://launchpad.edge.arista.com",
-                "host": "cmd-eu.untangle.com"
+                "uri": "https://launchpad.edge.arista.com"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://cmd.untangle.com/",
-                "host": "cmd-eu.untangle.com"
+                "uri": "https://cmd.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://license.untangle.com/license.php"
+                "uri": "https://license.edge.arista.com/license.php"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://classify.untangle.com/v1/md5s"
+                "uri": "https://classify.edge.arista.com/v1/md5s"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://bd.untangle.com/"
+                "uri": "http://bd.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://boxbackup.untangle.com/boxbackup/backup.php",
-                "host": "boxbackup-eu.untangle.com"
+                "uri": "https://boxbackup.edge.arista.com/boxbackup/backup.php"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://boxbackup.untangle.com/api/index.php",
-                "host": "boxbackup-eu.untangle.com"
+                "uri": "https://boxbackup.edge.arista.com/api/index.php"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://downloads.untangle.com/download.php"
+                "uri": "https://downloads.edge.arista.com/download.php"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://translations.untangle.com/"
+                "uri": "http://translations.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://queue.untangle.com/",
-                "host": "queue-eu.untangle.com"
+                "uri": "https://queue.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
@@ -81,7 +76,7 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://supssh.untangle.com/"
+                "uri": "https://supssh.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
