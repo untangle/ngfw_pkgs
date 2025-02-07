@@ -25,8 +25,8 @@ from ssl import SSLContext, TLSVersion
 import platform
 
 UNTANGLE_CMD_PORTS = [80, 443, 993, 4443, 587, 995, 8080, 53]
-UNTANGLE_CMD_SERVERS = ["cmd.untangle.com"]
-# UNTANGLE_CMD_SERVERS = ["dev-cmd.untangle.com"]
+UNTANGLE_CMD_SERVERS = ["cmd.edge.arista.com"]
+# UNTANGLE_CMD_SERVERS = ["dev-cmd.edge.arista.com"]
 RETRY_TIME_LONG = 10
 RETRY_TIME_SHORT = 5
 CERTS_FILE = '/tmp/pyconnector/certs.pem'
