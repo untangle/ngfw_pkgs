@@ -37,7 +37,7 @@
                     :disabled="internal.configType !== 'ADDRESSED'"
                   />
                 </div>
-                <div class="form-field">
+                <div class="form-field-netmask">
                   <label>{{ 'Internal Netmask:' }}</label>
                   <v-autocomplete
                     v-model="internal.v4StaticPrefix"
@@ -50,27 +50,27 @@
                     class="form-field-autocomplete"
                   >
                   </v-autocomplete>
+                </div>
+                <br />
+                <label class="form-field-label">{{ 'DHCP Server:' }}</label>
+                <div class="radio-group-child">
+                  <input
+                    v-model="internal.dhcpType"
+                    type="radio"
+                    name="dhcpType"
+                    value="SERVER"
+                    :disabled="internal.configType !== 'ADDRESSED'"
+                  />
+                  {{ 'Enabled' }}
                   <br />
-                  <label class="form-field-label">{{ 'DHCP Server:' }}</label>
-                  <div class="radio-group-child">
-                    <input
-                      v-model="internal.dhcpType"
-                      type="radio"
-                      name="dhcpType"
-                      value="SERVER"
-                      :disabled="internal.configType !== 'ADDRESSED'"
-                    />
-                    {{ 'Enabled' }}
-                    <br />
-                    <input
-                      v-model="internal.dhcpType"
-                      type="radio"
-                      name="dhcpType"
-                      value="DISABLED"
-                      :disabled="internal.configType !== 'ADDRESSED'"
-                    />
-                    {{ 'Disabled' }}
-                  </div>
+                  <input
+                    v-model="internal.dhcpType"
+                    type="radio"
+                    name="dhcpType"
+                    value="DISABLED"
+                    :disabled="internal.configType !== 'ADDRESSED'"
+                  />
+                  {{ 'Disabled' }}
                 </div>
               </div>
             </div>
@@ -446,6 +446,14 @@
     font-size: 12px;
     color: #555;
   }
+  .form-field-netmask {
+    font-size: 14px;
+    width: 88%;
+    margin: 20px 50px 0px 30px;
+    /* display: block; */
+    /* align-items: center; */
+    padding: 0px 0px 0px 0px;
+  }
 
   .form-field-autocomplete {
     font-size: 14px;
@@ -457,9 +465,9 @@
     gap: 10px;
   }
   .form-field-autocomplete input {
-    height: 94px !important; /* Adjust input height */
-    line-height: 24px; /* Adjust line height for proper vertical alignment */
-    padding: 0px 4px; /* Reduce padding within the input field */
+    height: 94px !important;
+    line-height: 24px;
+    padding: 0px 4px;
   }
   .form-field {
     font-size: 14px;
