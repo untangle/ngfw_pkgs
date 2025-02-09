@@ -475,7 +475,7 @@
     /* text-align: left; */
   }
   .network-table.table-bordered {
-    border-color: hsl(0, 0%, 1%); /* Example color (green) */
+    border-color: hsl(0, 0%, 1%);
   }
   .parent-card {
     display: flex;
@@ -543,6 +543,7 @@
     margin-left: 10px;
     margin-top: 10px;
     align-items: left;
+    background-color: green;
   }
   .status-disconnected {
     align-items: left;
@@ -569,14 +570,14 @@
   }
 
   .custom-dropdown {
-    border: 1px solid #000408; /* Blue border for the dropdown */
-    border-radius: 2px; /* Rounded corners */
-    padding-right: 1rem; /* Space for the arrow */
-    font-size: 1rem; /* Adjust font size */
+    border: 1px solid #000408;
+    border-radius: 2px;
+    padding-right: 1rem;
+    font-size: 1rem;
     padding-left: 5px;
   }
 
   .custom-dropdown .custom-dropdown-toggle {
-    padding-right: 1.5rem; /* Ensure arrow has enough space */
+    padding-right: 1.5rem;
   }
 </style>
