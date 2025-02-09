@@ -1,91 +1,91 @@
 <template>
-  <v-card width="1100" class="mx-auto mt-4" flat>
+  <v-card width="1100" height="auto" class="mx-auto mt-4" flat>
     <SetupLayout />
     <div class="internal-network">
       <h1 class="font-weight-light faint-color text-h5">{{ description }}</h1>
       <div>
         <div class="form-container">
           <!-- Router Section -->
-          <div class="router-section">
+          <v-radio-group>
             <div class="radio-group">
+              <!-- <v-radio label="Radio One" value="one"></v-radio> -->
               <input
-                id="router"
                 v-model="internal.configType"
                 type="radio"
                 name="configType"
-                value="ROUTER"
-                checked
-                @change="setConfigType(internal)"
+                value="ADDRESSED"
+                enabled
+                @change="setConfigType"
               />
-              <label for="router"
+              <label
                 ><strong>{{ 'Router' }}</strong></label
               >
-            </div>
-            <p class="info-text">
-              {{
-                $t(
-                  'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
-                )
-              }}
-            </p>
+              <p class="info-text">
+                {{
+                  $t(
+                    'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
+                  )
+                }}
+              </p>
 
-            <div class="form-field">
               <div class="form-field">
-                <label>{{ 'Internal Address:' }}</label>
-                <input v-model="internal.v4StaticAddress" type="text" disabled />
-              </div>
-              <div class="form-field">
-                <label>{{ 'Internal Netmask:' }}</label>
-                <ValidationProvider v-slot="{ errors }" rules="required">
+                <div class="form-field">
+                  <label>{{ 'Internal Address:' }}</label>
+                  <input
+                    v-model="internal.v4StaticAddress"
+                    type="text"
+                    :disabled="internal.configType !== 'ADDRESSED'"
+                  />
+                </div>
+                <div class="form-field">
+                  <label>{{ 'Internal Netmask:' }}</label>
                   <v-autocomplete
-                    v-model="internal.v4StaticNetmask"
+                    v-model="internal.v4StaticPrefix"
                     :items="v4NetmaskList"
+                    :disabled="internal.configType !== 'ADDRESSED'"
                     outlined
                     dense
                     hide-details
                     return-object
+                    class="form-field-autocomplete"
                   >
-                    <template v-if="errors.length" #append>
-                      <u-errors-tooltip :errors="errors" />
-                    </template>
                   </v-autocomplete>
-                </ValidationProvider>
-                <!-- <input v-model="internal.v4StaticAddress" type="text" disabled /> -->
-                <!-- <select v-model="internal.v4StaticPrefix" disabled>
-                <option v-for="[prefix, label] in v4NetmaskList" :key="prefix" :value="label">
-                  {{ label }}
-                </option>
-              </select> -->
-                <br />
-                <label>{{ 'DHCP Server:' }}</label>
-                <div class="radio-group-child">
-                  <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="SERVER" enabled />
-                  {{ 'Enabled' }}
                   <br />
-                  <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="DISABLED" enabled />
-                  {{ 'Disabled' }}
+                  <label class="form-field-label">{{ 'DHCP Server:' }}</label>
+                  <div class="radio-group-child">
+                    <input
+                      v-model="internal.dhcpType"
+                      type="radio"
+                      name="dhcpType"
+                      value="SERVER"
+                      :disabled="internal.configType !== 'ADDRESSED'"
+                    />
+                    {{ 'Enabled' }}
+                    <br />
+                    <input
+                      v-model="internal.dhcpType"
+                      type="radio"
+                      name="dhcpType"
+                      value="DISABLED"
+                      :disabled="internal.configType !== 'ADDRESSED'"
+                    />
+                    {{ 'Disabled' }}
+                  </div>
                 </div>
               </div>
-              <!-- <div class="radio-group">
-              <label>{{ 'DHCP Server:' }}</label>
-              <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="SERVER" enabled />
-              {{ 'Enabled' }}
-              <br />
-              <input v-model="internal.dhcpType" type="radio" name="dhcpType" value="DISABLED" enabled />
-              {{ 'Disabled' }}
-            </div> -->
             </div>
             <br />
             <div class="radio-group">
+              <!-- <v-radio label="Transparent Bridge" value="two"></v-radio> -->
               <input
-                id="bridge"
                 v-model="internal.configType"
                 type="radio"
                 name="configType"
                 value="BRIDGED"
-                @change="setConfigType(internal)"
+                enabled
+                @change="setConfigType"
               />
-              <label for="bridge"
+              <label
                 ><strong>{{ 'Transparent Bridge' }}</strong></label
               >
             </div>
@@ -97,10 +97,9 @@
               }}
             </p>
             <br />
-            <u-btn class="button-container" :small="false" style="margin: 8px 0" @click="onClickBack">{{
-              `Back`
-            }}</u-btn>
-          </div>
+            <u-btn class="button-container button-back" :small="true" @click="onClickBack">{{ `Back` }}</u-btn>
+          </v-radio-group>
+          <!-- </div> -->
 
           <!-- Transparent Bridge Section -->
           <div class="image-section">
@@ -111,19 +110,47 @@
             <br />
             <br />
             <img src="/skins/simple-gray/images/admin/wizard/bridge.png" alt="Bridge" class="config-image" />
-            <u-btn class="button-container" :small="false" style="margin: 8px 0" @click="onClickNext">{{
-              `Next`
-            }}</u-btn>
+            <div class="button-container-next">
+              <u-btn class="button-container button-next" :small="true" @click="onSave">
+                {{ `Next` }}
+              </u-btn>
+            </div>
           </div>
         </div>
         <br />
       </div>
     </div>
-    <div v-if="isLoading" class="loading-overlay">
-      <div class="loading-message">
-        <p>{{ loadingText }}</p>
-        <p v-html="redirectMessage"></p>
-        <p>{{ retryMessage }}</p>
+    <div v-if="warnAboutDisappeareAddress" class="popup wait-message">
+      <div class="popup-content">
+        <h2>Please Wait</h2>
+        <p>Saving Internal Network Settings</p>
+        <p>The Internal Address is no longer accessible.</p>
+        <p>
+          You will be redirected to the new setup address:
+          <a :href="newSetupLocation">{{ newSetupLocation }}</a>
+        </p>
+        <p>
+          If the new location is not loaded after 30 seconds, please reinitialize your local device network address and
+          try again.
+        </p>
+        <button @click="closePopup">Close</button>
+      </div>
+    </div>
+
+    <div v-if="warnAboutChangAddress" class="popup wait-message">
+      <div class="popup-content">
+        <h2>Please Wait</h2>
+        <p>Saving Internal Network Settings</p>
+        <p>The Internal Address is changed to: {{ internal.v4StaticAddress }}</p>
+        <p>
+          The changes are applied, and you will be redirected to the new setup address:
+          <a :href="newSetupLocation">{{ newSetupLocation }}</a>
+        </p>
+        <p>
+          If the new location is not loaded after 30 seconds, please reinitialize your local device network address and
+          try again.
+        </p>
+        <button @click="closePopup">Close</button>
       </div>
     </div>
   </v-card>
@@ -154,21 +181,24 @@
         title: 'Internal Network',
         description: 'Configure the Internal Network Interface',
         interfaces: [],
-        internal: [],
-        // internal: {
-        //   configType: 'ROUTER', // Hardcoded config type as 'ROUTER'
-        //   v4configType: null,
-        //   v4StaticAddress: '192.168.1.1', // Static IP Address
-        //   v4StaticPrefix: '24', // Static Netmask
-        //   dhcpType: null, // Static DHCP server option
-        // },
-        v4NetmaskList: Util.v4NetmaskList,
+        internal: {
+          configType: 'ADDRESSED',
+          v4ConfigType: null,
+          v4StaticAddress: '192.168.1.1',
+          v4StaticPrefix: null,
+          dhcpType: null,
+        },
+        networkSettings: null,
+        v4NetmaskList: Util.v4NetmaskList.map(n => ({ value: n[0], text: n[1] })),
+        warnAboutDisappeareAddress: false,
+        warnAboutChangAddress: false,
+        newSetupLocation: null,
       }
     },
     computed: {
-      installTypeSync: {
+      netmaskListSync: {
         get() {
-          return this.installType // Access installType from Vuex
+          return this.v4NetmaskList // Access installType from Vuex
         },
         set(value) {
           this.$store.dispatch('setup/setInstallType', value) // Dispatch action to update installType in Vuex
@@ -176,59 +206,58 @@
       },
     },
     created() {
+      console.log('v4NetmaskList :', this.v4NetmaskList)
+      console.log('Created called :')
       this.getInterface()
+      console.log('After getInterface called :', this.internal)
     },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       ...mapActions('setup', ['setShowPreviousStep']),
 
       setConfigType(radio) {
-        console.log('** Radio in setConfigType :', radio)
-        if (radio.checked) {
-          if (radio.inputValue === 'BRIDGED') {
-            this.internal.configType = 'BRIDGED'
-          } else {
-            this.internal.configType = 'ADDRESSED'
-            this.internal.v4configType = 'STATIC'
-          }
-        }
-      },
-      getInterface() {
-        this.interfaces = this.networkSettings.interfaces.list
-
-        console.log('getInterface() :', this.interfaces)
-        const internal = this.interfaces.find(intf => !intf.isWan)
-
-        console.log('internal in getInterface():', this.internal)
-        if (!internal) {
-          const userConfirmed = window.confirm('No internal interfaces found. Do you want to continue the setup?')
-          if (userConfirmed) {
-            // TODO
-            // this.$refs.nextBtn.click(); // next button
-          } else {
-            // if no is pressed
-            console.log(' No is pressed ')
-          }
+        if (radio.target.defaultValue === 'BRIDGED') {
+          this.internal.configType = 'BRIDGED'
         } else {
-          this.initialConfigType = this.internal.configType
-          this.initialv4Address = this.internal.v4StaticAddress
-          this.initialv4Prefix = this.internal.v4StaticPrefix
-          this.initialDhcpType = this.internal.dhcpType
+          this.internal.configType = 'ADDRESSED'
+          this.internal.v4ConfigType = 'STATIC'
         }
-        this.internal = internal
       },
-      showSavingMessage(newSetupLocation) {
-        this.isLoading = true
-        this.loadingText = this.$t('Saving Internal Network Settings')
-        this.redirectMessage =
-          this.$t('The Internal Address is no longer accessible.') +
-          '<br/>' +
-          this.$t('You will be redirected to the new setup address: ') +
-          `<a href="${newSetupLocation}">${newSetupLocation}</a><br/><br/>`
-        this.retryMessage = this.$t(
-          'If the new location is not loaded after 30 seconds please reinitialize your local device network address and try again.',
-        )
+      closePopup() {
+        this.showWarnAboutDisappearingAddressMessage = false
+        this.showWarnAboutChangingAddressMessage = false
       },
+      async getInterface() {
+        try {
+          // TODO: check if rpc call is required
+          const rpc = Util.setRpcJsonrpc('admin')
+          this.networkSettings = await rpc?.networkManager?.getNetworkSettings()
+          this.interfaces = this.networkSettings.interfaces.list
+
+          this.internal = this.interfaces.find(intf => !intf.isWan)
+
+          console.log('internal in getInterface():', this.internal)
+          if (!this.internal) {
+            const userConfirmed = window.confirm('No internal interfaces found. Do you want to continue the setup?')
+            if (userConfirmed) {
+              // TODO
+              // this.$refs.nextBtn.click(); // next button
+            } else {
+              // if no is pressed
+              console.log(' No is pressed ')
+            }
+          } else {
+            this.initialConfigType = this.internal.configType
+            this.initialv4Address = this.internal.v4StaticAddress
+            this.initialv4Prefix = this.internal.v4StaticPrefix
+            this.initialDhcpType = this.internal.dhcpType
+          }
+          // this.internal = this.internal
+        } catch (error) {
+          console.log('Failed to fetch device settings:', error)
+        }
+      },
+
       hideLoading() {
         this.isLoading = false
       },
@@ -236,7 +265,6 @@
         const rpc = Util.setRpcJsonrpc('admin')
         let firstWan = ''
         let firstWanStatus = ''
-        let newSetupLocation = ''
         // get firstWan settings & status
         firstWan = this.networkSettings.interfaces.list.find(intf => intf.isWan && intf.configType !== 'DISABLED')
         // firstWan must exist
@@ -256,46 +284,69 @@
         }
 
         // TODO Use Internal Address instead of External Address
-        newSetupLocation = window.location.href.replace(this.internal.v4StaticAddress, firstWanStatus.v4Address)
+        this.newSetupLocation = window.location.href.replace(this.internal.v4StaticAddress, firstWanStatus.v4Address)
+        console.log('newSetupLocation **:', this.newSetupLocation)
         // TODO
         rpc.keepAlive = function () {} // prevent keep alive
-        // TODO written showSavingMessage method for this
-        // Ext.MessageBox.wait('Saving Internal Network Settings'.t() + '<br/><br/>' +
-        //                         'The Internal Address is no longer accessible.'.t() + '<br/>' +
-        //                         Ext.String.format('You will be redirected to the new setup address: {0}'.t(), '<a href="' + newSetupLocation + '">' + newSetupLocation + '</a>') + '<br/><br/>' +
-        //                         'If the new location is not loaded after 30 seconds please reinitialize your local device network address and try again.'.t(), 'Please Wait'.t());
 
-        this.showSavingMessage(newSetupLocation)
-        // setTimeout(() => {
-        //   window.location.href = newSetupLocation
-        // }, 30000)
+        this.showWarnAboutDisappearingAddressMessage()
+        setTimeout(() => {
+          this.warnAboutDisappeareAddress = false
+          window.location.href = this.newSetupLocation
+        }, 30000)
+      },
+      showWarnAboutDisappearingAddressMessage() {
+        this.warnAboutDisappeareAddress = true
+        this.warnAboutChangAddress = false
+      },
+      showWarnAboutChangingAddressMessage() {
+        this.warnAboutDisappeareAddress = false
+        this.warnAboutChangAddress = true
       },
       warnAboutChangingAddress() {
         const rpc = Util.setRpcJsonrpc('admin')
-        const newSetupLocation = window.location.href.replace(this.initialv4Address, this.internal.v4StaticAddress)
+        this.newSetupLocation = window.location.href.replace(this.initialv4Address, this.internal.v4StaticAddress)
+        console.log('newSetupLocation :', this.newSetupLocation)
         // TODO
         rpc.keepAlive = function () {} // prevent keep alive
         // TODO
-        // Ext.MessageBox.wait('Saving Internal Network Settings'.t() + '<br/><br/>' +
-        //                         Ext.String.format('The Internal Address is changed to: {0}'.t(), vm.get('internal.v4StaticAddress')) + '<br/>' +
-        //                         Ext.String.format('The changes are applied and you will be redirected to the new setup address: {0}'.t(), '<a href="' + newSetupLocation + '">' + newSetupLocation + '</a>') + '<br/><br/>' +
-        //                         'If the new location is not loaded after 30 seconds please reinitialize your local device network address and try again.'.t(), 'Please Wait'.t());
+
+        this.showWarnAboutChangingAddressMessage()
         setTimeout(() => {
-          window.location.href = newSetupLocation
+          this.warnAboutChangAddress = false
+          window.location.href = this.newSetupLocation
         }, 30000)
       },
-      async onSave(cb) {
+      async onClickBack() {
+        try {
+          await Promise.resolve()
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
+          // Navigate to the setup wizard page
+          // this.$router.push('/setup/system/')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
+      },
+      async onSave() {
+        console.log('in Save :', this.internal)
         // TODO
         // if (!me.getView().isValid()) { return; }
 
         // no changes made - continue to next step
+        if (this.internal.v4StaticPrefix && this.internal.v4StaticPrefix.value) {
+          this.internal.v4StaticPrefix = this.internal.v4StaticPrefix.value
+        }
         if (
           this.initialConfigType === this.internal.configType &&
           this.initialv4Address === this.internal.v4StaticAddress &&
           this.initialv4Prefix === this.internal.v4StaticPrefix &&
           this.initialDhcpType === this.internal.dhcpType
         ) {
-          cb()
+          console.log('networkSettings saved in return with no changes:', this.internal)
+          await Promise.resolve()
+          await this.setShowStep('Network')
+          await this.setShowPreviousStep('Network')
           return
         }
         // BRIDGED (bridge mode)
@@ -318,22 +369,16 @@
           }
         }
 
-        // TODO save settings and continue to next step
-        // Ung.app.loading('Saving Internal Network Settings'.t());
-
-        await window.rpc.networkManager.setNetworkSettings(function (result, ex) {
-          // TODO
-          // Ung.app.loading(false)
-          if (ex) {
-            Util.handleException(ex)
-            return
-          }
-          cb()
-        }, this.networkSettings)
+        await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
 
         // Simply log the internal settings
+        console.log('networkSettings saved:', this.networkSettings)
         console.log('Settings saved:', this.internal)
         alert('Settings saved successfully.')
+
+        await Promise.resolve()
+        await this.setShowStep('Autoupgrades')
+        await this.setShowPreviousStep('Internet')
       },
     },
   }
@@ -370,17 +415,8 @@
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    height: calc(100vh - 40px); /* Ensure the height fits within the viewport, considering margins */
+    height: auto; /* Ensure the height fits within the viewport, considering margins */
     overflow: hidden; /* Hide any overflow */
-  }
-
-  .form-container {
-    display: flex;
-    width: 100%; /* Ensure the form container takes full width */
-    max-width: 900px; /* Set a max-width for the content */
-    padding: 20px;
-    gap: 90px;
-    overflow: hidden; /* Prevent any internal scrolling */
   }
 
   .router-section,
@@ -393,40 +429,72 @@
     margin-bottom: 8px 8spx 8px 8px;
   }
   .radio-group-child {
-    margin: -18px 8px 8px 92px;
+    display: block;
+    margin: -30px 10px 0px 0px;
   }
-
+  .radio-group-child label {
+    display: block;
+    margin-bottom: 10px;
+  }
+  .radio-group-child input[type='radio'] {
+    margin-left: 50px;
+    margin-right: -80px;
+    margin-bottom: 10px;
+  }
   .info-text {
-    margin: 10px -120px 0px 12px;
+    margin: 10px 10px 0px 12px;
     font-size: 12px;
     color: #555;
   }
 
+  .form-field-autocomplete {
+    font-size: 14px;
+    width: 51%;
+    margin: -30px 50px 0px 133px;
+    padding: 0px 5px 10px 0px;
+    display: block;
+    align-items: center;
+    gap: 10px;
+  }
+  .form-field-autocomplete input {
+    height: 94px !important; /* Adjust input height */
+    line-height: 24px; /* Adjust line height for proper vertical alignment */
+    padding: 0px 4px; /* Reduce padding within the input field */
+  }
   .form-field {
     font-size: 14px;
-    width: 100%;
-    margin: 10px 50px 0px 40px;
+    width: 88%;
+    margin: 20px 50px 0px 30px;
     display: block;
     align-items: center;
     gap: 10px;
   }
 
   .form-field label {
+    padding: 2px 8px 2px 10px;
     font-weight: bold;
     flex: 0 0 150px;
     font-size: 14px;
   }
 
   .form-field input,
-  select {
+  form-field select {
+    width: 50%;
     flex-direction: column;
     flex: 1;
-    padding: 1px;
-    border: 1px solid #ccc;
-    border-radius: 1px;
+    padding: 2px 2px 2px 10px;
+    border: 1px solid #817e7e;
+    border-radius: 3px;
     font-size: 14px;
   }
-
+  .form-field-label {
+    font-size: 14px;
+    width: 90%;
+    margin: -13px 30px 0px 30px;
+    display: block;
+    align-items: center;
+    gap: 10px;
+  }
   .config-image {
     margin-top: 30px;
     max-width: 200px;
@@ -448,14 +516,91 @@
   .save-button:hover {
     background-color: #0056b3;
   }
-  .image-section {
-    width: 180px;
-    height: 183px;
+  .form-container {
+    display: flex;
+    width: 1400%;
+    max-width: 900px;
+    padding: 20px;
+    gap: 40px;
+    overflow: hidden;
   }
+  .image-section {
+    width: 300px;
+    height: 183px;
+    padding: 30px 90px 350px 0px;
+    margin-right: -12px;
+  }
+
   .button-container {
+    padding: 0px 0px 22px 0px;
+    font-size: 14px;
+    display: block;
+    margin-left: 10px;
+    margin-right: 0;
+    width: 100px;
+    justify-content: center;
+  }
+  .button-container-next {
+    display: flex;
+    justify-content: flex-end;
+    margin-right: -10px;
+  }
+  .button-next {
+    margin: 26px;
+  }
+
+  .button-back {
+    margin: 15.9px;
+  }
+
+  .wait-message {
+    background-color: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 20px;
+    text-align: center;
+    margin: 20px;
+    border-radius: 5px;
+  }
+
+  .wait-message h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .wait-message a {
+    color: blue;
+    text-decoration: underline;
+  }
+  .popup {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 1300px;
+    z-index: 1000;
+  }
+  .popup-content {
+    background-color: white;
+    padding: 20px;
+    border-radius: 10px;
+    max-width: 400px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  }
+  .popup button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  .popup button:hover {
+    background-color: #0056b3;
   }
 </style>
