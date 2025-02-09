@@ -27,7 +27,7 @@
         <draggable
           v-model="gridData"
           :group="{ name: 'network-rows', pull: 'clone' }"
-          class="network-table"
+          class="network-table text-center"
           handle=".drag-handle"
           :animation="300"
           @start="onDragStart"
@@ -39,9 +39,8 @@
             hover
             :items="gridData"
             :fields="tableFields"
-            thead-class="text-left"
-            class="network-table"
-            :bordered="true"
+            class="network-table text-center"
+            bordered
             :striped="false"
             :small="false"
           >
@@ -64,7 +63,11 @@
             </template>
             <!-- Device Column -->
             <template #cell(deviceName)="row">
-              <b-form-select v-model="row.item.physicalDev" @change="setInterfacesMap(row.item)">
+              <b-form-select
+                v-model="row.item.physicalDev"
+                class="custom-dropdown"
+                @change="setInterfacesMap(row.item)"
+              >
                 <b-form-select-option
                   v-for="device in deviceStore"
                   :key="device.physicalDev"
@@ -448,24 +451,31 @@
   .network-cards-panel {
     display: flex;
     width: 100%;
-    padding: 5px;
-    padding-right: 0px;
+    padding: 10px 10px 0px 10px;
     border: 2px solid #ccc;
     border-radius: 5px;
     background-color: #ebe9e9;
-    margin: 0px 5px 0px 0px;
+    margin: 0px 5px 0px 10px;
     overflow: auto;
   }
   .network-table {
     width: 100%;
-    max-height: 500px;
+    max-height: 800px;
     border-collapse: collapse;
     box-sizing: border-box;
   }
+
+  .network-table th {
+    background-color: green;
+  }
+
   .network-table td .network-table th {
     border: 1px solid #ccc;
     padding: 10px;
-    text-align: left;
+    /* text-align: left; */
+  }
+  .network-table.table-bordered {
+    border-color: hsl(0, 0%, 1%); /* Example color (green) */
   }
   .parent-card {
     display: flex;
@@ -488,7 +498,7 @@
     justify-content: flex-end;
     margin-top: 20px;
     margin-bottom: 20px;
-    margin-right: 0px;
+    margin-right: -10px;
     margin-left: 600px;
     gap: 558px;
   }
@@ -530,8 +540,9 @@
     justify-content: center;
   }
   .status-connected {
+    margin-left: 10px;
+    margin-top: 10px;
     align-items: left;
-    background-color: green;
   }
   .status-disconnected {
     align-items: left;
@@ -555,5 +566,17 @@
     cursor: move;
     font-size: 1.5em;
     color: gray;
+  }
+
+  .custom-dropdown {
+    border: 1px solid #000408; /* Blue border for the dropdown */
+    border-radius: 2px; /* Rounded corners */
+    padding-right: 1rem; /* Space for the arrow */
+    font-size: 1rem; /* Adjust font size */
+    padding-left: 5px;
+  }
+
+  .custom-dropdown .custom-dropdown-toggle {
+    padding-right: 1.5rem; /* Ensure arrow has enough space */
   }
 </style>
