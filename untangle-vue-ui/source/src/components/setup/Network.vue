@@ -211,8 +211,6 @@
 
         sourceRecord.deviceName = targetRecordCopy.deviceName
         sourceRecord.physicalDev = targetRecordCopy.physicalDev
-        // sourceRecord.systemDev =  targetRecordCopy.systemDev
-        // sourceRecord.symbolicDev = targetRecordCopy.symbolicDev
         sourceRecord.macAddress = targetRecordCopy.macAddress
         sourceRecord.duplex = targetRecordCopy.duplex
         sourceRecord.vendor = targetRecordCopy.vendor
@@ -221,8 +219,6 @@
 
         targetRecord.deviceName = sourceRecordCopy.deviceName
         targetRecord.physicalDev = sourceRecordCopy.physicalDev
-        // targetRecord.systemDev = sourceRecordCopy.systemDev
-        // targetRecord.symbolicDev = sourceRecordCopy.symbolicDev
         targetRecord.macAddress = sourceRecordCopy.macAddress
         targetRecord.duplex = sourceRecordCopy.duplex
         targetRecord.vendor = sourceRecordCopy.vendor
@@ -292,8 +288,6 @@
           })
           this.deviceStore = physicalDevsStore
 
-          // update the steps based on interfaces
-          // me.getView().up('setupwizard').fireEvent('syncsteps');
         } catch (error) {
           console.log('Failed to fetch device settings:', error)
         }
@@ -339,7 +333,7 @@
           return
         }
         try {
-          const rpc = Util.setRpcJsonrpc('admin') // admin/JSONRPC
+          const rpc = Util.setRpcJsonrpc('admin')
           const networkSettings = await rpc?.networkManager?.getNetworkSettings()
           const interfaces = []
 
@@ -388,11 +382,6 @@
       async onClickNext() {
         try {
           const interfacesMap = {}
-
-          // TODO: how to check the row modification
-          // if (grid.getStore().getModifiedRecords().length === 0) { cb(); return; }
-
-          console.log('Get Settings : ', this.gridData)
           this.gridData.forEach(function (currentRow) {
             interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
           })
@@ -403,8 +392,6 @@
               intf.physicalDev = interfacesMap[intf.interfaceId]
             }
           })
-
-          console.log('Network Settings :', this.networkSettings)
 
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
