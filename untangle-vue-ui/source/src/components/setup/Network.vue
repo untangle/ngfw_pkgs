@@ -23,75 +23,65 @@
         </div>
       </div>
       <!-- Network Cards Table -->
-      <div fixed responsive class="network-cards-panel">
-        <draggable
-          v-model="gridData"
-          :group="{ name: 'network-rows', pull: 'clone' }"
+      <draggable
+        v-model="gridData"
+        :group="{ name: 'network-rows', pull: 'clone' }"
+        class="network-table text-center"
+        handle=".drag-handle"
+        :animation="300"
+        @start="onDragStart"
+        @end="onDragEnd"
+        @drag="onDrag"
+        @drop="onDrop"
+      >
+        <b-table
+          hover
+          :items="gridData"
+          :fields="tableFields"
           class="network-table text-center"
-          handle=".drag-handle"
-          :animation="300"
-          @start="onDragStart"
-          @end="onDragEnd"
-          @drag="onDrag"
-          @drop="onDrop"
+          bordered
+          :striped="false"
+          :small="false"
         >
-          <b-table
-            hover
-            :items="gridData"
-            :fields="tableFields"
-            class="network-table text-center"
-            bordered
-            :striped="false"
-            :small="false"
-          >
-            <!-- Name column -->
-            <template #cell(name)="row">
-              {{ row.item.name }}
-            </template>
-            <!-- Drag Icon Column -->
-            <template #cell(drag)="row">
-              <span
-                class="drag-handle"
-                style="cursor: move"
-                draggable="true"
-                @dragstart="dragStart($event, row.item)"
-                @dragover="dragOver($event)"
-                @drop="drop($event, row.item)"
-                @dragend="dragEnd"
-                ><v-icon>mdi-cursor-move</v-icon>
-              </span>
-            </template>
-            <!-- Device Column -->
-            <template #cell(deviceName)="row">
-              <b-form-select
-                v-model="row.item.physicalDev"
-                class="custom-dropdown"
-                @change="setInterfacesMap(row.item)"
-              >
-                <b-form-select-option
-                  v-for="device in deviceStore"
-                  :key="device.physicalDev"
-                  :value="device.physicalDev"
-                >
-                  {{ device.physicalDev }}
-                </b-form-select-option>
-              </b-form-select>
-            </template>
-            <!-- Icon Column -->
-            <template #cell(statusIcon)="row">
-              <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-            </template>
-            <!-- Status Column -->
-            <template #cell(connected)="row">
-              {{ getConnectedStr(row.item) }}
-            </template>
-            <!-- MAC Address Column -->
-            <template #cell(macAddress)="row">
-              {{ row.item.macAddress }}
-            </template>
-          </b-table>
-        </draggable>
-      </div>
+          <!-- Name column -->
+          <template #cell(name)="row">
+            {{ row.item.name }}
+          </template>
+          <!-- Drag Icon Column -->
+          <template #cell(drag)="row">
+            <span
+              class="drag-handle"
+              style="cursor: move"
+              draggable="true"
+              @dragstart="dragStart($event, row.item)"
+              @dragover="dragOver($event)"
+              @drop="drop($event, row.item)"
+              @dragend="dragEnd"
+              ><v-icon>mdi-cursor-move</v-icon>
+            </span>
+          </template>
+          <!-- Device Column -->
+          <template #cell(deviceName)="row">
+            <b-form-select v-model="row.item.physicalDev" class="custom-dropdown" @change="setInterfacesMap(row.item)">
+              <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
+                {{ device.physicalDev }}
+              </b-form-select-option>
+            </b-form-select>
+          </template>
+          <!-- Icon Column -->
+          <template #cell(statusIcon)="row">
+            <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+          </template>
+          <!-- Status Column -->
+          <template #cell(connected)="row">
+            {{ getConnectedStr(row.item) }}
+          </template>
+          <!-- MAC Address Column -->
+          <template #cell(macAddress)="row">
+            {{ row.item.macAddress }}
+          </template>
+        </b-table>
+      </draggable>
 
       <!-- Warning Message -->
       <div v-if="gridData.length < 2" class="inline-warning">
@@ -436,46 +426,20 @@
   .large-font {
     font-size: 17px;
   }
-  .network-cards-Parent {
-    display: flex;
-    width: 100%;
-    padding: 5px;
-    padding-right: 0px;
-    padding-bottom: 200px;
-    border: 2px solid #ebe5e5;
-    border-radius: 5px;
-    background-color: #fcf8f8;
-    margin: 10px;
-    overflow: auto;
-  }
-  .network-cards-panel {
-    display: flex;
-    width: 100%;
-    padding: 10px 10px 0px 10px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    background-color: #ebe9e9;
-    margin: 0px 5px 0px 10px;
-    overflow: auto;
-  }
   .network-table {
     width: 100%;
     max-height: 800px;
     border-collapse: collapse;
     box-sizing: border-box;
-  }
-
-  .network-table th {
-    background-color: green;
+    margin-left: 10px;
   }
 
   .network-table td .network-table th {
-    border: 1px solid #ccc;
+    border: 2px solid #ccc;
     padding: 10px;
-    /* text-align: left; */
   }
   .network-table.table-bordered {
-    border-color: hsl(0, 0%, 1%);
+    border-color: simple-gray(0, 1%, 35%);
   }
   .parent-card {
     display: flex;
@@ -500,7 +464,7 @@
     margin-bottom: 20px;
     margin-right: -10px;
     margin-left: 600px;
-    gap: 558px;
+    gap: 561px;
   }
   .internet-button {
     background-color: #007bff;
