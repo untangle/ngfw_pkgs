@@ -120,37 +120,36 @@
         <br />
       </div>
     </div>
-    <div v-if="warnAboutDisappeareAddress" class="popup wait-message">
-      <div class="popup-content">
-        <h2>Please Wait</h2>
-        <p>Saving Internal Network Settings</p>
+    <div v-if="loading" class="modal">
+      <div class="modal-content">
+        <h2>Saving Internal Network Settings...</h2>
         <p>The Internal Address is no longer accessible.</p>
         <p>
           You will be redirected to the new setup address:
-          <a :href="newSetupLocation">{{ newSetupLocation }}</a>
+          <a :href="newSetupLocation" target="_blank" class="setup-link">{{ newSetupLocation }}</a>
         </p>
         <p>
-          If the new location is not loaded after 30 seconds, please reinitialize your local device network address and
+          If the new location is not loaded after 30 seconds please reinitialize your local device network address and
           try again.
+          <br />
+          Please Wait...
         </p>
-        <button @click="closePopup">Close</button>
       </div>
     </div>
-
-    <div v-if="warnAboutChangAddress" class="popup wait-message">
-      <div class="popup-content">
-        <h2>Please Wait</h2>
-        <p>Saving Internal Network Settings</p>
+    <div v-if="loadingForChangeAddress" class="modal">
+      <div class="modal-content">
+        <h2>Saving Internal Network Settings...</h2>
         <p>The Internal Address is changed to: {{ internal.v4StaticAddress }}</p>
         <p>
-          The changes are applied, and you will be redirected to the new setup address:
-          <a :href="newSetupLocation">{{ newSetupLocation }}</a>
+          The changes are applied and you will be redirected to the new setup address:
+          <a :href="newSetupLocation" target="_blank" class="setup-link">{{ newSetupLocation }}</a>
         </p>
         <p>
-          If the new location is not loaded after 30 seconds, please reinitialize your local device network address and
+          If the new location is not loaded after 30 seconds please reinitialize your local device network address and
           try again.
+          <br />
+          Please Wait...
         </p>
-        <button @click="closePopup">Close</button>
       </div>
     </div>
   </v-card>
@@ -190,9 +189,10 @@
         },
         networkSettings: null,
         v4NetmaskList: Util.v4NetmaskList.map(n => ({ value: n[0], text: n[1] })),
-        warnAboutDisappeareAddress: false,
-        warnAboutChangAddress: false,
         newSetupLocation: null,
+        loading: false,
+        loadingForChangeAddress: false,
+        timeout: 480000,
       }
     },
     computed: {
@@ -329,56 +329,110 @@
         }
       },
       async onSave() {
-        console.log('in Save :', this.internal)
-        // TODO
-        // if (!me.getView().isValid()) { return; }
-
-        // no changes made - continue to next step
-        if (this.internal.v4StaticPrefix && this.internal.v4StaticPrefix.value) {
-          this.internal.v4StaticPrefix = this.internal.v4StaticPrefix.value
-        }
-        if (
-          this.initialConfigType === this.internal.configType &&
-          this.initialv4Address === this.internal.v4StaticAddress &&
-          this.initialv4Prefix === this.internal.v4StaticPrefix &&
-          this.initialDhcpType === this.internal.dhcpType
-        ) {
-          console.log('networkSettings saved in return with no changes:', this.internal)
-          await Promise.resolve()
-          await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
-          return
-        }
-        // BRIDGED (bridge mode)
-        if (this.internal.configType === 'BRIDGED') {
-          // If using internal address - redirect to external since internal address is vanishing
-          if (window.location.hostname === this.internal.v4StaticAddress) {
-            this.warnAboutDisappearingAddress()
+        try {
+          // setting the v4StaticPrefix
+          if (this.internal.v4StaticPrefix && this.internal.v4StaticPrefix.value) {
+            this.internal.v4StaticPrefix = this.internal.v4StaticPrefix.value
           }
-        } else {
-          // ADDRESSED (router)
-          // set these to null so new values will automatically be calculated based on current address
-          this.internal.dhcpRangeStart = null
-          this.internal.dhcpRangeEnd = null
-          // If using internal address and it is changed in this step redirect to new internal address
+          // no changes made - continue to next step
           if (
-            window.location.hostname === this.initialv4Address &&
-            this.initialv4Address !== this.internal.v4StaticAddress
+            this.initialConfigType === this.internal.configType &&
+            this.initialv4Address === this.internal.v4StaticAddress &&
+            this.initialv4Prefix === this.internal.v4StaticPrefix &&
+            this.initialDhcpType === this.internal.dhcpType
           ) {
-            this.warnAboutChangingAddress()
+            console.log('networkSettings saved in return with no changes:')
+            await Promise.resolve()
+            await this.setShowStep('Network')
+            await this.setShowPreviousStep('License')
           }
+          // BRIDGED (bridge mode)
+          if (this.internal.configType === 'BRIDGED') {
+            this.loading = true
+            // If using internal address - redirect to external since internal address is vanishing
+            // 192.168.58.102 window.location.hostname
+            if (this.internal.v4StaticAddress === window.location.hostname) {
+              console.log('Inside Bridge :', window.location.hostname)
+              let firstWan = ''
+              let firstWanStatus = ''
+              // get firstWan settings & status
+              firstWan = this.networkSettings.interfaces.list.find(intf => intf.isWan && intf.configType !== 'DISABLED')
+              // firstWan must exist
+              if (!firstWan || !firstWan.interfaceId) {
+                return
+              }
+              try {
+                console.log('inside try block of firstWanStatus')
+                firstWanStatus = await window.rpc.networkManager.getInterfaceStatus(firstWan.interfaceId)
+              } catch (e) {
+                Util.handleException(e)
+              }
+
+              // and the first WAN has a address
+              if (!firstWanStatus || !firstWanStatus.v4Address) {
+                return
+              }
+
+              console.log('firstWanStatus.v4Address :', firstWanStatus.v4Address)
+
+              // TODO Use Internal Address instead of External Address
+              // 'localhost:9092'  firstWanStatus.v4Address
+              this.newSetupLocation = window.location.href.replace(
+                this.internal.v4StaticAddress,
+                firstWanStatus.v4Address,
+              )
+              console.log('newSetupLocation **:', this.newSetupLocation)
+            }
+          } else {
+            // ADDRESSED (router)
+            // set these to null so new values will automatically be calculated based on current address
+            this.internal.dhcpRangeStart = null
+            this.internal.dhcpRangeEnd = null
+            // If using internal address and it is changed in this step redirect to new internal address
+            if (
+              window.location.hostname === this.initialv4Address &&
+              this.initialv4Address !== this.internal.v4StaticAddress
+            ) {
+              this.newSetupLocation = await window.location.href.replace(
+                this.initialv4Address,
+                this.internal.v4StaticAddress,
+              )
+              this.loadingForChangeAddress = true
+              console.log('newSetupLocation :', this.newSetupLocation)
+            }
+          }
+
+          // Simulate an async RPC call or save operation
+          await this.simulateRpcCall()
+          console.log('Settings saving in process...')
+          // save settings and continue to next step
+          await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
+
+          console.log('Settings saved successfully')
+
+          // Once save operation is complete, show alert and hide modal
+          alert('Settings saved successfully.')
+
+          await Promise.resolve()
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
+
+          window.top.location.href = this.newSetupLocation
+        } catch (error) {
+          console.error('Error during save operation:', error)
+        } finally {
+          // Hide the modal once save is complete
+          this.loading = false
+          this.loadingForChangeAddress = false
         }
-
-        await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-
-        // Simply log the internal settings
-        console.log('networkSettings saved:', this.networkSettings)
-        console.log('Settings saved:', this.internal)
-        alert('Settings saved successfully.')
-
-        await Promise.resolve()
-        await this.setShowStep('Autoupgrades')
-        await this.setShowPreviousStep('Internet')
+      },
+      // This is a simulated async RPC call to mimic a delay (e.g., an API request)
+      simulateRpcCall() {
+        return new Promise(resolve => {
+          setTimeout(() => {
+            resolve('Data saved')
+          }, this.timeout) // Simulate a delay of 8 min
+        })
       },
     },
   }
@@ -443,7 +497,7 @@
   }
   .info-text {
     margin: 10px 10px 0px 12px;
-    font-size: 12px;
+    font-size: 14px;
     color: #555;
   }
   .form-field-netmask {
@@ -579,36 +633,48 @@
     color: blue;
     text-decoration: underline;
   }
-  .popup {
+
+  .modal {
     position: fixed;
     top: 0;
     left: 0;
+    border: thin;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
+    background-color: rgba(0, 0, 0, 0.5); /* Transparent black background */
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000;
+    z-index: 1000; /* Ensure it is above other elements */
   }
-  .popup-content {
-    background-color: white;
+
+  .modal-content {
+    background-color: rgb(202, 196, 196); /* White background for modal content */
     padding: 20px;
-    border-radius: 10px;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-  }
-  .popup button {
-    margin-top: 20px;
-    padding: 10px 20px;
-    background-color: #007bff;
-    color: white;
-    border: none;
     border-radius: 5px;
-    cursor: pointer;
+    width: 500px;
+    height: 30%;
+    text-align: center;
+    box-shadow: 0px 4px 6px rgba(107, 105, 105, 0.1); /* Optional: adds a shadow around the modal */
   }
-  .popup button:hover {
-    background-color: #0056b3;
+
+  h2 {
+    font-size: 22px; /* Adjust font size for title */
+    margin-bottom: 15px; /* Space below title */
+  }
+
+  p {
+    font-size: 16px; /* Adjust font size for paragraph */
+  }
+
+  /* Styling for the hyperlink in the modal */
+  .setup-link {
+    color: #007bff; /* Blue color for the link */
+    text-decoration: underline; /* Underline the link */
+  }
+
+  .setup-link:hover {
+    color: #0056b3; /* Darker blue color on hover */
+    text-decoration: none; /* Remove underline on hover */
   }
 </style>
