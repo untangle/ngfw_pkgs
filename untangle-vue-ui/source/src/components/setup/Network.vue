@@ -287,7 +287,6 @@
             physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
           })
           this.deviceStore = physicalDevsStore
-
         } catch (error) {
           console.log('Failed to fetch device settings:', error)
         }
