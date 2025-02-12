@@ -81,8 +81,6 @@
               </v-autocomplete>
             </ValidationProvider>
             <label class="empty-label"> </label>
-            <br />
-            <br /><br /><br /><br /><br /><br />
             <u-btn :small="false" style="margin: 8px 180px" class="custom-btn-right" @click="passes(onContinue)">
               {{ `Next` }}
             </u-btn>
@@ -190,21 +188,41 @@
         }
       },
       async onContinue() {
-        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-        const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-        console.log(rpcResponseForSetup)
-        console.log('Response rpcResponseForAdmin', rpcResponseForAdmin)
-
         try {
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
             await window.rpc.setup.setTimeZone(timezoneId)
-            console.log('Timezone updated successfully.', timezoneId)
           }
+          await this.saveAdminPassword()
+          await this.setShowStep('Network')
+          await this.setShowPreviousStep('Network')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')
+        }
+      },
+      async saveAdminPassword() {
+        try {
+          // Update admin password
+          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
+          // Authenticate the updated password
+          await new Promise((resolve, reject) => {
+            Util.authenticate(this.newPassword, (error, success) => {
+              console.log('Authentication error:', error)
+              console.log('Authentication success:', success)
+              if (error || !success) {
+                console.error('Authentication failed after password update:', error)
+                reject(new Error('Authentication failed after password update.'))
+              } else {
+                resolve()
+                this.showInterfaces = true
+              }
+            })
+          })
+        } catch (error) {
+          console.error('Error saving admin password or authenticating:', error)
+          throw error
         }
       },
     },
@@ -232,7 +250,7 @@
     display: flex; /* Enables flexbox layout */
     gap: 430px; /* Adds 20px space between the child divs */
   }
-  . h2.font-weight-light {
+  .h2.font-weight-light {
     font-weight: bold; /* Or try 'bold' for a stronger weight */
   }
   .button-text {
@@ -258,7 +276,7 @@
   }
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
-    height: 13px; /* Set a specific height if needed */
+    height: 183px; /* Set a specific height if needed */
     background-color: white; /* Set a background color or any style */
   }
   .custom-margin {

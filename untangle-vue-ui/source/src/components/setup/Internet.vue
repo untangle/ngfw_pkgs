@@ -134,7 +134,10 @@
           console.error('Failed to navigate:', error)
         }
       },
-      async onClickNext() {},
+      async onClickNext() {
+        await this.setShowStep('Interface')
+        await this.setShowPreviousStep('Interface')
+      },
       checkRemoteReachability() {
         // Simulate the check for remote reachability
         this.isRemoteReachable = true // Example value

@@ -522,7 +522,7 @@
     display: flex;
     justify-content: flex-end;
     margin-right: -10px;
-    margin-top: 12px;
+    margin-top: 62px;
   }
   .button-next {
     margin: 26px;

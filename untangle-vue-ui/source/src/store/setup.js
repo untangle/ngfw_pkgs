@@ -3,6 +3,7 @@ import router from '@/router'
 
 const state = () => ({
   steps: [],
+  stepper: ['License', 'System', 'Network', 'Internet', 'Interface', 'Autoupgrades', 'Complete'],
   currentStep: 'wizard',
   previousStep: 'wizard',
   system: {
@@ -13,18 +14,20 @@ const state = () => ({
 })
 
 const getters = {
-  steps: (state, getters, rootState, rootGetters) => {
-    const steps = ['license', 'system', 'wan']
+  // steps: (state, getters, rootState, rootGetters) => {
+  //   const steps = ['license', 'system', 'wan']
 
-    const interfaces = rootGetters['settings/interfaces']
-    const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
-    const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
+  //   const interfaces = rootGetters['settings/interfaces']
+  //   const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
+  //   const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
 
-    if (lteStep >= 0) steps.push('lte')
-    if (wifiStep >= 0) steps.push('wifi')
+  //   if (lteStep >= 0) steps.push('lte')
+  //   if (wifiStep >= 0) steps.push('wifi')
 
-    return steps
-  },
+  //   return steps
+  // },
+  stepper: state => state.stepper || [],
+  steps: state => state.steps, // Getter for steps array
   currentStep: state => state.currentStep, // Getter for currentStep (showStep)
   previousStep: state => state.previousStep, // Getter for currentStep (showStep)
   newPassword: state => state.system.newPassword,
@@ -87,6 +90,9 @@ const actions = {
   setInstallType({ commit }, installType) {
     commit('SET_INSTALLTYPE', installType)
   },
+  setStep({ commit }, steps) {
+    commit('SET_STEP', steps)
+  },
 }
 const mutations = {
   SET_SHOW_STEP(state, value) {
@@ -115,6 +121,10 @@ const mutations = {
       newPasswordConfirm: '',
       installType: '',
     }
+  },
+  SET_STEP(state, steps) {
+    console.log('Mutation - step:', steps)
+    state.step = steps
   },
 }
 
