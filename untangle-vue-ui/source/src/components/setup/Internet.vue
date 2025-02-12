@@ -7,7 +7,8 @@
         <p>No Internet Connection..! Click on 'Test Connectivity' to verify.</p>
       </div>
       <div v-if="wan">
-        <ValidationObserver v-slot="{ passes, invalid }">
+        <ValidationObserver v-slot="{ passes }">
+          <!-- invalid    Add invalid in v-slot parameter if we want to add disabling in invalid-->
           <v-form>
             <div class="config-type">
               <label class="sectionheader">Configuration Type</label>
@@ -120,7 +121,8 @@
 
             <div class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-              <u-btn :small="false" style="margin: 8px 0" :disabled="invalid" @click="passes(onSave)">Next</u-btn>
+              <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
+              <!-- :disabled="invalid" -->
             </div>
           </v-form>
         </ValidationObserver>
@@ -220,7 +222,7 @@
 
           await this.testConnectivity()
           // setNetworkSettings after testConnectivity completes
-          await rpcResponseForSetup.networkManager.setNetworkSettings(() => {
+          rpcResponseForSetup.networkManager.setNetworkSettings(() => {
             this.setShowStep('Interface')
             this.setShowPreviousStep('Interface')
           }, this.networkSettings)
@@ -536,7 +538,6 @@
     font-weight: 100;
     color: #999;
     font-size: 36px;
-    background: #fff;
   }
   .sectionheader {
     font-family: 'Roboto Condensed', sans-serif;
