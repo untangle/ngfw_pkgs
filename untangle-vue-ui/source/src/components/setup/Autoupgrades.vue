@@ -1,10 +1,9 @@
 <template>
-  <div>
+  <v-card width="1000" height="auto" class="mx-auto mt-3" flat>
     <SetupLayout />
     <div class="auto-upgrades">
-      <v-container class="text-center" style="max-width: 800px">
-        <h2>{{ $t('Automatic Upgrades and ETM Dashboard Access') }}</h2>
-
+      <h1 class="font-weight-light faint-color text-h4">{{ $t('Automatic Upgrades and ETM Dashboard Access') }}</h1>
+      <v-container class="text-center">
         <!-- Checkbox for Automatically Install Updates -->
         <v-row>
           <v-col cols="12">
@@ -47,12 +46,12 @@
           </v-col>
         </v-row>
       </v-container>
+      <div class="button-container">
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
+      </div>
     </div>
-    <div class="button-container">
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
-      <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
-    </div>
-  </div>
+  </v-card>
 </template>
 
 <script>
@@ -93,21 +92,24 @@
 </script>
 
 <style scoped>
+  .faint-color {
+    color: rgba(0, 0, 0, 0.5); /* Adjust the opacity for a faint color */
+  }
   .auto-upgrades {
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    align-items: center; /* Horizontally center the content */
-    margin: 20px 20px 10px 20px; /* Reduced bottom margin to 10px */
+    padding: 20px;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 20px 120px 10px 120px;
     border: 1px solid #ccc;
-    border-radius: 5px;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    height: calc(100vh - 40px); /* Ensure the height fits within the viewport, considering margins */
-    overflow: hidden; /* Hide any overflow */
+    height: 130%;
+    overflow: hidden;
   }
   .text-center {
-    text-align: center;
+    text-align: left;
   }
 
   .v-checkbox {
