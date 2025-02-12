@@ -173,9 +173,6 @@
     },
     data() {
       return {
-        loadingText: '',
-        redirectMessage: '',
-        retryMessage: '',
         isLoading: false,
         title: 'Internal Network',
         description: 'Configure the Internal Network Interface',
@@ -195,16 +192,6 @@
         timeout: 480000,
       }
     },
-    computed: {
-      netmaskListSync: {
-        get() {
-          return this.v4NetmaskList // Access installType from Vuex
-        },
-        set(value) {
-          this.$store.dispatch('setup/setInstallType', value) // Dispatch action to update installType in Vuex
-        },
-      },
-    },
     created() {
       this.getInterface()
     },
@@ -220,10 +207,6 @@
           this.internal.v4ConfigType = 'STATIC'
         }
       },
-      closePopup() {
-        this.showWarnAboutDisappearingAddressMessage = false
-        this.showWarnAboutChangingAddressMessage = false
-      },
       async getInterface() {
         try {
           // TODO: check if rpc call is required
@@ -236,8 +219,9 @@
           if (!this.internal) {
             const userConfirmed = window.confirm('No internal interfaces found. Do you want to continue the setup?')
             if (userConfirmed) {
-              // TODO
-              // this.$refs.nextBtn.click(); // next button
+              await Promise.resolve()
+              await this.setShowStep('Autoupgrades')
+              await this.setShowPreviousStep('Autoupgrades')
             } else {
               // if no is pressed
               console.log(' No is pressed ')
@@ -252,64 +236,6 @@
         } catch (error) {
           console.log('Failed to fetch device settings:', error)
         }
-      },
-
-      hideLoading() {
-        this.isLoading = false
-      },
-      async warnAboutDisappearingAddress() {
-        const rpc = Util.setRpcJsonrpc('admin')
-        let firstWan = ''
-        let firstWanStatus = ''
-        // get firstWan settings & status
-        firstWan = this.networkSettings.interfaces.list.find(intf => intf.isWan && intf.configType !== 'DISABLED')
-        // firstWan must exist
-        if (!firstWan || !firstWan.interfaceId) {
-          return
-        }
-
-        try {
-          firstWanStatus = await window.rpc.networkManager.getInterfaceStatus(firstWan.interfaceId)
-        } catch (e) {
-          Util.handleException(e)
-        }
-
-        // and the first WAN has a address
-        if (!firstWanStatus || !firstWanStatus.v4Address) {
-          return
-        }
-
-        // TODO Use Internal Address instead of External Address
-        this.newSetupLocation = window.location.href.replace(this.internal.v4StaticAddress, firstWanStatus.v4Address)
-        // TODO
-        rpc.keepAlive = function () {} // prevent keep alive
-
-        this.showWarnAboutDisappearingAddressMessage()
-        setTimeout(() => {
-          this.warnAboutDisappeareAddress = false
-          window.location.href = this.newSetupLocation
-        }, 30000)
-      },
-      showWarnAboutDisappearingAddressMessage() {
-        this.warnAboutDisappeareAddress = true
-        this.warnAboutChangAddress = false
-      },
-      showWarnAboutChangingAddressMessage() {
-        this.warnAboutDisappeareAddress = false
-        this.warnAboutChangAddress = true
-      },
-      warnAboutChangingAddress() {
-        const rpc = Util.setRpcJsonrpc('admin')
-        this.newSetupLocation = window.location.href.replace(this.initialv4Address, this.internal.v4StaticAddress)
-        // TODO
-        rpc.keepAlive = function () {} // prevent keep alive
-        // TODO
-
-        this.showWarnAboutChangingAddressMessage()
-        setTimeout(() => {
-          this.warnAboutChangAddress = false
-          window.location.href = this.newSetupLocation
-        }, 30000)
       },
       async onClickBack() {
         try {
