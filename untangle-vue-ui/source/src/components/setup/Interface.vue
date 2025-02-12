@@ -206,10 +206,7 @@
       },
     },
     created() {
-      console.log('v4NetmaskList :', this.v4NetmaskList)
-      console.log('Created called :')
       this.getInterface()
-      console.log('After getInterface called :', this.internal)
     },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
@@ -236,7 +233,6 @@
 
           this.internal = this.interfaces.find(intf => !intf.isWan)
 
-          console.log('internal in getInterface():', this.internal)
           if (!this.internal) {
             const userConfirmed = window.confirm('No internal interfaces found. Do you want to continue the setup?')
             if (userConfirmed) {
@@ -285,7 +281,6 @@
 
         // TODO Use Internal Address instead of External Address
         this.newSetupLocation = window.location.href.replace(this.internal.v4StaticAddress, firstWanStatus.v4Address)
-        console.log('newSetupLocation **:', this.newSetupLocation)
         // TODO
         rpc.keepAlive = function () {} // prevent keep alive
 
@@ -306,7 +301,6 @@
       warnAboutChangingAddress() {
         const rpc = Util.setRpcJsonrpc('admin')
         this.newSetupLocation = window.location.href.replace(this.initialv4Address, this.internal.v4StaticAddress)
-        console.log('newSetupLocation :', this.newSetupLocation)
         // TODO
         rpc.keepAlive = function () {} // prevent keep alive
         // TODO
@@ -320,10 +314,8 @@
       async onClickBack() {
         try {
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
-          // Navigate to the setup wizard page
-          // this.$router.push('/setup/system/')
+          await this.setShowStep('Internet')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -341,10 +333,9 @@
             this.initialv4Prefix === this.internal.v4StaticPrefix &&
             this.initialDhcpType === this.internal.dhcpType
           ) {
-            console.log('networkSettings saved in return with no changes:')
             await Promise.resolve()
-            await this.setShowStep('Network')
-            await this.setShowPreviousStep('License')
+            await this.setShowStep('Autoupgrades')
+            await this.setShowPreviousStep('Autoupgrades')
           }
           // BRIDGED (bridge mode)
           if (this.internal.configType === 'BRIDGED') {
@@ -352,7 +343,6 @@
             // If using internal address - redirect to external since internal address is vanishing
             // 192.168.58.102 window.location.hostname
             if (this.internal.v4StaticAddress === window.location.hostname) {
-              console.log('Inside Bridge :', window.location.hostname)
               let firstWan = ''
               let firstWanStatus = ''
               // get firstWan settings & status
@@ -362,7 +352,6 @@
                 return
               }
               try {
-                console.log('inside try block of firstWanStatus')
                 firstWanStatus = await window.rpc.networkManager.getInterfaceStatus(firstWan.interfaceId)
               } catch (e) {
                 Util.handleException(e)
@@ -372,16 +361,15 @@
               if (!firstWanStatus || !firstWanStatus.v4Address) {
                 return
               }
-
-              console.log('firstWanStatus.v4Address :', firstWanStatus.v4Address)
-
               // TODO Use Internal Address instead of External Address
-              // 'localhost:9092'  firstWanStatus.v4Address
               this.newSetupLocation = window.location.href.replace(
                 this.internal.v4StaticAddress,
                 firstWanStatus.v4Address,
               )
-              console.log('newSetupLocation **:', this.newSetupLocation)
+              await this.simulateRpcCall()
+              await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
+              alert('Settings saved successfully.')
+              window.top.location.href = this.newSetupLocation
             }
           } else {
             // ADDRESSED (router)
@@ -398,26 +386,20 @@
                 this.internal.v4StaticAddress,
               )
               this.loadingForChangeAddress = true
-              console.log('newSetupLocation :', this.newSetupLocation)
+              await this.simulateRpcCall()
+              await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
             }
           }
 
-          // Simulate an async RPC call or save operation
-          await this.simulateRpcCall()
-          console.log('Settings saving in process...')
           // save settings and continue to next step
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-
-          console.log('Settings saved successfully')
 
           // Once save operation is complete, show alert and hide modal
           alert('Settings saved successfully.')
 
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
-
-          window.top.location.href = this.newSetupLocation
+          await this.setShowStep('Autoupgrades')
+          await this.setShowPreviousStep('Autoupgrades')
         } catch (error) {
           console.error('Error during save operation:', error)
         } finally {
@@ -431,7 +413,7 @@
         return new Promise(resolve => {
           setTimeout(() => {
             resolve('Data saved')
-          }, this.timeout) // Simulate a delay of 8 min
+          }, this.timeout)
         })
       },
     },
@@ -464,13 +446,13 @@
     display: flex;
     flex-direction: column;
     padding: 20px;
-    justify-content: flex-start; /* Align content to the top */
-    margin: 20px 120px 10px 120px; /* Reduced bottom margin to 10px */
+    justify-content: flex-start;
+    margin: 20px 120px 10px 120px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    height: auto; /* Ensure the height fits within the viewport, considering margins */
-    overflow: hidden; /* Hide any overflow */
+    height: auto;
+    overflow: hidden;
   }
 
   .router-section,
@@ -504,8 +486,6 @@
     font-size: 14px;
     width: 88%;
     margin: 20px 50px 0px 30px;
-    /* display: block; */
-    /* align-items: center; */
     padding: 0px 0px 0px 0px;
   }
 
@@ -606,6 +586,7 @@
     display: flex;
     justify-content: flex-end;
     margin-right: -10px;
+    margin-top: 12px;
   }
   .button-next {
     margin: 26px;
@@ -641,40 +622,39 @@
     border: thin;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5); /* Transparent black background */
+    background-color: rgba(0, 0, 0, 0.5);
     display: flex;
     justify-content: center;
     align-items: center;
-    z-index: 1000; /* Ensure it is above other elements */
+    z-index: 1000;
   }
 
   .modal-content {
-    background-color: rgb(202, 196, 196); /* White background for modal content */
+    background-color: rgb(202, 196, 196);
     padding: 20px;
     border-radius: 5px;
     width: 500px;
     height: 30%;
     text-align: center;
-    box-shadow: 0px 4px 6px rgba(107, 105, 105, 0.1); /* Optional: adds a shadow around the modal */
+    box-shadow: 0px 4px 6px rgba(107, 105, 105, 0.1);
   }
 
   h2 {
-    font-size: 22px; /* Adjust font size for title */
-    margin-bottom: 15px; /* Space below title */
+    font-size: 22px;
+    margin-bottom: 15px;
   }
 
   p {
-    font-size: 16px; /* Adjust font size for paragraph */
+    font-size: 16px;
   }
 
-  /* Styling for the hyperlink in the modal */
   .setup-link {
-    color: #007bff; /* Blue color for the link */
-    text-decoration: underline; /* Underline the link */
+    color: #007bff;
+    text-decoration: underline;
   }
 
   .setup-link:hover {
-    color: #0056b3; /* Darker blue color on hover */
-    text-decoration: none; /* Remove underline on hover */
+    color: #0056b3;
+    text-decoration: none;
   }
 </style>
