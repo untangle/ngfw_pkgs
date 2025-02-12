@@ -152,6 +152,16 @@
         </p>
       </div>
     </div>
+    <v-dialog v-model="dialog" persistent max-width="290">
+      <v-card>
+        <v-card-title class="headline">Warning!</v-card-title>
+        <v-card-text> No internal interfaces found. Do you want to continue the setup? </v-card-text>
+        <v-card-actions>
+          <v-btn color="green" text @click="onConfirm">Yes</v-btn>
+          <v-btn color="red" text @click="onCancel">No</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -190,15 +200,26 @@
         loading: false,
         loadingForChangeAddress: false,
         timeout: 480000,
+        dialog: false,
       }
     },
     created() {
       this.getInterface()
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
+      showDialog() {
+        this.dialog = true
+      },
+      onConfirm() {
+        this.dialog = false
+        this.nextPage()
+      },
+      onCancel() {
+        this.dialog = false
+      },
       setConfigType(radio) {
         if (radio.target.defaultValue === 'BRIDGED') {
           this.internal.configType = 'BRIDGED'
@@ -209,7 +230,6 @@
       },
       async getInterface() {
         try {
-          // TODO: check if rpc call is required
           const rpc = Util.setRpcJsonrpc('admin')
           this.networkSettings = await rpc?.networkManager?.getNetworkSettings()
           this.interfaces = this.networkSettings.interfaces.list
@@ -217,24 +237,15 @@
           this.internal = this.interfaces.find(intf => !intf.isWan)
 
           if (!this.internal) {
-            const userConfirmed = window.confirm('No internal interfaces found. Do you want to continue the setup?')
-            if (userConfirmed) {
-              await Promise.resolve()
-              await this.setShowStep('Autoupgrades')
-              await this.setShowPreviousStep('Autoupgrades')
-            } else {
-              // if no is pressed
-              console.log(' No is pressed ')
-            }
+            this.showDialog()
           } else {
             this.initialConfigType = this.internal.configType
             this.initialv4Address = this.internal.v4StaticAddress
             this.initialv4Prefix = this.internal.v4StaticPrefix
             this.initialDhcpType = this.internal.dhcpType
           }
-          // this.internal = this.internal
         } catch (error) {
-          console.log('Failed to fetch device settings:', error)
+          alert('Failed to fetch device settings:', error)
         }
       },
       async onClickBack() {
@@ -243,7 +254,7 @@
           await this.setShowStep('Internet')
           await this.setShowPreviousStep('Internet')
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          alert('Failed to navigate:', error)
         }
       },
       async onSave() {
@@ -259,15 +270,12 @@
             this.initialv4Prefix === this.internal.v4StaticPrefix &&
             this.initialDhcpType === this.internal.dhcpType
           ) {
-            await Promise.resolve()
-            await this.setShowStep('Autoupgrades')
-            await this.setShowPreviousStep('Autoupgrades')
+            this.nextPage()
           }
           // BRIDGED (bridge mode)
           if (this.internal.configType === 'BRIDGED') {
             this.loading = true
             // If using internal address - redirect to external since internal address is vanishing
-            // 192.168.58.102 window.location.hostname
             if (this.internal.v4StaticAddress === window.location.hostname) {
               let firstWan = ''
               let firstWanStatus = ''
@@ -287,7 +295,7 @@
               if (!firstWanStatus || !firstWanStatus.v4Address) {
                 return
               }
-              // TODO Use Internal Address instead of External Address
+              // Use Internal Address instead of External Address
               this.newSetupLocation = window.location.href.replace(
                 this.internal.v4StaticAddress,
                 firstWanStatus.v4Address,
@@ -313,7 +321,6 @@
               )
               this.loadingForChangeAddress = true
               await this.simulateRpcCall()
-              await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
             }
           }
 
@@ -323,11 +330,9 @@
           // Once save operation is complete, show alert and hide modal
           alert('Settings saved successfully.')
 
-          await Promise.resolve()
-          await this.setShowStep('Autoupgrades')
-          await this.setShowPreviousStep('Autoupgrades')
+          this.nextPage()
         } catch (error) {
-          console.error('Error during save operation:', error)
+          alert('Error during save operation:', error)
         } finally {
           // Hide the modal once save is complete
           this.loading = false
@@ -341,6 +346,11 @@
             resolve('Data saved')
           }, this.timeout)
         })
+      },
+      async nextPage() {
+        await Promise.resolve()
+        await this.setShowStep('Autoupgrades')
+        await this.setShowPreviousStep('Autoupgrades')
       },
     },
   }
