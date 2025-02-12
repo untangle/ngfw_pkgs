@@ -2,25 +2,15 @@
   <v-card width="1100" height="auto" class="mx-auto mt-4" flat>
     <SetupLayout />
     <v-container class="main-div">
-      <h1
-        style="
-          text-align: left;
-          color: gray;
-          font-weight: normal;
-          font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
-          /* margin-bottom: 10px; */
-        "
-      >
-        Configure the Internet Connection
-      </h1>
-      <p class="no-internet">No Internet Connection! Click on 'Test Connectivity' to verify.</p>
-
+      <div class="step-title">Configure the Internet Connection</div>
+      <div v-if="!isRemoteReachable" class="warning-message">
+        <p>No Internet Connection..! Click on 'Test Connectivity' to verify.</p>
+      </div>
       <div v-if="wan">
         <ValidationObserver v-slot="{ passes, invalid }">
-          <!-- Configuration Type Radio Buttons in Single Line -->
           <v-form>
             <div class="config-type">
-              <label class="config-label">Configuration Type</label>
+              <label class="sectionheader">Configuration Type</label>
               <div class="radio-group">
                 <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
                 <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
@@ -99,7 +89,7 @@
                 </div>
               </div>
               <div class="status-grid">
-                <p class="config-label">Status:</p>
+                <p class="sectionheader">Status:</p>
                 <div class="status-item">
                   <label>IP Address:</label>
                   <span>{{ wanStatus.v4Address }}</span>
@@ -120,18 +110,14 @@
                   <label>Secondary DNS:</label>
                   <span>{{ wanStatus.v4Dns2 }}</span>
                 </div>
-                <div class="button-test-connectivity">
-                  <u-btn :small="false" class="renew-button" @click="testConnectivity">
-                    <v-icon class="world-icon">mdi-earth</v-icon> Test Connectivity
+                <div>
+                  <u-btn :small="false" class="button-test-connectivity" @click="testConnectivity">
+                    <v-icon class="world-icon mr-2">mdi-earth</v-icon> Test Connectivity
                   </u-btn>
                 </div>
               </div>
             </div>
-            <!-- <div class="button-test-connectivity">
-              <u-btn :small="false" class="renew-button" @click="testConnectivity">
-                <v-icon class="world-icon">mdi-earth</v-icon> Test Connectivity
-              </u-btn>
-            </div> -->
+
             <div class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
               <u-btn :small="false" style="margin: 8px 0" :disabled="invalid" @click="passes(onSave)">Next</u-btn>
@@ -184,11 +170,8 @@
       },
     },
     mounted() {
-      // console.log('v4NetmaskList', this.v4NetmaskList)
-      // console.log('getV4NetmaskList', Util.getV4NetmaskList)
       this.checkRemoteReachability()
       this.getSettings()
-      // console.log('this.wan', this.wan)
     },
     methods: {
       ...mapActions('setup', ['setShowStep']),
@@ -198,13 +181,11 @@
           await this.setShowStep('Network')
           await this.setShowPreviousStep('Network')
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          alert('Failed to navigate:', error)
         }
       },
 
       async onSave(cb) {
-        console.log('Saving network settings...')
-        console.log('on Save function running')
         if (!this.wan) {
           cb()
           return
@@ -235,35 +216,29 @@
 
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
 
-          console.log('Settings saved. Testing connectivity...')
           this.showWarning('Settings saved. Testing connectivity...')
 
           await this.testConnectivity()
-          // Now run setNetworkSettings after testConnectivity completes
+          // setNetworkSettings after testConnectivity completes
           await rpcResponseForSetup.networkManager.setNetworkSettings(() => {
             this.setShowStep('Interface')
             this.setShowPreviousStep('Interface')
           }, this.networkSettings)
         } catch (error) {
-          console.error('Error saving settings:', error)
           this.showWarning('Unable to save network settings. Please try again.')
         } finally {
           this.loading = false // Ensure loading state is turned off after execution
         }
       },
       checkRemoteReachability() {
-        // Simulate checking remote reachability
-        this.isRemoteReachable = true // Example value
+        this.isRemoteReachable = false
       },
       async testConnectivity() {
-        console.log('Testing connectivity...')
         this.showWarning('Testing connectivity...')
         this.loading = true
         try {
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          console.log('rpcResponseForSetup', rpcResponseForSetup)
           const result = await rpcResponseForSetup.connectivityTester.getStatus()
-          console.log('result', result)
           if (result.tcpWorking === false && result.dnsWorking === false) {
             this.showWarning('Warning! Internet tests and DNS tests failed.')
           } else if (result.tcpWorking === false) {
@@ -274,7 +249,6 @@
             this.showWarning('Success..')
           }
         } catch (error) {
-          console.error('Connectivity test failed:', error)
           this.showWarning('Unable to complete connectivity test, please try again.')
         } finally {
           this.loading = false
@@ -289,50 +263,39 @@
       },
 
       async getSettings() {
-        console.log('Fetching network settings...')
         try {
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
           this.networkSettings = await rpcResponseForSetup.networkManager.getNetworkSettings()
-          console.log('Network settings:', this.networkSettings)
 
           const firstWan = this.networkSettings.interfaces.list.find(intf => {
             return intf.isWan && intf.configType !== 'DISABLED'
           })
 
           this.wan = firstWan
-          console.log('this.wan', this.wan)
 
           if (!firstWan) {
             return
           }
           this.getInterfaceStatus()
         } catch (error) {
-          console.error('Unable to fetch Network Settings:', error)
           this.showWarning('Unable to fetch Network Settings.')
         }
       },
       async getInterfaceStatus() {
-        console.log('Fetching interface status...')
         try {
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
           const status = await rpcResponseForSetup.networkManager.getInterfaceStatus(this.wan.interfaceId)
-          console.log('WAN status:', status)
           this.wanStatus = status
         } catch (error) {
-          console.error('Unable to get WAN status:', error)
           this.showWarning('Unable to get WAN status.')
         }
       },
       async renewDhcp() {
-        console.log('Renewing DHCP...')
-
         // Set loading statethis
         this.loading = true
         try {
           // Initialize RPC session for 'admin'
-
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          console.log('rpcResponseForSetup:', rpcResponseForSetup)
           await rpcResponseForSetup.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
               this.showWarning('Unable to set Network Settings.')
@@ -346,8 +309,7 @@
             }, this.wan.interfaceId)
           }, this.networkSettings)
         } catch (error) {
-          console.log('error', error)
-          console.error('Error during DHCP renewal:', error)
+          alert('Error during DHCP renewal:', error)
         } finally {
           this.loading = false
         }
@@ -359,7 +321,22 @@
 <style scoped>
   /* Main layout adjustments */
   .main-div {
-    max-width: 1100px;
+    /* max-width: 1100px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    /* align-items: center; */
+    padding: 20px;
+    justify-content: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    min-height: 600px; /* Ensures the minimum height remains constant */
+    max-height: 700px; /* Prevents the height from changing too much */
+    height: 700px; /* Set a fixed height to keep the div consistent */
+    overflow-y: auto;
+    position: relative; /* Ensures children stay within boundary */
   }
   .title {
     text-align: center; /* Center the text */
@@ -391,12 +368,15 @@
     display: grid;
     grid-template-columns: 1fr 1fr; /* Split into two equal columns */
     align-items: start;
+    gap: 10px; /* Reduce gap between columns */
+    width: 100%;
   }
 
   .status-item-details,
   .status-item {
     display: flex;
     justify-content: space-between;
+    font: normal tahoma, arial, verdana, sans-serif;
     align-items: center;
     padding: 8px 0;
   }
@@ -439,14 +419,6 @@
 
   /* Center align form */
   .select-Network-content {
-    /* display: flex;
-    flex-direction: column;
-    gap: 12px;
-    width: 320px;
-    height: 400px;
-    margin: 0 auto;
-    overflow-y: auto; 
-    overflow-x: hidden;  */
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -455,10 +427,8 @@
 
   /* Status grid styling */
   .status-grid {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    padding-right: 20px;
+    width: 100%; /* Ensure both divs take full column width */
+    padding-right: 0px;
   }
 
   /* Configuration Radio Button Group */
@@ -466,7 +436,6 @@
     display: flex;
     justify-content: center;
     gap: 15px;
-    /* align-items: center; */
   }
 
   .radio-group label {
@@ -493,8 +462,6 @@
     /* padding: 10px 15px; */
     border-radius: 5px;
     display: flex;
-    /* align-items: center;
-    justify-content: center; */
     color: white;
     font-size: 14px;
     cursor: pointer;
@@ -504,7 +471,7 @@
   /* Button Styling */
   .button-margin {
     display: flex;
-    justify-content: center; /* Center the button horizontally */
+    justify-content: left; /* Center the button horizontally */
     align-items: center; /* Center the button vertically */
   }
   .renew-button {
@@ -517,6 +484,17 @@
     border: 1px solid #ccc; /* Optional: Add a border for better visibility */
     background-color: #f5f5f5; /* Light background for the button */
     color: #333; /* Dark text color */
+    cursor: pointer; /* Pointer cursor on hover */
+    transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
+    width: 400px; /* Increase width further */
+  }
+  .button-test-connectivity {
+    display: flex; /* Enable flexbox for the button content */
+    align-items: center; /* Vertically align the text and icon */
+    justify-content: center; /* Center the text and icon horizontally */
+    padding: 10px 20px; /* Adjust padding for better spacing */
+    border-radius: 5px; /* Rounded corners */
+    font-size: 14px; /* Font size for button text */
     cursor: pointer; /* Pointer cursor on hover */
     transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
   }
@@ -538,17 +516,31 @@
   /* Button Container */
   .button-container {
     display: flex;
-    justify-content: space-between; /* Place items at the ends of the container */
+    justify-content: space-between; /* Places Back & Next at extreme left & right */
     align-items: center;
-    /* margin-top: 50px; */
-    /* gap: 1000px; */
+    width: 100%;
+    position: absolute;
+    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+
+    background-color: #f9f9f9;
   }
 
   .no-internet {
-    /* color: red; */
-    /* font-weight: bold; */
-    /* text-align: center; */
     margin-bottom: 15px;
     font-size: smaller;
+  }
+  .step-title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 100;
+    color: #999;
+    font-size: 36px;
+    background: #fff;
+  }
+  .sectionheader {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 20px;
+    color: #555;
   }
 </style>
