@@ -317,7 +317,7 @@
               )
               await this.simulateRpcCall()
               await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-              alert('Settings saved successfully.')
+              this.showWarningDialog('Settings saved successfully.')
               window.top.location.href = this.newSetupLocation
             }
           } else {
@@ -342,8 +342,8 @@
           // save settings and continue to next step
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
 
-          // Once save operation is complete, show alert and hide modal
-          alert('Settings saved successfully.')
+          // Once save operation is complete, show warning and hide modal
+          this.showWarningDialog('Settings saved successfully.')
 
           this.nextPage()
         } catch (error) {
