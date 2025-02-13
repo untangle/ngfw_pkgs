@@ -1,19 +1,18 @@
 <template>
-  <v-card width="1100" height="500" class="mx-auto mt-3" flat>
+  <div>
     <SetupLayout />
     <div class="auto-upgrades">
-      <v-container class="text-center">
+      <v-card width="350" class="mx-auto text-center" flat>
+        <v-icon size="128" color="green">mdi-check</v-icon>
+
+        <!-- Ensure the text stays on a single line -->
         <h2 class="font-weight-light single-line">{{ $t('The Arista Server is configured now') }}</h2>
         <p>{{ $t('You are now ready to configure the applications.') }}</p>
-
         <br />
-        <u-btn :small="false" @click="onClickDashboard">
-          <v-icon icon="mdi-check">mdi-check</v-icon>
-          {{ $t('Go to dashboard') }}</u-btn
-        >
-      </v-container>
+        <u-btn :small="false" to="/">{{ $t('Go to dashboard') }}</u-btn>
+      </v-card>
     </div>
-  </v-card>
+  </div>
 </template>
 
 <script>
@@ -38,34 +37,20 @@
           alert('Failed to reset setup. Please try again later.')
         }
       },
-      async onClickDashboard() {
-        try {
-          // /admin/index.do
-          await Promise.resolve()
-          await this.setShowStep('Interface')
-          await this.setShowPreviousStep('Interface')
-        } catch (error) {
-          alert('Failed to navigate:', error)
-        }
-      },
     },
   }
 </script>
 
 <style scoped>
-  .faint-color {
-    color: rgba(0, 0, 0, 0.5);
+  /* Prevent text wrapping on the h2 element */
+  .single-line {
+    white-space: nowrap;
+    /* overflow: hidden; */
+    text-overflow: ellipsis; /* Optional: adds ellipsis if the text overflows */
   }
-  .auto-upgrades {
-    display: flex;
-    flex-direction: column;
-    padding: 140px;
-    justify-content: flex-start;
-    margin: 20px 120px 10px 120px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    height: 120%;
-    overflow: hidden;
+
+  .v-card {
+    max-width: 400px;
+    margin: auto;
   }
 </style>
