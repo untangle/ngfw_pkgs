@@ -1,7 +1,7 @@
 <template>
-  <div>
-    <v-card width="800" class="mx-auto mt-4" flat>
-      <SetupLayout />
+  <v-card width="1100" class="mx-auto mt-4" flat>
+    <SetupLayout />
+    <v-container class="main-div">
       <div class="parent-card">
         <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
         <br />
@@ -101,8 +101,8 @@
         <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
         <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
       </div>
-    </v-card>
-  </div>
+    </v-container>
+  </v-card>
 </template>
 
 <script>
@@ -409,6 +409,23 @@
 </script>
 
 <style scoped>
+  .main-div {
+    /* max-width: 1100px; */
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* Align content to the top */
+    /* align-items: center; */
+    padding: 20px;
+    justify-content: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    min-height: 600px; /* Ensures the minimum height remains constant */
+    max-height: 700px; /* Prevents the height from changing too much */
+    height: 700px; /* Set a fixed height to keep the div consistent */
+    position: relative; /* Ensures children stay within boundary */
+  }
   .large-font {
     font-size: 17px;
   }
@@ -417,7 +434,7 @@
     max-height: 800px;
     border-collapse: collapse;
     box-sizing: border-box;
-    margin-left: 10px;
+    /* margin-left: 10px; */
   }
 
   .network-table td .network-table th {
@@ -430,7 +447,8 @@
   .parent-card {
     display: flex;
     flex-direction: column;
-    height: 100%;
+    align-items: center;
+    height: 50%;
     border-radius: 5px;
     margin: 10px;
     margin-bottom: -5px;
@@ -443,14 +461,18 @@
     margin-left: 20px;
     display: inline-block;
   }
+
   .button-container {
     display: flex;
-    justify-content: flex-end;
-    margin-top: 20px;
-    margin-bottom: 20px;
-    margin-right: -10px;
-    margin-left: 600px;
-    gap: 561px;
+    justify-content: space-between; /* Places Back & Next at extreme left & right */
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+
+    background-color: #f9f9f9;
   }
   .internet-button {
     background-color: #007bff;
@@ -522,7 +544,7 @@
   .custom-dropdown {
     border: 1px solid #000408;
     border-radius: 2px;
-    padding-right: 1rem;
+    /* padding-right: 1rem; */
     font-size: 1rem;
     padding-left: 5px;
   }
