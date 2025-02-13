@@ -4,7 +4,6 @@
     <div class="auto-upgrades">
       <h1 class="font-weight-light faint-color text-h4">{{ title }}</h1>
       <v-container class="text-center">
-        <!-- Checkbox for Automatically Install Updates -->
         <v-row>
           <v-col cols="auto">
             <v-checkbox
@@ -23,7 +22,6 @@
           </v-col>
         </v-row>
 
-        <!-- Checkbox for Connect to ETM Dashboard -->
         <v-row>
           <v-col cols="auto">
             <v-checkbox
@@ -55,6 +53,18 @@
         </u-btn>
       </div>
     </div>
+    <v-dialog v-model="warningDiaglog" max-width="400">
+      <v-card>
+        <v-card-title class="headline"></v-card-title>
+        <v-card-text>
+          {{ dialogMessage }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -84,6 +94,8 @@
         isCCHidden: false,
         description: '',
         title: '',
+        warningDiaglog: false,
+        dialogMessage: '',
       }
     },
     created() {
@@ -94,6 +106,13 @@
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
+      showWarningDialog(message) {
+        this.dialogMessage = message
+        this.warningDiaglog = true
+      },
+      closeWarningDialog() {
+        this.warningDiaglog = false
+      },
       getTitle() {
         const rpc = Util.setRpcJsonrpc('admin')
         if (rpc.isCCHidden) {
@@ -115,7 +134,7 @@
           }
           this.systemSettings = result
         } catch (error) {
-          alert('Failed to load settings:', error)
+          this.showWarningDialog(`Failed to load settings: ${error.message || error}`)
         }
       },
       async onClickBack() {
@@ -124,7 +143,7 @@
           await this.setShowStep('Interface')
           await this.setShowPreviousStep('Interface')
         } catch (error) {
-          alert('Failed to navigate:', error)
+          this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
       async onSave() {
