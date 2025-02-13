@@ -359,7 +359,7 @@
         return new Promise(resolve => {
           setTimeout(() => {
             resolve('Data saved')
-          }, 3000)
+          }, this.timeout)
         })
       },
       async nextPage() {
