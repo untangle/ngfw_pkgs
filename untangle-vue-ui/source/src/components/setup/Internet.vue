@@ -183,7 +183,8 @@
           await this.setShowStep('Network')
           await this.setShowPreviousStep('Network')
         } catch (error) {
-          alert('Failed to navigate:', error)
+          this.showWarning('Failed to navigate:', error)
+
         }
       },
 
@@ -311,7 +312,8 @@
             }, this.wan.interfaceId)
           }, this.networkSettings)
         } catch (error) {
-          alert('Error during DHCP renewal:', error)
+          this.showWarning('Error during DHCP renewal:', error)
+          
         } finally {
           this.loading = false
         }
