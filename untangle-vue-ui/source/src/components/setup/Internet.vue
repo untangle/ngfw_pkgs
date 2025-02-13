@@ -184,7 +184,6 @@
           await this.setShowPreviousStep('Network')
         } catch (error) {
           this.showWarning('Failed to navigate:', error)
-
         }
       },
 
@@ -313,7 +312,6 @@
           }, this.networkSettings)
         } catch (error) {
           this.showWarning('Error during DHCP renewal:', error)
-          
         } finally {
           this.loading = false
         }
