@@ -5,10 +5,8 @@
       <h1 class="font-weight-light faint-color text-h5">{{ description }}</h1>
       <div>
         <div class="form-container">
-          <!-- Router Section -->
           <v-radio-group>
             <div class="radio-group">
-              <!-- <v-radio label="Radio One" value="one"></v-radio> -->
               <input
                 v-model="internal.configType"
                 type="radio"
@@ -76,7 +74,6 @@
             </div>
             <br />
             <div class="radio-group">
-              <!-- <v-radio label="Transparent Bridge" value="two"></v-radio> -->
               <input
                 v-model="internal.configType"
                 type="radio"
@@ -99,9 +96,7 @@
             <br />
             <u-btn class="button-container button-back" :small="true" @click="onClickBack">{{ `Back` }}</u-btn>
           </v-radio-group>
-          <!-- </div> -->
 
-          <!-- Transparent Bridge Section -->
           <div class="image-section">
             <br />
             <img src="/skins/simple-gray/images/admin/wizard/router.png" alt="Router" class="config-image" />
@@ -162,6 +157,18 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
+    <v-dialog v-model="warningDiaglog" max-width="400">
+      <v-card>
+        <v-card-title class="headline"></v-card-title>
+        <v-card-text>
+          {{ dialogMessage }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
   </v-card>
 </template>
 
@@ -201,6 +208,8 @@
         loadingForChangeAddress: false,
         timeout: 480000,
         dialog: false,
+        warningDiaglog: false,
+        dialogMessage: '',
       }
     },
     created() {
@@ -216,6 +225,13 @@
       onConfirm() {
         this.dialog = false
         this.nextPage()
+      },
+      showWarningDialog(message) {
+        this.dialogMessage = message
+        this.warningDiaglog = true
+      },
+      closeWarningDialog() {
+        this.warningDiaglog = false
       },
       onCancel() {
         this.dialog = false
@@ -245,7 +261,7 @@
             this.initialDhcpType = this.internal.dhcpType
           }
         } catch (error) {
-          alert('Failed to fetch device settings:', error)
+          this.showWarningDialog(`Failed to fetch device settings: ${error.message || error}`)
         }
       },
       async onClickBack() {
@@ -254,7 +270,7 @@
           await this.setShowStep('Internet')
           await this.setShowPreviousStep('Internet')
         } catch (error) {
-          alert('Failed to navigate:', error)
+          this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
       async onSave() {
@@ -272,7 +288,6 @@
           ) {
             this.nextPage()
           }
-          // BRIDGED (bridge mode)
           if (this.internal.configType === 'BRIDGED') {
             this.loading = true
             // If using internal address - redirect to external since internal address is vanishing
@@ -332,7 +347,7 @@
 
           this.nextPage()
         } catch (error) {
-          alert('Error during save operation:', error)
+          this.showWarningDialog(`Error during save operation: ${error.message || error}`)
         } finally {
           // Hide the modal once save is complete
           this.loading = false
@@ -344,7 +359,7 @@
         return new Promise(resolve => {
           setTimeout(() => {
             resolve('Data saved')
-          }, this.timeout)
+          }, 3000)
         })
       },
       async nextPage() {
