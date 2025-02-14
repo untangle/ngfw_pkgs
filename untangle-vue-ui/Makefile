@@ -12,7 +12,7 @@ dir:
 yarn:
 	cd ./source; \
 	yarnpkg install --force --network-concurrency 1; \
-	yarnpkg build
+	VUE_CLI_SERVICE_CONFIG_PATH=./vue.config.ngfw-components.js yarnpkg build
 
 dist: yarn
 	cp -r ./source/dist/* $(INSTALL_DIR)
