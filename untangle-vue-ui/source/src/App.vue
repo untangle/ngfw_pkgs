@@ -1,6 +1,12 @@
 <template>
   <blank-layout
-    v-if="embedded || $route.name === 'login' || $route.name === 'setupwizard' || $route.name === 'wizard'"
+    v-if="
+      embedded ||
+      $route.name === 'login' ||
+      $route.name === 'setupwizard' ||
+      $route.name === 'wizard' ||
+      $route.name === 'setup'
+    "
   />
   <!-- <setup-layout v-else-if="$route.name.indexOf('setup') > -1" /> -->
   <default-layout v-else />

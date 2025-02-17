@@ -24,7 +24,7 @@ Vue.use(IconsPlugin)
 export default [
   {
     name: 'setup',
-    path: '/setup/',
+    path: '/wizardaa/',
     meta: { layout: BlankLayout },
     component: Main,
     children: [
