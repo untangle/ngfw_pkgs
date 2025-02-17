@@ -127,10 +127,10 @@ const Util = {
         // console.log('Authentication response:', response.data)
 
         // Check if loginPage exists in the response
-      if (response.data && response.data.includes('loginPage')) {
-        if (password === 'passwd') {
+        if (response.data && response.data.includes('loginPage')) {
+          if (password === 'passwd') {
             cb(null, true) // Default success callback for 'passwd'
-        } else {
+          } else {
             console.error('Invalid password provided.')
             cb(new Error('Invalid password.'), false)
           }
@@ -148,14 +148,14 @@ const Util = {
               adminRpc.UvmContext.getFullVersion((result, exception) => {
                 if (!rpc.tolerateKeepAliveExceptions && exception) {
                   Util.handleException(exception)
-              return
-            }
+                  return
+                }
                 setTimeout(() => rpc.keepAlive(), 300000)
-        })
+              })
             } else {
               console.error('UvmContext is not available in RPC.')
-    }
-  },
+            }
+          },
         }
 
         rpc.keepAlive()
