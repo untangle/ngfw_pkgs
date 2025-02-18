@@ -175,12 +175,24 @@ const Util = {
 
     let details = ''
     if (exception.message) {
-      details += `<b>Exception message:</b> ${exception.message.replace(/\n/g, '<br/>')}<br/><br/>`
+      details += `<b>Exception Message:</b> ${exception.message.replace(/\n/g, '<br/>')}<br/><br/>`
+    }
+    if (exception.javaStack) {
+      details += `<b>Exception Java Stack:</b> ${exception.javaStack.replace(/\n/g, '<br/>')}<br/><br/>`
     }
     if (exception.stack) {
-      details += `<b>Exception stack:</b> ${exception.stack.replace(/\n/g, '<br/>')}<br/><br/>`
+      details += `<b>Exception JS Stack:</b> ${exception.stack.replace(/\n/g, '<br/>')}<br/><br/>`
+    }
+    if (window.rpc?.fullVersionAndRevision) {
+      details += `<b>Build:</b> ${window.rpc.fullVersionAndRevision}<br/><br/>`
+    }
+    details += `<b>Timestamp:</b> ${new Date().toString()}<br/><br/>`
+
+    if (exception.response) {
+      details += `<b>Exception Response:</b> ${exception.response.replace(/\s+/g, '<br/>')}<br/><br/>`
     }
 
+    /** Handle session timeout / authorization lost */
     if (exception.response && exception.response.includes('loginPage')) {
       this.showWarningMessage(
         'Session timed out.<br/>Press OK to return to the login page.',
@@ -190,9 +202,29 @@ const Util = {
       return
     }
 
-    this.showWarningMessage('An error occurred', details, this.goToStartPage)
-  },
+    /** Handle connection lost */
+    if (
+      exception.code === 550 ||
+      exception.code === 12029 ||
+      exception.code === 12019 ||
+      exception.code === 0 ||
+      (exception.name === 'JSONRpcClientException' && exception.fileName?.includes('jsonrpc')) ||
+      exception.message?.includes('method not found') ||
+      exception.message?.includes('Service Unavailable') ||
+      exception.message?.includes('Service Temporarily Unavailable') ||
+      exception.message?.includes('This application is not currently available')
+    ) {
+      this.showWarningMessage(
+        'The connection to the server has been lost.<br/>Press OK to return to the login page.',
+        details,
+        this.goToStartPage,
+      )
+      return
+    }
 
+    /** Show generic error message */
+    this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
+  },
   showWarningMessage(message, details, errorHandler) {
     // Use your modal library here. Example:
     this.$notify({

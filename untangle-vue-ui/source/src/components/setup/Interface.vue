@@ -2,7 +2,7 @@
   <v-card width="1100" height="auto" class="mx-auto mt-4" flat>
     <SetupLayout />
     <div class="internal-network">
-      <h1 class="font-weight-light faint-color text-h5">{{ description }}</h1>
+      <h1 class="step-title">{{ description }}</h1>
       <div>
         <div class="form-container">
           <v-radio-group>
@@ -27,16 +27,17 @@
               </p>
 
               <div class="form-field">
-                <div class="form-field">
-                  <label>{{ 'Internal Address:' }}</label>
-                  <input
+                <div class="inline-field">
+                  <label class="bold-label">{{ 'Internal Address:' }}</label>
+                  <u-text-field
                     v-model="internal.v4StaticAddress"
                     type="text"
                     :disabled="internal.configType !== 'ADDRESSED'"
+                    style="width: 150px; min-width: 20 px"
                   />
                 </div>
-                <div class="form-field-netmask">
-                  <label>{{ 'Internal Netmask:' }}</label>
+                <div class="inline-field">
+                  <label class="bold-label">{{ 'Internal Netmask:' }}</label>
                   <v-autocomplete
                     v-model="internal.v4StaticPrefix"
                     :items="v4NetmaskList"
@@ -45,12 +46,12 @@
                     dense
                     hide-details
                     return-object
-                    class="form-field-autocomplete"
+                    style="width: 150px; min-width: 20 px"
                   >
                   </v-autocomplete>
                 </div>
                 <br />
-                <label class="form-field-label">{{ 'DHCP Server:' }}</label>
+                <label class="bold-label">{{ 'DHCP Server:' }}</label>
                 <div class="radio-group-child">
                   <input
                     v-model="internal.dhcpType"
@@ -94,23 +95,18 @@
               }}
             </p>
             <br />
-            <u-btn class="button-container button-back" :small="true" @click="onClickBack">{{ `Back` }}</u-btn>
+            <!-- <u-btn class="button-container button-back" :small="true" @click="onClickBack">{{ `Back` }}</u-btn> -->
           </v-radio-group>
 
           <div class="image-section">
-            <br />
             <img src="/skins/simple-gray/images/admin/wizard/router.png" alt="Router" class="config-image" />
-            <br />
-            <br />
-            <br />
-            <br />
-            <img src="/skins/simple-gray/images/admin/wizard/bridge.png" alt="Bridge" class="config-image" />
-            <div class="button-container-next">
-              <u-btn class="button-container button-next" :small="true" @click="onSave">
-                {{ `Next` }}
-              </u-btn>
-            </div>
+            <img src="/skins/simple-gray/images/admin/wizard/bridge.png" alt="Bridge" class="config-image-2" />
           </div>
+        </div>
+        <div class="button-container">
+          <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
+          <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
+          <!-- :disabled="invalid" -->
         </div>
         <br />
       </div>
@@ -393,6 +389,12 @@
     max-width: 500px;
     word-wrap: break-word;
   }
+  .step-title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 100;
+    color: #999;
+    font-size: 36px;
+  }
   .internal-network {
     display: flex;
     flex-direction: column;
@@ -404,6 +406,35 @@
     font-family: Arial, sans-serif;
     height: auto;
     overflow: hidden;
+  }
+  .inline-field {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .bold-label {
+    white-space: nowrap;
+    font-size: 14px;
+    font-weight: bold;
+  }
+
+  .small-text-field {
+    width: 150px;
+    min-width: 100px;
+  }
+  /* Button Container */
+  .button-containerforNextPrevious {
+    display: flex;
+    justify-content: space-between; /* Places Back & Next at extreme left & right */
+    align-items: center;
+    width: 100%;
+    position: absolute;
+    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+
+    background-color: #f9f9f9;
   }
 
   .router-section,
@@ -488,11 +519,6 @@
     align-items: center;
     gap: 10px;
   }
-  .config-image {
-    margin-top: 30px;
-    max-width: 200px;
-    height: auto;
-  }
 
   .save-button {
     display: block;
@@ -519,19 +545,32 @@
   }
   .image-section {
     width: 300px;
-    height: 183px;
-    padding: 30px 90px 350px 0px;
-    margin-right: -12px;
+    height: 100%; /* Allow full height usage */
+    padding: 90px 90px 30px 0px;
+    display: flex;
+    flex-direction: column; /* Stack images vertically */
+    justify-content: space-between; /* Push first image to top and second image to bottom */
+    align-items: center; /* Center align images horizontally */
+  }
+
+  .config-image {
+    max-width: 200px;
+    height: auto;
+  }
+  .config-image-2 {
+    max-width: 200px;
+    margin-top: 100px;
+    height: auto;
   }
 
   .button-container {
-    padding: 0px 0px 22px 0px;
-    font-size: 14px;
-    display: block;
-    margin-left: 10px;
-    margin-right: 0;
-    width: 100px;
-    justify-content: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+    background-color: #f9f9f9;
   }
   .button-container-next {
     display: flex;

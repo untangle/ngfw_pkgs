@@ -77,8 +77,8 @@ const routes = baseRoutes.concat(auth, setup, setting, wizard, {
 })
 
 const router = new VueRouter({
-  // mode: 'history',
-  mode: 'hash',
+  mode: 'history',
+  // mode: 'hash',
   base: process.env.VUE_APP_BASE_URL,
   routes,
 })
