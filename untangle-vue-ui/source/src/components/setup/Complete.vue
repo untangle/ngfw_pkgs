@@ -41,6 +41,18 @@
             </v-card-text>
           </v-card>
         </v-dialog>
+        <v-dialog v-model="warningDiaglog" max-width="400">
+          <v-card>
+            <v-card-title class="headline"></v-card-title>
+            <v-card-text>
+              {{ dialogMessage }}
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </div>
   </v-card>
@@ -59,6 +71,7 @@
         redirectToDashboard: false,
         rpc: null,
         loading: false,
+        warningDiaglog: false,
       }
     },
     computed: {
@@ -72,7 +85,7 @@
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
       } else {
-        console.error('RPC setup failed')
+        this.showWarningDialog('RPC setup failed')
       }
       this.onActivate()
     },
@@ -83,6 +96,13 @@
           // In local mode, mark wizard completed so apps can start being populated.
           rpc.jsonrpc.UvmContext.wizardComplete()
         }
+      },
+      showWarningDialog(message) {
+        this.dialogMessage = message
+        this.warningDiaglog = true
+      },
+      closeWarningDialog() {
+        this.warningDiaglog = false
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
