@@ -123,8 +123,6 @@
           }
           window.top.location.href = '/admin/index.do'
         })
-        // TODO
-        // view.down('[itemId=complete]').add(items)
       },
     },
   }
