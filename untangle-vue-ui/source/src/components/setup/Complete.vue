@@ -6,7 +6,7 @@
         <div class="auto-setup">
           <div v-if="!rpc?.remote" class="centered-content">
             <h3>
-              <strong>{{ `The ${rpc?.oemName} is now configured.` }}</strong>
+              <strong>{{ `The ${rpc?.oemProductName} is now configured.` }}</strong>
             </h3>
             <br />
             <p>
@@ -41,18 +41,6 @@
             </v-card-text>
           </v-card>
         </v-dialog>
-        <v-dialog v-model="warningDiaglog" max-width="400">
-          <v-card>
-            <v-card-title class="headline"></v-card-title>
-            <v-card-text>
-              {{ dialogMessage }}
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-container>
     </div>
   </v-card>
@@ -84,8 +72,6 @@
 
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
-      } else {
-        this.showWarningDialog('RPC setup failed')
       }
       this.onActivate()
     },
@@ -96,13 +82,6 @@
           // In local mode, mark wizard completed so apps can start being populated.
           rpc.jsonrpc.UvmContext.wizardComplete()
         }
-      },
-      showWarningDialog(message) {
-        this.dialogMessage = message
-        this.warningDiaglog = true
-      },
-      closeWarningDialog() {
-        this.warningDiaglog = false
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
