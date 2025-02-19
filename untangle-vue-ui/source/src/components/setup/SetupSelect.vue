@@ -189,6 +189,7 @@
                 if (this.isResetWizardAuthentication) {
                   this.resetWizardContinue()
                 } else {
+                  this.dialog = false
                   this.openSetup()
                 }
               }
@@ -253,6 +254,7 @@
         }
       },
       resetWizardContinue() {
+        this.dialog = false
         this.resuming = false
         this.rpc.wizardSettings.completedStep = null
         this.rpc.wizardSettings.wizardComplete = false
