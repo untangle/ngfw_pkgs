@@ -145,16 +145,16 @@
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
 
       this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-      // this.resuming = rpcResponseForSetup?.wizardSettings?.wizardComplete
 
       if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
         this.resuming = true
       }
 
-      if (this.previousStep !== 'License' && this.previousStep !== 'Wizard') {
-        if (this.previousStep === 'System') {
-          this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
-        }
+      // TODO will get handled in wizard
+      if (this.previousStep === 'System') {
+        this.$store.commit('setup/RESET_SYSTEM')
+      }
+      if (this.previousStep !== 'License' && this.previousStep !== 'Wizard' && this.previousStep !== 'System') {
         this.resuming = true
       }
       if (rpcResponseForSetup) {
@@ -201,6 +201,7 @@
                 } else {
                   this.dialog = false
                   this.setShowStep(this.previousStep)
+                  // TODO
                   // this.nextPage()
                   // this.openSetup()
                 }
@@ -277,7 +278,7 @@
       async nextPage() {
         await Promise.resolve()
         await this.setShowStep('License')
-        await this.setShowPreviousStep('Wizard')
+        await this.setShowPreviousStep('License')
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`

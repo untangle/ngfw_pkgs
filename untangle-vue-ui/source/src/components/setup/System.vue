@@ -41,9 +41,6 @@
                 <u-text-field v-model="adminEmail" />
               </ValidationProvider>
               <br /><br />
-              <!-- <u-btn :small="false" style="margin: 8px 0px" class="custom-btn" @click="onClickBack">
-                {{ `Back` }}
-              </u-btn> -->
             </div>
             <br />
             <div class="custom-margin">
@@ -192,6 +189,7 @@
         try {
           await Promise.resolve()
           await this.setShowStep('License')
+          await this.setShowPreviousStep('License')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -205,7 +203,7 @@
           }
           await this.saveAdminPassword()
           await this.setShowStep('Network')
-          await this.setShowPreviousStep('System')
+          await this.setShowPreviousStep('Network')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')

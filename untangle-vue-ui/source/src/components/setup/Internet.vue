@@ -181,7 +181,7 @@
       async onClickBack() {
         try {
           await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           this.showWarning(`Failed to navigate: ${error.message || error}`)
         }
@@ -224,7 +224,7 @@
           // setNetworkSettings after testConnectivity completes
           rpcResponseForSetup.networkManager.setNetworkSettings(() => {
             this.setShowStep('Interface')
-            this.setShowPreviousStep('Internet')
+            this.setShowPreviousStep('Interface')
           }, this.networkSettings)
         } catch (error) {
           this.showWarning('Unable to save network settings. Please try again.')

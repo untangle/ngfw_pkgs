@@ -361,7 +361,7 @@
       async nextPage() {
         await Promise.resolve()
         await this.setShowStep('Autoupgrades')
-        await this.setShowPreviousStep('Interface')
+        await this.setShowPreviousStep('Autoupgrades')
       },
     },
   }
