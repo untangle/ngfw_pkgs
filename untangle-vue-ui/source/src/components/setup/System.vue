@@ -36,23 +36,20 @@
                 >Administrators receive email alerts and report summaries</label
               >
               <br />
-              <label>Adding Email:</label>
+              <label>Admin Email:</label>
               <ValidationProvider>
                 <u-text-field v-model="adminEmail" />
               </ValidationProvider>
               <br /><br />
-              <!-- <u-btn :small="false" style="margin: 8px 0px" class="custom-btn" @click="onClickBack">
-                {{ `Back` }}
-              </u-btn> -->
             </div>
             <br />
             <div class="custom-margin">
               <label class="sectionheader">{{ `Install Type` }}</label>
               <br />
+              <label class="empty-label"></label>
               <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
                 Install type determines the optimal default settings for this deployment
               </label>
-              <br />
               <label>Choose Type:</label>
               <ValidationProvider v-slot="{ errors }" rules="required">
                 <v-autocomplete
@@ -192,6 +189,7 @@
         try {
           await Promise.resolve()
           await this.setShowStep('License')
+          await this.setShowPreviousStep('License')
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -262,6 +260,7 @@
     font-weight: 100;
     color: #999;
     font-size: 36px;
+    margin-left: 105px;
   }
   .sectionheader {
     font-family: 'Roboto Condensed', sans-serif;
@@ -316,7 +315,7 @@
   }
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
-    height: 183px; /* Set a specific height if needed */
+    height: 5px; /* Set a specific height if needed */
     background-color: white; /* Set a background color or any style */
   }
   .custom-margin {
@@ -336,12 +335,12 @@
     display: flex;
     justify-content: space-between; /* Places Back & Next at extreme left & right */
     align-items: center;
-    width: 100%;
+    width: 76%;
     position: absolute;
     bottom: 20px; /* Keeps it at a fixed position from bottom */
     left: 0;
     padding: 10px 20px; /* Adds padding for spacing */
-
     background-color: #f9f9f9;
+    margin-left: 107px;
   }
 </style>

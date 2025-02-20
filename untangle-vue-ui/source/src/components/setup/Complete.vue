@@ -47,6 +47,7 @@
 </template>
 
 <script>
+  import { mapActions } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   export default {
@@ -76,6 +77,9 @@
       this.onActivate()
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']),
+      ...mapActions('setup', ['setShowPreviousStep']),
+
       onActivate() {
         const rpc = Util.setRpcJsonrpc('admin')
         if (!rpc?.remote) {
