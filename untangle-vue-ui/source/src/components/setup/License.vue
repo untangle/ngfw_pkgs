@@ -50,6 +50,7 @@
 
       async onContinue() {
         try {
+          await Promise.resolve()
           await this.setShowStep('System') // Transition to System step
           await this.setShowPreviousStep('System')
         } catch (error) {
@@ -60,6 +61,7 @@
       async onClickDisagree() {
         try {
           await this.setShowStep('Wizard') // Navigate back to Wizard step
+          await this.setShowPreviousStep('Wizard')
         } catch (error) {
           console.error('Failed to navigate to Wizard step:', error)
         }

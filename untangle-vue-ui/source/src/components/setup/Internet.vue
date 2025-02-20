@@ -181,7 +181,7 @@
       async onClickBack() {
         try {
           await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          await this.setShowPreviousStep('Internet')
         } catch (error) {
           this.showWarning(`Failed to navigate: ${error.message || error}`)
         }
