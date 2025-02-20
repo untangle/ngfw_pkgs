@@ -46,10 +46,10 @@
             <div class="custom-margin">
               <label class="sectionheader">{{ `Install Type` }}</label>
               <br />
+              <label class="empty-label"></label>
               <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
                 Install type determines the optimal default settings for this deployment
               </label>
-              <br />
               <label>Choose Type:</label>
               <ValidationProvider v-slot="{ errors }" rules="required">
                 <v-autocomplete
@@ -315,7 +315,7 @@
   }
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
-    height: 183px; /* Set a specific height if needed */
+    height: 5px; /* Set a specific height if needed */
     background-color: white; /* Set a background color or any style */
   }
   .custom-margin {
