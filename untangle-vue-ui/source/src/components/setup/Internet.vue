@@ -224,7 +224,7 @@
           // setNetworkSettings after testConnectivity completes
           rpcResponseForSetup.networkManager.setNetworkSettings(() => {
             this.setShowStep('Interface')
-            this.setShowPreviousStep('Interface')
+            this.setShowPreviousStep('Internet')
           }, this.networkSettings)
         } catch (error) {
           this.showWarning('Unable to save network settings. Please try again.')

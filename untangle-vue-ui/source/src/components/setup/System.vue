@@ -36,7 +36,7 @@
                 >Administrators receive email alerts and report summaries</label
               >
               <br />
-              <label>Adding Email:</label>
+              <label>Admin Email:</label>
               <ValidationProvider>
                 <u-text-field v-model="adminEmail" />
               </ValidationProvider>
@@ -205,7 +205,7 @@
           }
           await this.saveAdminPassword()
           await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          await this.setShowPreviousStep('System')
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')
@@ -262,6 +262,7 @@
     font-weight: 100;
     color: #999;
     font-size: 36px;
+    margin-left: 105px;
   }
   .sectionheader {
     font-family: 'Roboto Condensed', sans-serif;
@@ -336,12 +337,12 @@
     display: flex;
     justify-content: space-between; /* Places Back & Next at extreme left & right */
     align-items: center;
-    width: 100%;
+    width: 76%;
     position: absolute;
     bottom: 20px; /* Keeps it at a fixed position from bottom */
     left: 0;
     padding: 10px 20px; /* Adds padding for spacing */
-
     background-color: #f9f9f9;
+    margin-left: 107px;
   }
 </style>

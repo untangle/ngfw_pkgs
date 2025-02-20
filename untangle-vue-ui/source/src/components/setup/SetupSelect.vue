@@ -145,8 +145,18 @@
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
 
       this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-      this.resuming = rpcResponseForSetup?.wizardSettings?.wizardComplete
+      // this.resuming = rpcResponseForSetup?.wizardSettings?.wizardComplete
 
+      if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
+        this.resuming = true
+      }
+
+      if (this.previousStep !== 'License' && this.previousStep !== 'Wizard') {
+        if (this.previousStep === 'System') {
+          this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
+        }
+        this.resuming = true
+      }
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
       } else {
@@ -190,7 +200,9 @@
                   this.resetWizardContinue()
                 } else {
                   this.dialog = false
-                  this.openSetup()
+                  this.setShowStep(this.previousStep)
+                  // this.nextPage()
+                  // this.openSetup()
                 }
               }
             })
@@ -215,19 +227,19 @@
       closeWarningDialog() {
         this.warningDiaglog = false
       },
-      async onContinue() {
-        try {
-          try {
-            this.showLicense = true
-            await this.setShowStep('License')
-            await this.setShowPreviousStep('License')
-          } catch (error) {
-            this.showWarningDialog(`Failed to reset: ${error.message || error}`)
-          }
-        } catch (error) {
-          this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
-        }
-      },
+      // async onContinue() {
+      //   try {
+      //     try {
+      //       this.showLicense = true
+      //       await this.setShowStep('License')
+      //       await this.setShowPreviousStep('License')
+      //     } catch (error) {
+      //       this.showWarningDialog(`Failed to reset: ${error.message || error}`)
+      //     }
+      //   } catch (error) {
+      //     this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
+      //   }
+      // },
       async resetWizard() {
         try {
           if (this.rpc.remote && !this.remoteReachable) {
@@ -258,8 +270,14 @@
         this.resuming = false
         this.rpc.wizardSettings.completedStep = null
         this.rpc.wizardSettings.wizardComplete = false
-
-        this.openSetup()
+        this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
+        this.nextPage()
+        // this.openSetup()
+      },
+      async nextPage() {
+        await Promise.resolve()
+        await this.setShowStep('License')
+        await this.setShowPreviousStep('Wizard')
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`

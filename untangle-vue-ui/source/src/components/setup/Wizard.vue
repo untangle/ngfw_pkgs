@@ -76,6 +76,7 @@
         try {
           // Change the step to 'System' and render the System component
           await this.setShowStep('System')
+          await this.setShowPreviousStep('Wizard')
         } catch (error) {
           console.error('Failed to navigate to System step:', error)
         }

@@ -105,7 +105,7 @@
         </div>
         <div class="button-container">
           <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-          <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
+          <u-btn :small="false" style="margin: 8px 0" @click="onSave">Next</u-btn>
           <!-- :disabled="invalid" -->
         </div>
         <br />
@@ -361,7 +361,7 @@
       async nextPage() {
         await Promise.resolve()
         await this.setShowStep('Autoupgrades')
-        await this.setShowPreviousStep('Autoupgrades')
+        await this.setShowPreviousStep('Interface')
       },
     },
   }

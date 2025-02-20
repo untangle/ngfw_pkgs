@@ -50,8 +50,9 @@
 
       async onContinue() {
         try {
+          await Promise.resolve()
           await this.setShowStep('System') // Transition to System step
-          await this.setShowPreviousStep('System')
+          await this.setShowPreviousStep('License')
         } catch (error) {
           console.error('Failed to navigate to System step:', error)
         }
