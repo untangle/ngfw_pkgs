@@ -7,11 +7,11 @@
           <v-img :src="require('@/assets/arista-logo-white.svg')" contain width="240" height="40" transition="false" />
         </div>
         <div v-if="status" class="d-flex flex-row">
-          <div v-for="(step, idx) in stepper" :key="idx">
-            <v-btn small text class="mx-2" :disabled="status.completed || stepper.indexOf(currentStep) < idx">
+          <div v-for="(step, idx) in wizardSteps" :key="idx">
+            <v-btn small text class="mx-2" :disabled="status.completed || wizardSteps.indexOf(currentStep) < idx">
               {{ $t(step) }}
             </v-btn>
-            <v-icon v-if="idx < stepper.length - 1" small :disabled="stepper.indexOf(currentStep) <= idx">
+            <v-icon v-if="idx < wizardSteps.length - 1" small :disabled="wizardSteps.indexOf(currentStep) <= idx">
               mdi-chevron-right
             </v-icon>
           </div>
@@ -31,12 +31,12 @@
 
   export default {
     computed: {
-      ...mapGetters('setup', ['stepper', 'previousStep']), // Map the stepper and previousStep getters
+      ...mapGetters('setup', ['stepper', 'previousStep', 'wizardSteps']), // Map the stepper and previousStep getters
       currentStep() {
         // If previousStep exists, determine the next step; otherwise, default to the first step in stepper
-        const previousStepIndex = this.stepper.indexOf(this.previousStep)
-        if (previousStepIndex >= 0 && previousStepIndex < this.stepper.length) {
-          return this.stepper[previousStepIndex]
+        const previousStepIndex = this.wizardSteps.indexOf(this.previousStep)
+        if (previousStepIndex >= 0 && previousStepIndex < this.wizardSteps.length) {
+          return this.wizardSteps[previousStepIndex]
         }
         return this.stepper[0] // Default to the first step if no previousStep or invalid index
       },
@@ -44,10 +44,6 @@
         return { completed: false } // Example status
       },
     },
-    mounted() {
-      console.log('Stepper from Vuex Store:', this.stepper) // Debugging log
-      console.log('Previous Step from Vuex Store:', this.previousStep) // Debugging log
-      console.log('Calculated Current Step:', this.currentStep) // Debugging log
-    },
+    mounted() {},
   }
 </script>

@@ -25,9 +25,10 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import uris from '@/util/uris'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  // import Util from '@/util/setupUtil'
 
   export default {
     name: 'License',
@@ -40,6 +41,9 @@
     mounted() {
       this.setEulaSrc()
     },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
+    },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       ...mapActions('setup', ['setShowPreviousStep']),
@@ -50,16 +54,18 @@
 
       async onContinue() {
         try {
-          await this.setShowStep('System') // Transition to System step
-          await this.setShowPreviousStep('System')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
           console.error('Failed to navigate to System step:', error)
         }
       },
 
       async onClickDisagree() {
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         try {
-          await this.setShowStep('Wizard') // Navigate back to Wizard step
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1]) // Navigate back to Wizard step
         } catch (error) {
           console.error('Failed to navigate to Wizard step:', error)
         }

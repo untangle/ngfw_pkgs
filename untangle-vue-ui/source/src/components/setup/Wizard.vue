@@ -1,7 +1,27 @@
 <template>
   <div>
-    <!-- Dynamically render components based on currentStep -->
+    <!-- <SetupLayout /> -->
     <component :is="currentStepComponent" />
+    <!-- <div class="wizard-footer">
+      <u-btn v-if="prevStep" :small="false" style="margin: 8px 0" class="btn prev-btn" @click="onPrev">
+        <i class="fa fa-chevron-circle-left"></i> {{ prevStep }}
+      </u-btn>
+
+      <span class="step-indicator">
+        <i v-for="(step, index) in steps" :key="index" :class="stepIndicatorClass(index)"></i>
+      </span>
+
+      <u-btn
+        v-if="nextStep"
+        :small="false"
+        style="margin: 8px 0"
+        :disabled="nextButtonDisabled"
+        class="btn next-btn"
+        @click="onNext"
+      >
+        {{ nextStep }} <i class="fa fa-chevron-circle-right"></i>
+      </u-btn>
+    </div> -->
   </div>
 </template>
 
@@ -14,8 +34,9 @@
   import Network from '@/components/setup/Network.vue'
   import Internet from '@/components/setup/Internet.vue'
   import Interface from '@/components/setup/Interface.vue'
-  import Autoupgrades from '@/components/setup/Autoupgrades.vue'
+  import AutoUpgrades from '@/components/setup/Autoupgrades.vue'
   import Complete from '@/components/setup/Complete.vue'
+  import Util from '@/util/setupUtil'
 
   export default {
     name: 'Wizard',
@@ -26,30 +47,72 @@
       SetupSelect,
       Internet,
       Interface,
-      Autoupgrades,
+      AutoUpgrades,
       Complete,
     },
+
+    data() {
+      return {
+        steps: [],
+        activeStepIndex: 0,
+        activeStepDesc: '',
+        intfListLength: 0, // used for next button disable/enable
+        nextDisabled: false,
+        interfacesForceContinue: false,
+        rpc: null,
+        cardIndex: null,
+        // wizard: {
+        //   steps: null,
+        // },
+        networkSettings: null,
+        setActiveItem: null,
+
+        prevStep: null,
+        nextStep: null,
+        activeItem: null,
+        activeIndex: null,
+      }
+    },
+
+    async created() {
+      await this.initializeRpc()
+      await this.onAfterRender()
+      await this.onSyncSteps()
+    },
+
+    mount() {
+      this.updateNav()
+    },
+
     computed: {
-      ...mapGetters('setup', ['currentStep']), // Get currentStep from Vuex
+      ...mapGetters('setup', ['currentStep', 'wizardSteps']), // Get currentStep from Vuex
       // Dynamically choose the component based on currentStep
       currentStepComponent() {
         switch (this.currentStep) {
-          case 'Wizard':
+          case 'Welcome':
             return SetupSelect
+
           case 'License':
             return License
-          case 'System':
+
+          case 'ServerSettings':
             return System
-          case 'Network':
-            return Network
+
+          case 'InternalNetwork':
+            return Interface
+
           case 'Internet':
             return Internet
-          case 'Interface':
-            return Interface
-          case 'Autoupgrades':
-            return Autoupgrades
+
+          case 'Interfaces':
+            return Network
+
+          case 'AutoUpgrades':
+            return AutoUpgrades
+
           case 'Complete':
             return Complete
+
           default:
             return SetupSelect
         }
@@ -59,40 +122,201 @@
       // If the page is refreshed, force set currentStep to 'Wizard'
       if (
         this.currentStep === 'License' ||
-        this.currentStep === 'System' ||
+        this.currentStep === 'ServerSettings' ||
         this.currentStep === 'Network' ||
         this.currentStep === 'Internet' ||
-        this.currentStep === 'Interface' ||
-        this.currentStep === 'Autoupgrades' ||
+        this.currentStep === 'InternalNetwork' ||
+        this.currentStep === 'Interfaces' ||
+        this.currentStep === 'AutoUpgrades' ||
         this.currentStep === 'Complete'
       ) {
-        await this.setShowStep('Wizard') // Reset step to 'Wizard'
+        await this.setShowStep('Welcome') // Reset step to 'Wizard'
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map Vuex action to change step
+      ...mapActions('setup', ['setShowStep', 'initializeWizard']), // Map Vuex action to change step
 
-      async onContinue() {
+      async initializeRpc() {
         try {
-          // Change the step to 'System' and render the System component
-          await this.setShowStep('System')
+          const rpcResult = await this.initializeWizard() // Await the resolved object
+          this.rpc = { ...rpcResult }
+
+          console.log('this.rpc', this.rpc)
         } catch (error) {
-          console.error('Failed to navigate to System step:', error)
+          console.error('Error initializing wizard:', error)
         }
       },
 
-      async onClickDisagree() {
-        try {
-          // If 'Disagree' is clicked, move to the 'Wizard' step
-          await this.setShowStep('Wizard')
-        } catch (error) {
-          console.error('Failed to navigate to Wizard step:', error)
+      updateNav() {
+        console.log('update nav Rpc', this.rpc)
+
+        this.prevStep = this.steps[this.activeStepIndex - 1]
+        this.nextStep = this.steps[this.activeStepIndex + 1]
+        this.activeStepDesc = this.steps[this.activeStepIndex]
+        console.log('updateNav function')
+
+        console.log('this.prevStep', this.prevStep)
+        console.log('this.nextStep', this.nextStep)
+        console.log('this.activeStepDesc', this.activeStepDesc)
+
+        if (this.rpc.jsonrpc) {
+          if (this.steps && this.steps.length > 0) {
+            this.rpc.wizardSettings.steps = this.steps
+          }
+          this.rpc.wizardSettings.completedStep = this.prevStep || null
+          this.rpc.wizardSettings.wizardComplete = !this.nextStep
+
+          if (this.rpc.jsonrpc.UvmContext) {
+            this.rpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+              if (ex) {
+                Util.handleException(ex)
+              }
+            }, this.rpc.wizardSettings)
+          }
+        }
+
+        // var me = this, view = me.getView(), vm = me.getViewModel(),
+
+        //     layout = me.getView().getLayout(),
+        //     prevStep = layout.getPrev(),
+        //     nextStep = layout.getNext(),
+
+        //     activeItem = layout.getActiveItem(),
+        //     activeIndex = activeItem ? Ext.Array.indexOf(view.steps, activeItem.getXType()) : -1,
+
+        //     stepInd = view.down('#stepIndicator'),
+        //     stepIndHtml = '';
+
+        //     console.log('layout',layout);
+        //     console.log('prevStep',prevStep);
+        //     console.log('nextStep',nextStep);
+        //     console.log('activeItem',activeItem);
+        //     console.log('activeIndex',activeIndex);
+        //     console.log('stepInd',stepInd);
+        //     console.log('stepInd',stepInd);
+
+        // if(activeItem &&
+        //     activeItem.getViewModel() &&
+        //     activeItem.getViewModel().get('nextStep') !== null){
+        //     nextStep = activeItem.getViewModel().get('nextStep');
+        // }
+
+        // vm.set({
+        //     activeStep: activeItem && activeItem.getXType(),
+        //     activeStepDesc: activeItem && activeItem.description,
+        //     prevStep: prevStep ? prevStep.getTitle() : null,
+        //     nextStep: nextStep ? nextStep.getTitle() : null
+        // });
+
+        // Ext.Array.each(view.steps, function (step, idx) {
+        //     if (idx < activeIndex) {
+        //         stepIndHtml += '<i class="done"></i>';
+        //         return;
+        //     }
+        //     if (idx === activeIndex) {
+        //         stepIndHtml += '<i class="active"></i>';
+        //         return;
+        //     }
+        //     stepIndHtml += '<i></i>';
+        // });
+        // stepInd.setHtml(stepIndHtml);
+
+        // if (rpc.jsonrpc) {
+        //     if(view.steps && view.steps.length > 0){
+        //         rpc.wizardSettings.steps = view.steps;
+        //     }
+        //     rpc.wizardSettings.completedStep = prevStep ? prevStep.getXType() : null;
+        //     rpc.wizardSettings.wizardComplete = nextStep ? false : true;
+
+        //     if(rpc.jsonrpc.UvmContext){
+        //         rpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+        //             if (ex) { Util.handleException(ex); return; }
+        //         }, rpc.wizardSettings);
+        //     }
+        // }
+      },
+
+      async onSyncSteps() {
+        console.log('this.rpc.remote', this.rpc.remote)
+        // if (this.rpc.remote) {
+        //   // Only for local.
+        //   return
+        // }
+        const rpcForAdmin = Util.setRpcJsonrpc('admin')
+        this.networkSettings = await rpcForAdmin?.networkManager?.getNetworkSettings()
+        this.interfaces = await this.networkSettings.interfaces.list
+        const firstWan = this.interfaces.find(function (intf) {
+          return intf.isWan && intf.configType !== 'DISABLED'
+        })
+        const firstNonWan = this.interfaces.find(function (intf) {
+          return !intf.isWan
+        })
+        const firstWireless = this.interfaces.find(function (intf) {
+          return intf.isWirelessInterface
+        })
+
+        this.tempSteps = ['License', 'ServerSettings', 'Interfaces']
+
+        if (firstWan) {
+          this.tempSteps.push('Internet')
+        }
+        if (firstNonWan) {
+          this.tempSteps.push('InternalNetwork')
+        }
+        if (firstWireless) {
+          this.tempSteps.push('Wireless')
+        }
+
+        this.tempSteps.push('AutoUpgrades')
+        this.tempSteps.push('Complete')
+
+        console.log('this.tempSteps', this.tempSteps)
+        this.steps = this.tempSteps
+        await this.$store.dispatch('setup/setStep', this.steps)
+      },
+
+      async onAfterRender() {
+        console.log('rpc in onAfterRender', this.rpc)
+        // Iterate over the steps array and push each step into this.steps
+        await this.rpc.wizardSettings.steps.forEach(stepName => {
+          console.log('stepName..................', stepName)
+          this.steps.push(stepName)
+        })
+        console.log('this.steps', this.steps)
+        if (!this.rpc.wizardSettings.wizardComplete && this.rpc.wizardSettings.completedStep !== null) {
+          // Get the card index based on completedStep
+          this.cardIndex = await this.rpc.wizardSettings.steps.indexOf(this.rpc.wizardSettings.completedStep)
+          console.log('cardIndex', this.cardIndex)
+
+          // Decrease cardIndex if needed for next steps
+          this.cardIndex--
+          if (this.cardIndex >= 2) {
+            // Ung.app.loading('Loading interfaces...'.t())
+            this.rpc.networkManager.getNetworkSettings(async (result, ex) => {
+              console.log('result', result)
+              console.log('ex', ex)
+
+              if (ex) {
+                Util.handleException('Unable to load interfaces.'.t())
+                return
+              }
+
+              this.networkSettings = result
+              this.intfListLength = result.interfaces.list.length
+
+              console.log('networkSettings', this.networkSettings)
+              console.log('intfListLength', this.intfListLength)
+              await this.onSyncSteps(this.cardIndex)
+            })
+          } else {
+            this.setActiveItem(this.cardIndex + 1)
+            this.updateNav()
+          }
+        } else {
+          // If wizard is complete, just update the navigation
+          this.updateNav()
         }
       },
     },
   }
 </script>
-
-<style scoped>
-  /* Add custom styles here */
-</style>

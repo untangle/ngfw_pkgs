@@ -105,7 +105,7 @@
         </div>
         <div class="button-container">
           <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-          <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
+          <u-btn :small="false" style="margin: 8px 0" @click="onSave">Next</u-btn>
           <!-- :disabled="invalid" -->
         </div>
         <br />
@@ -169,7 +169,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
 
@@ -206,10 +206,21 @@
         dialog: false,
         warningDiaglog: false,
         dialogMessage: '',
+        isProcessing: false,
       }
     },
+
     created() {
       this.getInterface()
+    },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
+    },
+
+    mounted() {
+      console.log('wizardSteps', this.wizardSteps)
+      console.log('currentStep', this.currentStep)
+      console.log('previousStep', this.previousStep)
     },
     methods: {
       ...mapActions('setup', ['setShowStep']),
@@ -263,8 +274,8 @@
       async onClickBack() {
         try {
           await Promise.resolve()
-          await this.setShowStep('Internet')
-          await this.setShowPreviousStep('Internet')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
         }
@@ -359,9 +370,23 @@
         })
       },
       async nextPage() {
-        await Promise.resolve()
-        await this.setShowStep('Autoupgrades')
-        await this.setShowPreviousStep('Autoupgrades')
+        if (this.isProcessing) return
+        this.isProcessing = true
+
+        try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+
+          if (this.wizardSteps[currentStepIndex + 1]) {
+            await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+            await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+          } else {
+            console.error('No next step available')
+          }
+        } catch (error) {
+          console.error('Error while navigating to next step:', error)
+        } finally {
+          this.isProcessing = false // Reset flag after processing is complete
+        }
       },
     },
   }

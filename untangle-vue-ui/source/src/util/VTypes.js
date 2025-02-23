@@ -135,4 +135,22 @@ export const VTypes = {
       return this.regex.test(value)
     },
   },
+
+  // IP Address Validation
+  ipAddress: {
+    regex: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/,
+    message: 'Please enter a valid IP Address.',
+    validate(value) {
+      return this.regex.test(value)
+    },
+  },
+
+  // Password Confirm Check
+  passwordConfirmCheck: {
+    validate(value, field) {
+      const originalPasswordField = field.comparePasswordField
+      return value === originalPasswordField.value
+    },
+    message: 'Passwords do not match',
+  },
 }

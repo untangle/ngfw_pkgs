@@ -133,7 +133,14 @@
       }
     },
     computed: {
-      ...mapGetters('setup', ['newPassword', 'newPasswordConfirm', 'installType']), // Map installType from Vuex
+      ...mapGetters('setup', [
+        'newPassword',
+        'newPasswordConfirm',
+        'installType',
+        'wizardSteps',
+        'currentStep',
+        'previousStep',
+      ]), // from Vuex
 
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
@@ -190,22 +197,24 @@
       ...mapActions('setup', ['setShowPreviousStep']),
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('License')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
       },
       async onContinue() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
             await window.rpc.setup.setTimeZone(timezoneId)
           }
           await this.saveAdminPassword()
-          await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')

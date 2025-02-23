@@ -106,7 +106,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Vue from 'vue'
   import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
   import { forEach } from 'lodash'
@@ -151,6 +151,9 @@
           { key: 'macAddress', label: 'MAC Address' },
         ],
       }
+    },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
     created() {
       this.getSettings()
@@ -370,9 +373,10 @@
 
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -391,11 +395,11 @@
               intf.physicalDev = interfacesMap[intf.interfaceId]
             }
           })
-
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
-          await this.setShowStep('Internet')
-          await this.setShowPreviousStep('Internet')
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
           console.error('Error saving settings:', error)
           alert('Failed to save settings. Please try again.')

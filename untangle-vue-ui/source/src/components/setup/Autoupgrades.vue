@@ -69,11 +69,11 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   export default {
-    name: 'Autoupgrades',
+    name: 'AutoUpgrades',
     components: {
       SetupLayout,
     },
@@ -96,11 +96,15 @@
         title: '',
         warningDiaglog: false,
         dialogMessage: '',
+        isProcessing: false,
       }
     },
     created() {
       this.getSettings()
       this.getTitle()
+    },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
     methods: {
       ...mapActions('setup', ['setShowStep']),
@@ -140,8 +144,9 @@
       async onClickBack() {
         try {
           await Promise.resolve()
-          await this.setShowStep('Interface')
-          await this.setShowPreviousStep('Interface')
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
         }
@@ -164,9 +169,21 @@
         this.nextPage()
       },
       async nextPage() {
-        await Promise.resolve()
-        await this.setShowStep('Complete')
-        await this.setShowPreviousStep('Complete')
+        if (this.isProcessing) return
+        this.isProcessing = true
+
+        try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+
+          if (this.wizardSteps[currentStepIndex + 1]) {
+            await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+            await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+          }
+        } catch (error) {
+          console.error('Error while navigating to next step:', error)
+        } finally {
+          this.isProcessing = false
+        }
       },
     },
   }

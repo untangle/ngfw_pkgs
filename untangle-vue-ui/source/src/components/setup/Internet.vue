@@ -146,7 +146,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
   export default {
@@ -170,6 +170,7 @@
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
     mounted() {
       this.checkRemoteReachability()
@@ -180,8 +181,9 @@
       ...mapActions('setup', ['setShowPreviousStep']),
       async onClickBack() {
         try {
-          await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           this.showWarning(`Failed to navigate: ${error.message || error}`)
         }
@@ -210,21 +212,17 @@
           this.wan.v4NatEgressTraffic = true
           this.wan.v4PPPoEUsePeerDns = true
         }
-
         this.loading = true // Start loading state
-
         try {
           this.loading = true // Indicate loading state
-
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-
           this.showWarning('Settings saved. Testing connectivity...')
-
           await this.testConnectivity()
           // setNetworkSettings after testConnectivity completes
-          rpcResponseForSetup.networkManager.setNetworkSettings(() => {
-            this.setShowStep('Interface')
-            this.setShowPreviousStep('Interface')
+          rpcResponseForSetup.networkManager.setNetworkSettings(async () => {
+            const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+            await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+            await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           }, this.networkSettings)
         } catch (error) {
           this.showWarning('Unable to save network settings. Please try again.')
