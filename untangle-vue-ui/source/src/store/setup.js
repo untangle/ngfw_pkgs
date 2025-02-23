@@ -15,6 +15,8 @@ const state = () => ({
   wizardSettings: {
     steps: [],
   },
+  isLoading: false,
+  loadingMessage: 'Loading...',
 })
 
 const getters = {
@@ -137,6 +139,14 @@ const actions = {
   setStep({ commit }, steps) {
     commit('SET_STEP', steps)
   },
+
+  // Actions for Loader
+  showLoader({ commit }, message) {
+    commit('SHOW_LOADER', message)
+  },
+  hideLoader({ commit }) {
+    commit('HIDE_LOADER')
+  },
 }
 const mutations = {
   SET_SHOW_STEP(state, value) {
@@ -170,6 +180,17 @@ const mutations = {
     console.log('Mutation - Setting wizardSettings:', steps)
     state.wizardSettings.steps = steps
   },
+  // For Loader
+  SHOW_LOADER(state, message) {
+    state.isLoading = true
+    state.loadingMessage = message || 'Loading...' // Default message
+  },
+  HIDE_LOADER(state) {
+    state.isLoading = false
+  },
+
+  // this.$store.dispatch('showLoader', 'Saving your data...');
+  // this.$store.dispatch('hideLoader');
 }
 
 export default {
