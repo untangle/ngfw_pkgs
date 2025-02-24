@@ -121,6 +121,7 @@
     },
     created() {
       this.rpc = Util.setRpcJsonrpc('admin')
+      console.log('rpc call :', this.rpc)
       this.getSsid()
       this.getEncryption()
       this.getPassword()
