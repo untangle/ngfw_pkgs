@@ -3,89 +3,86 @@
     <SetupLayout />
     <div class="wireless">
       <v-container>
-        <div v-if="wirelessSettings">
-          <p class="section-paragraph">Configure Wireless Settings</p>
+        <ValidationObserver v-slot="{ passes }">
+          <div v-if="wirelessSettings">
+            <p class="section-paragraph">Configure Wireless Settings</p>
 
-          <div class="container">
-            <!-- Section Header -->
-            <h1 class="section-header">Settings</h1>
+            <div class="container">
+              <!-- Section Header -->
+              <h1 class="section-header">Settings</h1>
 
-            <!-- SSID (Network Name) -->
-            <label>{{ `Network Name (SSID)` }}</label>
-            <u-text-field
-              id="ssid"
-              v-model="wirelessSettings.ssid"
-              maxlength="30"
-              pattern="[a-zA-Z0-9\\-_=]*"
-              required
-              outlined
-              dense
-              hide-details
-              class="input-box"
-            />
-            <label>{{ `Encryption` }}</label>
-            <v-autocomplete
-              v-model="wirelessSettings.encryption"
-              :items="encryptionOptions"
-              item-value="value"
-              item-title="text"
-              outlined
-              dense
-              hide-details
-            ></v-autocomplete>
-
-            <label>{{ `Password` }}</label>
-            <ValidationProvider
-              v-slot="{ errors }"
-              vid="newPassword"
-              :rules="{ required: passwordRequired, min: 8, max: 63 }"
-            >
-              <u-password
-                v-model="wirelessSettings.password"
-                :errors="errors"
-                :disabled="wirelessSettings.encryption === 'WPA'"
+              <!-- SSID (Network Name) -->
+              <label>{{ `Network Name (SSID)` }}</label>
+              <u-text-field
+                id="ssid"
+                v-model="wirelessSettings.ssid"
+                maxlength="30"
+                pattern="[a-zA-Z0-9\\-_=]*"
+                required
                 outlined
                 dense
                 hide-details
-                @NONE="validatePassword"
+                class="input-box"
               />
-            </ValidationProvider>
+              <label>{{ `Encryption` }}</label>
+              <v-autocomplete
+                v-model="wirelessSettings.encryption"
+                :items="encryptionOptions"
+                item-value="value"
+                item-title="text"
+                outlined
+                dense
+                hide-details
+              ></v-autocomplete>
+
+              <label>{{ `Password` }}</label>
+              <ValidationProvider v-slot="{ errors }" :rules="{ required: passwordRequired, min: 8, max: 63 }">
+                <u-password
+                  v-model="wirelessSettings.password"
+                  :errors="errors"
+                  :disabled="wirelessSettings.encryption === 'WPA'"
+                  outlined
+                  dense
+                  hide-details
+                  @NONE="validatePassword"
+                />
+              </ValidationProvider>
+            </div>
           </div>
-        </div>
-        <div class="button-container">
-          <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-          <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">{{ `Next` }}</u-btn>
-        </div>
-        <v-dialog v-model="dialog" persistent max-width="290">
-          <v-card>
-            <v-card-title class="headline">Warning!</v-card-title>
-            <v-card-text> No wireless interfaces found. Do you want to continue the setup? </v-card-text>
-            <v-card-actions>
-              <v-btn color="green" text @click="onConfirm">Yes</v-btn>
-              <v-btn color="red" text @click="onCancel">No</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
-        <v-dialog v-model="loading" persistent max-width="300">
-          <v-card>
-            <v-card-title class="headline"> Please Wait </v-card-title>
-            <v-card-text>
-              Loading User Interface...
-              <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
+          <div class="button-container">
+            <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
+            <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">{{ `Next` }}</u-btn>
+          </div>
+          <v-dialog v-model="dialog" persistent max-width="290">
+            <v-card>
+              <v-card-title class="headline">Warning!</v-card-title>
+              <v-card-text> No wireless interfaces found. Do you want to continue the setup? </v-card-text>
+              <v-card-actions>
+                <v-btn color="green" text @click="onConfirm">Yes</v-btn>
+                <v-btn color="red" text @click="onCancel">No</v-btn>
+              </v-card-actions>
+            </v-card>
+          </v-dialog>
+          <v-dialog v-model="loading" persistent max-width="300">
+            <v-card>
+              <v-card-title class="headline"> Please Wait </v-card-title>
+              <v-card-text>
+                Loading User Interface...
+                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </ValidationObserver>
       </v-container>
     </div>
   </v-card>
 </template>
 
 <script>
-  import { ref } from 'vue'
+  import { mapActions } from 'vuex'
+  import isEqual from 'lodash/isEqual'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
-  const passwordError = ref('')
-  console.log('passwordError:', passwordError)
 
   export default {
     components: {
@@ -95,15 +92,13 @@
       return {
         title: 'Wireless Settings',
         description: 'Configure Wireless Settings',
-        interfaces: [],
-        wireless: {},
         dialog: false,
         loading: false,
         rpc: null,
         wirelessSettings: {
-          ssid: 'ssid',
-          encryption: 'NONE',
-          password: 'password',
+          ssid: null,
+          encryption: null,
+          password: null,
         },
         encryptionOptions: [
           { value: 'NONE', text: 'None' },
@@ -111,7 +106,8 @@
           { value: 'WPA12', text: 'WPA /WPA2' },
           { value: 'WPA2', text: 'WPA2' },
         ],
-        initialSettings: {},
+        initialSettings: null,
+        networkSettings: null,
       }
     },
     computed: {
@@ -120,19 +116,20 @@
       },
     },
     created() {
-      this.rpc = Util.setRpcJsonrpc('admin')
-      console.log('rpc call :', this.rpc)
-      this.getSsid()
-      this.getEncryption()
-      this.getPassword()
       this.getSettings()
     },
     methods: {
+      ...mapActions('setup', ['setShowStep']),
+      ...mapActions('setup', ['setShowPreviousStep']),
+
       showDialog() {
         this.dialog = true
       },
-      onConfirm() {
+      async onConfirm() {
         this.dialog = false
+        await Promise.resolve()
+        await this.setShowStep('System')
+        await this.setShowPreviousStep('System')
         // TODO
         // me.getView().up('setupwizard').down('#nextBtn').click()
       },
@@ -140,21 +137,20 @@
         this.dialog = false
       },
       async getSettings() {
+        this.rpc = Util.setRpcJsonrpc('admin')
         try {
           this.networkSettings = await this.rpc?.networkManager?.getNetworkSettings()
-          this.interfaces = this.networkSettings.interfaces.list
+          const interfaces = await this.networkSettings.interfaces.list
 
-          this.wireless = this.interfaces.find(intf => intf.isWirelessInterface)
+          const wireless = await interfaces.find(intf => intf.isWirelessInterface)
 
-          console.log(this.networkSettings)
-
-          if (!this.wireless) {
+          if (!wireless) {
             this.showDialog()
           }
-          this.loading = true
-          setTimeout(() => {
-            this.loading = false
-          }, 3000)
+          // this.loading = true
+          // setTimeout(() => {
+          //   this.loading = false
+          // }, 3000)
           // Run all requests in parallel
           const [ssid, encryption, password] = await Promise.all([
             this.getSsid(),
@@ -167,6 +163,8 @@
             encryption: encryption || 'NONE',
             password: !password || password === '12345678' ? '' : password,
           }
+
+          this.initialSettings = { ...this.wirelessSettings }
         } catch (error) {
           console.error('Error fetching wireless settings:', error)
         } finally {
@@ -206,20 +204,41 @@
           })
         })
       },
-      onClickBack() {
+      async onClickBack() {
+        try {
+          await Promise.resolve()
+          await this.setShowStep('wizard')
+          await this.setShowPreviousStep('wizard')
+        } catch (error) {
+          console.error('Failed to navigate:', error)
+        }
         // previous page
       },
-      onSave() {
-        this.loading = true
-        if (this.initialSettings === this.wirelessSettings) {
+      async onSave() {
+        // this.loading = true
+        if (isEqual(this.initialSettings, this.wirelessSettings)) {
           // continue to next step
+          await Promise.resolve()
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
           return
         }
-        this.initialSettings.ssid = this.wirelessSettings.ssid
-        this.initialSettings.encryption = this.wirelessSettings.encryption
-        this.initialSettings.password = this.wirelessSettings.password
-
-        this.rpc.networkManager.setWirelessSettings(this.initialSettings)
+        if (!this.rpc || !this.rpc.networkManager) {
+          console.error('RPC session expired. Re-initializing...')
+          this.rpc = Util.setRpcJsonrpc('admin') // Reinitialize RPC session
+        }
+        try {
+          await this.rpc.networkManager.setWirelessSettings(
+            this.wirelessSettings.ssid,
+            this.wirelessSettings.encryption,
+            this.wirelessSettings.password,
+          )
+          await Promise.resolve()
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
+        } catch (error) {
+          console.error('Error saving wireless settings:', error)
+        }
       },
     },
   }
