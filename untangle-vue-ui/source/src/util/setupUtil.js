@@ -123,18 +123,17 @@ const Util = {
       })
   },
 
-  updateWizardSettings(Step) {
-    const rpc = this.setRpcJsonrpc('admin')
-
+  updateWizardSettings(step) {
+    const rpc = this.setRpcJsonrpc('setup')
+    const adminRpc = this.setRpcJsonrpc('admin')
     if (!rpc.wizardSettings.wizardComplete) {
-      rpc.wizardSettings.completedStep = Step
-      if (rpc.jsonrpc.UvmContext) {
-        rpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+      rpc.wizardSettings.completedStep = step
+      if (adminRpc.jsonrpc.UvmContext) {
+        adminRpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
           if (ex) {
             Util.handleException(ex)
           }
         }, rpc.wizardSettings)
-        console.log('rpc.wizardSettings')
       }
     }
     // me.updateNav(); // update navigation

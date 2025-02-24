@@ -171,11 +171,7 @@
       },
     },
     created() {
-      console.log('installType from Vuex:', this.installType) // Should now show the correct initial value
-
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-      console.log('Response', rpcResponseForSetup)
-
       this.adminEmail = rpcResponseForSetup?.adminEmail
       this.timezoneID = rpcResponseForSetup?.timezoneID
       this.timezones = []
@@ -213,6 +209,7 @@
             await window.rpc.setup.setTimeZone(timezoneId)
           }
           await this.saveAdminPassword()
+          await Util.updateWizardSettings(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {

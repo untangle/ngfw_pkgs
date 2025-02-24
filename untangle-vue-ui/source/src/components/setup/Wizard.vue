@@ -36,6 +36,7 @@
   import Interface from '@/components/setup/Interface.vue'
   import AutoUpgrades from '@/components/setup/Autoupgrades.vue'
   import Complete from '@/components/setup/Complete.vue'
+  import Wireless from '@/components/setup/Wireless.vue'
   import Util from '@/util/setupUtil'
 
   export default {
@@ -47,6 +48,7 @@
       SetupSelect,
       Internet,
       Interface,
+      Wireless,
       AutoUpgrades,
       Complete,
     },
@@ -107,6 +109,9 @@
           case 'Interfaces':
             return Network
 
+          case 'Wireless':
+            return Wireless
+
           case 'AutoUpgrades':
             return AutoUpgrades
 
@@ -127,6 +132,7 @@
         this.currentStep === 'Internet' ||
         this.currentStep === 'InternalNetwork' ||
         this.currentStep === 'Interfaces' ||
+        this.currentStep === 'Wireless' ||
         this.currentStep === 'AutoUpgrades' ||
         this.currentStep === 'Complete'
       ) {
@@ -140,24 +146,15 @@
         try {
           const rpcResult = await this.initializeWizard() // Await the resolved object
           this.rpc = { ...rpcResult }
-
-          console.log('this.rpc', this.rpc)
         } catch (error) {
           console.error('Error initializing wizard:', error)
         }
       },
 
       updateNav() {
-        console.log('update nav Rpc', this.rpc)
-
         this.prevStep = this.steps[this.activeStepIndex - 1]
         this.nextStep = this.steps[this.activeStepIndex + 1]
         this.activeStepDesc = this.steps[this.activeStepIndex]
-        console.log('updateNav function')
-
-        console.log('this.prevStep', this.prevStep)
-        console.log('this.nextStep', this.nextStep)
-        console.log('this.activeStepDesc', this.activeStepDesc)
 
         if (this.rpc.jsonrpc) {
           if (this.steps && this.steps.length > 0) {
@@ -174,74 +171,13 @@
             }, this.rpc.wizardSettings)
           }
         }
-
-        // var me = this, view = me.getView(), vm = me.getViewModel(),
-
-        //     layout = me.getView().getLayout(),
-        //     prevStep = layout.getPrev(),
-        //     nextStep = layout.getNext(),
-
-        //     activeItem = layout.getActiveItem(),
-        //     activeIndex = activeItem ? Ext.Array.indexOf(view.steps, activeItem.getXType()) : -1,
-
-        //     stepInd = view.down('#stepIndicator'),
-        //     stepIndHtml = '';
-
-        //     console.log('layout',layout);
-        //     console.log('prevStep',prevStep);
-        //     console.log('nextStep',nextStep);
-        //     console.log('activeItem',activeItem);
-        //     console.log('activeIndex',activeIndex);
-        //     console.log('stepInd',stepInd);
-        //     console.log('stepInd',stepInd);
-
-        // if(activeItem &&
-        //     activeItem.getViewModel() &&
-        //     activeItem.getViewModel().get('nextStep') !== null){
-        //     nextStep = activeItem.getViewModel().get('nextStep');
-        // }
-
-        // vm.set({
-        //     activeStep: activeItem && activeItem.getXType(),
-        //     activeStepDesc: activeItem && activeItem.description,
-        //     prevStep: prevStep ? prevStep.getTitle() : null,
-        //     nextStep: nextStep ? nextStep.getTitle() : null
-        // });
-
-        // Ext.Array.each(view.steps, function (step, idx) {
-        //     if (idx < activeIndex) {
-        //         stepIndHtml += '<i class="done"></i>';
-        //         return;
-        //     }
-        //     if (idx === activeIndex) {
-        //         stepIndHtml += '<i class="active"></i>';
-        //         return;
-        //     }
-        //     stepIndHtml += '<i></i>';
-        // });
-        // stepInd.setHtml(stepIndHtml);
-
-        // if (rpc.jsonrpc) {
-        //     if(view.steps && view.steps.length > 0){
-        //         rpc.wizardSettings.steps = view.steps;
-        //     }
-        //     rpc.wizardSettings.completedStep = prevStep ? prevStep.getXType() : null;
-        //     rpc.wizardSettings.wizardComplete = nextStep ? false : true;
-
-        //     if(rpc.jsonrpc.UvmContext){
-        //         rpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
-        //             if (ex) { Util.handleException(ex); return; }
-        //         }, rpc.wizardSettings);
-        //     }
-        // }
       },
 
       async onSyncSteps() {
-        console.log('this.rpc.remote', this.rpc.remote)
-        // if (this.rpc.remote) {
-        //   // Only for local.
-        //   return
-        // }
+        if (this.rpc.remote) {
+          // Only for local.
+          return
+        }
         const rpcForAdmin = Util.setRpcJsonrpc('admin')
         this.networkSettings = await rpcForAdmin?.networkManager?.getNetworkSettings()
         this.interfaces = await this.networkSettings.interfaces.list
@@ -270,32 +206,24 @@
         this.tempSteps.push('AutoUpgrades')
         this.tempSteps.push('Complete')
 
-        console.log('this.tempSteps', this.tempSteps)
         this.steps = this.tempSteps
         await this.$store.dispatch('setup/setStep', this.steps)
       },
 
       async onAfterRender() {
-        console.log('rpc in onAfterRender', this.rpc)
         // Iterate over the steps array and push each step into this.steps
         await this.rpc.wizardSettings.steps.forEach(stepName => {
-          console.log('stepName..................', stepName)
           this.steps.push(stepName)
         })
-        console.log('this.steps', this.steps)
         if (!this.rpc.wizardSettings.wizardComplete && this.rpc.wizardSettings.completedStep !== null) {
           // Get the card index based on completedStep
           this.cardIndex = await this.rpc.wizardSettings.steps.indexOf(this.rpc.wizardSettings.completedStep)
-          console.log('cardIndex', this.cardIndex)
 
           // Decrease cardIndex if needed for next steps
           this.cardIndex--
           if (this.cardIndex >= 2) {
             // Ung.app.loading('Loading interfaces...'.t())
             this.rpc.networkManager.getNetworkSettings(async (result, ex) => {
-              console.log('result', result)
-              console.log('ex', ex)
-
               if (ex) {
                 Util.handleException('Unable to load interfaces.'.t())
                 return
@@ -304,8 +232,6 @@
               this.networkSettings = result
               this.intfListLength = result.interfaces.list.length
 
-              console.log('networkSettings', this.networkSettings)
-              console.log('intfListLength', this.intfListLength)
               await this.onSyncSteps(this.cardIndex)
             })
           } else {

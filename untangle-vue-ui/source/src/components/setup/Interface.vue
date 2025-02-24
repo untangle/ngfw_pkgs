@@ -377,6 +377,7 @@
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
 
           if (this.wizardSteps[currentStepIndex + 1]) {
+            await Util.updateWizardSettings(this.currentStep)
             await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
             await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           } else {

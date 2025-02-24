@@ -18,6 +18,7 @@
 <script>
   import store from '@/store'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import Util from '@/util/setupUtil'
   export default {
     components: {
       SetupLayout,
@@ -30,6 +31,7 @@
         try {
           const nextStep = await store.dispatch('setup/resetStatus')
           if (nextStep) {
+            await Util.updateWizardSettings(this.currentStep)
             this.$router.push(`/setup/${nextStep}`)
           }
         } catch (error) {

@@ -5,8 +5,8 @@ import Util from '@/util/setupUtil'
 const state = () => ({
   steps: [],
   stepper: ['License', 'System', 'Network', 'Internet', 'Interface', 'Autoupgrades', 'Complete'],
-  currentStep: 'wizard',
-  previousStep: 'wizard',
+  currentStep: '',
+  previousStep: '',
   system: {
     newPassword: '',
     newPasswordConfirm: '',
@@ -17,23 +17,12 @@ const state = () => ({
   },
   isLoading: false,
   loadingMessage: 'Loading...',
+  currentStepIndex: 0,
 })
 
 const getters = {
-  // steps: (state, getters, rootState, rootGetters) => {
-  //   const steps = ['license', 'system', 'wan']
-
-  //   const interfaces = rootGetters['settings/interfaces']
-  //   const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
-  //   const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
-
-  //   if (lteStep >= 0) steps.push('lte')
-  //   if (wifiStep >= 0) steps.push('wifi')
-
-  //   return steps
-  // },
   stepper: state => state.stepper || [],
-  steps: state => state.steps, // Getter for steps array
+  steps: state => state.steps,
   currentStep: state => state.currentStep, // Getter for currentStep (showStep)
   previousStep: state => state.previousStep, // Getter for currentStep (showStep)
   newPassword: state => state.system.newPassword,
@@ -113,7 +102,8 @@ const actions = {
         steps = rpc.wizardSettings.steps
         console.log('steps', steps)
       }
-
+      commit('SET_SHOW_STEP', steps[0])
+      commit('SET_SHOW_PREVIOUS_STEP', steps[0])
       commit('SET_WIZARDSETTINGS', { steps })
       return rpc
     } catch (error) {
