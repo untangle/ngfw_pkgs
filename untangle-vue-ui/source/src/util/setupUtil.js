@@ -66,7 +66,6 @@ const Util = {
 
   authenticate(password, cb) {
     const url = '/auth/login?url=/admin&realm=Administrator'
-    console.log('Authenticating with password:', password)
 
     axios
       .post(

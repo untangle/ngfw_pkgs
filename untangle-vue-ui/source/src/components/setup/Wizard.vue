@@ -146,6 +146,9 @@
         try {
           const rpcResult = await this.initializeWizard() // Await the resolved object
           this.rpc = { ...rpcResult }
+          // Change the step to 'System' and render the System component
+          await this.setShowStep('System')
+          await this.setShowPreviousStep('System')
         } catch (error) {
           console.error('Error initializing wizard:', error)
         }

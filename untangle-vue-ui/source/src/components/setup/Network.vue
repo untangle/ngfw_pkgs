@@ -456,7 +456,7 @@
     height: 50%;
     border-radius: 5px;
     margin: 10px;
-    margin-bottom: -5px;
+    margin-bottom: -85px;
   }
   .description {
     margin-bottom: 20px;
