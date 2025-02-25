@@ -8,10 +8,8 @@
             <p class="section-paragraph">Configure Wireless Settings</p>
 
             <div class="container">
-              <!-- Section Header -->
               <h1 class="section-header">Settings</h1>
 
-              <!-- SSID (Network Name) -->
               <label>{{ `Network Name (SSID)` }}</label>
               <u-text-field
                 id="ssid"
@@ -73,6 +71,18 @@
             </v-card>
           </v-dialog>
         </ValidationObserver>
+        <v-dialog v-model="showDialog" max-width="400">
+          <v-card>
+            <v-card-title class="headline">RPC Status</v-card-title>
+            <v-card-text>
+              {{ dialogMessage }}
+            </v-card-text>
+            <v-card-actions>
+              <v-spacer></v-spacer>
+              <v-btn color="primary" text @click="closeDialog">OK</v-btn>
+            </v-card-actions>
+          </v-card>
+        </v-dialog>
       </v-container>
     </div>
   </v-card>
@@ -108,6 +118,7 @@
         ],
         initialSettings: null,
         networkSettings: null,
+        showDialog: false,
       }
     },
     computed: {
@@ -122,7 +133,7 @@
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
-      showDialog() {
+      showDialogBox() {
         this.dialog = true
       },
       async onConfirm() {
@@ -130,8 +141,6 @@
         await Promise.resolve()
         await this.setShowStep('System')
         await this.setShowPreviousStep('System')
-        // TODO
-        // me.getView().up('setupwizard').down('#nextBtn').click()
       },
       onCancel() {
         this.dialog = false
@@ -145,12 +154,12 @@
           const wireless = await interfaces.find(intf => intf.isWirelessInterface)
 
           if (!wireless) {
-            this.showDialog()
+            this.showDialogBox()
           }
-          // this.loading = true
-          // setTimeout(() => {
-          //   this.loading = false
-          // }, 3000)
+          this.loading = true
+          setTimeout(() => {
+            this.loading = false
+          }, 3000)
           // Run all requests in parallel
           const [ssid, encryption, password] = await Promise.all([
             this.getSsid(),
@@ -166,9 +175,9 @@
 
           this.initialSettings = { ...this.wirelessSettings }
         } catch (error) {
-          console.error('Error fetching wireless settings:', error)
+          this.showWarning(`Error fetching wireless settings: ${error.message || error}`)
         } finally {
-          this.loading = false // Stop loading indicator
+          this.loading = false
         }
       },
       getSsid() {
@@ -210,22 +219,20 @@
           await this.setShowStep('wizard')
           await this.setShowPreviousStep('wizard')
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          this.showWarning(`Failed to navigate: ${error.message || error}`)
         }
-        // previous page
       },
       async onSave() {
-        // this.loading = true
+        this.loading = true
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
-          // continue to next step
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
           return
         }
         if (!this.rpc || !this.rpc.networkManager) {
-          console.error('RPC session expired. Re-initializing...')
-          this.rpc = Util.setRpcJsonrpc('admin') // Reinitialize RPC session
+          this.showWarning('RPC session expired. Re-initializing...')
+          this.rpc = Util.setRpcJsonrpc('admin')
         }
         try {
           await this.rpc.networkManager.setWirelessSettings(
@@ -237,8 +244,15 @@
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
         } catch (error) {
-          console.error('Error saving wireless settings:', error)
+          this.showWarning(`Error saving wireless settings: ${error.message || error}`)
         }
+      },
+      showWarning(message) {
+        this.dialogMessage = message
+        this.showDialog = true
+      },
+      closeDialog() {
+        this.showDialog = false
       },
     },
   }
@@ -251,13 +265,13 @@
   }
   .button-container {
     display: flex;
-    justify-content: space-between; /* Places Back & Next at extreme left & right */
+    justify-content: space-between;
     align-items: center;
     width: 74%;
     position: absolute;
-    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    bottom: 20px;
     left: 0;
-    padding: 10px 20px; /* Adds padding for spacing */
+    padding: 10px 20px;
     gap: 20px;
     background-color: #f9f9f9;
     margin-left: 150px;
@@ -270,21 +284,16 @@
     margin: 20px 120px 10px 120px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
-    /* font-family: Arial, sans-serif; */
     height: 120%;
     overflow: hidden;
     padding: 30px 10px 10px 20px;
-    /* font-size: 90px; */
   }
   .container {
-    /* display: flex; */
-    /* justify-content: left; */
     padding-top: 0px;
   }
 
   .section-header {
     font-size: 24px;
-    /* font-weight: bold; */
     margin-bottom: 15px;
   }
   .section-paragraph {
@@ -296,7 +305,7 @@
     font-family: 'Arial', sans-serif;
     font-size: 20px;
     font-weight: bold;
-    color: #333; /* Optional: Adjust text color */
+    color: #333;
   }
 
   input,
@@ -315,6 +324,5 @@
   .custom-margin {
     width: 400px;
     margin-left: 100px;
-    /* height: 50px; */
   }
 </style>
