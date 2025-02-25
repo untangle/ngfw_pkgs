@@ -11,20 +11,24 @@
               <h1 class="section-header">Settings</h1>
 
               <label>{{ `Network Name (SSID)` }}</label>
-              <u-text-field
-                id="ssid"
-                v-model="wirelessSettings.ssid"
-                maxlength="30"
-                pattern="[a-zA-Z0-9\\-_=]*"
-                required
-                outlined
-                dense
-                hide-details
-                class="input-box"
-              />
+              <ValidationProvider v-slot="{ errors }" rules="required|max:30">
+                <u-text-field
+                  id="ssid"
+                  v-model="wirelessSettings.ssid"
+                  :error-messages="errors"
+                  outlined
+                  dense
+                  hide-details
+                  class="input-box"
+                  @keydown="validateSsid"
+                >
+                  <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                </u-text-field>
+              </ValidationProvider>
               <label>{{ `Encryption` }}</label>
               <v-autocomplete
                 v-model="wirelessSettings.encryption"
+                :errors="errors"
                 :items="encryptionOptions"
                 item-value="value"
                 item-title="text"
@@ -35,15 +39,17 @@
 
               <label>{{ `Password` }}</label>
               <ValidationProvider v-slot="{ errors }" :rules="{ required: passwordRequired, min: 8, max: 63 }">
-                <u-password
-                  v-model="wirelessSettings.password"
-                  :errors="errors"
-                  :disabled="wirelessSettings.encryption === 'WPA'"
-                  outlined
-                  dense
-                  hide-details
-                  @NONE="validatePassword"
-                />
+                <div @keydown="restrictPasswordInput">
+                  <u-password
+                    v-model="wirelessSettings.password"
+                    :errors="errors"
+                    :disabled="wirelessSettings.encryption === 'NONE'"
+                    outlined
+                    dense
+                    hide-details
+                    @input="validatePasswordField"
+                  />
+                </div>
               </ValidationProvider>
             </div>
           </div>
@@ -70,10 +76,19 @@
               </v-card-text>
             </v-card>
           </v-dialog>
+          <v-dialog v-model="saving" persistent max-width="300">
+            <v-card>
+              <v-card-title class="headline"> Please Wait </v-card-title>
+              <v-card-text>
+                Saving Settings...
+                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
         </ValidationObserver>
         <v-dialog v-model="showDialog" max-width="400">
           <v-card>
-            <v-card-title class="headline">RPC Status</v-card-title>
+            <v-card-title class="headline"></v-card-title>
             <v-card-text>
               {{ dialogMessage }}
             </v-card-text>
@@ -91,6 +106,7 @@
 <script>
   import { mapActions } from 'vuex'
   import isEqual from 'lodash/isEqual'
+  // import { max } from 'lodash'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
 
@@ -119,11 +135,15 @@
         initialSettings: null,
         networkSettings: null,
         showDialog: false,
+        saving: false,
       }
     },
     computed: {
       passwordRequired() {
-        return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
+        return this.wirelessSettings.encryption !== 'NONE'
+      },
+      requiredField() {
+        return this.wirelessSettings.ssid !== null
       },
     },
     created() {
@@ -133,6 +153,30 @@
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
+      validatePasswordField() {
+        if (this.wirelessSettings.password === '12345678') {
+          this.showWarning('You must choose a new and different wireless password.')
+        }
+      },
+      validateSsid(event) {
+        const allowedChars = /^[a-zA-Z0-9\-_=]$/
+        // Allow backspace, delete, arrow keys, tab
+        if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+          return
+        }
+        if (!allowedChars.test(event.key)) {
+          event.preventDefault() // Prevents the character from being entered
+        }
+      },
+      restrictPasswordInput(event) {
+        const allowedChars = /^[a-zA-Z0-9\-_=~@#%_,!/?.()[\]^$+*.|]+$/
+        if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+          return
+        }
+        if (!allowedChars.test(event.key)) {
+          event.preventDefault() // Prevents the character from being entered
+        }
+      },
       showDialogBox() {
         this.dialog = true
       },
@@ -157,9 +201,6 @@
             this.showDialogBox()
           }
           this.loading = true
-          setTimeout(() => {
-            this.loading = false
-          }, 3000)
           // Run all requests in parallel
           const [ssid, encryption, password] = await Promise.all([
             this.getSsid(),
@@ -174,6 +215,7 @@
           }
 
           this.initialSettings = { ...this.wirelessSettings }
+          this.loading = false
         } catch (error) {
           this.showWarning(`Error fetching wireless settings: ${error.message || error}`)
         } finally {
@@ -223,8 +265,9 @@
         }
       },
       async onSave() {
-        this.loading = true
+        this.saving = true
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
+          this.saving = false
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
@@ -240,10 +283,12 @@
             this.wirelessSettings.encryption,
             this.wirelessSettings.password,
           )
+          this.saving = false
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
         } catch (error) {
+          this.saving = false
           this.showWarning(`Error saving wireless settings: ${error.message || error}`)
         }
       },
