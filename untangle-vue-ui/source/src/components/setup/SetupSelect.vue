@@ -124,8 +124,7 @@
       }
     },
     computed: {
-      ...mapGetters('setup', ['currentStep']),
-      ...mapGetters('setup', ['previousStep']),
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
 
       logo() {
         return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
@@ -163,6 +162,7 @@
         this.showWarningDialog('RPC setup failed')
       }
     },
+
     methods: {
       ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'setSetupContext']),
 
@@ -277,8 +277,12 @@
       },
       async nextPage() {
         await Promise.resolve()
-        await this.setShowStep('License')
-        await this.setShowPreviousStep('License')
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+        await Util.updateWizardSettings(this.currentStep)
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+        // await this.setShowStep('License')
+        // await this.setShowPreviousStep('License')
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`

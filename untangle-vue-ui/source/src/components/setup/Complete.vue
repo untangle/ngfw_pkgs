@@ -50,7 +50,6 @@
   import { mapActions } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
-  import Util from '@/util/setupUtil'
   export default {
     components: {
       SetupLayout,

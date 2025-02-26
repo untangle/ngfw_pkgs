@@ -68,8 +68,8 @@
       async onClickDisagree() {
         const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         try {
-          await this.setShowStep('Wizard') // Navigate back to Wizard step
-          await this.setShowPreviousStep('Wizard')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           console.error('Failed to navigate to Wizard step:', error)
         }
