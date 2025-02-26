@@ -3,7 +3,7 @@
     <SetupLayout />
     <v-container class="main-div">
       <div class="step-title">Configure the Internet Connection</div>
-      <div v-if="!isRemoteReachable" class="warning-message">
+      <div v-if="!remoteReachable" class="warning-message">
         <p>No Internet Connection..! Click on 'Test Connectivity' to verify.</p>
       </div>
       <div v-if="wan">
@@ -119,8 +119,16 @@
               </div>
             </div>
 
-            <div class="button-container">
+            <div v-if="!remoteTestPassed" class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
+              <div class="center-container-renew-button">
+                <span class="center-text">
+                  You may continue configuring your Internet connection or run the Setup Wizard locally
+                </span>
+                <u-btn :small="false" class="renew-button" :disabled="loading" @click="resetWizard">
+                  <v-icon left>mdi-autorenew</v-icon> Run Setup Wizard Locally
+                </u-btn>
+              </div>
               <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
               <!-- :disabled="invalid" -->
             </div>
@@ -141,6 +149,17 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
+      <!-- Dialog Box for show No internal interfaces -->
+      <v-dialog v-model="dialog" persistent max-width="290">
+        <v-card>
+          <v-card-title class="headline">Warning!</v-card-title>
+          <v-card-text> No internal interfaces found. Do you want to continue the setup? </v-card-text>
+          <v-card-actions>
+            <v-btn color="green" text @click="onConfirm">Yes</v-btn>
+            <v-btn color="red" text @click="onCancel">No</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
     </v-container>
   </v-card>
 </template>
@@ -149,6 +168,9 @@
   import { mapActions, mapGetters } from 'vuex'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
+  // import store from '@/store'
+
   export default {
     name: 'Internet',
     components: {
@@ -156,7 +178,7 @@
     },
     data() {
       return {
-        isRemoteReachable: null,
+        remoteReachable: null,
         wan: {},
         wanStatus: {},
         networkSettings: null,
@@ -164,6 +186,11 @@
         loading: false,
         showDialog: false,
         dialogMessage: '',
+        rpcResponseForAdmin: null,
+        rpcResponseForSetup: null,
+        nextDisabled: false,
+        remoteTestPassed: false,
+        remote: false,
       }
     },
     computed: {
@@ -172,8 +199,14 @@
       },
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
+    created() {
+      // this.getSettings()
+      this.rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+      this.rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+      this.remoteReachable = this.rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
+      this.remote = this.rpcResponseForSetup.remote
+    },
     mounted() {
-      this.checkRemoteReachability()
       this.getSettings()
     },
     methods: {
@@ -185,10 +218,29 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          this.showWarning(`Failed to navigate: ${error.message || error}`)
+          this.alertDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
 
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Internet Status'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
+      },
       async onSave(cb) {
         if (!this.wan) {
           cb()
@@ -216,8 +268,12 @@
         try {
           this.loading = true // Indicate loading state
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          this.showWarning('Settings saved. Testing connectivity...')
-          await this.testConnectivity()
+          this.alertDialog('Settings saved. Testing connectivity...')
+          // Check if cb is a function using typeof.
+          const mode = typeof cb === 'function' ? 'auto' : 'manual'
+          await this.testConnectivity(mode, () => {
+            cb()
+          })
           // setNetworkSettings after testConnectivity completes
           rpcResponseForSetup.networkManager.setNetworkSettings(async () => {
             const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
@@ -226,46 +282,117 @@
             await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           }, this.networkSettings)
         } catch (error) {
-          this.showWarning('Unable to save network settings. Please try again.')
+          this.alertDialog('Unable to save network settings. Please try again.')
         } finally {
           this.loading = false // Ensure loading state is turned off after execution
         }
       },
-      checkRemoteReachability() {
-        this.isRemoteReachable = false
-      },
-      async testConnectivity() {
-        this.showWarning('Testing connectivity...')
+
+      async testConnectivity(testType, cb) {
+        //  this.showWarning('Testing connectivity...')
+        console.log('this.rpcResponseForAdmin', this.rpcResponseForAdmin)
+
         this.loading = true
+        let message = null
+        const remote = this.remote
+
         try {
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          const result = await rpcResponseForSetup.connectivityTester.getStatus()
+          // const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
+          const result = await this.rpcResponseForAdmin.connectivityTester.getStatus()
+          console.log('result in connectivity tester', result)
+          console.log('remote', remote)
+          console.log('this.remoteReachable', this.remoteReachable)
+          console.log('this.remoteTestPassed', this.remoteTestPassed)
           if (result.tcpWorking === false && result.dnsWorking === false) {
-            this.showWarning('Warning! Internet tests and DNS tests failed.')
+            message = 'Warning! Internet tests and DNS tests failed.'
+            this.alertDialog(message)
           } else if (result.tcpWorking === false) {
-            this.showWarning('Warning! DNS tests succeeded, but Internet tests failed.')
+            message = 'Warning! DNS tests succeeded, but Internet tests failed.'
+            this.alertDialog(message)
           } else if (result.dnsWorking === false) {
-            this.showWarning('Warning! Internet tests succeeded, but DNS tests failed.')
+            message = 'Warning! Internet tests succeeded, but DNS tests failed.'
+            this.alertDialog(message)
           } else {
-            this.showWarning('Success..')
+            console.log('this.remote', this.remote)
+            if (remote) {
+              this.remoteReachable = this.rpcResponseForAdmin.setup.getRemoteReachable()
+              if (this.remoteReachable === false) {
+                message = 'Unable to reach ETM Dashboard!'
+                this.alertDialog(message)
+              } else {
+                this.nextDisabled = false
+              }
+            } else {
+              this.message = null
+              this.nextDisabled = false
+            }
+            if (remote) {
+              this.$set(this, 'nextDisabled', this.nextDisabled)
+              if (remote && message !== null) {
+                this.remoteTestPassed = false
+                console.log('this.remoteTestPassed', this.remoteTestPassed)
+                console.log('message', message)
+                message += this.$t(
+                  'You may continue configuring your Internet connection or run the Setup Wizard locally.',
+                )
+                this.alertDialog(message)
+                console.log('message', message)
+              }
+            }
+            if (testType === 'manual') {
+              this.message = 'Success..'
+              this.alertDialog(message)
+            } else {
+              // on next step just move forward if no failures
+              if (!message) {
+                cb()
+                return
+              }
+
+              // otherwise show a warning message
+              message +=
+                '<br/><br/><br/>' +
+                this.$t('You may continue configuring your Internet connection or run the Setup Wizard locally.')
+              this.alertDialog(message)
+
+              const warningText =
+                message +
+                '<br/><br/>' +
+                this.$t('It is recommended to configure valid Internet settings before continuing. Try again?')
+
+              this.$vuntangle.confirm.show({
+                title: `<i class="mdi mdi-alert" style="font-style: normal;"> ${this.$t('warning')}</i>`,
+                message: warningText,
+                confirmLabel: this.$t('Yes'),
+                cancelLabel: this.$t('No'), // No button, similar to Ext.Msg.confirm
+                action: resolve => {
+                  // If the user clicks "Yes", do nothing (just close the modal)
+                  resolve()
+                },
+                cancel: () => {
+                  // If "No" is clicked, execute the callback function
+                  cb()
+                },
+              })
+            }
           }
+          this.getInterfaceStatus()
         } catch (error) {
-          this.showWarning('Unable to complete connectivity test, please try again.')
+          this.alertDialog('Unable to complete connectivity test, please try again.')
         } finally {
           this.loading = false
         }
-      },
-      showWarning(message) {
-        this.dialogMessage = message
-        this.showDialog = true
-      },
-      closeDialog() {
-        this.showDialog = false
       },
 
       async getSettings() {
         try {
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
+
+          if (this.remote) {
+            // If remote and we are here, disable the next button.
+            this.nextDisabled = true
+            this.remoteTestPassed = true
+          }
           this.networkSettings = await rpcResponseForSetup.networkManager.getNetworkSettings()
 
           const firstWan = this.networkSettings.interfaces.list.find(intf => {
@@ -279,7 +406,7 @@
           }
           this.getInterfaceStatus()
         } catch (error) {
-          this.showWarning('Unable to fetch Network Settings.')
+          this.alertDialog('Unable to fetch Network Settings.')
         }
       },
       async getInterfaceStatus() {
@@ -288,7 +415,7 @@
           const status = await rpcResponseForSetup.networkManager.getInterfaceStatus(this.wan.interfaceId)
           this.wanStatus = status
         } catch (error) {
-          this.showWarning('Unable to get WAN status.')
+          this.alertDialog('Unable to get WAN status.')
         }
       },
       async renewDhcp() {
@@ -299,21 +426,39 @@
           const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
           await rpcResponseForSetup.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
-              this.showWarning('Unable to set Network Settings.')
+              this.alertDialog('Unable to set Network Settings.')
               return
             }
             // then force the DHCP lease renew just in case
-            this.showWarning('Renewing DHCP Lease...')
+            this.alertDialog('Renewing DHCP Lease...')
             rpcResponseForSetup.networkManager.renewDhcpLease(() => {
-              this.showWarning('DHCP lease renewed successfully.')
+              this.alertDialog('DHCP lease renewed successfully.')
               this.getSettings()
             }, this.wan.interfaceId)
           }, this.networkSettings)
         } catch (error) {
-          this.showWarning(`Error during DHCP renewal: ${error.message || error}`)
+          this.alertDialog(`Error during DHCP renewal: ${error.message || error}`)
         } finally {
           this.loading = false
         }
+      },
+
+      async resetWizard() {
+        this.$store.commit('SET_LOADER', true)
+        console.log('this.rpcResponseForAdmin', this.rpcResponseForAdmin)
+        console.log('this.rpcResponseForSetup', this.rpcResponseForSetup)
+        this.rpcResponseForSetup.wizardSettings.steps = []
+        await this.rpcResponseForAdmin.jsonrpc.UvmContext.setRemoteSetup(false)
+        // Update wizard settings and handle the response.
+        this.rpcResponseForAdmin.jsonrpc.UvmContext.setWizardSettings((result, ex) => {
+          if (ex) {
+            Util.handleException(ex)
+            return
+          }
+          // Redirect to the setup page.
+          window.top.location.href = '/setup/index.do'
+          this.$store.commit('SET_LOADER', false)
+        }, this.rpcResponseForSetup.wizardSettings)
       },
     },
   }
@@ -363,6 +508,23 @@
     margin-left: 0px;
     margin-bottom: 20px; /* Add spacing below */
     width: 100%; /* Ensure it takes the full width */
+  }
+  .center-container-renew-button {
+    display: flex;
+    flex-direction: column; /* Stack text and button vertically */
+    justify-content: center; /* Align vertically in the center */
+    align-items: center; /* Align horizontally in the center */
+    text-align: center; /* Center the text inside */
+    height: 100%; /* Ensure it takes full height */
+    width: 100%; /* Ensure it takes full width */
+    padding: 20px; /* Add some spacing */
+  }
+
+  .center-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px; /* Space between text and button */
+    display: block; /* Ensures text behaves like a block for proper spacing */
   }
 
   .column-view {
@@ -525,7 +687,7 @@
     left: 0;
     padding: 10px 20px; /* Adds padding for spacing */
 
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
   }
 
   .no-internet {
