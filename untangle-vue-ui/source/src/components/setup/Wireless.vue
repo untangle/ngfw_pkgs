@@ -38,7 +38,7 @@
               ></v-autocomplete>
 
               <label>{{ `Password` }}</label>
-              <ValidationProvider v-slot="{ errors }" :rules="{ required: passwordRequired, min: 8, max: 63 }">
+              <ValidationProvider v-slot="{ errors }" rules="required|min:8|max:63|valide_password">
                 <div @keydown="restrictPasswordInput">
                   <u-password
                     v-model="wirelessSettings.password"
@@ -47,7 +47,6 @@
                     outlined
                     dense
                     hide-details
-                    @input="validatePasswordField"
                   />
                 </div>
               </ValidationProvider>
@@ -57,47 +56,7 @@
             <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
             <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">{{ `Next` }}</u-btn>
           </div>
-          <v-dialog v-model="dialog" persistent max-width="290">
-            <v-card>
-              <v-card-title class="headline">Warning!</v-card-title>
-              <v-card-text> No wireless interfaces found. Do you want to continue the setup? </v-card-text>
-              <v-card-actions>
-                <v-btn color="green" text @click="onConfirm">Yes</v-btn>
-                <v-btn color="red" text @click="onCancel">No</v-btn>
-              </v-card-actions>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="loading" persistent max-width="300">
-            <v-card>
-              <v-card-title class="headline"> Please Wait </v-card-title>
-              <v-card-text>
-                Loading User Interface...
-                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
-          <v-dialog v-model="saving" persistent max-width="300">
-            <v-card>
-              <v-card-title class="headline"> Please Wait </v-card-title>
-              <v-card-text>
-                Saving Settings...
-                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
-              </v-card-text>
-            </v-card>
-          </v-dialog>
         </ValidationObserver>
-        <v-dialog v-model="showDialog" max-width="400">
-          <v-card>
-            <v-card-title class="headline"></v-card-title>
-            <v-card-text>
-              {{ dialogMessage }}
-            </v-card-text>
-            <v-card-actions>
-              <v-spacer></v-spacer>
-              <v-btn color="primary" text @click="closeDialog">OK</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-container>
     </div>
   </v-card>
@@ -106,7 +65,7 @@
 <script>
   import { mapActions } from 'vuex'
   import isEqual from 'lodash/isEqual'
-  // import { max } from 'lodash'
+  import { extend } from 'vee-validate'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
 
@@ -139,33 +98,32 @@
       }
     },
     computed: {
-      passwordRequired() {
-        return this.wirelessSettings.encryption !== 'NONE'
-      },
       requiredField() {
         return this.wirelessSettings.ssid !== null
       },
     },
     created() {
+      this.$store.commit('SET_LOADER', true)
+      extend('valide_password', this.validatePasswordField)
       this.getSettings()
     },
     methods: {
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
-      validatePasswordField() {
-        if (this.wirelessSettings.password === '12345678') {
-          this.showWarning('You must choose a new and different wireless password.')
+      validatePasswordField(value) {
+        if (value === '12345678') {
+          return this.$t('You must choose a new and different wireless password.', this.wirelessSettings.password)
         }
+        return true
       },
       validateSsid(event) {
         const allowedChars = /^[a-zA-Z0-9\-_=]$/
-        // Allow backspace, delete, arrow keys, tab
         if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
           return
         }
         if (!allowedChars.test(event.key)) {
-          event.preventDefault() // Prevents the character from being entered
+          event.preventDefault()
         }
       },
       restrictPasswordInput(event) {
@@ -173,21 +131,10 @@
         if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
           return
         }
+        console.log('event.data :', event.key)
         if (!allowedChars.test(event.key)) {
-          event.preventDefault() // Prevents the character from being entered
+          event.preventDefault()
         }
-      },
-      showDialogBox() {
-        this.dialog = true
-      },
-      async onConfirm() {
-        this.dialog = false
-        await Promise.resolve()
-        await this.setShowStep('System')
-        await this.setShowPreviousStep('System')
-      },
-      onCancel() {
-        this.dialog = false
       },
       async getSettings() {
         this.rpc = Util.setRpcJsonrpc('admin')
@@ -198,9 +145,21 @@
           const wireless = await interfaces.find(intf => intf.isWirelessInterface)
 
           if (!wireless) {
-            this.showDialogBox()
+            this.$vuntangle.confirm.show({
+              title: `<i class="mdi mdi-alert" style="font-style: normal;"> ${this.$t('warning')}</i>`,
+              message: this.$t(`Loading User Interface...`),
+              confirmLabel: this.$t('yes'),
+              cancelLabel: this.$t('no'),
+              action: async resolve => {
+                resolve()
+                await Promise.resolve()
+                await this.setShowStep('System')
+                await this.setShowPreviousStep('System')
+              },
+            })
           }
-          this.loading = true
+          this.$store.commit('SET_LOADER', true)
+
           // Run all requests in parallel
           const [ssid, encryption, password] = await Promise.all([
             this.getSsid(),
@@ -215,11 +174,10 @@
           }
 
           this.initialSettings = { ...this.wirelessSettings }
-          this.loading = false
         } catch (error) {
-          this.showWarning(`Error fetching wireless settings: ${error.message || error}`)
+          this.$vuntangle.toast.add(this.$t(`Error fetching wireless settings : ${error || error.message}`))
         } finally {
-          this.loading = false
+          this.$store.commit('SET_LOADER', false)
         }
       },
       getSsid() {
@@ -261,20 +219,19 @@
           await this.setShowStep('wizard')
           await this.setShowPreviousStep('wizard')
         } catch (error) {
-          this.showWarning(`Failed to navigate: ${error.message || error}`)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
         }
       },
       async onSave() {
-        this.saving = true
+        this.$store.commit('SET_LOADER', true)
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
           this.saving = false
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
-          return
         }
         if (!this.rpc || !this.rpc.networkManager) {
-          this.showWarning('RPC session expired. Re-initializing...')
+          this.$vuntangle.toast.add(this.$t(`RPC session expired. Re-initializing...`))
           this.rpc = Util.setRpcJsonrpc('admin')
         }
         try {
@@ -283,13 +240,14 @@
             this.wirelessSettings.encryption,
             this.wirelessSettings.password,
           )
-          this.saving = false
+          this.$store.commit('SET_LOADER', false)
+
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
         } catch (error) {
-          this.saving = false
-          this.showWarning(`Error saving wireless settings: ${error.message || error}`)
+          this.$store.commit('SET_LOADER', false)
+          this.$vuntangle.toast.add(this.$t(`Error saving wireless settings : ${error || error.message}`))
         }
       },
       showWarning(message) {
