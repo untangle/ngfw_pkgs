@@ -37,7 +37,7 @@
               >
               <br />
               <label>Admin Email:</label>
-              <ValidationProvider>
+              <ValidationProvider rules="required">
                 <u-text-field v-model="adminEmail" />
               </ValidationProvider>
               <br /><br />
@@ -80,7 +80,6 @@
                 >
                 </v-autocomplete>
               </ValidationProvider>
-              <!-- <label class="empty-label"> </label> -->
               <div class="button-container">
                 <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
                 <u-btn :small="false" style="margin: 8px 0" @click="passes(onContinue)">{{ `Next` }}</u-btn>
@@ -245,22 +244,20 @@
 
 <style scoped>
   .main-div {
-    /* max-width: 1100px; */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    /* align-items: center; */
+    justify-content: flex-start;
     padding: 20px;
     justify-content: flex-start;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    min-height: 600px; /* Ensures the minimum height remains constant */
-    max-height: 700px; /* Prevents the height from changing too much */
-    height: 700px; /* Set a fixed height to keep the div consistent */
+    min-height: 600px;
+    max-height: 700px;
+    height: 700px;
     overflow-y: auto;
-    position: relative; /* Ensures children stay within boundary */
+    position: relative;
   }
   .step-title {
     font-family: 'Roboto Condensed', sans-serif;
@@ -323,7 +320,7 @@
   .empty-label {
     display: block; /* Ensures the label takes up space and is on its own line */
     height: 5px; /* Set a specific height if needed */
-    background-color: white; /* Set a background color or any style */
+    background-color: #f9f9f9;
   }
   .custom-margin {
     width: 300px; /* Fixed width for buttons */
