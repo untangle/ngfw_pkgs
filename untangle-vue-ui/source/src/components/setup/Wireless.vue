@@ -20,6 +20,7 @@
                   dense
                   hide-details
                   class="input-box"
+                  @paste="validatePaste"
                   @keydown="validateSsid"
                 >
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
@@ -39,7 +40,7 @@
 
               <label>{{ `Password` }}</label>
               <ValidationProvider v-slot="{ errors }" rules="required|min:8|max:63|valide_password">
-                <div @keydown="restrictPasswordInput">
+                <div @keydown="restrictPasswordInput" @paste="restrictPasswordPaste">
                   <u-password
                     v-model="wirelessSettings.password"
                     :errors="errors"
@@ -119,20 +120,31 @@
       },
       validateSsid(event) {
         const allowedChars = /^[a-zA-Z0-9\-_=]$/
-        if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
+        if (event.key.length > 1) {
           return
         }
         if (!allowedChars.test(event.key)) {
           event.preventDefault()
         }
       },
+      validatePaste(event) {
+        const pastedText = (event.clipboardData || window.clipboardData).getData('text')
+        const allowedChars = /^[a-zA-Z0-9\-_=]+$/
+
+        if (!allowedChars.test(pastedText)) {
+          event.preventDefault()
+        }
+      },
       restrictPasswordInput(event) {
         const allowedChars = /^[a-zA-Z0-9\-_=~@#%_,!/?.()[\]^$+*.|]+$/
-        if (['Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'Tab'].includes(event.key)) {
-          return
-        }
-        console.log('event.data :', event.key)
         if (!allowedChars.test(event.key)) {
+          event.preventDefault()
+        }
+      },
+      restrictPasswordPaste(event) {
+        const pastedText = (event.clipboardData || window.clipboardData).getData('text')
+        const allowedChars = /^[a-zA-Z0-9\-_=~@#%_,!/?.()[\]^$+*.|]+$/
+        if (!allowedChars.test(pastedText)) {
           event.preventDefault()
         }
       },
