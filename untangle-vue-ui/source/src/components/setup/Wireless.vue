@@ -223,13 +223,13 @@
         }
       },
       async onSave() {
-        this.$store.commit('SET_LOADER', true)
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
           this.saving = false
           await Promise.resolve()
           await this.setShowStep('System')
           await this.setShowPreviousStep('System')
         }
+        this.$store.commit('SET_LOADER', true)
         if (!this.rpc || !this.rpc.networkManager) {
           this.$vuntangle.toast.add(this.$t(`RPC session expired. Re-initializing...`))
           this.rpc = Util.setRpcJsonrpc('admin')
@@ -249,13 +249,6 @@
           this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$t(`Error saving wireless settings : ${error || error.message}`))
         }
-      },
-      showWarning(message) {
-        this.dialogMessage = message
-        this.showDialog = true
-      },
-      closeDialog() {
-        this.showDialog = false
       },
     },
   }
