@@ -97,11 +97,17 @@ router.beforeEach((to, from, next) => {
         }
       }
     } catch (ex) {
-      if (to.name !== 'login') next({ name: 'login' })
-      else next()
+      if (to.name === 'setup') {
+        return next({ name: 'wizard' })
+      }
+      // if (to.name !== 'login') {
+      //   return next({ name: 'login' })
+      // }
+      next()
     }
-  } else if (to.name === 'login') next({ name: 'home' })
-  else next()
+  } else if (to.name === 'login') {
+    next({ name: 'home' })
+  } else next()
 })
 
 export default router
