@@ -140,7 +140,7 @@
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep', 'initializeWizard']), // Map Vuex action to change step
+      ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'initializeWizard']), // Map Vuex action to change step
 
       async initializeRpc() {
         try {

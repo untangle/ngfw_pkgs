@@ -28,6 +28,8 @@
   import { mapActions, mapGetters } from 'vuex'
   import uris from '@/util/uris'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import Util from '@/util/setupUtil'
+
   // import Util from '@/util/setupUtil'
 
   export default {
@@ -44,6 +46,22 @@
     computed: {
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
     },
+    created() {
+      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+      if (rpcResponseForSetup) {
+        this.rpc = rpcResponseForSetup
+        console.log('this.rpc inside created', this.rpc)
+      } else {
+        this.showWarningDialog('RPC setup failed')
+      }
+
+      const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+      if (rpcResponseForAdmin) {
+        this.adminRpc = rpcResponseForAdmin
+      } else {
+        this.showWarningDialog('RPC setup failed')
+      }
+    },
     methods: {
       ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
       ...mapActions('setup', ['setShowPreviousStep']),
@@ -57,9 +75,6 @@
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
-          await Promise.resolve()
-          await this.setShowStep('System') // Transition to System step
-          await this.setShowPreviousStep('System')
         } catch (error) {
           console.error('Failed to navigate to System step:', error)
         }

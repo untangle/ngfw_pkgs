@@ -122,21 +122,49 @@ const Util = {
       })
   },
 
-  updateWizardSettings(step) {
+  async updateWizardSettings(step) {
     const rpc = this.setRpcJsonrpc('setup')
     const adminRpc = this.setRpcJsonrpc('admin')
-    if (!rpc.wizardSettings.wizardComplete) {
+    if (rpc.wizardSettings.wizardComplete) {
       rpc.wizardSettings.completedStep = step
       if (adminRpc.jsonrpc.UvmContext) {
-        adminRpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
-          if (ex) {
-            Util.handleException(ex)
-          }
-        }, rpc.wizardSettings)
+        await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
+        console.log('rpc.wizardSettings :', rpc.wizardSettings)
+        console.log('adminRpc.jsonrpc.UvmContext :', adminRpc.jsonrpc.UvmContext)
+        console.log(
+          'adminRpc.jsonrpc.UvmContext.getWizardSettings() :',
+          adminRpc.jsonrpc.UvmContext.getWizardSettings(),
+        )
+        return adminRpc.jsonrpc.UvmContext.getWizardSettings()
       }
     }
+    // this.updateNav()
     // me.updateNav(); // update navigation
   },
+
+  // updateNav(activeStepIndex, steps) {
+  //   const prevStep = steps[activeStepIndex - 1]
+  //   const nextStep = steps[activeStepIndex + 1]
+  //   const activeStepDesc = steps[activeStepIndex]
+
+  //   if (rpc.jsonrpc) {
+  //     if (steps && steps.length > 0) {
+  //       rpc.wizardSettings.steps = steps
+  //     }
+  //     rpc.wizardSettings.completedStep = prevStep || null
+  //     rpc.wizardSettings.wizardComplete = nextStep ? false : true
+
+  //     if (adminRpc.jsonrpc.UvmContext) {
+  //       adminRpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+  //         if (ex) {
+  //           Util.handleException(ex)
+  //         }
+  //       }, rpc.wizardSettings)
+  //     }
+  //     return {rpc, adminRpc}
+  //   }
+  //   return null
+  // },
 
   handleException(exception) {
     if (!exception) {

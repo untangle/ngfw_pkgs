@@ -207,7 +207,9 @@
             await window.rpc.setup.setTimeZone(timezoneId)
           }
           await this.saveAdminPassword()
-          await Util.updateWizardSettings(this.currentStep)
+          const updatedSettings = await Util.updateWizardSettings(this.currentStep)
+          console.log('updatedSettings in License :', updatedSettings)
+
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {

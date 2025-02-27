@@ -121,6 +121,9 @@
         warningDiaglog: false,
         windowWidth: window.innerWidth,
         isOpenSetup: false,
+        adminRpc: null,
+        updatedSettings: null,
+        index: -1,
       }
     },
     computed: {
@@ -132,35 +135,65 @@
     },
     mounted() {
       window.addEventListener('resize', this.handleResize)
+      this.index = this.wizardSteps.indexOf(this.previousStep)
+      console.log('index from mounted :', this.index)
+      if (this.index >= 2) {
+        this.resuming = true
+      }
+
+      // TODO handled from update of setupUtil
+      // this.$store.commit('setup/RESET_SYSTEM')
+      // Util.updateWizardSettings(this.currentStep)
+      //   .then(settings => {
+      //     this.updatedSettings = settings
+      //     console.log('Updated Settings:', this.updatedSettings)
+
+      //     // if (this.updatedSettings && this.updatedSettings.completedStep) {
+      //     //   this.resuming = true
+      //     // }
+
+      //     this.index = this.wizardSteps.indexOf(previousStep)
+      //     console.log('index from mounted :', this.index)
+      //   })
+      //   .catch(error => {
+      //     console.error('Error updating settings:', error)
+      //   })
     },
     beforeDestroy() {
       window.removeEventListener('resize', this.handleResize)
     },
     created() {
+      console.log('wizardSteps :', this.wizardSteps)
       this.presentStepFromStore = this.currentStep
       this.logCurrentStep() // Log again after ensuring data is available
 
       // Example: Setting up RPC client
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-
-      this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-
-      if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
-        this.resuming = true
-      }
-
-      // TODO will get handled in wizard
-      if (this.previousStep === 'System') {
-        this.$store.commit('setup/RESET_SYSTEM')
-      }
-      if (this.previousStep !== 'License' && this.previousStep !== 'Wizard' && this.previousStep !== 'System') {
-        this.resuming = true
-      }
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
       } else {
         this.showWarningDialog('RPC setup failed')
       }
+
+      const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+      if (rpcResponseForAdmin) {
+        this.adminRpc = rpcResponseForAdmin
+      } else {
+        this.showWarningDialog('RPC setup failed')
+      }
+      this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
+
+      if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
+        this.resuming = true
+      }
+      this.index = this.wizardSteps.indexOf(this.previousStep)
+      console.log('index from mounted :', this.index)
+      if (this.index >= 2) {
+        this.resuming = true
+      }
+      // if (this.previousStep !== 'License' && this.previousStep !== 'Wizard' && this.previousStep !== 'System') {
+      //   this.resuming = true
+      // }
     },
 
     methods: {
@@ -200,7 +233,14 @@
                   this.resetWizardContinue()
                 } else {
                   this.dialog = false
-                  this.setShowStep(this.previousStep)
+                  // this.setShowStep(this.previousStep)
+                  console.log('updatedSettings inside OK setupSelect :', this.updatedSettings)
+
+                  console.log('index in OK click:', this.index)
+                  if (this.index !== -1) {
+                    this.setShowStep(this.wizardSteps[this.index - 1])
+                    this.setShowPreviousStep(this.wizardSteps[this.index - 1])
+                  }
                   // TODO
                   // this.nextPage()
                   // this.openSetup()
@@ -242,6 +282,8 @@
       //   }
       // },
       async resetWizard() {
+        // const updatedSettings = await Util.updateWizardSettings(this.currentStep)
+        console.log('updatedSettings :', this.updatedSettings)
         try {
           if (this.rpc.remote && !this.remoteReachable) {
             if (Util.setRpcJsonrpc('admin') === true) {
@@ -266,13 +308,17 @@
           this.showWarningDialog(`Failed to reset: ${error.message || error}`)
         }
       },
-      resetWizardContinue() {
+      async resetWizardContinue() {
         this.dialog = false
         this.resuming = false
         this.rpc.wizardSettings.completedStep = null
         this.rpc.wizardSettings.wizardComplete = false
         this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
-        this.nextPage()
+        await Promise.resolve()
+        this.rpc.wizardSettings.completedStep = null
+        await this.setShowStep(this.wizardSteps[0])
+        await this.setShowPreviousStep(this.wizardSteps[0])
+        // this.nextPage()
         // this.openSetup()
       },
       async nextPage() {
