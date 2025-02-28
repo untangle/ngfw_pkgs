@@ -135,6 +135,14 @@
     },
     mounted() {
       window.addEventListener('resize', this.handleResize)
+      if (
+        !this.rpcResponseForSetup?.wizardSettings?.wizardComplete &&
+        this.rpc?.wizardSettings?.completedStep != null
+      ) {
+        if (this.index >= 2) {
+          this.resuming = true
+        }
+      }
       this.index = this.wizardSteps.indexOf(this.previousStep)
       console.log('index from mounted :', this.index)
       if (this.index >= 2) {
@@ -183,15 +191,15 @@
       }
       this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
 
-      if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
-        this.resuming = true
-      }
-      this.index = this.wizardSteps.indexOf(this.previousStep)
-      console.log('index from mounted :', this.index)
-      if (this.index >= 2) {
-        this.resuming = true
-      }
-      // if (this.previousStep !== 'License' && this.previousStep !== 'Wizard' && this.previousStep !== 'System') {
+      // if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
+      //   if (this.index >= 2) {
+      //     this.resuming = true
+      //   }
+      // }
+      // this.index = this.wizardSteps.indexOf(this.previousStep)
+      // console.log('index from mounted :', this.index)
+      // // TODO to be removed as handled above
+      // if (this.index >= 2) {
       //   this.resuming = true
       // }
     },
@@ -233,17 +241,11 @@
                   this.resetWizardContinue()
                 } else {
                   this.dialog = false
-                  // this.setShowStep(this.previousStep)
-                  console.log('updatedSettings inside OK setupSelect :', this.updatedSettings)
-
-                  console.log('index in OK click:', this.index)
                   if (this.index !== -1) {
+                    this.$store.commit('setup/RESET_SYSTEM')
                     this.setShowStep(this.wizardSteps[this.index - 1])
                     this.setShowPreviousStep(this.wizardSteps[this.index - 1])
                   }
-                  // TODO
-                  // this.nextPage()
-                  // this.openSetup()
                 }
               }
             })
@@ -268,22 +270,9 @@
       closeWarningDialog() {
         this.warningDiaglog = false
       },
-      // async onContinue() {
-      //   try {
-      //     try {
-      //       this.showLicense = true
-      //       await this.setShowStep('License')
-      //       await this.setShowPreviousStep('License')
-      //     } catch (error) {
-      //       this.showWarningDialog(`Failed to reset: ${error.message || error}`)
-      //     }
-      //   } catch (error) {
-      //     this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
-      //   }
-      // },
       async resetWizard() {
         // const updatedSettings = await Util.updateWizardSettings(this.currentStep)
-        console.log('updatedSettings :', this.updatedSettings)
+        // console.log('updatedSettings :', this.updatedSettings)
         try {
           if (this.rpc.remote && !this.remoteReachable) {
             if (Util.setRpcJsonrpc('admin') === true) {
@@ -318,17 +307,6 @@
         this.rpc.wizardSettings.completedStep = null
         await this.setShowStep(this.wizardSteps[0])
         await this.setShowPreviousStep(this.wizardSteps[0])
-        // this.nextPage()
-        // this.openSetup()
-      },
-      async nextPage() {
-        await Promise.resolve()
-        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-        await Util.updateWizardSettings(this.currentStep)
-        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
-        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
-        // await this.setShowStep('License')
-        // await this.setShowPreviousStep('License')
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
