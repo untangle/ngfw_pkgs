@@ -9,7 +9,7 @@
         <div v-if="status" class="d-flex flex-row">
           <div v-for="(step, idx) in wizardSteps" :key="idx">
             <v-btn small text class="mx-2" :disabled="status.completed || wizardSteps.indexOf(currentStep) < idx">
-              {{ $t(step) }}
+              {{ $t(getStepLabel(step)) }}
             </v-btn>
             <v-icon v-if="idx < wizardSteps.length - 1" small :disabled="wizardSteps.indexOf(currentStep) <= idx">
               mdi-chevron-right
@@ -44,6 +44,15 @@
         return { completed: false } // Example status
       },
     },
-    mounted() {},
+
+    methods: {
+      getStepLabel(step) {
+        const customLabels = {
+          ServerSettings: 'Settings',
+          InternalNetwork: 'Network',
+        }
+        return customLabels[step] || step
+      },
+    },
   }
 </script>
