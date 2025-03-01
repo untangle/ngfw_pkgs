@@ -113,14 +113,14 @@
                   <span>{{ wanStatus.v4Dns2 }}</span>
                 </div>
                 <div>
-                  <u-btn :small="false" class="button-test-connectivity" @click="onSave">
+                  <u-btn :small="false" class="button-test-connectivity" @click="onSave('testConnectivity')">
                     <v-icon class="world-icon mr-2">mdi-earth</v-icon> Test Connectivity
                   </u-btn>
                 </div>
               </div>
             </div>
             <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-            <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
+            <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave('save'))">Next</u-btn>
           </v-form>
         </ValidationObserver>
       </div>
@@ -248,7 +248,7 @@
           ],
         })
       },
-      async onSave(cb) {
+      async onSave(triggeredBy, cb) {
         if (!this.wan) {
           cb()
           return
@@ -275,15 +275,21 @@
         // this.loading = true // Start loading state
         this.$store.commit('SET_LOADER', true)
 
+        let mode = 'auto'
+        if (triggeredBy === 'testConnectivity') {
+          mode = 'manual'
+        } else if (triggeredBy === 'save') {
+          mode = 'auto'
+        }
         try {
-          const mode = typeof cb === 'function' ? 'auto' : 'manual'
           await this.testConnectivity(mode)
+          console.log('mode:', mode)
           this.rpcForAdmin.networkManager.setNetworkSettings(this.networkSettings)
           if (typeof cb === 'function') {
             cb()
+            this.$store.commit('SET_LOADER', false)
+            this.nextPage()
           }
-          this.$store.commit('SET_LOADER', false)
-          this.nextPage()
         } catch (error) {
           this.alertDialog('Unable to save network settings. Please try again.')
         } finally {
@@ -293,28 +299,15 @@
       },
 
       async testConnectivity(testType, cb) {
-        console.log('this.rpcForAdmin:', this.rpcForAdmin)
-
-        // this.loading = true // Start loading state
         let message = null
         let nextDisabled = true
         const remote = this.remote
 
         try {
-          // Show loading message
-
           this.$store.commit('SET_LOADER', true)
 
           // this.alertDialog('Testing Connectivity...')
-
-          // Fetch connectivity status
           const result = await this.rpcForAdmin.connectivityTester.getStatus()
-
-          console.log('connectivityTester.getStatus() result:', result)
-          console.log('Remote:', remote)
-          console.log('this.remoteReachable:', this.remoteReachable)
-          console.log('this.remoteTestPassed:', this.remoteTestPassed)
-
           // Determine connectivity status
           if (!result.tcpWorking && !result.dnsWorking) {
             message = 'Warning! Internet tests and DNS tests failed.'
@@ -342,11 +335,6 @@
 
           // Handle different test types
           if (testType === 'manual') {
-            //   this.$vuntangle.dialog.show({
-            //   title: `${this.$t(`Internet Status ${message || `success`}`)}`,
-            //   width: 800,
-            //   buttons: [],
-            // })
             this.alertDialog(message || 'Success!')
           } else {
             if (!message) {
@@ -364,8 +352,17 @@
               message: warningText,
               confirmLabel: this.$t('Yes'),
               cancelLabel: this.$t('No'),
-              action: resolve => resolve(), // If Yes, do nothing (just close)
-              cancel: () => cb(), // If No, continue callback
+              action: async resolve => {
+                try {
+                  await this.testConnectivity(testType, cb) // 🔥 Retry test on "Yes"
+                } finally {
+                  resolve()
+                }
+              },
+              cancel: () => {
+                // cb()
+                this.nextPage() // If No, continue callback
+              },
             })
           }
 
