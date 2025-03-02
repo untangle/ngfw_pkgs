@@ -30,8 +30,6 @@
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
 
-  // import Util from '@/util/setupUtil'
-
   export default {
     name: 'License',
     components: {
