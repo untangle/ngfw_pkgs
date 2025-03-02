@@ -2,26 +2,6 @@
   <div>
     <!-- <SetupLayout /> -->
     <component :is="currentStepComponent" />
-    <!-- <div class="wizard-footer">
-      <u-btn v-if="prevStep" :small="false" style="margin: 8px 0" class="btn prev-btn" @click="onPrev">
-        <i class="fa fa-chevron-circle-left"></i> {{ prevStep }}
-      </u-btn>
-
-      <span class="step-indicator">
-        <i v-for="(step, index) in steps" :key="index" :class="stepIndicatorClass(index)"></i>
-      </span>
-
-      <u-btn
-        v-if="nextStep"
-        :small="false"
-        style="margin: 8px 0"
-        :disabled="nextButtonDisabled"
-        class="btn next-btn"
-        @click="onNext"
-      >
-        {{ nextStep }} <i class="fa fa-chevron-circle-right"></i>
-      </u-btn>
-    </div> -->
   </div>
 </template>
 
