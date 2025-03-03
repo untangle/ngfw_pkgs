@@ -64,7 +64,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import isEqual from 'lodash/isEqual'
   import { extend } from 'vee-validate'
   import Util from '@/util/setupUtil'
@@ -99,6 +99,7 @@
       }
     },
     computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
       requiredField() {
         return this.wirelessSettings.ssid !== null
       },
@@ -164,9 +165,10 @@
               cancelLabel: this.$t('no'),
               action: async resolve => {
                 resolve()
-                await Promise.resolve()
-                await this.setShowStep('System')
-                await this.setShowPreviousStep('System')
+                const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+                await Util.updateWizardSettings(this.currentStep)
+                await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+                await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
               },
             })
           }
@@ -237,9 +239,10 @@
       async onSave() {
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
           this.saving = false
-          await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await Util.updateWizardSettings(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         }
         this.$store.commit('SET_LOADER', true)
         if (!this.rpc || !this.rpc.networkManager) {
@@ -254,9 +257,11 @@
           )
           this.$store.commit('SET_LOADER', false)
 
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          await Util.updateWizardSettings(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
           this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$t(`Error saving wireless settings : ${error || error.message}`))

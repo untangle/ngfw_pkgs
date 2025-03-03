@@ -54,14 +54,14 @@ const Util = {
 
       Object.assign(rpc, setupInfo)
       rpcResponse = rpc
-    } catch (e) {
+    } catch (error) {
       // success = false
-      console.error(e) // Handle the exception here
-      rpcResponse = null // If an error occurs, ensure rpcResponse is null
+      this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
+      rpcResponse = null
     }
 
     // return success
-    return rpcResponse // Return the rpc response object or null in case of an error
+    return rpcResponse
   },
 
   authenticate(password, cb) {
@@ -79,20 +79,16 @@ const Util = {
         },
       )
       .then(response => {
-        // console.log('Authentication response:', response.data)
-
-        // Check if loginPage exists in the response
         if (response.data && response.data.includes('loginPage')) {
           if (password === 'passwd') {
             cb(null, true) // Default success callback for 'passwd'
           } else {
-            console.error('Invalid password provided.')
+            this.$vuntangle.toast.add(this.$t(`Invalid password provided.`))
             cb(new Error('Invalid password.'), false)
           }
           return
         }
 
-        // Set up RPC JSON-RPC client
         this.setRpcJsonrpc('admin')
 
         const adminRpc = new window.JSONRpcClient('/admin/JSON-RPC')
@@ -107,68 +103,34 @@ const Util = {
                 }
                 setTimeout(() => rpc.keepAlive(), 300000)
               })
-            } else {
-              console.error('UvmContext is not available in RPC.')
             }
           },
         }
 
         rpc.keepAlive()
-        cb(null, true) // Successfully authenticated
+        cb(null, true)
       })
       .catch(error => {
-        console.error('Error during authentication:', error)
+        this.$vuntangle.toast.add(this.$t(`Error during authentication: ${error || error.message}`))
         cb(new Error('Authentication request failed.'), false)
       })
   },
 
+  // save and update wizard settings
   async updateWizardSettings(step) {
     const rpc = this.setRpcJsonrpc('setup')
     const adminRpc = this.setRpcJsonrpc('admin')
-    if (rpc.wizardSettings.wizardComplete) {
+    if (!rpc.wizardSettings.wizardComplete) {
       rpc.wizardSettings.completedStep = step
       if (adminRpc.jsonrpc.UvmContext) {
         await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
-        console.log('rpc.wizardSettings :', rpc.wizardSettings)
-        console.log('adminRpc.jsonrpc.UvmContext :', adminRpc.jsonrpc.UvmContext)
-        console.log(
-          'adminRpc.jsonrpc.UvmContext.getWizardSettings() :',
-          adminRpc.jsonrpc.UvmContext.getWizardSettings(),
-        )
-        return adminRpc.jsonrpc.UvmContext.getWizardSettings()
       }
     }
-    // this.updateNav()
-    // me.updateNav(); // update navigation
   },
-
-  // updateNav(activeStepIndex, steps) {
-  //   const prevStep = steps[activeStepIndex - 1]
-  //   const nextStep = steps[activeStepIndex + 1]
-  //   const activeStepDesc = steps[activeStepIndex]
-
-  //   if (rpc.jsonrpc) {
-  //     if (steps && steps.length > 0) {
-  //       rpc.wizardSettings.steps = steps
-  //     }
-  //     rpc.wizardSettings.completedStep = prevStep || null
-  //     rpc.wizardSettings.wizardComplete = nextStep ? false : true
-
-  //     if (adminRpc.jsonrpc.UvmContext) {
-  //       adminRpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
-  //         if (ex) {
-  //           Util.handleException(ex)
-  //         }
-  //       }, rpc.wizardSettings)
-  //     }
-  //     return {rpc, adminRpc}
-  //   }
-  //   return null
-  // },
 
   handleException(exception) {
     if (!exception) {
-      console.error('Null Exception!')
+      this.$vuntangle.toast.add(this.$t(`Null Exception!`))
       return
     }
 
@@ -221,11 +183,9 @@ const Util = {
       return
     }
 
-    /** Show generic error message */
     this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
   },
   showWarningMessage(message, details, errorHandler) {
-    // Use your modal library here. Example:
     this.$notify({
       title: 'Warning',
       message: `

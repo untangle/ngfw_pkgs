@@ -17,7 +17,7 @@
       </p>
 
       <div class="button-container">
-        <u-btn :small="false" style="margin: 8px 0" @click="onClickDisagree">Disagree</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onDisagree">Disagree</u-btn>
         <u-btn :small="false" style="margin: 8px 0" @click="onContinue">Agree</u-btn>
       </div>
     </v-container>
@@ -48,20 +48,18 @@
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
-        console.log('this.rpc inside created', this.rpc)
       } else {
         this.showWarningDialog('RPC setup failed')
       }
-
       const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
       if (rpcResponseForAdmin) {
-        this.adminRpc = rpcResponseForAdmin
+        this.rpcForAdmin = rpcResponseForAdmin
       } else {
         this.showWarningDialog('RPC setup failed')
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
       async setEulaSrc() {
@@ -74,17 +72,18 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          console.error('Failed to navigate to System step:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate to System step: ${error || error.message}`))
         }
       },
 
-      async onClickDisagree() {
+      async onDisagree() {
+        await Util.updateWizardSettings(null)
         const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         try {
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          console.error('Failed to navigate to Wizard step:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate to Wizard step: ${error || error.message}`))
         }
       },
     },
