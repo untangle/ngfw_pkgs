@@ -316,7 +316,6 @@
       async testConnectivity(testType, cb) {
         let message = null
         let nextDisabled = true
-        const remote = this.remote
 
         try {
           this.$store.commit('SET_LOADER', true)
@@ -340,10 +339,10 @@
             message = null
             nextDisabled = false
           }
-          if (remote) {
+          if (this.remote) {
             this.nextDisabled = nextDisabled
           }
-          if (remote && message !== null) {
+          if (this.remote && message !== null) {
             this.remoteTestPassed = false
             message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
           }
@@ -398,7 +397,7 @@
           }
           this.getInterfaceStatus()
         } catch (error) {
-          this.alertDialog('Unable to fetch Network Settings.')
+          this.alertDialog(`Unable to fetch Network Settings. Error: ${error.message || error}`)
         }
       },
       async getInterfaceStatus() {
@@ -406,7 +405,7 @@
           const status = await this.rpcForAdmin.networkManager.getInterfaceStatus(this.wan.interfaceId)
           this.wanStatus = status
         } catch (error) {
-          this.alertDialog('Unable to get WAN status.')
+          this.alertDialog(`Unable to get WAN status : ${error.message || error}`)
         }
       },
       async renewDhcp() {
