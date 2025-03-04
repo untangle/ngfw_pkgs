@@ -72,7 +72,8 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          this.$vuntangle.toast.add(this.$t(`Failed to navigate to System step: ${error || error.message}`))
+          console.log('error:', error)
+          // this.$vuntangle.toast.add(this.$t(`Failed to navigate to System step: ${error || error.message}`))
         }
       },
 
@@ -83,7 +84,8 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          this.$vuntangle.toast.add(this.$t(`Failed to navigate to Wizard step: ${error || error.message}`))
+          console.log('error:', error)
+          // this.$vuntangle.toast.add(this.$t(`Failed to navigate to Wizard step: ${error || error.message}`))
         }
       },
     },

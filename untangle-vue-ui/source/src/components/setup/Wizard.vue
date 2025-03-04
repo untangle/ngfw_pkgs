@@ -130,6 +130,7 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex])
         } catch (error) {
+          // console.log('error:', error)
           this.$vuntangle.toast.add(this.$t(`Error initializing wizard: ${error || error.message}`))
         }
       },

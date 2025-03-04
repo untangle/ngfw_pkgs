@@ -134,14 +134,10 @@
       },
     },
     mounted() {
-      // window.addEventListener('resize', this.handleResize)
       if (!this.rpc?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
         this.resuming = true
       }
     },
-    // beforeDestroy() {
-    //   window.removeEventListener('resize', this.handleResize)
-    // },
     created() {
       this.presentStepFromStore = this.currentStep
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
@@ -153,7 +149,16 @@
       if (rpcResponseForAdmin) {
         this.adminRpc = rpcResponseForAdmin
       }
-      this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
+      const rpcWindow = {
+        jsonrpc: new window.JSONRpcClient('/setup/JSON-RPC'),
+      }
+      console.log('rpcWindow:', rpcWindow)
+      console.log('window.rpc', window.rpc)
+      console.log('this.rpc window :', this.rpc)
+      if (rpcWindow.jsonrpc.SetupContext) {
+        this.remoteReachable = rpcWindow.jsonrpc.SetupContext.getRemoteReachable()
+      }
+      console.log('this.remoteReachable :', this.remoteReachable)
     },
 
     methods: {
