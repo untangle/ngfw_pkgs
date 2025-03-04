@@ -216,8 +216,8 @@
         }
       },
 
-      showLoader(value) {
-        this.$store.commit('SET_LOADER', value)
+      async showLoader(value) {
+        await this.$store.commit('SET_LOADER', value)
       },
       alertDialog(message) {
         this.$vuntangle.dialog.show({
@@ -290,7 +290,6 @@
           this.wan.v4NatEgressTraffic = true
           this.wan.v4PPPoEUsePeerDns = true
         }
-        this.$store.commit('SET_LOADER', true)
 
         let mode = 'auto'
         if (triggeredBy === 'testConnectivity') {
@@ -299,13 +298,28 @@
           mode = 'auto'
         }
         try {
-          await this.testConnectivity(mode)
-          this.rpcForAdmin.networkManager.setNetworkSettings(this.networkSettings)
-          if (typeof cb === 'function') {
-            cb()
+          this.$store.commit('SET_LOADER', true)
+          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+
+          await this.rpcForAdmin.networkManager.setNetworkSettings(async (response, ex) => {
+            await this.$store.commit('SET_LOADER', true)
+            if (ex) {
+              console.log('in ex conditiom')
+              Util.handleException(ex)
+              this.$store.commit('SET_LOADER', false) // Hide loader on error
+              return
+            }
+            console.log('after ex')
+
+            await this.testConnectivity(mode)
+
+            if (typeof cb === 'function') {
+              cb()
+              this.nextPage()
+            }
+
             this.$store.commit('SET_LOADER', false)
-            this.nextPage()
-          }
+          }, this.networkSettings)
         } catch (error) {
           this.alertDialog('Unable to save network settings. Please try again.')
         } finally {
@@ -318,6 +332,7 @@
         let nextDisabled = true
 
         try {
+          console.log('in Test connectivity function')
           this.$store.commit('SET_LOADER', true)
 
           // this.alertDialog('Testing Connectivity...')
@@ -408,24 +423,35 @@
           this.alertDialog(`Unable to get WAN status : ${error.message || error}`)
         }
       },
-      async renewDhcp() {
-        try {
-          this.showLoader(true)
-          await this.$nextTick()
-          await this.rpcForAdmin.networkManager.setNetworkSettings(this.networkSettings)
-          await this.rpcForAdmin.networkManager.renewDhcpLease(this.wan.interfaceId)
-          this.$vuntangle.toast.add(this.$t('DHCP lease renewed successfully.'))
 
-          // close loader
-          this.showLoader(false)
-          this.getSettings()
+      async renewDhcp() {
+        const self = this
+
+        try {
+          await this.$store.commit('SET_LOADER', true)
+          this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
+            if (ex) {
+              Util.handleException(self.$t('Unable to set Network Settings.'))
+              self.$store.commit('SET_LOADER', false)
+              return
+            }
+            self.$vuntangle.toast.add(self.$t('Renewing DHCP Lease...'))
+            self.rpcForAdmin.networkManager.renewDhcpLease((r, e) => {
+              if (e) {
+                Util.handleException(e)
+                self.$store.commit('SET_LOADER', false)
+                return
+              }
+              self.$vuntangle.toast.add(self.$t('DHCP lease renewed successfully.'))
+              self.getSettings()
+              self.$store.commit('SET_LOADER', false)
+            }, self.wan.interfaceId)
+          }, self.networkSettings)
         } catch (error) {
           this.alertDialog(`Error during DHCP renewal: ${error.message || error}`)
-        } finally {
-          this.showLoader(false)
+          this.$store.commit('SET_LOADER', false)
         }
       },
-
       async nextPage() {
         const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
         await Util.updateWizardSettings(this.currentStep)

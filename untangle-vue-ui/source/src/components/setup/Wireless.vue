@@ -98,6 +98,7 @@
         saving: false,
       }
     },
+
     computed: {
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
       requiredField() {
@@ -165,10 +166,8 @@
               cancelLabel: this.$t('no'),
               action: async resolve => {
                 resolve()
-                const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-                await Util.updateWizardSettings(this.currentStep)
-                await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
-                await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+                await Promise.resolve()
+                this.nextPage()
               },
             })
           }
@@ -227,11 +226,18 @@
           })
         })
       },
+
+      async nextPage() {
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+      },
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('wizard')
-          await this.setShowPreviousStep('wizard')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
         }
@@ -239,10 +245,8 @@
       async onSave() {
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
           this.saving = false
-          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-          await Util.updateWizardSettings(this.currentStep)
-          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
-          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+          await Promise.resolve()
+          this.nextPage()
         }
         this.$store.commit('SET_LOADER', true)
         if (!this.rpc || !this.rpc.networkManager) {
@@ -259,9 +263,7 @@
 
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await Util.updateWizardSettings(this.currentStep)
-          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
-          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+          this.nextPage()
         } catch (error) {
           this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$t(`Error saving wireless settings : ${error || error.message}`))
