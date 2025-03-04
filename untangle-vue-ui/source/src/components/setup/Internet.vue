@@ -126,8 +126,8 @@
           </v-form>
         </ValidationObserver>
       </div>
-      <div v-else-if="!remoteTestPassed" class="button-container">
-        <div class="center-container-renew-button">
+      <div v-if="!remoteTestPassed">
+        <div>
           <span class="center-text">
             You may continue configuring your Internet connection or run the Setup Wizard locally
           </span>
@@ -197,7 +197,7 @@
     created() {
       this.rpc = Util.setRpcJsonrpc('setup')
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
+      // this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
       this.remote = this.rpc.remote
     },
     mounted() {
@@ -266,7 +266,7 @@
         })
       },
 
-      async onSave(triggeredBy, cb) {
+      onSave(triggeredBy, cb) {
         if (!this.wan) {
           cb()
           return
@@ -300,23 +300,21 @@
         try {
           this.$store.commit('SET_LOADER', true)
           this.$vuntangle.toast.add(this.$t('Saving settings ...'))
-
-          await this.rpcForAdmin.networkManager.setNetworkSettings(async (response, ex) => {
-            await this.$store.commit('SET_LOADER', true)
+          this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
               Util.handleException(ex)
-              this.$store.commit('SET_LOADER', false) // Hide loader on error
+              this.$store.commit('SET_LOADER', false)
               return
             }
 
-            await this.testConnectivity(mode)
+            this.testConnectivity(mode, () => {
+              if (typeof cb === 'function') {
+                cb()
+                this.nextPage()
+              }
 
-            if (typeof cb === 'function') {
-              cb()
-              this.nextPage()
-            }
-
-            this.$store.commit('SET_LOADER', false)
+              this.$store.commit('SET_LOADER', false)
+            })
           }, this.networkSettings)
         } catch (error) {
           this.alertDialog('Unable to save network settings. Please try again.')
@@ -333,6 +331,7 @@
           this.$store.commit('SET_LOADER', true)
 
           // this.alertDialog('Testing Connectivity...')
+
           const result = await this.rpcForAdmin.connectivityTester.getStatus()
           // Determine connectivity status
           if (!result.tcpWorking && !result.dnsWorking) {
@@ -342,19 +341,23 @@
           } else if (!result.dnsWorking) {
             message = 'Warning! Internet tests succeeded, but DNS tests failed.'
           } else if (this.remote) {
+            this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
+
             if (!this.remoteReachable) {
               message = 'Unable to reach ETM Dashboard!'
             } else {
               nextDisabled = false
             }
           } else {
-            message = null
             nextDisabled = false
+            message = null
           }
+
           if (this.remote) {
             this.nextDisabled = nextDisabled
           }
           if (this.remote && message !== null) {
+            console.log('this.remote && message !== null')
             this.remoteTestPassed = false
             message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
           }
@@ -384,7 +387,6 @@
         } catch (error) {
           this.alertDialog(`Unable to complete connectivity test, please try again. Error`)
         } finally {
-          // this.loading = false
           this.$store.commit('SET_LOADER', false)
         }
       },
