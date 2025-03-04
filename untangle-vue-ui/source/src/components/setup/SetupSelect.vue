@@ -152,13 +152,9 @@
       const rpcWindow = {
         jsonrpc: new window.JSONRpcClient('/setup/JSON-RPC'),
       }
-      console.log('rpcWindow:', rpcWindow)
-      console.log('window.rpc', window.rpc)
-      console.log('this.rpc window :', this.rpc)
       if (rpcWindow.jsonrpc.SetupContext) {
         this.remoteReachable = rpcWindow.jsonrpc.SetupContext.getRemoteReachable()
       }
-      console.log('this.remoteReachable :', this.remoteReachable)
     },
 
     methods: {
