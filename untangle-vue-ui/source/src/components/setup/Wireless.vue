@@ -260,8 +260,6 @@
             this.wirelessSettings.password,
           )
           this.$store.commit('SET_LOADER', false)
-
-          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
           this.nextPage()
         } catch (error) {
