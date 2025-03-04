@@ -1,16 +1,15 @@
 <template>
   <div>
-    <!-- <SetupLayout /> -->
     <component :is="currentStepComponent" />
   </div>
 </template>
 
 <script>
   import { mapGetters, mapActions } from 'vuex'
-  import License from '@/components/setup/License.vue' // Import License component
-  import System from '@/components/setup/System.vue' // Import System component
-  import SetupLayout from '@/layouts/SetupLayout.vue' // Import Layout component
-  import SetupSelect from '@/components/setup/SetupSelect.vue' // Import System component
+  import License from '@/components/setup/License.vue'
+  import System from '@/components/setup/System.vue'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+  import SetupSelect from '@/components/setup/SetupSelect.vue'
   import Network from '@/components/setup/Network.vue'
   import Internet from '@/components/setup/Internet.vue'
   import Interface from '@/components/setup/Interface.vue'
@@ -35,20 +34,18 @@
 
     data() {
       return {
-        steps: [],
-        activeStepIndex: 0,
         activeStepDesc: '',
-        intfListLength: 0, // used for next button disable/enable
+        activeStep: null,
+        intfListLength: 0,
         nextDisabled: false,
         interfacesForceContinue: false,
+        steps: [],
+        activeStepIndex: 0,
         rpc: null,
+        rpcForAdmin: null,
         cardIndex: null,
-        // wizard: {
-        //   steps: null,
-        // },
         networkSettings: null,
         setActiveItem: null,
-
         prevStep: null,
         nextStep: null,
         activeItem: null,
@@ -57,9 +54,11 @@
     },
 
     async created() {
+      console.log('created in wizard:')
+      this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+      console.log('created in wizard:**')
       await this.initializeRpc()
       await this.onAfterRender()
-      await this.onSyncSteps()
     },
 
     mount() {
@@ -67,7 +66,7 @@
     },
 
     computed: {
-      ...mapGetters('setup', ['currentStep', 'wizardSteps']), // Get currentStep from Vuex
+      ...mapGetters('setup', ['currentStep', 'wizardSteps']),
       // Dynamically choose the component based on currentStep
       currentStepComponent() {
         switch (this.currentStep) {
@@ -116,38 +115,41 @@
         this.currentStep === 'AutoUpgrades' ||
         this.currentStep === 'Complete'
       ) {
-        await this.setShowStep('Welcome') // Reset step to 'Wizard'
+        await this.setShowStep('Welcome')
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'initializeWizard']), // Map Vuex action to change step
+      ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'initializeWizard']),
 
       async initializeRpc() {
         try {
-          const rpcResult = await this.initializeWizard() // Await the resolved object
+          const rpcResult = await this.initializeWizard()
           this.rpc = { ...rpcResult }
-          // Change the step to 'System' and render the System component
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+
+          await this.setShowStep(this.wizardSteps[currentStepIndex])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex])
         } catch (error) {
-          console.error('Error initializing wizard:', error)
+          // console.log('error:', error)
+          this.$vuntangle.toast.add(this.$t(`Error initializing wizard: ${error || error.message}`))
         }
       },
 
       updateNav() {
+        console.log('rpcForAdmin updateNav :', this.rpcForAdmin)
         this.prevStep = this.steps[this.activeStepIndex - 1]
         this.nextStep = this.steps[this.activeStepIndex + 1]
         this.activeStepDesc = this.steps[this.activeStepIndex]
 
-        if (this.rpc.jsonrpc) {
+        if (this.rpcForAdmin.jsonrpc) {
           if (this.steps && this.steps.length > 0) {
             this.rpc.wizardSettings.steps = this.steps
           }
           this.rpc.wizardSettings.completedStep = this.prevStep || null
           this.rpc.wizardSettings.wizardComplete = !this.nextStep
 
-          if (this.rpc.jsonrpc.UvmContext) {
-            this.rpc.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+          if (this.rpcForAdmin.jsonrpc.UvmContext) {
+            this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
               if (ex) {
                 Util.handleException(ex)
               }
@@ -156,13 +158,17 @@
         }
       },
 
-      async onSyncSteps() {
+      /**
+       * called after the network settings were fetched,
+       * updates the wizard steps depending on available
+       * interfaces.
+       */
+      async onSyncSteps(activeItemIdx) {
         if (this.rpc.remote) {
           // Only for local.
           return
         }
-        const rpcForAdmin = Util.setRpcJsonrpc('admin')
-        this.networkSettings = await rpcForAdmin?.networkManager?.getNetworkSettings()
+        this.networkSettings = await this.rpcForAdmin?.networkManager?.getNetworkSettings()
         this.interfaces = await this.networkSettings.interfaces.list
         const firstWan = this.interfaces.find(function (intf) {
           return intf.isWan && intf.configType !== 'DISABLED'
@@ -174,39 +180,48 @@
           return intf.isWirelessInterface
         })
 
-        this.tempSteps = ['License', 'ServerSettings', 'Interfaces']
+        this.steps = ['License', 'ServerSettings', 'Interfaces']
 
         if (firstWan) {
-          this.tempSteps.push('Internet')
+          this.steps.push('Internet')
         }
         if (firstNonWan) {
-          this.tempSteps.push('InternalNetwork')
+          this.steps.push('InternalNetwork')
         }
         if (firstWireless) {
-          this.tempSteps.push('Wireless')
+          this.steps.push('Wireless')
         }
 
-        this.tempSteps.push('AutoUpgrades')
-        this.tempSteps.push('Complete')
+        this.steps.push('AutoUpgrades')
+        this.steps.push('Complete')
 
-        this.steps = this.tempSteps
         await this.$store.dispatch('setup/setStep', this.steps)
+        // used when resuming the setup
+        if (Number.isInteger(this.activeItemIdx)) {
+          this.rpc.wizardSettings.completedStep = this.rpc.wizardSteps[activeItemIdx]
+          if (this.rpcForAdmin.jsonrpc.UvmContext) {
+            this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
+              if (ex) {
+                Util.handleException(ex)
+              }
+            }, this.rpc.wizardSettings)
+          }
+        }
       },
 
       async onAfterRender() {
-        // Iterate over the steps array and push each step into this.steps
+        // Populate steps from wizard settings.
         await this.rpc.wizardSettings.steps.forEach(stepName => {
           this.steps.push(stepName)
         })
         if (!this.rpc.wizardSettings.wizardComplete && this.rpc.wizardSettings.completedStep !== null) {
-          // Get the card index based on completedStep
           this.cardIndex = await this.rpc.wizardSettings.steps.indexOf(this.rpc.wizardSettings.completedStep)
 
-          // Decrease cardIndex if needed for next steps
+          // if resuming from a step after Network Cards settings, need to fetch network settings
           this.cardIndex--
           if (this.cardIndex >= 2) {
-            // Ung.app.loading('Loading interfaces...'.t())
-            this.rpc.networkManager.getNetworkSettings(async (result, ex) => {
+            this.$store.commit('SET_LOADER', true)
+            this.rpcForAdmin.networkManager.getNetworkSettings(async (result, ex) => {
               if (ex) {
                 Util.handleException('Unable to load interfaces.'.t())
                 return
@@ -214,11 +229,12 @@
 
               this.networkSettings = result
               this.intfListLength = result.interfaces.list.length
-
+              // update the steps based on interfaces
               await this.onSyncSteps(this.cardIndex)
             })
+            this.$store.commit('SET_LOADER', false)
           } else {
-            this.setActiveItem(this.cardIndex + 1)
+            this.rpc.wizardSettings.completedStep = this.wizardSteps.indexOf(this.cardIndex + 1)
             this.updateNav()
           }
         } else {

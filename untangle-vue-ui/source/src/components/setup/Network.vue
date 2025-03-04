@@ -398,9 +398,7 @@
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
-          const updatedSettings = await Util.updateWizardSettings(this.currentStep)
-          console.log('updatedSettings in License :', updatedSettings)
-
+          await Util.updateWizardSettings(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {

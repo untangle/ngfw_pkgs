@@ -145,7 +145,6 @@
         try {
           await Promise.resolve()
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
-          await Util.updateWizardSettings(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
@@ -177,6 +176,7 @@
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
 
           if (this.wizardSteps[currentStepIndex + 1]) {
+            await Util.updateWizardSettings(this.currentStep)
             await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
             await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           }

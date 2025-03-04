@@ -37,8 +37,10 @@
               >
               <br />
               <label>Admin Email:</label>
-              <ValidationProvider rules="required">
-                <u-text-field v-model="adminEmail" />
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <u-text-field v-model="adminEmail" :error-messages="errors">
+                  <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                </u-text-field>
               </ValidationProvider>
               <br /><br />
             </div>
@@ -185,15 +187,14 @@
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
       async onClickBack() {
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
-          await this.setShowStep('License')
-          await this.setShowPreviousStep('License')
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           console.error('Failed to navigate:', error)
         }
@@ -201,15 +202,16 @@
       async onContinue() {
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          // Ung.app.loading('loading')
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
             await window.rpc.setup.setTimeZone(timezoneId)
+            await this.saveAdminPassword()
+          } else {
+            await this.saveAdminPassword()
           }
-          await this.saveAdminPassword()
-          const updatedSettings = await Util.updateWizardSettings(this.currentStep)
-          console.log('updatedSettings in License :', updatedSettings)
-
+          await Util.updateWizardSettings(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
@@ -224,8 +226,6 @@
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
             Util.authenticate(this.newPassword, (error, success) => {
-              console.log('Authentication error:', error)
-              console.log('Authentication success:', success)
               if (error || !success) {
                 console.error('Authentication failed after password update:', error)
                 reject(new Error('Authentication failed after password update.'))

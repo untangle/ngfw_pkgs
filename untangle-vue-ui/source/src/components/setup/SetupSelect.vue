@@ -123,85 +123,42 @@
         isOpenSetup: false,
         adminRpc: null,
         updatedSettings: null,
-        index: -1,
+        index: 0,
       }
     },
     computed: {
-      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
 
       logo() {
         return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
       },
     },
     mounted() {
-      window.addEventListener('resize', this.handleResize)
-      if (
-        !this.rpcResponseForSetup?.wizardSettings?.wizardComplete &&
-        this.rpc?.wizardSettings?.completedStep != null
-      ) {
-        if (this.index >= 2) {
-          this.resuming = true
-        }
-      }
-      this.index = this.wizardSteps.indexOf(this.previousStep)
-      console.log('index from mounted :', this.index)
-      if (this.index >= 2) {
+      if (!this.rpc?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
         this.resuming = true
       }
-
-      // TODO handled from update of setupUtil
-      // this.$store.commit('setup/RESET_SYSTEM')
-      // Util.updateWizardSettings(this.currentStep)
-      //   .then(settings => {
-      //     this.updatedSettings = settings
-      //     console.log('Updated Settings:', this.updatedSettings)
-
-      //     // if (this.updatedSettings && this.updatedSettings.completedStep) {
-      //     //   this.resuming = true
-      //     // }
-
-      //     this.index = this.wizardSteps.indexOf(previousStep)
-      //     console.log('index from mounted :', this.index)
-      //   })
-      //   .catch(error => {
-      //     console.error('Error updating settings:', error)
-      //   })
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.handleResize)
     },
     created() {
-      console.log('wizardSteps :', this.wizardSteps)
       this.presentStepFromStore = this.currentStep
-      this.logCurrentStep() // Log again after ensuring data is available
-
-      // Example: Setting up RPC client
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
-      } else {
-        this.showWarningDialog('RPC setup failed')
       }
 
       const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
       if (rpcResponseForAdmin) {
         this.adminRpc = rpcResponseForAdmin
-      } else {
-        this.showWarningDialog('RPC setup failed')
       }
-      this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-
-      // if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
-      //   if (this.index >= 2) {
-      //     this.resuming = true
-      //   }
-      // }
-      // this.index = this.wizardSteps.indexOf(this.previousStep)
-      // console.log('index from mounted :', this.index)
-      // // TODO to be removed as handled above
-      // if (this.index >= 2) {
-      //   this.resuming = true
-      // }
+      const rpcWindow = {
+        jsonrpc: new window.JSONRpcClient('/setup/JSON-RPC'),
+      }
+      console.log('rpcWindow:', rpcWindow)
+      console.log('window.rpc', window.rpc)
+      console.log('this.rpc window :', this.rpc)
+      if (rpcWindow.jsonrpc.SetupContext) {
+        this.remoteReachable = rpcWindow.jsonrpc.SetupContext.getRemoteReachable()
+      }
+      console.log('this.remoteReachable :', this.remoteReachable)
     },
 
     methods: {
@@ -228,24 +185,22 @@
       },
       async onClickOk() {
         try {
-          // Authenticate the updated password
           await new Promise(resolve => {
             Util.authenticate(this.newPasswordSync, (error, success) => {
               if (error || !success) {
                 this.showAuthFailedDialog(error)
               } else {
-                // Proceed to the next page after successful authentication
                 resolve()
                 this.simulateRpcCall()
                 if (this.isResetWizardAuthentication) {
                   this.resetWizardContinue()
                 } else {
                   this.dialog = false
-                  if (this.index !== -1) {
-                    this.$store.commit('setup/RESET_SYSTEM')
-                    this.setShowStep(this.wizardSteps[this.index - 1])
-                    this.setShowPreviousStep(this.wizardSteps[this.index - 1])
-                  }
+                  this.$store.commit('setup/RESET_SYSTEM')
+                  const completedStep = this.rpc.wizardSettings.completedStep
+                  const currentStepIndex = this.wizardSteps.indexOf(completedStep)
+                  this.setShowStep(this.wizardSteps[currentStepIndex])
+                  this.setShowPreviousStep(this.wizardSteps[currentStepIndex])
                 }
               }
             })
@@ -259,10 +214,6 @@
         this.authFailed = false
         this.newPasswordSync = null
       },
-      logCurrentStep() {
-        console.log('currentStep in logCurrentStep method:', this.currentStep)
-        console.log('previousStep in logCurrentStep method:', this.previousStep)
-      },
       showWarningDialog(message) {
         this.dialogMessage = message
         this.warningDiaglog = true
@@ -271,8 +222,6 @@
         this.warningDiaglog = false
       },
       async resetWizard() {
-        // const updatedSettings = await Util.updateWizardSettings(this.currentStep)
-        // console.log('updatedSettings :', this.updatedSettings)
         try {
           if (this.rpc.remote && !this.remoteReachable) {
             if (Util.setRpcJsonrpc('admin') === true) {
@@ -302,11 +251,11 @@
         this.resuming = false
         this.rpc.wizardSettings.completedStep = null
         this.rpc.wizardSettings.wizardComplete = false
-        this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
+        this.$store.commit('setup/RESET_SYSTEM')
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         await Promise.resolve()
-        this.rpc.wizardSettings.completedStep = null
-        await this.setShowStep(this.wizardSteps[0])
-        await this.setShowPreviousStep(this.wizardSteps[0])
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
@@ -330,12 +279,12 @@
 </script>
 <style scoped>
   .custom-btn {
-    width: 300px; /* Adjust the width to your desired length */
-    height: 50px; /* Adjust the height to your desired size */
-    font-size: 16px; /* Adjust font size if needed */
-    align-items: center; /* Vertically center the text */
-    justify-content: center; /* Horizontally center the text */
-    border-radius: 5px; /* Optional: to make buttons rounded */
+    width: 300px;
+    height: 50px;
+    font-size: 16px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
   }
   .button-container {
     display: flex;

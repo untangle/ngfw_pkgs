@@ -80,7 +80,6 @@ const actions = {
       let steps = []
 
       if (!rpc.wizardSettings.steps || rpc.wizardSettings.steps.length === 0) {
-        console.log('rpc.wizardSettings', rpc.wizardSettings)
         if (!rpc.remote) {
           steps = [
             'Welcome',
@@ -100,7 +99,6 @@ const actions = {
         rpc.wizardSettings.steps = steps
       } else {
         steps = rpc.wizardSettings.steps
-        console.log('steps', steps)
       }
       commit('SET_SHOW_STEP', steps[0])
       commit('SET_SHOW_PREVIOUS_STEP', steps[0])
@@ -162,12 +160,10 @@ const mutations = {
     }
   },
   SET_STEP(state, steps) {
-    console.log('Mutation - wizard steps:', steps)
     state.wizardSettings.steps = steps // Update the wizardSettings.steps array in state
   },
 
   SET_WIZARDSETTINGS(state, { steps }) {
-    console.log('Mutation - Setting wizardSettings:', steps)
     state.wizardSettings.steps = steps
   },
   // For Loader
