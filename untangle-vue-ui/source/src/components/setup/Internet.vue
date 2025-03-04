@@ -304,12 +304,10 @@
           await this.rpcForAdmin.networkManager.setNetworkSettings(async (response, ex) => {
             await this.$store.commit('SET_LOADER', true)
             if (ex) {
-              console.log('in ex conditiom')
               Util.handleException(ex)
               this.$store.commit('SET_LOADER', false) // Hide loader on error
               return
             }
-            console.log('after ex')
 
             await this.testConnectivity(mode)
 
@@ -333,7 +331,6 @@
         const remote = this.remote
 
         try {
-          console.log('in Test connectivity function')
           this.$store.commit('SET_LOADER', true)
 
           // this.alertDialog('Testing Connectivity...')
