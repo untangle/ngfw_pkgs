@@ -70,18 +70,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="warningDiaglog" max-width="400">
-        <v-card>
-          <v-card-title class="headline"></v-card-title>
-          <v-card-text>
-            {{ dialogMessage }}
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-container>
     <div v-if="isOpenSetup" class="setup-container">
       <div v-if="windowWidth >= 840" class="flex-item left-space"></div>
@@ -101,6 +89,8 @@
   import { mapGetters, mapActions } from 'vuex'
   import Util from '@/util/setupUtil'
   import locales from '@/locales/en'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
+
   export default {
     name: 'SetupSelect',
     data() {
@@ -179,6 +169,26 @@
       openSetup() {
         this.isOpenSetup = true
       },
+
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Internet Status'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message },
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
+      },
       async onClickOk() {
         try {
           await new Promise(resolve => {
@@ -202,20 +212,13 @@
             })
           })
         } catch (error) {
-          this.showWarningDialog(error)
+          this.alertDialog(error)
         }
       },
       onClickCancel() {
         this.dialog = false
         this.authFailed = false
         this.newPasswordSync = null
-      },
-      showWarningDialog(message) {
-        this.dialogMessage = message
-        this.warningDiaglog = true
-      },
-      closeWarningDialog() {
-        this.warningDiaglog = false
       },
       async resetWizard() {
         try {
@@ -239,7 +242,7 @@
             this.resetWizardContinue()
           }
         } catch (error) {
-          this.showWarningDialog(`Failed to reset: ${error.message || error}`)
+          this.alertDialog(`Failed to reset: ${error.message || error}`)
         }
       },
       async resetWizardContinue() {

@@ -126,8 +126,8 @@
           </v-form>
         </ValidationObserver>
       </div>
-      <div v-if="!remoteTestPassed">
-        <div>
+      <div v-else-if="!remoteTestPassed" class="button-container">
+        <div class="center-container-renew-button">
           <span class="center-text">
             You may continue configuring your Internet connection or run the Setup Wizard locally
           </span>
@@ -135,7 +135,6 @@
             <v-icon left>mdi-autorenew</v-icon> Run Setup Wizard Locally
           </u-btn>
         </div>
-        <!-- :disabled="invalid" -->
       </div>
       <!-- Dialog Box for show No internal interfaces -->
       <v-dialog v-model="dialog" persistent max-width="290">
@@ -271,7 +270,7 @@
           cb()
           return
         }
-        // Modify WAN settings based on configuration type
+
         if (this.wan.v4ConfigType === 'AUTO' || this.wan.v4ConfigType === 'PPPOE') {
           this.wan.v4StaticAddress = null
           this.wan.v4StaticPrefix = null
@@ -281,7 +280,6 @@
         }
         if (this.wan.v4ConfigType === 'STATIC') {
           this.wan.v4NatEgressTraffic = true
-          // this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value /// not required
           if (this.wan.v4StaticPrefix && this.wan.v4StaticPrefix.value) {
             this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value
           }
@@ -291,15 +289,11 @@
           this.wan.v4PPPoEUsePeerDns = true
         }
 
-        let mode = 'auto'
-        if (triggeredBy === 'testConnectivity') {
-          mode = 'manual'
-        } else if (triggeredBy === 'save') {
-          mode = 'auto'
-        }
+        const mode = triggeredBy === 'testConnectivity' ? 'manual' : 'auto'
+
         try {
           this.$store.commit('SET_LOADER', true)
-          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+
           this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
               Util.handleException(ex)
@@ -310,19 +304,22 @@
             this.testConnectivity(mode, () => {
               if (typeof cb === 'function') {
                 cb()
-                this.nextPage()
+                // this.nextPage()
+                if (mode === 'auto') {
+                  this.nextPage()
+                }
               }
+
+              this.$vuntangle.toast.add(this.$t('Saving settings ...'))
 
               this.$store.commit('SET_LOADER', false)
             })
           }, this.networkSettings)
         } catch (error) {
           this.alertDialog('Unable to save network settings. Please try again.')
-        } finally {
           this.$store.commit('SET_LOADER', false)
         }
       },
-
       async testConnectivity(testType, cb) {
         let message = null
         let nextDisabled = true
@@ -330,10 +327,10 @@
         try {
           this.$store.commit('SET_LOADER', true)
 
-          // this.alertDialog('Testing Connectivity...')
+          await this.$vuntangle.toast.add(this.$t('Testing Connectivity...'))
 
           const result = await this.rpcForAdmin.connectivityTester.getStatus()
-          // Determine connectivity status
+
           if (!result.tcpWorking && !result.dnsWorking) {
             message = 'Warning! Internet tests and DNS tests failed.'
           } else if (!result.tcpWorking) {
@@ -341,8 +338,7 @@
           } else if (!result.dnsWorking) {
             message = 'Warning! Internet tests succeeded, but DNS tests failed.'
           } else if (this.remote) {
-            this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
-
+            this.remoteReachable = await this.rpcForAdmin.setup.getRemoteReachable()
             if (!this.remoteReachable) {
               message = 'Unable to reach ETM Dashboard!'
             } else {
@@ -356,13 +352,13 @@
           if (this.remote) {
             this.nextDisabled = nextDisabled
           }
+
           if (this.remote && message !== null) {
             console.log('this.remote && message !== null')
             this.remoteTestPassed = false
             message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
           }
 
-          // Handle different test types
           if (testType === 'manual') {
             this.alertDialog(message || 'Success!')
           } else {
@@ -371,18 +367,20 @@
               return
             }
 
-            // Warning dialog before proceeding
             const warningText = `${message}<br/><br/>${this.$t(
               'It is recommended to configure valid Internet settings before continuing. Try again?',
             )}`
             this.confirmDialog({
               message: warningText,
-              onConfirmYes: () => this.testConnectivity(testType, cb),
+              onConfirmYes: () => {
+                this.onSave(() => {
+                  this.testConnectivity(testType, cb)
+                })
+              },
               onConfirmNo: () => this.nextPage(),
             })
           }
 
-          // Refresh interface status
           this.getInterfaceStatus()
         } catch (error) {
           this.alertDialog(`Unable to complete connectivity test, please try again. Error`)

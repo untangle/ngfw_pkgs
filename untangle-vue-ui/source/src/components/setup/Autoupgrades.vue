@@ -53,18 +53,6 @@
         </u-btn>
       </div>
     </div>
-    <v-dialog v-model="warningDiaglog" max-width="400">
-      <v-card>
-        <v-card-title class="headline"></v-card-title>
-        <v-card-text>
-          {{ dialogMessage }}
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-card>
 </template>
 
@@ -72,6 +60,7 @@
   import { mapActions, mapGetters } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
   export default {
     name: 'AutoUpgrades',
     components: {
@@ -94,8 +83,6 @@
         isCCHidden: false,
         description: '',
         title: '',
-        warningDiaglog: false,
-        dialogMessage: '',
         isProcessing: false,
       }
     },
@@ -110,12 +97,24 @@
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
-      showWarningDialog(message) {
-        this.dialogMessage = message
-        this.warningDiaglog = true
-      },
-      closeWarningDialog() {
-        this.warningDiaglog = false
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Warning'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
       },
       getTitle() {
         const rpc = Util.setRpcJsonrpc('admin')
@@ -138,7 +137,7 @@
           }
           this.systemSettings = result
         } catch (error) {
-          this.showWarningDialog(`Failed to load settings: ${error.message || error}`)
+          this.alertDialog(`Failed to load settings: ${error.message || error}`)
         }
       },
       async onClickBack() {
@@ -148,7 +147,7 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
+          this.alertDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
       async onSave() {
