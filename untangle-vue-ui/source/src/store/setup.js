@@ -174,8 +174,7 @@ const mutations = {
   HIDE_LOADER(state) {
     state.isLoading = false
   },
-
- }
+}
 
 export default {
   namespaced: true,
