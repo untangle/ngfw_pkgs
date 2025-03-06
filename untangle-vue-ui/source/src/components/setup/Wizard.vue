@@ -219,7 +219,7 @@
             this.$store.commit('SET_LOADER', true)
             this.rpcForAdmin.networkManager.getNetworkSettings(async (result, ex) => {
               if (ex) {
-                Util.handleException('Unable to load interfaces.'.t())
+                Util.handleException('Unable to load interfaces.')
                 return
               }
 
