@@ -54,9 +54,7 @@
     },
 
     async created() {
-      console.log('created in wizard:')
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      console.log('created in wizard:**')
       await this.initializeRpc()
       await this.onAfterRender()
     },
@@ -130,13 +128,11 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex])
         } catch (error) {
-          // console.log('error:', error)
           this.$vuntangle.toast.add(this.$t(`Error initializing wizard: ${error || error.message}`))
         }
       },
 
       updateNav() {
-        console.log('rpcForAdmin updateNav :', this.rpcForAdmin)
         this.prevStep = this.steps[this.activeStepIndex - 1]
         this.nextStep = this.steps[this.activeStepIndex + 1]
         this.activeStepDesc = this.steps[this.activeStepIndex]

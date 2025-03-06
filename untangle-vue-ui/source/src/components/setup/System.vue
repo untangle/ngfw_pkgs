@@ -196,7 +196,7 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
         }
       },
       async onContinue() {
@@ -215,7 +215,7 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          console.error('Error saving settings:', error)
+          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
           alert('Failed to save settings. Please try again.')
         }
       },
@@ -227,7 +227,7 @@
           await new Promise((resolve, reject) => {
             Util.authenticate(this.newPassword, (error, success) => {
               if (error || !success) {
-                console.error('Authentication failed after password update:', error)
+                this.$vuntangle.toast.add(this.$t(`Authentication failed after password update: ${error || error.message}`))
                 reject(new Error('Authentication failed after password update.'))
               } else {
                 resolve()
@@ -236,7 +236,7 @@
             })
           })
         } catch (error) {
-          console.error('Error saving admin password or authenticating:', error)
+          this.$vuntangle.toast.add(this.$t(`Error saving admin password or authenticating: ${error || error.message}`))
           throw error
         }
       },
