@@ -17,7 +17,7 @@
       </p>
 
       <div class="button-container">
-        <u-btn :small="false" style="margin: 8px 0" @click="onClickDisagree">Disagree</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onDisagree">Disagree</u-btn>
         <u-btn :small="false" style="margin: 8px 0" @click="onContinue">Agree</u-btn>
       </div>
     </v-container>
@@ -25,9 +25,11 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import uris from '@/util/uris'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import Util from '@/util/setupUtil'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
 
   export default {
     name: 'License',
@@ -40,8 +42,25 @@
     mounted() {
       this.setEulaSrc()
     },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
+    },
+    created() {
+      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+      if (rpcResponseForSetup) {
+        this.rpc = rpcResponseForSetup
+      } else {
+        this.alertDialog('RPC setup failed')
+      }
+      const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+      if (rpcResponseForAdmin) {
+        this.rpcForAdmin = rpcResponseForAdmin
+      } else {
+        this.alertDialog('RPC setup failed')
+      }
+    },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
 
       async setEulaSrc() {
@@ -50,21 +69,42 @@
 
       async onContinue() {
         try {
-          await Promise.resolve()
-          await this.setShowStep('System') // Transition to System step
-          await this.setShowPreviousStep('System')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          console.error('Failed to navigate to System step:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate: ${error || error.message}`))
         }
       },
 
-      async onClickDisagree() {
+      async onDisagree() {
+        await Util.updateWizardSettings(null)
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         try {
-          await this.setShowStep('Wizard') // Navigate back to Wizard step
-          await this.setShowPreviousStep('Wizard')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          console.error('Failed to navigate to Wizard step:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate: ${error || error.message}`))
         }
+      },
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Warning'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
       },
     },
   }

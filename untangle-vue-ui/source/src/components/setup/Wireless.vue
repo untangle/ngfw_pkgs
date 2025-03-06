@@ -64,7 +64,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import isEqual from 'lodash/isEqual'
   import { extend } from 'vee-validate'
   import Util from '@/util/setupUtil'
@@ -98,7 +98,9 @@
         saving: false,
       }
     },
+
     computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
       requiredField() {
         return this.wirelessSettings.ssid !== null
       },
@@ -165,8 +167,7 @@
               action: async resolve => {
                 resolve()
                 await Promise.resolve()
-                await this.setShowStep('System')
-                await this.setShowPreviousStep('System')
+                this.nextPage()
               },
             })
           }
@@ -225,11 +226,18 @@
           })
         })
       },
+
+      async nextPage() {
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+      },
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('wizard')
-          await this.setShowPreviousStep('wizard')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
           this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
         }
@@ -238,8 +246,7 @@
         if (isEqual(this.initialSettings, this.wirelessSettings)) {
           this.saving = false
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          this.nextPage()
         }
         this.$store.commit('SET_LOADER', true)
         if (!this.rpc || !this.rpc.networkManager) {
@@ -253,10 +260,8 @@
             this.wirelessSettings.password,
           )
           this.$store.commit('SET_LOADER', false)
-
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          this.nextPage()
         } catch (error) {
           this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$t(`Error saving wireless settings : ${error || error.message}`))

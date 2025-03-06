@@ -156,9 +156,7 @@
     <v-dialog v-model="warningDiaglog" max-width="400">
       <v-card>
         <v-card-title class="headline"></v-card-title>
-        <v-card-text>
-          {{ dialogMessage }}
-        </v-card-text>
+        <v-card-text> </v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
@@ -169,9 +167,10 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Util from '@/util/setupUtil'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
 
   export default {
     name: 'InternalNetwork',
@@ -205,12 +204,17 @@
         timeout: 480000,
         dialog: false,
         warningDiaglog: false,
-        dialogMessage: '',
+        isProcessing: false,
       }
     },
+
     created() {
       this.getInterface()
     },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
+    },
+
     methods: {
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
@@ -222,12 +226,25 @@
         this.dialog = false
         this.nextPage()
       },
-      showWarningDialog(message) {
-        this.dialogMessage = message
-        this.warningDiaglog = true
-      },
-      closeWarningDialog() {
-        this.warningDiaglog = false
+
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Warning'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
       },
       onCancel() {
         this.dialog = false
@@ -257,16 +274,16 @@
             this.initialDhcpType = this.internal.dhcpType
           }
         } catch (error) {
-          this.showWarningDialog(`Failed to fetch device settings: ${error.message || error}`)
+          this.alertDialog(`Failed to fetch device settings: ${error.message || error}`)
         }
       },
       async onClickBack() {
         try {
           await Promise.resolve()
-          await this.setShowStep('Internet')
-          await this.setShowPreviousStep('Internet')
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
+          this.alertDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
       async onSave() {
@@ -313,7 +330,7 @@
               )
               await this.simulateRpcCall()
               await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-              this.showWarningDialog('Settings saved successfully.')
+              this.alertDialog('Settings saved successfully.')
               window.top.location.href = this.newSetupLocation
             }
           } else {
@@ -339,11 +356,11 @@
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
 
           // Once save operation is complete, show warning and hide modal
-          this.showWarningDialog('Settings saved successfully.')
+          this.alertDialog('Settings saved successfully.')
 
           this.nextPage()
         } catch (error) {
-          this.showWarningDialog(`Error during save operation: ${error.message || error}`)
+          this.alertDialog(`Error during save operation: ${error.message || error}`)
         } finally {
           // Hide the modal once save is complete
           this.loading = false
@@ -359,9 +376,24 @@
         })
       },
       async nextPage() {
-        await Promise.resolve()
-        await this.setShowStep('Autoupgrades')
-        await this.setShowPreviousStep('Autoupgrades')
+        if (this.isProcessing) return
+        this.isProcessing = true
+
+        try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+
+          if (this.wizardSteps[currentStepIndex + 1]) {
+            await Util.updateWizardSettings(this.currentStep)
+            await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+            await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+          } else {
+            this.$vuntangle.toast.add(this.$t(`No next step available`))
+          }
+        } catch (error) {
+          this.$vuntangle.toast.add(this.$t(`Error while navigating to next step: ${error || error.message}`))
+        } finally {
+          this.isProcessing = false // Reset flag after processing is complete
+        }
       },
     },
   }

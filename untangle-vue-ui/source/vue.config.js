@@ -15,6 +15,9 @@ module.exports = {
       '/admin': {
         target: `http://ngfw.untangle.com/`,
       },
+      '/setup': {
+        target: `http://ngfw.untangle.com/`,
+      },
     },
   },
   configureWebpack: {

@@ -6,9 +6,6 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
-// import Login from '@/views/Login.vue'
-// import Home from '@/views/Home.vue'
-// import Component from '@/views/Component.vue'
 
 /**
  * Override .push() to catch navigation failures.
@@ -35,31 +32,6 @@ VueRouter.prototype.push = function push(location) {
 
 Vue.use(VueRouter)
 
-// const routes = [
-//   {
-//     path: '/',
-//     name: 'home',
-//     component: Home,
-//   },
-//   {
-//     path: '/login',
-//     name: 'login',
-//     component: Login,
-//   },
-
-//   {
-//     path: '/:componentName',
-//     name: 'component',
-//     component: Component,
-//   },
-// ]
-
-// const router = new VueRouter({
-//   mode: 'history',
-//   base: '/vue/',
-//   routes,
-// })
-
 const baseRoutes = [
   {
     path: '/dashboard',
@@ -78,7 +50,6 @@ const routes = baseRoutes.concat(auth, setup, setting, wizard, {
 
 const router = new VueRouter({
   mode: 'history',
-  // mode: 'hash',
   base: process.env.VUE_APP_BASE_URL,
   routes,
 })
@@ -97,11 +68,14 @@ router.beforeEach((to, from, next) => {
         }
       }
     } catch (ex) {
-      if (to.name !== 'login') next({ name: 'login' })
-      else next()
+      if (to.name === 'setup') {
+        return next({ name: 'wizard' })
+      }
+      next()
     }
-  } else if (to.name === 'login') next({ name: 'home' })
-  else next()
+  } else if (to.name === 'login') {
+    next({ name: 'home' })
+  } else next()
 })
 
 export default router

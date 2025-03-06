@@ -70,18 +70,6 @@
           </v-card-actions>
         </v-card>
       </v-dialog>
-      <v-dialog v-model="warningDiaglog" max-width="400">
-        <v-card>
-          <v-card-title class="headline"></v-card-title>
-          <v-card-text>
-            {{ dialogMessage }}
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
     </v-container>
     <div v-if="isOpenSetup" class="setup-container">
       <div v-if="windowWidth >= 840" class="flex-item left-space"></div>
@@ -101,6 +89,8 @@
   import { mapGetters, mapActions } from 'vuex'
   import Util from '@/util/setupUtil'
   import locales from '@/locales/en'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
+
   export default {
     name: 'SetupSelect',
     data() {
@@ -121,48 +111,37 @@
         warningDiaglog: false,
         windowWidth: window.innerWidth,
         isOpenSetup: false,
+        adminRpc: null,
+        updatedSettings: null,
+        index: 0,
       }
     },
     computed: {
-      ...mapGetters('setup', ['currentStep']),
-      ...mapGetters('setup', ['previousStep']),
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
 
       logo() {
         return this.$vuetify.theme.isDark ? 'BrandingLogo.png' : 'BrandingLogo.png'
       },
     },
     mounted() {
-      window.addEventListener('resize', this.handleResize)
-    },
-    beforeDestroy() {
-      window.removeEventListener('resize', this.handleResize)
+      if (!this.rpc?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
+        this.resuming = true
+      }
     },
     created() {
       this.presentStepFromStore = this.currentStep
-      this.logCurrentStep() // Log again after ensuring data is available
-
-      // Example: Setting up RPC client
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-
-      this.remoteReachable = rpcResponseForSetup?.jsonrpc?.SetupContext?.getRemoteReachable()
-
-      if (!rpcResponseForSetup?.wizardSettings?.wizardComplete && this.rpc?.wizardSettings?.completedStep != null) {
-        this.resuming = true
-      }
-
-      // TODO will get handled in wizard
-      if (this.previousStep === 'System') {
-        this.$store.commit('setup/RESET_SYSTEM')
-      }
-      if (this.previousStep !== 'License' && this.previousStep !== 'Wizard' && this.previousStep !== 'System') {
-        this.resuming = true
-      }
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
-      } else {
-        this.showWarningDialog('RPC setup failed')
       }
+
+      const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+      if (rpcResponseForAdmin) {
+        this.adminRpc = rpcResponseForAdmin
+      }
+      this.remoteReachable = this.rpc.jsonrpc.SetupContext.getRemoteReachable()
     },
+
     methods: {
       ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'setSetupContext']),
 
@@ -185,31 +164,50 @@
       openSetup() {
         this.isOpenSetup = true
       },
+
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Internet Status'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message },
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
+      },
       async onClickOk() {
         try {
-          // Authenticate the updated password
           await new Promise(resolve => {
             Util.authenticate(this.newPasswordSync, (error, success) => {
               if (error || !success) {
                 this.showAuthFailedDialog(error)
               } else {
-                // Proceed to the next page after successful authentication
                 resolve()
                 this.simulateRpcCall()
                 if (this.isResetWizardAuthentication) {
                   this.resetWizardContinue()
                 } else {
                   this.dialog = false
-                  this.setShowStep(this.previousStep)
-                  // TODO
-                  // this.nextPage()
-                  // this.openSetup()
+                  this.$store.commit('setup/RESET_SYSTEM')
+                  const completedStep = this.rpc.wizardSettings.completedStep
+                  const currentStepIndex = this.wizardSteps.indexOf(completedStep)
+                  this.setShowStep(this.wizardSteps[currentStepIndex])
+                  this.setShowPreviousStep(this.wizardSteps[currentStepIndex])
                 }
               }
             })
           })
         } catch (error) {
-          this.showWarningDialog(error)
+          this.alertDialog(error)
         }
       },
       onClickCancel() {
@@ -217,30 +215,6 @@
         this.authFailed = false
         this.newPasswordSync = null
       },
-      logCurrentStep() {
-        console.log('currentStep in logCurrentStep method:', this.currentStep)
-        console.log('previousStep in logCurrentStep method:', this.previousStep)
-      },
-      showWarningDialog(message) {
-        this.dialogMessage = message
-        this.warningDiaglog = true
-      },
-      closeWarningDialog() {
-        this.warningDiaglog = false
-      },
-      // async onContinue() {
-      //   try {
-      //     try {
-      //       this.showLicense = true
-      //       await this.setShowStep('License')
-      //       await this.setShowPreviousStep('License')
-      //     } catch (error) {
-      //       this.showWarningDialog(`Failed to reset: ${error.message || error}`)
-      //     }
-      //   } catch (error) {
-      //     this.showWarningDialog(`Failed to navigate: ${error.message || error}`)
-      //   }
-      // },
       async resetWizard() {
         try {
           if (this.rpc.remote && !this.remoteReachable) {
@@ -263,22 +237,19 @@
             this.resetWizardContinue()
           }
         } catch (error) {
-          this.showWarningDialog(`Failed to reset: ${error.message || error}`)
+          this.alertDialog(`Failed to reset: ${error.message || error}`)
         }
       },
-      resetWizardContinue() {
+      async resetWizardContinue() {
         this.dialog = false
         this.resuming = false
         this.rpc.wizardSettings.completedStep = null
         this.rpc.wizardSettings.wizardComplete = false
-        this.$store.commit('setup/RESET_SYSTEM') // Reset system object to initial values
-        this.nextPage()
-        // this.openSetup()
-      },
-      async nextPage() {
+        this.$store.commit('setup/RESET_SYSTEM')
+        const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
         await Promise.resolve()
-        await this.setShowStep('License')
-        await this.setShowPreviousStep('License')
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
       },
       login() {
         window.top.location.href = `${this.rpc.remoteUrl}appliances/add/${this.rpc.serverUID}`
@@ -302,12 +273,12 @@
 </script>
 <style scoped>
   .custom-btn {
-    width: 300px; /* Adjust the width to your desired length */
-    height: 50px; /* Adjust the height to your desired size */
-    font-size: 16px; /* Adjust font size if needed */
-    align-items: center; /* Vertically center the text */
-    justify-content: center; /* Horizontally center the text */
-    border-radius: 5px; /* Optional: to make buttons rounded */
+    width: 300px;
+    height: 50px;
+    font-size: 16px;
+    align-items: center;
+    justify-content: center;
+    border-radius: 5px;
   }
   .button-container {
     display: flex;

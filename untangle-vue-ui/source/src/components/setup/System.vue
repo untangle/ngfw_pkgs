@@ -37,8 +37,10 @@
               >
               <br />
               <label>Admin Email:</label>
-              <ValidationProvider rules="required">
-                <u-text-field v-model="adminEmail" />
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <u-text-field v-model="adminEmail" :error-messages="errors">
+                  <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                </u-text-field>
               </ValidationProvider>
               <br /><br />
             </div>
@@ -129,7 +131,14 @@
       }
     },
     computed: {
-      ...mapGetters('setup', ['newPassword', 'newPasswordConfirm', 'installType']), // Map installType from Vuex
+      ...mapGetters('setup', [
+        'newPassword',
+        'newPasswordConfirm',
+        'installType',
+        'wizardSteps',
+        'currentStep',
+        'previousStep',
+      ]), // from Vuex
 
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
@@ -160,11 +169,7 @@
       },
     },
     created() {
-      console.log('installType from Vuex:', this.installType) // Should now show the correct initial value
-
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-      console.log('Response', rpcResponseForSetup)
-
       this.adminEmail = rpcResponseForSetup?.adminEmail
       this.timezoneID = rpcResponseForSetup?.timezoneID
       this.timezones = []
@@ -182,29 +187,35 @@
       }
     },
     methods: {
-      ...mapActions('setup', ['setShowStep']), // Map the setShowStep action from Vuex store
+      ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('License')
-          await this.setShowPreviousStep('License')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
         }
       },
       async onContinue() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          // Ung.app.loading('loading')
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
             await window.rpc.setup.setTimeZone(timezoneId)
+            await this.saveAdminPassword()
+          } else {
+            await this.saveAdminPassword()
           }
-          await this.saveAdminPassword()
-          await this.setShowStep('Network')
-          await this.setShowPreviousStep('Network')
+          await Util.updateWizardSettings(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          console.error('Error saving settings:', error)
+          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
           alert('Failed to save settings. Please try again.')
         }
       },
@@ -215,10 +226,10 @@
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
             Util.authenticate(this.newPassword, (error, success) => {
-              console.log('Authentication error:', error)
-              console.log('Authentication success:', success)
               if (error || !success) {
-                console.error('Authentication failed after password update:', error)
+                this.$vuntangle.toast.add(
+                  this.$t(`Authentication failed after password update: ${error || error.message}`),
+                )
                 reject(new Error('Authentication failed after password update.'))
               } else {
                 resolve()
@@ -227,7 +238,7 @@
             })
           })
         } catch (error) {
-          console.error('Error saving admin password or authenticating:', error)
+          this.$vuntangle.toast.add(this.$t(`Error saving admin password or authenticating: ${error || error.message}`))
           throw error
         }
       },

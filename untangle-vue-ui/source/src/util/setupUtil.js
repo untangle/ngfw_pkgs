@@ -1,5 +1,6 @@
 // utils/util.js
 import axios from 'axios'
+import vuntangle from '@/plugins/vuntangle'
 
 const Util = {
   v4NetmaskList: [
@@ -38,50 +39,6 @@ const Util = {
     [0, '/0 - 0.0.0.0'],
   ],
 
-  getV4NetmaskList(includeNull, excludeZero) {
-    const data = []
-    if (includeNull) {
-      data.push([null, '\u00A0'])
-    }
-    data.push([32, '/32 - 255.255.255.255'])
-    data.push([31, '/31 - 255.255.255.254'])
-    data.push([30, '/30 - 255.255.255.252'])
-    data.push([29, '/29 - 255.255.255.248'])
-    data.push([28, '/28 - 255.255.255.240'])
-    data.push([27, '/27 - 255.255.255.224'])
-    data.push([26, '/26 - 255.255.255.192'])
-    data.push([25, '/25 - 255.255.255.128'])
-    data.push([24, '/24 - 255.255.255.0'])
-    data.push([23, '/23 - 255.255.254.0'])
-    data.push([22, '/22 - 255.255.252.0'])
-    data.push([21, '/21 - 255.255.248.0'])
-    data.push([20, '/20 - 255.255.240.0'])
-    data.push([19, '/19 - 255.255.224.0'])
-    data.push([18, '/18 - 255.255.192.0'])
-    data.push([17, '/17 - 255.255.128.0'])
-    data.push([16, '/16 - 255.255.0.0'])
-    data.push([15, '/15 - 255.254.0.0'])
-    data.push([14, '/14 - 255.252.0.0'])
-    data.push([13, '/13 - 255.248.0.0'])
-    data.push([12, '/12 - 255.240.0.0'])
-    data.push([11, '/11 - 255.224.0.0'])
-    data.push([10, '/10 - 255.192.0.0'])
-    data.push([9, '/9 - 255.128.0.0'])
-    data.push([8, '/8 - 255.0.0.0'])
-    data.push([7, '/7 - 254.0.0.0'])
-    data.push([6, '/6 - 252.0.0.0'])
-    data.push([5, '/5 - 248.0.0.0'])
-    data.push([4, '/4 - 240.0.0.0'])
-    data.push([3, '/3 - 224.0.0.0'])
-    data.push([2, '/2 - 192.0.0.0'])
-    data.push([1, '/1 - 128.0.0.0'])
-    if (!excludeZero) {
-      data.push([0, '/0 - 0.0.0.0'])
-    }
-
-    return data
-  },
-
   setRpcJsonrpc(root) {
     let setupInfo
     // let success = true
@@ -98,14 +55,14 @@ const Util = {
 
       Object.assign(rpc, setupInfo)
       rpcResponse = rpc
-    } catch (e) {
+    } catch (error) {
       // success = false
-      console.error(e) // Handle the exception here
-      rpcResponse = null // If an error occurs, ensure rpcResponse is null
+      vuntangle.toast.add(`Failed to navigate : ${error || error.message}`)
+      rpcResponse = null
     }
 
     // return success
-    return rpcResponse // Return the rpc response object or null in case of an error
+    return rpcResponse
   },
 
   authenticate(password, cb) {
@@ -123,20 +80,16 @@ const Util = {
         },
       )
       .then(response => {
-        // console.log('Authentication response:', response.data)
-
-        // Check if loginPage exists in the response
         if (response.data && response.data.includes('loginPage')) {
           if (password === 'passwd') {
             cb(null, true) // Default success callback for 'passwd'
           } else {
-            console.error('Invalid password provided.')
+            vuntangle.toast.add(`Invalid password provided.`)
             cb(new Error('Invalid password.'), false)
           }
           return
         }
 
-        // Set up RPC JSON-RPC client
         this.setRpcJsonrpc('admin')
 
         const adminRpc = new window.JSONRpcClient('/admin/JSON-RPC')
@@ -151,24 +104,34 @@ const Util = {
                 }
                 setTimeout(() => rpc.keepAlive(), 300000)
               })
-            } else {
-              console.error('UvmContext is not available in RPC.')
             }
           },
         }
 
         rpc.keepAlive()
-        cb(null, true) // Successfully authenticated
+        cb(null, true)
       })
       .catch(error => {
-        console.error('Error during authentication:', error)
+        vuntangle.toast.add(`Error during authentication: ${error || error.message}`)
         cb(new Error('Authentication request failed.'), false)
       })
   },
 
+  // save and update wizard settings
+  async updateWizardSettings(step) {
+    const rpc = this.setRpcJsonrpc('setup')
+    const adminRpc = this.setRpcJsonrpc('admin')
+    if (!rpc.wizardSettings.wizardComplete) {
+      rpc.wizardSettings.completedStep = step
+      if (adminRpc.jsonrpc.UvmContext) {
+        await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
+      }
+    }
+  },
+
   handleException(exception) {
     if (!exception) {
-      console.error('Null Exception!')
+      vuntangle.toast.add(`Null Exception!`)
       return
     }
 
@@ -221,11 +184,9 @@ const Util = {
       return
     }
 
-    /** Show generic error message */
     this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
   },
   showWarningMessage(message, details, errorHandler) {
-    // Use your modal library here. Example:
     this.$notify({
       title: 'Warning',
       message: `

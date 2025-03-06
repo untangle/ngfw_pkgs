@@ -1,38 +1,35 @@
 import api from '@/plugins/api'
 import router from '@/router'
+import Util from '@/util/setupUtil'
 
 const state = () => ({
   steps: [],
   stepper: ['License', 'System', 'Network', 'Internet', 'Interface', 'Autoupgrades', 'Complete'],
-  currentStep: 'wizard',
-  previousStep: 'wizard',
+  currentStep: '',
+  previousStep: '',
   system: {
     newPassword: '',
     newPasswordConfirm: '',
     installType: '',
   },
+  wizardSettings: {
+    steps: [],
+  },
+  isLoading: false,
+  loadingMessage: 'Loading...',
+  currentStepIndex: 0,
 })
 
 const getters = {
-  // steps: (state, getters, rootState, rootGetters) => {
-  //   const steps = ['license', 'system', 'wan']
-
-  //   const interfaces = rootGetters['settings/interfaces']
-  //   const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
-  //   const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
-
-  //   if (lteStep >= 0) steps.push('lte')
-  //   if (wifiStep >= 0) steps.push('wifi')
-
-  //   return steps
-  // },
   stepper: state => state.stepper || [],
-  steps: state => state.steps, // Getter for steps array
-  currentStep: state => state.currentStep, // Getter for currentStep (showStep)
-  previousStep: state => state.previousStep, // Getter for currentStep (showStep)
+  steps: state => state.steps,
+  currentStep: state => state.currentStep,
+  previousStep: state => state.previousStep,
   newPassword: state => state.system.newPassword,
   newPasswordConfirm: state => state.system.newPasswordConfirm,
-  installType: state => state.system.installType, // Getter for installType
+  installType: state => state.system.installType,
+  wizardSettings: state => state.wizardSettings.steps,
+  wizardSteps: state => state.wizardSettings.steps,
 }
 
 const actions = {
@@ -75,6 +72,43 @@ const actions = {
       return state.steps[0]
     }
   },
+
+  // Refactored to handle setting the wizard steps based on conditions
+  async initializeWizard({ commit }) {
+    try {
+      const rpc = await Util.setRpcJsonrpc('setup')
+      let steps = []
+
+      if (!rpc.wizardSettings.steps || rpc.wizardSettings.steps.length === 0) {
+        if (!rpc.remote) {
+          steps = [
+            'Welcome',
+            'License',
+            'ServerSettings',
+            'Interfaces',
+            'Internet',
+            'InternalNetwork',
+            'Wireless',
+            'AutoUpgrades',
+            'Complete',
+          ]
+        } else {
+          steps = ['Welcome', 'Internet', 'Complete']
+        }
+
+        rpc.wizardSettings.steps = steps
+      } else {
+        steps = rpc.wizardSettings.steps
+      }
+      commit('SET_SHOW_STEP', steps[0])
+      commit('SET_SHOW_PREVIOUS_STEP', steps[0])
+      commit('SET_WIZARDSETTINGS', { steps })
+      return rpc
+    } catch (error) {
+      console.error('Error initializing wizard:', error)
+    }
+  },
+
   setShowStep({ commit }, value) {
     commit('SET_SHOW_STEP', value) // Commit mutation to set currentStep
   },
@@ -93,26 +127,29 @@ const actions = {
   setStep({ commit }, steps) {
     commit('SET_STEP', steps)
   },
+
+  // Actions for Loader
+  showLoader({ commit }, message) {
+    commit('SHOW_LOADER', message)
+  },
+  hideLoader({ commit }) {
+    commit('HIDE_LOADER')
+  },
 }
 const mutations = {
   SET_SHOW_STEP(state, value) {
-    console.log('Setting showStep to:', value) // Log the value being set
     state.currentStep = value // Mutate currentStep
   },
   SET_SHOW_PREVIOUS_STEP(state, value) {
-    console.log('Setting  previous show Step to:', value) // Log the value being set
     state.previousStep = value // Mutate currentStep
   },
   SET_NEW_PASSWORD(state, password) {
-    console.log('Mutation - newPassword:', password) // Log password to check
     state.system.newPassword = password
   },
   SET_NEW_PASSWORD_CONFIRM(state, passwordConfirm) {
-    console.log('Mutation - newPasswordConfirm:', passwordConfirm) // Log passwordConfirm to check
     state.system.newPasswordConfirm = passwordConfirm
   },
   SET_INSTALLTYPE(state, installType) {
-    console.log('Mutation - installType:', installType)
     state.system.installType = installType
   },
   RESET_SYSTEM(state) {
@@ -123,8 +160,19 @@ const mutations = {
     }
   },
   SET_STEP(state, steps) {
-    console.log('Mutation - step:', steps)
-    state.step = steps
+    state.wizardSettings.steps = steps // Update the wizardSettings.steps array in state
+  },
+
+  SET_WIZARDSETTINGS(state, { steps }) {
+    state.wizardSettings.steps = steps
+  },
+  // For Loader
+  SHOW_LOADER(state, message) {
+    state.isLoading = true
+    state.loadingMessage = message || 'Loading...' // Default message
+  },
+  HIDE_LOADER(state) {
+    state.isLoading = false
   },
 }
 

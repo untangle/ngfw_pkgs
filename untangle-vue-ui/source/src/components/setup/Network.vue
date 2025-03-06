@@ -106,7 +106,7 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import Vue from 'vue'
   import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
   import { forEach } from 'lodash'
@@ -151,6 +151,9 @@
           { key: 'macAddress', label: 'MAC Address' },
         ],
       }
+    },
+    computed: {
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
     created() {
       this.getSettings()
@@ -288,7 +291,7 @@
           })
           this.deviceStore = physicalDevsStore
         } catch (error) {
-          console.log('Failed to fetch device settings:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to fetch device settings: ${error || error.message}`))
         }
       },
       // used when mapping from comboboxes
@@ -364,17 +367,18 @@
             setTimeout(this.autoRefreshInterfaces, 3000)
           }
         } catch (error) {
-          console.log('Failed to fetch device statuc:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to fetch device status: ${error || error.message}`))
         }
       },
 
       async onClickBack() {
         try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
           await Promise.resolve()
-          await this.setShowStep('System')
-          await this.setShowPreviousStep('System')
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          console.error('Failed to navigate:', error)
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate: ${error || error.message}`))
         }
       },
 
@@ -391,13 +395,14 @@
               intf.physicalDev = interfacesMap[intf.interfaceId]
             }
           })
-
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
           await Promise.resolve()
-          await this.setShowStep('Internet')
-          await this.setShowPreviousStep('Internet')
+          await Util.updateWizardSettings(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          console.error('Error saving settings:', error)
+          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
           alert('Failed to save settings. Please try again.')
         }
       },

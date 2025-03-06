@@ -3,7 +3,7 @@
     <SetupLayout />
     <v-container class="main-div">
       <div class="step-title">Configure the Internet Connection</div>
-      <div v-if="!isRemoteReachable" class="warning-message">
+      <div v-if="!remoteReachable" class="warning-message">
         <p>No Internet Connection..! Click on 'Test Connectivity' to verify.</p>
       </div>
       <div v-if="wan">
@@ -33,7 +33,7 @@
                   <ValidationProvider rules="required">
                     <label>Netmask:</label>
                     <v-autocomplete
-                      v-model="wan.v4StaticPrefix"
+                      v-model="v4StaticPrefixModel"
                       :items="v4NetmaskList"
                       outlined
                       dense
@@ -41,6 +41,7 @@
                       return-object
                     />
                   </ValidationProvider>
+
                   <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
                     <label>Gateway:</label>
                     <u-text-field v-model="wan.v4StaticGateway" :error-messages="errors">
@@ -112,32 +113,38 @@
                   <span>{{ wanStatus.v4Dns2 }}</span>
                 </div>
                 <div>
-                  <u-btn :small="false" class="button-test-connectivity" @click="testConnectivity">
+                  <u-btn :small="false" class="button-test-connectivity" @click="onSave('testConnectivity')">
                     <v-icon class="world-icon mr-2">mdi-earth</v-icon> Test Connectivity
                   </u-btn>
                 </div>
               </div>
             </div>
-
-            <div class="button-container">
+            <!-- Condition is handled for disabling the Next/Prev button during the initial setup step -->
+            <div v-if="wizardSteps.length > 3" class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-              <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">Next</u-btn>
-              <!-- :disabled="invalid" -->
+              <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave('save'))">Next</u-btn>
             </div>
           </v-form>
         </ValidationObserver>
       </div>
-
-      <!-- Warning Dialog -->
-      <v-dialog v-model="showDialog" max-width="400">
+      <div v-else-if="!remoteTestPassed" class="button-container">
+        <div class="center-container-renew-button">
+          <span class="center-text">
+            You may continue configuring your Internet connection or run the Setup Wizard locally
+          </span>
+          <u-btn :small="false" class="renew-button" :disabled="loading" @click="resetWizard">
+            <v-icon left>mdi-autorenew</v-icon> Run Setup Wizard Locally
+          </u-btn>
+        </div>
+      </div>
+      <!-- Dialog Box for show No internal interfaces -->
+      <v-dialog v-model="dialog" persistent max-width="290">
         <v-card>
-          <v-card-title class="headline">Internet Status</v-card-title>
-          <v-card-text>
-            {{ dialogMessage }}
-          </v-card-text>
+          <v-card-title class="headline">Warning!</v-card-title>
+          <v-card-text> No internal interfaces found. Do you want to continue the setup? </v-card-text>
           <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" text @click="closeDialog">OK</v-btn>
+            <v-btn color="green" text @click="onConfirm">Yes</v-btn>
+            <v-btn color="red" text @click="onCancel">No</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -146,9 +153,13 @@
 </template>
 
 <script>
-  import { mapActions } from 'vuex'
+  import { mapActions, mapGetters } from 'vuex'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
+  import confirmDialog from '@/components/Reusable/ConfirmDialog.vue'
+
+  // import store from '@/store'
   export default {
     name: 'Internet',
     components: {
@@ -156,23 +167,40 @@
     },
     data() {
       return {
-        isRemoteReachable: null,
+        remoteReachable: null,
         wan: {},
         wanStatus: {},
         networkSettings: null,
         v4NetmaskList: Util.v4NetmaskList.map(n => ({ value: n[0], text: n[1] })),
         loading: false,
-        showDialog: false,
-        dialogMessage: '',
+        rpcForAdmin: null,
+        nextDisabled: false,
+        remoteTestPassed: true,
+        remote: false,
+        rpc: null,
       }
     },
     computed: {
+      v4StaticPrefixModel: {
+        get() {
+          return this.wan.v4StaticPrefix ?? 24
+        },
+        set(value) {
+          this.wan.v4StaticPrefix = value
+        },
+      },
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
+    },
+    created() {
+      this.rpc = Util.setRpcJsonrpc('setup')
+      this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+      // this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
+      this.remote = this.rpc.remote
     },
     mounted() {
-      this.checkRemoteReachability()
       this.getSettings()
     },
     methods: {
@@ -180,94 +208,196 @@
       ...mapActions('setup', ['setShowPreviousStep']),
       async onClickBack() {
         try {
-          await this.setShowStep('Network')
-          await this.setShowPreviousStep('Internet')
+          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
         } catch (error) {
-          this.showWarning(`Failed to navigate: ${error.message || error}`)
+          this.alertDialog(`Failed to navigate: ${error.message || error}`)
         }
       },
 
-      async onSave(cb) {
+      async showLoader(value) {
+        await this.$store.commit('SET_LOADER', value)
+      },
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Internet Status'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
+      },
+      confirmDialog({ message, onConfirmNo = null, onConfirmYes = null }) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Internet Status'),
+          component: confirmDialog,
+          componentProps: {
+            alert: { message },
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('Yes'),
+              handler() {
+                this.onClose()
+                onConfirmYes()
+              },
+            },
+            {
+              name: this.$t('No'),
+              handler() {
+                this.onClose()
+                onConfirmNo()
+              },
+            },
+          ],
+        })
+      },
+
+      onSave(triggeredBy, cb) {
         if (!this.wan) {
           cb()
           return
         }
-        // Modify WAN settings based on configuration type
+
         if (this.wan.v4ConfigType === 'AUTO' || this.wan.v4ConfigType === 'PPPOE') {
-          Object.assign(this.wan, {
-            v4StaticAddress: null,
-            v4StaticPrefix: null,
-            v4StaticGateway: null,
-            v4StaticDns1: null,
-            v4StaticDns2: null,
-          })
+          this.wan.v4StaticAddress = null
+          this.wan.v4StaticPrefix = null
+          this.wan.v4StaticGateway = null
+          this.wan.v4StaticDns1 = null
+          this.wan.v4StaticDns2 = null
         }
         if (this.wan.v4ConfigType === 'STATIC') {
           this.wan.v4NatEgressTraffic = true
-          this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value
+          if (this.wan.v4StaticPrefix && this.wan.v4StaticPrefix.value) {
+            this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value
+          }
         }
         if (this.wan.v4ConfigType === 'PPPOE') {
           this.wan.v4NatEgressTraffic = true
           this.wan.v4PPPoEUsePeerDns = true
         }
 
-        this.loading = true // Start loading state
+        const mode = triggeredBy === 'testConnectivity' ? 'manual' : 'auto'
 
         try {
-          this.loading = true // Indicate loading state
+          this.$store.commit('SET_LOADER', true)
 
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
+          this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+              this.$store.commit('SET_LOADER', false)
+              return
+            }
 
-          this.showWarning('Settings saved. Testing connectivity...')
+            this.testConnectivity(mode, () => {
+              if (typeof cb === 'function') {
+                cb()
+                // this.nextPage()
+                if (mode === 'auto') {
+                  this.nextPage()
+                }
+              }
 
-          await this.testConnectivity()
-          // setNetworkSettings after testConnectivity completes
-          rpcResponseForSetup.networkManager.setNetworkSettings(() => {
-            this.setShowStep('Interface')
-            this.setShowPreviousStep('Interface')
+              this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+
+              this.$store.commit('SET_LOADER', false)
+            })
           }, this.networkSettings)
         } catch (error) {
-          this.showWarning('Unable to save network settings. Please try again.')
-        } finally {
-          this.loading = false // Ensure loading state is turned off after execution
+          this.alertDialog('Unable to save network settings. Please try again.')
+          this.$store.commit('SET_LOADER', false)
         }
       },
-      checkRemoteReachability() {
-        this.isRemoteReachable = false
-      },
-      async testConnectivity() {
-        this.showWarning('Testing connectivity...')
-        this.loading = true
+      async testConnectivity(testType, cb) {
+        let message = null
+        let nextDisabled = true
+
         try {
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          const result = await rpcResponseForSetup.connectivityTester.getStatus()
-          if (result.tcpWorking === false && result.dnsWorking === false) {
-            this.showWarning('Warning! Internet tests and DNS tests failed.')
-          } else if (result.tcpWorking === false) {
-            this.showWarning('Warning! DNS tests succeeded, but Internet tests failed.')
-          } else if (result.dnsWorking === false) {
-            this.showWarning('Warning! Internet tests succeeded, but DNS tests failed.')
+          this.$store.commit('SET_LOADER', true)
+
+          await this.$vuntangle.toast.add(this.$t('Testing Connectivity...'))
+
+          const result = await this.rpcForAdmin.connectivityTester.getStatus()
+
+          if (!result.tcpWorking && !result.dnsWorking) {
+            message = 'Warning! Internet tests and DNS tests failed.'
+          } else if (!result.tcpWorking) {
+            message = 'Warning! DNS tests succeeded, but Internet tests failed.'
+          } else if (!result.dnsWorking) {
+            message = 'Warning! Internet tests succeeded, but DNS tests failed.'
+          } else if (this.remote) {
+            this.remoteReachable = await this.rpcForAdmin.setup.getRemoteReachable()
+            if (!this.remoteReachable) {
+              message = 'Unable to reach ETM Dashboard!'
+            } else {
+              nextDisabled = false
+            }
           } else {
-            this.showWarning('Success..')
+            nextDisabled = false
+            message = null
           }
+
+          if (this.remote) {
+            this.nextDisabled = nextDisabled
+          }
+
+          if (this.remote && message !== null) {
+            console.log('this.remote && message !== null')
+            this.remoteTestPassed = false
+            message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
+          }
+
+          if (testType === 'manual') {
+            this.alertDialog(message || 'Success!')
+          } else {
+            if (!message) {
+              cb()
+              return
+            }
+
+            const warningText = `${message}<br/><br/>${this.$t(
+              'It is recommended to configure valid Internet settings before continuing. Try again?',
+            )}`
+            this.confirmDialog({
+              message: warningText,
+              onConfirmYes: () => {
+                this.onSave(() => {
+                  this.testConnectivity(testType, cb)
+                })
+              },
+              onConfirmNo: () => this.nextPage(),
+            })
+          }
+
+          this.getInterfaceStatus()
         } catch (error) {
-          this.showWarning('Unable to complete connectivity test, please try again.')
+          this.alertDialog(`Unable to complete connectivity test, please try again. Error`)
         } finally {
-          this.loading = false
+          this.$store.commit('SET_LOADER', false)
         }
-      },
-      showWarning(message) {
-        this.dialogMessage = message
-        this.showDialog = true
-      },
-      closeDialog() {
-        this.showDialog = false
       },
 
       async getSettings() {
         try {
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          this.networkSettings = await rpcResponseForSetup.networkManager.getNetworkSettings()
+          if (this.remote) {
+            // If remote and we are here, disable the next button.
+            this.nextDisabled = true
+            this.remoteTestPassed = true
+          }
+          this.networkSettings = await this.rpcForAdmin.networkManager.getNetworkSettings()
 
           const firstWan = this.networkSettings.interfaces.list.find(intf => {
             return intf.isWan && intf.configType !== 'DISABLED'
@@ -280,40 +410,64 @@
           }
           this.getInterfaceStatus()
         } catch (error) {
-          this.showWarning('Unable to fetch Network Settings.')
+          this.alertDialog(`Unable to fetch Network Settings. Error: ${error.message || error}`)
         }
       },
       async getInterfaceStatus() {
         try {
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          const status = await rpcResponseForSetup.networkManager.getInterfaceStatus(this.wan.interfaceId)
+          const status = await this.rpcForAdmin.networkManager.getInterfaceStatus(this.wan.interfaceId)
           this.wanStatus = status
         } catch (error) {
-          this.showWarning('Unable to get WAN status.')
+          this.alertDialog(`Unable to get WAN status : ${error.message || error}`)
         }
       },
+
       async renewDhcp() {
-        // Set loading statethis
-        this.loading = true
+        const self = this
+
         try {
-          // Initialize RPC session for 'admin'
-          const rpcResponseForSetup = await Util.setRpcJsonrpc('admin')
-          await rpcResponseForSetup.networkManager.setNetworkSettings((response, ex) => {
+          await this.$store.commit('SET_LOADER', true)
+          this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
-              this.showWarning('Unable to set Network Settings.')
+              Util.handleException(self.$t('Unable to set Network Settings.'))
+              self.$store.commit('SET_LOADER', false)
               return
             }
-            // then force the DHCP lease renew just in case
-            this.showWarning('Renewing DHCP Lease...')
-            rpcResponseForSetup.networkManager.renewDhcpLease(() => {
-              this.showWarning('DHCP lease renewed successfully.')
-              this.getSettings()
-            }, this.wan.interfaceId)
-          }, this.networkSettings)
+            self.$vuntangle.toast.add(self.$t('Renewing DHCP Lease...'))
+            self.rpcForAdmin.networkManager.renewDhcpLease((r, e) => {
+              if (e) {
+                Util.handleException(e)
+                self.$store.commit('SET_LOADER', false)
+                return
+              }
+              self.$vuntangle.toast.add(self.$t('DHCP lease renewed successfully.'))
+              self.getSettings()
+              self.$store.commit('SET_LOADER', false)
+            }, self.wan.interfaceId)
+          }, self.networkSettings)
         } catch (error) {
-          this.showWarning(`Error during DHCP renewal: ${error.message || error}`)
+          this.alertDialog(`Error during DHCP renewal: ${error.message || error}`)
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+      async nextPage() {
+        const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+        await Util.updateWizardSettings(this.currentStep)
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+      },
+      async resetWizard() {
+        this.$store.commit('SET_LOADER', true)
+
+        try {
+          this.rpc.wizardSettings.steps = []
+          await this.rpcForAdmin.jsonrpc.UvmContext.setRemoteSetup(false)
+          this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(this.rpc.wizardSettings)
+          window.top.location.href = '/setup/index.do'
+        } catch (error) {
+          this.alertDialog(`Failed to reset wizard: ${error.message || error}`)
         } finally {
-          this.loading = false
+          this.$store.commit('SET_LOADER', false)
         }
       },
     },
@@ -364,6 +518,23 @@
     margin-left: 0px;
     margin-bottom: 20px; /* Add spacing below */
     width: 100%; /* Ensure it takes the full width */
+  }
+  .center-container-renew-button {
+    display: flex;
+    flex-direction: column; /* Stack text and button vertically */
+    justify-content: center; /* Align vertically in the center */
+    align-items: center; /* Align horizontally in the center */
+    text-align: center; /* Center the text inside */
+    height: 100%; /* Ensure it takes full height */
+    width: 100%; /* Ensure it takes full width */
+    padding: 20px; /* Add some spacing */
+  }
+
+  .center-text {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 10px; /* Space between text and button */
+    display: block; /* Ensures text behaves like a block for proper spacing */
   }
 
   .column-view {
@@ -526,7 +697,7 @@
     left: 0;
     padding: 10px 20px; /* Adds padding for spacing */
 
-    background-color: #f9f9f9;
+    /* background-color: #f9f9f9; */
   }
 
   .no-internet {
