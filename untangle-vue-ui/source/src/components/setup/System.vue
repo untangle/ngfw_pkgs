@@ -227,7 +227,9 @@
           await new Promise((resolve, reject) => {
             Util.authenticate(this.newPassword, (error, success) => {
               if (error || !success) {
-                this.$vuntangle.toast.add(this.$t(`Authentication failed after password update: ${error || error.message}`))
+                this.$vuntangle.toast.add(
+                  this.$t(`Authentication failed after password update: ${error || error.message}`),
+                )
                 reject(new Error('Authentication failed after password update.'))
               } else {
                 resolve()

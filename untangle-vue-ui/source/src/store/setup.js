@@ -23,11 +23,11 @@ const state = () => ({
 const getters = {
   stepper: state => state.stepper || [],
   steps: state => state.steps,
-  currentStep: state => state.currentStep, // Getter for currentStep (showStep)
-  previousStep: state => state.previousStep, // Getter for currentStep (showStep)
+  currentStep: state => state.currentStep,
+  previousStep: state => state.previousStep,
   newPassword: state => state.system.newPassword,
   newPasswordConfirm: state => state.system.newPasswordConfirm,
-  installType: state => state.system.installType, // Getter for installType
+  installType: state => state.system.installType,
   wizardSettings: state => state.wizardSettings.steps,
   wizardSteps: state => state.wizardSettings.steps,
 }
@@ -175,9 +175,7 @@ const mutations = {
     state.isLoading = false
   },
 
-  // this.$store.dispatch('showLoader', 'Saving your data...');
-  // this.$store.dispatch('hideLoader');
-}
+ }
 
 export default {
   namespaced: true,

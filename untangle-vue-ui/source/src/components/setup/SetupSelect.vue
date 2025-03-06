@@ -139,12 +139,7 @@
       if (rpcResponseForAdmin) {
         this.adminRpc = rpcResponseForAdmin
       }
-      const rpcWindow = {
-        jsonrpc: new window.JSONRpcClient('/setup/JSON-RPC'),
-      }
-      if (rpcWindow.jsonrpc.SetupContext) {
-        this.remoteReachable = rpcWindow.jsonrpc.SetupContext.getRemoteReachable()
-      }
+      this.remoteReachable = this.rpc.jsonrpc.SetupContext.getRemoteReachable()
     },
 
     methods: {
