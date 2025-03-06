@@ -181,7 +181,7 @@
             await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           }
         } catch (error) {
-          console.error('Error while navigating to next step:', error)
+          this.$vuntangle.toast.add(this.$t(`Error while navigating to next step : ${error || error.message}`))
         } finally {
           this.isProcessing = false
         }

@@ -217,11 +217,6 @@
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
 
-    mounted() {
-      console.log('wizardSteps', this.wizardSteps)
-      console.log('currentStep', this.currentStep)
-      console.log('previousStep', this.previousStep)
-    },
     methods: {
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
@@ -381,10 +376,10 @@
             await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
             await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
           } else {
-            console.error('No next step available')
+            this.$vuntangle.toast.add(this.$t(`No next step available`))
           }
         } catch (error) {
-          console.error('Error while navigating to next step:', error)
+          this.$vuntangle.toast.add(this.$t(`Error while navigating to next step: ${error || error.message}`))
         } finally {
           this.isProcessing = false // Reset flag after processing is complete
         }
