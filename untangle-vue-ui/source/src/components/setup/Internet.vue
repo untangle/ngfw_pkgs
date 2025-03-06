@@ -119,6 +119,7 @@
                 </div>
               </div>
             </div>
+            <!-- Condition is handled for disabling the Next/Prev button during the initial setup step -->
             <div v-if="wizardSteps.length > 3" class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
               <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave('save'))">Next</u-btn>
@@ -174,7 +175,7 @@
         loading: false,
         rpcForAdmin: null,
         nextDisabled: false,
-        remoteTestPassed: false,
+        remoteTestPassed: true,
         remote: false,
         rpc: null,
       }
