@@ -29,6 +29,7 @@
   import uris from '@/util/uris'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
 
   export default {
     name: 'License',
@@ -49,13 +50,13 @@
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
       } else {
-        this.showWarningDialog('RPC setup failed')
+        this.alertDialog('RPC setup failed')
       }
       const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
       if (rpcResponseForAdmin) {
         this.rpcForAdmin = rpcResponseForAdmin
       } else {
-        this.showWarningDialog('RPC setup failed')
+        this.alertDialog('RPC setup failed')
       }
     },
     methods: {
@@ -85,6 +86,25 @@
         } catch (error) {
           this.$vuntangle.toast.add(this.$t(`Failed to navigate: ${error || error.message}`))
         }
+      },
+      alertDialog(message) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Warning'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message }, // Pass the plain message in an object
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
+        })
       },
     },
   }

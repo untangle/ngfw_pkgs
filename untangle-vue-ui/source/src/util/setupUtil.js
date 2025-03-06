@@ -1,6 +1,7 @@
 // utils/util.js
 import axios from 'axios'
 
+
 const Util = {
   v4NetmaskList: [
     [32, '/32 - 255.255.255.255'],
@@ -56,7 +57,7 @@ const Util = {
       rpcResponse = rpc
     } catch (error) {
       // success = false
-      this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
+      this.$vuntangle.toast.add(`Failed to navigate : ${error || error.message}`)
       rpcResponse = null
     }
 
@@ -83,7 +84,7 @@ const Util = {
           if (password === 'passwd') {
             cb(null, true) // Default success callback for 'passwd'
           } else {
-            this.$vuntangle.toast.add(this.$t(`Invalid password provided.`))
+            this.$vuntangle.toast.add(`Invalid password provided.`)
             cb(new Error('Invalid password.'), false)
           }
           return
@@ -111,7 +112,7 @@ const Util = {
         cb(null, true)
       })
       .catch(error => {
-        this.$vuntangle.toast.add(this.$t(`Error during authentication: ${error || error.message}`))
+        this.$vuntangle.toast.add(`Error during authentication: ${error || error.message}`)
         cb(new Error('Authentication request failed.'), false)
       })
   },
