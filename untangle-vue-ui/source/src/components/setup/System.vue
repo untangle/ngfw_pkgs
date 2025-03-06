@@ -1,0 +1,354 @@
+<template>
+  <div>
+    <v-card width="900" class="mx-auto mt-4" flat>
+      <SetupLayout />
+      <v-container class="main-div">
+        <div class="step-title">Configure the Server</div>
+
+        <!-- <h2 class="font-weight-light faint-color text-h4">{{ `Configure the Server` }}</h2> -->
+        <br />
+        <br />
+        <ValidationObserver v-slot="{ passes }">
+          <div class="parent-container">
+            <div class="custom-margin">
+              <h2 class="sectionheader">{{ `Admin Account` }}</h2>
+              <br />
+              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
+                Choose a password for the <strong>admin</strong><br />
+                account
+              </label>
+              <br />
+              <label>Password:</label>
+              <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
+                <u-password v-model="newPasswordSync" :errors="errors" />
+              </ValidationProvider>
+              <br />
+              <label>Confirm Password:</label>
+              <ValidationProvider
+                v-slot="{ errors }"
+                name="confirmPassword"
+                :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
+              >
+                <u-password v-model="newPasswordConfirmSync" :errors="errors" />
+              </ValidationProvider>
+              <br />
+              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px"
+                >Administrators receive email alerts and report summaries</label
+              >
+              <br />
+              <label>Admin Email:</label>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <u-text-field v-model="adminEmail" :error-messages="errors">
+                  <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                </u-text-field>
+              </ValidationProvider>
+              <br /><br />
+            </div>
+            <br />
+            <div class="custom-margin">
+              <label class="sectionheader">{{ `Install Type` }}</label>
+              <br />
+              <label class="empty-label"></label>
+              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
+                Install type determines the optimal default settings for this deployment
+              </label>
+              <label>Choose Type:</label>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <v-autocomplete
+                  v-model="installTypeSync"
+                  :items="typeOptions"
+                  outlined
+                  dense
+                  hide-details
+                  return-object
+                  placeholder="Select Type"
+                >
+                  <template v-if="errors.length" #append>
+                    <u-errors-tooltip :errors="errors" />
+                  </template>
+                </v-autocomplete>
+              </ValidationProvider>
+              <br />
+              <label>Timezone:</label>
+              <ValidationProvider v-slot="{ errors }" rules="required">
+                <v-autocomplete
+                  v-model="timezone"
+                  :items="timezones"
+                  outlined
+                  dense
+                  hide-details
+                  return-object
+                  :error-messages="errors"
+                >
+                </v-autocomplete>
+              </ValidationProvider>
+              <div class="button-container">
+                <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
+                <u-btn :small="false" style="margin: 8px 0" @click="passes(onContinue)">{{ `Next` }}</u-btn>
+                <!-- :disabled="invalid" -->
+              </div>
+              <!-- <u-btn :small="false" style="margin: 8px 180px" class="custom-btn-right" @click="passes(onContinue)">
+                {{ `Next` }}
+              </u-btn> -->
+            </div>
+          </div>
+        </ValidationObserver>
+      </v-container>
+    </v-card>
+  </div>
+</template>
+
+<script>
+  import { mapActions, mapGetters } from 'vuex'
+  import Util from '@/util/setupUtil'
+  import SetupLayout from '@/layouts/SetupLayout.vue'
+
+  export default {
+    components: {
+      SetupLayout,
+    },
+    data() {
+      return {
+        adminEmail: '',
+        timezoneID: '',
+        timezone: '',
+        timezones: '',
+        loading: false,
+        // installType: '',
+        typeOptions: [
+          { value: 'school', text: 'School' },
+          { value: 'college', text: 'Higher Education' },
+          { value: 'government', text: 'State & Local Government' },
+          { value: 'fedgovernment', text: 'Federal Government' },
+          { value: 'nonprofit', text: 'Nonprofit' },
+          { value: 'retail', text: 'Hospitality & Retail' },
+          { value: 'healthcare', text: 'Healthcare' },
+          { value: 'financial', text: 'Banking & Financial' },
+          { value: 'home', text: 'Home' },
+          { value: 'student', text: 'Student' },
+          { value: 'other', text: 'Other' },
+        ],
+      }
+    },
+    computed: {
+      ...mapGetters('setup', [
+        'newPassword',
+        'newPasswordConfirm',
+        'installType',
+        'wizardSteps',
+        'currentStep',
+        'previousStep',
+      ]), // from Vuex
+
+      passwordRequired() {
+        return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
+      },
+      newPasswordSync: {
+        get() {
+          return this.newPassword // Vuex getter
+        },
+        set(value) {
+          this.$store.dispatch('setup/setNewPassword', value) // Vuex action to update password
+        },
+      },
+      newPasswordConfirmSync: {
+        get() {
+          return this.newPasswordConfirm // Vuex getter
+        },
+        set(value) {
+          this.$store.dispatch('setup/setNewPasswordConfirm', value) // Vuex action to update confirm password
+        },
+      },
+      installTypeSync: {
+        get() {
+          return this.installType // Access installType from Vuex
+        },
+        set(value) {
+          this.$store.dispatch('setup/setInstallType', value) // Dispatch action to update installType in Vuex
+        },
+      },
+    },
+    created() {
+      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+      this.adminEmail = rpcResponseForSetup?.adminEmail
+      this.timezoneID = rpcResponseForSetup?.timezoneID
+      this.timezones = []
+
+      const jsonStr = rpcResponseForSetup.timezones.replace(/'/g, '"')
+      const timezonesArray = JSON.parse(jsonStr)
+      if (timezonesArray) {
+        for (let i = 0; i < timezonesArray.length; i++) {
+          const timezone = `(${timezonesArray[i][1]}) ${timezonesArray[i][0]}`
+          this.timezones.push(timezone)
+          if (this.timezoneID === timezonesArray[i][0]) {
+            this.timezone = timezone
+          }
+        }
+      }
+    },
+    methods: {
+      ...mapActions('setup', ['setShowStep']),
+      ...mapActions('setup', ['setShowPreviousStep']),
+      async onClickBack() {
+        try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          await Promise.resolve()
+          await this.setShowStep(this.wizardSteps[currentStepIndex - 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex - 1])
+        } catch (error) {
+          this.$vuntangle.toast.add(this.$t(`Failed to navigate : ${error || error.message}`))
+        }
+      },
+      async onContinue() {
+        try {
+          const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          // Ung.app.loading('loading')
+          window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
+          if (this.timezoneID !== this.timezone) {
+            const timezoneId = this.timezone.split(' ')[1]
+            await window.rpc.setup.setTimeZone(timezoneId)
+            await this.saveAdminPassword()
+          } else {
+            await this.saveAdminPassword()
+          }
+          await Util.updateWizardSettings(this.currentStep)
+          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
+        } catch (error) {
+          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
+          alert('Failed to save settings. Please try again.')
+        }
+      },
+      async saveAdminPassword() {
+        try {
+          // Update admin password
+          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
+          // Authenticate the updated password
+          await new Promise((resolve, reject) => {
+            Util.authenticate(this.newPassword, (error, success) => {
+              if (error || !success) {
+                this.$vuntangle.toast.add(
+                  this.$t(`Authentication failed after password update: ${error || error.message}`),
+                )
+                reject(new Error('Authentication failed after password update.'))
+              } else {
+                resolve()
+                this.showInterfaces = true
+              }
+            })
+          })
+        } catch (error) {
+          this.$vuntangle.toast.add(this.$t(`Error saving admin password or authenticating: ${error || error.message}`))
+          throw error
+        }
+      },
+    },
+  }
+</script>
+
+<style scoped>
+  .main-div {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    padding: 20px;
+    justify-content: flex-start;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    font-family: Arial, sans-serif;
+    min-height: 600px;
+    max-height: 700px;
+    height: 700px;
+    overflow-y: auto;
+    position: relative;
+  }
+  .step-title {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-weight: 100;
+    color: #999;
+    font-size: 36px;
+    margin-left: 105px;
+  }
+  .sectionheader {
+    font-family: 'Roboto Condensed', sans-serif;
+    font-size: 35px;
+    color: #555;
+  }
+  .network-cards-panel {
+    display: flex;
+    flex-direction: column;
+    height: 70%;
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+    margin: 20px;
+    margin-left: 300px;
+    margin-right: 300px;
+  }
+  .parent-container {
+    display: flex; /* Enables flexbox layout */
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* Adds 20px space between the child divs */
+  }
+  .child-container {
+    display: flex; /* Enables flexbox layout */
+    gap: 430px; /* Adds 20px space between the child divs */
+  }
+  .h2.font-weight-light {
+    font-weight: bold; /* Or try 'bold' for a stronger weight */
+  }
+  .button-text {
+    margin-left: 65px;
+    margin-right: -10px;
+    display: inline-block;
+  }
+  .custom-btn {
+    margin-left: auto;
+    width: 10px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
+    font-size: 16px; /* Text size */
+    border-radius: 5px; /* Optional: rounded corners */
+    text-align: center; /* Center text */
+  }
+  .custom-btn-right {
+    margin-left: auto;
+    width: 10px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
+    font-size: 16px; /* Text size */
+    border-radius: 5px; /* Optional: rounded corners */
+    text-align: right;
+  }
+  .empty-label {
+    display: block; /* Ensures the label takes up space and is on its own line */
+    height: 5px; /* Set a specific height if needed */
+    background-color: #f9f9f9;
+  }
+  .custom-margin {
+    width: 300px; /* Fixed width for buttons */
+    height: 50px; /* Fixed height for buttons */
+  }
+  .faint-color {
+    color: rgba(0, 0, 0, 25); /* Adjust the color and opacity */
+  }
+  /* .button-container {
+    display: flex;
+    justify-content: flex-end; 
+    width: 100%; 
+  } */
+  /* Button Container */
+  .button-container {
+    display: flex;
+    justify-content: space-between; /* Places Back & Next at extreme left & right */
+    align-items: center;
+    width: 76%;
+    position: absolute;
+    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+    background-color: #f9f9f9;
+    margin-left: 107px;
+  }
+</style>
