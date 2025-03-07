@@ -23,65 +23,75 @@
         </div>
       </div>
       <!-- Network Cards Table -->
-      <draggable
-        v-model="gridData"
-        :group="{ name: 'network-rows', pull: 'clone' }"
-        class="network-table text-center"
-        handle=".drag-handle"
-        :animation="300"
-        @start="onDragStart"
-        @end="onDragEnd"
-        @drag="onDrag"
-        @drop="onDrop"
-      >
-        <b-table
-          hover
-          :items="gridData"
-          :fields="tableFields"
+      <div class="network-table-container">
+        <draggable
+          v-model="gridData"
+          :group="{ name: 'network-rows', pull: 'clone' }"
           class="network-table text-center"
-          bordered
-          :striped="false"
-          :small="false"
+          handle=".drag-handle"
+          :animation="300"
+          @start="onDragStart"
+          @end="onDragEnd"
+          @drag="onDrag"
+          @drop="onDrop"
         >
-          <!-- Name column -->
-          <template #cell(name)="row">
-            {{ row.item.name }}
-          </template>
-          <!-- Drag Icon Column -->
-          <template #cell(drag)="row">
-            <span
-              class="drag-handle"
-              style="cursor: move"
-              draggable="true"
-              @dragstart="dragStart($event, row.item)"
-              @dragover="dragOver($event)"
-              @drop="drop($event, row.item)"
-              @dragend="dragEnd"
-              ><v-icon>mdi-cursor-move</v-icon>
-            </span>
-          </template>
-          <!-- Device Column -->
-          <template #cell(deviceName)="row">
-            <b-form-select v-model="row.item.physicalDev" class="custom-dropdown" @change="setInterfacesMap(row.item)">
-              <b-form-select-option v-for="device in deviceStore" :key="device.physicalDev" :value="device.physicalDev">
-                {{ device.physicalDev }}
-              </b-form-select-option>
-            </b-form-select>
-          </template>
-          <!-- Icon Column -->
-          <template #cell(statusIcon)="row">
-            <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-          </template>
-          <!-- Status Column -->
-          <template #cell(connected)="row">
-            {{ getConnectedStr(row.item) }}
-          </template>
-          <!-- MAC Address Column -->
-          <template #cell(macAddress)="row">
-            {{ row.item.macAddress }}
-          </template>
-        </b-table>
-      </draggable>
+          <b-table
+            hover
+            :items="gridData"
+            :fields="tableFields"
+            class="network-table text-center"
+            bordered
+            :striped="false"
+            :small="false"
+          >
+            <!-- Name column -->
+            <template #cell(name)="row">
+              {{ row.item.name }}
+            </template>
+            <!-- Drag Icon Column -->
+            <template #cell(drag)="row">
+              <span
+                class="drag-handle"
+                style="cursor: move"
+                draggable="true"
+                @dragstart="dragStart($event, row.item)"
+                @dragover="dragOver($event)"
+                @drop="drop($event, row.item)"
+                @dragend="dragEnd"
+                ><v-icon>mdi-cursor-move</v-icon>
+              </span>
+            </template>
+            <!-- Device Column -->
+            <template #cell(deviceName)="row">
+              <b-form-select
+                v-model="row.item.physicalDev"
+                class="custom-dropdown"
+                @change="setInterfacesMap(row.item)"
+              >
+                <b-form-select-option
+                  v-for="device in deviceStore"
+                  :key="device.physicalDev"
+                  :value="device.physicalDev"
+                >
+                  {{ device.physicalDev }}
+                </b-form-select-option>
+              </b-form-select>
+            </template>
+            <!-- Icon Column -->
+            <template #cell(statusIcon)="row">
+              <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
+            </template>
+            <!-- Status Column -->
+            <template #cell(connected)="row">
+              {{ getConnectedStr(row.item) }}
+            </template>
+            <!-- MAC Address Column -->
+            <template #cell(macAddress)="row">
+              {{ row.item.macAddress }}
+            </template>
+          </b-table>
+        </draggable>
+      </div>
 
       <!-- Warning Message -->
       <div v-if="gridData.length < 2" class="inline-warning">
@@ -383,12 +393,13 @@
       },
 
       async onClickNext() {
+        this.$store.commit('SET_LOADER', true)
+
         try {
           const interfacesMap = {}
           this.gridData.forEach(function (currentRow) {
             interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
           })
-
           // apply new physicalDev for each interface from initial Network Settings
           this.networkSettings.interfaces.list.forEach(function (intf) {
             if (!intf.isVlanInterface) {
@@ -396,14 +407,30 @@
             }
           })
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
-          await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
+          // await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
+          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+
+          await new Promise((resolve, reject) => {
+            window.rpc.networkManager.setNetworkSettings((response, ex) => {
+              if (ex) {
+                Util.handleException(ex)
+                reject(ex) // Reject the Promise if there's an error
+              } else {
+                resolve(response) // Resolve the Promise on success
+              }
+            }, this.networkSettings)
+          })
+
           await Promise.resolve()
           await Util.updateWizardSettings(this.currentStep)
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
+          this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
           alert('Failed to save settings. Please try again.')
+        } finally {
+          this.$store.commit('SET_LOADER', false)
         }
       },
       statusIcon(status) {
@@ -430,9 +457,19 @@
     max-height: 700px; /* Prevents the height from changing too much */
     height: 700px; /* Set a fixed height to keep the div consistent */
     position: relative; /* Ensures children stay within boundary */
+    overflow: hidden; /* Prevents content from spilling out */
   }
   .large-font {
     font-size: 17px;
+  }
+  .network-table-container {
+    width: 100%;
+    max-height: 400px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background: white;
   }
   .network-table {
     width: 100%;

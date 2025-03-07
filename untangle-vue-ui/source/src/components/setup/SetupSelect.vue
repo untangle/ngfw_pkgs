@@ -167,7 +167,7 @@
 
       alertDialog(message) {
         this.$vuntangle.dialog.show({
-          title: this.$t('Internet Status'),
+          title: this.$t('Warning'),
           component: AlertDialog,
           componentProps: {
             alert: { message },

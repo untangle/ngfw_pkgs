@@ -287,6 +287,8 @@
         }
       },
       async onSave() {
+        this.$store.commit('SET_LOADER', true)
+
         try {
           // setting the v4StaticPrefix
           if (this.internal.v4StaticPrefix && this.internal.v4StaticPrefix.value) {
@@ -330,7 +332,6 @@
               )
               await this.simulateRpcCall()
               await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-              this.alertDialog('Settings saved successfully.')
               window.top.location.href = this.newSetupLocation
             }
           } else {
@@ -353,16 +354,25 @@
           }
 
           // save settings and continue to next step
-          await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
+          // await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
 
-          // Once save operation is complete, show warning and hide modal
-          this.alertDialog('Settings saved successfully.')
-
+          await new Promise((resolve, reject) => {
+            window.rpc.networkManager.setNetworkSettings((response, ex) => {
+              if (ex) {
+                Util.handleException(ex)
+                reject(ex) // Reject the Promise if there's an error
+              } else {
+                resolve(response) // Resolve the Promise on success
+              }
+            }, this.networkSettings)
+          })
           this.nextPage()
         } catch (error) {
+          this.$store.commit('SET_LOADER', false)
           this.alertDialog(`Error during save operation: ${error.message || error}`)
         } finally {
           // Hide the modal once save is complete
+          this.$store.commit('SET_LOADER', false)
           this.loading = false
           this.loadingForChangeAddress = false
         }

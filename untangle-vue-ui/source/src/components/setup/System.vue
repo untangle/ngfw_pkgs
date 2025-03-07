@@ -225,6 +225,7 @@
           await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
+            this.$store.commit('SET_LOADER', true) // Stop loader
             Util.authenticate(this.newPassword, (error, success) => {
               if (error || !success) {
                 this.$vuntangle.toast.add(
@@ -238,8 +239,11 @@
             })
           })
         } catch (error) {
+          this.$store.commit('SET_LOADER', false) // Stop loader
           this.$vuntangle.toast.add(this.$t(`Error saving admin password or authenticating: ${error || error.message}`))
           throw error
+        } finally {
+          this.$store.commit('SET_LOADER', false)
         }
       },
     },
