@@ -109,7 +109,7 @@
       </div>
       <div class="button-container">
         <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
-        <u-btn :small="false" style="margin: 8px 0" @click="onClickNext">{{ `Next` }}</u-btn>
+        <u-btn :small="false" style="margin: 8px 0" @click="onSave">{{ `Next` }}</u-btn>
       </div>
     </v-container>
   </v-card>
@@ -392,7 +392,8 @@
         }
       },
 
-      async onClickNext() {
+      async onSave() {
+        this.$vuntangle.toast.add(this.$t('Saving settings ...'))
         this.$store.commit('SET_LOADER', true)
 
         try {
@@ -408,7 +409,7 @@
           })
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
           // await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+          // this.$vuntangle.toast.add(this.$t('Saving settings ...'))
 
           await new Promise((resolve, reject) => {
             window.rpc.networkManager.setNetworkSettings((response, ex) => {

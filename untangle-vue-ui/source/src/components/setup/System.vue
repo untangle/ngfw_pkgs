@@ -62,6 +62,7 @@
                   hide-details
                   return-object
                   placeholder="Select Type"
+                  :error-messages="errors"
                 >
                   <template v-if="errors.length" #append>
                     <u-errors-tooltip :errors="errors" />
