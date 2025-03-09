@@ -119,14 +119,15 @@
           </div>
           <br />
           <div class="custom-margin">
-            <div class="button-container">
+            <div v-if="!nextDisabled" class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
               <u-btn :small="false" style="margin: 8px 0" @click="passes(() => onSave('save'))">Next</u-btn>
             </div>
           </div>
         </ValidationObserver>
       </div>
-      <div v-else-if="!remoteTestPassed" class="button-container">
+      <!-- In Remote mode, allow Local as a backup if Internet fails.  Disabled by default. -->
+      <div v-if="!remoteTestPassed" class="button-container">
         <div class="center-container-renew-button">
           <span class="center-text">
             You may continue configuring your Internet connection or run the Setup Wizard locally
@@ -352,7 +353,6 @@
           }
 
           if (this.remote && message !== null) {
-            console.log('this.remote && message !== null')
             this.remoteTestPassed = false
             message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
           }
@@ -372,7 +372,6 @@
             const warningText = `${message}<br/><br/>${this.$t(
               'It is recommended to configure valid Internet settings before continuing. Try again?',
             )}`
-            console.log('warningText :', warningText)
             this.confirmDialog({
               message: warningText,
               onConfirmYes: () => {
