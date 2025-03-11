@@ -1,5 +1,5 @@
 <template>
-  <v-card width="1100" height="auto" class="mx-auto mt-4" flat>
+  <v-card width="900" height="auto" class="mx-auto mt-4" flat>
     <SetupLayout />
     <v-container class="main-div">
       <div class="step-title">Configure the Internet Connection</div>
@@ -8,126 +8,127 @@
       </div>
       <div v-if="wan">
         <ValidationObserver v-slot="{ passes }">
-          <!-- invalid    Add invalid in v-slot parameter if we want to add disabling in invalid-->
-          <v-form>
-            <div class="config-type">
-              <label class="sectionheader">Configuration Type</label>
-              <div class="radio-group">
-                <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
-                <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
-                <label> <input v-model="wan.v4ConfigType" type="radio" value="PPPOE" /> PPPoE </label>
-              </div>
+          <div class="config-type">
+            <label class="sectionheader">Configuration Type</label>
+            <div class="radio-group">
+              <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
+              <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
+              <label> <input v-model="wan.v4ConfigType" type="radio" value="PPPOE" /> PPPoE </label>
             </div>
-            <div class="column-view">
-              <div class="select-Network-content">
-                <!-- Static Configuration Fields -->
-                <div v-if="wan.v4ConfigType === 'STATIC'" class="pppoe-config">
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                    <label>IP Address:</label>
-
-                    <u-text-field v-model="wan.v4StaticAddress" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-text-field>
-                  </ValidationProvider>
-
-                  <ValidationProvider rules="required">
-                    <label>Netmask:</label>
-                    <v-autocomplete
-                      v-model="v4StaticPrefixModel"
-                      :items="v4NetmaskList"
-                      outlined
-                      dense
-                      hide-details
-                      return-object
-                    />
-                  </ValidationProvider>
-
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                    <label>Gateway:</label>
-                    <u-text-field v-model="wan.v4StaticGateway" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-text-field>
-                  </ValidationProvider>
-
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                    <label>Primary DNS:</label>
-                    <u-text-field v-model="wan.v4StaticDns1" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-text-field>
-                  </ValidationProvider>
-
-                  <ValidationProvider v-slot="{ errors }" :rules="{ ip: true }">
-                    <label>Secondary DNS (optional):</label>
-                    <u-text-field v-model="wan.v4StaticDns2" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-text-field>
-                  </ValidationProvider>
-                </div>
-
-                <!-- Auto (DHCP) Configuration Fields -->
-                <div v-if="wan.v4ConfigType === 'AUTO'" class="auto-config">
-                  <div class="button-margin">
-                    <u-btn :small="false" class="renew-button" :disabled="loading" @click="renewDhcp">
-                      <v-icon left>mdi-autorenew</v-icon> Renew DHCP
-                    </u-btn>
-                  </div>
-                </div>
-
-                <!-- PPPoE Configuration Fields -->
-                <div v-if="wan.v4ConfigType === 'PPPOE'">
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true }">
-                    <label>User Name:</label>
-                    <u-text-field v-model="wan.v4PPPoEUsername" :label="$t('User Name ')" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-text-field>
-                  </ValidationProvider>
-
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true, min: 3 }">
-                    <label>Password:</label>
-                    <u-password v-model="wan.v4PPPoEPassword" :label="$t('Password')" :error-messages="errors">
-                      <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                    </u-password>
-                  </ValidationProvider>
-                </div>
-              </div>
-              <div class="status-grid">
-                <p class="sectionheader">Status:</p>
-                <div class="status-item">
+          </div>
+          <div class="column-view">
+            <div class="select-Network-content">
+              <div v-if="wan.v4ConfigType === 'STATIC'" class="auto-config">
+                <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
                   <label>IP Address:</label>
-                  <span>{{ wanStatus.v4Address }}</span>
-                </div>
-                <div class="status-item">
+
+                  <u-text-field v-model="wan.v4StaticAddress" :error-messages="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-text-field>
+                </ValidationProvider>
+                <ValidationProvider v-slot="{ errors }" rules="required">
                   <label>Netmask:</label>
-                  <span>/ {{ wanStatus.v4PrefixLength }} - {{ wanStatus.v4Netmask }}</span>
-                </div>
-                <div class="status-item">
+                  <v-autocomplete
+                    v-model="v4StaticPrefixModel"
+                    :items="v4NetmaskList"
+                    outlined
+                    dense
+                    hide-details
+                    return-object
+                    :error-messages="errors"
+                  />
+                </ValidationProvider>
+
+                <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
                   <label>Gateway:</label>
-                  <span>{{ wanStatus.v4Gateway }}</span>
-                </div>
-                <div class="status-item">
+                  <u-text-field v-model="wan.v4StaticGateway" :error-messages="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-text-field>
+                </ValidationProvider>
+
+                <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
                   <label>Primary DNS:</label>
-                  <span>{{ wanStatus.v4Dns1 }}</span>
-                </div>
-                <div class="status-item">
-                  <label>Secondary DNS:</label>
-                  <span>{{ wanStatus.v4Dns2 }}</span>
-                </div>
-                <div>
-                  <u-btn :small="false" class="button-test-connectivity" @click="onSave('testConnectivity')">
-                    <v-icon class="world-icon mr-2">mdi-earth</v-icon> Test Connectivity
+                  <u-text-field v-model="wan.v4StaticDns1" :error-messages="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-text-field>
+                </ValidationProvider>
+
+                <ValidationProvider v-slot="{ errors }" :rules="{ ip: true }">
+                  <label>Secondary DNS (optional):</label>
+                  <u-text-field v-model="wan.v4StaticDns2" :error-messages="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-text-field>
+                </ValidationProvider>
+              </div>
+
+              <div v-if="wan.v4ConfigType === 'AUTO'" class="auto-config">
+                <div class="button-margin">
+                  <u-btn :small="false" class="renew-button" :disabled="loading" @click="renewDhcp">
+                    <v-icon left>mdi-autorenew</v-icon> Renew DHCP
                   </u-btn>
                 </div>
               </div>
+
+              <div v-if="wan.v4ConfigType === 'PPPOE'">
+                <ValidationProvider v-slot="{ errors }" :rules="{ required: true }">
+                  <label>User Name:</label>
+                  <u-text-field v-model="wan.v4PPPoEUsername" :error-messages="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-text-field>
+                </ValidationProvider>
+
+                <ValidationProvider v-slot="{ errors }" :rules="{ required: true, min: 3 }">
+                  <label>Password:</label>
+                  <u-password v-model="wan.v4PPPoEPassword" :error-messages="errors" :errors="errors">
+                    <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+                  </u-password>
+                </ValidationProvider>
+              </div>
             </div>
-            <!-- Condition is handled for disabling the Next/Prev button during the initial setup step -->
-            <div v-if="wizardSteps.length > 3" class="button-container">
+            <div class="status-grid">
+              <p class="sectionheader">Status:</p>
+              <div class="status-item">
+                <label>IP Address: </label>
+                <span>{{ wanStatus.v4Address }}</span>
+              </div>
+              <div class="status-item">
+                <label>Netmask: </label>
+                <span>/ {{ wanStatus.v4PrefixLength }} - {{ wanStatus.v4Netmask }}</span>
+              </div>
+              <div class="status-item">
+                <label>Gateway: </label>
+                <span>{{ wanStatus.v4Gateway }}</span>
+              </div>
+              <div class="status-item">
+                <label>Primary DNS: </label>
+                <span>{{ wanStatus.v4Dns1 }}</span>
+              </div>
+              <div class="status-item">
+                <label>Secondary DNS: </label>
+                <span>{{ wanStatus.v4Dns2 }}</span>
+              </div>
+              <div>
+                <u-btn
+                  :small="false"
+                  class="button-test-connectivity"
+                  @click="passes(() => onSave('testConnectivity'))"
+                >
+                  <v-icon class="world-icon mr-2">mdi-earth</v-icon> Test Connectivity
+                </u-btn>
+              </div>
+            </div>
+          </div>
+          <br />
+          <div class="custom-margin">
+            <div v-if="!nextDisabled" class="button-container">
               <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-              <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave('save'))">Next</u-btn>
+              <u-btn :small="false" style="margin: 8px 0" @click="passes(() => onSave('save'))">Next</u-btn>
             </div>
-          </v-form>
+          </div>
         </ValidationObserver>
       </div>
-      <div v-else-if="!remoteTestPassed" class="button-container">
+      <!-- In Remote mode, allow Local as a backup if Internet fails.  Disabled by default. -->
+      <div v-if="!remoteTestPassed" class="button-container">
         <div class="center-container-renew-button">
           <span class="center-text">
             You may continue configuring your Internet connection or run the Setup Wizard locally
@@ -137,7 +138,6 @@
           </u-btn>
         </div>
       </div>
-      <!-- Dialog Box for show No internal interfaces -->
       <v-dialog v-model="dialog" persistent max-width="290">
         <v-card>
           <v-card-title class="headline">Warning!</v-card-title>
@@ -159,7 +159,6 @@
   import AlertDialog from '@/components/Reusable/AlertDialog.vue'
   import confirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
-  // import store from '@/store'
   export default {
     name: 'Internet',
     components: {
@@ -167,7 +166,7 @@
     },
     data() {
       return {
-        remoteReachable: null,
+        remoteReachable: false,
         wan: {},
         wanStatus: {},
         networkSettings: null,
@@ -192,7 +191,7 @@
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
-      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
+      ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
     },
     created() {
       this.rpc = Util.setRpcJsonrpc('setup')
@@ -224,7 +223,7 @@
           title: this.$t('Internet Status'),
           component: AlertDialog,
           componentProps: {
-            alert: { message }, // Pass the plain message in an object
+            alert: { message },
           },
           width: 600,
           height: 500,
@@ -305,7 +304,6 @@
             this.testConnectivity(mode, () => {
               if (typeof cb === 'function') {
                 cb()
-                // this.nextPage()
                 if (mode === 'auto') {
                   this.nextPage()
                 }
@@ -322,10 +320,10 @@
         }
       },
       async testConnectivity(testType, cb) {
-        let message = null
-        let nextDisabled = true
-
         try {
+          // build test fail message if any
+          let message = ''
+          let nextDisabled = true
           this.$store.commit('SET_LOADER', true)
 
           await this.$vuntangle.toast.add(this.$t('Testing Connectivity...'))
@@ -339,44 +337,49 @@
           } else if (!result.dnsWorking) {
             message = 'Warning! Internet tests succeeded, but DNS tests failed.'
           } else if (this.remote) {
-            this.remoteReachable = await this.rpcForAdmin.setup.getRemoteReachable()
-            if (!this.remoteReachable) {
+            const rpcSetup = Util.setRpcJsonrpc('setup')
+            this.remoteReachable = rpcSetup.jsonrpc.SetupContext.getRemoteReachable()
+            const adminRpc = Util.setRpcJsonrpc('admin')
+            if (adminRpc) {
+              this.rpcForAdmin = adminRpc
+            }
+            if (this.remoteReachable) {
               message = 'Unable to reach ETM Dashboard!'
             } else {
               nextDisabled = false
             }
           } else {
-            nextDisabled = false
             message = null
+            nextDisabled = false
           }
-
           if (this.remote) {
             this.nextDisabled = nextDisabled
           }
 
           if (this.remote && message !== null) {
-            console.log('this.remote && message !== null')
             this.remoteTestPassed = false
             message = 'You may continue configuring your Internet connection or run the Setup Wizard locally.'
           }
 
           if (testType === 'manual') {
+            // on manual test just show the message
             this.alertDialog(message || 'Success!')
           } else {
+            // on next step just move forward if no failures
             if (!message) {
               cb()
+              this.nextPage()
               return
             }
 
+            // otherwise show a warning message
             const warningText = `${message}<br/><br/>${this.$t(
               'It is recommended to configure valid Internet settings before continuing. Try again?',
             )}`
             this.confirmDialog({
               message: warningText,
               onConfirmYes: () => {
-                this.onSave(() => {
-                  this.testConnectivity(testType, cb)
-                })
+                // Do nothing
               },
               onConfirmNo: () => this.nextPage(),
             })
@@ -427,12 +430,16 @@
 
         try {
           await this.$store.commit('SET_LOADER', true)
+          // save settings before
+          self.$vuntangle.toast.add(self.$t('Saving settings ...'))
           this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
               Util.handleException(self.$t('Unable to set Network Settings.'))
               self.$store.commit('SET_LOADER', false)
               return
             }
+            // then force the DHCP lease renew just in case
+            // setNetworkSettings is not guaranteed to restart networking
             self.$vuntangle.toast.add(self.$t('Renewing DHCP Lease...'))
             self.rpcForAdmin.networkManager.renewDhcpLease((r, e) => {
               if (e) {
@@ -440,7 +447,6 @@
                 self.$store.commit('SET_LOADER', false)
                 return
               }
-              self.$vuntangle.toast.add(self.$t('DHCP lease renewed successfully.'))
               self.getSettings()
               self.$store.commit('SET_LOADER', false)
             }, self.wan.interfaceId)
@@ -475,73 +481,70 @@
 </script>
 
 <style scoped>
-  /* Main layout adjustments */
   .main-div {
-    /* max-width: 1100px; */
     display: flex;
     flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    /* align-items: center; */
+    justify-content: flex-start;
     padding: 20px;
     justify-content: flex-start;
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    min-height: 600px; /* Ensures the minimum height remains constant */
-    max-height: 700px; /* Prevents the height from changing too much */
-    height: 700px; /* Set a fixed height to keep the div consistent */
+    min-height: 600px;
+    max-height: 700px;
+    height: 700px;
     overflow-y: auto;
-    position: relative; /* Ensures children stay within boundary */
+    position: relative;
   }
   .title {
-    text-align: center; /* Center the text */
-    color: gray; /* Set text color to gray */
-    font-weight: normal; /* Normal font weight for thinner text */
-    font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif; /* Modern font stack */
-    margin-bottom: 10px; /* Space below the title */
+    text-align: center;
+    color: gray;
+    font-weight: normal;
+    font-family: 'Roboto', 'Open Sans', 'Lato', Arial, sans-serif;
+    margin-bottom: 10px;
   }
   .config-label {
-    font-size: 16px; /* Set a readable font size */
-    font-weight: 600; /* Medium-bold for clarity */
-    color: gray; /* Dark gray-blue for a modern UI */
-    margin-bottom: 8px; /* Add spacing below the label */
-    display: block; /* Ensure it appears above the radio buttons */
-    text-transform: capitalize; /* Keep the text looking clean */
-    letter-spacing: 0.5px; /* Improve letter spacing for readability */
+    font-size: 16px;
+    font-weight: 600;
+    color: gray;
+    margin-bottom: 8px;
+    display: block;
+    text-transform: capitalize;
+    letter-spacing: 0.5px;
   }
   .config-type {
     display: flex;
-    flex-direction: column; /* Stack label above radio buttons */
-    align-items: flex-start; /* Align content to the left */
-    text-align: left; /* Ensure text aligns to the left */
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: left;
     margin-left: 0px;
-    margin-bottom: 20px; /* Add spacing below */
-    width: 100%; /* Ensure it takes the full width */
+    margin-bottom: 20px;
+    width: 100%;
   }
   .center-container-renew-button {
     display: flex;
-    flex-direction: column; /* Stack text and button vertically */
-    justify-content: center; /* Align vertically in the center */
-    align-items: center; /* Align horizontally in the center */
-    text-align: center; /* Center the text inside */
-    height: 100%; /* Ensure it takes full height */
-    width: 100%; /* Ensure it takes full width */
-    padding: 20px; /* Add some spacing */
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    height: 100%;
+    width: 100%;
+    padding: 20px;
   }
 
   .center-text {
     font-size: 16px;
     font-weight: 500;
-    margin-bottom: 10px; /* Space between text and button */
-    display: block; /* Ensures text behaves like a block for proper spacing */
+    margin-bottom: 10px;
+    display: block;
   }
 
   .column-view {
     display: grid;
-    grid-template-columns: 1fr 1fr; /* Split into two equal columns */
+    grid-template-columns: 1fr 1fr;
     align-items: start;
-    gap: 10px; /* Reduce gap between columns */
+    gap: 10px;
     width: 100%;
   }
 
@@ -563,12 +566,12 @@
   .status-item span {
     flex-grow: 1;
     text-align: left;
+    margin-top: -8px;
   }
   .world-icon {
-    font-size: 20px; /* Increase size */
+    font-size: 20px;
   }
 
-  /* Input and Select Field Styling */
   .status-item-details input,
   .status-item-details select,
   .select-Network-content input,
@@ -590,7 +593,6 @@
     box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
   }
 
-  /* Center align form */
   .select-Network-content {
     display: flex;
     flex-direction: column;
@@ -598,13 +600,11 @@
     padding-right: 20px;
   }
 
-  /* Status grid styling */
   .status-grid {
-    width: 100%; /* Ensure both divs take full column width */
+    width: 100%;
     padding-right: 0px;
   }
 
-  /* Configuration Radio Button Group */
   .radio-group {
     display: flex;
     justify-content: center;
@@ -624,7 +624,6 @@
     cursor: pointer;
   }
 
-  /* Config Types */
   .static-config,
   .auto-config,
   .pppoe-config {
@@ -632,7 +631,6 @@
   }
 
   .button-test-connectivity {
-    /* padding: 10px 15px; */
     border-radius: 5px;
     display: flex;
     color: white;
@@ -641,44 +639,43 @@
     transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
   }
 
-  /* Button Styling */
   .button-margin {
     display: flex;
-    justify-content: left; /* Center the button horizontally */
-    align-items: center; /* Center the button vertically */
+    justify-content: left;
+    align-items: center;
   }
   .renew-button {
-    display: flex; /* Enable flexbox for the button content */
-    align-items: center; /* Vertically align the text and icon */
-    justify-content: center; /* Center the text and icon horizontally */
-    padding: 10px 20px; /* Adjust padding for better spacing */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 14px; /* Font size for button text */
-    border: 1px solid #ccc; /* Optional: Add a border for better visibility */
-    background-color: #f5f5f5; /* Light background for the button */
-    color: #333; /* Dark text color */
-    cursor: pointer; /* Pointer cursor on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    border: 1px solid #ccc;
+    background-color: #f5f5f5;
+    color: #333;
+    cursor: pointer;
     transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
-    width: 400px; /* Increase width further */
+    width: 400px;
   }
   .button-test-connectivity {
-    display: flex; /* Enable flexbox for the button content */
-    align-items: center; /* Vertically align the text and icon */
-    justify-content: center; /* Center the text and icon horizontally */
-    padding: 10px 20px; /* Adjust padding for better spacing */
-    border-radius: 5px; /* Rounded corners */
-    font-size: 14px; /* Font size for button text */
-    cursor: pointer; /* Pointer cursor on hover */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-size: 14px;
+    cursor: pointer;
     transition: background-color 0.3s ease-in-out, transform 0.2s ease-in-out;
   }
 
   .renew-button:hover {
-    background-color: #e0e0e0; /* Slightly darker background on hover */
+    background-color: #e0e0e0;
   }
 
   .renew-button v-icon {
-    margin-right: 8px; /* Add spacing between the icon and text */
-    font-size: 18px; /* Icon size */
+    margin-right: 8px;
+    font-size: 18px;
   }
 
   .button-margin .renew-button:hover,
@@ -686,18 +683,15 @@
     transform: scale(1.05);
   }
 
-  /* Button Container */
   .button-container {
     display: flex;
-    justify-content: space-between; /* Places Back & Next at extreme left & right */
+    justify-content: space-between;
     align-items: center;
     width: 100%;
     position: absolute;
-    bottom: 20px; /* Keeps it at a fixed position from bottom */
+    bottom: 20px;
     left: 0;
-    padding: 10px 20px; /* Adds padding for spacing */
-
-    /* background-color: #f9f9f9; */
+    padding: 10px 20px;
   }
 
   .no-internet {

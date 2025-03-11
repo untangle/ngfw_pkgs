@@ -21,7 +21,7 @@
             <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" class="branding-logo" />
             {{ currentTime }}
             <br />
-            <h1>{{ `${localesEn?.Thanks_for_choosing} ${rpc?.oemName}!` }}</h1>
+            <h1>{{ `Thanks for choosing ${rpc?.oemName}!` }}</h1>
             <p>
               To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a
               free account.

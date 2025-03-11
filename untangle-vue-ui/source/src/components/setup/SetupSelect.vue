@@ -135,11 +135,14 @@
         this.rpc = rpcResponseForSetup
       }
 
+      const setupRpc = Util.setRpcJsonrpc('setup')
+
+      this.remoteReachable = setupRpc.jsonrpc.SetupContext.getRemoteReachable()
       const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
+
       if (rpcResponseForAdmin) {
         this.adminRpc = rpcResponseForAdmin
       }
-      this.remoteReachable = this.rpc.jsonrpc.SetupContext.getRemoteReachable()
     },
 
     methods: {
@@ -167,7 +170,7 @@
 
       alertDialog(message) {
         this.$vuntangle.dialog.show({
-          title: this.$t('Internet Status'),
+          title: this.$t('Warning'),
           component: AlertDialog,
           componentProps: {
             alert: { message },
