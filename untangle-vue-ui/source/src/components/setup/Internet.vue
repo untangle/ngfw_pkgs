@@ -339,10 +339,7 @@
           } else if (this.remote) {
             const rpcSetup = Util.setRpcJsonrpc('setup')
             this.remoteReachable = rpcSetup.jsonrpc.SetupContext.getRemoteReachable()
-            const adminRpc = Util.setRpcJsonrpc('admin')
-            if (adminRpc) {
-              this.rpcForAdmin = adminRpc
-            }
+            this.rpcForAdmin = Util.setRpcJsonrpc('admin')
             if (this.remoteReachable) {
               message = 'Unable to reach ETM Dashboard!'
             } else {
