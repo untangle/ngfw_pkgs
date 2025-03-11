@@ -354,7 +354,6 @@
       },
 
       async onSave() {
-        // this.$vuntangle.toast.add(this.$t('Saving settings ...'))
         this.$store.commit('SET_LOADER', true)
         try {
           const interfacesMap = {}

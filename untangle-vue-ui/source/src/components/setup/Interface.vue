@@ -201,7 +201,7 @@
         newSetupLocation: null,
         loading: false,
         loadingForChangeAddress: false,
-        timeout: 30000, // 480000,
+        timeout: 30000,
         dialog: false,
         warningDiaglog: false,
         isProcessing: false,

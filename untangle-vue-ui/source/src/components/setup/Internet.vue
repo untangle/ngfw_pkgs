@@ -444,7 +444,6 @@
                 self.$store.commit('SET_LOADER', false)
                 return
               }
-              // self.$vuntangle.toast.add(self.$t('DHCP lease renewed successfully.'))
               self.getSettings()
               self.$store.commit('SET_LOADER', false)
             }, self.wan.interfaceId)
