@@ -67,7 +67,6 @@
 
     methods: {
       getServerData() {
-        // console.log(window.rpcvue)
         this.serverData = [
           { name: 'uid', value: window.rpc.serverUID },
           {
@@ -102,7 +101,6 @@
       },
 
       async getLicenseData() {
-        console.log('window.rpc', window.rpc)
         if (!window.rpc.licenseManager) {
           window.rpc.licenseManager = window.rpc.UvmContext.licenseManager()
         }

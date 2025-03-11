@@ -40,11 +40,9 @@ const mutations = {
     }
   },
   SET_SHOW_STEP(state, value) {
-    console.log('Setting showStep to:', value) // Log the value being set
     state.currentStep = value
   },
   SET_SHOW_PREVIOUS_STEP(state, value) {
-    console.log('Setting  previous show Step to:', value) // Log the value being set
     state.previousStep = value // Mutate currentStep
   },
   SET_NEW_PASSWORD(state, password) {

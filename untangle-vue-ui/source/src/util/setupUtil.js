@@ -1,6 +1,7 @@
 // utils/util.js
 import axios from 'axios'
 import vuntangle from '@/plugins/vuntangle'
+import HandleExceptionAlert from '@/components/Reusable/HandleExceptionAlert.vue'
 
 const Util = {
   v4NetmaskList: [
@@ -41,7 +42,6 @@ const Util = {
 
   setRpcJsonrpc(root) {
     let setupInfo
-    // let success = true
     let rpcResponse = null
 
     try {
@@ -56,12 +56,10 @@ const Util = {
       Object.assign(rpc, setupInfo)
       rpcResponse = rpc
     } catch (error) {
-      // success = false
       vuntangle.toast.add(`Failed to navigate : ${error || error.message}`)
       rpcResponse = null
     }
 
-    // return success
     return rpcResponse
   },
 
@@ -154,12 +152,24 @@ const Util = {
       details += `<b>Exception Response:</b> ${exception.response.replace(/\s+/g, '<br/>')}<br/><br/>`
     }
 
+    /** Handle Invalid Security Nonce (Session Expired) */
+    if (exception.code === 595 || exception.message.includes('Invalid security nonce')) {
+      this.showWarningMessage(
+        'Your session has expired due to a security issue. Please log in again.',
+        details,
+        this.goToStartPage,
+        'OK',
+      )
+      return
+    }
+
     /** Handle session timeout / authorization lost */
     if (exception.response && exception.response.includes('loginPage')) {
       this.showWarningMessage(
-        'Session timed out.<br/>Press OK to return to the login page.',
+        'Session timed out.Press OK to return to the login page.',
         details,
         this.goToStartPage,
+        'OK',
       )
       return
     }
@@ -177,35 +187,41 @@ const Util = {
       exception.message?.includes('This application is not currently available')
     ) {
       this.showWarningMessage(
-        'The connection to the server has been lost.<br/>Press OK to return to the login page.',
+        'The connection to the server has been lost.Press OK to return to the login page.',
         details,
         this.goToStartPage,
+        'Ok',
       )
       return
     }
-
     this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
   },
-  showWarningMessage(message, details, errorHandler) {
-    this.$notify({
-      title: 'Warning',
-      message: `
-        <div>
-          <p>${message}</p>
-          ${details ? `<details><summary>Details</summary><p>${details}</p></details>` : ''}
-        </div>
-      `,
-      type: 'warning',
-      dangerouslyUseHTMLString: true,
-    })
 
-    if (errorHandler) {
-      errorHandler()
-    }
+  async showWarningMessage(message, details = '', errorHandler = null, buttonName = null) {
+    await vuntangle.toast.add(message)
+    await vuntangle.dialog.show({
+      title: 'Warning',
+      component: HandleExceptionAlert,
+      componentProps: {
+        alert: { message, details: details || '' },
+      },
+      width: 600,
+      height: 500,
+      buttons: [
+        {
+          name: buttonName || 'Close',
+          handler() {
+            if (errorHandler) {
+              errorHandler()
+            }
+            this.onClose()
+          },
+        },
+      ],
+    })
   },
 
   goToStartPage() {
-    alert('Redirecting to the start page...')
     location.reload()
   },
 }

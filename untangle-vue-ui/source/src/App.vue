@@ -26,10 +26,6 @@
     },
 
     beforeMount() {
-      console.log('route', this.$route.name)
-      console.log('embedded', this.embedded)
-      console.log('window.location', window.location)
-
       this.embedded = window.location !== window.parent.location
     },
   }
