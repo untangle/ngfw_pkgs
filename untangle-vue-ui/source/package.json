@@ -13,7 +13,7 @@
     "clean": "rimraf ./node_modules/.cache"
   },
   "dependencies": {
-    "axios": "^0.21.1",
+    "axios": "1.8.2",
     "bootstrap-vue": "^2.23.1",
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "extglob": "^3.0.0",
