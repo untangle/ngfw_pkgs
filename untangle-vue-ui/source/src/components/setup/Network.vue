@@ -206,53 +206,14 @@
         const draggedItemData = event.dataTransfer.getData('text/plain')
         if (draggedItemData) {
           const draggedItem = JSON.parse(draggedItemData)
-          this.onBeforeDrop(draggedItem, targetItem)
+          draggedItem.physicalDev = targetItem.physicalDev
+          this.setInterfacesMap(draggedItem)
         }
       },
       dragEnd() {
         this.draggingItem = null
       },
 
-      onBeforeDrop(sourceRecord, targetRecord) {
-        const sourceRecordCopy = { ...sourceRecord } // shallow copy
-        const targetRecordCopy = { ...targetRecord }
-
-        // make sure sourceRecord & targetRecord are defined
-        if (sourceRecord === null || targetRecord === null) {
-          return
-        }
-
-        sourceRecord.deviceName = targetRecordCopy.deviceName
-        sourceRecord.physicalDev = targetRecordCopy.physicalDev
-        sourceRecord.macAddress = targetRecordCopy.macAddress
-        sourceRecord.duplex = targetRecordCopy.duplex
-        sourceRecord.vendor = targetRecordCopy.vendor
-        sourceRecord.mbit = targetRecordCopy.mbit
-        sourceRecord.connected = targetRecordCopy.connected
-
-        targetRecord.deviceName = sourceRecordCopy.deviceName
-        targetRecord.physicalDev = sourceRecordCopy.physicalDev
-        targetRecord.macAddress = sourceRecordCopy.macAddress
-        targetRecord.duplex = sourceRecordCopy.duplex
-        targetRecord.vendor = sourceRecordCopy.vendor
-        targetRecord.mbit = sourceRecordCopy.mbit
-        targetRecord.connected = sourceRecordCopy.connected
-
-        const sourceIndex = this.tempArray.findIndex(record => record.physicalDev === sourceRecord.physicalDev)
-        const targetIndex = this.tempArray.findIndex(record => record.physicalDev === targetRecord.physicalDev)
-
-        if (sourceIndex !== -1 && targetIndex !== -1) {
-          const temp = this.tempArray[sourceIndex]
-          this.tempArray[sourceIndex] = this.tempArray[targetIndex]
-          this.tempArray[targetIndex] = temp
-        }
-
-        this.tempArray.forEach((item, index) => {
-          if (this.gridData[index]) {
-            this.$set(this.gridData, index, { ...item })
-          }
-        })
-      },
       getConnectedStr(deviceStatus) {
         const connected = deviceStatus.connected
         const mbit = deviceStatus.mbit
@@ -393,23 +354,23 @@
       },
 
       async onSave() {
-        this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+        // this.$vuntangle.toast.add(this.$t('Saving settings ...'))
         this.$store.commit('SET_LOADER', true)
-
         try {
           const interfacesMap = {}
           this.gridData.forEach(function (currentRow) {
             interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
           })
+
           // apply new physicalDev for each interface from initial Network Settings
           this.networkSettings.interfaces.list.forEach(function (intf) {
             if (!intf.isVlanInterface) {
               intf.physicalDev = interfacesMap[intf.interfaceId]
             }
           })
+
           const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
-          // await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-          // this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
 
           await new Promise((resolve, reject) => {
             window.rpc.networkManager.setNetworkSettings((response, ex) => {

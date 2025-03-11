@@ -201,7 +201,7 @@
         newSetupLocation: null,
         loading: false,
         loadingForChangeAddress: false,
-        timeout: 480000,
+        timeout: 30000, // 480000,
         dialog: false,
         warningDiaglog: false,
         isProcessing: false,
@@ -303,14 +303,17 @@
           ) {
             this.nextPage()
           }
+          // BRIDGED (bridge mode)
           if (this.internal.configType === 'BRIDGED') {
             this.loading = true
             // If using internal address - redirect to external since internal address is vanishing
             if (this.internal.v4StaticAddress === window.location.hostname) {
+              // warnAboutDisappearingAddress
               let firstWan = ''
               let firstWanStatus = ''
               // get firstWan settings & status
               firstWan = this.networkSettings.interfaces.list.find(intf => intf.isWan && intf.configType !== 'DISABLED')
+
               // firstWan must exist
               if (!firstWan || !firstWan.interfaceId) {
                 return
@@ -331,7 +334,6 @@
                 firstWanStatus.v4Address,
               )
               await this.simulateRpcCall()
-              await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
               window.top.location.href = this.newSetupLocation
             }
           } else {
@@ -344,25 +346,25 @@
               window.location.hostname === this.initialv4Address &&
               this.initialv4Address !== this.internal.v4StaticAddress
             ) {
+              // warnAboutChangingAddress
               this.newSetupLocation = await window.location.href.replace(
                 this.initialv4Address,
                 this.internal.v4StaticAddress,
               )
               this.loadingForChangeAddress = true
               await this.simulateRpcCall()
+              window.top.location.href = this.newSetupLocation
             }
           }
 
           // save settings and continue to next step
-          // await window.rpc.networkManager.setNetworkSettings(this.networkSettings)
-
           await new Promise((resolve, reject) => {
             window.rpc.networkManager.setNetworkSettings((response, ex) => {
               if (ex) {
                 Util.handleException(ex)
-                reject(ex) // Reject the Promise if there's an error
+                reject(ex)
               } else {
-                resolve(response) // Resolve the Promise on success
+                resolve(response)
               }
             }, this.networkSettings)
           })
@@ -371,7 +373,6 @@
           this.$store.commit('SET_LOADER', false)
           this.alertDialog(`Error during save operation: ${error.message || error}`)
         } finally {
-          // Hide the modal once save is complete
           this.$store.commit('SET_LOADER', false)
           this.loading = false
           this.loadingForChangeAddress = false
