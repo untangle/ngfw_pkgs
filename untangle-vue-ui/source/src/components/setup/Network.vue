@@ -431,6 +431,19 @@
     border: 1px solid #ccc;
     border-radius: 5px;
     background: white;
+    margin-bottom: 40px;
+  }
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    bottom: 0;
+    left: 0;
+    padding: 10px 20px; /* Adds padding for spacing */
+    background-color: #f9f9f9;
+    position: absolute;
+    z-index: 10;
   }
   .network-table {
     width: 100%;
@@ -451,10 +464,10 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    height: 50%;
+    height: auto;
     border-radius: 5px;
     margin: 10px;
-    margin-bottom: -85px;
+    margin-bottom: 20px; /* Positive margin to ensure spacing */
   }
   .description {
     margin-bottom: 20px;
@@ -465,18 +478,6 @@
     display: inline-block;
   }
 
-  .button-container {
-    display: flex;
-    justify-content: space-between; /* Places Back & Next at extreme left & right */
-    align-items: center;
-    width: 100%;
-    position: absolute;
-    bottom: 20px; /* Keeps it at a fixed position from bottom */
-    left: 0;
-    padding: 10px 20px; /* Adds padding for spacing */
-
-    background-color: #f9f9f9;
-  }
   .internet-button {
     background-color: #007bff;
     color: white;

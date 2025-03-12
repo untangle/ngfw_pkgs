@@ -54,13 +54,10 @@
     },
 
     async created() {
+      this.rpc = Util.setRpcJsonrpc('setup')
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      await this.initializeRpc()
+      this.onSyncSteps()
       await this.onAfterRender()
-    },
-
-    mount() {
-      this.updateNav()
     },
 
     computed: {
@@ -203,13 +200,16 @@
             }, this.rpc.wizardSettings)
           }
         }
+        this.updateNav()
       },
 
       async onAfterRender() {
         // Populate steps from wizard settings.
-        await this.rpc.wizardSettings.steps.forEach(stepName => {
-          this.steps.push(stepName)
-        })
+        this.rpc.wizardSettings &&
+          this.rpc.wizardSettings.steps &&
+          this.rpc.wizardSettings.steps.forEach(stepName => {
+            this.steps.push(stepName)
+          })
         if (!this.rpc.wizardSettings.wizardComplete && this.rpc.wizardSettings.completedStep !== null) {
           this.cardIndex = await this.rpc.wizardSettings.steps.indexOf(this.rpc.wizardSettings.completedStep)
 

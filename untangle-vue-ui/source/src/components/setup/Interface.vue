@@ -288,7 +288,7 @@
       },
       async onSave() {
         this.$store.commit('SET_LOADER', true)
-
+        let shouldNavigate = true // Flag to manage navigation
         try {
           // setting the v4StaticPrefix
           if (this.internal.v4StaticPrefix && this.internal.v4StaticPrefix.value) {
@@ -301,7 +301,7 @@
             this.initialv4Prefix === this.internal.v4StaticPrefix &&
             this.initialDhcpType === this.internal.dhcpType
           ) {
-            this.nextPage()
+            shouldNavigate = true
           }
           // BRIDGED (bridge mode)
           if (this.internal.configType === 'BRIDGED') {
@@ -335,6 +335,7 @@
               )
               await this.simulateRpcCall()
               window.top.location.href = this.newSetupLocation
+              shouldNavigate = false
             }
           } else {
             // ADDRESSED (router)
@@ -354,6 +355,7 @@
               this.loadingForChangeAddress = true
               await this.simulateRpcCall()
               window.top.location.href = this.newSetupLocation
+              shouldNavigate = false
             }
           }
 
@@ -368,7 +370,9 @@
               }
             }, this.networkSettings)
           })
-          this.nextPage()
+          if (shouldNavigate) {
+            this.nextPage()
+          }
         } catch (error) {
           this.$store.commit('SET_LOADER', false)
           this.alertDialog(`Error during save operation: ${error.message || error}`)

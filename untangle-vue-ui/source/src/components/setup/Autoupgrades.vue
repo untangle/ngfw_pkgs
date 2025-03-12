@@ -46,11 +46,9 @@
           </v-col>
         </v-row>
       </v-container>
-      <div>
-        <u-btn class="button-back" :small="true" @click="onClickBack">{{ `Back` }}</u-btn>
-        <u-btn class="button-next" :small="true" @click="onSave">
-          {{ `Next` }}
-        </u-btn>
+      <div class="button-container">
+        <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+        <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
       </div>
     </div>
   </v-card>
@@ -196,18 +194,23 @@
   .auto-upgrades {
     display: flex;
     flex-direction: column;
+    min-height: 120%; /*Added */
     padding: 20px;
-    justify-content: flex-start;
+    justify-content: space-between;
     margin: 20px 120px 10px 120px;
     border: 1px solid #ccc;
     background-color: #f9f9f9;
     font-family: Arial, sans-serif;
-    height: 120%;
+    height: auto;
     overflow: hidden;
   }
-  .text-center {
-    margin-top: 8px;
-    text-align: left;
+  .button-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    margin-top: auto;
+    padding: 10px 20px;
   }
   .v-checkbox {
     margin-bottom: 20px;
@@ -222,16 +225,6 @@
     color: #24282b;
     margin: 5px 0;
     text-align: left;
-  }
-  .button-back {
-    margin-top: 220px;
-    margin-left: 0px;
-    margin-bottom: -180px;
-  }
-  .button-next {
-    margin-top: 220px;
-    margin-left: 578px;
-    margin-bottom: -180px;
   }
   .bold-label {
     font-weight: bold;
