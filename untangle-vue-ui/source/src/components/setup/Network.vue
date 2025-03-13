@@ -441,9 +441,7 @@
     bottom: 0;
     left: 0;
     padding: 10px 20px; /* Adds padding for spacing */
-    background-color: #f9f9f9;
     position: absolute;
-    z-index: 10;
   }
   .network-table {
     width: 100%;
