@@ -221,7 +221,7 @@
       async resetWizard() {
         try {
           if (this.rpc.remote && !this.remoteReachable) {
-            if (Util.setRpcJsonrpc('admin') === true) {
+            if (Util.setRpcJsonrpc('admin')) {
               this.resetWizardContinue()
             } else {
               await new Promise(() => {

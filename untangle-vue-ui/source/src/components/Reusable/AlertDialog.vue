@@ -2,7 +2,7 @@
   <table class="text-body-2">
     <tbody>
       <tr>
-        <td class="px-2 text-right">{{ alert.message }}</td>
+        <td class="px-2 text-left">{{ alert.message }}</td>
       </tr>
     </tbody>
   </table>

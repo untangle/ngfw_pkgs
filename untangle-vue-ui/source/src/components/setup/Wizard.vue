@@ -56,7 +56,8 @@
     async created() {
       this.rpc = Util.setRpcJsonrpc('setup')
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      this.onSyncSteps()
+      await this.initializeRpc()
+      await this.onSyncSteps()
       await this.onAfterRender()
     },
 
@@ -172,8 +173,7 @@
         const firstWireless = this.interfaces.find(function (intf) {
           return intf.isWirelessInterface
         })
-
-        this.steps = ['License', 'ServerSettings', 'Interfaces']
+        this.steps = ['Welcome', 'License', 'ServerSettings', 'Interfaces']
 
         if (firstWan) {
           this.steps.push('Internet')
@@ -204,6 +204,7 @@
       },
 
       async onAfterRender() {
+        this.steps = []
         // Populate steps from wizard settings.
         this.rpc.wizardSettings &&
           this.rpc.wizardSettings.steps &&
