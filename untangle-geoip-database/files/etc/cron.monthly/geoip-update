@@ -10,7 +10,7 @@
 #set -x
 
 # This is the URL where we download the database update tarball
-NETURL=https://downloads.untangle.com/download.php
+NETURL=https://downloads.edge.arista.com/download.php
 
 # This is the location for the temporary working copy we download
 TEMPFILE=/tmp/geoip-download.tar.gz
