@@ -2,12 +2,13 @@
   <div>
     <SetupLayout />
     <v-container class="text-center" style="max-width: 600px">
-      <h1 class="d-flex font-weight-light text-center faint-color">
-        License
-        <v-spacer />
-      </h1>
+      <h1 class="d-flex font-weight-thin">License</h1>
       <br />
-      <p>{{ $t('setup_review_license') }}</p>
+      <p>
+        To continue installing and using this software, you must agree to the terms and conditions of the software
+        license agreement. Please review the whole license agreement by navigating to the provided website link and
+        scrolling through to the end of the agreement.
+      </p>
       <p>
         {{ $t('setup_license_available_at') }}
         <a :href="remoteEulaSrc" target="_blank">{{ remoteEulaSrc }}</a>
@@ -16,9 +17,9 @@
         <b>{{ $t('setup_legal_links_available_at') }}</b>
       </p>
 
-      <div class="button-container">
-        <u-btn :small="false" style="margin: 8px 0" @click="onDisagree">Disagree</u-btn>
-        <u-btn :small="false" style="margin: 8px 0" @click="onContinue">Agree</u-btn>
+      <div>
+        <u-btn :small="false" class="mr-10 mt-3" @click="onDisagree">{{ $t('Disagree') }}</u-btn>
+        <u-btn :small="false" class="mr-10 mt-3" @click="onContinue">{{ $t('Agree') }}</u-btn>
       </div>
     </v-container>
   </div>
@@ -109,15 +110,3 @@
     },
   }
 </script>
-
-<style scoped>
-  .faint-color {
-    color: rgba(0, 0, 0, 0.5); /* Adjust the color and opacity */
-  }
-  .button-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 50px;
-  }
-</style>
