@@ -13,17 +13,17 @@
             <div class="custom-margin">
               <h2 class="sectionheader">{{ `Admin Account` }}</h2>
               <br />
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
+              <span style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
                 Choose a password for the <strong>admin</strong><br />
                 account
-              </label>
+              </span>
               <br />
-              <label>Password:</label>
+              <span>Password:</span>
               <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
                 <u-password v-model="newPasswordSync" :errors="errors" />
               </ValidationProvider>
               <br />
-              <label>Confirm Password:</label>
+              <span>Confirm Password:</span>
               <ValidationProvider
                 v-slot="{ errors }"
                 name="confirmPassword"
@@ -32,11 +32,11 @@
                 <u-password v-model="newPasswordConfirmSync" :errors="errors" />
               </ValidationProvider>
               <br />
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px"
-                >Administrators receive email alerts and report summaries</label
+              <span style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px"
+                >Administrators receive email alerts and report summaries</span
               >
               <br />
-              <label>Admin Email:</label>
+              <span>Admin Email:</span>
               <ValidationProvider v-slot="{ errors }" rules="required">
                 <u-text-field v-model="adminEmail" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
@@ -46,13 +46,13 @@
             </div>
             <br />
             <div class="custom-margin">
-              <label class="sectionheader">{{ `Install Type` }}</label>
+              <span class="sectionheader">{{ `Install Type` }}</span>
               <br />
-              <label class="empty-label"></label>
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
+              <span class="empty-label"></span>
+              <div style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
                 Install type determines the optimal default settings for this deployment
-              </label>
-              <label>Choose Type:</label>
+              </div>
+              <span>Choose Type:</span>
               <ValidationProvider v-slot="{ errors }" rules="required">
                 <v-autocomplete
                   v-model="installTypeSync"
@@ -70,7 +70,7 @@
                 </v-autocomplete>
               </ValidationProvider>
               <br />
-              <label>Timezone:</label>
+              <span>Timezone:</span>
               <ValidationProvider v-slot="{ errors }" rules="required">
                 <v-autocomplete
                   v-model="timezone"

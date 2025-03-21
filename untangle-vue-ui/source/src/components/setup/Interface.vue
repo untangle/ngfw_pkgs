@@ -5,87 +5,52 @@
       <h1 class="step-title">{{ description }}</h1>
       <div>
         <div class="form-container">
-          <v-radio-group>
-            <div class="radio-group">
-              <input
-                v-model="internal.configType"
-                type="radio"
-                name="configType"
-                value="ADDRESSED"
-                enabled
-                @change="setConfigType"
-              />
-              <label
-                ><strong>{{ 'Router' }}</strong></label
-              >
-              <p class="info-text">
-                {{
-                  $t(
-                    'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
-                  )
-                }}
-              </p>
+          <v-radio-group v-model="internal.configType" row @change="setConfigType">
+            <v-radio label="Router" value="ADDRESSED"></v-radio>
 
-              <div class="form-field">
-                <div class="inline-field">
-                  <label class="bold-label">{{ 'Internal Address:' }}</label>
-                  <u-text-field
-                    v-model="internal.v4StaticAddress"
-                    type="text"
-                    :disabled="internal.configType !== 'ADDRESSED'"
-                    style="width: 150px; min-width: 20 px"
-                  />
-                </div>
-                <div class="inline-field">
-                  <label class="bold-label">{{ 'Internal Netmask:' }}</label>
-                  <v-autocomplete
-                    v-model="internal.v4StaticPrefix"
-                    :items="v4NetmaskList"
-                    :disabled="internal.configType !== 'ADDRESSED'"
-                    outlined
-                    dense
-                    hide-details
-                    return-object
-                    style="width: 150px; min-width: 20 px"
-                  >
-                  </v-autocomplete>
-                </div>
-                <br />
-                <label class="bold-label">{{ 'DHCP Server:' }}</label>
-                <div class="radio-group-child">
-                  <input
-                    v-model="internal.dhcpType"
-                    type="radio"
-                    name="dhcpType"
-                    value="SERVER"
-                    :disabled="internal.configType !== 'ADDRESSED'"
-                  />
-                  {{ 'Enabled' }}
-                  <br />
-                  <input
-                    v-model="internal.dhcpType"
-                    type="radio"
-                    name="dhcpType"
-                    value="DISABLED"
-                    :disabled="internal.configType !== 'ADDRESSED'"
-                  />
-                  {{ 'Disabled' }}
-                </div>
+            <p class="info-text">
+              {{
+                $t(
+                  'This is recommended if the external port is plugged into the internet connection. This enables NAT and DHCP.',
+                )
+              }}
+            </p>
+
+            <div class="form-field">
+              <div class="inline-field">
+                <span class="text-body-2 font-weight-bold text-no-wrap">{{ 'Internal Address:' }}</span>
+                <u-text-field
+                  v-model="internal.v4StaticAddress"
+                  type="text"
+                  :disabled="internal.configType !== 'ADDRESSED'"
+                  style="width: 150px; min-width: 20 px"
+                />
               </div>
+              <div class="inline-field">
+                <span class="text-body-2 font-weight-bold text-no-wrap">{{ 'Internal Netmask:' }}</span>
+                <v-autocomplete
+                  v-model="internal.v4StaticPrefix"
+                  :items="v4NetmaskList"
+                  :disabled="internal.configType !== 'ADDRESSED'"
+                  outlined
+                  dense
+                  hide-details
+                  return-object
+                  style="width: 150px; min-width: 20 px"
+                >
+                </v-autocomplete>
+              </div>
+              <br />
+              <span class="text-body-2 font-weight-bold text-no-wrap">{{ 'DHCP Server:' }}</span>
+              <v-radio-group v-model="internal.dhcpType" row :disabled="internal.configType !== 'ADDRESSED'">
+                <v-radio label="Enabled" value="SERVER"></v-radio>
+                <v-radio label="Disabled" value="DISABLED"></v-radio>
+              </v-radio-group>
+              <!-- </div> -->
             </div>
             <br />
             <div class="radio-group">
-              <input
-                v-model="internal.configType"
-                type="radio"
-                name="configType"
-                value="BRIDGED"
-                enabled
-                @change="setConfigType"
-              />
-              <label
-                ><strong>{{ 'Transparent Bridge' }}</strong></label
-              >
+              <v-radio label="Transparent Bridge" value="BRIDGED"></v-radio>
             </div>
             <p class="info-text">
               {{

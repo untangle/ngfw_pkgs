@@ -10,7 +10,7 @@
             <div class="container">
               <h1 class="section-header">Settings</h1>
 
-              <label>{{ `Network Name (SSID)` }}</label>
+              <v-card-text>{{ `Network Name (SSID)` }}</v-card-text>
               <ValidationProvider v-slot="{ errors }" rules="required|max:30">
                 <u-text-field
                   id="ssid"
@@ -26,7 +26,7 @@
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
-              <label>{{ `Encryption` }}</label>
+              <v-card-text>{{ `Encryption` }}</v-card-text>
               <v-autocomplete
                 v-model="wirelessSettings.encryption"
                 :errors="errors"
@@ -38,7 +38,7 @@
                 hide-details
               ></v-autocomplete>
 
-              <label>{{ `Password` }}</label>
+              <v-card-text>{{ `Password` }}</v-card-text>
               <ValidationProvider v-slot="{ errors }" rules="required|min:8|max:63|valide_password">
                 <div @keydown="restrictPasswordInput" @paste="restrictPasswordPaste">
                   <u-password
