@@ -10,7 +10,7 @@
           {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
         </p>
         <br />
-        <div class="button-container">
+        <div>
           <u-btn v-if="resuming" :small="false" class="mr-10 mt-2" @click="resumeWizard">
             <v-icon left>mdi-play</v-icon>{{ 'Resume Setup Wizard' }}
           </u-btn>
@@ -31,7 +31,7 @@
             account.
           </p>
           <br />
-          <div class="button-container">
+          <div>
             <u-btn :small="false" class="mr-10 mt-2" @click="login">Login</u-btn>
             <u-btn :small="false" class="mr-10 mt-2" @click="createAccount">Create Account</u-btn>
           </div>
