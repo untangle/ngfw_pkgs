@@ -1,78 +1,76 @@
 <template>
-  <div>
+  <v-container class="text-center flex-grow-1">
     <SetupLayout />
-    <v-container class="text-center" style="max-width: 800px">
-      <div class="d-flex flex-column align-center pt-16 pb-0 mb-16">
-        <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" max-height="80" class="my-4" />
+    <div class="d-flex flex-column align-center pt-16 pb-0 mb-16">
+      <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" max-height="80" class="my-4" />
+      <br />
+      <h1>{{ `${localesEn?.Thanks_for_choosing} ${rpc?.oemShortName}!` }}</h1>
+      <div v-if="!rpc?.remote">
+        <p class="font-weight-medium text-h6 text--secondary">
+          {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
+        </p>
         <br />
-        <h1>{{ `${localesEn?.Thanks_for_choosing} ${rpc?.oemShortName}!` }}</h1>
-        <div v-if="!rpc?.remote">
+        <div class="button-container">
+          <u-btn v-if="resuming" :small="false" class="mr-10 mt-2" @click="resumeWizard">
+            <v-icon left>mdi-play</v-icon>{{ 'Resume Setup Wizard' }}
+          </u-btn>
+          <u-btn :small="false" class="mr-10 mt-2" @click="resetWizard">
+            <v-icon left>mdi-refresh</v-icon>{{ !resuming ? 'Run Setup Wizard' : 'Restart' }}
+          </u-btn>
+        </div>
+      </div>
+      <div v-else>
+        <div v-if="remoteReachable === null">
+          <p class="font-weight-medium text-h6">
+            {{ `Checking Internet connectivity` }}
+          </p>
+        </div>
+        <div v-if="remoteReachable">
           <p class="font-weight-medium text-h6 text--secondary">
-            {{ `${localesEn?.A_wizard_will_guide} ${rpc?.oemProductName}!` }}
+            To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a free
+            account.
           </p>
           <br />
           <div class="button-container">
-            <u-btn v-if="resuming" :small="false" class="mr-10 mt-2" @click="resumeWizard">
-              <v-icon left>mdi-play</v-icon>{{ 'Resume Setup Wizard' }}
-            </u-btn>
-            <u-btn :small="false" class="mr-10 mt-2" @click="resetWizard">
-              <v-icon left>mdi-refresh</v-icon>{{ !resuming ? 'Run Setup Wizard' : 'Restart' }}
-            </u-btn>
+            <u-btn :small="false" class="mr-10 mt-2" @click="login">Login</u-btn>
+            <u-btn :small="false" class="mr-10 mt-2" @click="createAccount">Create Account</u-btn>
           </div>
         </div>
-        <div v-else>
-          <div v-if="remoteReachable === null">
-            <p class="font-weight-medium text-h6">
-              {{ `Checking Internet connectivity` }}
-            </p>
-          </div>
-          <div v-if="remoteReachable">
-            <p class="font-weight-medium text-h6 text--secondary">
-              To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a
-              free account.
-            </p>
-            <br />
-            <div class="button-container">
-              <u-btn :small="false" class="mr-10 mt-2" @click="login">Login</u-btn>
-              <u-btn :small="false" class="mr-10 mt-2" @click="createAccount">Create Account</u-btn>
-            </div>
-          </div>
-          <div v-else-if="!remoteReachable">
-            <p class="font-weight-medium text-h6 text--secondary">
-              To continue, you must connect to ETM Dashboard which is currently unreachable from this device.<br />
-              You must configure Internet connectivity to ETM Dashboard to continue
-            </p>
-            <u-btn :small="false" class="mr-10 mt-2" @click="resetWizard">Configure Internet</u-btn>
-          </div>
+        <div v-else-if="!remoteReachable">
+          <p class="font-weight-medium text-h6 text--secondary">
+            To continue, you must connect to ETM Dashboard which is currently unreachable from this device.<br />
+            You must configure Internet connectivity to ETM Dashboard to continue
+          </p>
+          <u-btn :small="false" class="mr-10 mt-2" @click="resetWizard">Configure Internet</u-btn>
         </div>
       </div>
-      <v-dialog v-model="dialog" persistent max-width="350" @keydown.enter="onClickOk">
-        <v-card>
-          <v-card-title>{{ $t('Authentication Required') }}</v-card-title>
-          <v-card-text class="body-1">
-            {{ `Please enter admin password` }}
-          </v-card-text>
-          <u-password v-model="newPasswordSync" density="compact" class="w-55 ml-5 mr-5" autofocus />
-          <v-card-actions class="pt-5 pb-5">
-            <u-btn :small="false" class="ml-5 mr-5" @click="onClickOk">OK</u-btn>
-            <u-btn :small="false" class="ml-5 mr-5" @click="onClickCancel">CANCEL</u-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-      <v-dialog v-model="authFailed" max-width="400">
-        <v-card>
-          <v-card-title>Authentication failed</v-card-title>
-          <v-card-text class="body-1">
-            {{ authFailedMessage }}
-          </v-card-text>
-          <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn text @click="closeDialog">OK</v-btn>
-          </v-card-actions>
-        </v-card>
-      </v-dialog>
-    </v-container>
-  </div>
+    </div>
+    <v-dialog v-model="dialog" persistent max-width="350" @keydown.enter="onClickOk">
+      <v-card>
+        <v-card-title>{{ $t('Authentication Required') }}</v-card-title>
+        <v-card-text class="body-1">
+          {{ `Please enter admin password` }}
+        </v-card-text>
+        <u-password v-model="newPasswordSync" density="compact" class="w-55 ml-5 mr-5" autofocus />
+        <v-card-actions class="pt-5 pb-5">
+          <u-btn :small="false" class="ml-5 mr-5" @click="onClickOk">OK</u-btn>
+          <u-btn :small="false" class="ml-5 mr-5" @click="onClickCancel">CANCEL</u-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+    <v-dialog v-model="authFailed" max-width="400">
+      <v-card>
+        <v-card-title>Authentication failed</v-card-title>
+        <v-card-text class="body-1">
+          {{ authFailedMessage }}
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer></v-spacer>
+          <v-btn text @click="closeDialog">OK</v-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+  </v-container>
 </template>
 
 <script>
