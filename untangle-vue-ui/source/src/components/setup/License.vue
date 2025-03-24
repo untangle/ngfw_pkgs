@@ -1,7 +1,6 @@
 <template>
   <v-container class="text-center flex-grow-1" style="max-width: 820px">
     <SetupLayout />
-    <!-- <v-container class="text-center" style="max-width: 820px"> -->
     <h1 class="d-flex font-weight-thin">License</h1>
     <br />
     <p class="font-weight-medium text-h6 text--secondary">
@@ -21,11 +20,6 @@
       <u-btn :small="false" class="mr-10 mt-3" @click="onDisagree">{{ $t('Disagree') }}</u-btn>
       <u-btn :small="false" class="mr-10 mt-3" @click="onContinue">{{ $t('Agree') }}</u-btn>
     </div>
-    <!-- <div class="d-flex justify-space-between pa-7" style="position: relative">
-        <u-btn :small="false" @click="onDisagree">{{ `Disagree` }}</u-btn>
-        <u-btn :small="false" @click="onContinue">{{ `Agree` }}</u-btn>
-      </div> -->
-    <!-- </v-container> -->
   </v-container>
 </template>
 
