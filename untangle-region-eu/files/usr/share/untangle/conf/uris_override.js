@@ -71,8 +71,7 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://edge.arista.com/api/v1/appliance/OnSettingsUpdate",
-                "host": "eu.edge.arista.com"
+                "uri": "https://edge.arista.com/api/v1/appliance/OnSettingsUpdate"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
@@ -80,18 +79,15 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://sshrelay.untangle.com/",
-                "host": "sshrelay-eu.untangle.com"
+                "uri": "https://sshrelay.untangle.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://www.edge.arista.com/api/v1",
-                "host": "eu.edge.arista.com"
+                "uri": "https://www.edge.arista.com/api/v1"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://launchpad.edge.arista.com/",
-                "host": "eu.edge.arista.com"
+                "uri": "https://launchpad.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
