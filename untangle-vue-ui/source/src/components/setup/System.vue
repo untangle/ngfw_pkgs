@@ -8,18 +8,20 @@
       >
         <v-row class="justify-center mb-4">
           <v-col cols="12" class="text-center">
-            <p class="text-h4 text-left font-weight-thick grey--text text--lighten-1">Configure the Server</p>
+            <p class="text-h3 text-left font-weight-thick grey--text text--lighten-1">Configure the Server</p>
           </v-col>
         </v-row>
 
         <ValidationObserver v-slot="{ passes }">
           <v-row>
             <v-col cols="12" md="6">
-              <p class="text-h6 font-weight-bold grey--text text--darken-2">Admin Account</p>
-              <p class="text-body-2 grey--text">Choose a password for the <strong>admin</strong> account</p>
+              <p class="font-weight-medium text-h4 text--secondary">Admin Account</p>
+              <p class="text-h6 font-weight-medium grey--text mt-2 pa-0">
+                Choose a password for the <strong class="font-weight-bold text--secondary">admin</strong> account
+              </p>
 
               <v-row>
-                <v-col class="mt-5" cols="12">
+                <v-col cols="12">
                   <span>Password:</span>
                   <ValidationProvider
                     v-slot="{ errors }"
@@ -41,8 +43,10 @@
                   </ValidationProvider>
                 </v-col>
 
-                <v-col cols="12">
-                  <p class="text-body-2 grey--text">Administrators receive email alerts and report summaries</p>
+                <v-col class="mt-0 pt-0" cols="12">
+                  <p class="text-h6 font-weight-medium grey--text">
+                    Administrators receive email alerts and report summaries
+                  </p>
                   <span>Admin Email:</span>
                   <ValidationProvider v-slot="{ errors }" rules="required">
                     <u-text-field v-model="adminEmail" :error-messages="errors">
@@ -56,8 +60,8 @@
             </v-col>
 
             <v-col cols="12" md="6">
-              <p class="text-h6 font-weight-bold grey--text text--darken-2">Install Type</p>
-              <p class="text-body-2 grey--text">
+              <p class="font-weight-medium text-h4 text--secondary mb-1">Install Type</p>
+              <p class="text-h6 font-weight-medium grey--text mt-0 mb-0">
                 Install type determines the optimal default settings for this deployment
               </p>
 
