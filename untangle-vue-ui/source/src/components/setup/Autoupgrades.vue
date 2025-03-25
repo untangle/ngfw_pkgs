@@ -1,57 +1,60 @@
 <template>
-  <v-card width="1100" height="500" class="mx-auto mt-3" flat>
-    <SetupLayout />
-    <div class="auto-upgrades">
-      <h1 class="font-weight-light faint-color text-h4">{{ title }}</h1>
-      <v-container class="text-center">
-        <v-row>
-          <v-col cols="auto">
-            <v-checkbox
-              id="autoUpgrade"
-              v-model="systemSettings.autoUpgrade"
-              :label="$t('Automatically Install Upgrades')"
-              hide-details
-              class="bold-label"
-            />
-            <v-row>
-              <v-col cols="12">
-                <p class="paragraph">{{ $t('Automatically install new versions of the software when available.') }}</p>
-                <p class="paragraph">{{ $t('This is the recommended choice for most sites.') }}</p>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
+  <v-container>
+    <v-card width="900" class="mx-auto mt-3 pa-3" flat>
+      <SetupLayout />
+      <div
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="width: 100%; min-height: 500px; border: 1px solid #e0e0e0 !important"
+      >
+        <h1 class="font-weight-light faint-color text-h4">{{ title }}</h1>
+        <v-container class="flex-grow-1">
+          <v-row>
+            <v-col cols="auto">
+              <v-checkbox id="autoUpgrade" v-model="systemSettings.autoUpgrade" hide-details>
+                <template #label>
+                  <span class="font-weight-bold mt-2">{{ $t('Automatically Install Upgrades') }}</span>
+                </template>
+              </v-checkbox>
+              <v-row>
+                <v-col cols="auto">
+                  <p class="ml-8 mt-1">
+                    {{ $t('Automatically install new versions of the software when available.') }}
+                  </p>
+                  <p class="ml-8 mt-1">{{ $t('This is the recommended choice for most sites.') }}</p>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
 
-        <v-row>
-          <v-col cols="auto">
-            <v-checkbox
-              id="cloudEnabled"
-              v-model="systemSettings.cloudEnabled"
-              :label="$t('Connect to ETM Dashboard')"
-              hide-details
-              class="bold-label"
-            />
-            <v-row>
-              <v-col cols="12">
-                <p class="paragraph">
-                  {{
-                    $t(
-                      'Remain securely connected to the ETM Dashboard for cloud management, hot fixes, and support access.',
-                    )
-                  }}
-                </p>
-                <p class="paragraph">{{ $t('This is the recommended choice for most sites.') }}</p>
-              </v-col>
-            </v-row>
-          </v-col>
-        </v-row>
-      </v-container>
-      <div class="button-container">
-        <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
-        <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
+          <v-row>
+            <v-col cols="auto">
+              <v-checkbox id="cloudEnabled" v-model="systemSettings.cloudEnabled" hide-details
+                ><template #label>
+                  <span class="font-weight-bold mt-2">{{ $t('Connect to ETM Dashboard') }}</span>
+                </template>
+              </v-checkbox>
+              <v-row>
+                <v-col cols="auto">
+                  <p class="ml-8">
+                    {{
+                      $t(
+                        'Remain securely connected to the ETM Dashboard for cloud management, hot fixes, and support access.',
+                      )
+                    }}
+                  </p>
+                  <p class="ml-8">{{ $t('This is the recommended choice for most sites.') }}</p>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+        </v-container>
+        <div class="d-flex justify-space-between pa-7" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
+        </div>
       </div>
-    </div>
-  </v-card>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -186,58 +189,3 @@
     },
   }
 </script>
-
-<style scoped>
-  .faint-color {
-    color: rgba(0, 0, 0, 0.5);
-  }
-  .auto-upgrades {
-    display: flex;
-    flex-direction: column;
-    min-height: 120%; /*Added */
-    padding: 20px;
-    justify-content: space-between;
-    margin: 20px 120px 10px 120px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    height: auto;
-    overflow: hidden;
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    margin-top: auto;
-    padding: 10px 20px;
-  }
-  .v-checkbox {
-    margin-bottom: 20px;
-  }
-  h2 {
-    font-size: 24px;
-    font-weight: 600;
-    margin-bottom: 20px;
-  }
-  p {
-    font-size: 16px;
-    color: #24282b;
-    margin: 5px 0;
-    text-align: left;
-  }
-  .bold-label {
-    font-weight: bold;
-    padding-top: -10px;
-    margin-top: 10px;
-    text-align: center;
-    width: 100%;
-    display: block;
-  }
-  .paragraph {
-    margin-left: 33px;
-  }
-  .parent-div {
-    margin-top: 10px;
-  }
-</style>

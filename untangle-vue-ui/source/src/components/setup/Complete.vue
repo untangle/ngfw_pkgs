@@ -1,49 +1,61 @@
 <template>
-  <v-card width="1100" height="500" class="mx-auto mt-3" flat>
-    <SetupLayout />
-    <div class="auto-upgrades">
-      <v-container class="text-center">
-        <div class="auto-setup">
-          <div v-if="!rpc?.remote" class="centered-content">
-            <h3>
-              <strong>{{ `The ${rpc?.oemProductName} is now configured.` }}</strong>
-            </h3>
-            <br />
-            <p>
-              {{ `You are now ready to configure the applications.` }}
-            </p>
-            <u-btn :small="false" class="custom-btn" @click="onClickDashboard">
-              <v-icon left>mdi-check</v-icon>{{ 'Go to Dashboard' }}
-            </u-btn>
-          </div>
-          <!-- Can get to remote server -->
-          <div v-else class="remote-setup">
-            <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" class="branding-logo" />
-            {{ currentTime }}
-            <br />
-            <h1>{{ `Thanks for choosing ${rpc?.oemName}!` }}</h1>
-            <p>
-              To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a
-              free account.
-            </p>
-            <div class="button-container">
-              <u-btn :small="false" class="custom-btn" @click="login">Login</u-btn>
-              <u-btn :small="false" class="custom-btn" @click="createAccount">Create Account</u-btn>
-            </div>
-          </div>
-        </div>
-        <v-dialog v-model="loading" persistent max-width="300">
-          <v-card>
-            <v-card-title class="headline"> Please Wait </v-card-title>
-            <v-card-text>
-              Loading User Interface...
-              <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
-            </v-card-text>
-          </v-card>
-        </v-dialog>
-      </v-container>
-    </div>
-  </v-card>
+  <v-container>
+    <v-card width="900" class="mx-auto mt-3 pa-3" flat>
+      <SetupLayout />
+      <div
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="width: 100%; min-height: 500px; border: 1px solid #e0e0e0 !important"
+      >
+        <v-container class="flex-grow-1 d-flex align-center justify-center">
+          <v-row>
+            <v-col>
+              <div v-if="!rpc?.remote" class="text-center">
+                <h3>
+                  <strong>{{ `The ${rpc?.oemProductName} is now configured.` }}</strong>
+                </h3>
+                <br />
+                <p>
+                  {{ `You are now ready to configure the applications.` }}
+                </p>
+                <u-btn :small="false" class="custom-btn" @click="onClickDashboard">
+                  <v-icon left>mdi-check</v-icon>{{ 'Go to Dashboard' }}
+                </u-btn>
+              </div>
+              <!-- Can get to remote server -->
+              <div v-else class="text-center">
+                <v-img
+                  :src="require('@/assets/BrandingLogo.png')"
+                  contain
+                  max-height="80"
+                  transition="false"
+                  class="my-4"
+                />
+                {{ currentTime }}
+                <h2 class="font-weight-bold">{{ `Thanks for choosing ${rpc?.oemName}!` }}</h2>
+                <p class="mt-2">
+                  To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create
+                  a free account.
+                </p>
+                <v-row class="justify-center mt-4">
+                  <u-btn :small="false" class="mr-10 mt-3" @click="login">{{ $t('Login') }}</u-btn>
+                  <u-btn :small="false" class="mr-10 mt-3" @click="createAccount">{{ $t('Create Account') }}</u-btn>
+                </v-row>
+              </div>
+            </v-col>
+          </v-row>
+          <v-dialog v-model="loading" persistent max-width="300">
+            <v-card>
+              <v-card-title> Please Wait </v-card-title>
+              <v-card-text>
+                Loading User Interface...
+                <v-progress-circular indeterminate color="primary" size="64" width="6"></v-progress-circular>
+              </v-card-text>
+            </v-card>
+          </v-dialog>
+        </v-container>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -110,26 +122,3 @@
     },
   }
 </script>
-
-<style scoped>
-  .button-container {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-  }
-  .faint-color {
-    color: rgba(0, 0, 0, 0.5);
-  }
-  .auto-upgrades {
-    display: flex;
-    flex-direction: column;
-    padding: 140px;
-    justify-content: flex-start;
-    margin: 20px 120px 10px 120px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    height: 120%;
-    overflow: hidden;
-  }
-</style>
