@@ -117,17 +117,10 @@
 
 <script>
   import { mapActions, mapGetters } from 'vuex'
-  import Vue from 'vue'
-  import { BTable, BFormSelect, BFormSelectOption } from 'bootstrap-vue'
   import { forEach } from 'lodash'
   import VueDraggable from 'vuedraggable'
   import SetupLayout from '@/layouts/SetupLayout.vue'
   import Util from '@/util/setupUtil'
-  Vue.use(VueDraggable)
-
-  Vue.component('BTable', BTable)
-  Vue.component('BFormSelect', BFormSelect)
-  Vue.component('BFormSelectOption', BFormSelectOption)
 
   export default {
     name: 'Network',

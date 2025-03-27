@@ -1,5 +1,3 @@
-import Vue from 'vue'
-import { BootstrapVue, IconsPlugin } from 'bootstrap-vue'
 import SetupLayout from '@/layouts/SetupLayout'
 import Main from '@/components/setup/Main.vue'
 import License from '@/components/setup/License.vue'
@@ -15,11 +13,6 @@ import Internet from '@/components/setup/Internet.vue'
 import Interface from '@/components/setup/Interface.vue'
 import Network from '@/components/setup/Network.vue'
 import { BlankLayout } from '@/layouts/BlankLayout.vue'
-import 'bootstrap/dist/css/bootstrap.min.css'
-import 'bootstrap-vue/dist/bootstrap-vue.css'
-
-Vue.use(BootstrapVue)
-Vue.use(IconsPlugin)
 
 export default [
   {
