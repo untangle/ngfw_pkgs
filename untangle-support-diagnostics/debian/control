@@ -1,0 +1,13 @@
+Source: untangle-support-diagnostics
+Section: admin
+Priority: optional
+Maintainer: Mayur Dhande <mayur.dhande@arista.com>
+Uploaders: Untangle Buildbot <buildbot@untangle.com>
+Standards-Version: 3.9.8
+
+Package: untangle-support-diagnostics
+Architecture: all
+Depends: ${misc:Depends}, untangle-python3-support-diagnostics
+Description: Library for analyzing Untangle system environment (Python 3)
+ This module is a library for analyzing Untangle environment settings. This is the Python 3 version of the package.
+

@@ -58,6 +58,7 @@ untangle-client-local                   bullseye
 untangle-ddclient-config                bullseye
 untangle-development-build              bullseye
 untangle-development-runtime            bullseye
+untangle-support-diagnostics           bullseye
 untangle-gateway                        bullseye
 untangle-extra-utils                    bullseye
 untangle-update-manager                 bullseye

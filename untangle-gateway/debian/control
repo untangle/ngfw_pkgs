@@ -63,6 +63,7 @@ Depends: ${misc:Depends},
          untangle-softflowd-config,
          untangle-snmpd-config,
          untangle-system-config,
+         untangle-support-diagnostics,
          untangle-update-manager,
 	 untangle-vm
 Pre-Depends: untangle-debconf-manager
