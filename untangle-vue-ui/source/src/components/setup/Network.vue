@@ -1,118 +1,118 @@
 <template>
-  <v-card width="1100" class="mx-auto mt-4" flat>
-    <SetupLayout />
-    <v-container class="main-div">
-      <div class="parent-card">
-        <h2 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h2>
-        <br />
-        <p class="large-font">This step identifies the external, internal, and other network cards.</p>
-
-        <!-- Description -->
-        <div class="description">
-          <p class="large-font">
-            <strong>Step 1:</strong>
-            <span class="step-text"
-              >Plug an active cable into one network card to determine which network card it is. </span
-            ><br />
-            <strong>Step 2:</strong>
-            <span class="step-text">Drag and drop the network card to map it to the desired interface.</span>
-            <br />
-            <strong>Step 3:</strong>
-            <span class="step-text">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
-          </p>
-        </div>
-      </div>
-      <!-- Network Cards Table -->
-      <div class="network-table-container">
-        <draggable
-          v-model="gridData"
-          :group="{ name: 'network-rows', pull: 'clone' }"
-          class="network-table text-center"
-          handle=".drag-handle"
-          :animation="300"
-          @start="onDragStart"
-          @end="onDragEnd"
-          @drag="onDrag"
-          @drop="onDrop"
-        >
-          <b-table
-            hover
-            :items="gridData"
-            :fields="tableFields"
-            class="network-table text-center"
-            bordered
-            :striped="false"
-            :small="false"
-          >
-            <!-- Name column -->
-            <template #cell(name)="row">
-              {{ row.item.name }}
-            </template>
-            <!-- Drag Icon Column -->
-            <template #cell(drag)="row">
-              <span
-                class="drag-handle"
-                style="cursor: move"
-                draggable="true"
-                @dragstart="dragStart($event, row.item)"
-                @dragover="dragOver($event)"
-                @drop="drop($event, row.item)"
-                @dragend="dragEnd"
-                ><v-icon>mdi-cursor-move</v-icon>
-              </span>
-            </template>
-            <!-- Device Column -->
-            <template #cell(deviceName)="row">
-              <b-form-select
-                v-model="row.item.physicalDev"
-                class="custom-dropdown"
-                @change="setInterfacesMap(row.item)"
-              >
-                <b-form-select-option
-                  v-for="device in deviceStore"
-                  :key="device.physicalDev"
-                  :value="device.physicalDev"
-                >
-                  {{ device.physicalDev }}
-                </b-form-select-option>
-              </b-form-select>
-            </template>
-            <!-- Icon Column -->
-            <template #cell(statusIcon)="row">
-              <span :class="statusIcon(row.item.connected)" class="status-dot"></span>
-            </template>
-            <!-- Status Column -->
-            <template #cell(connected)="row">
-              {{ getConnectedStr(row.item) }}
-            </template>
-            <!-- MAC Address Column -->
-            <template #cell(macAddress)="row">
-              {{ row.item.macAddress }}
-            </template>
-          </b-table>
-        </draggable>
-      </div>
-
-      <!-- Warning Message -->
-      <div v-if="gridData.length < 2" class="inline-warning">
-        <span class="warning-icon"></span>
+  <v-container>
+    <v-card width="1100" class="mx-auto mt-3 pa-3" flat>
+      <SetupLayout />
+      <div
+        v-if="gridData.length < 2"
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="width: 100%; min-height: 300px; border: 1px solid #e0e0e0 !important; display: flex"
+      >
+        <span class="mx-2">
+          <v-avatar size="12" class="bg-orange-darken-2 mx-2"></v-avatar>
+        </span>
         <div>
-          <p>
+          <p class="ma-7">
             Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs),
             and fewer than 2 NICs were detected.
           </p>
-          <label>
-            <input v-model="interfacesForceContinue" type="checkbox" />
-            <strong>Continue anyway</strong>
-          </label>
+          <v-checkbox v-model="interfacesForceContinue" density="compact" class="ma-7">
+            <template #label>
+              <span class="pt-2 d-inline-block">Continue anyway</span>
+            </template>
+          </v-checkbox>
+        </div>
+        <div v-if="interfacesForceContinue" class="d-flex justify-space-between pa-2" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
         </div>
       </div>
-      <div class="button-container">
-        <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
-        <u-btn :small="false" style="margin: 8px 0" @click="onSave">{{ `Next` }}</u-btn>
+      <div
+        v-else
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="width: 100%; min-height: 500px; border: 1px solid #e0e0e0 !important"
+      >
+        <div class="ma-2">
+          <h1 class="font-weight-light faint-color text-h4">{{ `Identify Network Cards` }}</h1>
+          <br />
+          <p class="ma-2 font-weight-light faint-color text-h6">
+            This step identifies the external, internal, and other network cards.
+          </p>
+
+          <div class="ma-2">
+            <p>
+              <strong>Step 1:</strong>
+              <span class="ml-2"
+                >Plug an active cable into one network card to determine which network card it is. </span
+              ><br />
+              <strong>Step 2:</strong>
+              <span class="ml-2">Drag and drop the network card to map it to the desired interface.</span>
+              <br />
+              <strong>Step 3:</strong>
+              <span class="ml-2">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
+            </p>
+          </div>
+          <v-card class="ma-2">
+            <v-data-table
+              :headers="tableFields"
+              :items="gridData"
+              item-value="id"
+              hide-default-footer
+              class="border border-black"
+            >
+              <template #item="{ item }">
+                <tr class="text-center align-middle">
+                  <td v-for="(value, key) in item" :key="key" class="text-center align-center">
+                    {{ value }}
+                  </td>
+                </tr>
+              </template>
+              <template #body>
+                <draggable
+                  v-model="gridData"
+                  :group="{ name: 'network-rows', pull: 'clone' }"
+                  tag="tbody"
+                  handle=".drag-handle"
+                  :move="onBeforeDrop"
+                  @start="onDragStart"
+                  @end="onDragEnd"
+                  @drag="onDrag"
+                  @drop="onDrop"
+                >
+                  <tr v-for="item in gridData" :key="item.id">
+                    <td>{{ item.name }}</td>
+                    <td>
+                      <v-icon class="drag-handle cursor-grab">mdi-drag</v-icon>
+                    </td>
+                    <td>
+                      <v-select
+                        v-model="item.physicalDev"
+                        :items="deviceStore.map(device => device.physicalDev)"
+                        variant="outlined"
+                        density="compact"
+                        class="bg-grey-lighten-4 text-black border border-black d-flex align-center justify-center"
+                        style="width: 80px; height: 36px"
+                        menu-icon="mdi-chevron-down"
+                        @change="newValue => setInterfacesMap(item, newValue)"
+                      ></v-select>
+                    </td>
+                    <td>
+                      <v-avatar size="12" class="mx-3" :class="statusIcon(item.connected)"></v-avatar>
+                    </td>
+                    <td>{{ getConnectedStr(item) }}</td>
+                    <td>{{ item.macAddress }}</td>
+                  </tr>
+                </draggable>
+              </template>
+            </v-data-table>
+          </v-card>
+        </div>
+        <div class="d-flex justify-space-between pa-7" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
+        </div>
       </div>
-    </v-container>
-  </v-card>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -133,6 +133,7 @@
     name: 'Network',
     components: {
       SetupLayout,
+      draggable: VueDraggable,
     },
     props: {
       rpc: {
@@ -150,15 +151,17 @@
         intfListLength: 0,
         networkSettings: null,
         enableAutoRefresh: true,
-        interfacesForceContinue: false,
         bordered: true,
+        draggedIndex: null,
+        draggedItem: null,
+        interfacesForceContinue: false,
         tableFields: [
-          { key: 'name', label: 'Name' },
-          { key: 'drag', label: 'Drag' },
-          { key: 'deviceName', label: 'Device' },
-          { key: 'statusIcon', label: 'Icon' },
-          { key: 'connected', label: 'Status' },
-          { key: 'macAddress', label: 'MAC Address' },
+          { text: 'Name', value: 'name' },
+          { text: 'Drag', value: 'drag' },
+          { text: 'Device', value: 'deviceName' },
+          { text: 'Icon', value: 'statusIcon' },
+          { text: 'Status', value: 'connected' },
+          { text: 'MAC Address', value: 'macAddress' },
         ],
       }
     },
@@ -178,7 +181,19 @@
       ...mapActions('setup', ['setShowPreviousStep']),
 
       onDragStart(event) {
-        console.log('Drag Started', event)
+        this.tempArray = this.gridData.map(item => ({ ...item }))
+        this.draggingItem = this.gridData[event.oldIndex]
+      },
+
+      onBeforeDrop(event) {
+        const newIndex = event.relatedContext.index
+        const targetItem = this.tempArray[newIndex]
+
+        if (targetItem) {
+          this.draggingItem.physicalDev = targetItem.physicalDev
+          this.setInterfacesMap(this.draggingItem)
+        }
+        return false
       },
       onDragEnd(event) {
         console.log('Drag Ended', event)
@@ -188,30 +203,6 @@
       },
       onDrop(event) {
         console.log('Item Dropped', event)
-      },
-
-      dragStart(event, item) {
-        this.tempArray = this.gridData.map(item => ({ ...item }))
-        this.draggingItem = item
-        if (event && event.dataTransfer) {
-          const itemString = JSON.stringify(item)
-          event.dataTransfer.setData('text/plain', itemString)
-        }
-      },
-      dragOver(event) {
-        event.preventDefault()
-      },
-      drop(event, targetItem) {
-        event.preventDefault()
-        const draggedItemData = event.dataTransfer.getData('text/plain')
-        if (draggedItemData) {
-          const draggedItem = JSON.parse(draggedItemData)
-          draggedItem.physicalDev = targetItem.physicalDev
-          this.setInterfacesMap(draggedItem)
-        }
-      },
-      dragEnd() {
-        this.draggingItem = null
       },
 
       getConnectedStr(deviceStatus) {
@@ -395,163 +386,21 @@
         }
       },
       statusIcon(status) {
-        return status === 'CONNECTED' ? 'status-connected' : 'status-disconnected'
+        return status === 'CONNECTED' ? 'green' : 'grey'
       },
     },
   }
 </script>
 
 <style scoped>
-  .main-div {
-    /* max-width: 1100px; */
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start; /* Align content to the top */
-    /* align-items: center; */
-    padding: 20px;
-    justify-content: flex-start;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    min-height: 600px; /* Ensures the minimum height remains constant */
-    max-height: 700px; /* Prevents the height from changing too much */
-    height: 700px; /* Set a fixed height to keep the div consistent */
-    position: relative; /* Ensures children stay within boundary */
-    overflow: hidden; /* Prevents content from spilling out */
+  /deep/ th,
+  /deep/ td {
+    border-right: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
   }
-  .large-font {
-    font-size: 17px;
-  }
-  .network-table-container {
-    width: 100%;
-    max-height: 400px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background: white;
-    margin-bottom: 40px;
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    padding: 10px 20px; /* Adds padding for spacing */
-    position: absolute;
-  }
-  .network-table {
-    width: 100%;
-    max-height: 800px;
-    border-collapse: collapse;
-    box-sizing: border-box;
-    /* margin-left: 10px; */
-  }
-
-  .network-table td .network-table th {
-    border: 2px solid #ccc;
-    padding: 10px;
-  }
-  .network-table.table-bordered {
-    border-color: simple-gray(0, 1%, 35%);
-  }
-  .parent-card {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    height: auto;
-    border-radius: 5px;
-    margin: 10px;
-    margin-bottom: 20px; /* Positive margin to ensure spacing */
-  }
-  .description {
-    margin-bottom: 20px;
-    text-align: left;
-  }
-  .step-text {
-    margin-left: 20px;
-    display: inline-block;
-  }
-
-  .internet-button {
-    background-color: #007bff;
-    color: white;
-    border: none;
-    padding: 10px 15px;
-    font-size: 16px;
-    cursor: pointer;
-    border-radius: 5px;
-    display: flex;
-    align-items: center;
-  }
-  .dragging {
-    opacity: 0.5;
-    background-color: #f1f1f1;
-  }
-  .internet-button .arrow {
-    margin-left: 8px;
-    font-size: 18px;
-  }
-  .internet-button:hover {
-    background-color: #0056b3;
-  }
-  .inline-warning {
-    display: flex;
-    align-items: flex-start;
-    margin-top: 10px;
-  }
-  .status-dot {
-    display: inline-block;
-    align-items: center;
-    width: 12px;
-    height: 12px;
-    border-radius: 50%;
-    margin-right: 6px;
-    margin-left: 18px;
-    justify-content: center;
-  }
-  .status-connected {
-    margin-left: 10px;
-    margin-top: 10px;
-    align-items: left;
-    background-color: green;
-  }
-  .status-disconnected {
-    align-items: left;
-    background-color: gray;
-  }
-  .warning-icon {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    background-color: orange;
-    border-radius: 50%;
-    margin-right: 8px;
-  }
-  .draggable-row {
-    cursor: move;
-  }
-  .ghost {
-    opacity: 0.4;
-  }
-  .drag-handle {
-    cursor: move;
-    font-size: 1.5em;
-    color: gray;
-  }
-
-  .custom-dropdown {
-    border: 1px solid #000408;
-    border-radius: 2px;
-    /* padding-right: 1rem; */
-    font-size: 1rem;
-    padding-left: 5px;
-  }
-
-  .custom-dropdown .custom-dropdown-toggle {
-    padding-right: 1.5rem;
+  /deep/ th:last-child,
+  /deep/ td:last-child {
+    border-right: none;
   }
 </style>
