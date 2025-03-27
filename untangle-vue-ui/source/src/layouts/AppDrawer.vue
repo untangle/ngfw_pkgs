@@ -110,12 +110,7 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [
-          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
-          // { name: 'clients', to: { name: 'clients' }, icon: 'mdi-server-network' },
-          // { name: 'active_sessions', to: { name: 'active-sessions' }, icon: 'mdi-table-network' },
-          // { name: 'reports', to: { name: 'reports' }, icon: 'mdi-chart-areaspline' },
-        ],
+        rootNavItems: [{ name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' }],
 
         settingsNavItems: [
           {
@@ -126,10 +121,6 @@
             items: [
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
-              // { name: 'port_forward', to: '/settings/network/port-forward' },
-              // { name: 'shaping', to: '/settings/network/shaping' },
-              // { name: 'nat', to: '/settings/network/nat' },
-              // { name: 'status_analyzers', to: '/settings/network/status-analyzers' },
             ],
           },
           {
@@ -137,71 +128,24 @@
             icon: 'mdi-call-split',
             active: false,
             match: '/settings/routing',
-            items: [
-              { name: 'static_routes', to: '/settings/routing/routes' },
-              // {
-              //   name: 'static-routes',
-              //   to: {
-              //     name: 'component',
-              //     params: {
-              //       componentName: 'NgfwStaticRoutes',
-              //     },
-              //   },
-              // },
-              // { name: 'wan_policies', to: '/settings/routing/wan-policies' },
-              // { name: 'wan_rules', to: '/settings/routing/wan-rules' },
-            ],
+            items: [{ name: 'static_routes', to: '/settings/routing/routes' }],
           },
-          // {
-          //   name: 'firewall',
-          //   icon: 'mdi-shield-half-full',
-          //   active: false,
-          //   match: '/settings/firewall',
-          //   items: [
-          //     { name: 'filter', to: '/settings/firewall/filter' },
-          //     { name: 'access', to: '/settings/firewall/access' },
-          //   ],
-          // },
-          // {
-          //   name: 'services',
-          //   icon: 'mdi-apps',
-          //   active: false,
-          //   match: '/settings/services',
-          //   items: [
-          //     { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }, // uncomment for development
-          //     { name: 'web_filter', to: '/settings/services/web-filter' },
-          //     { name: 'threat_prevention', to: '/settings/services/threat-prevention' },
-          //     { name: 'geoip_filter', to: '/settings/services/geoip-filter' },
-          //     { name: 'network_discovery', to: '/settings/services/network-discovery' },
-          //     { name: 'application_control', to: '/settings/services/application-control' },
-          //     { name: 'captive_portal', to: '/settings/services/captive-portal' },
-          //   ],
-          // },
           {
             name: 'system',
             icon: 'mdi-cog',
             active: false,
             match: '/settings/system',
             items: [
-              // { name: 'preferences', to: '/settings/system/preferences' },
-              // { name: 'settings', to: '/settings/system/settings' },
-              // { name: 'upgrade', to: '/settings/system/upgrade' },
-              // { name: 'logging', to: '/settings/system/logging' },
               { name: 'settings', to: '/settings/system/settings' },
               { name: 'about', to: '/settings/system/about' },
-              // { name: 'about', to: { name: 'component', params: { componentName: 'NgfwAbout' } } },
-              // { name: 'settings', to: { name: 'component', params: { componentName: 'NgfwSettings' } } },
             ],
           },
           {
             name: 'services',
             icon: 'mdi-apps',
             active: false,
-            // match: '/services/DynamicBlockLists',
-            // group: 'services',
             items: [
               { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }, // uncomment for development
-              // { name: 'DynamicBlockLists', to: { name: 'component', params: { componentName: 'DynamicBlockLists' } } },
             ],
           },
         ],
@@ -269,10 +213,7 @@
             name: 'application_control',
             active: false,
             match: '/reports/application-control',
-            items: [
-              // { name: 'summary', to: '/reports/application-control/summary' },
-              { name: 'applications', to: '/reports/application-control/applications' },
-            ],
+            items: [{ name: 'applications', to: '/reports/application-control/applications' }],
           },
           {
             name: 'captive_portal',

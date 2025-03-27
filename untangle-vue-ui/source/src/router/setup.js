@@ -4,10 +4,6 @@ import License from '@/components/setup/License.vue'
 import System from '@/components/setup/System.vue'
 import Wan from '@/components/setup/Wan.vue'
 import Complete from '@/components/setup/Complete.vue'
-// import Wizard from '@/components/setup/Wizard.vue'
-// import Lte from '@/components/setup/Lte.vue'
-// import Wifi from '@/components/setup/Wifi.vue'
-
 import Autoupgrades from '@/components/setup/Autoupgrades.vue'
 import Internet from '@/components/setup/Internet.vue'
 import Interface from '@/components/setup/Interface.vue'
@@ -21,12 +17,9 @@ export default [
     meta: { layout: BlankLayout },
     component: Main,
     children: [
-      // { name: 'setup-wizard', path: '', component: Wizard, meta: { layout: SetupLayout } },
       { name: 'setup-license', path: 'license', component: License, meta: { layout: SetupLayout } },
       { name: 'setup-system', path: 'system', component: System, meta: { layout: SetupLayout } },
       { name: 'setup-wan', path: 'wan', component: Wan, meta: { layout: SetupLayout } },
-      //   { name: 'setup-lte', path: 'lte', component: Lte, meta: { layout: SetupLayout } },
-      //   { name: 'setup-wifi', path: 'wifi', component: Wifi, meta: { layout: SetupLayout } },
       { name: 'setup-complete', path: 'complete', component: Complete, meta: { layout: SetupLayout } },
       { name: 'setup-autoupgrades', path: 'autoupgrades', component: Autoupgrades, meta: { layout: SetupLayout } },
       { name: 'setup-internet', path: 'internet', component: Internet, meta: { layout: SetupLayout } },

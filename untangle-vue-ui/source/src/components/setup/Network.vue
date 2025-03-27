@@ -149,12 +149,12 @@
         draggedItem: null,
         interfacesForceContinue: false,
         tableFields: [
-          { text: 'Name', value: 'name' },
-          { text: 'Drag', value: 'drag' },
-          { text: 'Device', value: 'deviceName' },
-          { text: 'Icon', value: 'statusIcon' },
-          { text: 'Status', value: 'connected' },
-          { text: 'MAC Address', value: 'macAddress' },
+          { text: 'Name', value: 'name', sortable: false },
+          { text: 'Drag', value: 'drag', sortable: false },
+          { text: 'Device', value: 'deviceName', sortable: false },
+          { text: 'Icon', value: 'statusIcon', sortable: false },
+          { text: 'Status', value: 'connected', sortable: false },
+          { text: 'MAC Address', value: 'macAddress', sortable: false },
         ],
       }
     },

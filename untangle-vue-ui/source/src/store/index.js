@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Vuex, { Store } from 'vuex'
 import VuexPersistence from 'vuex-persist'
-import settings from './settings'
 import setup from './setup'
 import auth from './auth'
 
@@ -60,7 +59,6 @@ const actions = {
    */
   resetState({ commit }) {
     commit('RESET')
-    commit('settings/RESET')
   },
 
   setShowStep({ commit }, value) {
@@ -77,18 +75,7 @@ const actions = {
   },
 }
 
-const getters = {
-  // steps: (state, getters, rootState, rootGetters) => {
-  //   const steps = ['license', 'system', 'wan']
-  //   const interfaces = rootGetters['settings/interfaces']
-  //   const lteStep = interfaces.findIndex(intf => intf.type === 'WWAN')
-  //   const wifiStep = interfaces.findIndex(intf => intf.type === 'WIFI')
-  //   if (lteStep >= 0) steps.push('lte')
-  //   if (wifiStep >= 0) steps.push('wifi')
-  //   return steps
-  // },
-  // currentStep: state => state.currentStep,
-}
+const getters = {}
 
 const vuexPersistence = new VuexPersistence({
   storage: window.localStorage,
@@ -97,7 +84,6 @@ const vuexPersistence = new VuexPersistence({
 export default new Store({
   modules: {
     auth,
-    settings,
     setup,
   },
   state: getDefaultState,

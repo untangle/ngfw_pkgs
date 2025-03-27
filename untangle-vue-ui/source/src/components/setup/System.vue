@@ -115,7 +115,6 @@
         timezone: '',
         timezones: '',
         loading: false,
-        // installType: '',
         typeOptions: [
           { value: 'school', text: 'School' },
           { value: 'college', text: 'Higher Education' },
@@ -226,7 +225,7 @@
           await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
-            this.$store.commit('SET_LOADER', true) // Stop loader
+            this.$store.commit('SET_LOADER', true)
             Util.authenticate(this.newPassword, (error, success) => {
               if (error || !success) {
                 this.$vuntangle.toast.add(
