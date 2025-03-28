@@ -1,102 +1,117 @@
 <template>
-  <div>
+  <v-container>
     <v-card width="900" class="mx-auto mt-4" flat>
       <SetupLayout />
-      <v-container class="main-div">
-        <div class="step-title">Configure the Server</div>
+      <div
+        class="pa-6 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="border: 1px solid #e0e0e0 !important"
+      >
+        <h1 class="font-weight-light faint-color text-h4 mb-6">{{ `Configure the Server` }}</h1>
 
-        <!-- <h2 class="font-weight-light faint-color text-h4">{{ `Configure the Server` }}</h2> -->
-        <br />
-        <br />
         <ValidationObserver v-slot="{ passes }">
-          <div class="parent-container">
-            <div class="custom-margin">
-              <h2 class="sectionheader">{{ `Admin Account` }}</h2>
-              <br />
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
-                Choose a password for the <strong>admin</strong><br />
-                account
-              </label>
-              <br />
-              <label>Password:</label>
-              <ValidationProvider v-slot="{ errors }" vid="newPassword" :rules="{ required: passwordRequired, min: 3 }">
-                <u-password v-model="newPasswordSync" :errors="errors" />
-              </ValidationProvider>
-              <br />
-              <label>Confirm Password:</label>
-              <ValidationProvider
-                v-slot="{ errors }"
-                name="confirmPassword"
-                :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
-              >
-                <u-password v-model="newPasswordConfirmSync" :errors="errors" />
-              </ValidationProvider>
-              <br />
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px"
-                >Administrators receive email alerts and report summaries</label
-              >
-              <br />
-              <label>Admin Email:</label>
-              <ValidationProvider v-slot="{ errors }" rules="required">
-                <u-text-field v-model="adminEmail" :error-messages="errors">
-                  <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-                </u-text-field>
-              </ValidationProvider>
-              <br /><br />
-            </div>
-            <br />
-            <div class="custom-margin">
-              <label class="sectionheader">{{ `Install Type` }}</label>
-              <br />
-              <label class="empty-label"></label>
-              <label style="color: rgb(153, 153, 153); margin: 0px; right: auto; left: 0px; width: 300px; top: 29px">
+          <v-row>
+            <v-col cols="12" md="6">
+              <p class="font-weight-light text-h5 text">Admin Account</p>
+              <p class="text-h7 mt-1">
+                Choose a password for the <strong class="font-weight-bold">admin</strong> account
+              </p>
+              <v-row>
+                <v-col cols="12" class="mt-6">
+                  <span>Password:</span>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    vid="newPassword"
+                    :rules="{ required: passwordRequired, min: 3 }"
+                  >
+                    <u-password v-model="newPasswordSync" :errors="errors" />
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12">
+                  <span>Confirm Password:</span>
+                  <ValidationProvider
+                    v-slot="{ errors }"
+                    name="confirmPassword"
+                    :rules="{ required: !!(passwordRequired || newPassword), confirmed: 'newPassword' }"
+                  >
+                    <u-password v-model="newPasswordConfirmSync" :errors="errors" />
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col class="mt-0 pt-0" cols="12">
+                  <p class="text-h7 mt-1">Administrators receive email alerts and report summaries</p>
+                  <span>Admin Email:</span>
+                  <ValidationProvider v-slot="{ errors }" rules="required">
+                    <u-text-field v-model="adminEmail" :error-messages="errors">
+                      <template v-if="errors.length" #append>
+                        <u-errors-tooltip :errors="errors" />
+                      </template>
+                    </u-text-field>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+            </v-col>
+
+            <v-col cols="12" md="6">
+              <p class="font-weight-light text-h5 text">Install Type</p>
+              <p class="text-h7 mt-1">Install type determines the optimal default settings for this deployment</p>
+              <!-- <p class="text-h6 font-weight-medium grey--text mt-0 mb-0">
                 Install type determines the optimal default settings for this deployment
-              </label>
-              <label>Choose Type:</label>
-              <ValidationProvider v-slot="{ errors }" rules="required">
-                <v-autocomplete
-                  v-model="installTypeSync"
-                  :items="typeOptions"
-                  outlined
-                  dense
-                  hide-details
-                  return-object
-                  placeholder="Select Type"
-                  :error-messages="errors"
-                >
-                  <template v-if="errors.length" #append>
-                    <u-errors-tooltip :errors="errors" />
-                  </template>
-                </v-autocomplete>
-              </ValidationProvider>
-              <br />
-              <label>Timezone:</label>
-              <ValidationProvider v-slot="{ errors }" rules="required">
-                <v-autocomplete
-                  v-model="timezone"
-                  :items="timezones"
-                  outlined
-                  dense
-                  hide-details
-                  return-object
-                  :error-messages="errors"
-                >
-                </v-autocomplete>
-              </ValidationProvider>
-              <div class="button-container">
-                <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-                <u-btn :small="false" style="margin: 8px 0" @click="passes(onContinue)">{{ `Next` }}</u-btn>
-                <!-- :disabled="invalid" -->
-              </div>
-              <!-- <u-btn :small="false" style="margin: 8px 180px" class="custom-btn-right" @click="passes(onContinue)">
-                {{ `Next` }}
-              </u-btn> -->
-            </div>
-          </div>
+              </p> -->
+
+              <v-row>
+                <v-col cols="12">
+                  <span>Choose Type:</span>
+                  <ValidationProvider v-slot="{ errors }" rules="required">
+                    <v-autocomplete
+                      v-model="installTypeSync"
+                      :items="typeOptions"
+                      outlined
+                      dense
+                      hide-details
+                      return-object
+                      placeholder="Select Type"
+                      :error-messages="errors"
+                    >
+                      <template v-if="errors.length" #append>
+                        <u-errors-tooltip :errors="errors" />
+                      </template>
+                    </v-autocomplete>
+                  </ValidationProvider>
+                </v-col>
+
+                <v-col cols="12">
+                  <span>Timezone:</span>
+                  <ValidationProvider v-slot="{ errors }" rules="required">
+                    <v-autocomplete
+                      v-model="timezone"
+                      :items="timezones"
+                      outlined
+                      dense
+                      hide-details
+                      return-object
+                      :error-messages="errors"
+                    >
+                    </v-autocomplete>
+                  </ValidationProvider>
+                </v-col>
+              </v-row>
+            </v-col>
+          </v-row>
+
+          <!-- Buttons (Back & Next) -->
+          <v-row class="justify-space-between mt-16 px-4">
+            <v-col cols="auto align-self-end">
+              <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+            </v-col>
+            <v-col cols="auto align-self-end">
+              <u-btn :small="false" @click="passes(onContinue)">{{ `Next` }}</u-btn>
+            </v-col>
+          </v-row>
         </ValidationObserver>
-      </v-container>
+      </div>
     </v-card>
-  </div>
+  </v-container>
 </template>
 
 <script>
@@ -249,110 +264,3 @@
     },
   }
 </script>
-
-<style scoped>
-  .main-div {
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    padding: 20px;
-    justify-content: flex-start;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    font-family: Arial, sans-serif;
-    min-height: 600px;
-    max-height: 700px;
-    height: 700px;
-    overflow-y: auto;
-    position: relative;
-  }
-  .step-title {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-weight: 100;
-    color: #999;
-    font-size: 36px;
-    margin-left: 105px;
-  }
-  .sectionheader {
-    font-family: 'Roboto Condensed', sans-serif;
-    font-size: 35px;
-    color: #555;
-  }
-  .network-cards-panel {
-    display: flex;
-    flex-direction: column;
-    height: 70%;
-    padding: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
-    background-color: #f9f9f9;
-    margin: 20px;
-    margin-left: 300px;
-    margin-right: 300px;
-  }
-  .parent-container {
-    display: flex; /* Enables flexbox layout */
-    justify-content: center;
-    align-items: center;
-    gap: 20px; /* Adds 20px space between the child divs */
-  }
-  .child-container {
-    display: flex; /* Enables flexbox layout */
-    gap: 430px; /* Adds 20px space between the child divs */
-  }
-  .h2.font-weight-light {
-    font-weight: bold; /* Or try 'bold' for a stronger weight */
-  }
-  .button-text {
-    margin-left: 65px;
-    margin-right: -10px;
-    display: inline-block;
-  }
-  .custom-btn {
-    margin-left: auto;
-    width: 10px; /* Fixed width for buttons */
-    height: 50px; /* Fixed height for buttons */
-    font-size: 16px; /* Text size */
-    border-radius: 5px; /* Optional: rounded corners */
-    text-align: center; /* Center text */
-  }
-  .custom-btn-right {
-    margin-left: auto;
-    width: 10px; /* Fixed width for buttons */
-    height: 50px; /* Fixed height for buttons */
-    font-size: 16px; /* Text size */
-    border-radius: 5px; /* Optional: rounded corners */
-    text-align: right;
-  }
-  .empty-label {
-    display: block; /* Ensures the label takes up space and is on its own line */
-    height: 5px; /* Set a specific height if needed */
-    background-color: #f9f9f9;
-  }
-  .custom-margin {
-    width: 300px; /* Fixed width for buttons */
-    height: 50px; /* Fixed height for buttons */
-  }
-  .faint-color {
-    color: rgba(0, 0, 0, 25); /* Adjust the color and opacity */
-  }
-  /* .button-container {
-    display: flex;
-    justify-content: flex-end; 
-    width: 100%; 
-  } */
-  /* Button Container */
-  .button-container {
-    display: flex;
-    justify-content: space-between; /* Places Back & Next at extreme left & right */
-    align-items: center;
-    width: 76%;
-    position: absolute;
-    bottom: 20px; /* Keeps it at a fixed position from bottom */
-    left: 0;
-    padding: 10px 20px; /* Adds padding for spacing */
-    background-color: #f9f9f9;
-    margin-left: 107px;
-  }
-</style>

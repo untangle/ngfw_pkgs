@@ -1,16 +1,18 @@
 <template>
-  <v-card width="1100" height="500" class="mx-auto mt-3" flat>
-    <SetupLayout />
-    <div class="wireless">
-      <v-container>
-        <ValidationObserver v-slot="{ passes }">
-          <div v-if="wirelessSettings">
-            <p class="section-paragraph">Configure Wireless Settings</p>
-
-            <div class="container">
-              <h1 class="section-header">Settings</h1>
-
-              <label>{{ `Network Name (SSID)` }}</label>
+  <v-container>
+    <v-card width="900" height="500" class="mx-auto mt-3 pa-3" flat>
+      <SetupLayout />
+      <div
+        class="pa-6 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="border: 1px solid #e0e0e0 !important"
+      >
+        <h1 class="font-weight-light faint-color text-h4">{{ title }}</h1>
+        <v-container class="flex-grow-1">
+          <v-row class="flex-column align-center">
+            <v-col class="text-left pa-1 ma-1">
+              <v-card-text class="pa-0 ma-0 text-body-2 font-weight-bold">Network Name (SSID)</v-card-text>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
               <ValidationProvider v-slot="{ errors }" rules="required|max:30">
                 <u-text-field
                   id="ssid"
@@ -19,14 +21,21 @@
                   outlined
                   dense
                   hide-details
-                  class="input-box"
+                  class="input-box mx-auto"
                   @paste="validatePaste"
                   @keydown="validateSsid"
                 >
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
-              <label>{{ `Encryption` }}</label>
+            </v-col>
+          </v-row>
+
+          <v-row class="flex-column align-center">
+            <v-col class="text-left pa-1 ma-1">
+              <v-card-text class="pa-0 ma-0 text-body-2 font-weight-bold">Encryption</v-card-text>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
               <v-autocomplete
                 v-model="wirelessSettings.encryption"
                 :errors="errors"
@@ -36,9 +45,16 @@
                 outlined
                 dense
                 hide-details
+                class="mx-auto"
               ></v-autocomplete>
+            </v-col>
+          </v-row>
 
-              <label>{{ `Password` }}</label>
+          <v-row class="flex-column align-center">
+            <v-col class="text-left pa-1 ma-1">
+              <v-card-text class="pa-0 ma-0 text-body-2 font-weight-bold">Password</v-card-text>
+            </v-col>
+            <v-col cols="12" class="pa-0 ma-0">
               <ValidationProvider v-slot="{ errors }" rules="required|min:8|max:63|valide_password">
                 <div @keydown="restrictPasswordInput" @paste="restrictPasswordPaste">
                   <u-password
@@ -48,19 +64,30 @@
                     outlined
                     dense
                     hide-details
+                    class="mx-auto"
                   />
                 </div>
               </ValidationProvider>
-            </div>
-          </div>
-          <div class="button-container">
-            <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">Back</u-btn>
-            <u-btn :small="false" style="margin: 8px 0" @click="passes(onSave)">{{ `Next` }}</u-btn>
-          </div>
-        </ValidationObserver>
-      </v-container>
-    </div>
-  </v-card>
+            </v-col>
+          </v-row>
+
+          <!-- Buttons -->
+          <!-- <v-row class="justify-space-between mt-16 px-4">
+            <v-col cols="auto align-self-end">
+              <u-btn :small="false" @click="onClickBack">Back</u-btn>
+            </v-col>
+            <v-col cols="auto align-self-end">
+              <u-btn :small="false" @click="passes(onSave)">Next</u-btn>
+            </v-col>
+          </v-row> -->
+        </v-container>
+        <div class="d-flex justify-space-between pa-7" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
+        </div>
+      </div>
+    </v-card>
+  </v-container>
 </template>
 
 <script>
@@ -270,72 +297,3 @@
     },
   }
 </script>
-
-<style scoped>
-  .step-title {
-    color: #2c2b2b;
-    font-size: 25px;
-  }
-  .button-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 74%;
-    position: absolute;
-    bottom: 20px;
-    left: 0;
-    padding: 10px 20px;
-    gap: 20px;
-    background-color: #f9f9f9;
-    margin-left: 150px;
-    margin-bottom: -90px;
-  }
-  .faint-color {
-    color: rgba(0, 0, 0, 0.5);
-  }
-  .wireless {
-    margin: 20px 120px 10px 120px;
-    border: 1px solid #ccc;
-    background-color: #f9f9f9;
-    height: 120%;
-    overflow: hidden;
-    padding: 30px 10px 10px 20px;
-  }
-  .container {
-    padding-top: 0px;
-  }
-
-  .section-header {
-    font-size: 24px;
-    margin-bottom: 15px;
-  }
-  .section-paragraph {
-    font-size: 30px;
-    margin-bottom: 15px;
-  }
-
-  .label {
-    font-family: 'Arial', sans-serif;
-    font-size: 20px;
-    font-weight: bold;
-    color: #333;
-  }
-
-  input,
-  select {
-    width: 100%;
-    padding: 8px;
-    margin-top: 5px;
-    border: black;
-    border-radius: 2px;
-    border-color: black;
-  }
-  .input {
-    font-family: 'Arial', sans-serif;
-    font-size: 25px;
-  }
-  .custom-margin {
-    width: 400px;
-    margin-left: 100px;
-  }
-</style>
