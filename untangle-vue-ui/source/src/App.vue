@@ -8,15 +8,12 @@
       $route.name === 'setup'
     "
   />
-  <!-- <setup-layout v-else-if="$route.name.indexOf('setup') > -1" /> -->
   <default-layout v-else />
 </template>
 <script>
-  // SetupLayout
   import { BlankLayout, DefaultLayout } from '@/layouts'
 
   export default {
-    // SetupLayout
     components: { DefaultLayout, BlankLayout },
 
     data() {
