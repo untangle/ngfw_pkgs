@@ -101,10 +101,7 @@
             Untangle must be installed "in-line" as a gateway. This usually requires at least 2 network cards (NICs),
             and fewer than 2 NICs were detected.
           </p>
-          <label>
-            <input v-model="interfacesForceContinue" type="checkbox" />
-            <strong>Continue anyway</strong>
-          </label>
+          <v-checkbox v-model="interfacesForceContinue" label="Continue anyway" hide-details></v-checkbox>
         </div>
       </div>
       <div class="button-container">

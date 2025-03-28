@@ -9,25 +9,28 @@
       <div v-if="wan">
         <ValidationObserver v-slot="{ passes }">
           <div class="config-type">
-            <label class="sectionheader">Configuration Type</label>
-            <div class="radio-group">
-              <label> <input v-model="wan.v4ConfigType" type="radio" value="AUTO" /> Auto (DHCP) </label>
-              <label> <input v-model="wan.v4ConfigType" type="radio" value="STATIC" /> Static </label>
-              <label> <input v-model="wan.v4ConfigType" type="radio" value="PPPOE" /> PPPoE </label>
-            </div>
+            <v-card-text class="sectionheader">Configuration Type</v-card-text>
+
+            <v-radio-group v-model="wan.v4ConfigType" row class="d-flex justify-center ga-3">
+              <v-radio label="Auto (DHCP)" value="AUTO" class="font-weight-bold text-body-2"></v-radio>
+
+              <v-radio label="Static" value="STATIC" class="font-weight-bold text-body-2"></v-radio>
+
+              <v-radio label="PPPoE" value="PPPOE" class="font-weight-bold text-body-2"></v-radio>
+            </v-radio-group>
           </div>
           <div class="column-view">
             <div class="select-Network-content">
               <div v-if="wan.v4ConfigType === 'STATIC'" class="auto-config">
                 <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                  <label>IP Address:</label>
+                  <v-card-text class="pa-0 ma-0">IP Address:</v-card-text>
 
                   <u-text-field v-model="wan.v4StaticAddress" :error-messages="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-text-field>
                 </ValidationProvider>
                 <ValidationProvider v-slot="{ errors }" rules="required">
-                  <label>Netmask:</label>
+                  <v-card-text class="pa-0 ma-0">Netmask:</v-card-text>
                   <v-autocomplete
                     v-model="v4StaticPrefixModel"
                     :items="v4NetmaskList"
@@ -40,21 +43,21 @@
                 </ValidationProvider>
 
                 <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                  <label>Gateway:</label>
+                  <v-card-text class="pa-0 ma-0">Gateway:</v-card-text>
                   <u-text-field v-model="wan.v4StaticGateway" :error-messages="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-text-field>
                 </ValidationProvider>
 
                 <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-                  <label>Primary DNS:</label>
+                  <v-card-text class="pa-0 ma-0">Primary DNS:</v-card-text>
                   <u-text-field v-model="wan.v4StaticDns1" :error-messages="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-text-field>
                 </ValidationProvider>
 
                 <ValidationProvider v-slot="{ errors }" :rules="{ ip: true }">
-                  <label>Secondary DNS (optional):</label>
+                  <v-card-text class="pa-0 ma-0">Secondary DNS (optional):</v-card-text>
                   <u-text-field v-model="wan.v4StaticDns2" :error-messages="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-text-field>
@@ -71,14 +74,14 @@
 
               <div v-if="wan.v4ConfigType === 'PPPOE'">
                 <ValidationProvider v-slot="{ errors }" :rules="{ required: true }">
-                  <label>User Name:</label>
+                  <v-card-text>User Name:</v-card-text>
                   <u-text-field v-model="wan.v4PPPoEUsername" :error-messages="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-text-field>
                 </ValidationProvider>
 
                 <ValidationProvider v-slot="{ errors }" :rules="{ required: true, min: 3 }">
-                  <label>Password:</label>
+                  <v-card-text>Password:</v-card-text>
                   <u-password v-model="wan.v4PPPoEPassword" :error-messages="errors" :errors="errors">
                     <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                   </u-password>
@@ -88,23 +91,23 @@
             <div class="status-grid">
               <p class="sectionheader">Status:</p>
               <div class="status-item">
-                <label>IP Address: </label>
+                <div class="status-label">IP Address:</div>
                 <span>{{ wanStatus.v4Address }}</span>
               </div>
               <div class="status-item">
-                <label>Netmask: </label>
+                <div class="status-label">Netmask:</div>
                 <span>/ {{ wanStatus.v4PrefixLength }} - {{ wanStatus.v4Netmask }}</span>
               </div>
               <div class="status-item">
-                <label>Gateway: </label>
+                <div class="status-label">Gateway:</div>
                 <span>{{ wanStatus.v4Gateway }}</span>
               </div>
               <div class="status-item">
-                <label>Primary DNS: </label>
+                <div class="status-label">Primary DNS:</div>
                 <span>{{ wanStatus.v4Dns1 }}</span>
               </div>
               <div class="status-item">
-                <label>Secondary DNS: </label>
+                <div class="status-label">Secondary DNS:</div>
                 <span>{{ wanStatus.v4Dns2 }}</span>
               </div>
               <div>
@@ -543,6 +546,11 @@
     align-items: start;
     gap: 10px;
     width: 100%;
+  }
+  .status-label {
+    width: 150px;
+    font-weight: bold;
+    white-space: nowrap; /* Keeps text in one line */
   }
 
   .status-item-details,
