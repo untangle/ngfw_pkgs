@@ -6,22 +6,17 @@
         class="pa-6 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
         style="border: 1px solid #e0e0e0 !important"
       >
-        <v-row class="justify-center mb-4">
-          <v-col cols="12" class="text-center">
-            <p class="text-h3 text-left font-weight-thick grey--text text--lighten-1">Configure the Server</p>
-          </v-col>
-        </v-row>
+        <h1 class="font-weight-light faint-color text-h4 mb-6">{{ `Configure the Server` }}</h1>
 
         <ValidationObserver v-slot="{ passes }">
           <v-row>
             <v-col cols="12" md="6">
-              <p class="font-weight-medium text-h4 text--secondary">Admin Account</p>
-              <p class="text-h6 font-weight-medium grey--text mt-2 pa-0">
-                Choose a password for the <strong class="font-weight-bold text--secondary">admin</strong> account
+              <p class="font-weight-light text-h5 text">Admin Account</p>
+              <p class="text-h7 mt-1">
+                Choose a password for the <strong class="font-weight-bold">admin</strong> account
               </p>
-
               <v-row>
-                <v-col cols="12">
+                <v-col cols="12" class="mt-6">
                   <span>Password:</span>
                   <ValidationProvider
                     v-slot="{ errors }"
@@ -44,9 +39,7 @@
                 </v-col>
 
                 <v-col class="mt-0 pt-0" cols="12">
-                  <p class="text-h6 font-weight-medium grey--text">
-                    Administrators receive email alerts and report summaries
-                  </p>
+                  <p class="text-h7 mt-1">Administrators receive email alerts and report summaries</p>
                   <span>Admin Email:</span>
                   <ValidationProvider v-slot="{ errors }" rules="required">
                     <u-text-field v-model="adminEmail" :error-messages="errors">
@@ -60,10 +53,11 @@
             </v-col>
 
             <v-col cols="12" md="6">
-              <p class="font-weight-medium text-h4 text--secondary mb-1">Install Type</p>
-              <p class="text-h6 font-weight-medium grey--text mt-0 mb-0">
+              <p class="font-weight-light text-h5 text">Install Type</p>
+              <p class="text-h7 mt-1">Install type determines the optimal default settings for this deployment</p>
+              <!-- <p class="text-h6 font-weight-medium grey--text mt-0 mb-0">
                 Install type determines the optimal default settings for this deployment
-              </p>
+              </p> -->
 
               <v-row>
                 <v-col cols="12">

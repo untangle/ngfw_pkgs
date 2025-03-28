@@ -1,79 +1,96 @@
 <template>
-  <v-card width="900" class="mx-auto mt-4" flat>
+  <v-card width="900" class="mx-auto ma-2" flat>
     <SetupLayout />
 
     <div
       class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column position-relative"
       style="width: 100%; min-height: 500px; border: 1px solid #e0e0e0 !important"
     >
-      <h1 class="text-h4 font-weight-light grey--text">{{ description }}</h1>
-
+      <h1 class="font-weight-light faint-color text-h4 ma-2">{{ description }}</h1>
       <v-container class="flex-grow-1">
-        <v-row>
+        <v-row no-gutters>
           <v-col cols="auto">
-            <v-radio-group v-model="internal.configType" column @change="setConfigType">
-              <v-radio label="Router" value="ADDRESSED"></v-radio>
+            <v-radio-group v-model="internal.configType" column dense @change="setConfigType">
+              <v-radio value="ADDRESSED">
+                <template #label>
+                  <span class="font-weight-medium text-h6 mt-3">{{ $t('Router') }}</span>
+                </template>
+              </v-radio>
 
-              <v-row class="align-center">
+              <v-row class="align-center" no-gutters>
                 <v-col cols="8">
-                  <p class="text-body-2 grey--text text-wrap">
+                  <p class="font-weight-light ml-8">
                     This is recommended if the external port is plugged into the internet connection. This enables NAT
                     and DHCP.
                   </p>
                 </v-col>
-                <v-col cols="4">
+                <v-col cols="4" class="mt-2">
                   <v-img src="/skins/simple-gray/images/admin/wizard/router.png" max-width="200"></v-img>
                 </v-col>
               </v-row>
 
-              <div class="d-flex flex-column">
-                <v-row class="align-center">
-                  <v-col cols="auto"><span class="font-weight-bold">Internal Address:</span></v-col>
-                  <v-col cols="6">
-                    <u-text-field
-                      v-model="internal.v4StaticAddress"
-                      type="text"
-                      :disabled="internal.configType !== 'ADDRESSED'"
-                    />
-                  </v-col>
-                </v-row>
-
-                <v-row class="align-center">
-                  <v-col cols="auto"><span class="font-weight-bold">Internal Netmask:</span></v-col>
-                  <v-col cols="6">
-                    <v-autocomplete
-                      v-model="internal.v4StaticPrefix"
-                      :items="v4NetmaskList"
-                      :disabled="internal.configType !== 'ADDRESSED'"
-                      outlined
-                      dense
-                      hide-details
-                      return-object
-                    ></v-autocomplete>
-                  </v-col>
-                </v-row>
-              </div>
-
-              <div class="mt-3">
-                <span class="font-weight-bold">DHCP Server:</span>
-                <v-radio-group
-                  v-model="internal.dhcpType"
-                  class="ma-0"
-                  row
-                  :disabled="internal.configType !== 'ADDRESSED'"
+              <v-row class="align-center d-flex" no-gutters>
+                <v-col cols="auto"
+                  ><span class="font-weight-medium faint-color text-h7 ml-8">Internal Address :</span></v-col
                 >
-                  <v-row class="align-center">
-                    <v-col cols="auto"><v-radio label="Enabled" value="SERVER"></v-radio></v-col>
-                    <v-col cols="auto"><v-radio label="Disabled" value="DISABLED"></v-radio></v-col>
-                  </v-row>
-                </v-radio-group>
-              </div>
+                <v-col cols="4" class="ml-2">
+                  <u-text-field
+                    v-model="internal.v4StaticAddress"
+                    type="text"
+                    :disabled="internal.configType !== 'ADDRESSED'"
+                  />
+                </v-col>
+              </v-row>
 
-              <v-radio label="Transparent Bridge" column value="BRIDGED"></v-radio>
+              <v-row class="align-center d-flex mb-2" no-gutters>
+                <v-col cols="auto"><span class="font-weight-medium faint-color ml-8">Internal Netmask :</span></v-col>
+                <v-col cols="4" class="ml-1">
+                  <v-autocomplete
+                    v-model="internal.v4StaticPrefix"
+                    :items="v4NetmaskList"
+                    :disabled="internal.configType !== 'ADDRESSED'"
+                    outlined
+                    dense
+                    hide-details
+                    return-object
+                  ></v-autocomplete>
+                </v-col>
+              </v-row>
+              <v-radio-group
+                v-model="internal.dhcpType"
+                class="d-flex align-items-center ma-0"
+                row
+                dense
+                :disabled="internal.configType !== 'ADDRESSED'"
+              >
+                <span class="font-weight-bold mr-4 ml-8">DHCP Server :</span>
+                <v-row class="d-flex flex-column ml-16">
+                  <v-col cols="auto" class="ml-16"
+                    ><v-radio value="SERVER" class="mt-0">
+                      <template #label>
+                        <span class="font-weight-bold mt-2">{{ $t('Enabled') }}</span>
+                      </template>
+                    </v-radio></v-col
+                  >
+                  <v-col cols="auto" class="ml-16"
+                    ><v-radio value="DISABLED" class="mt-0">
+                      <template #label>
+                        <span class="font-weight-bold mt-2">{{ $t('Disabled') }}</span>
+                      </template>
+                    </v-radio></v-col
+                  >
+                </v-row>
+              </v-radio-group>
+
+              <v-radio column value="BRIDGED">
+                <template #label>
+                  <span class="font-weight-medium text-h6 mt-3">{{ $t('Transparent Bridge') }}</span>
+                </template>
+              </v-radio>
 
               <v-row class="align-center">
                 <v-col cols="8">
-                  <p class="text-body-2 grey--text text-wrap">
+                  <p class="font-weight-light ml-8">
                     This is recommended if the external port is plugged into a firewall/router. This bridges Internal
                     and External and disables DHCP.
                   </p>
@@ -85,12 +102,11 @@
             </v-radio-group>
           </v-col>
         </v-row>
+        <div class="d-flex justify-space-between pa-4" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="onSave">{{ `Next` }}</u-btn>
+        </div>
       </v-container>
-
-      <div class="d-flex justify-space-between pa-7 position-relative">
-        <u-btn :small="false" @click="onClickBack">Back</u-btn>
-        <u-btn :small="false" @click="onSave">Next</u-btn>
-      </div>
     </div>
 
     <!-- Dialogs -->
