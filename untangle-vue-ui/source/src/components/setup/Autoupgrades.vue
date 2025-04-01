@@ -12,12 +12,12 @@
             <v-col cols="auto">
               <v-checkbox id="autoUpgrade" v-model="systemSettings.autoUpgrade" hide-details>
                 <template #label>
-                  <span class="font-weight-bold mt-2">{{ $t('Automatically Install Upgrades') }}</span>
+                  <span class="font-weight-bold">{{ $t('Automatically Install Upgrades') }}</span>
                 </template>
               </v-checkbox>
               <v-row>
                 <v-col cols="auto">
-                  <p class="ml-8 mt-1">
+                  <p class="ml-8 mt-3">
                     {{ $t('Automatically install new versions of the software when available.') }}
                   </p>
                   <p class="ml-8 mt-1">{{ $t('This is the recommended choice for most sites.') }}</p>
@@ -25,17 +25,16 @@
               </v-row>
             </v-col>
           </v-row>
-
           <v-row>
             <v-col cols="auto">
               <v-checkbox id="cloudEnabled" v-model="systemSettings.cloudEnabled" hide-details
                 ><template #label>
-                  <span class="font-weight-bold mt-2">{{ $t('Connect to ETM Dashboard') }}</span>
+                  <span class="font-weight-bold">{{ $t('Connect to ETM Dashboard') }}</span>
                 </template>
               </v-checkbox>
               <v-row>
                 <v-col cols="auto">
-                  <p class="ml-8">
+                  <p class="ml-8 mt-3">
                     {{
                       $t(
                         'Remain securely connected to the ETM Dashboard for cloud management, hot fixes, and support access.',
@@ -56,7 +55,6 @@
     </v-card>
   </v-container>
 </template>
-
 <script>
   import { mapActions, mapGetters } from 'vuex'
   import Util from '@/util/setupUtil'
@@ -97,7 +95,6 @@
     methods: {
       ...mapActions('setup', ['setShowStep']),
       ...mapActions('setup', ['setShowPreviousStep']),
-
       alertDialog(message) {
         this.$vuntangle.dialog.show({
           title: this.$t('Warning'),
@@ -164,17 +161,14 @@
         if (this.systemSettings.cloudEnabled) {
           this.systemSettings.supportEnabled = true
         }
-
         await rpc.systemManager.setSettings(this.systemSettings)
         this.nextPage()
       },
       async nextPage() {
         if (this.isProcessing) return
         this.isProcessing = true
-
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-
           if (this.wizardSteps[currentStepIndex + 1]) {
             await Util.updateWizardSettings(this.currentStep)
             await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
