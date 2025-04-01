@@ -75,6 +75,7 @@
                       <u-btn
                         :small="false"
                         class="font-weight-bold px-4 py-2 text--darken-4 w-100"
+                        style="max-width: 400px; width: 100%"
                         :disabled="loading"
                         @click="renewDhcp"
                       >
@@ -145,9 +146,10 @@
               </v-col>
             </v-row>
             <br />
-            <div v-if="!nextDisabled" class="d-flex justify-space-between pa-4">
-              <u-btn :small="false" style="margin: 8px 0" @click="onClickBack">{{ `Back` }}</u-btn>
-              <u-btn :small="false" style="margin: 8px 0" @click="passes(() => onSave('save'))">{{ `Next` }}</u-btn>
+
+            <div v-if="!nextDisabled" class="d-flex justify-space-between pa-4" style="position: relative">
+              <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+              <u-btn :small="false" @click="passes(() => onSave('save'))">{{ `Next` }}</u-btn>
             </div>
           </ValidationObserver>
         </div>
