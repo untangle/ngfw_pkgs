@@ -3,6 +3,7 @@ import Main from '@/components/settings/Main.vue'
 // network
 import Dhcp from '@/components/settings/network/NgfwDhcp'
 import Dns from '@/components/settings/network/NgfwDns.vue'
+import Interface from '@/components/settings/network/Interface.vue'
 // routing
 import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
 
@@ -25,6 +26,11 @@ export default [
       {
         path: 'network/dns',
         component: Dns,
+        meta: { helpContext: 'dns' },
+      },
+      {
+        path: 'network/interface',
+        component: Interface,
         meta: { helpContext: 'dns' },
       },
       {

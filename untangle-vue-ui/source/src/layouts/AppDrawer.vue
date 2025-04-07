@@ -119,6 +119,7 @@
             active: false,
             match: '/settings/network',
             items: [
+              { name: 'interface', to: '/settings/network/interface' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],
@@ -199,7 +200,7 @@
             ],
           },
           {
-            name: 'geoip_filter',
+            name: 'geoip_filtdnser',
             active: false,
             match: '/reports/geoip-filter',
             items: [
