@@ -20,7 +20,7 @@
     "lodash": "^4.17.21",
     "nanomatch": "^1.2.13",
     "vee-validate": "^3.4.10",
-    "vue": "2.7.16",
+    "vue": "3.0.0",
     "vue-grid-layout": "^2.3.12",
     "vue-i18n": "^8.24.5",
     "vue-router": "^3.5.2",
