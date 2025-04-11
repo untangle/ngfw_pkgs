@@ -145,6 +145,7 @@
             ipv4Address: this.getIpv4Address(intf, status),
             type: this.getType(intf),
             originalType: intf.type,
+            parentBridge: this.getParentBridge(intf), // delete function dependancy
           }
         })
       },
