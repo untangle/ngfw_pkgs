@@ -110,7 +110,10 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [{ name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' }],
+        rootNavItems: [
+          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          // { name: 'Network', to: '/settings/network/networkTabs', icon: 'mdi-lan' },
+        ],
 
         settingsNavItems: [
           {

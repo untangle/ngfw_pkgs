@@ -35,97 +35,26 @@
 <script>
   import { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon } from 'vuetify/lib'
   import StatusRenderer from './StatusRenderer.vue'
+  import interfaceMixin from './interfaceMixin'
   import Util from '@/util/setupUtil'
 
   export default {
     components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon },
+    mixins: [interfaceMixin],
     props: {
-      // interfaces settings from box settings.json
-      // interfaces: { type: Array, required: true },
-      // interfaces status
-      interfacesStatus: { type: Array, default: undefined },
-      // features that applies to interfaces view
-      features: { type: Object, default: undefined },
-      // weather the applliance is offline
       disabled: { type: Boolean, default: false },
     },
     data() {
       return {
-        interfaces: [
-          {
-            'configType': 'ADDRESSED',
-            'device': 'eth0',
-            'dhcpEnabled': true,
-            'dhcpLeaseDuration': 3600,
-            'dhcpRangeEnd': '192.168.1.200',
-            'dhcpRangeStart': '192.168.1.100',
-            'dhcpRelayAddress': '',
-            'dhcpRelayEnabled': false,
-            'downloadKbps': 0,
-            'enabled': true,
-            'ethAutoneg': true,
-            'ethDuplex': 'full',
-            'ethSpeed': 1000,
-            'interfaceId': 1,
-            'mtu': 1500,
-            'name': 'internal',
-            'natIngress': false,
-            'qosEnabled': false,
-            'type': 'NIC',
-            'uploadKbps': 0,
-            'v4ConfigType': 'STATIC',
-            'v4StaticAddress': '192.168.56.119',
-            'v4StaticPrefix': 24,
-            'v6AssignHint': '1234',
-            'v6AssignPrefix': 64,
-            'v6ConfigType': 'ASSIGN',
-            'virtual': false,
-            'wan': false,
-            'wanWeight': 0,
-          },
-          {
-            'configType': 'ADDRESSED',
-            'device': 'eth1',
-            'downloadKbps': 0,
-            'enabled': true,
-            'ethAutoneg': true,
-            'ethDuplex': 'full',
-            'ethSpeed': 1000,
-            'interfaceId': 2,
-            'mtu': 1500,
-            'name': 'WAN0',
-            'natEgress': true,
-            'natIngress': false,
-            'qosEnabled': false,
-            'type': 'NIC',
-            'uploadKbps': 0,
-            'v4ConfigType': 'DHCP',
-            'v6ConfigType': 'DHCP',
-            'virtual': false,
-            'wan': true,
-            'wanWeight': 0,
-          },
-          {
-            'boundInterfaceId': 1,
-            'configType': 'ADDRESSED',
-            'device': 'eth0.1',
-            'dhcpEnabled': false,
-            'dhcpRelayAddress': '',
-            'dhcpRelayEnabled': false,
-            'enabled': true,
-            'interfaceId': 3,
-            'mtu': 1500,
-            'name': 'Test1',
-            'natEgress': false,
-            'natIngress': false,
-            'type': 'VLAN',
-            'v4ConfigType': 'DISABLED',
-            'v6ConfigType': 'DISABLED',
-            'virtual': true,
-            'vlanid': '1',
-            'wan': false,
-          },
-        ],
+        // all interfaces status, async fetched
+        interfacesStatus: undefined,
+        physicalDevsStore: [],
+        intfOrderArr: [],
+        features: {
+          hasWireguard: false,
+          hasOpenVpn: false,
+          hasBridged: false,
+        },
         frameworkComponents: {
           StatusRenderer,
         },
@@ -141,10 +70,18 @@
       }
     },
     computed: {
+      // interfaces filered and grouped (by category)
+      interfaces() {
+        return this.$store.getters['settings/interfaces']
+      },
       colDefs: ({ $i18n, deviceValueFormatter, statusValueFormatter }) => {
         return [
           {
-            headerName: $i18n.t('interface'),
+            headerName: $i18n.t('Id'),
+            field: 'interfaceId',
+          },
+          {
+            headerName: $i18n.t('device'),
             field: 'device',
             sort: 'asc',
             valueFormatter: ({ value }) => deviceValueFormatter(value),
@@ -157,7 +94,7 @@
             },
           },
           {
-            headerName: $i18n.t('description'),
+            headerName: $i18n.t('Name'),
             field: 'description',
           },
           {
@@ -171,99 +108,45 @@
             field: 'duplex',
           },
           {
-            headerName: $i18n.t('mac_address'),
-            field: 'mac',
+            headerName: $i18n.t('Config'),
+            field: 'config',
           },
           {
-            headerName: $i18n.t('mtu'),
-            field: 'mtu',
+            headerName: $i18n.t('mac_address'),
+            field: 'mac',
           },
           {
             headerName: $i18n.t('speed'),
             field: 'speed',
           },
           {
-            headerName: $i18n.t('type'),
-            field: 'type',
+            headerName: $i18n.t('is WAN'),
+            field: 'isWan',
           },
           {
-            headerName: $i18n.t('ipv4_address'),
+            headerName: $i18n.t('Current Address'),
             field: 'ipv4Address',
-          },
-          {
-            headerName: $i18n.t('ipv4_gateway'),
-            field: 'ipv4Gateway',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('ipv6_address'),
-            field: 'ipv6Address',
-          },
-          {
-            headerName: $i18n.t('ipv6_gateway'),
-            field: 'ipv6Gateway',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('dns_servers'),
-            field: 'dnsServers',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('download'),
-            field: 'download',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('upload'),
-            field: 'upload',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('bridged_to'),
-            field: 'bridgedTo',
-            hide: true,
-          },
-          {
-            headerName: $i18n.t('parent_bridge'),
-            field: 'parentBridge',
-            hide: true,
-          },
-          // IPsec specific columns
-          {
-            headerName: `IPsec ${$i18n.t('local_gateway')}`,
-            field: 'ipsecLocalGateway',
-            hide: true,
-          },
-          {
-            headerName: `IPsec ${$i18n.t('local_networks')}`,
-            field: 'ipsecLocalNetworks',
-            hide: true,
-          },
-          {
-            headerName: `IPsec ${$i18n.t('remote_gateway')}`,
-            field: 'ipsecRemoteGateway',
-            hide: true,
-          },
-          {
-            headerName: `IPsec ${$i18n.t('remote_networks')}`,
-            field: 'ipsecRemoteNetworks',
-            hide: true,
-          },
-          {
-            headerName: `IPsec ${$i18n.t('bound_to')}`,
-            field: 'ipsecBoundTo',
-            hide: true,
-          },
-          {
-            headerName: `IPsec ${$i18n.t('authentication')}`,
-            field: 'ipsecAuthType',
-            hide: true,
           },
         ]
       },
       rowData() {
-        return null
+        return this.interfaces?.map(intf => {
+          const status = this.interfacesStatusMap?.[intf.device]
+          return {
+            interfaceId: intf.interfaceId,
+            device: intf.physicalDev,
+            description: intf.name,
+            status: this.getStatus(intf, status),
+            config: intf.configType,
+            duplex: this.getDuplex(intf, status),
+            mac: this.getMac(intf, status),
+            speed: this.getSpeed(intf, status),
+            isWan: intf.isWan,
+            ipv4Address: this.getIpv4Address(intf, status),
+            type: this.getType(intf),
+            originalType: intf.type,
+          }
+        })
       },
       /**
        * Returns a map of interfaces status based on interface device
@@ -271,6 +154,16 @@
        * @param {Object} vm.interfacesStatus - all interfaces status
        * @returns {Object} - the status mapped by interface device
        */
+
+      menuItems: ({ features, $i18n }) => {
+        return [
+          ...(features.hasOpenVpn ? [{ text: $i18n.t('open_vpn'), to: 'openvpn' }] : []),
+          ...(features.hasWireguard ? [{ text: $i18n.t('wireguard'), to: 'wireguard' }] : []),
+          { text: $i18n.t('vlan'), to: 'vlan' },
+          { text: $i18n.t('ipsec_tunnel'), to: 'ipsec' },
+          ...(features.hasBridged ? [{ text: $i18n.t('bridge'), to: 'bridge' }] : []),
+        ]
+      },
       interfacesStatusMap: ({ interfacesStatus }) => {
         if (!interfacesStatus) return
         const map = {}
@@ -281,13 +174,51 @@
       },
     },
     created() {
-      this.rpc = Util.setRpcJsonrpc('admin')
-      console.log(this.rpc)
+      this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
     },
     mounted() {
-      console.log('this.rpc', this.rpc)
+      this.loadInterfacesAndStatus()
     },
     methods: {
+      async loadInterfacesAndStatus() {
+        try {
+          const rpc = await Util.setRpcJsonrpc('admin')
+
+          // Get Network Settings
+          const networkSettings = await rpc.networkManager.getNetworkSettings()
+          const interfaces = networkSettings?.interfaces?.list || []
+
+          const filteredInterfaces = interfaces.filter(intf => !intf.isVlanInterface)
+          const physicalDevs = filteredInterfaces.map(intf => ({
+            physicalDev: intf.physicalDev,
+          }))
+
+          // Save to Vue data
+          this.interfacesStatus = filteredInterfaces
+          this.physicalDevsStore = physicalDevs.map(d => [d.physicalDev, d.physicalDev])
+
+          // Get Device Status
+          const deviceStatusData = await rpc.networkManager.getDeviceStatus()
+          const deviceStatusList = deviceStatusData?.list || []
+
+          const deviceStatusMap = {}
+          deviceStatusList.forEach(dev => {
+            deviceStatusMap[dev.deviceName] = dev
+          })
+
+          // Map status to interfaces
+          this.interfacesStatus = filteredInterfaces.map(intf => {
+            const status = deviceStatusMap[intf.physicalDev]
+            return {
+              ...intf,
+              ...(status || {}), // add status fields like 'connected' etc.
+            }
+          })
+        } catch (err) {
+          console.error('Error loading interfaces and device status:', err)
+          Util.handleException(err)
+        }
+      },
       /**
        * Emits the edit event up to the host app, used for routing based on device
        * @param {Object} params - row click event params

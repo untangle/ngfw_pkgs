@@ -1,10 +1,10 @@
 <template>
   <span>
-    <v-icon x-small :color="intf.enabled && status && status.connected ? 'green' : 'grey'">
-      {{ intf.enabled ? 'mdi-circle' : 'mdi-circle-off-outline' }}
+    <v-icon x-small :color="status && status.connected === 'CONNECTED' ? 'green' : 'grey'">
+      {{ status.connected === 'CONNECTED' ? 'mdi-circle' : 'mdi-circle-off-outline' }}
     </v-icon>
     <span class="d-none d-sm-inline ml-1 text-lowercase">
-      {{ $t(intf.enabled ? (status && status.connected ? 'connected' : 'disconnected') : 'disabled') }}
+      {{ $t(status.connected ? (status.connected === 'CONNECTED' ? 'connected' : 'disconnected') : 'disabled') }}
     </span>
 
     <template v-if="status && status.wan">
@@ -30,5 +30,6 @@
         return !status.offline
       },
     },
+    mounted() {},
   })
 </script>
