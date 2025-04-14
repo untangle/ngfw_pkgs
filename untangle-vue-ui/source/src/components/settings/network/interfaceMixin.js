@@ -56,14 +56,40 @@ export default {
      */
     getDuplex(intf, status) {
       const duplex = status?.duplex || intf.duplex
-      if (duplex === 'FULL_DUPLEX') return this.$vuntangle.$t('FULL DUPLEX')
-      if (duplex === 'HALF_DUPLEX') return this.$vuntangle.t('HALF_DUPLEX')
-      // return '-'
+
+      switch (duplex) {
+        case 'FULL_DUPLEX':
+          return this.$vuntangle.$t('Full-duplex')
+        case 'HALF_DUPLEX':
+          return this.$vuntangle.$t('Half-duplex')
+        default:
+          return this.$vuntangle.$t('Unknown')
+      }
     },
 
     getIsWan(intf, status) {
-      const isWAN = intf.isWan || status.isWan
-      return isWAN
+      const configType = (intf && intf.configType) || (status && status.configType)
+      const isWAN = (intf && intf.isWan) || (status && status.isWan)
+
+      if (configType === 'ADDRESSED') {
+        return isWAN ? this.$t('true') : this.$t('false')
+      } else {
+        return ''
+      }
+    },
+    getConfigAddress(intf = {}, status = {}) {
+      const configType = intf.configType || status.configType
+
+      switch (configType) {
+        case 'ADDRESSED':
+          return this.$t('Addressed')
+        case 'BRIDGED':
+          return this.$t('Bridged')
+        case 'DISABLED':
+          return this.$t('Disabled')
+        default:
+          return configType ? this.$t(configType) : ''
+      }
     },
 
     /**
@@ -83,12 +109,19 @@ export default {
      * @param {Object} status - interface status
      * @returns {String}
      */
-    getSpeed(intf, status) {
+    getSpeed(intf = {}, status = {}) {
       const speed = status?.mbit > -1 ? status.mbit : intf.mbit
-      if (!speed || speed < 0) return '-'
-      return `${speed / 1000} Gbps`
-    },
 
+      if (!speed || speed === 0) {
+        return ''
+      }
+
+      if (speed >= 1000) {
+        return speed / 1000 + ' ' + this.$t('Gbit')
+      }
+
+      return speed + ' ' + this.$t('Mbit')
+    },
     /**
      * Returns the interface type (WAN, LAN, Management / NIC, VLAN, WIREGUARD etc)
      * @param {Object} intf - interface settings
@@ -108,18 +141,21 @@ export default {
      * @returns {String}
      */
     getIpv4Address(intf, status) {
-      if (!status?.ip4Addr && !intf.v4StaticAddress) return '-'
+      if (!status?.ip4Addr?.length && !intf.v4StaticAddress) return '-'
 
-      let address = ''
-      if (status?.ip4Addr) {
-        address = status.ip4Addr[0]
-      } else if (intf.v4StaticAddress) {
+      if (status?.ip4Addr?.length) {
+        return `${status.ip4Addr[0]}/${status.v4PrefixLength || ''}`
+      }
+
+      if (intf.v4StaticAddress) {
         if (intf.v4ConfigType === CONFIG_TYPE.DISABLED) {
           return this.$vuntangle.$t('disabled')
         }
-        address = intf.v4StaticAddress + (intf.v4StaticPrefix ? `/${intf.v4StaticPrefix}` : '')
+        const prefix = intf.v4StaticPrefix || ''
+        return `${intf.v4StaticAddress}/${prefix}`
       }
-      return `${address}`
+
+      return ''
     },
 
     /**
