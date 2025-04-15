@@ -217,11 +217,20 @@
       async onContinue() {
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-          // Ung.app.loading('loading')
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
-            await window.rpc.setup.setTimeZone(timezoneId)
+            await new Promise((resolve, reject) => {
+              window.rpc.setup.setTimeZone((result, ex) => {
+                if (ex) {
+                  console.log('exception :', ex)
+                  Util.handleException(ex)
+                  reject(ex)
+                } else {
+                  resolve(result)
+                }
+              }, timezoneId)
+            })
             await this.saveAdminPassword()
           } else {
             await this.saveAdminPassword()
@@ -230,14 +239,28 @@
           await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
           await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
         } catch (error) {
-          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
-          alert('Failed to save settings. Please try again.')
+          Util.handleException(error)
         }
       },
       async saveAdminPassword() {
         try {
           // Update admin password
-          await window.rpc.setup.setAdminPassword(this.newPassword, this.adminEmail, this.installType.value)
+          await new Promise((resolve, reject) => {
+            window.rpc.setup.setAdminPassword(
+              (result, ex) => {
+                if (ex) {
+                  console.log('exception :', ex)
+                  Util.handleException(ex)
+                  reject(ex)
+                } else {
+                  resolve(result)
+                }
+              },
+              this.newPassword,
+              this.adminEmail,
+              this.installType.value,
+            )
+          })
           // Authenticate the updated password
           await new Promise((resolve, reject) => {
             this.$store.commit('SET_LOADER', true)
