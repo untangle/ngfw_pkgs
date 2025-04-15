@@ -223,7 +223,6 @@
             await new Promise((resolve, reject) => {
               window.rpc.setup.setTimeZone((result, ex) => {
                 if (ex) {
-                  console.log('exception :', ex)
                   Util.handleException(ex)
                   reject(ex)
                 } else {
@@ -249,7 +248,6 @@
             window.rpc.setup.setAdminPassword(
               (result, ex) => {
                 if (ex) {
-                  console.log('exception :', ex)
                   Util.handleException(ex)
                   reject(ex)
                 } else {
