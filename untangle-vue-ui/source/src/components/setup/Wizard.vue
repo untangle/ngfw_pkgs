@@ -135,20 +135,18 @@
         this.nextStep = this.steps[this.activeStepIndex + 1]
         this.activeStepDesc = this.steps[this.activeStepIndex]
 
-        if (this.rpcForAdmin.jsonrpc) {
+        if (this.rpc.jsonrpc) {
           if (this.steps && this.steps.length > 0) {
             this.rpc.wizardSettings.steps = this.steps
           }
           this.rpc.wizardSettings.completedStep = this.prevStep || null
           this.rpc.wizardSettings.wizardComplete = !this.nextStep
 
-          if (this.rpcForAdmin.jsonrpc.UvmContext) {
-            this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
-              if (ex) {
-                Util.handleException(ex)
-              }
-            }, this.rpc.wizardSettings)
-          }
+          this.rpcForAdmin?.jsonrpc?.UvmContext?.setWizardSettings?.((result, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+            }
+          }, this.rpc?.wizardSettings)
         }
       },
 

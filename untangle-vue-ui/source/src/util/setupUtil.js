@@ -56,7 +56,6 @@ const Util = {
       Object.assign(rpc, setupInfo)
       rpcResponse = rpc
     } catch (error) {
-      vuntangle.toast.add(`Failed to navigate : ${error || error.message}`)
       rpcResponse = null
     }
 
