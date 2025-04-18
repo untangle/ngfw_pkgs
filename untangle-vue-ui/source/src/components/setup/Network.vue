@@ -311,7 +311,6 @@
         const networkSettings = await new Promise(resolve => {
           rpc?.networkManager?.getNetworkSettings((result, ex) => {
             if (ex) {
-              console.log('***eception inside autoRefreshInterfaces :', ex)
               Util.handleException('Unable to refresh the interfaces')
               resolve(null)
             } else {
@@ -319,7 +318,6 @@
             }
           })
         })
-        console.log('networkSettings inside Network :', networkSettings)
 
         const interfaces = []
 
