@@ -82,7 +82,7 @@
                 </v-row>
               </v-radio-group>
 
-              <v-radio column value="BRIDGED">
+              <v-radio value="BRIDGED">
                 <template #label>
                   <span class="font-weight-medium text-h6 mt-3">{{ $t('Transparent Bridge') }}</span>
                 </template>
@@ -243,7 +243,7 @@
         this.dialog = false
       },
       setConfigType(radio) {
-        if (radio.target.defaultValue === 'BRIDGED') {
+        if (radio === 'BRIDGED') {
           this.internal.configType = 'BRIDGED'
         } else {
           this.internal.configType = 'ADDRESSED'
