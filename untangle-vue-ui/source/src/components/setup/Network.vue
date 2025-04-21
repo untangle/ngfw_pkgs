@@ -218,7 +218,6 @@
             if (ex) {
               Util.handleException('Unable to load interface')
               reject(ex)
-              return
             } else {
               resolve(result)
             }
@@ -243,7 +242,6 @@
             if (ex) {
               Util.handleException(ex)
               reject(ex)
-              return
             } else {
               resolve(result)
             }
@@ -397,7 +395,6 @@
               Util.handleException(ex)
               this.$store.commit('SET_LOADER', false)
               reject(ex) // Reject the Promise if there's an error
-              return
             } else {
               resolve(response) // Resolve the Promise on success
             }

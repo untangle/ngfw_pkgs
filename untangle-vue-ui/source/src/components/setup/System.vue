@@ -225,7 +225,6 @@
                 if (ex) {
                   Util.handleException(ex)
                   reject(ex)
-                  return
                 } else {
                   resolve(result)
                 }
