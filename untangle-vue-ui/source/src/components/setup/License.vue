@@ -49,16 +49,6 @@
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
       }
-      // else {
-      //   this.alertDialog('RPC setup failed')
-      // }
-      // const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-      // if (rpcResponseForAdmin) {
-      //   this.rpcForAdmin = rpcResponseForAdmin
-      // }
-      // else {
-      //   this.alertDialog('RPC setup failed')
-      // }
     },
     methods: {
       ...mapActions('setup', ['setShowStep']),
