@@ -152,7 +152,7 @@ const Util = {
     }
 
     /** Handle Invalid Security Nonce (Session Expired) */
-    if (exception.code === 595 || exception.message.includes('Invalid security nonce')) {
+    if (exception.code === 595 || exception.message?.includes('Invalid security nonce')) {
       this.showWarningMessage(
         'Your session has expired due to a security issue. Please log in again.',
         details,
@@ -193,7 +193,11 @@ const Util = {
       )
       return
     }
-    this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
+    if (typeof exception === 'string') {
+      this.showWarningMessage(exception, '', this.goToStartPage)
+    } else {
+      this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
+    }
   },
 
   async showWarningMessage(message, details = '', errorHandler = null, buttonName = null) {

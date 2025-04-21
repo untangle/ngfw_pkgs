@@ -160,11 +160,11 @@
           // Only for local.
           return
         }
-        this.networkSettings = await new Promise(resolve => {
+        this.networkSettings = await new Promise((resolve, reject) => {
           this?.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
             if (ex) {
               Util.handleException('Unable to refresh the interfaces')
-              resolve(null)
+              reject(ex)
             } else {
               resolve(result)
             }

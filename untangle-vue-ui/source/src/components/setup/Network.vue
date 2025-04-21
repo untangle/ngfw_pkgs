@@ -147,6 +147,7 @@
         bordered: true,
         draggedIndex: null,
         draggedItem: null,
+        rpcForAdmin: null,
         interfacesForceContinue: false,
         tableFields: [
           { text: 'Name', value: 'name', sortable: false },
@@ -210,18 +211,19 @@
         return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
       },
       async getSettings() {
-        const rpc = Util.setRpcJsonrpc('admin')
+        this.rpcForAdmin = Util.setRpcJsonrpc('admin')
 
-        this.networkSettings = await new Promise(resolve => {
-          rpc?.networkManager?.getNetworkSettings((result, ex) => {
+        this.networkSettings = await new Promise((resolve, reject) => {
+          this.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
             if (ex) {
               Util.handleException('Unable to load interface')
-              resolve(null)
+              reject(ex)
             } else {
               resolve(result)
             }
           })
         })
+
         const physicalDevsStore = []
         this.intfOrderArr = []
         this.intfListLength = this.networkSettings.interfaces.list.length
@@ -235,11 +237,11 @@
           }
         })
 
-        const deviceRecords = await new Promise(resolve => {
-          rpc.networkManager.getDeviceStatus((result, ex) => {
+        const deviceRecords = await new Promise((resolve, reject) => {
+          this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
             if (ex) {
               Util.handleException(ex)
-              resolve(null)
+              reject(ex)
             } else {
               resolve(result)
             }
@@ -306,56 +308,58 @@
         if (!this.enableAutoRefresh) {
           return
         }
-        const rpc = Util.setRpcJsonrpc('admin')
-
-        const networkSettings = await new Promise(resolve => {
-          rpc?.networkManager?.getNetworkSettings((result, ex) => {
-            if (ex) {
-              Util.handleException('Unable to refresh the interfaces')
-              resolve(null)
-            } else {
-              resolve(result)
-            }
-          })
-        })
-
         const interfaces = []
 
-        this.intfListLength = networkSettings.interfaces.list.length
-        networkSettings.interfaces.list.forEach(function (intf) {
-          if (!intf.isVlanInterface) {
-            interfaces.push(intf)
-          }
-        })
-
-        if (interfaces.length !== this.gridData.length) {
-          alert('There are new interfaces, please restart the wizard.')
+        if (!this.rpcForAdmin) {
+          this.rpcForAdmin = Util.setRpcJsonrpc('admin')
         }
-
-        const deviceStatusResult = await new Promise(resolve => {
-          rpc.networkManager.getDeviceStatus((result, ex) => {
+        await new Promise((resolve, reject) => {
+          this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
             if (ex) {
-              Util.handleException(ex)
-              resolve(null)
-            } else {
-              resolve(result)
+              Util.handleException('Unable to refresh the interfaces')
+              reject(ex)
+              return
             }
+            if (result === null) {
+              return
+            }
+            this.intfListLength = result.interfaces.list.length
+            result.interfaces.list.forEach(function (intf) {
+              if (!intf.isVlanInterface) {
+                interfaces.push(intf)
+              }
+            })
+            if (interfaces.length !== this.gridData.length) {
+              alert('There are new interfaces, please restart the wizard.')
+              return
+            }
+            this.rpcForAdmin.networkManager.getDeviceStatus((result2, ex2) => {
+              if (ex2) {
+                Util.handleException(ex2)
+                reject(ex2)
+                return
+              }
+              if (result === null) {
+                return
+              }
+              const deviceStatusMap = result2.list.reduce((map, item) => {
+                map[item.deviceName] = item
+                return map
+              }, {})
+
+              this.gridData.forEach(function (row) {
+                const deviceStatus = deviceStatusMap[row.physicalDev]
+                if (deviceStatus !== null) {
+                  row.connected = deviceStatus.connected
+                }
+              })
+              if (this.enableAutoRefresh) {
+                setTimeout(this.autoRefreshInterfaces, 3000)
+              }
+              resolve()
+            })
           })
         })
-        const deviceStatusMap = deviceStatusResult.list.reduce((map, item) => {
-          map[item.deviceName] = item
-          return map
-        }, {})
-
-        this.gridData.forEach(function (row) {
-          const deviceStatus = deviceStatusMap[row.physicalDev]
-          if (deviceStatus !== null) {
-            row.connected = deviceStatus.connected
-          }
-        })
-        if (this.enableAutoRefresh) {
-          setTimeout(this.autoRefreshInterfaces, 3000)
-        }
       },
 
       async onClickBack() {
