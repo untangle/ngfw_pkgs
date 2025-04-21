@@ -115,6 +115,7 @@
         rpc.jsonrpc.UvmContext.wizardComplete((result, ex) => {
           if (ex) {
             Util.handleException(ex)
+            return
           }
           window.top.location.href = '/admin/index.do'
         })

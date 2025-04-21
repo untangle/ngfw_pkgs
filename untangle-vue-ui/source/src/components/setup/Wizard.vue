@@ -145,6 +145,7 @@
           this.rpcForAdmin?.jsonrpc?.UvmContext?.setWizardSettings?.((result, ex) => {
             if (ex) {
               Util.handleException(ex)
+              return
             }
           }, this.rpc?.wizardSettings)
         }
@@ -165,6 +166,7 @@
             if (ex) {
               Util.handleException('Unable to refresh the interfaces')
               reject(ex)
+              return
             } else {
               resolve(result)
             }
@@ -203,6 +205,7 @@
             this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
               if (ex) {
                 Util.handleException(ex)
+                return
               }
             }, this.rpc.wizardSettings)
           }
