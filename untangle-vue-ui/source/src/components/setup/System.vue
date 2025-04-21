@@ -250,29 +250,25 @@
                 if (ex) {
                   Util.handleException(ex)
                   reject(ex)
-                } else {
-                  resolve(result)
+                  return
                 }
+                Util.authenticate(this.newPassword, (error, success) => {
+                  if (error || !success) {
+                    this.$vuntangle.toast.add(
+                      this.$t(`Authentication failed after password update: ${error || error.message}`),
+                    )
+                    reject(new Error('Authentication failed after password update.'))
+                  } else {
+                    resolve()
+                    this.showInterfaces = true
+                  }
+                })
               },
               this.newPassword,
               this.adminEmail,
               this.installType.value,
             )
-          })
-          // Authenticate the updated password
-          await new Promise((resolve, reject) => {
-            this.$store.commit('SET_LOADER', true)
-            Util.authenticate(this.newPassword, (error, success) => {
-              if (error || !success) {
-                this.$vuntangle.toast.add(
-                  this.$t(`Authentication failed after password update: ${error || error.message}`),
-                )
-                reject(new Error('Authentication failed after password update.'))
-              } else {
-                resolve()
-                this.showInterfaces = true
-              }
-            })
+            resolve()
           })
         } catch (error) {
           this.$store.commit('SET_LOADER', false) // Stop loader
