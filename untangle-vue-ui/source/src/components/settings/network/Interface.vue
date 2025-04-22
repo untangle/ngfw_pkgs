@@ -23,23 +23,39 @@
       row-node-id="device"
       :row-data="rowData"
       :column-defs="colDefs"
-      :custom-grid-options="{ suppressRowClickSelection: true }"
+      :custom-grid-options="{ rowSelection: 'single', suppressRowClickSelection: true }"
       :row-actions="rowActions"
       :framework-components="frameworkComponents"
       v-on="$listeners"
-      @row-clicked="onEditInterface"
+      @row-clicked="onSelectInterface"
+      @grid-ready="onGridReady"
     />
+    <div
+      class="resizable-bottom-panel position-relative overflow-hidden"
+      :style="{ height: panelHeight + 'px' }"
+      @mousemove="onMouseMove"
+      @mouseup="stopResize"
+    >
+      <div class="resize-handle d-flex justify-center align-center" @mousedown.prevent="startResize"></div>
+      <StatusAndArpEntries
+        :interface-source-config="interfaceSourceConfig"
+        :interface-status-data="interfaceStatusData"
+        :arp-entries="arpEntries"
+      />
+    </div>
   </v-container>
 </template>
 
 <script>
   import { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon } from 'vuetify/lib'
+  import StatusAndArpEntries from '../interface/StatusAndArpEntries.vue'
   import StatusRenderer from './StatusRenderer.vue'
   import interfaceMixin from './interfaceMixin'
   import Util from '@/util/setupUtil'
+  import Rpc from '@/util/Rpc'
 
   export default {
-    components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon },
+    components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
     mixins: [interfaceMixin],
     props: {
       disabled: { type: Boolean, default: false },
@@ -50,6 +66,12 @@
         interfacesStatus: undefined,
         physicalDevsStore: [],
         intfOrderArr: [],
+        selectedInterface: null,
+        selectedInterfaceIndex: 0,
+        isResizing: false,
+        panelHeight: 500,
+        minHeight: 100,
+        maxHeight: 800,
         features: {
           hasWireguard: false,
           hasOpenVpn: false,
@@ -67,6 +89,34 @@
             },
           },
         ],
+        interfaceSourceConfig: {
+          address: { displayName: this.$t('IPv4 Address') },
+          device: { displayName: this.$t('Device') },
+          macAddress: { displayName: this.$t('MAC Address') },
+          rxbytes: { displayName: this.$t('Rx Bytes') },
+          rxdrop: { displayName: this.$t('Rx Drop') },
+          rxpkts: { displayName: this.$t('Rx Packets') },
+          rxerr: { displayName: this.$t('Rx Errors') },
+          txbytes: { displayName: this.$t('Tx Bytes') },
+          txdrop: { displayName: this.$t('Tx Drop') },
+          txerr: { displayName: this.$t('Tx Errors') },
+          txpkts: { displayName: this.$t('Tx Packets') },
+          v6Addr: { displayName: this.$t('IPv6 Address') },
+          vendor: { displayName: this.$t('MAC Vendor') },
+        },
+        interfaceStatusData: {},
+        arpEntries: [],
+        interfaceStatusLinkMap: {
+          1: 'macAddress',
+          2: 'rxbytes',
+          3: 'rxpkts',
+          4: 'rxerr',
+          5: 'rxdrop',
+          8: 'txbytes',
+          9: 'txpkts',
+          10: 'txerr',
+          11: 'txdrop',
+        },
       }
     },
     computed: {
@@ -74,6 +124,7 @@
       interfaces() {
         return this.$store.getters['settings/interfaces']
       },
+      // column Header data for Interface Listing
       colDefs: ({ $i18n, deviceValueFormatter, statusValueFormatter }) => {
         return [
           {
@@ -129,6 +180,7 @@
           },
         ]
       },
+      // Table data for interface listing table
       rowData() {
         return this.interfaces?.map(intf => {
           const status = this.interfacesStatusMap?.[intf.device]
@@ -174,13 +226,50 @@
         return map
       },
     },
+    watch: {
+      selectedInterfaceIndex(newIndex) {
+        if (!this.gridApi) return
+
+        this.$nextTick(() => {
+          this.gridApi.deselectAll() // 🔹 important: clear old selection
+
+          const node = this.gridApi.getDisplayedRowAtIndex(newIndex)
+          if (node) {
+            node.setSelected(true)
+            this.onSelectInterface({ data: node.data, node })
+          }
+        })
+      },
+    },
     created() {
       this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
     },
     mounted() {
       this.loadInterfacesAndStatus()
+      // Auto select first row (like `interfacesGridReconfigure`)
+      if (this.interfaces) {
+        this.InterfacesSelectInitial(this.interfaces[0])
+      }
     },
     methods: {
+      startResize() {
+        this.isResizing = true
+        document.addEventListener('mousemove', this.onMouseMove)
+        document.addEventListener('mouseup', this.stopResize)
+      },
+      onMouseMove(e) {
+        if (!this.isResizing) return
+        const containerBottom = this.$el.getBoundingClientRect().bottom
+        const newHeight = containerBottom - e.clientY
+        if (newHeight >= this.minHeight && newHeight <= this.maxHeight) {
+          this.panelHeight = newHeight
+        }
+      },
+      stopResize() {
+        this.isResizing = false
+        document.removeEventListener('mousemove', this.onMouseMove)
+        document.removeEventListener('mouseup', this.stopResize)
+      },
       async loadInterfacesAndStatus() {
         try {
           const rpc = await Util.setRpcJsonrpc('admin')
@@ -220,6 +309,143 @@
           Util.handleException(err)
         }
       },
+
+      async InterfacesSelectInitial(item) {
+        this.selectedInterface = item
+        await this.getInterfaceStatus(item.symbolicDev)
+        await this.getInterfaceArp(item.symbolicDev)
+
+        // await this.getInterfaceArp(item.symbolicDev);
+      },
+
+      async getInterfaceStatus(symbolicDev) {
+        // Simulate loading in the status grid
+        this.siStatus = { device: '' }
+
+        if (!symbolicDev) {
+          this.siStatus = {}
+          return
+        }
+
+        this.isLoading = true // Assuming `isLoading` is used to show loader in UI
+
+        try {
+          const res1Promise = Rpc.asyncPromise('rpc.networkManager.getStatus', 'INTERFACE_TRANSFER', symbolicDev)
+          const res2Promise = Rpc.asyncPromise('rpc.networkManager.getStatus', 'INTERFACE_IP_ADDRESSES', symbolicDev)
+
+          const [res1, res2] = await Promise.all([res1Promise(), res2Promise()])
+
+          const stat = {
+            device: symbolicDev,
+            macAddress: null,
+            address: null,
+            v6Addr: null,
+            rxpkts: null,
+            rxbytes: null,
+            rxerr: null,
+            rxdrop: null,
+            txpkts: null,
+            txbytes: null,
+            txerr: null,
+            txdrop: null,
+            vendor: this.selectedInterface?.vendor || null,
+          }
+
+          if (this.interfaceStatusLinkMap) {
+            res1
+              .trim()
+              .split(' ')
+              .forEach((item, index) => {
+                if (index in this.interfaceStatusLinkMap) {
+                  stat[this.interfaceStatusLinkMap[index]] = item
+                }
+              })
+          }
+
+          let getNext = false
+          res2.split(' ').forEach(item => {
+            if (getNext) {
+              stat[getNext] = stat[getNext] ? [...stat[getNext], item] : [item]
+              getNext = false
+            }
+            if (item === 'inet') getNext = 'address'
+            else if (item === 'inet6') getNext = 'v6Addr'
+          })
+
+          stat.address = Array.isArray(stat.address) ? stat.address.join(', ') : stat.address
+          stat.v6Addr = Array.isArray(stat.v6Addr) ? stat.v6Addr.join(', ') : stat.v6Addr
+
+          // Apply datasize renderer
+          stat.rxbytes = stat.rxbytes !== null ? this.datasize(stat.rxbytes) : null
+          stat.txbytes = stat.txbytes !== null ? this.datasize(stat.txbytes) : null
+
+          // Apply count renderer
+          stat.rxpkts = stat.rxpkts !== null ? this.count(stat.rxpkts) : null
+          stat.rxerr = stat.rxerr !== null ? this.count(stat.rxerr) : null
+          stat.rxdrop = stat.rxdrop !== null ? this.count(stat.rxdrop) : null
+          stat.txpkts = stat.txpkts !== null ? this.count(stat.txpkts) : null
+          stat.txerr = stat.txerr !== null ? this.count(stat.txerr) : null
+          stat.txdrop = stat.txdrop !== null ? this.count(stat.txdrop) : null
+          this.siStatus = stat
+          this.interfaceStatusData = this.siStatus
+        } catch (err) {
+          console.error('Interface Status Error:', err)
+          this.siStatus = {}
+        } finally {
+          this.isLoading = false
+        }
+      },
+
+      async getInterfaceArp(symbolicDev) {
+        if (!symbolicDev) {
+          this.arpEntries = []
+          return
+        }
+
+        this.isLoading = true
+
+        try {
+          const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', symbolicDev)
+          const connections = []
+          const macAddressList = []
+
+          result.split('\n').forEach(row => {
+            if (row.trim() === '') return
+
+            const items = row.trim().split(/\s+/) // Split by whitespace
+            const address = items[0] || null
+            const macAddress = items[2] || null
+
+            if (macAddress) macAddressList.push(macAddress)
+
+            connections.push({
+              address,
+              macAddress,
+              vendor: null,
+            })
+          })
+
+          if (macAddressList.length > 0) {
+            const list = { javaClass: 'java.util.LinkedList', list: macAddressList }
+            const lookUpResult = await Rpc.directData('rpc.networkManager.lookupMacVendorList', list)
+            const macVendorMap = lookUpResult.map || {}
+
+            connections.forEach(conn => {
+              if (macVendorMap[conn.macAddress]) {
+                conn.vendor = macVendorMap[conn.macAddress]
+              }
+            })
+          }
+
+          this.arpEntries = connections
+        } catch (err) {
+          console.error('Failed to fetch ARP table:', err)
+          Util.handleException(err)
+        } finally {
+          this.isLoading = false
+        }
+      },
+
       /**
        * Emits the edit event up to the host app, used for routing based on device
        * @param {Object} params - row click event params
@@ -230,6 +456,44 @@
         if (this.disabled) return
         this.$emit('edit-interface', data.device)
       },
+      onGridReady(params) {
+        this.gridApi = params.api
+        this.gridColumnApi = params.columnApi
+
+        this.$nextTick(() => {
+          const firstNode = this.gridApi.getDisplayedRowAtIndex(this.selectedInterfaceIndex)
+          if (firstNode) {
+            firstNode.setSelected(true)
+            this.onSelectInterface({ data: firstNode.data, node: firstNode })
+          }
+        })
+      },
+      async onSelectInterface({ data, node }) {
+        const index = node ? node.rowIndex : null
+        if (index !== null && this.selectedInterfaceIndex !== index) {
+          this.selectedInterfaceIndex = index // 🔹 update index so watcher can re-highlight
+        }
+
+        this.selectedInterface = index
+        const symbolicDev = data.symbolicDev || data.device
+        if (!symbolicDev) return
+
+        await this.getInterfaceStatus(symbolicDev)
+        await this.getInterfaceArp(symbolicDev)
+      },
     },
   }
 </script>
+
+<style scoped>
+  .resizable-bottom-panel {
+    border-top: 1px solid #ccc;
+  }
+
+  .resize-handle {
+    height: 7px;
+    cursor: row-resize;
+    background-color: #ddd;
+    user-select: none;
+  }
+</style>

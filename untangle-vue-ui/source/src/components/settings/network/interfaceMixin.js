@@ -1,5 +1,21 @@
 import { CONFIG_TYPE } from '../../../shared/SettingsInterface/components/constants'
 
+const datasizeMap = [
+  [1125899906842624, 'PB'],
+  [1099511627776, 'TB'],
+  [1073741824, 'GB'],
+  [1048576, 'MB'],
+  [1024, 'KB'],
+  [1, 'B'],
+]
+const countMap = [
+  [1125899906842624, 'P'], // PB
+  [1099511627776, 'T'], // TB
+  [1073741824, 'G'], // GB
+  [1048576, 'M'], // MB
+  [1024, 'K'], // KB
+  [1, ''], // B (no unit)
+]
 export default {
   methods: {
     /**
@@ -89,6 +105,52 @@ export default {
           return this.$t('Disabled')
         default:
           return configType ? this.$t(configType) : ''
+      }
+    },
+
+    datasize(value) {
+      if (value === null) value = 0
+      value = parseInt(value, 10)
+
+      let size = datasizeMap[datasizeMap.length - 1]
+      for (let i = 0; i < datasizeMap.length; i++) {
+        size = datasizeMap[i]
+        if (value >= size[0] || value <= -size[0]) {
+          break
+        }
+      }
+
+      if (value === 0 || size[0] === 1) {
+        return `${value} ${size[1]}`
+      } else {
+        let dividedValue = (value / size[0]).toFixed(2)
+        if (dividedValue.endsWith('.00')) {
+          dividedValue = dividedValue.slice(0, -3)
+        }
+        return `${dividedValue} ${size[1]}`
+      }
+    },
+
+    count(value) {
+      if (value === null) value = 0
+      value = parseInt(value, 10)
+
+      let size = countMap[countMap.length - 1]
+      for (let i = 0; i < countMap.length; i++) {
+        size = countMap[i]
+        if (value >= size[0] || value <= -size[0]) {
+          break
+        }
+      }
+
+      if (value === 0 || size[0] === 1) {
+        return `${value} ${size[1]}`
+      } else {
+        let formatted = (value / size[0]).toFixed(2)
+        if (formatted.endsWith('.00')) {
+          formatted = formatted.slice(0, -3)
+        }
+        return `${formatted} ${size[1]}`
       }
     },
 
