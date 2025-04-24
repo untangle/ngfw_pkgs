@@ -147,6 +147,7 @@
         bordered: true,
         draggedIndex: null,
         draggedItem: null,
+        rpcForAdmin: null,
         interfacesForceContinue: false,
         tableFields: [
           { text: 'Name', value: 'name', sortable: false },
@@ -210,44 +211,62 @@
         return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
       },
       async getSettings() {
-        try {
-          const rpc = Util.setRpcJsonrpc('admin')
-          this.networkSettings = await rpc?.networkManager?.getNetworkSettings()
-          const physicalDevsStore = []
-          this.intfOrderArr = []
-          this.intfListLength = this.networkSettings.interfaces.list.length
-          const interfaces = []
-          const devices = []
+        this.rpcForAdmin = Util.setRpcJsonrpc('admin')
 
-          forEach(this.networkSettings.interfaces.list, function (intf) {
-            if (!intf.isVlanInterface) {
-              interfaces.push(intf)
-              devices.push({ physicalDev: intf.physicalDev })
+        this.networkSettings = await new Promise((resolve, reject) => {
+          this.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
+            if (ex) {
+              Util.handleException('Unable to load interface')
+              reject(ex)
+            } else {
+              resolve(result)
             }
           })
-          const deviceRecords = await rpc.networkManager.getDeviceStatus()
-          const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
-            map[item.deviceName] = item
-            return map
-          }, {})
+        })
 
-          forEach(interfaces, intf => {
-            if (deviceStatusMap[intf.physicalDev]) {
-              Object.keys(deviceStatusMap[intf.physicalDev]).forEach(key => {
-                if (!Object.prototype.hasOwnProperty.call(intf, key)) {
-                  this.$set(intf, key, deviceStatusMap[intf.physicalDev][key])
-                }
-              })
+        const physicalDevsStore = []
+        this.intfOrderArr = []
+        this.intfListLength = this.networkSettings.interfaces.list.length
+        const interfaces = []
+        const devices = []
+
+        forEach(this.networkSettings.interfaces.list, function (intf) {
+          if (!intf.isVlanInterface) {
+            interfaces.push(intf)
+            devices.push({ physicalDev: intf.physicalDev })
+          }
+        })
+
+        const deviceRecords = await new Promise((resolve, reject) => {
+          this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+              reject(ex)
+            } else {
+              resolve(result)
             }
           })
-          this.gridData = interfaces
-          forEach(interfaces, function (intf) {
-            physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
-          })
-          this.deviceStore = physicalDevsStore
-        } catch (error) {
-          this.$vuntangle.toast.add(this.$t(`Failed to fetch device settings: ${error || error.message}`))
-        }
+        })
+
+        const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
+          map[item.deviceName] = item
+          return map
+        }, {})
+
+        forEach(interfaces, intf => {
+          if (deviceStatusMap[intf.physicalDev]) {
+            Object.keys(deviceStatusMap[intf.physicalDev]).forEach(key => {
+              if (!Object.prototype.hasOwnProperty.call(intf, key)) {
+                this.$set(intf, key, deviceStatusMap[intf.physicalDev][key])
+              }
+            })
+          }
+        })
+        this.gridData = interfaces
+        forEach(interfaces, function (intf) {
+          physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
+        })
+        this.deviceStore = physicalDevsStore
       },
       // used when mapping from comboboxes
       setInterfacesMap(row) {
@@ -289,41 +308,58 @@
         if (!this.enableAutoRefresh) {
           return
         }
-        try {
-          const rpc = Util.setRpcJsonrpc('admin')
-          const networkSettings = await rpc?.networkManager?.getNetworkSettings()
-          const interfaces = []
+        const interfaces = []
 
-          this.intfListLength = networkSettings.interfaces.list.length
-          networkSettings.interfaces.list.forEach(function (intf) {
-            if (!intf.isVlanInterface) {
-              interfaces.push(intf)
-            }
-          })
-
-          if (interfaces.length !== this.gridData.length) {
-            alert('There are new interfaces, please restart the wizard.')
-          }
-
-          const deviceStatusResult = await rpc.networkManager.getDeviceStatus()
-
-          const deviceStatusMap = deviceStatusResult.list.reduce((map, item) => {
-            map[item.deviceName] = item
-            return map
-          }, {})
-
-          this.gridData.forEach(function (row) {
-            const deviceStatus = deviceStatusMap[row.physicalDev]
-            if (deviceStatus !== null) {
-              row.connected = deviceStatus.connected
-            }
-          })
-          if (this.enableAutoRefresh) {
-            setTimeout(this.autoRefreshInterfaces, 3000)
-          }
-        } catch (error) {
-          this.$vuntangle.toast.add(this.$t(`Failed to fetch device status: ${error || error.message}`))
+        if (!this.rpcForAdmin) {
+          this.rpcForAdmin = Util.setRpcJsonrpc('admin')
         }
+        await new Promise((resolve, reject) => {
+          this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
+            if (ex) {
+              Util.handleException('Unable to refresh the interfaces')
+              reject(ex)
+              return
+            }
+            if (result === null) {
+              return
+            }
+            this.intfListLength = result.interfaces.list.length
+            result.interfaces.list.forEach(function (intf) {
+              if (!intf.isVlanInterface) {
+                interfaces.push(intf)
+              }
+            })
+            if (interfaces.length !== this.gridData.length) {
+              alert('There are new interfaces, please restart the wizard.')
+              return
+            }
+            this.rpcForAdmin.networkManager.getDeviceStatus((result2, ex2) => {
+              if (ex2) {
+                Util.handleException(ex2)
+                reject(ex2)
+                return
+              }
+              if (result === null) {
+                return
+              }
+              const deviceStatusMap = result2.list.reduce((map, item) => {
+                map[item.deviceName] = item
+                return map
+              }, {})
+
+              this.gridData.forEach(function (row) {
+                const deviceStatus = deviceStatusMap[row.physicalDev]
+                if (deviceStatus !== null) {
+                  row.connected = deviceStatus.connected
+                }
+              })
+              if (this.enableAutoRefresh) {
+                setTimeout(this.autoRefreshInterfaces, 3000)
+              }
+              resolve()
+            })
+          })
+        })
       },
 
       async onClickBack() {
@@ -339,44 +375,38 @@
 
       async onSave() {
         this.$store.commit('SET_LOADER', true)
-        try {
-          const interfacesMap = {}
-          this.gridData.forEach(function (currentRow) {
-            interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
-          })
+        const interfacesMap = {}
+        this.gridData.forEach(function (currentRow) {
+          interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
+        })
 
-          // apply new physicalDev for each interface from initial Network Settings
-          this.networkSettings.interfaces.list.forEach(function (intf) {
-            if (!intf.isVlanInterface) {
-              intf.physicalDev = interfacesMap[intf.interfaceId]
+        // apply new physicalDev for each interface from initial Network Settings
+        this.networkSettings.interfaces.list.forEach(function (intf) {
+          if (!intf.isVlanInterface) {
+            intf.physicalDev = interfacesMap[intf.interfaceId]
+          }
+        })
+
+        const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
+
+        await new Promise((resolve, reject) => {
+          window.rpc.networkManager.setNetworkSettings((response, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+              this.$store.commit('SET_LOADER', false)
+              reject(ex) // Reject the Promise if there's an error
+            } else {
+              resolve(response) // Resolve the Promise on success
             }
-          })
+          }, this.networkSettings)
+        })
 
-          const currentStepIndex = await this.wizardSteps.indexOf(this.currentStep)
-          this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+        await Promise.resolve()
+        await Util.updateWizardSettings(this.currentStep)
+        await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
+        await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
 
-          await new Promise((resolve, reject) => {
-            window.rpc.networkManager.setNetworkSettings((response, ex) => {
-              if (ex) {
-                Util.handleException(ex)
-                reject(ex) // Reject the Promise if there's an error
-              } else {
-                resolve(response) // Resolve the Promise on success
-              }
-            }, this.networkSettings)
-          })
-
-          await Promise.resolve()
-          await Util.updateWizardSettings(this.currentStep)
-          await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
-          await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
-        } catch (error) {
-          this.$store.commit('SET_LOADER', false)
-          this.$vuntangle.toast.add(this.$t(`Error saving settings: ${error || error.message}`))
-          alert('Failed to save settings. Please try again.')
-        } finally {
-          this.$store.commit('SET_LOADER', false)
-        }
+        this.$store.commit('SET_LOADER', false)
       },
       statusIcon(status) {
         return status === 'CONNECTED' ? 'green' : 'grey'

@@ -135,20 +135,18 @@
         this.nextStep = this.steps[this.activeStepIndex + 1]
         this.activeStepDesc = this.steps[this.activeStepIndex]
 
-        if (this.rpcForAdmin.jsonrpc) {
+        if (this.rpc.jsonrpc) {
           if (this.steps && this.steps.length > 0) {
             this.rpc.wizardSettings.steps = this.steps
           }
           this.rpc.wizardSettings.completedStep = this.prevStep || null
           this.rpc.wizardSettings.wizardComplete = !this.nextStep
 
-          if (this.rpcForAdmin.jsonrpc.UvmContext) {
-            this.rpcForAdmin.jsonrpc.UvmContext.setWizardSettings(function (result, ex) {
-              if (ex) {
-                Util.handleException(ex)
-              }
-            }, this.rpc.wizardSettings)
-          }
+          this.rpcForAdmin?.jsonrpc?.UvmContext?.setWizardSettings?.((result, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+            }
+          }, this.rpc?.wizardSettings)
         }
       },
 
@@ -162,8 +160,17 @@
           // Only for local.
           return
         }
-        this.networkSettings = await this.rpcForAdmin?.networkManager?.getNetworkSettings()
-        this.interfaces = await this.networkSettings.interfaces.list
+        this.networkSettings = await new Promise((resolve, reject) => {
+          this?.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
+            if (ex) {
+              Util.handleException('Unable to refresh the interfaces')
+              reject(ex)
+            } else {
+              resolve(result)
+            }
+          })
+        })
+        this.interfaces = this.networkSettings.interfaces.list
         const firstWan = this.interfaces.find(function (intf) {
           return intf.isWan && intf.configType !== 'DISABLED'
         })
@@ -218,7 +225,7 @@
           this.cardIndex--
           if (this.cardIndex >= 2) {
             this.$store.commit('SET_LOADER', true)
-            this.rpcForAdmin.networkManager.getNetworkSettings(async (result, ex) => {
+            this.rpcForAdmin?.networkManager?.getNetworkSettings(async (result, ex) => {
               if (ex) {
                 Util.handleException('Unable to load interfaces.')
                 return

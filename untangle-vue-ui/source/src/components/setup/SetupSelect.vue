@@ -216,7 +216,6 @@
                     this.resetWizardContinue()
                   }
                 })
-                this.dialog = true
               })
             }
           } else {

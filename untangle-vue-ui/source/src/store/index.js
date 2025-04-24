@@ -3,6 +3,7 @@ import Vuex, { Store } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import setup from './setup'
 import auth from './auth'
+import settings from './settings'
 
 Vue.use(Vuex)
 
@@ -85,6 +86,7 @@ export default new Store({
   modules: {
     auth,
     setup,
+    settings,
   },
   state: getDefaultState,
   getters,

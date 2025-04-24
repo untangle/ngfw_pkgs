@@ -110,7 +110,10 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [{ name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' }],
+        rootNavItems: [
+          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          // { name: 'Network', to: '/settings/network/networkTabs', icon: 'mdi-lan' },
+        ],
 
         settingsNavItems: [
           {
@@ -119,7 +122,7 @@
             active: false,
             match: '/settings/network',
             items: [
-              { name: 'interfaces', to: '/settings/network/interfaces' },
+              { name: 'interface', to: '/settings/network/interface' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],
@@ -200,7 +203,7 @@
             ],
           },
           {
-            name: 'geoip_filtdnse',
+            name: 'geoip_filtdnser',
             active: false,
             match: '/reports/geoip-filter',
             items: [

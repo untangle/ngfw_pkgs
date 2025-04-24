@@ -448,7 +448,7 @@
           const status = await this.rpcForAdmin.networkManager.getInterfaceStatus(this.wan.interfaceId)
           this.wanStatus = status
         } catch (error) {
-          this.alertDialog(`Unable to get WAN status : ${error.message || error}`)
+          Util.handleException(error)
         }
       },
 
