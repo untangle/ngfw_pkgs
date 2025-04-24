@@ -1,4 +1,4 @@
-import { CONFIG_TYPE } from '../../../shared/SettingsInterface/components/constants'
+import { CONFIG_TYPE } from '../../settings/network/SettingsInterface/components/constants'
 
 export default {
   methods: {

@@ -124,6 +124,11 @@
             field: 'isWan',
           },
           {
+            headerName: $i18n.t('Edit'),
+            field: 'edit',
+            cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+          },
+          {
             headerName: $i18n.t('Current Address'),
             field: 'ipv4Address',
           },
@@ -181,6 +186,9 @@
       this.loadInterfacesAndStatus()
     },
     methods: {
+      onEditInterface(device) {
+        this.$router.push(`/settings/network/interface/${device.data.device}`)
+      },
       async loadInterfacesAndStatus() {
         try {
           const rpc = await Util.setRpcJsonrpc('admin')
@@ -225,11 +233,12 @@
        * @param {Object} params - row click event params
        * @param {Object} params.data - the row data
        */
-      onEditInterface({ data }) {
-        // avoid editing an interface if disabled (appliance offline)
-        if (this.disabled) return
-        this.$emit('edit-interface', data.device)
-      },
+      // onEditInterface({ data }) {
+      //   // avoid editing an interface if disabled (appliance offline)
+      //   // if (this.disabled) return
+      //   console.log('edit called', data)
+      //   this.$emit('edit-interface', data.device)
+      // },
     },
   }
 </script>

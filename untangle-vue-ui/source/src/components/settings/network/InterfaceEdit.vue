@@ -1,6 +1,30 @@
 <template>
   <v-container>
-    <settings-interface ref="component">
+    <settings-interface
+      ref="component"
+      :settings="settings"
+      :is-saving="isSaving"
+      :interfaces="interfaces"
+      :type="type"
+      :disabled="!canAddInterface && settings.type !== 'WIFI'"
+      :status="status"
+      :ping-analyzers="pingAnalyzers"
+      :features="features"
+      @renew-dhcp="onRenewDhcp"
+      @manage-status-analyzers="onManageStatusAnalyzers"
+      @delete="onDelete"
+      @get-all-interface-status="onGetAllInterfaceStatus"
+      @get-status-hardware="onGetStatusHardware"
+      @get-status-wan-test="onGetStatusWanTest"
+      @get-wifi-channels="onGetWifiChannels"
+      @get-wifi-mode-list="onGetWifiModeList"
+      @get-status-wwan="onGetStatusWwan"
+      @get-wireguard-publickey="onGetWireguardPublicKey"
+      @get-wireguard-keypair="onGetWireguardKeypair"
+      @get-wireguard-address-check="onWireguardAddressCheck"
+      @get-device-status="onGetDeviceStatus"
+      @get-wireguard-random-address="onGenerateWireguardRandomAddress"
+    >
       <template #no-license>
         <no-license v-if="!canAddInterface" class="mt-2">
           {{ getVpnInterfaceMessage() }}
@@ -27,7 +51,6 @@
           </div>
         </v-alert>
       </template>
-
       <template #actions="{ newSettings, isDirty, validate }">
         <u-btn to="/settings/network/interfaces" class="mr-2">{{ $t('back_to_list') }}</u-btn>
         <u-btn :min-width="null" :disabled="!isDirty || !canAddInterface" @click="onSave(newSettings, validate)">
@@ -40,8 +63,8 @@
 <script>
   import cloneDeep from 'lodash/cloneDeep'
   import { VAlert, VSpacer } from 'vuetify/lib'
-  import SettingsInterface from './SettingsInterface/index.vue'
-  import interfaceMixin from './interfacesMixin'
+  import { NoLicense, SettingsInterface } from 'vuntangle'
+  import interfaceMixin from './interfaceMixin'
   import api from '@/plugins/api'
   import http from '@/plugins/http'
   import uris from '@/util/uris'
@@ -52,6 +75,7 @@
     components: {
       VAlert,
       VSpacer,
+      NoLicense,
       SettingsInterface,
     },
     mixins: [interfaceMixin],
@@ -71,20 +95,16 @@
       settings: ({ $store, device }) => $store.getters['settings/interface'](device),
       pingAnalyzers: ({ $store }) => $store.getters['settings/settings'].stats?.pingAnalyzers,
     },
-    created() {
-      console.log('interfaces inside interface edit', this.interfaces)
-      this.$store.dispatch('settings/getInterfaces')
-    },
     async mounted() {
-      console.log('Interfaces:', this.interfaces)
       await this.setFeatures()
-      // this.isBridgedInterface()
+      this.isBridgedInterface()
       // Call getStatus conditionally only if not adding a new interface
       if (this.device) {
         await this.getStatus()
       }
       this.setLicenseAndLicenseUri()
       // set the help context for this device type (e.g. interfaces_wwan)
+      // <! -- TODO uncommnet below
       // this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.settings?.type).toLowerCase()}`)
     },
     methods: {
@@ -324,31 +344,31 @@
         return wanCopy
       },
 
-      // isBridgedInterface() {
-      //   const currentDevice = this.device
-      //   let isBridgeInterface = false
-      //   let currentInterfaceId = ''
+      isBridgedInterface() {
+        const currentDevice = this.device
+        let isBridgeInterface = false
+        let currentInterfaceId = ''
 
-      //   for (const interfaceItem of this.interfaces) {
-      //     if (interfaceItem.device === currentDevice) {
-      //       currentInterfaceId = interfaceItem.interfaceId
-      //       break
-      //     }
-      //   }
+        for (const interfaceItem of this.interfaces) {
+          if (interfaceItem.device === currentDevice) {
+            currentInterfaceId = interfaceItem.interfaceId
+            break
+          }
+        }
 
-      //   for (const interfaceItem of this.interfaces) {
-      //     if (interfaceItem.type === 'BRIDGE') {
-      //       const matchedInterface = interfaceItem.bridgedInterfaces.includes(currentInterfaceId)
-      //       if (matchedInterface) {
-      //         isBridgeInterface = true
-      //         this.isBridged = true
-      //         this.bridgedInterfaceName = interfaceItem.device
-      //         break
-      //       }
-      //     }
-      //   }
-      //   return isBridgeInterface
-      // },
+        for (const interfaceItem of this.interfaces) {
+          if (interfaceItem.type === 'BRIDGE') {
+            const matchedInterface = interfaceItem.bridgedInterfaces.includes(currentInterfaceId)
+            if (matchedInterface) {
+              isBridgeInterface = true
+              this.isBridged = true
+              this.bridgedInterfaceName = interfaceItem.device
+              break
+            }
+          }
+        }
+        return isBridgeInterface
+      },
     },
   }
 </script>
