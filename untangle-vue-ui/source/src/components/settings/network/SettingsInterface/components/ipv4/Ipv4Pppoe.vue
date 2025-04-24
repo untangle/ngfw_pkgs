@@ -12,14 +12,7 @@
       <v-col>
         <!-- v4PPPoEPassword -->
         <ValidationProvider v-slot="{ errors }" rules="required|min:6">
-          <u-text-field
-            v-model="intf.v4PPPoEPassword"
-            :label="$t('password')"
-            type="password"
-            :error-messages="errors"
-            @focus="onFocus"
-            @blur="onBlur"
-          >
+          <u-text-field v-model="intf.v4PPPoEPassword" :label="$t('password')" type="password" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
         </ValidationProvider>
@@ -29,12 +22,12 @@
     <v-checkbox v-model="intf.v4PPPoEUsePeerDns" :label="$t('use_peer_dns')" />
     <v-row>
       <v-col>
-        <!-- v4PPPoEOverrideDNS1 -->
-        <ValidationProvider v-slot="{ errors }" :rules="{ required: !intf.v4PPPoEUsePeerDns }">
+        <!-- v4PPPoEDns1 -->
+        <ValidationProvider v-slot="{ errors }" :rules="ip">
           <u-text-field
             v-model="intf.v4PPPoEDns1"
             :label="$t('primary_dns')"
-            :disabled="intf.v4PPPoEUsePeerDNS"
+            :disabled="intf.v4PPPoEUsePeerDns"
             :error-messages="errors"
           >
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
@@ -42,7 +35,7 @@
         </ValidationProvider>
       </v-col>
       <v-col>
-        <!-- v4PPPoEOverrideDNS2 -->
+        <!-- v4PPPoEDns2 -->
         <ValidationProvider v-slot="{ errors }" rules="ip">
           <u-text-field
             v-model="intf.v4PPPoEDns2"
@@ -67,7 +60,7 @@
     inject: ['$intf'],
     computed: {
       intf: ({ $intf }) => $intf(),
-      pppoePassword: {
+      v4PPPoEPassword: {
         /**
          * If we do have the `v4PPPoEPasswordEncrypted` means a password was already set (edit mode)
          * and if password field is not being touched it will be just filled with 6 dots
@@ -86,7 +79,7 @@
        * Empty the field when settings a new password
        */
       onFocus() {
-        if (this.pppoePassword === passwordFill) this.pppoePassword = ''
+        if (this.v4PPPoEPassword === passwordFill) this.v4PPPoEPassword = ''
       },
 
       /**
@@ -94,8 +87,8 @@
        * and remove it from interface settings
        */
       onBlur() {
-        if (this.pppoePassword === '') {
-          this.pppoePassword = passwordFill
+        if (this.v4PPPoEPassword === '') {
+          this.v4PPPoEPassword = passwordFill
           this.$delete(this.intf, 'v4PPPoEPassword')
         }
       },

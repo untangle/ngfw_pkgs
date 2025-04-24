@@ -71,11 +71,13 @@
 
   export default {
     components: { VDataTable, VSimpleCheckbox, VBtn, VIcon, VRow, VCol, VCombobox },
+    inject: ['$intf', '$interfaces'],
     props: {
       options: { type: Array, default: () => [] },
     },
     data() {
       return {
+        intf: ({ $intf }) => $intf(),
         adding: false, // boolean telling to show the add fields
         dhcpOptions: defaults.dhcp_options,
 

@@ -53,62 +53,85 @@
         </v-expansion-panel-header>
         <v-expansion-panel-content class="mx-n6">
           <v-row dense>
-            <v-col>
-              <!-- v4DhcpAddressOverride -->
+            <v-col cols="6">
+              <!-- v4AutoAddressOverride -->
+              <span class="text-grey ma-2">Address Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field
-                  v-model="intf.v4DhcpAddressOverride"
-                  :label="$t(`Address Override`)"
-                  :error-messages="errors"
-                >
+                <u-text-field v-model="intf.v4AutoAddressOverride" :label="intf.v4Address" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col>
-              <!-- v4DhcpPrefixOverride -->
-              <ipv-4-prefix-autocomplete v-model="intf.v4StaticPrefix" :min="1" :required="false" />
+            <v-col v-show="intf.v4Address" cols="6" class="pt-8">
+              <span class="pa-2">
+                <span class="text-grey ma-2">Current :</span>
+                <strong>{{ intf.v4Address }}</strong>
+              </span>
+            </v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="6">
+              <!-- v4AutoPrefixOverride -->
+              <span class="text-grey ma-2">Netmask Override :</span>
+              <ipv-4-prefix-autocomplete v-model="intf.v4AutoPrefixOverride" :min="1" :required="false" />
+            </v-col>
+            <v-col v-show="intf.v4Netmask" cols="6" class="pt-8">
+              <span class="pa-2">
+                <span class="text-grey ma-2">Current :</span>
+                <strong> / {{ intf.v4PrefixLength }} - {{ intf.v4Netmask }}</strong>
+              </span>
             </v-col>
           </v-row>
 
           <v-row dense>
-            <v-col>
-              <!-- v4DhcpGatewayOverride -->
+            <v-col cols="6">
+              <!-- v4AutoGatewayOverride -->
+              <span class="text-grey ma-2">Gateway Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field
-                  v-model="intf.v4DhcpGatewayOverride"
-                  :label="$t(`Gateway Override`)"
-                  :error-messages="errors"
-                >
+                <u-text-field v-model="intf.v4AutoGatewayOverride" :label="intf.v4Gateway" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
+            </v-col>
+            <v-col v-show="intf.v4Gateway" cols="6" class="pt-8">
+              <span class="pa-2">
+                <span class="text-grey ma-2">Current :</span>
+                <strong>{{ intf.v4Gateway }}</strong>
+              </span>
             </v-col>
           </v-row>
           <v-row dense>
-            <!-- v4DhcpDNS1Override -->
+            <!-- v4AutoDns1Override -->
             <v-col cols="6">
+              <span class="text-grey ma-2">Primary DNS Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field
-                  v-model="intf.v4DhcpDNS1Override"
-                  :label="$t(`Primary DNS Override`)"
-                  :error-messages="errors"
-                >
+                <u-text-field v-model="intf.v4AutoDns1Override" :label="intf.v4Dns1" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
+            <v-col v-show="intf.v4Dns1" cols="6" class="pt-8">
+              <span class="pa-2">
+                <span class="text-grey ma-2">Current :</span>
+                <strong>{{ intf.v4Dns1 }}</strong>
+              </span>
+            </v-col>
+          </v-row>
+          <v-row dense>
             <v-col cols="6">
-              <!-- v4DhcpDNS2Override -->
+              <span class="text-grey ma-2">Secondary DNS Override :</span>
+              <!-- v4AutoDns2Override -->
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field
-                  v-model="intf.v4DhcpDNS2Override"
-                  :label="$t(`Secondary DNS Override`)"
-                  :error-messages="errors"
-                >
+                <u-text-field v-model="intf.v4AutoDns2Override" :label="intf.v4Dns2" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
+            </v-col>
+            <v-col v-show="intf.v4Dns2" cols="6" class="pt-8">
+              <span class="pa-2">
+                <span class="text-grey ma-2">Current :</span>
+                <strong>{{ intf.v4Dns2 }}</strong>
+              </span>
             </v-col>
           </v-row>
         </v-expansion-panel-content>
@@ -118,8 +141,11 @@
 </template>
 <script>
   import { Ipv4PrefixAutocomplete } from 'vuntangle'
+  // import { result } from 'lodash'
   import { CONFIG_TYPE } from '../constants'
   import mixin from '../mixin'
+  import Util from '../../../../../../util/setupUtil'
+  import CommonUtil from '../../../../../../util/util'
 
   export default {
     components: {
@@ -131,13 +157,69 @@
       return {
         renewDhcpPending: false,
         CONFIG_TYPE,
+        rpc: null,
       }
     },
     computed: {
       status: ({ $status }) => $status(),
       intf: ({ $intf }) => $intf(),
+      interfaces: ({ $interfaces }) => $interfaces(),
     },
+    async created() {
+      this.rpc = await Util.setRpcJsonrpc('admin')
+      console.log('rpc of admin in renew DHCP lease: *****', this.rpc)
+    },
+
     methods: {
+      async onRenewDhcpLease() {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const [intfIdResult, interfaceStatusResult] = await Promise.all([this.getIntfId(), this.getInterfaceStatus()])
+
+          console.log('intfIdResult :', intfIdResult)
+          if (CommonUtil.isDestroyed(this)) {
+            return
+          }
+          const intfStatus = interfaceStatusResult.list.find(intfSt => intfSt.interfaceId === this.intf.interfaceId)
+
+          if (intfStatus) {
+            const { javaClass, interfaceId, ...rest } = intfStatus
+            Object.assign(this.intf, rest) // Update reactive object
+            console.log('javaClass : ', javaClass)
+            console.log('interfaceId : ', interfaceId)
+          }
+        } catch (ex) {
+          if (!CommonUtil.isDestroyed(this)) {
+            console.error(ex)
+            Util.handleException(ex)
+          }
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      getIntfId() {
+        return new Promise((resolve, reject) => {
+          this.rpc.networkManager.renewDhcpLease((result, error) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          }, this.intf.interfaceId)
+        })
+      },
+      getInterfaceStatus() {
+        return new Promise((resolve, reject) => {
+          this.rpc.networkManager.getInterfaceStatus((result, error) => {
+            if (error) {
+              reject(error)
+            } else {
+              resolve(result)
+            }
+          })
+        })
+      },
       onRenewIp() {
         this.renewDhcpPending = true
         this.$onRenewDhcp(this.intf.device, () => (this.renewDhcpPending = false))

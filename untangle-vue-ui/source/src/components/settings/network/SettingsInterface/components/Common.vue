@@ -81,7 +81,6 @@
       <!-- bridgedTo -->
       <v-row v-if="isBridged && !intf.isWirelessInterface" class="mb-2">
         <v-col>
-          <!-- TODO @change="newValue => setInterfacesMap(item, newValue)" -->
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-select
               v-model="intf.bridgedTo"
@@ -94,7 +93,6 @@
               dense
               outlined
               hide-details
-              multiple
               :placeholder="$vuntangle.$t('select')"
               :menu-props="{ offsetY: true, dense: true }"
             >
@@ -129,10 +127,8 @@
         </v-col>
       </v-row>
 
-      <div v-if="intf.configType != CONFIG_TYPE.DISABLED" class="d-flex align-center" style="gap: 48px">
-        <!-- wan -->
-        <!-- TODO check is it require or not @change="handleNatEgress" -->
-        <v-switch v-if="isAddressed" v-model="intf.isWan" :label="$t('wan_interface')" @change="handleNatEgress" />
+      <div v-if="isAddressed" class="d-flex align-center" style="gap: 48px">
+        <v-switch v-model="intf.isWan" :label="$t('wan_interface')" />
 
         <!-- natEgress -->
         <v-checkbox
@@ -283,9 +279,6 @@
             }
           }
         }
-        if (parentBridgedIntfMap[intf.interfaceId]) {
-          // isBridged = true
-        }
         // const isWiFiBridged = intf.type === 'WIFI' && isBridged
         // const isWanEnabled = intf.isWan === true
 
@@ -368,24 +361,23 @@
         }
         return commonValid
       },
-      /**
-       * TODO
-       * MFW-2038, MFW-2047
-       * handles the NAT egress value (true/false) explicitly when user
-       * turns an interface to WAN via UI switcher (if switcher is enabled)
-       * - by default NAT egress will be pre-set to true (with ability to turn it to false if wanted)
-       * - except for IPsec interfaces for which NAT egress will not change (will remain as false)
-       * @param {Boolean} isWan - true/false
-       */
-      handleNatEgress(isWan) {
-        // if(isWan){
-        //   intf.v4NatIngressTraffic = true
-        //   intf.v4NatEgressTraffic = false
-        // }
-        if (isWan && this.intf.type !== 'IPSEC') {
-          this.intf.natEgress = true
-        }
-      },
+      // /**
+      //  * TODO
+      //  * handles the NAT egress value (true/false) explicitly when user
+      //  * turns an interface to WAN via UI switcher (if switcher is enabled)
+      //  * - by default NAT egress will be pre-set to true (with ability to turn it to false if wanted)
+      //  * - except for IPsec interfaces for which NAT egress will not change (will remain as false)
+      //  * @param {Boolean} isWan - true/false
+      //  */
+      // handleNatEgress(isWan) {
+      //   // if(isWan){
+      //   //   intf.v4NatIngressTraffic = true
+      //   //   intf.v4NatEgressTraffic = false
+      //   // }
+      //   if (isWan && this.intf.type !== 'IPSEC') {
+      //     this.intf.natEgress = true
+      //   }
+      // },
     },
   }
 </script>

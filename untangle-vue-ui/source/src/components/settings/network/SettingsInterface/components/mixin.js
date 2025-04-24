@@ -13,6 +13,16 @@ export default {
 
     /** is WAN */
     isAddressed: ({ intf }) => intf.configType === 'ADDRESSED',
+
+    /** isDisabledv6 */
+    isDisabledv6: ({ intf }) => intf.v6ConfigType === 'DISABLED',
+
+    /** isAutov6 */
+    isAutov6: ({ intf }) => intf.v6ConfigType === 'AUTO',
+
+    /** RouterWarning */
+    showRouterWarning: ({ intf }) => intf.v6StaticPrefixLength !== 64,
+
     /** is autov4 */
     isAutov4: ({ intf }) => intf.v4ConfigType === 'AUTO',
     /** is PPPoE */
@@ -168,28 +178,26 @@ export default {
       return []
     },
 
-    // TODO
     /** returns interfaces options to be bridged */
     bridgedToOptions: ({ intf, interfaces }) => {
-      // let filter = []
-      // if (intf.configType === 'BRIDGE') {
-      //   const alreadyBridgedToSet = new Set()
-      //   interfaces
-      //     .filter(i => i.interfaceId !== intf.interfaceId && i.configType === 'BRIDGE')
-      //     .forEach(i => i.bridgedInterfaces.forEach(i => alreadyBridgedToSet.add(i)))
-      //   filter = interfaces.filter(
-      //     i =>
-      //       i.interfaceId !== intf.interfaceId &&
-      //       ['NIC', 'VLAN', 'WIFI'].includes(i.type) &&
-      //       !i.wan &&
-      //       !alreadyBridgedToSet.has(i.interfaceId),
-      //   )
-      // } else {
-      //   filter = interfaces.filter(i => i.interfaceId !== intf.interfaceId && i.configType === 'ADDRESSED' && !i.wan)
-      // }
-      // if (!filter.length) return []
-      console.log('intf :', intf)
-      return interfaces.map(i => ({ value: i.interfaceId, text: i.name }))
+      const record = intf
+
+      const fields = []
+      interfaces.forEach(intf => {
+        if (
+          intf.interfaceId === record.interfaceId ||
+          intf.bridged !== false ||
+          intf.disabled !== false ||
+          intf.configType !== 'ADDRESSED'
+        ) {
+          return
+        }
+        fields.push(intf)
+      })
+      return fields
+        .slice()
+        .sort((a, b) => a.name.localeCompare(b.name))
+        .map(i => ({ value: i.interfaceId, text: i.name }))
     },
 
     /**

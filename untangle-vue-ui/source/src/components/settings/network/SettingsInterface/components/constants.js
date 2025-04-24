@@ -9,6 +9,7 @@ const CONFIG_TYPE = {
   BRIDGED: 'BRIDGED',
   RELAY: 'RELAY',
   SERVER: 'SERVER',
+  AUTO: 'AUTO',
 }
 
 const MTU_VALUES = {
