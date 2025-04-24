@@ -78,7 +78,7 @@
     async mounted() {
       console.log('Interfaces:', this.interfaces)
       await this.setFeatures()
-      this.isBridgedInterface()
+      // this.isBridgedInterface()
       // Call getStatus conditionally only if not adding a new interface
       if (this.device) {
         await this.getStatus()
@@ -324,31 +324,31 @@
         return wanCopy
       },
 
-      isBridgedInterface() {
-        const currentDevice = this.device
-        let isBridgeInterface = false
-        let currentInterfaceId = ''
+      // isBridgedInterface() {
+      //   const currentDevice = this.device
+      //   let isBridgeInterface = false
+      //   let currentInterfaceId = ''
 
-        for (const interfaceItem of this.interfaces) {
-          if (interfaceItem.device === currentDevice) {
-            currentInterfaceId = interfaceItem.interfaceId
-            break
-          }
-        }
+      //   for (const interfaceItem of this.interfaces) {
+      //     if (interfaceItem.device === currentDevice) {
+      //       currentInterfaceId = interfaceItem.interfaceId
+      //       break
+      //     }
+      //   }
 
-        for (const interfaceItem of this.interfaces) {
-          if (interfaceItem.type === 'BRIDGE') {
-            const matchedInterface = interfaceItem.bridgedInterfaces.includes(currentInterfaceId)
-            if (matchedInterface) {
-              isBridgeInterface = true
-              this.isBridged = true
-              this.bridgedInterfaceName = interfaceItem.device
-              break
-            }
-          }
-        }
-        return isBridgeInterface
-      },
+      //   for (const interfaceItem of this.interfaces) {
+      //     if (interfaceItem.type === 'BRIDGE') {
+      //       const matchedInterface = interfaceItem.bridgedInterfaces.includes(currentInterfaceId)
+      //       if (matchedInterface) {
+      //         isBridgeInterface = true
+      //         this.isBridged = true
+      //         this.bridgedInterfaceName = interfaceItem.device
+      //         break
+      //       }
+      //     }
+      //   }
+      //   return isBridgeInterface
+      // },
     },
   }
 </script>
