@@ -23,12 +23,12 @@
       row-node-id="device"
       :row-data="rowData"
       :column-defs="colDefs"
-      :custom-grid-options="{ suppressRowClickSelection: true }"
+      :custom-grid-options="gridOptions"
       :row-actions="rowActions"
       :framework-components="frameworkComponents"
       v-on="$listeners"
-      @row-clicked="onEditInterface"
     />
+    <!-- @row-clicked="onEditInterface" -->
   </v-container>
 </template>
 
@@ -46,6 +46,12 @@
     },
     data() {
       return {
+        gridOptions: {
+          context: {
+            componentParent: this,
+          },
+          suppressRowClickSelection: true,
+        },
         // all interfaces status, async fetched
         interfacesStatus: undefined,
         physicalDevsStore: [],
@@ -73,6 +79,9 @@
       // interfaces filered and grouped (by category)
       interfaces() {
         return this.$store.getters['settings/interfaces']
+      },
+      settings() {
+        return this.$store.getters.settings
       },
       colDefs: ({ $i18n, deviceValueFormatter, statusValueFormatter }) => {
         return [
@@ -126,7 +135,24 @@
           {
             headerName: $i18n.t('Edit'),
             field: 'edit',
-            cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            cellRenderer(params) {
+              const icon = document.createElement('i')
+              icon.className = 'mdi mdi-pencil'
+              icon.style.cursor = 'pointer'
+              icon.style.fontSize = '18px'
+              icon.title = 'Edit'
+              icon.addEventListener('click', event => {
+                event.stopPropagation() // Prevents triggering row selection
+                params.context.componentParent.onEditInterface(params.data)
+              })
+              return icon
+            },
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            suppressSorting: true,
+            width: 60,
+            cellStyle: { textAlign: 'center' },
           },
           {
             headerName: $i18n.t('Current Address'),
@@ -181,13 +207,16 @@
     },
     created() {
       this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
+      this.$store.dispatch('settings/getNetworkSettings')
     },
     mounted() {
       this.loadInterfacesAndStatus()
     },
     methods: {
-      onEditInterface(device) {
-        this.$router.push(`/settings/network/interface/${device.data.device}`)
+      onEditInterface(rowData) {
+        console.log('selcted rowData :', rowData)
+        this.intf = rowData.data
+        this.$router.push(`/settings/network/interfaces/${rowData.device}`)
       },
       async loadInterfacesAndStatus() {
         try {

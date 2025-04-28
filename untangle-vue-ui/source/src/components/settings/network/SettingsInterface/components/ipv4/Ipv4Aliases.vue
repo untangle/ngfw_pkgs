@@ -58,7 +58,7 @@
        * the key under `interface` settings.json where aliases are going to be set
        * e.g.
        * `v4Aliases` for IPv4 settings
-       * `vrrpV4Aliases` for VRRP
+       * `v4Aliases` for VRRP
        * */
       aliasKey: { type: String, default: 'v4Aliases' },
     },

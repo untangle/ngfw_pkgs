@@ -73,25 +73,5 @@
         },
       },
     },
-
-    methods: {
-      /**
-       * Empty the field when settings a new password
-       */
-      onFocus() {
-        if (this.v4PPPoEPassword === passwordFill) this.v4PPPoEPassword = ''
-      },
-
-      /**
-       * Fill in the dummy password fill if password field is empty
-       * and remove it from interface settings
-       */
-      onBlur() {
-        if (this.v4PPPoEPassword === '') {
-          this.v4PPPoEPassword = passwordFill
-          this.$delete(this.intf, 'v4PPPoEPassword')
-        }
-      },
-    },
   }
 </script>

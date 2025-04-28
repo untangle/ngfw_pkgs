@@ -1,10 +1,10 @@
 const CONFIG_TYPE = {
-  AUTO_DHCP: 'AUTO', // v4, v6 - WAN
-  STATIC: 'STATIC', // v4, v6 - both WAN/non-WAN
-  PPPOE: 'PPPOE', // v4 - WAN
-  SLAAC: 'SLAAC', // v6 - WAN
-  ASSIGN: 'ASSIGN', // v6 - non-WAN
-  DISABLED: 'DISABLED', // v6 - both WAN/non-WAN
+  AUTO_DHCP: 'AUTO',
+  STATIC: 'STATIC',
+  PPPOE: 'PPPOE',
+  SLAAC: 'SLAAC',
+  ASSIGN: 'ASSIGN',
+  DISABLED: 'DISABLED',
   ADDRESSED: 'ADDRESSED',
   BRIDGED: 'BRIDGED',
   RELAY: 'RELAY',

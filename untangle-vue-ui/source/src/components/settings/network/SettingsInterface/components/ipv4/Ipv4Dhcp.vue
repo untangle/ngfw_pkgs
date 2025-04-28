@@ -152,7 +152,7 @@
       Ipv4PrefixAutocomplete,
     },
     mixins: [mixin],
-    inject: ['$intf', '$status', '$onRenewDhcp'],
+    inject: ['$intf', '$status'],
     data() {
       return {
         renewDhcpPending: false,
@@ -166,6 +166,7 @@
       interfaces: ({ $interfaces }) => $interfaces(),
     },
     async created() {
+      console.log('itf in ipv4 DHCP :', this.intf)
       this.rpc = await Util.setRpcJsonrpc('admin')
       console.log('rpc of admin in renew DHCP lease: *****', this.rpc)
     },
@@ -219,10 +220,6 @@
             }
           })
         })
-      },
-      onRenewIp() {
-        this.renewDhcpPending = true
-        this.$onRenewDhcp(this.intf.device, () => (this.renewDhcpPending = false))
       },
     },
   }

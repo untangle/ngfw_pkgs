@@ -18,9 +18,6 @@
 
     <ValidationObserver v-slot="{ passes }" tag="div">
       <v-row v-if="adding" no-gutters align="center" class="mt-2">
-        <!-- <v-col class="shrink">
-          <v-checkbox v-model="option.enabled" class="ml-2" />
-        </v-col> -->
         <v-col class="grow">
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-combobox

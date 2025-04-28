@@ -45,7 +45,6 @@
           </ValidationProvider>
         </v-col>
         <v-col>
-          <!-- dhcpLeaseDuration (min 120s, max 30 days)-->
           <ValidationProvider v-slot="{ errors }" rules="required|min_value:120">
             <u-text-field
               v-model.number="intf.dhcpLeaseDuration"
@@ -95,7 +94,6 @@
           </ValidationProvider>
         </v-col>
       </v-row>
-      <!-- <dhcp-aliases v-if="intf.dhcpType === CONFIG_TYPE.SERVER" /> -->
       <dhcp-options :options.sync="intf.dhcpOptions" />
     </template>
 
@@ -119,7 +117,6 @@
   import { Ipv4PrefixAutocomplete } from 'vuntangle'
   import { CONFIG_TYPE } from '../constants'
   import DhcpOptions from './DhcpOptions.vue'
-  // import Util from '../../../Util.js'
 
   export default {
     components: { VRow, VCol, DhcpOptions, Ipv4PrefixAutocomplete },

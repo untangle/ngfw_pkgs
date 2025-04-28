@@ -18,11 +18,8 @@
   </v-container>
 </template>
 <script>
-  import cloneDeep from 'lodash/cloneDeep'
   import settingsMixin from '../../settingsMixin'
   import Common from './components/Common.vue'
-  import defaults from './defaults'
-  import intfMockData from './InterfaceData.json'
 
   export default {
     components: {
@@ -36,50 +33,38 @@
     provide() {
       return {
         $isSaving: () => this.isSaving,
-        $intf: () => this.intfData[0],
-        $features: () => this.features,
-        $interfaces: () => this.intfData,
-        $status: () => this.intfData[0],
+        $intf: () => this.intf,
+        $interfaces: () => this.interfaces,
+        $status: () => this.status,
         $disabled: () => this.disabled,
-        $pingAnalyzers: () => this.pingAnalyzers,
         $interfaceTrackers: () => this.interfaceTrackers,
         $onManageStatusAnalyzers: () => this.$emit('manage-status-analyzers'),
         $onDelete: () => this.$emit('delete'),
         $onRenewDhcp: (device, cb) => this.$emit('renew-dhcp', device, () => cb()),
         $onGetAllInterfaceStatus: cb => this.$emit('get-all-interface-status', res => cb(res)),
-        $onGetStatusHardware: cb => this.$emit('get-status-hardware', res => cb(res)),
-        $onGetStatusWanTest: (l3device, cb) => this.$emit('get-status-wan-test', l3device, res => cb(res)),
       }
     },
     props: {
-      // interfaces: { type: Array, default: () => [] },
+      settings: { type: Array, default: () => [] },
+      interfaces: { type: Array, default: () => [] },
       type: { type: String, default: () => null },
-      // status: { type: Object, default: () => null },
+      status: { type: Object, default: () => null },
       disabled: { type: Boolean, default: () => false },
-      pingAnalyzers: { type: Array, default: () => [] },
       interfaceTrackers: { type: Array, default: () => [] },
       isSaving: { type: Boolean, default: false },
     },
     data() {
       return {
-        intfData: null,
+        intf: null,
       }
     },
     computed: {
-      interfaces() {
-        return this.intfData
-      },
-      intf() {
-        return this.intfData[0]
-      },
-      status() {
-        return this.intfData[0]
-      },
+      device: ({ $route }) => $route.params.device,
       title() {
         // when editing existing intf use original settings for title
-        // if (this.settings) {
-        //   return this.$t('edit_interface', [`${this.settings.name} (${this.settings.device})`])
-        // }
+        if (this.intf) {
+          return this.$t('edit_interface', [`${this.intf.name} (${this.intf.physicalDev})`])
+        }
         // when adding a new intf use cloned intf type for the title
         // switch (this.settingsCopy.type) {
         //   case 'VLAN':
@@ -93,16 +78,16 @@
         //   case 'BRIDGE':
         //     return this.$t('add_x_interface', [this.$t('bridge')])
         // }
-        return 'Edit eth0'
+        return 'Edit Interface'
       },
     },
     mounted() {
       console.log('interfaces inside index', this.interfaces)
     },
     created() {
-      this.intfData = intfMockData
+      this.intf = this.device ? this.interfaces.find(i => i.physicalDev === this.device) : {}
       // cloning the defaults so they do not get mutated
-      if (this.type && defaults[this.type]) this.settingsCopy = cloneDeep(defaults[this.type])
+      // if (this.type && defaults[this.type]) this.settingsCopy = cloneDeep(defaults[this.type])
     },
 
     methods: {

@@ -47,7 +47,6 @@
   </div>
 </template>
 <script>
-  // import { rules } from 'node_modules/eslint-plugin-sort-keys-fix/lib/index'
   import { Ipv4PrefixAutocomplete } from 'vuntangle'
 
   export default {

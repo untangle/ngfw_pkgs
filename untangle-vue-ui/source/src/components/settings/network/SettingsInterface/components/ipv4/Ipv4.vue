@@ -3,7 +3,6 @@
     <v-radio-group v-model="intf.v4ConfigType" row class="ma-0" @change="onChangeConfigType">
       <v-radio :value="CONFIG_TYPE.AUTO_DHCP" :label="$t('auto_dhcp')" :disabled="!intf.isWan" />
       <v-radio :value="CONFIG_TYPE.STATIC" :label="$t('static')" />
-      <!-- TODO change listener for pppoe line: 228 -->
       <v-radio :value="CONFIG_TYPE.PPPOE" :label="$t('pppoe')" :disabled="!intf.isWan" />
     </v-radio-group>
 
@@ -30,7 +29,6 @@
     },
     inject: ['$intf'],
     data() {
-      console.log('CONFIG_TYPE :', CONFIG_TYPE)
       return {
         CONFIG_TYPE,
         previousConfigType: null,
@@ -42,7 +40,7 @@
     watch: {
       // when switching wan to true/false set `v4ConfigType` to 'STATIC'
       'intf.isWan'(isWan) {
-        if (!isWan && this.intf.v4ConfigType !== CONFIG_TYPE.STATIC) {
+        if (!isWan) {
           this.intf.v4ConfigType = CONFIG_TYPE.STATIC
         }
       },

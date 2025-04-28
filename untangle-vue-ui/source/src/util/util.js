@@ -277,10 +277,13 @@ const util = {
     return map
   },
 
-  // <!-- TODO rpc.systemManager
-  // getDecryptedPassword(encryptedPassword) {
-  //   return rpc.systemManager.getDecryptedPassword(encryptedPassword)
-  // },
+  getDecryptedPassword(encryptedPassword) {
+    const rpc = {
+      jsonrpc: new window.JSONRpcClient(`/admin/JSON-RPC`),
+    }
+    console.log('rpc in getDecryptedPassword : ', rpc)
+    return rpc.systemManager.getDecryptedPassword(encryptedPassword)
+  },
 }
 
 export default util

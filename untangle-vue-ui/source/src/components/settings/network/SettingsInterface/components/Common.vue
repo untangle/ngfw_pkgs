@@ -30,7 +30,7 @@
         </v-col> -->
 
         <!-- boundInterfaceId -->
-        <v-col v-if="showBoundToOptions">
+        <!-- <v-col v-if="showBoundToOptions">
           <ValidationProvider v-slot="{ errors }" rules="required">
             <u-select
               v-model="intf.boundInterfaceId"
@@ -42,7 +42,7 @@
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-select>
           </ValidationProvider>
-        </v-col>
+        </v-col> -->
       </v-row>
       <v-row>
         <v-col>
@@ -193,15 +193,14 @@
   import Ipv4 from './ipv4/Ipv4.vue'
   import Ipv6 from './ipv6/Ipv6.vue'
   import Dhcp from './dhcp/Dhcp.vue'
-  import Vrrp from './vrrp/Vrrp.vue'
-  import Qos from './qos/Qos.vue'
+  // import Vrrp from './vrrp/Vrrp.vue'
+  // import Qos from './qos/Qos.vue'
 
-  import OpenVpn from './openvpn/OpenVpn.vue'
-  import Wireguard from './wireguard/Wireguard.vue'
-  import Wifi from './wifi/Wifi.vue'
-  import Wwan from './wwan/Wwan.vue'
+  // import OpenVpn from './openvpn/OpenVpn.vue'
+  // import Wireguard from './wireguard/Wireguard.vue'
+  // import Wifi from './wifi/Wifi.vue'
 
-  import { IpsecNetwork, IpsecAuth, IpsecCipherSuites } from './ipsec'
+  // import { IpsecNetwork, IpsecAuth, IpsecCipherSuites } from './ipsec'
 
   export default {
     components: {
@@ -209,15 +208,6 @@
       Ipv4,
       Ipv6,
       Dhcp,
-      Vrrp,
-      Qos,
-      OpenVpn,
-      Wireguard,
-      Wifi,
-      Wwan,
-      IpsecNetwork,
-      IpsecAuth,
-      IpsecCipherSuites,
       VRow,
       VCol,
       VSelect,
@@ -229,7 +219,7 @@
       VTabItem,
     },
     mixins: [mixin],
-    inject: ['$intf', '$interfaces', '$status', '$disabled', '$onDelete', '$isSaving', '$features'],
+    inject: ['$intf', '$interfaces', '$status', '$disabled', '$onDelete', '$isSaving'],
     data() {
       return {
         selectedTab: null,
@@ -241,17 +231,17 @@
         return this.$t(this.intf.configType.toLowerCase())
       },
       intf: ({ $intf }) => $intf(),
-      features: ({ $features }) => $features(),
       interfaces: ({ $interfaces }) => $interfaces(),
       status: ({ $status }) => $status(),
       disabled: ({ $disabled }) => $disabled(),
       isSaving: ({ $isSaving }) => $isSaving(),
+
       /**
        * used to display a warning message when wan interface gets disabled
        * @returns {String} the interfaces names bound to this wan
        */
       boundInterfaces() {
-        if (!this.intf.wan || this.intf.enabled) {
+        if (!this.intf.isWan || this.intf.enabled) {
           return ''
         }
         return this.interfaces
@@ -298,8 +288,6 @@
           ...(isAddressed ? [{ cmp: 'Vrrp', key: 'vrrp' }] : []),
           // WIFI
           // ...(intf.type === 'WIFI' ? [{ cmp: 'Wifi', key: 'wifi' }] : []),
-          // WWAN (LTE)
-          // ...(intf.type === 'WWAN' ? [{ cmp: 'Wwan', key: 'lte' }] : []),
           // OPENVPN
           // ...(intf.type === 'OPENVPN' ? [{ cmp: 'OpenVpn', key: 'openvpn' }] : []),
           // WIREGUARD
@@ -338,7 +326,6 @@
     },
     mounted() {
       this.selectedTab = this.tabs.length ? this.tabs[0].key : undefined
-      console.log('interfaces inside common', this.interfaces)
     },
 
     methods: {
@@ -361,23 +348,6 @@
         }
         return commonValid
       },
-      // /**
-      //  * TODO
-      //  * handles the NAT egress value (true/false) explicitly when user
-      //  * turns an interface to WAN via UI switcher (if switcher is enabled)
-      //  * - by default NAT egress will be pre-set to true (with ability to turn it to false if wanted)
-      //  * - except for IPsec interfaces for which NAT egress will not change (will remain as false)
-      //  * @param {Boolean} isWan - true/false
-      //  */
-      // handleNatEgress(isWan) {
-      //   // if(isWan){
-      //   //   intf.v4NatIngressTraffic = true
-      //   //   intf.v4NatEgressTraffic = false
-      //   // }
-      //   if (isWan && this.intf.type !== 'IPSEC') {
-      //     this.intf.natEgress = true
-      //   }
-      // },
     },
   }
 </script>

@@ -37,24 +37,9 @@ export default {
       type !== 'IPSEC' &&
       (intf.configType === 'ADDRESSED' || ['WWAN', 'VLAN', 'WIREGUARD', 'OPENVPN'].includes(type)),
 
-    /** shows delete interface button */
-    showDelete: ({ intf, type, isBridgedInterface }) =>
-      intf.device && !['NIC', 'WIFI', 'WWAN'].includes(type) && !isBridgedInterface,
-
-    /** shows Ipv4, Ipv6 for ADDRESSED config types */
-    showAddressed: ({ intf, type }) => {
-      return (
-        (intf.configType === 'ADDRESSED' || type === 'BRIDGE') &&
-        !['OPENVPN', 'WIREGUARD', 'WWAN', 'IPSEC'].includes(intf.type)
-      )
-    },
-
-    /** shows interface config type based on interface type */
-    showConfigType: ({ type }) => !['WWAN', 'OPENVPN', 'WIREGUARD', 'IPSEC', 'VLAN', 'BRIDGE'].includes(type),
-
     /** shows bound to options for specific types and `configType` not `BRIDGED` */
-    showBoundToOptions: ({ type, intf }) =>
-      ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
+    // showBoundToOptions: ({ type, intf }) =>
+    //   ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
 
     /** shows bridged to options only if `configType` is `BRIDGED` */
     isBridged: ({ intf }) => intf.configType === 'BRIDGED',
@@ -70,18 +55,6 @@ export default {
 
     /** show DHCP Tab only if ADDRESSED interface is not WAN */
     showDhcp: ({ intf, isAddressed }) => isAddressed && !intf.isWan,
-
-    /** show VRRP Tab for NIC, VLAN types and interface `ADDRESSED` */
-    showVrrp: ({ intf, type, features }) =>
-      features.hasVrrp &&
-      (type === 'BRIDGE' || (['NIC', 'VLAN'].includes(type) && intf.configType === 'ADDRESSED' && !intf.management)),
-
-    /** show NIC Options only if interface is `NIC` and `ADDRESSED` */
-    showNICOptions: ({ intf, status }) =>
-      intf.type === 'NIC' && intf.configType === 'ADDRESSED' && status?.ethSpeed > 0,
-
-    /** show Qos Tab only for WANs and exclude specified interface types */
-    // showQos: ({ intf }) => intf.wan && !['OPENVPN', 'WIREGUARD', 'WIFI', 'WWAN', 'IPSEC'].includes(intf.type),
 
     /** retuns interface names used for validation against duplicate names */
     interfaceNames: ({ intf, interfaces }) =>
