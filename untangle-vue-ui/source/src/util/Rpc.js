@@ -116,6 +116,30 @@ export default {
       })
     }
   },
+
+  directPromise(...args) {
+    const commandResult = this.getCommand(...args)
+
+    if (!commandResult.context) {
+      return Promise.reject(commandResult.error)
+    } else {
+      return () => {
+        return new Promise((resolve, reject) => {
+          try {
+            const result =
+              typeof commandResult.context === 'function'
+                ? commandResult.context(...commandResult.args)
+                : commandResult.context
+
+            resolve(result)
+          } catch (ex) {
+            this.handleRpcException(reject, ex, false)
+          }
+        })
+      }
+    }
+  },
+
   processException(_, ex, handle = true) {
     if (ex?.message?.includes('method not found')) {
       ex.message = 'Possible argument mismatch: ' + ex.message

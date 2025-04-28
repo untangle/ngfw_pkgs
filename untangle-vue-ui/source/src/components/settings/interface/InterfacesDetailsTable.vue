@@ -2,7 +2,7 @@
   <v-card class="pa-3 fill-height d-flex flex-column">
     <div class="d-flex justify-space-between align-center mb-2">
       <h1 class="headline">{{ $vuntangle?.$t(title) || title }}</h1>
-      <u-btn class="ma-2 pa-1" @click="$emit('refresh')">
+      <u-btn @click="$emit('refresh')">
         {{ $vuntangle?.$t('Refresh') || 'Refresh' }}
       </u-btn>
     </div>

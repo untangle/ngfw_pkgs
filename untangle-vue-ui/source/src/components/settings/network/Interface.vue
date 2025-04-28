@@ -20,7 +20,7 @@
 
     <u-grid
       id="appliance-interfaces"
-      row-node-id="device"
+      row-node-id="rowNodeId"
       :row-data="rowData"
       :column-defs="colDefs"
       :custom-grid-options="{ rowSelection: 'single', suppressRowClickSelection: true }"
@@ -68,6 +68,7 @@
         intfOrderArr: [],
         selectedInterface: null,
         selectedInterfaceIndex: 0,
+        InerfaceDataForVendor: null,
         isResizing: false,
         panelHeight: 500,
         minHeight: 100,
@@ -183,10 +184,11 @@
       // Table data for interface listing table
       rowData() {
         return this.interfaces?.map(intf => {
-          const status = this.interfacesStatusMap?.[intf.device]
+          const status = this.interfacesStatusMap?.[intf.symbolicDev]
           return {
+            rowNodeId: intf.interfaceId,
             interfaceId: intf.interfaceId,
-            device: intf.physicalDev,
+            device: this.deviceRenderer(intf),
             description: intf.name,
             status: this.getStatus(intf, status),
             config: this.getConfigAddress(intf, status),
@@ -217,12 +219,16 @@
           ...(features.hasBridged ? [{ text: $i18n.t('bridge'), to: 'bridge' }] : []),
         ]
       },
-      interfacesStatusMap: ({ interfacesStatus }) => {
-        if (!interfacesStatus) return
+      interfacesStatusMap({ interfacesStatus }) {
+        if (!interfacesStatus) return {}
+
         const map = {}
-        interfacesStatus?.forEach(intfStat => {
-          map[intfStat.device] = intfStat
+        interfacesStatus.forEach(intfStat => {
+          if (intfStat.symbolicDev) {
+            map[intfStat.symbolicDev] = intfStat
+          }
         })
+
         return map
       },
     },
@@ -245,7 +251,7 @@
       this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
     },
     mounted() {
-      this.loadInterfacesAndStatus()
+      this.loadSettings()
       // Auto select first row (like `interfacesGridReconfigure`)
       if (this.interfaces) {
         this.InterfacesSelectInitial(this.interfaces[0])
@@ -270,52 +276,65 @@
         document.removeEventListener('mousemove', this.onMouseMove)
         document.removeEventListener('mouseup', this.stopResize)
       },
-      async loadInterfacesAndStatus() {
+
+      async loadSettings() {
         try {
           const rpc = await Util.setRpcJsonrpc('admin')
 
-          // Get Network Settings
-          const networkSettings = await rpc.networkManager.getNetworkSettings()
-          const interfaces = networkSettings?.interfaces?.list || []
+          // Prepare promises for fetching data
+          const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
+          const interfaceStatusPromise = rpc.networkManager.getInterfaceStatus()
+          const deviceStatusPromise = rpc.networkManager.getDeviceStatus()
 
-          const filteredInterfaces = interfaces.filter(intf => !intf.isVlanInterface)
-          const physicalDevs = filteredInterfaces.map(intf => ({
-            physicalDev: intf.physicalDev,
-          }))
+          const interfaces = networkSettingsPromise?.interfaces?.list || []
+          const intfStatusList = interfaceStatusPromise?.list || []
+          const devStatusList = deviceStatusPromise?.list || []
 
-          // Save to Vue data
-          this.interfacesStatus = filteredInterfaces
-          this.physicalDevsStore = physicalDevs.map(d => [d.physicalDev, d.physicalDev])
-
-          // Get Device Status
-          const deviceStatusData = await rpc.networkManager.getDeviceStatus()
-          const deviceStatusList = deviceStatusData?.list || []
+          // Filter out VLAN interfaces
+          // const filteredInterfaces = interfaces.filter(intf => !intf.isVlanInterface)
 
           const deviceStatusMap = {}
-          deviceStatusList.forEach(dev => {
+          devStatusList.forEach(dev => {
             deviceStatusMap[dev.deviceName] = dev
           })
 
-          // Map status to interfaces
-          this.interfacesStatus = filteredInterfaces.map(intf => {
-            const status = deviceStatusMap[intf.physicalDev]
-            return {
-              ...intf,
-              ...(status || {}), // add status fields like 'connected' etc.
-            }
+          const interfaceStatusMap = {}
+          intfStatusList.forEach(intfStatus => {
+            interfaceStatusMap[intfStatus.interfaceId] = intfStatus
           })
+
+          // Merge interface status and device status into interfaces
+          const mergedInterfaces = interfaces.map(intf => {
+            const intfStatus = interfaceStatusMap[intf.interfaceId]
+            const devStatus = deviceStatusMap[intf.physicalDev]
+
+            if (intfStatus) {
+              delete intfStatus.javaClass
+              Object.assign(intf, intfStatus)
+            }
+
+            if (devStatus) {
+              delete devStatus.javaClass
+              Object.assign(intf, devStatus)
+            }
+
+            return intf
+          })
+
+          // Save final result
+          this.interfacesStatus = mergedInterfaces
+          // Save physical devices store
+          const physicalDevs = mergedInterfaces.map(intf => [intf.physicalDev, intf.physicalDev])
+          this.physicalDevsStore = physicalDevs
         } catch (err) {
-          console.error('Error loading interfaces and device status:', err)
+          console.error('Error loading interfaces and status:', err)
           Util.handleException(err)
         }
       },
-
       async InterfacesSelectInitial(item) {
         this.selectedInterface = item
         await this.getInterfaceStatus(item.symbolicDev)
         await this.getInterfaceArp(item.symbolicDev)
-
-        // await this.getInterfaceArp(item.symbolicDev);
       },
 
       async getInterfaceStatus(symbolicDev) {
@@ -348,9 +367,8 @@
             txbytes: null,
             txerr: null,
             txdrop: null,
-            vendor: this.selectedInterface?.vendor || null,
+            vendor: this.InerfaceDataForVendor?.vendor || null,
           }
-
           if (this.interfaceStatusLinkMap) {
             res1
               .trim()
@@ -371,7 +389,6 @@
             if (item === 'inet') getNext = 'address'
             else if (item === 'inet6') getNext = 'v6Addr'
           })
-
           stat.address = Array.isArray(stat.address) ? stat.address.join(', ') : stat.address
           stat.v6Addr = Array.isArray(stat.v6Addr) ? stat.v6Addr.join(', ') : stat.v6Addr
 
@@ -445,7 +462,78 @@
           this.isLoading = false
         }
       },
+      async getDynamicRoutingOverview() {
+        const vm = this // Assuming you're using `this` to refer to the Vue instance
 
+        const runInterfaceTaskDelay = 100
+
+        // Delay the task to wait for dynamic settings to be populated
+        const delayTask = delay => new Promise(resolve => setTimeout(resolve, delay))
+
+        try {
+          await delayTask(runInterfaceTaskDelay)
+
+          const networkInterfaces = vm.settings?.interfaces // Access settings and interfaces from the Vue data
+          const ospfNetworks = vm.ospfNetworks // Assuming ospfNetworks is also part of your Vue data
+
+          if (!networkInterfaces || !ospfNetworks) {
+            await delayTask(runInterfaceTaskDelay)
+            return
+          }
+
+          const warningsMessages = []
+
+          // Check if dynamic routing is enabled
+          if (vm.settings.dynamicRoutingSettings?.enabled) {
+            // Check BGP settings
+            if (vm.settings.dynamicRoutingSettings.bgpEnabled) {
+              if (!vm.settings.dynamicRoutingSettings.bgpNeighbors?.list?.length) {
+                warningsMessages.push('At least one BGP neighbor must be configured.')
+              }
+              if (!vm.settings.dynamicRoutingSettings.bgpNetworks?.list?.length) {
+                warningsMessages.push('No BGP networks configured.')
+              }
+            }
+
+            // Check OSPF settings
+            if (vm.settings.dynamicRoutingSettings.ospfEnabled) {
+              if (!vm.settings.dynamicRoutingSettings.ospfAreas?.list?.length) {
+                warningsMessages.push('At least one OSPF area must be configured.')
+              }
+              if (!vm.settings.dynamicRoutingSettings.ospfNetworks?.list?.length) {
+                warningsMessages.push('No OSPF networks configured.')
+              }
+
+              // Check if at least one OSPF network is reachable
+              let atLeastOneReachableNetwork = false
+              const routingTable = await Rpc.directData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
+
+              routingTable.split('\n').forEach(route => {
+                if (route.includes(' via ') && !route.includes(' zebra ')) {
+                  const routeParts = route.match(/ via ([^\s]+) /)
+                  const gateway = routeParts[1]
+
+                  ospfNetworks.forEach(network => {
+                    if (network.enabled === true && Util.ipMatchesNetwork(gateway, network.network, network.prefix)) {
+                      atLeastOneReachableNetwork = true
+                    }
+                  })
+                }
+              })
+
+              if (!atLeastOneReachableNetwork) {
+                warningsMessages.push('At least one OSPF network must be reachable.')
+              }
+            }
+          }
+
+          // Update the Vue component's state with the warnings
+          vm.dynamicRoutingWarningsMessages = warningsMessages.join('<br>')
+          vm.dynamicRoutingWarningsCount = warningsMessages.length
+        } catch (error) {
+          console.error('Error in getDynamicRoutingOverview:', error)
+        }
+      },
       /**
        * Emits the edit event up to the host app, used for routing based on device
        * @param {Object} params - row click event params
@@ -473,11 +561,10 @@
         if (index !== null && this.selectedInterfaceIndex !== index) {
           this.selectedInterfaceIndex = index // 🔹 update index so watcher can re-highlight
         }
-
+        this.InerfaceDataForVendor = data?.status?.status
         this.selectedInterface = index
         const symbolicDev = data.symbolicDev || data.device
         if (!symbolicDev) return
-
         await this.getInterfaceStatus(symbolicDev)
         await this.getInterfaceArp(symbolicDev)
       },
