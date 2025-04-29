@@ -35,23 +35,25 @@
         $isSaving: () => this.isSaving,
         $intf: () => this.intf,
         $interfaces: () => this.interfaces,
+        $interfaceStatuses: () => this.interfaceStatuses,
         $status: () => this.status,
         $disabled: () => this.disabled,
         $interfaceTrackers: () => this.interfaceTrackers,
-        $onManageStatusAnalyzers: () => this.$emit('manage-status-analyzers'),
+        // $onManageStatusAnalyzers: () => this.$emit('manage-status-analyzers'),
         $onDelete: () => this.$emit('delete'),
-        $onRenewDhcp: (device, cb) => this.$emit('renew-dhcp', device, () => cb()),
+        // $onRenewDhcp: (device, cb) => this.$emit('renew-dhcp', device, () => cb()),
         $onGetAllInterfaceStatus: cb => this.$emit('get-all-interface-status', res => cb(res)),
       }
     },
     props: {
-      settings: { type: Array, default: () => [] },
+      settings: { type: Object, default: () => null },
       interfaces: { type: Array, default: () => [] },
       type: { type: String, default: () => null },
       status: { type: Object, default: () => null },
       disabled: { type: Boolean, default: () => false },
       interfaceTrackers: { type: Array, default: () => [] },
       isSaving: { type: Boolean, default: false },
+      interfaceStatuses: { type: Array, default: () => [] },
     },
     data() {
       return {
@@ -60,6 +62,7 @@
     },
     computed: {
       device: ({ $route }) => $route.params.device,
+      // interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
       title() {
         // when editing existing intf use original settings for title
         if (this.intf) {
@@ -83,9 +86,13 @@
     },
     mounted() {
       console.log('interfaces inside index', this.interfaces)
+      console.log('interfaceStatuses inside index', this.interfaceStatuses)
+      // console.log('intf inside index', this.intf)
     },
     created() {
-      this.intf = this.device ? this.interfaces.find(i => i.physicalDev === this.device) : {}
+      this.intf = this.device ? this.interfaceStatuses.find(i => i.physicalDev === this.device) : {}
+      console.log('intf inside index', this.intf)
+      console.log('settings inside index', this.settings)
       // cloning the defaults so they do not get mutated
       // if (this.type && defaults[this.type]) this.settingsCopy = cloneDeep(defaults[this.type])
     },

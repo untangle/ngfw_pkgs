@@ -11,9 +11,9 @@
           <span v-html="$t('bound_wan_interface_warning', [boundInterfaces])"></span>
         </u-alert>
         <!-- delete action button, available for virtual interfaces only when editing -->
-        <u-btn v-if="showDelete" text color="red" @click="$onDelete">
+        <!-- <u-btn v-if="showDelete" text color="red" @click="$onDelete">
           {{ $t('delete_interface') }}
-        </u-btn>
+        </u-btn> -->
       </div>
 
       <v-row>
@@ -193,7 +193,7 @@
   import Ipv4 from './ipv4/Ipv4.vue'
   import Ipv6 from './ipv6/Ipv6.vue'
   import Dhcp from './dhcp/Dhcp.vue'
-  // import Vrrp from './vrrp/Vrrp.vue'
+  import Vrrp from './vrrp/Vrrp.vue'
   // import Qos from './qos/Qos.vue'
 
   // import OpenVpn from './openvpn/OpenVpn.vue'
@@ -207,6 +207,7 @@
       ValidationObserver,
       Ipv4,
       Ipv6,
+      Vrrp,
       Dhcp,
       VRow,
       VCol,
@@ -219,7 +220,7 @@
       VTabItem,
     },
     mixins: [mixin],
-    inject: ['$intf', '$interfaces', '$status', '$disabled', '$onDelete', '$isSaving'],
+    inject: ['$intf', '$interfaces', '$status', '$disabled', '$onDelete', '$isSaving', '$interfaceStatuses'],
     data() {
       return {
         selectedTab: null,
@@ -232,6 +233,7 @@
       },
       intf: ({ $intf }) => $intf(),
       interfaces: ({ $interfaces }) => $interfaces(),
+      interfaceStatuses: ({ $interfaceStatuses }) => $interfaceStatuses(),
       status: ({ $status }) => $status(),
       disabled: ({ $disabled }) => $disabled(),
       isSaving: ({ $isSaving }) => $isSaving(),
@@ -323,6 +325,10 @@
           this.intf.wan = parentIntf.wan
         }
       },
+    },
+    created() {
+      console.log('interfaceStatuses.......common :', this.interfaceStatuses)
+      console.log('Interfaces.......common :', this.interfaces)
     },
     mounted() {
       this.selectedTab = this.tabs.length ? this.tabs[0].key : undefined

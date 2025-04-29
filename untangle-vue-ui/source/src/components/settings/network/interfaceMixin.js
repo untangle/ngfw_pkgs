@@ -1,5 +1,21 @@
 import { CONFIG_TYPE } from '../../settings/network/SettingsInterface/components/constants'
 
+const datasizeMap = [
+  [1125899906842624, 'PB'],
+  [1099511627776, 'TB'],
+  [1073741824, 'GB'],
+  [1048576, 'MB'],
+  [1024, 'KB'],
+  [1, 'B'],
+]
+const countMap = [
+  [1125899906842624, 'P'], // PB
+  [1099511627776, 'T'], // TB
+  [1073741824, 'G'], // GB
+  [1048576, 'M'], // MB
+  [1024, 'K'], // KB
+  [1, ''], // B (no unit)
+]
 export default {
   methods: {
     /**
@@ -43,8 +59,21 @@ export default {
      * @returns {String}
      */
     statusValueFormatter({ intf, status }) {
-      const connected = this.$t(intf.enabled ? (status && status.connected ? 'connected' : 'disconnected') : 'disabled')
+      let connectionStatus = 'unknown'
+
+      if (!intf || intf.enabled === undefined) {
+        connectionStatus = 'missing'
+      } else if (!intf.enabled) {
+        connectionStatus = 'disabled'
+      } else if (status?.connected) {
+        connectionStatus = 'connected'
+      } else {
+        connectionStatus = 'disconnected'
+      }
+
+      const connected = this.$t(connectionStatus)
       const online = status?.wan && status?.connected && !status?.offline ? this.$t('online') : this.$t('offline')
+
       return `${connected} ${online}`
     },
 
@@ -77,6 +106,13 @@ export default {
         return ''
       }
     },
+    deviceRenderer(intf) {
+      if (!intf) return ''
+
+      // If it's a VLAN interface, return systemDev, else return symbolicDev
+      return intf.isVlanInterface ? intf.systemDev : intf.symbolicDev
+    },
+
     getConfigAddress(intf = {}, status = {}) {
       const configType = intf.configType || status.configType
 
@@ -89,6 +125,52 @@ export default {
           return this.$t('Disabled')
         default:
           return configType ? this.$t(configType) : ''
+      }
+    },
+
+    datasize(value) {
+      if (value === null) value = 0
+      value = parseInt(value, 10)
+
+      let size = datasizeMap[datasizeMap.length - 1]
+      for (let i = 0; i < datasizeMap.length; i++) {
+        size = datasizeMap[i]
+        if (value >= size[0] || value <= -size[0]) {
+          break
+        }
+      }
+
+      if (value === 0 || size[0] === 1) {
+        return `${value} ${size[1]}`
+      } else {
+        let dividedValue = (value / size[0]).toFixed(2)
+        if (dividedValue.endsWith('.00')) {
+          dividedValue = dividedValue.slice(0, -3)
+        }
+        return `${dividedValue} ${size[1]}`
+      }
+    },
+
+    count(value) {
+      if (value === null) value = 0
+      value = parseInt(value, 10)
+
+      let size = countMap[countMap.length - 1]
+      for (let i = 0; i < countMap.length; i++) {
+        size = countMap[i]
+        if (value >= size[0] || value <= -size[0]) {
+          break
+        }
+      }
+
+      if (value === 0 || size[0] === 1) {
+        return `${value} ${size[1]}`
+      } else {
+        let formatted = (value / size[0]).toFixed(2)
+        if (formatted.endsWith('.00')) {
+          formatted = formatted.slice(0, -3)
+        }
+        return `${formatted} ${size[1]}`
       }
     },
 
@@ -140,22 +222,47 @@ export default {
      * @param {Object} status - interface status
      * @returns {String}
      */
-    getIpv4Address(intf, status) {
-      if (!status?.ip4Addr?.length && !intf.v4StaticAddress) return '-'
 
-      if (status?.ip4Addr?.length) {
-        return `${status.ip4Addr[0]}/${status.v4PrefixLength || ''}`
+    getIpv4Address(intf, status) {
+      if (!status?.v4Address && !status?.v4StaticAddress && !intf?.v4Address && !intf?.v4StaticAddress) {
+        return '-'
       }
 
-      if (intf.v4StaticAddress) {
+      let address = ''
+
+      // 1. First priority: status.v4Address
+      if (status?.v4Address) {
+        address = status.v4Address
+        if (status.v4PrefixLength) {
+          address += `/${status.v4PrefixLength}`
+        }
+      }
+      // 2. Second priority: status.v4StaticAddress
+      else if (status?.v4StaticAddress) {
+        address = status.v4StaticAddress
+        if (status.v4StaticPrefix) {
+          address += `/${status.v4StaticPrefix}`
+        }
+      }
+      // 3. Third priority: intf.v4Address
+      else if (intf?.v4Address) {
+        address = intf.v4Address
+        if (intf.v4PrefixLength) {
+          address += `/${intf.v4PrefixLength}`
+        }
+      }
+      // 4. Fourth priority: intf.v4StaticAddress
+      else if (intf?.v4StaticAddress) {
         if (intf.v4ConfigType === CONFIG_TYPE.DISABLED) {
           return this.$vuntangle.$t('disabled')
         }
-        const prefix = intf.v4StaticPrefix || ''
-        return `${intf.v4StaticAddress}/${prefix}`
+        address = intf.v4StaticAddress
+        if (intf.v4StaticPrefix) {
+          address += `/${intf.v4StaticPrefix}`
+        }
       }
 
-      return ''
+      return address
     },
 
     /**

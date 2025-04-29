@@ -152,25 +152,17 @@ export default {
     },
 
     /** returns interfaces options to be bridged */
-    bridgedToOptions: ({ intf, interfaces }) => {
-      const record = intf
+    bridgedToOptions: ({ intf, interfaces, isBridged }) => {
+      console.log('bridgedToOptions interfaces :', interfaces)
+      console.log('bridgedToOptions record :', intf)
+      let filter = []
 
-      const fields = []
-      interfaces.forEach(intf => {
-        if (
-          intf.interfaceId === record.interfaceId ||
-          intf.bridged !== false ||
-          intf.disabled !== false ||
-          intf.configType !== 'ADDRESSED'
-        ) {
-          return
-        }
-        fields.push(intf)
-      })
-      return fields
-        .slice()
-        .sort((a, b) => a.name.localeCompare(b.name))
-        .map(i => ({ value: i.interfaceId, text: i.name }))
+      if (isBridged) {
+        filter = interfaces.filter(i => i.interfaceId !== intf.interfaceId && i.configType === 'ADDRESSED')
+
+        if (!filter.length) return []
+        return filter.map(i => ({ value: i.interfaceId, text: i.name }))
+      }
     },
 
     /**

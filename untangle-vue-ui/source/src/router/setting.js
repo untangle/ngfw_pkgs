@@ -1,4 +1,5 @@
-import Main from '@/components/settings/Main.vue'
+import Main from '../components/settings/Main.vue'
+// import Main from '../components/settings/network/SettingsInterface/index.vue'
 
 // network
 import Dhcp from '@/components/settings/network/NgfwDhcp'
@@ -33,16 +34,16 @@ export default [
         meta: { helpContext: 'dns' },
       },
       {
-        path: 'network/interface',
+        path: 'network/interfaces',
         component: Interface,
         meta: { helpContext: 'dns' },
       },
       {
-        path: 'network/interface/:device',
+        path: 'network/interfaces/:device',
         component: InterfaceEdit,
       },
       {
-        path: 'network/interface/add/:type',
+        path: 'network/interfaces/add/:type',
         component: InterfaceEdit,
         // helpContext handled in InterfaceEdit component based on interface type
       },

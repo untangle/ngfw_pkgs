@@ -5,7 +5,6 @@ export default {
   props: {
     settings: { type: [Object, Array], default: null },
     disabled: { type: Boolean, default: false },
-    features: { type: Object, default: () => ({}) },
     // matches styles to ETM, uses h1 for page titles and makes the component expand the whole width
     classicView: { type: Boolean, required: false, default: false },
     // used to show / hide the description field; shown for mfw-ui but hidden in ETM
@@ -21,6 +20,10 @@ export default {
     }
   },
 
+  created() {
+    console.log('settings inside mixin :', this.settings)
+    console.log('settingsCopy inside mixin :', this.settingsCopy)
+  },
   computed: {
     isDirty: ({ settings, settingsCopy, $options }) => !isEqual(settings || $options.defaults, settingsCopy),
   },

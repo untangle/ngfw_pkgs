@@ -5,19 +5,16 @@
       :settings="settings"
       :is-saving="isSaving"
       :interfaces="interfaces"
-      :type="type"
+      :interface-statuses="interfaceStatuses"
       :disabled="!canAddInterface && settings.type !== 'WIFI'"
       :status="status"
-      :features="features"
       @renew-dhcp="onRenewDhcp"
-      @manage-status-analyzers="onManageStatusAnalyzers"
       @delete="onDelete"
       @get-all-interface-status="onGetAllInterfaceStatus"
       @get-wifi-channels="onGetWifiChannels"
       @get-wifi-mode-list="onGetWifiModeList"
       @get-wireguard-publickey="onGetWireguardPublicKey"
       @get-wireguard-keypair="onGetWireguardKeypair"
-      @get-wireguard-address-check="onWireguardAddressCheck"
       @get-device-status="onGetDeviceStatus"
       @get-wireguard-random-address="onGenerateWireguardRandomAddress"
     >
@@ -64,7 +61,7 @@
   import interfaceMixin from './interfaceMixin'
   import api from '@/plugins/api'
   import http from '@/plugins/http'
-  // import uris from '@/util/uris'
+  // import SetupUtil from '@/util/setupUtil'
 
   import util from '@/util/util'
 
@@ -83,26 +80,31 @@
       isBridged: undefined,
       bridgedInterfaceName: undefined,
       isSaving: false,
-      features: {},
     }),
     computed: {
       device: ({ $route }) => $route.params.device,
       // type: ({ $route }) => $route.params.type,
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
       settings: ({ $store }) => $store.getters['settings/settings'],
+      interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
     },
     created() {
-      console.log('device :', this.device)
-      console.log('interfaces * :', this.interfaces)
-      console.log('settings ---* :', this.settings)
+      console.log('interfaceStatuses in edit --- :', this.interfaceStatuses)
     },
+    // async mounted() {
+    //   try {
+    //     const deviceId = this.device
+    //     const result = await this.$store.dispatch('settings/getInterfaceWithStatus', { device: deviceId })
+
+    //     console.log('Interface with Status:', result)
+
+    //     this.intfStatus = result
+    //     console.log('intfStatus ---* :', this.intfStatus)
+    //   } catch (error) {
+    //     console.error('Failed to load interface with status:', error)
+    //   }
+    // },
     methods: {
-      // setFeatures() {
-      //   const platform = this.$store.getters['hardware/platform']
-      //   this.features.hasVrrp = platform === 'MFW_EOS'
-      //   this.features.hasPppoe = platform === 'OPENWRT'
-      //   this.features.hasBridged = platform === 'MFW_EOS'
-      // },
       // getVpnInterfaceMessage() {
       //   switch (this.type?.toLowerCase()) {
       //     case 'openvpn':
@@ -128,9 +130,19 @@
 
       // get the interface status
       // async getStatus() {
-      //   const response = await api.get(`/api/status/interfaces/${this.device}`)
-      //   if (response && Array.isArray(response)) {
-      //     this.status = response[0]
+      //   try {
+      //     const rpc = await SetupUtil.setRpcJsonrpc('setup')
+      //     console.log('device in edit :', this.device)
+      //     console.log('rpc in edit :', this.rpc)
+      //     const interfaceStatus = rpc.networkManager.getInterfaceStatus()
+      //     const status = interfaceStatus.list.find(j => j.physicalDev === this.device)
+      //     // const response = await api.get(`/api/status/interfaces/${this.device}`)
+      //     if (status && Array.isArray(status)) {
+      //       this.status = interfaceStatus[0]
+      //     }
+      //     console.log('status :', this.status)
+      //   } catch (ex) {
+      //     SetupUtil.handleException(ex)
       //   }
       // },
 
@@ -236,30 +248,31 @@
         // push changes via store actions
         this.$store.commit('SET_LOADER', true)
         // disable IPsec interfaces bound to disabled wan interface
-        const interfaces = this.disableIpsecInterfacesBoundToWan(newSettings)
+        const interfaces = this.disableInterfacesBoundToWan(newSettings)
         let resultIntf = { success: false }
         if (interfaces.length === 0) {
           // Save interface settings by updating the current interface- newSettings
           resultIntf = await this.$store.dispatch('settings/setInterface', newSettings)
         } else {
           // Save all interfaces settings that the current interface
-          // plus some other modified (disabled) IPSec interfaces
+          // plus some other modified (disabled) interfaces
           resultIntf = await this.$store.dispatch('settings/setInterfaces', interfaces)
         }
 
+        console.log('resultIntf', resultIntf)
         // save policies if changed (forced enabled)
-        let resultWan = { success: true }
-        const updatedWan = this.validateIpsecPoliciesAndRules(newSettings)
-        if (updatedWan) {
-          resultWan = await this.$store.dispatch('settings/setWan', { wan: updatedWan })
-        }
+        // let resultWan = { success: true }
+        // const updatedWan = this.validateIpsecPoliciesAndRules(newSettings)
+        // if (updatedWan) {
+        //   resultWan = await this.$store.dispatch('settings/setWan', { wan: updatedWan })
+        // }
 
         this.$store.commit('SET_LOADER', false)
         this.isSaving = false
-        if (resultIntf.success && resultWan.success) {
+        if (resultIntf) {
           this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('interface')]))
         } else {
-          this.$vuntangle.toast.add(this.$t('rolled_back_settings', [resultIntf.message || resultWan.message]))
+          this.$vuntangle.toast.add(this.$t('rolled_back_settings'))
         }
 
         // return to main interfaces screen on success or error toast to avoid blank screen
@@ -280,7 +293,7 @@
        * When disabling a WAN interface, disable IPSec interfaces that are bound to this interface.
        * @returns {Array} - the updated interfaces array.
        */
-      disableIpsecInterfacesBoundToWan(newSettings) {
+      disableInterfacesBoundToWan(newSettings) {
         if (newSettings.enabled || !newSettings.isWan) return []
         const wanId = newSettings.interfaceId
         const interfaces = cloneDeep(this.interfaces)
@@ -298,34 +311,34 @@
        * when enabling a disabled IPsec interface also enable policies related to it
        * @returns {Array|Boolean} - the updated policies array or false
        */
-      validateIpsecPoliciesAndRules(newSettings) {
-        if (!newSettings.enabled || newSettings.type !== 'IPSEC') return false
-        const wanCopy = cloneDeep(this.$store.getters['settings/settings']?.wan)
-        if (!wanCopy) return false
+      // validateIpsecPoliciesAndRules(newSettings) {
+      //   if (!newSettings.enabled || newSettings.type !== 'IPSEC') return false
+      //   const wanCopy = cloneDeep(this.$store.getters['settings/settings']?.wan)
+      //   if (!wanCopy) return false
 
-        const policies = wanCopy.policies
-        const rules = wanCopy.policy_chains.find(chain => chain.name === 'user-wan-rules').rules
-        const affectedPoliciesIds = []
+      //   const policies = wanCopy.policies
+      //   const rules = wanCopy.policy_chains.find(chain => chain.name === 'user-wan-rules').rules
+      //   const affectedPoliciesIds = []
 
-        policies.forEach(policy => {
-          policy.interfaces.forEach(intf => {
-            // find policies related to current interface
-            if (intf.interfaceId === newSettings.interfaceId && !policy.enabled) {
-              affectedPoliciesIds.push(policy.policyId)
-              policy.enabled = newSettings.enabled
-            }
-          })
-        })
-        rules.forEach(rule => {
-          // check rule action policy in affected policies
-          if (affectedPoliciesIds.includes(rule.action.policy) && !rule.enabled) {
-            rule.enabled = true
-          }
-        })
+      //   policies.forEach(policy => {
+      //     policy.interfaces.forEach(intf => {
+      //       // find policies related to current interface
+      //       if (intf.interfaceId === newSettings.interfaceId && !policy.enabled) {
+      //         affectedPoliciesIds.push(policy.policyId)
+      //         policy.enabled = newSettings.enabled
+      //       }
+      //     })
+      //   })
+      //   rules.forEach(rule => {
+      //     // check rule action policy in affected policies
+      //     if (affectedPoliciesIds.includes(rule.action.policy) && !rule.enabled) {
+      //       rule.enabled = true
+      //     }
+      //   })
 
-        if (affectedPoliciesIds.length < 0) return false
-        return wanCopy
-      },
+      //   if (affectedPoliciesIds.length < 0) return false
+      //   return wanCopy
+      // },
 
       // isBridgedInterface() {
       //   const currentDevice = this.device
