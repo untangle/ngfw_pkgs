@@ -51,29 +51,30 @@
     components: {
       Ipv4PrefixAutocomplete,
     },
-    inject: ['$intf', '$interfaces'],
+    inject: ['$intf', '$interfaces', '$status'],
 
     props: {
       /**
        * the key under `interface` settings.json where aliases are going to be set
        * e.g.
        * `v4Aliases` for IPv4 settings
-       * `v4Aliases` for VRRP
        * */
       aliasKey: { type: String, default: 'v4Aliases' },
     },
 
-    data({ $intf }) {
+    data({ $intf, $status }) {
       const intf = $intf()
+      const status = $status()
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v4_alias }, // model for new v4 alias
-        list: intf?.[this.aliasKey]?.length ? cloneDeep(intf[this.aliasKey]) : [],
+        list: status?.[this.aliasKey]?.length ? cloneDeep(intf[this.aliasKey]) : [],
       }
     },
     computed: {
       intf: ({ $intf }) => $intf(),
       interfaces: ({ $interfaces }) => $interfaces(),
+      status: ({ $status }) => $status(),
     },
     watch: {
       adding(value) {
