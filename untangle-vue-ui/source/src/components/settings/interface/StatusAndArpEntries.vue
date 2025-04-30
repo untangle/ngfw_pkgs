@@ -4,7 +4,14 @@
       <!-- Left Pane -->
       <div class="overflow-auto transition-fast" :style="{ width: leftWidth + '%' }">
         <!-- Status Table  -->
-        <InterfacesTable title="Status" :headers="statusHeaders" :items="statusRows" :dense="true" />
+        <InterfacesTable
+          title="Status"
+          :headers="statusHeaders"
+          :items="statusRows"
+          :dense="true"
+          :loading="statusLoading"
+          @refresh="$emit('refresh-table', 'status')"
+        />
       </div>
 
       <!-- Resizer -->
@@ -19,7 +26,14 @@
       <!-- Right Pane -->
       <div class="overflow-auto transition-fast" :style="{ width: 100 - leftWidth + '%' }">
         <!-- ARP Entries -->
-        <InterfacesTable title="ARP Entries" :headers="headersForArp" :items="arpEntries" :dense="true" />
+        <InterfacesTable
+          title="ARP Entries"
+          :headers="headersForArp"
+          :items="arpEntries"
+          :dense="true"
+          :loading="arpLoading"
+          @refresh="$emit('refresh-table', 'arp')"
+        />
       </div>
     </div>
   </div>
@@ -43,6 +57,14 @@
       arpEntries: {
         type: Array,
         default: () => [],
+      },
+      statusLoading: {
+        type: Boolean,
+        default: false,
+      },
+      arpLoading: {
+        type: Boolean,
+        default: false,
       },
     },
 
