@@ -16,7 +16,7 @@
         <!-- name -->
         <v-col>
           <ValidationProvider v-slot="{ errors }" :rules="!isSaving ? interfaceNameRules : ''">
-            <u-text-field v-model="intf.name" :label="$t('interface_name')" maxlength="10" :error-messages="errors">
+            <u-text-field v-model="intf.name" :label="$t('interface_name')" maxlength="400" :error-messages="errors">
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-text-field>
           </ValidationProvider>

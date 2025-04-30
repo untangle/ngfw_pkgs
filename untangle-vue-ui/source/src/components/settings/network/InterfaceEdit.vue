@@ -21,6 +21,7 @@
 </template>
 <script>
   import SettingsInterface from '../network/SettingsInterface'
+  import Util from '../../../util/setupUtil'
   import interfaceMixin from './interfaceMixin'
 
   export default {
@@ -51,23 +52,27 @@
     },
     methods: {
       async onSave(validate) {
-        const isValid = await validate()
-        if (!isValid) return
-        this.isSaving = true
-        this.$store.commit('SET_LOADER', true)
-        let resultIntf = false
-        // Save interface settings by updating the current interface
-        resultIntf = await this.$store.dispatch('settings/setInterface', this.intf)
-        this.$store.commit('SET_LOADER', false)
-        this.isSaving = false
-        if (resultIntf) {
-          this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('interface')]))
-        } else {
-          this.$vuntangle.toast.add(this.$t('rolled_back_settings'))
-        }
+        try {
+          const isValid = await validate()
+          if (!isValid) return
+          this.isSaving = true
+          this.$store.commit('SET_LOADER', true)
+          let resultIntf = false
+          // Save interface settings by updating the current interface
+          resultIntf = await this.$store.dispatch('settings/setInterface', this.intf)
+          this.$store.commit('SET_LOADER', false)
+          this.isSaving = false
+          if (resultIntf) {
+            this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('interface')]))
+          } else {
+            this.$vuntangle.toast.add(this.$t('rolled_back_settings'))
+          }
 
-        // return to main interfaces screen on success or error toast to avoid blank screen
-        this.$router.push('/settings/network/interfaces')
+          // return to main interfaces screen on success or error toast to avoid blank screen
+          this.$router.push('/settings/network/interfaces')
+        } catch (ex) {
+          Util.handleException(ex)
+        }
       },
 
       /**

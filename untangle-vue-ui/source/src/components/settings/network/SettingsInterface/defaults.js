@@ -115,10 +115,20 @@ export default {
     prefix: 0,
   },
   v4_alias: {
-    v4Address: null,
-    v4Prefix: 24, // use 24 as default
+    staticAddress: '',
+    staticPrefix: 24, // use 24 as default
+    // staticNetmask: '',
   },
-  v6_alias: { v6Address: null, v6Prefix: null },
+  v6_alias: {
+    staticAddress: '::1',
+    staticPrefix: 64,
+    staticNetmask: '',
+  },
+  vrrp_alias: {
+    staticAddress: '1.2.3.4',
+    staticPrefix: 24,
+    staticNetmask: '',
+  },
   dhcp_options: [
     { value: 1, text: 'netmask', description: '' },
     { value: 2, text: 'time-offset', description: '' },

@@ -3,18 +3,18 @@
     <p class="font-weight-bold mt-6 mb-2">{{ $t('ipv4_aliases') }}</p>
     <em v-if="!list || !list.length" class="mr-2">{{ $t('no_aliases') }}</em>
     <v-chip v-for="(item, idx) in list" :key="idx" class="mr-1 mb-1" small close @click:close="onRemoveAlias(idx)">
-      {{ item.v4Address }}{{ item.v4Prefix || item.v4Prefix === 0 ? `/${item.v4Prefix}` : '' }}
+      {{ item.staticAddress }}{{ item.staticPrefix || item.staticPrefix === 0 ? `/${item.staticPrefix}` : '' }}
     </v-chip>
     <v-chip v-if="!adding" class="mb-1" small color="primary" @click="adding = true">{{ $t('add_alias') }}</v-chip>
 
     <ValidationObserver v-slot="{ passes }" tag="div">
       <v-row v-if="adding" no-gutters align="center" class="mt-2">
         <v-col class="grow">
-          <!-- v4Address -->
+          <!-- staticAddress -->
           <ValidationProvider v-slot="{ errors }" rules="required|ip|unique_ip_address">
             <u-text-field
-              v-model="alias.v4Address"
-              :label="$t('address')"
+              v-model="alias.staticAddress"
+              :label="$t('enter IPv4 address')"
               class="mr-2"
               :error-messages="errors"
               @keydown.space.prevent
@@ -24,9 +24,14 @@
           </ValidationProvider>
         </v-col>
         <v-col class="grow">
-          <!-- v4Prefix -->
+          <!-- staticPrefix -->
           <ValidationProvider v-slot="{ errors }" rules="required">
-            <ipv-4-prefix-autocomplete v-model="alias.v4Prefix" :min="1" :errors="errors" />
+            <ipv-4-prefix-autocomplete
+              v-model="alias.staticPrefix"
+              :min="1"
+              :errors="errors"
+              @click:modelValue="onStaticPrefixChange"
+            />
           </ValidationProvider>
         </v-col>
         <v-col class="shrink">
@@ -46,6 +51,7 @@
   import { extend } from 'vee-validate'
   import { Ipv4PrefixAutocomplete } from 'vuntangle'
   import defaults from '../../defaults'
+  import Util from '../../../../../../util/setupUtil'
 
   export default {
     components: {
@@ -95,6 +101,9 @@
       extend('unique_ip_address', this.validateUniqueIpAddress)
     },
     methods: {
+      onStaticPrefixChange(prefix) {
+        this.alias.staticNetmask = Util.getNetmask(prefix)
+      },
       /**
        * Make sure the IPv4 address of the alias being added does not conflict with any other
        * interfaces.
@@ -114,7 +123,7 @@
           // check v4 aliases
           if (networkInterface.v4Aliases?.length) {
             for (const v4Alias of networkInterface.v4Aliases) {
-              if (v4Alias.v4Address === value) {
+              if (v4Alias.staticAddress === value) {
                 return this.$t('address_conflicts_with_interface', [networkInterface.name])
               }
             }
@@ -128,7 +137,7 @@
 
         // check v4 addresses that are currently being added/edited on this interface
         for (const v4Alias of this.list) {
-          if (v4Alias.v4Address === value) {
+          if (v4Alias.staticAddress === value) {
             return this.$t('address_conflicts_with_current_interface')
           }
         }
@@ -139,7 +148,11 @@
         return true
       },
       onAddAlias() {
-        this.list.push(this.alias)
+        this.alias.staticNetmask = Util.getNetmask(this.alias.staticPrefix)
+        this.list.push({
+          ...this.alias,
+          staticNetmask: Util.getNetmask(this.alias.staticPrefix),
+        })
         this.adding = false
       },
       onRemoveAlias(index) {
