@@ -26,7 +26,7 @@
     </v-row>
     <v-row v-if="intf.isWan">
       <v-col>
-        <ValidationProvider v-slot="{ errors }" rules="required">
+        <ValidationProvider v-slot="{ errors }">
           <u-text-field v-model="intf.v6StaticGateway" :label="$t('gateway')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>

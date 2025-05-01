@@ -283,8 +283,6 @@
       this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
       this.$store.dispatch('settings/getNetworkSettings')
       this.$store.dispatch('settings/getInterfaceStatuses')
-      console.log('******* interfaces', this.interfaces)
-      console.log('*******', this.interfaceStatuses)
     },
     mounted() {
       this.loadSettings()
