@@ -122,7 +122,7 @@
             active: false,
             match: '/settings/network',
             items: [
-              { name: 'interface', to: '/settings/network/interface' },
+              { name: 'interface', to: '/settings/network/interfaces' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],

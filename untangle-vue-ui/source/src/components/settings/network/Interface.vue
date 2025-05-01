@@ -23,7 +23,7 @@
       row-node-id="rowNodeId"
       :row-data="rowData"
       :column-defs="colDefs"
-      :custom-grid-options="{ rowSelection: 'single', suppressRowClickSelection: true }"
+      :custom-grid-options="gridOptions"
       :row-actions="rowActions"
       :framework-components="frameworkComponents"
       v-on="$listeners"
@@ -62,6 +62,13 @@
     },
     data() {
       return {
+        gridOptions: {
+          context: {
+            componentParent: this,
+          },
+          suppressRowClickSelection: true,
+          rowSelection: 'single',
+        },
         // all interfaces status, async fetched
         interfacesStatus: undefined,
         physicalDevsStore: [],
@@ -125,6 +132,9 @@
       interfaces() {
         return this.$store.getters['settings/interfaces']
       },
+      interfaceStatuses() {
+        return this.$store.getters['settings/interfaceStatuses']
+      },
       // column Header data for Interface Listing
       colDefs: ({ $i18n, deviceValueFormatter, statusValueFormatter }) => {
         return [
@@ -174,6 +184,28 @@
           {
             headerName: $i18n.t('is WAN'),
             field: 'isWan',
+          },
+          {
+            headerName: $i18n.t('Edit'),
+            field: 'edit',
+            // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            cellRenderer(params) {
+              const icon = document.createElement('i')
+              icon.className = 'mdi mdi-pencil'
+              icon.style.cursor = 'pointer'
+              icon.style.fontSize = '18px'
+              icon.title = 'Edit'
+              icon.addEventListener('click', event => {
+                event.stopPropagation() // Prevents triggering row selection
+                params.context.componentParent.onEditInterface(params)
+              })
+              return icon
+            },
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            suppressSorting: true,
+            width: 60,
+            cellStyle: { textAlign: 'center' },
           },
           {
             headerName: $i18n.t('Current Address'),
@@ -249,6 +281,8 @@
     },
     created() {
       this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
+      this.$store.dispatch('settings/getNetworkSettings')
+      this.$store.dispatch('settings/getInterfaceStatuses')
     },
     mounted() {
       this.loadSettings()
@@ -539,10 +573,9 @@
        * @param {Object} params - row click event params
        * @param {Object} params.data - the row data
        */
-      onEditInterface({ data }) {
-        // avoid editing an interface if disabled (appliance offline)
-        if (this.disabled) return
-        this.$emit('edit-interface', data.device)
+      onEditInterface(rowData) {
+        this.intf = rowData.data
+        this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
       },
       onGridReady(params) {
         this.gridApi = params.api

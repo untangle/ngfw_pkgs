@@ -1,4 +1,4 @@
-import { CONFIG_TYPE } from '../../../shared/SettingsInterface/components/constants'
+import { CONFIG_TYPE } from '../../settings/network/SettingsInterface/components/constants'
 
 const datasizeMap = [
   [1125899906842624, 'PB'],
@@ -224,7 +224,7 @@ export default {
      */
 
     getIpv4Address(intf, status) {
-      if (!status?.v4Address && !status?.v4StaticAddress && !intf?.v4Address && !intf?.v4StaticAddress) {
+      if (!status?.v4Address && !status?.v4StaticAddress && !status?.v4Address && !intf?.v4StaticAddress) {
         return '-'
       }
 
@@ -244,11 +244,11 @@ export default {
           address += `/${status.v4StaticPrefix}`
         }
       }
-      // 3. Third priority: intf.v4Address
-      else if (intf?.v4Address) {
-        address = intf.v4Address
-        if (intf.v4PrefixLength) {
-          address += `/${intf.v4PrefixLength}`
+      // 3. Third priority: status.v4Address
+      else if (status?.v4Address) {
+        address = status.v4Address
+        if (status.v4PrefixLength) {
+          address += `/${status.v4PrefixLength}`
         }
       }
       // 4. Fourth priority: intf.v4StaticAddress
