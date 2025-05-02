@@ -35,7 +35,7 @@
             name: 'network',
             icon: 'mdi-lan',
             items: [
-              { name: 'interface', to: '/settings/network/interfaces' },
+              { name: 'interface', to: '/settings/network/interface' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],

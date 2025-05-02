@@ -6,7 +6,7 @@
         * STATIC only for non-wan interfaces
       -->
     <v-radio-group v-model="intfCopy.v4ConfigType" row class="ma-0">
-      <v-radio value="AUTO" :label="$t('auto_dhcp')" :disabled="!intf.wan" />
+      <v-radio value="DHCP" :label="$t('auto_dhcp')" :disabled="!intf.wan" />
       <v-radio value="STATIC" :label="$t('static')" />
       <v-radio value="PPPOE" :label="$t('pppoe')" :disabled="!intf.wan" />
     </v-radio-group>

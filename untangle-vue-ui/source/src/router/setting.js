@@ -1,13 +1,10 @@
-import Main from '../components/settings/Main.vue'
-// import Main from '../components/settings/network/SettingsInterface/index.vue'
+import Main from '@/components/settings/Main.vue'
 
 // network
 import Dhcp from '@/components/settings/network/NgfwDhcp'
 import Dns from '@/components/settings/network/NgfwDns.vue'
 import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
-import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
-// import Interfaces from '@/components/settings/network/Interfaces.vue'
 
 // routing
 import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
@@ -34,18 +31,9 @@ export default [
         meta: { helpContext: 'dns' },
       },
       {
-        path: 'network/interfaces',
+        path: 'network/interface',
         component: Interface,
         meta: { helpContext: 'dns' },
-      },
-      {
-        path: 'network/interfaces/:device',
-        component: InterfaceEdit,
-      },
-      {
-        path: 'network/interfaces/add/:type',
-        component: InterfaceEdit,
-        // helpContext handled in InterfaceEdit component based on interface type
       },
       {
         path: 'network/networkTabs',

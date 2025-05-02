@@ -40,10 +40,6 @@ const Util = {
     [0, '/0 - 0.0.0.0'],
   ],
 
-  getNetmask(prefix) {
-    const netMask = this.v4NetmaskList.find(i => i[0] === prefix)
-    return netMask ? netMask[1].split(' - ')[1] : ''
-  },
   setRpcJsonrpc(root) {
     let setupInfo
     let rpcResponse = null
