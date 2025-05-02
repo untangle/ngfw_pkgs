@@ -236,16 +236,16 @@
             headerName: $i18n.t('Delete'),
             // field: 'edit',
             // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
-            cellRenderer() {
+            cellRenderer(params) {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-delete'
               icon.style.cursor = 'pointer'
               icon.style.fontSize = '18px'
               icon.title = 'Delete'
-              // icon.addEventListener('click', event => {
-              //   event.stopPropagation() // Prevents triggering row selection
-              //   params.context.componentParent.onEditInterface(params)
-              // })
+              icon.addEventListener('click', event => {
+                event.stopPropagation() // Prevents triggering row selection
+                params.context.componentParent.onDeleteInterface(params)
+              })
               return icon
             },
             suppressSizeToFit: true,
@@ -634,6 +634,9 @@
       onEditInterface(rowData) {
         this.intf = rowData.data
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
+      },
+      onDeleteInterface(rowData) {
+        console.log('rowData in onDelete Interface', rowData)
       },
       onGridReady(params) {
         this.gridApi = params.api
