@@ -32,7 +32,6 @@ const actions = {
   async getInterfaces({ commit }) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
-      console.log('rpc :', rpc)
       const data = rpc.networkManager.getNetworkSettings().interfaces.list
       commit('SET_INTERFACES', data)
     } catch (err) {
@@ -72,7 +71,6 @@ const actions = {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
       const data = rpc.networkManager.getNetworkSettings()
-      console.log('data in getNetworkSettings :', data)
       commit('SET_SETTINGS', data)
     } catch (err) {
       console.error('getNetworkSettings error:', err)

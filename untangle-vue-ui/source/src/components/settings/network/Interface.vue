@@ -159,60 +159,79 @@
           {
             headerName: $i18n.t('Id'),
             field: 'interfaceId',
-            minWidth: 70,
+            flex: 1,
           },
           {
             headerName: $i18n.t('device'),
             field: 'device',
             sort: 'asc',
+            flex: 1,
             valueFormatter: ({ value }) => deviceValueFormatter(value),
             cellClass: 'primary--text',
             comparator: (a, b) => {
-              return a.localeCompare(b, undefined, {
-                numeric: true,
-                sensitivity: 'base',
-              })
+              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
             },
           },
           {
             headerName: $i18n.t('Name'),
             field: 'description',
+            flex: 1,
+            // functionality for tooltip
+            cellRenderer(params) {
+              const value = params.value || '-'
+              const span = document.createElement('span')
+
+              span.innerText = value
+              span.title = value // this is for tooltip
+
+              span.style.whiteSpace = 'nowrap'
+              span.style.overflow = 'hidden'
+              span.style.textOverflow = 'ellipsis'
+              span.style.display = 'block'
+              span.style.width = '100%'
+
+              return span
+            },
           },
           {
             headerName: $i18n.t('operational_status'),
             field: 'status',
             cellRenderer: 'StatusRenderer',
-            minWidth: 150,
+            flex: 1,
             valueFormatter: ({ value }) => statusValueFormatter(value),
           },
           {
             headerName: $i18n.t('duplex'),
             field: 'duplex',
-            minWidth: 150,
+            flex: 1,
           },
           {
             headerName: $i18n.t('Config'),
             field: 'config',
-            minWidth: 150,
+            flex: 1,
           },
           {
             headerName: $i18n.t('speed'),
             field: 'speed',
-            minWidth: 120,
+            flex: 1,
           },
           {
             headerName: $i18n.t('is WAN'),
             field: 'isWan',
-            minWidth: 100,
+            flex: 1,
           },
           {
             headerName: $i18n.t('Current Address'),
             field: 'ipv4Address',
+            flex: 1,
           },
           {
             headerName: $i18n.t('Edit'),
             field: 'edit',
-            // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            flex: 1,
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            cellStyle: { textAlign: 'center' },
             cellRenderer(params) {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-pencil'
@@ -220,44 +239,31 @@
               icon.style.fontSize = '18px'
               icon.title = 'Edit'
               icon.addEventListener('click', event => {
-                event.stopPropagation() // Prevents triggering row selection
+                event.stopPropagation()
                 params.context.componentParent.onEditInterface(params)
               })
               return icon
             },
-            suppressSizeToFit: true,
-            width: 100,
-            minWidth: 100,
-            maxWidth: 100,
-            suppressMenu: true,
-            cellStyle: { textAlign: 'center' },
           },
           {
             headerName: $i18n.t('Delete'),
-            // field: 'edit',
-            // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            field: 'delete',
+            flex: 1,
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            cellStyle: { textAlign: 'center' },
             cellRenderer() {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-delete'
               icon.style.cursor = 'pointer'
               icon.style.fontSize = '18px'
               icon.title = 'Delete'
-              // icon.addEventListener('click', event => {
-              //   event.stopPropagation() // Prevents triggering row selection
-              //   params.context.componentParent.onEditInterface(params)
-              // })
               return icon
             },
-            suppressSizeToFit: true,
-            suppressMenu: true,
-            width: 100,
-            minWidth: 100,
-            maxWidth: 100,
-            // width: 100, // fixed width
-            cellStyle: { textAlign: 'center' },
           },
         ]
       },
+
       // Table data for interface listing table
       rowData() {
         return this.interfaces?.map(intf => {
