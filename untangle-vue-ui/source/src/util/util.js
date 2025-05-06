@@ -281,7 +281,6 @@ const util = {
     const rpc = {
       jsonrpc: new window.JSONRpcClient(`/admin/JSON-RPC`),
     }
-    console.log('rpc in getDecryptedPassword : ', rpc)
     return rpc.systemManager.getDecryptedPassword(encryptedPassword)
   },
 }

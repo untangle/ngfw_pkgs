@@ -11,13 +11,23 @@
       :headers="headers"
       :items="items"
       :search="searchable ? search : ''"
-      :loading="loading"
       :items-per-page="itemsPerPage"
       :dense="dense"
       disable-pagination
       hide-default-footer
     >
-      <template v-if="$slots.item" #item="slotProps">
+      <template v-if="loading" #body>
+        <tr>
+          <td :colspan="headers.length">
+            <div class="d-flex flex-column align-center justify-center pa-6" style="height: 200px">
+              <v-progress-circular :size="50" :width="4" color="primary" indeterminate />
+              <div class="mt-2">{{ $t('Loading...') }}</div>
+            </div>
+          </td>
+        </tr>
+      </template>
+
+      <template v-else-if="$slots.item" #item="slotProps">
         <slot name="item" v-bind="slotProps" />
       </template>
     </v-data-table>

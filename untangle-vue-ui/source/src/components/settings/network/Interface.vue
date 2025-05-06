@@ -18,7 +18,16 @@
       </v-menu>
     </div>
 
+    <div
+      v-if="tableLoading.interfaces"
+      class="d-flex flex-column align-center justify-center pa-6"
+      style="height: 200px"
+    >
+      <v-progress-circular :size="50" :width="4" color="primary" indeterminate />
+      <div class="mt-2">{{ $t('Loading...') }}</div>
+    </div>
     <u-grid
+      v-else
       id="appliance-interfaces"
       row-node-id="rowNodeId"
       :row-data="rowData"
@@ -29,6 +38,7 @@
       v-on="$listeners"
       @row-clicked="onSelectInterface"
       @grid-ready="onGridReady"
+      @refresh="loadSettings"
     />
     <div
       class="resizable-bottom-panel position-relative overflow-hidden"
@@ -41,6 +51,9 @@
         :interface-source-config="interfaceSourceConfig"
         :interface-status-data="interfaceStatusData"
         :arp-entries="arpEntries"
+        :status-loading="tableLoading.status"
+        :arp-loading="tableLoading.arp"
+        @refresh-table="handleTableRefresh"
       />
     </div>
   </v-container>
@@ -76,10 +89,16 @@
         selectedInterface: null,
         selectedInterfaceIndex: 0,
         InerfaceDataForVendor: null,
+        symbolicDev: null,
         isResizing: false,
         panelHeight: 500,
         minHeight: 100,
         maxHeight: 800,
+        tableLoading: {
+          interfaces: false,
+          status: false,
+          arp: false,
+        },
         features: {
           hasWireguard: false,
           hasOpenVpn: false,
@@ -100,7 +119,6 @@
         interfaceSourceConfig: {
           address: { displayName: this.$t('IPv4 Address') },
           device: { displayName: this.$t('Device') },
-          macAddress: { displayName: this.$t('MAC Address') },
           rxbytes: { displayName: this.$t('Rx Bytes') },
           rxdrop: { displayName: this.$t('Rx Drop') },
           rxpkts: { displayName: this.$t('Rx Packets') },
@@ -141,54 +159,79 @@
           {
             headerName: $i18n.t('Id'),
             field: 'interfaceId',
+            flex: 1,
           },
           {
             headerName: $i18n.t('device'),
             field: 'device',
             sort: 'asc',
+            flex: 1,
             valueFormatter: ({ value }) => deviceValueFormatter(value),
             cellClass: 'primary--text',
             comparator: (a, b) => {
-              return a.localeCompare(b, undefined, {
-                numeric: true,
-                sensitivity: 'base',
-              })
+              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
             },
           },
           {
             headerName: $i18n.t('Name'),
             field: 'description',
+            flex: 1,
+            // functionality for tooltip
+            cellRenderer(params) {
+              const value = params.value || '-'
+              const span = document.createElement('span')
+
+              span.innerText = value
+              span.title = value // this is for tooltip
+
+              span.style.whiteSpace = 'nowrap'
+              span.style.overflow = 'hidden'
+              span.style.textOverflow = 'ellipsis'
+              span.style.display = 'block'
+              span.style.width = '100%'
+
+              return span
+            },
           },
           {
             headerName: $i18n.t('operational_status'),
             field: 'status',
             cellRenderer: 'StatusRenderer',
+            flex: 1,
             valueFormatter: ({ value }) => statusValueFormatter(value),
           },
           {
             headerName: $i18n.t('duplex'),
             field: 'duplex',
+            flex: 1,
           },
           {
             headerName: $i18n.t('Config'),
             field: 'config',
-          },
-          {
-            headerName: $i18n.t('mac_address'),
-            field: 'mac',
+            flex: 1,
           },
           {
             headerName: $i18n.t('speed'),
             field: 'speed',
+            flex: 1,
           },
           {
             headerName: $i18n.t('is WAN'),
             field: 'isWan',
+            flex: 1,
+          },
+          {
+            headerName: $i18n.t('Current Address'),
+            field: 'ipv4Address',
+            flex: 1,
           },
           {
             headerName: $i18n.t('Edit'),
             field: 'edit',
-            // cellRenderer: () => '<i class="mdi mdi-pencil" style="cursor: pointer;"></i>',
+            flex: 1,
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            cellStyle: { textAlign: 'center' },
             cellRenderer(params) {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-pencil'
@@ -196,23 +239,31 @@
               icon.style.fontSize = '18px'
               icon.title = 'Edit'
               icon.addEventListener('click', event => {
-                event.stopPropagation() // Prevents triggering row selection
+                event.stopPropagation()
                 params.context.componentParent.onEditInterface(params)
               })
               return icon
             },
-            suppressSizeToFit: true,
-            suppressMenu: true,
-            suppressSorting: true,
-            width: 60,
-            cellStyle: { textAlign: 'center' },
           },
           {
-            headerName: $i18n.t('Current Address'),
-            field: 'ipv4Address',
+            headerName: $i18n.t('Delete'),
+            field: 'delete',
+            flex: 1,
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            cellStyle: { textAlign: 'center' },
+            cellRenderer() {
+              const icon = document.createElement('i')
+              icon.className = 'mdi mdi-delete'
+              icon.style.cursor = 'pointer'
+              icon.style.fontSize = '18px'
+              icon.title = 'Delete'
+              return icon
+            },
           },
         ]
       },
+
       // Table data for interface listing table
       rowData() {
         return this.interfaces?.map(intf => {
@@ -231,7 +282,7 @@
             ipv4Address: this.getIpv4Address(intf, status),
             type: this.getType(intf),
             originalType: intf.type,
-            parentBridge: this.getParentBridge(intf), // delete function dependancy
+            // parentBridge: this.getParentBridge(intf), // delete function dependancy
           }
         })
       },
@@ -313,6 +364,7 @@
 
       async loadSettings() {
         try {
+          this.tableLoading.interfaces = true
           const rpc = await Util.setRpcJsonrpc('admin')
 
           // Prepare promises for fetching data
@@ -363,10 +415,14 @@
         } catch (err) {
           console.error('Error loading interfaces and status:', err)
           Util.handleException(err)
+        } finally {
+          this.tableLoading.interfaces = false
         }
       },
       async InterfacesSelectInitial(item) {
         this.selectedInterface = item
+        const symbolicDev = item.symbolicDev
+        this.symbolicDev = symbolicDev
         await this.getInterfaceStatus(item.symbolicDev)
         await this.getInterfaceArp(item.symbolicDev)
       },
@@ -379,8 +435,7 @@
           this.siStatus = {}
           return
         }
-
-        this.isLoading = true // Assuming `isLoading` is used to show loader in UI
+        this.tableLoading.status = true
 
         try {
           const res1Promise = Rpc.asyncPromise('rpc.networkManager.getStatus', 'INTERFACE_TRANSFER', symbolicDev)
@@ -443,7 +498,7 @@
           console.error('Interface Status Error:', err)
           this.siStatus = {}
         } finally {
-          this.isLoading = false
+          this.tableLoading.status = false
         }
       },
 
@@ -453,7 +508,7 @@
           return
         }
 
-        this.isLoading = true
+        this.tableLoading.arp = true
 
         try {
           const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', symbolicDev)
@@ -493,7 +548,16 @@
           console.error('Failed to fetch ARP table:', err)
           Util.handleException(err)
         } finally {
-          this.isLoading = false
+          this.tableLoading.arp = false
+        }
+      },
+
+      async handleTableRefresh(source) {
+        if (!this.symbolicDev) return
+        if (source === 'status') {
+          await this.getInterfaceStatus(this.symbolicDev)
+        } else if (source === 'arp') {
+          await this.getInterfaceArp(this.symbolicDev)
         }
       },
       async getDynamicRoutingOverview() {
@@ -588,6 +652,8 @@
             this.onSelectInterface({ data: firstNode.data, node: firstNode })
           }
         })
+        // Auto-size all columns
+        this.gridApi.sizeColumnsToFit()
       },
       async onSelectInterface({ data, node }) {
         const index = node ? node.rowIndex : null
@@ -597,6 +663,7 @@
         this.InerfaceDataForVendor = data?.status?.status
         this.selectedInterface = index
         const symbolicDev = data.symbolicDev || data.device
+        this.symbolicDev = symbolicDev
         if (!symbolicDev) return
         await this.getInterfaceStatus(symbolicDev)
         await this.getInterfaceArp(symbolicDev)
