@@ -2,11 +2,7 @@
   <v-form :disabled="disabled" :class="{ 'shared-cmp disabled': disabled }">
     <ValidationObserver ref="common">
       <div class="d-flex align-center" style="gap: 48px">
-        <!-- enabled -->
-        <!-- <v-switch v-model="intf.enabled" :label="$t('interface_enabled')" /> -->
-
         <v-spacer />
-
         <u-alert v-if="boundInterfaces" class="ma-0 py-2" info>
           <span v-html="$t('bound_wan_interface_warning', [boundInterfaces])"></span>
         </u-alert>
@@ -20,7 +16,7 @@
         <!-- name -->
         <v-col>
           <ValidationProvider v-slot="{ errors }" :rules="!isSaving ? interfaceNameRules : ''">
-            <u-text-field v-model="intf.name" :label="$t('interface_name')" maxlength="10" :error-messages="errors">
+            <u-text-field v-model="intf.name" :label="$t('interface_name')" maxlength="400" :error-messages="errors">
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-text-field>
           </ValidationProvider>
@@ -54,29 +50,6 @@
           </v-radio-group>
         </v-col>
       </v-row>
-      <!-- <v-row v-if="isBridged" class="mb-2">
-        <v-col>
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <u-select
-              v-model="intf.bridgedTo"
-              :items="bridgedToOptions"
-              :label="$t('bridged_to')"
-              :error-messages="errors"
-              ￼
-              n-a-t
-              traffic
-              exiting
-              this
-              interface
-              (and
-              bridged
-              peers)
-            >
-              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-            </u-select>
-          </ValidationProvider>
-        </v-col>
-      </v-row> -->
 
       <!-- bridgedTo -->
       <v-row v-if="isBridged && !intf.isWirelessInterface" class="mb-2">
@@ -186,21 +159,12 @@
 <script>
   import { ValidationObserver } from 'vee-validate'
   import { VRow, VCol, VSelect, VSwitch, VCheckbox, VBtnToggle, VBtn, VTabsItems, VTabItem } from 'vuetify/lib'
-
   import { CONFIG_TYPE } from './constants'
   import mixin from './mixin'
-
   import Ipv4 from './ipv4/Ipv4.vue'
   import Ipv6 from './ipv6/Ipv6.vue'
   import Dhcp from './dhcp/Dhcp.vue'
   import Vrrp from './vrrp/Vrrp.vue'
-  // import Qos from './qos/Qos.vue'
-
-  // import OpenVpn from './openvpn/OpenVpn.vue'
-  // import Wireguard from './wireguard/Wireguard.vue'
-  // import Wifi from './wifi/Wifi.vue'
-
-  // import { IpsecNetwork, IpsecAuth, IpsecCipherSuites } from './ipsec'
 
   export default {
     components: {
@@ -271,11 +235,8 @@
             }
           }
         }
-        // const isWiFiBridged = intf.type === 'WIFI' && isBridged
-        // const isWanEnabled = intf.isWan === true
 
         return [
-          // IPv4, IPv6
           ...(isAddressed
             ? [
                 { cmp: 'Ipv4', key: 'ipv4' },
@@ -288,13 +249,6 @@
           // ...(showQos ? [{ cmp: 'Qos', key: 'qos' }] : []),
           // VRRP
           ...(isAddressed ? [{ cmp: 'Vrrp', key: 'vrrp' }] : []),
-          // WIFI
-          // ...(intf.type === 'WIFI' ? [{ cmp: 'Wifi', key: 'wifi' }] : []),
-          // OPENVPN
-          // ...(intf.type === 'OPENVPN' ? [{ cmp: 'OpenVpn', key: 'openvpn' }] : []),
-          // WIREGUARD
-          // ...(intf.type === 'WIREGUARD' ? [{ cmp: 'Wireguard', key: 'wireguard' }] : []),
-          // IPSEC
           ...(intf.type === 'IPSEC'
             ? [
                 { cmp: 'IpsecNetwork', key: 'network' },
@@ -306,29 +260,16 @@
       },
     },
     watch: {
-      // special case if the wireguard type is set to 'TUNNEL', make sure the bound interface is not 'any' (0)
-      'intf.wireguardType': {
-        immediate: true,
-        handler(newWireguardType) {
-          if (newWireguardType === 'TUNNEL' && this.intf.boundInterfaceId === 0) {
-            this.intf.boundInterfaceId = null
-          }
-        },
-      },
       // update VLAN interface `wan` and `natEgress` options based on selected parent interface
-      'intf.boundInterfaceId'(id) {
-        if (!id || !this.intf) {
-          return
-        }
-        if (this.intf.type === 'VLAN') {
-          const parentIntf = this.interfaces.find(({ interfaceId }) => interfaceId === id)
-          this.intf.wan = parentIntf.wan
-        }
-      },
-    },
-    created() {
-      console.log('interfaceStatuses.......common :', this.interfaceStatuses)
-      console.log('Interfaces.......common :', this.interfaces)
+      // 'intf.boundInterfaceId'(id) {
+      //   if (!id || !this.intf) {
+      //     return
+      //   }
+      //   if (this.intf.type === 'VLAN') {
+      //     const parentIntf = this.interfaces.find(({ interfaceId }) => interfaceId === id)
+      //     this.intf.wan = parentIntf.wan
+      //   }
+      // },
     },
     mounted() {
       this.selectedTab = this.tabs.length ? this.tabs[0].key : undefined

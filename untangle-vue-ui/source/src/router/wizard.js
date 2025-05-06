@@ -3,7 +3,7 @@ import wizard from '@/components/setup/Wizard.vue'
 
 export default [
   {
-    path: '/ngfwsetup',
+    path: '/setup',
     name: 'wizard',
     component: wizard,
     meta: { layout: BlankLayout },

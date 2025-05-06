@@ -3,17 +3,17 @@
     <p class="font-weight-bold mt-6 mb-2">{{ $t('VRRP Aliases') }}</p>
     <em v-if="!list || !list.length" class="mr-2">{{ $t('No VRRP Aliases defined') }}</em>
     <v-chip v-for="(item, idx) in list" :key="idx" class="mr-1 mb-1" small close @click:close="onRemoveAlias(idx)">
-      {{ item.ip4Address }}{{ item.v4Prefix || item.v4Prefix === 0 ? `/${item.v4Prefix}` : '' }}
+      {{ item.staticAddress }}{{ item.staticPrefix || item.staticPrefix === 0 ? `/${item.staticPrefix}` : '' }}
     </v-chip>
     <v-chip v-if="!adding" class="mb-1" small color="primary" @click="adding = true">{{ $t('add_alias') }}</v-chip>
 
     <ValidationObserver v-slot="{ passes }" tag="div">
       <v-row v-if="adding" no-gutters align="center" class="mt-2">
         <v-col class="grow">
-          <!-- ip4Address -->
+          <!-- staticAddress -->
           <ValidationProvider v-slot="{ errors }" rules="required|ip|unique_ip_address">
             <u-text-field
-              v-model="alias.ip4Address"
+              v-model="alias.staticAddress"
               :label="$t('address')"
               class="mr-2"
               :error-messages="errors"
@@ -24,9 +24,17 @@
           </ValidationProvider>
         </v-col>
         <v-col class="grow">
-          <!-- v4Prefix -->
+          <!-- staticPrefix -->
           <ValidationProvider v-slot="{ errors }" rules="required">
-            <ipv-4-prefix-autocomplete v-model="alias.v4Prefix" :min="1" :errors="errors" />
+            <u-text-field
+              v-model="alias.staticPrefix"
+              :label="$t('prefix')"
+              placeholder="1-32"
+              type="number"
+              :error-messages="errors"
+            >
+              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+            </u-text-field>
           </ValidationProvider>
         </v-col>
         <v-col class="shrink">
@@ -44,28 +52,24 @@
 <script>
   import cloneDeep from 'lodash/cloneDeep'
   import { extend } from 'vee-validate'
-  import { Ipv4PrefixAutocomplete } from 'vuntangle'
   import defaults from '../../defaults'
   export default {
-    components: {
-      Ipv4PrefixAutocomplete,
-    },
     inject: ['$intf', '$interfaces'],
     props: {
       /**
        * the key under `interface` settings.json where aliases are going to be set
        * e.g.
-       * `v4Aliases` for IPv4 settings
-       * `vrrpV4Aliases` for VRRP
+       * `staticAddress` for vrrp settings
+       * `vrrpAliases` for VRRP
        * */
-      aliasKey: { type: String, default: 'v4Aliases' },
+      aliasKey: { type: String, default: 'vrrpAliases' },
     },
     data({ $intf }) {
       const intf = $intf()
       return {
         adding: false, // boolean telling to show the add fields
-        alias: { ...defaults.v4_alias }, // model for new v4 alias
-        list: intf?.[this.aliasKey]?.length ? cloneDeep(intf[this.aliasKey]) : [],
+        alias: { ...defaults.vrrp_alias }, // model for new vrrp alias
+        list: intf?.[this.vrrpAliases]?.length ? cloneDeep(intf[this.vrrpAliases]) : [],
       }
     },
     computed: {
@@ -76,7 +80,7 @@
       adding(value) {
         if (!value) {
           // reset
-          this.alias = { ...defaults.v4_alias }
+          this.alias = { ...defaults.vrrp_alias }
         }
       },
       list: {
@@ -92,7 +96,7 @@
     },
     methods: {
       /**
-       * Make sure the IPv4 address of the alias being added does not conflict with any other
+       * Make sure the vrrp address of the alias being added does not conflict with any other
        * interfaces.
        *
        * @param {string} value
@@ -108,8 +112,8 @@
           }
           // check v4 aliases
           if (networkInterface.InterfaceAlias?.length) {
-            for (const v4Alias of networkInterface.InterfaceAlias) {
-              if (v4Alias.ip4Address === value) {
+            for (const vrrpAlias of networkInterface.InterfaceAlias) {
+              if (vrrpAlias.staticAddress === value) {
                 return this.$t('address_conflicts_with_interface', [networkInterface.name])
               }
             }

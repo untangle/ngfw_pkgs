@@ -57,15 +57,15 @@
               <!-- v4AutoAddressOverride -->
               <span class="text-grey ma-2">Address Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field v-model="intf.v4AutoAddressOverride" :label="intf.v4Address" :error-messages="errors">
+                <u-text-field v-model="intf.v4AutoAddressOverride" :label="status.v4Address" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col v-show="intf.v4Address" cols="6" class="pt-8">
+            <v-col v-show="status.v4Address" cols="6" class="pt-8">
               <span class="pa-2">
                 <span class="text-grey ma-2">Current :</span>
-                <strong>{{ intf.v4Address }}</strong>
+                <strong>{{ status.v4Address }}</strong>
               </span>
             </v-col>
           </v-row>
@@ -73,12 +73,17 @@
             <v-col cols="6">
               <!-- v4AutoPrefixOverride -->
               <span class="text-grey ma-2">Netmask Override :</span>
-              <ipv-4-prefix-autocomplete v-model="intf.v4AutoPrefixOverride" :min="1" :required="false" />
+              <ipv-4-prefix-autocomplete
+                v-model="intf.v4AutoPrefixOverride"
+                :label="`${status.v4PrefixLength} - ${status.v4Netmask}`"
+                :min="1"
+                :required="false"
+              />
             </v-col>
-            <v-col v-show="intf.v4Netmask" cols="6" class="pt-8">
+            <v-col v-show="status.v4Netmask" cols="6" class="pt-8">
               <span class="pa-2">
                 <span class="text-grey ma-2">Current :</span>
-                <strong> / {{ intf.v4PrefixLength }} - {{ intf.v4Netmask }}</strong>
+                <strong> / {{ status.v4PrefixLength }} - {{ status.v4Netmask }}</strong>
               </span>
             </v-col>
           </v-row>
@@ -88,15 +93,15 @@
               <!-- v4AutoGatewayOverride -->
               <span class="text-grey ma-2">Gateway Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field v-model="intf.v4AutoGatewayOverride" :label="intf.v4Gateway" :error-messages="errors">
+                <u-text-field v-model="intf.v4AutoGatewayOverride" :label="status.v4Gateway" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col v-show="intf.v4Gateway" cols="6" class="pt-8">
+            <v-col v-show="status.v4Gateway" cols="6" class="pt-8">
               <span class="pa-2">
                 <span class="text-grey ma-2">Current :</span>
-                <strong>{{ intf.v4Gateway }}</strong>
+                <strong>{{ status.v4Gateway }}</strong>
               </span>
             </v-col>
           </v-row>
@@ -105,15 +110,15 @@
             <v-col cols="6">
               <span class="text-grey ma-2">Primary DNS Override :</span>
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field v-model="intf.v4AutoDns1Override" :label="intf.v4Dns1" :error-messages="errors">
+                <u-text-field v-model="intf.v4AutoDns1Override" :label="status.v4Dns1" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col v-show="intf.v4Dns1" cols="6" class="pt-8">
+            <v-col v-show="status.v4Dns1" cols="6" class="pt-8">
               <span class="pa-2">
                 <span class="text-grey ma-2">Current :</span>
-                <strong>{{ intf.v4Dns1 }}</strong>
+                <strong>{{ status.v4Dns1 }}</strong>
               </span>
             </v-col>
           </v-row>
@@ -122,15 +127,15 @@
               <span class="text-grey ma-2">Secondary DNS Override :</span>
               <!-- v4AutoDns2Override -->
               <ValidationProvider v-slot="{ errors }" rules="ip">
-                <u-text-field v-model="intf.v4AutoDns2Override" :label="intf.v4Dns2" :error-messages="errors">
+                <u-text-field v-model="intf.v4AutoDns2Override" :label="status.v4Dns2" :error-messages="errors">
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col v-show="intf.v4Dns2" cols="6" class="pt-8">
+            <v-col v-show="status.v4Dns2" cols="6" class="pt-8">
               <span class="pa-2">
                 <span class="text-grey ma-2">Current :</span>
-                <strong>{{ intf.v4Dns2 }}</strong>
+                <strong>{{ status.v4Dns2 }}</strong>
               </span>
             </v-col>
           </v-row>

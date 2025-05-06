@@ -3,7 +3,7 @@
     <p class="font-weight-bold mt-6 mb-2">{{ $t('ipv6_aliases') }}</p>
     <em v-if="!list || !list.length" class="mr-2">{{ $t('no_aliases') }}</em>
     <v-chip v-for="(item, idx) in list" :key="idx" class="mr-1 mb-1" small close @click:close="onRemoveAlias(idx)">
-      {{ item.v6Address }}{{ item.v6Prefix || item.v6Prefix === 0 ? `/${item.v6Prefix}` : '' }}
+      {{ item.staticAddress }}{{ item.staticPrefix || item.staticPrefix === 0 ? `/${item.staticPrefix}` : '' }}
     </v-chip>
     <v-chip v-if="!adding" class="mb-1" small color="primary" @click="adding = true">{{ $t('add_alias') }}</v-chip>
 
@@ -12,7 +12,7 @@
         <v-col class="grow">
           <ValidationProvider v-slot="{ errors }" rules="required|ip_v6|unique_ip_v6_address">
             <u-text-field
-              v-model="alias.v6Address"
+              v-model="alias.staticAddress"
               :label="$t('address')"
               class="mr-2"
               :error-messages="errors"
@@ -25,7 +25,7 @@
         <v-col cols="3">
           <ValidationProvider v-slot="{ errors }" rules="min_value:1|max_value:128">
             <u-text-field
-              v-model="alias.v6Prefix"
+              v-model="alias.staticPrefix"
               :label="$t('prefix')"
               placeholder="1-128"
               type="number"
@@ -113,7 +113,7 @@
           // check v6 aliases
           if (networkInterface.v6Aliases?.length) {
             for (const v6Alias of networkInterface.v6Aliases) {
-              if (v6Alias.v6Address === value) {
+              if (v6Alias.staticAddress === value) {
                 return this.$t('address_conflicts_with_interface', [networkInterface.name])
               }
             }
@@ -127,7 +127,7 @@
 
         // check v6 addresses that are currently being added/edited on this interface
         for (const v6Alias of this.list) {
-          if (v6Alias.v6Address === value) {
+          if (v6Alias.staticAddress === value) {
             return this.$t('address_conflicts_with_current_interface')
           }
         }
