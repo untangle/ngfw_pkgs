@@ -219,7 +219,6 @@
             }
           })
         })
-        console.log('this.networkSettings', this.networkSettings)
         const physicalDevsStore = []
         this.intfOrderArr = []
         this.intfListLength = this.networkSettings.interfaces.list.length

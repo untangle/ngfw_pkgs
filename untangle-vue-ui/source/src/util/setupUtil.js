@@ -60,10 +60,10 @@ const Util = {
       } else if (rpc.context?.getSetupWizardStartupInfo) {
         Object.assign(rpc, rpc.context.getSetupWizardStartupInfo())
       } else {
-        console.warn(`No context found for ${root}`)
+        vuntangle.toast.add(`No context found for ${root}`)
       }
     } catch (error) {
-      console.error(`Error in setRpcJsonrpc for ${root}`, error)
+      vuntangle.toast.add(`Error in setRpcJsonrpc for ${root}`)
     }
 
     return rpc
