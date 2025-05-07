@@ -45,25 +45,28 @@ const Util = {
     return netMask ? netMask[1].split(' - ')[1] : ''
   },
   setRpcJsonrpc(root) {
-    let setupInfo
-    let rpcResponse = null
-
-    try {
-      const rpc = {
-        jsonrpc: new window.JSONRpcClient(`/${root}/JSON-RPC`),
-      }
-
-      setupInfo = rpc.jsonrpc.UvmContext
-        ? rpc.jsonrpc.UvmContext.getSetupStartupInfo()
-        : rpc.jsonrpc.SetupContext.getSetupWizardStartupInfo()
-
-      Object.assign(rpc, setupInfo)
-      rpcResponse = rpc
-    } catch (error) {
-      rpcResponse = null
+    const rpc = {
+      jsonrpc: null,
+      context: null,
+      wizardSettings: {},
     }
 
-    return rpcResponse
+    try {
+      rpc.jsonrpc = new window.JSONRpcClient(`/${root}/JSON-RPC`)
+      rpc.context = rpc.jsonrpc.UvmContext || rpc.jsonrpc.SetupContext
+
+      if (rpc.context?.getSetupStartupInfo) {
+        Object.assign(rpc, rpc.context.getSetupStartupInfo())
+      } else if (rpc.context?.getSetupWizardStartupInfo) {
+        Object.assign(rpc, rpc.context.getSetupWizardStartupInfo())
+      } else {
+        console.warn(`No context found for ${root}`)
+      }
+    } catch (error) {
+      console.error(`Error in setRpcJsonrpc for ${root}`, error)
+    }
+
+    return rpc
   },
 
   authenticate(password, cb) {
@@ -121,7 +124,9 @@ const Util = {
   // save and update wizard settings
   async updateWizardSettings(step) {
     const rpc = this.setRpcJsonrpc('setup')
-    const adminRpc = this.setRpcJsonrpc('admin')
+    const adminRpc = {
+      jsonrpc: new window.JSONRpcClient(`/admin/JSON-RPC`),
+    }
     if (!rpc.wizardSettings.wizardComplete) {
       rpc.wizardSettings.completedStep = step
       if (adminRpc.jsonrpc.UvmContext) {

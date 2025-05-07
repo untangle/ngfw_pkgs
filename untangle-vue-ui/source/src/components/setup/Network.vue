@@ -3,7 +3,7 @@
     <v-card width="1100" class="mx-auto mt-3 pa-3" flat>
       <SetupLayout />
       <div
-        v-if="gridData.length < 2"
+        v-if="!loadingGridData && gridData.length < 2"
         class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
         style="width: 100%; min-height: 300px; border: 1px solid #e0e0e0 !important; display: flex"
       >
@@ -128,12 +128,6 @@
       SetupLayout,
       draggable: VueDraggable,
     },
-    props: {
-      rpc: {
-        type: Object,
-        required: true,
-      },
-    },
     data() {
       return {
         gridData: [],
@@ -149,6 +143,7 @@
         draggedItem: null,
         rpcForAdmin: null,
         interfacesForceContinue: false,
+        loadingGridData: true,
         tableFields: [
           { text: 'Name', value: 'name', sortable: false },
           { text: 'Drag', value: 'drag', sortable: false },
@@ -211,6 +206,7 @@
         return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
       },
       async getSettings() {
+        this.loadingGridData = true
         this.rpcForAdmin = Util.setRpcJsonrpc('admin')
 
         this.networkSettings = await new Promise((resolve, reject) => {
@@ -223,7 +219,7 @@
             }
           })
         })
-
+        console.log('this.networkSettings', this.networkSettings)
         const physicalDevsStore = []
         this.intfOrderArr = []
         this.intfListLength = this.networkSettings.interfaces.list.length
@@ -267,6 +263,7 @@
           physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
         })
         this.deviceStore = physicalDevsStore
+        this.loadingGridData = false
       },
       // used when mapping from comboboxes
       setInterfacesMap(row) {
