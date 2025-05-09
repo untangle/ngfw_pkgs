@@ -46,9 +46,7 @@
       interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
     },
     created() {
-      this.intf = this.device ? this.interfaces.find(i => i.physicalDev === this.device) : {}
-      console.log('interfaceStatuses in edit --- :', this.interfaceStatuses)
-      console.log('intf in edit --- :', this.intf)
+      this.intf = this.device ? this.interfaces.find(i => i.systemDev === this.device) : {}
     },
     methods: {
       async onSave(validate) {
@@ -57,17 +55,15 @@
           if (!isValid) return
           this.isSaving = true
           this.$store.commit('SET_LOADER', true)
-          let resultIntf = false
+          if (Util.isDestroyed(this, this.intf)) {
+            return
+          }
+          const cb = this.$store.state.setEditCallback
+          if (cb) cb()
           // Save interface settings by updating the current interface
-          resultIntf = await this.$store.dispatch('settings/setInterface', this.intf)
+          await this.$store.dispatch('settings/setInterface', this.intf)
           this.$store.commit('SET_LOADER', false)
           this.isSaving = false
-          if (resultIntf) {
-            this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('interface')]))
-          } else {
-            this.$vuntangle.toast.add(this.$t('rolled_back_settings'))
-          }
-
           // return to main interfaces screen on success or error toast to avoid blank screen
           this.$router.push('/settings/network/interfaces')
         } catch (ex) {

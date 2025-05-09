@@ -70,5 +70,15 @@
       intf: ({ $intf }) => $intf(),
       status: ({ $status }) => $status(),
     },
+    watch: {
+      'intf.vrrpAliases'(vrrpAliases) {
+        if (!vrrpAliases) {
+          this.$set(this.intf, 'vrrpAliases', {
+            javaClass: 'java.util.LinkedList',
+            list: [],
+          })
+        }
+      },
+    },
   }
 </script>

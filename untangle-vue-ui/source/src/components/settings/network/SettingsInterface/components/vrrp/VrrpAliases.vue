@@ -11,7 +11,7 @@
       <v-row v-if="adding" no-gutters align="center" class="mt-2">
         <v-col class="grow">
           <!-- staticAddress -->
-          <ValidationProvider v-slot="{ errors }" rules="required|ip|unique_ip_address">
+          <ValidationProvider v-slot="{ errors }" rules="required">
             <u-text-field
               v-model="alias.staticAddress"
               :label="$t('address')"
@@ -51,7 +51,6 @@
 </template>
 <script>
   import cloneDeep from 'lodash/cloneDeep'
-  import { extend } from 'vee-validate'
   import defaults from '../../defaults'
   export default {
     inject: ['$intf', '$interfaces'],
@@ -90,9 +89,6 @@
           this.$set(this.intf, this.aliasKey, newList)
         },
       },
-    },
-    created() {
-      extend('unique_ip_address', this.validateUniqueIpAddress)
     },
     methods: {
       /**

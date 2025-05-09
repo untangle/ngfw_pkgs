@@ -282,11 +282,13 @@
           let invalidTab = null
           // check if tabs fields are valid
           const promises = this.tabs.map(async tab => {
-            tab.valid = await this.$refs[tab.key][0].validate()
-            if (!tab.valid && !invalidTab) {
-              invalidTab = tab.key
+            if (this.selectedTab === tab.key) {
+              tab.valid = await this.$refs[tab.key][0].validate()
+              if (!tab.valid && !invalidTab) {
+                invalidTab = tab.key
+              }
+              return tab.valid
             }
-            return tab.valid
           })
           // returns an array of resolved promises into `true` (valid) or `false` (invalid)
           const tabsValid = await Promise.all(promises)

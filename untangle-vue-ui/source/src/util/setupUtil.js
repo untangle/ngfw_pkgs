@@ -130,6 +130,10 @@ const Util = {
     }
   },
 
+  isDestroyed(...args) {
+    return args.some(arg => typeof arg === 'object' && arg?.$isUnmounted)
+  },
+
   handleException(exception) {
     if (!exception) {
       vuntangle.toast.add(`Null Exception!`)

@@ -70,7 +70,7 @@
     components: { VDataTable, VSimpleCheckbox, VBtn, VIcon, VRow, VCol, VCombobox },
     inject: ['$intf', '$interfaces'],
     props: {
-      options: { type: Array, default: () => [] },
+      options: { type: Object, default: () => {} },
     },
     data() {
       return {

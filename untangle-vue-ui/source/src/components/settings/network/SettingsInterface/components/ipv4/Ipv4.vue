@@ -44,6 +44,14 @@
           this.intf.v4ConfigType = CONFIG_TYPE.STATIC
         }
       },
+      'intf.v4Aliases'(v4Aliases) {
+        if (!v4Aliases) {
+          this.$set(this.intf, 'v4Aliases', {
+            javaClass: 'java.util.LinkedList',
+            list: [],
+          })
+        }
+      },
     },
     mounted() {
       this.previousConfigType = this.intf.v4ConfigType

@@ -23,7 +23,7 @@
     <v-row>
       <v-col>
         <!-- v4PPPoEDns1 -->
-        <ValidationProvider v-slot="{ errors }" :rules="ip">
+        <ValidationProvider v-slot="{ errors }" rules="ip">
           <u-text-field
             v-model="intf.v4PPPoEDns1"
             :label="$t('primary_dns')"

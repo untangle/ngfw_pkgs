@@ -65,7 +65,7 @@
        * e.g.
        * `v4Aliases` for IPv4 settings
        * */
-      aliasKey: { type: String, default: 'v4Aliases' },
+      aliasKey: { type: Array, default: () => ['v4Aliases'] },
     },
 
     data({ $intf, $status }) {
@@ -74,7 +74,7 @@
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v4_alias }, // model for new v4 alias
-        list: status?.[this.aliasKey]?.length ? cloneDeep(intf[this.aliasKey]) : [],
+        list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
       }
     },
     computed: {
@@ -93,7 +93,7 @@
         deep: true,
         handler(newList) {
           // using $set to maintain reactivity in case aliasKey not existing in interface settings
-          this.$set(this.intf, this.aliasKey, newList)
+          this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },
     },
@@ -119,7 +119,6 @@
           if (networkInterface.interfaceId === this.intf.interfaceId) {
             continue
           }
-
           // check v4 aliases
           if (networkInterface.v4Aliases?.length) {
             for (const v4Alias of networkInterface.v4Aliases) {
