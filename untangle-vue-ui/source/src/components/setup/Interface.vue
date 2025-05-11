@@ -170,12 +170,6 @@
     components: {
       SetupLayout,
     },
-    props: {
-      rpc: {
-        type: Object,
-        required: true,
-      },
-    },
     data() {
       return {
         isLoading: false,
