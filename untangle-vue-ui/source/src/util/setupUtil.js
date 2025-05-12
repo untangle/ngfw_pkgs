@@ -224,6 +224,15 @@ const Util = {
     })
   },
 
+  isDestroyed(...args) {
+    for (let i = 0; i < args.length; i++) {
+      if (typeof args[i] === 'object' && args[i]?.destroyed) {
+        return true
+      }
+    }
+    return false
+  },
+
   goToStartPage() {
     location.reload()
   },

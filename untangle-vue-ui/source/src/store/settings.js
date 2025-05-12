@@ -32,9 +32,9 @@ const actions = {
   async getInterfaces({ commit }) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
-      console.log('rpc :', rpc)
       const data = rpc.networkManager.getNetworkSettings().interfaces.list
-      commit('SET_INTERFACES', data)
+      const sortedData = await [...data].sort((a, b) => a.interfaceId - b.interfaceId)
+      commit('SET_INTERFACES', sortedData)
     } catch (err) {
       console.error('getInterfaces error:', err)
     }
@@ -48,7 +48,6 @@ const actions = {
         const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
         return { ...intf, ...status }
       })
-      console.log('InterfaceWithStatus :', interfaceWithStatus)
       commit('SET_INTERFACES_STATUSES', interfaceWithStatus)
     } catch (err) {
       console.error('getInterfaces error:', err)
@@ -72,7 +71,6 @@ const actions = {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
       const data = rpc.networkManager.getNetworkSettings()
-      console.log('data in getNetworkSettings :', data)
       commit('SET_SETTINGS', data)
     } catch (err) {
       console.error('getNetworkSettings error:', err)
@@ -111,18 +109,52 @@ const actions = {
     }
   },
 
-  // updates all interfaces
-  async setInterfaces(interfaces) {
+  // Delete selected Interface and update all interfaces
+  async deleteInterfaces({ state }, interfaces) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
-      const response = rpc.networkManager.getNetworkSettings.setInterface(interfaces)
-      console.log('response setInterfaces:', response)
-      return true
-    } catch (ex) {
-      Util.handleException(ex)
+
+      // Clone settings to avoid mutation
+      const fullSettings = JSON.parse(JSON.stringify(state.settings))
+
+      // Update interface list
+      fullSettings.settings.interfaces = {
+        javaClass: 'java.util.LinkedList',
+        list: interfaces.map(intf => ({
+          ...intf,
+          javaClass: 'com.untangle.uvm.network.InterfaceSettings',
+        })),
+      }
+
+      return new Promise((resolve, reject) => {
+        rpc.networkManager.setNetworkSettings((response, exception) => {
+          if (Util.isDestroyed(this)) return
+
+          if (exception) {
+            const details = [
+              exception.name && `<b>Exception Name:</b> ${exception.name}`,
+              exception.code && `<b>Exception Code:</b> ${exception.code}`,
+              exception.message && `<b>Message:</b> ${exception.message.replace(/\n/g, '<br/>')}`,
+              exception.javaStack && `<b>Java Stack:</b> ${exception.javaStack.replace(/\n/g, '<br/>')}`,
+              exception.stack && `<b>JS Stack:</b> ${exception.stack.replace(/\n/g, '<br/>')}`,
+              `<b>Timestamp:</b> ${new Date().toString()}`,
+            ]
+              .filter(Boolean)
+              .join('<br/><br/>')
+
+            Util.showWarningMessage(exception.message, details)
+            return reject(exception)
+          }
+
+          resolve(response)
+        }, fullSettings.settings)
+      })
+    } catch (err) {
+      Util.handleException(err)
       return false
     }
   },
+
   /**
    * Check if settings are rolled back due to some reason
    * Return the reason to present in the toast.
