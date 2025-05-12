@@ -88,8 +88,6 @@
       list: {
         deep: true,
         handler(newList) {
-          console.log('newList :', newList)
-          console.log('newList :', this.intf)
           this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },

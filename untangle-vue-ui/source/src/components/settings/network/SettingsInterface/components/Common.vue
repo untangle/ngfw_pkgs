@@ -204,10 +204,10 @@
 
       /**
        * used to display a warning message when wan interface gets disabled
-       * @returns {String} the interfaces names bound to this wan
+       * @returns {String} the interfaces names bound to this isWan
        */
       boundInterfaces() {
-        if (!this.intf.isWan || this.intf.enabled) {
+        if (!this.intf.isWan) {
           return ''
         }
         return this.interfaces

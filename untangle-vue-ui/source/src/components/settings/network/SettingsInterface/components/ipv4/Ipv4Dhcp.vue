@@ -171,9 +171,7 @@
       interfaces: ({ $interfaces }) => $interfaces(),
     },
     async created() {
-      console.log('itf in ipv4 DHCP :', this.intf)
       this.rpc = await Util.setRpcJsonrpc('admin')
-      console.log('rpc of admin in renew DHCP lease: *****', this.rpc)
     },
 
     methods: {
