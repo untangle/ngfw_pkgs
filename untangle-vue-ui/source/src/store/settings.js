@@ -114,10 +114,8 @@ const actions = {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
 
-      // Clone settings to avoid mutation
       const fullSettings = JSON.parse(JSON.stringify(state.settings))
 
-      // Update interface list
       fullSettings.settings.interfaces = {
         javaClass: 'java.util.LinkedList',
         list: interfaces.map(intf => ({
@@ -131,18 +129,7 @@ const actions = {
           if (Util.isDestroyed(this)) return
 
           if (exception) {
-            const details = [
-              exception.name && `<b>Exception Name:</b> ${exception.name}`,
-              exception.code && `<b>Exception Code:</b> ${exception.code}`,
-              exception.message && `<b>Message:</b> ${exception.message.replace(/\n/g, '<br/>')}`,
-              exception.javaStack && `<b>Java Stack:</b> ${exception.javaStack.replace(/\n/g, '<br/>')}`,
-              exception.stack && `<b>JS Stack:</b> ${exception.stack.replace(/\n/g, '<br/>')}`,
-              `<b>Timestamp:</b> ${new Date().toString()}`,
-            ]
-              .filter(Boolean)
-              .join('<br/><br/>')
-
-            Util.showWarningMessage(exception.message, details)
+            Util.handleException(exception)
             return reject(exception)
           }
 
@@ -154,7 +141,6 @@ const actions = {
       return false
     }
   },
-
   /**
    * Check if settings are rolled back due to some reason
    * Return the reason to present in the toast.

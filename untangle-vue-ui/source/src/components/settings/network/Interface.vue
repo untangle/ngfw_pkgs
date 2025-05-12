@@ -149,7 +149,9 @@
           {
             headerName: $i18n.t('Id'),
             field: 'interfaceId',
+            sort: 'asc',
             minWidth: 70,
+            comparator: (a, b) => Number(a) - Number(b), //  numeric sort on the basis of ID
           },
           {
             headerName: $i18n.t('device'),
@@ -394,7 +396,8 @@
 
             return intf
           })
-          this.interfaces = mergedInterfaces.sort((a, b) => a.interfaceId - b.interfaceId)
+          this.interfaces = mergedInterfaces
+          console.log('this.interfaces', this.interfaces)
           // Save final result
           this.interfacesStatus = mergedInterfaces
           // Save physical devices store
