@@ -3,7 +3,7 @@
     <v-row>
       <v-col cols="8">
         <!-- v6StaticAddress -->
-        <ValidationProvider v-slot="{ errors }" rules="required|ip_v6">
+        <ValidationProvider v-slot="{ errors }" rules="ip_v6">
           <u-text-field v-model="intf.v6StaticAddress" :label="$t('address')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
@@ -26,7 +26,7 @@
     </v-row>
     <v-row v-if="intf.isWan">
       <v-col>
-        <ValidationProvider v-slot="{ errors }" rules="required">
+        <ValidationProvider v-slot="{ errors }">
           <u-text-field v-model="intf.v6StaticGateway" :label="$t('gateway')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>

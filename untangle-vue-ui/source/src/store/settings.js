@@ -1,6 +1,5 @@
-import cloneDeep from 'lodash/cloneDeep'
+// import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
-// import api from '@/plugins/api'
 import Util from '@/util/setupUtil'
 
 const getDefaultState = () => ({
@@ -13,7 +12,7 @@ const getDefaultState = () => ({
 })
 
 const getters = {
-  settings: state => state.settings || [],
+  settings: state => state.settings.network || [],
   interfaces: state => state.settings?.network?.interfaces || [],
   interfaceStatuses: state => state.settings?.network?.interfaceStatuses || [],
 
@@ -54,19 +53,6 @@ const actions = {
       Util.handleException(err)
     }
   },
-  // async getInterfaceWithStatus(_, { device }) {
-  //   try {
-  //     const rpc = await Util.setRpcJsonrpc('admin')
-  //     const interfacesList = rpc.networkManager.getNetworkSettings().interfaces.list
-  //     const interfaceStatusList = rpc.networkManager.getInterfaceStatus().list
-  //     const intf = interfacesList.find(j => j.physicalDev === device)
-  //     const interfaceStatus = interfaceStatusList.find(i => i.interfaceId === intf.interfaceId)
-  //     return { ...intf, ...interfaceStatus }
-  //   } catch (err) {
-  //     console.error('getInterfaces error:', err)
-  //     Util.handleException(err)
-  //   }
-  // },
   async getNetworkSettings({ commit }) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
@@ -78,30 +64,21 @@ const actions = {
   },
   /**
    * Updates a single interface
-   * Interfaces are bulk updated
    * The save process works like:
    * - apply changes to the edited interface
    * - then save the entire set of interfaces
    */
-  async setInterface({ state }, intf) {
+  async setInterface({ state }, updatedInterface) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
-
-      const interfaces = cloneDeep(state.settings.network.interfaces)
-      console.log('**********')
-      const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
-      console.log('**********')
-
-      // apply changes made to the interface
-      if (updatedInterface) {
-        Object.assign(updatedInterface, { ...intf })
-      } else {
-        interfaces.push(intf)
-      }
-      console.log('****interfaces******', interfaces)
-      // post new interfaces data
-      const response = await rpc.networkManager.setNetworkSettings(interfaces)
-      console.log('response setInterface:', response)
+      const settings = state.settings.settings
+      const updatedIntf = settings.interfaces.list.find(i => i.interfaceId === updatedInterface.interfaceId)
+      Object.keys(updatedIntf).forEach(key => {
+        if (Object.prototype.hasOwnProperty.call(updatedInterface, key)) {
+          updatedIntf[key] = updatedInterface[key]
+        }
+      })
+      await rpc.networkManager.setNetworkSettings(settings)
       return true
     } catch (ex) {
       Util.handleException(ex)

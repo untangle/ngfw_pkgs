@@ -65,9 +65,10 @@
       VCard,
       VrrpAliases,
     },
-    inject: ['$intf'],
+    inject: ['$intf', '$status'],
     computed: {
       intf: ({ $intf }) => $intf(),
+      status: ({ $status }) => $status(),
     },
   }
 </script>

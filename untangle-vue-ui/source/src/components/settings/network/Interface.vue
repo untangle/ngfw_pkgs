@@ -151,7 +151,7 @@
             field: 'interfaceId',
             sort: 'asc',
             minWidth: 70,
-            comparator: (a, b) => Number(a) - Number(b), //  numeric sort on the basis of ID
+            comparator: (a, b) => Number(a) - Number(b), // sort Interfaces  on the basis of ID
           },
           {
             headerName: $i18n.t('device'),
@@ -159,15 +159,28 @@
             valueFormatter: ({ value }) => deviceValueFormatter(value),
             cellClass: 'primary--text',
             comparator: (a, b) => {
-              return a.localeCompare(b, undefined, {
-                numeric: true,
-                sensitivity: 'base',
-              })
+              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
             },
           },
           {
             headerName: $i18n.t('Name'),
             field: 'description',
+            flex: 1,
+            // functionality for tooltip
+            cellRenderer(params) {
+              const value = params.value || '-'
+              const span = document.createElement('span')
+
+              span.innerText = value
+              span.title = value
+              span.style.whiteSpace = 'nowrap'
+              span.style.overflow = 'hidden'
+              span.style.textOverflow = 'ellipsis'
+              span.style.display = 'block'
+              span.style.width = '100%'
+
+              return span
+            },
           },
           {
             headerName: $i18n.t('operational_status'),
@@ -210,7 +223,7 @@
               icon.style.fontSize = '18px'
               icon.title = 'Edit'
               icon.addEventListener('click', event => {
-                event.stopPropagation() // Prevents triggering row selection
+                event.stopPropagation()
                 params.context.componentParent.onEditInterface(params)
               })
               return icon
@@ -258,6 +271,7 @@
           },
         ]
       },
+
       // Table data for interface listing table
       rowData() {
         return this.interfaces?.map(intf => {
