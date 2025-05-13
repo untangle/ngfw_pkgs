@@ -1,8 +1,10 @@
 // import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
+import vuntangle from '@/plugins/vuntangle'
 
 const getDefaultState = () => ({
+  editCallback: null,
   settings: {
     network: {
       interfaces: [],
@@ -22,6 +24,9 @@ const getters = {
 }
 
 const mutations = {
+  setEditCallback(state, cb) {
+    state.editCallback = cb
+  },
   SET_INTERFACES: (state, value) => set(state.settings.network, 'interfaces', value),
   SET_INTERFACES_STATUSES: (state, value) => set(state.settings.network, 'interfaceStatuses', value),
   SET_SETTINGS: (state, value) => set(state.settings, 'settings', value),
@@ -69,6 +74,9 @@ const actions = {
    */
   async setInterface({ state }, updatedInterface) {
     try {
+      if (Util.isDestroyed(this, updatedInterface)) {
+        return
+      }
       const rpc = await Util.setRpcJsonrpc('admin')
       const settings = state.settings.settings
       const updatedIntf = settings.interfaces.list.find(i => i.interfaceId === updatedInterface.interfaceId)
@@ -78,10 +86,10 @@ const actions = {
         }
       })
       await rpc.networkManager.setNetworkSettings(settings)
-      return true
+      vuntangle.toast.add('Network settings saved successfully!')
     } catch (ex) {
+      vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
-      return false
     }
   },
 }

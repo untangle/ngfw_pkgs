@@ -53,28 +53,25 @@
   import defaults from '../../defaults'
 
   export default {
-    inject: ['$intf', '$interfaces'],
+    inject: ['$intf', '$interfaces', '$status'],
 
     props: {
-      /**
-       * the key under `interface` settings.json where aliases are going to be set
-       * e.g.
-       * `v6Aliases` for IPv6 settings
-       * */
-      aliasKey: { type: String, default: 'v6Aliases' },
+      aliasKey: { type: Array, default: () => ['v6Aliases'] },
     },
 
-    data({ $intf }) {
+    data({ $intf, $status }) {
       const intf = $intf()
+      const status = $status()
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v6_alias }, // model for new v6 alias
-        list: intf.v6Aliases?.length ? cloneDeep(intf.v6Aliases) : [],
+        list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
       }
     },
     computed: {
       intf: ({ $intf }) => $intf(),
       interfaces: ({ $interfaces }) => $interfaces(),
+      status: ({ $status }) => $status(),
     },
     watch: {
       adding(value) {
@@ -86,7 +83,7 @@
       list: {
         deep: true,
         handler(newList) {
-          this.$set(this.intf, this.aliasKey, newList)
+          this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },
     },
@@ -138,7 +135,11 @@
         return true
       },
       onAddAlias() {
-        this.list.push(this.alias)
+        this.list.push({
+          ...this.alias,
+          markedForDelete: false,
+          markedForNew: true,
+        })
         this.adding = false
       },
       onRemoveAlias(index) {

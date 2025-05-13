@@ -62,5 +62,11 @@
       intf: ({ $intf }) => $intf(),
       status: ({ $status }) => $status(),
     },
+    mounted() {
+      // Set default value if not already set
+      if (!this.intf.v6StaticPrefixLength) {
+        this.$set(this.intf, 'v6StaticPrefixLength', 64)
+      }
+    },
   }
 </script>

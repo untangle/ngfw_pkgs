@@ -94,7 +94,7 @@
           </ValidationProvider>
         </v-col>
       </v-row>
-      <dhcp-options :options.sync="intf.dhcpOptions" />
+      <dhcp-options :options="intf.dhcpOptions" @update:options="val => (intf.dhcpOptions = val)" />
     </template>
 
     <!-- DHCP Relaying -->

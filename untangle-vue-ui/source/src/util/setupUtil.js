@@ -68,7 +68,10 @@ const Util = {
 
     return rpc
   },
-
+  getDecryptedPassword(encryptedPassword) {
+    const rpc = this.setRpcJsonrpc('admin')
+    return rpc.systemManager.getDecryptedPassword(encryptedPassword)
+  },
   authenticate(password, cb) {
     const url = '/auth/login?url=/admin&realm=Administrator'
 
@@ -133,6 +136,10 @@ const Util = {
         await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
       }
     }
+  },
+
+  isDestroyed(...args) {
+    return args.some(arg => typeof arg === 'object' && arg?.$isUnmounted)
   },
 
   handleException(exception) {

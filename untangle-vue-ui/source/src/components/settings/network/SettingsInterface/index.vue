@@ -60,7 +60,7 @@
       title() {
         // when editing existing intf use original settings for title
         if (this.intf) {
-          return this.$t('edit_interface', [`${this.intf.name} (${this.intf.physicalDev})`])
+          return this.$t('edit_interface', [`${this.intf.name} (${this.intf.systemDev})`])
         }
         // when adding a new intf use cloned intf type for the title
         // switch (this.settingsCopy.type) {
@@ -78,16 +78,9 @@
         return 'Edit Interface'
       },
     },
-    mounted() {
-      console.log('interfaces inside index', this.interfaces)
-      console.log('interfaceStatuses inside index', this.interfaceStatuses)
-    },
     created() {
-      this.intf = this.device ? this.interfaces.find(i => i.physicalDev === this.device) : {}
-      this.status = this.device ? this.interfaceStatuses.find(i => i.physicalDev === this.device) : {}
-      console.log('intf inside index', this.intf)
-      console.log('settings inside index', this.settings)
-      console.log('settingsCopy inside index', this.settingsCopy)
+      this.intf = this.device ? this.interfaces.find(i => i.systemDev === this.device) : {}
+      this.status = this.device ? this.interfaceStatuses.find(i => i.systemDev === this.device) : {}
     },
 
     methods: {

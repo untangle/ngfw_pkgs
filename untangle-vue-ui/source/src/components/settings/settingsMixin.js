@@ -19,11 +19,6 @@ export default {
       invalidSettingsErrors: undefined,
     }
   },
-
-  created() {
-    console.log('settings inside mixin :', this.settings)
-    console.log('settingsCopy inside mixin :', this.settingsCopy)
-  },
   computed: {
     isDirty: ({ settings, settingsCopy, $options }) => !isEqual(settings || $options.defaults, settingsCopy),
   },

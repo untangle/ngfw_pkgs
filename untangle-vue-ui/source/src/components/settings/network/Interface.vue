@@ -639,6 +639,7 @@
        */
       onEditInterface(rowData) {
         this.intf = rowData.data
+        this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
       },
       onGridReady(params) {
