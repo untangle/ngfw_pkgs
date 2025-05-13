@@ -18,22 +18,14 @@
       </v-menu>
     </div>
 
-    <div
-      v-if="tableLoading.interfaces"
-      class="d-flex flex-column align-center justify-center pa-6"
-      style="height: 200px"
-    >
-      <v-progress-circular :size="50" :width="4" color="primary" indeterminate />
-      <div class="mt-2">{{ $t('Loading...') }}</div>
-    </div>
     <u-grid
-      v-else
       id="appliance-interfaces"
       row-node-id="rowNodeId"
       :row-data="rowData"
       :column-defs="colDefs"
       :custom-grid-options="gridOptions"
       :row-actions="rowActions"
+      :fetching="tableLoading.interfaces"
       :framework-components="frameworkComponents"
       v-on="$listeners"
       @row-clicked="onSelectInterface"
@@ -342,12 +334,12 @@
       this.$store.dispatch('settings/getNetworkSettings')
       this.$store.dispatch('settings/getInterfaceStatuses')
     },
-    mounted() {
-      this.loadSettings().then(() => {
-        if (this.interfaces && this.interfaces.length > 0) {
-          this.InterfacesSelectInitial(this.interfaces[0])
-        }
-      })
+    async mounted() {
+      await this.loadSettings()
+
+      if (this.interfaces && this.interfaces.length > 0) {
+        this.InterfacesSelectInitial(this.interfaces[0])
+      }
     },
     methods: {
       startResize() {
