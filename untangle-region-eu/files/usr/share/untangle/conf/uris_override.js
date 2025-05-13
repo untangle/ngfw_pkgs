@@ -79,10 +79,6 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "https://sshrelay.untangle.com/"
-            },
-            {
-                "javaClass": "com.untangle.uvm.UriTranslation",
                 "uri": "https://www.edge.arista.com/api/v1"
             },
             {
