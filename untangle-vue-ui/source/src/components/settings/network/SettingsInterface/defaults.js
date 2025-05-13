@@ -117,11 +117,16 @@ export default {
   v4_alias: {
     staticAddress: '',
     staticPrefix: 24, // use 24 as default
+    markedForDelete: false,
+    markedForNew: false,
     javaClass: 'com.untangle.uvm.network.InterfaceSettings$InterfaceAlias',
   },
   v6_alias: {
     staticAddress: '::1',
     staticPrefix: 64,
+    staticNetmask: '',
+    markedForDelete: false,
+    markedForNew: false,
     javaClass: 'com.untangle.uvm.network.InterfaceSettings$InterfaceAlias',
   },
   vrrp_alias: {
@@ -132,7 +137,7 @@ export default {
   dhcp_options: {
     enabled: true,
     value: '66,1.2.3.4',
-    description: 'no description',
+    description: '[no description]',
     javaClass: 'com.untangle.uvm.network.DhcpOption',
   },
 }

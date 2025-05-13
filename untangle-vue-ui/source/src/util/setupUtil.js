@@ -65,7 +65,10 @@ const Util = {
 
     return rpcResponse
   },
-
+  getDecryptedPassword(encryptedPassword) {
+    const rpc = this.setRpcJsonrpc('admin')
+    return rpc.systemManager.getDecryptedPassword(encryptedPassword)
+  },
   authenticate(password, cb) {
     const url = '/auth/login?url=/admin&realm=Administrator'
 

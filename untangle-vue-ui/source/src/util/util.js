@@ -248,41 +248,6 @@ const util = {
 
     return BigInt(0)
   },
-  /**
-   * When we make an delayed or async call and then try to manipulate an object in the post-call
-   * method, there's a possibility the object will exist but will have been destroyed.
-   * For example, go to a form and quickly click away while an RPC call is going on but before
-   * the resulting method has been called.  Or just very long backend calls that the user clicks away
-   * from out of impatience.  Without this check, subsequent calls to the scoped variables will fail
-   * and won't be apparent unless the user has a developer console enabled.
-   * This method us used to test any number of objects for the destroyed proprty and returns true if any are.
-   */
-  isDestroyed() {
-    for (let i = 0; i < arguments.length; i++) {
-      if (typeof arguments[i] === 'object') {
-        if (arguments[i].destroyed) {
-          return true
-        }
-      }
-    }
-    return false
-  },
-
-  getV4NetmaskMap() {
-    const map = {}
-    const data = this.getV4NetmaskList()
-    data.forEach(function (element) {
-      map[element[0]] = element[1].split('-')[1].trim()
-    })
-    return map
-  },
-
-  getDecryptedPassword(encryptedPassword) {
-    const rpc = {
-      jsonrpc: new window.JSONRpcClient(`/admin/JSON-RPC`),
-    }
-    return rpc.systemManager.getDecryptedPassword(encryptedPassword)
-  },
 }
 
 export default util

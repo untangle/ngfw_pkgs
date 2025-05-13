@@ -56,11 +56,6 @@
     inject: ['$intf', '$interfaces', '$status'],
 
     props: {
-      /**
-       * the key under `interface` settings.json where aliases are going to be set
-       * e.g.
-       * `v6Aliases` for IPv6 settings
-       * */
       aliasKey: { type: Array, default: () => ['v6Aliases'] },
     },
 
@@ -140,7 +135,11 @@
         return true
       },
       onAddAlias() {
-        this.list.push(this.alias)
+        this.list.push({
+          ...this.alias,
+          markedForDelete: false,
+          markedForNew: true,
+        })
         this.adding = false
       },
       onRemoveAlias(index) {

@@ -151,6 +151,8 @@
         this.list.push({
           ...this.alias,
           staticNetmask: Util.getNetmask(this.alias.staticPrefix),
+          markedForDelete: false,
+          markedForNew: true,
         })
         this.adding = false
       },

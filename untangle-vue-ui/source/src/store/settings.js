@@ -85,9 +85,6 @@ const actions = {
           updatedIntf[key] = updatedInterface[key]
         }
       })
-      // if (Util.isDestroyed(this, updatedInterface)) {
-      //   return
-      // }
       await rpc.networkManager.setNetworkSettings(settings)
       vuntangle.toast.add('Network settings saved successfully!')
     } catch (ex) {
