@@ -3,6 +3,10 @@
     <div class="d-flex align-center mb-2">
       <h1 class="headline">{{ $vuntangle.$t('interfaces') }}</h1>
       <v-spacer />
+      <u-btn :disabled="disabled" class="mr-2" @click="dialogOpen">
+        <v-icon small class="ma-2">mdi-shuffle</v-icon>
+        {{ `Remap Interfaces` }}
+      </u-btn>
       <v-menu offset-y left>
         <template #activator="{ on, attrs }">
           <u-btn :disabled="disabled" v-bind="attrs" v-on="on">
@@ -66,6 +70,7 @@
   import interfaceMixin from './interfaceMixin'
   import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
+  import confirmDialog from '@/components/Reusable/RemapInterfaceDialogue.vue'
 
   export default {
     components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
@@ -81,6 +86,7 @@
           },
           suppressRowClickSelection: true,
           rowSelection: 'single',
+          dialog: false,
         },
         // all interfaces status, async fetched
         interfacesStatus: undefined,
@@ -343,6 +349,48 @@
       }
     },
     methods: {
+      confirmDialog({ message, interfaces, onConfirmNo = null, onConfirmYes = null }) {
+        this.$vuntangle.dialog.show({
+          title: this.$t('Remap Interfaces'),
+          component: confirmDialog,
+          componentProps: {
+            alert: { message, interfaces },
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('Done'),
+              handler() {
+                this.onClose()
+                onConfirmYes()
+              },
+            },
+            {
+              name: this.$t('Cancel'),
+              handler() {
+                this.onClose()
+                onConfirmNo()
+              },
+            },
+          ],
+        })
+      },
+      dialogOpen() {
+        console.log('**dialogue**')
+        this.confirmDialog({
+          message: 'hello',
+          interfaces: this.interfaces,
+          onConfirmYes: () => {
+            // TODO implement done functionality
+            console.log('**yes**')
+          },
+          onConfirmNo: () => {
+            // implement Cancel functionality
+            console.log('**No**')
+          },
+        })
+      },
       startResize() {
         this.isResizing = true
         document.addEventListener('mousemove', this.onMouseMove)
@@ -639,7 +687,6 @@
        */
       onEditInterface(rowData) {
         this.intf = rowData.data
-        this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
       },
       onGridReady(params) {
