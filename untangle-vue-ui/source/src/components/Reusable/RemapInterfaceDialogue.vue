@@ -1,99 +1,337 @@
 <template>
-  <!-- <table class="text-body-2">
-    <tbody>
-      <tr>
-        <td class="px-2 text-left" v-html="alert.message"></td>
-      </tr>
-    </tbody>
-  </table> -->
-  <v-card width="1100" class="mx-auto mt-3 pa-3" flat>
-    <div class="ma-2">
-      <br />
+  <v-card class="mx-auto pa-2" max-width="100%" elevation="2">
+    <div style="overflow: auto" class="ma-2">
       <p class="ma-2 font-weight-light faint-color text-h6">
-        This step identifies the external, internal, and other network cards.
+        <strong>How to map Devices with Interfaces</strong>
       </p>
 
       <div class="ma-2">
         <p>
-          <strong>Step 1:</strong>
-          <span class="ml-2">Plug an active cable into one network card to determine which network card it is. </span
+          <strong>Method 1:</strong><b>Drag and Drop</b> <span class="ml-1">the Device to the desired Interface </span
           ><br />
-          <strong>Step 2:</strong>
-          <span class="ml-2">Drag and drop the network card to map it to the desired interface.</span>
-          <br />
-          <strong>Step 3:</strong>
-          <span class="ml-2">Repeat steps 1 and 2 for each network card and then click <i>Next</i>.</span>
+          <strong>Method 2:</strong><b>Click on a Device</b>
+          <span class="ml-1"
+            >to open a combo and choose the desired Device from a list. When another Device is selected the 2 Devices
+            are switched.</span
+          >
         </p>
-      </div>
-      <!-- <v-card class="ma-2">
-        <v-data-table
-          :headers="tableFields"
-          :items="gridData"
-          item-value="id"
-          hide-default-footer
-          class="border border-black"
-        >
-          <template #item="{ item }">
-            <tr class="text-center align-middle">
-              <td v-for="(value, key) in item" :key="key" class="text-center align-center">
-                {{ value }}
-              </td>
-            </tr>
-          </template>
-          <template #body>
-            <draggable
-              v-model="gridData"
-              :group="{ name: 'network-rows', pull: 'clone' }"
-              tag="tbody"
-              handle=".drag-handle"
-              :move="onBeforeDrop"
-              @start="onDragStart"
-              @end="onDragEnd"
-              @drag="onDrag"
-              @drop="onDrop"
-            >
-              <tr v-for="item in gridData" :key="item.id">
-                <td>{{ item.name }}</td>
-                <td>
-                  <v-icon class="drag-handle cursor-grab">mdi-drag</v-icon>
+        <v-card class="ma-2">
+          <v-data-table
+            :headers="tableFields"
+            :items="gridData"
+            item-value="id"
+            hide-default-footer
+            class="border border-black"
+          >
+            <template #item="{ item }">
+              <tr class="text-center align-middle">
+                <td v-for="(value, key) in item" :key="key" class="text-center align-center">
+                  {{ value }}
                 </td>
-                <td>
-                  <v-select
-                    v-model="item.physicalDev"
-                    :items="deviceStore.map(device => device.physicalDev)"
-                    variant="outlined"
-                    density="compact"
-                    class="bg-grey-lighten-4 text-black border border-black d-flex align-center justify-center"
-                    style="width: 80px; height: 36px"
-                    menu-icon="mdi-chevron-down"
-                    @change="newValue => setInterfacesMap(item, newValue)"
-                  ></v-select>
-                </td>
-                <td>
-                  <v-avatar size="12" class="mx-3" :class="statusIcon(item.connected)"></v-avatar>
-                </td>
-                <td>{{ getConnectedStr(item) }}</td>
-                <td>{{ item.macAddress }}</td>
               </tr>
-            </draggable>
-          </template>
-        </v-data-table>
-      </v-card> -->
+            </template>
+            <template #body>
+              <draggable
+                v-model="gridData"
+                :group="{ name: 'network-rows', pull: 'clone' }"
+                tag="tbody"
+                handle=".drag-handle"
+                :move="onBeforeDrop"
+                @start="onDragStart"
+                @end="onDragEnd"
+                @drag="onDrag"
+                @drop="onDrop"
+              >
+                <tr v-for="item in gridData" :key="item.id">
+                  <td>
+                    <v-avatar size="12" class="mx-3" :class="statusIcon(item.connected)"></v-avatar>
+                  </td>
+                  <td>{{ item.name }}</td>
+                  <td>
+                    <v-icon class="drag-handle cursor-grab">mdi-drag</v-icon>
+                  </td>
+                  <td>
+                    <v-select
+                      v-model="item.physicalDev"
+                      :items="deviceStore.map(device => device.physicalDev)"
+                      variant="outlined"
+                      density="compact"
+                      class="bg-grey-lighten-4 text-black border border-black d-flex align-center justify-center"
+                      style="width: 80px; height: 36px"
+                      menu-icon="mdi-chevron-down"
+                      @change="newValue => setInterfacesMap(item, newValue)"
+                    ></v-select>
+                  </td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ item.name }}</td>
+                  <td>{{ getConnectedStr(item) }}</td>
+                  <td>{{ item.macAddress }}</td>
+                </tr>
+              </draggable>
+            </template>
+          </v-data-table>
+        </v-card>
+      </div>
     </div>
   </v-card>
 </template>
 
 <script>
+  import VueDraggable from 'vuedraggable'
+  import { forEach } from 'lodash'
+  import Util from '../../util/setupUtil'
+
   export default {
+    components: {
+      draggable: VueDraggable,
+    },
     props: {
       alert: {
         type: Object,
         required: true,
       },
     },
+    data() {
+      return {
+        gridData: [],
+        tempArray: [],
+        deviceStore: [],
+        intfOrderArr: [],
+        draggingItem: null,
+        intfListLength: 0,
+        enableAutoRefresh: true,
+        bordered: true,
+        draggedIndex: null,
+        draggedItem: null,
+        rpcForAdmin: null,
+        interfacesForceContinue: false,
+        loadingGridData: true,
+        tableFields: [
+          { text: 'Icon', value: 'statusIcon', sortable: false },
+          { text: 'Name', value: 'name', sortable: false },
+          { text: 'Drag', value: 'drag', sortable: false },
+          { text: 'Device', value: 'deviceName', sortable: false },
+          { text: 'Speed', value: 'name', sortable: false },
+          { text: 'Duplex', value: 'name', sortable: false },
+          { text: 'Vendor', value: 'connected', sortable: false },
+          { text: 'MAC Address', value: 'macAddress', sortable: false },
+        ],
+      }
+    },
     created() {
+      this.getSettings()
+      // this.gridData = this.alert.interfaces
       console.log('****', this.alert.message)
       console.log('****', this.alert.interfaces)
     },
+    methods: {
+      async getSettings() {
+        this.loadingGridData = true
+        this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+
+        // this.networkSettings = await new Promise((resolve, reject) => {
+        //   this.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
+        //     if (ex) {
+        //       Util.handleException('Unable to load interface')
+        //       reject(ex)
+        //     } else {
+        //       resolve(result)
+        //     }
+        //   })
+        // })
+        const physicalDevsStore = []
+        this.intfOrderArr = []
+        this.intfListLength = this.alert.interfaces.length
+        const interfaces = []
+        const devices = []
+
+        forEach(this.alert.interfaces, function (intf) {
+          if (!intf.isVlanInterface) {
+            interfaces.push(intf)
+            devices.push({ physicalDev: intf.physicalDev })
+          }
+        })
+
+        const deviceRecords = await new Promise((resolve, reject) => {
+          this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
+            if (ex) {
+              Util.handleException(ex)
+              reject(ex)
+            } else {
+              resolve(result)
+            }
+          })
+        })
+
+        const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
+          map[item.deviceName] = item
+          return map
+        }, {})
+
+        forEach(interfaces, intf => {
+          if (deviceStatusMap[intf.physicalDev]) {
+            Object.keys(deviceStatusMap[intf.physicalDev]).forEach(key => {
+              if (!Object.prototype.hasOwnProperty.call(intf, key)) {
+                this.$set(intf, key, deviceStatusMap[intf.physicalDev][key])
+              }
+            })
+          }
+        })
+        this.gridData = interfaces
+
+        forEach(interfaces, function (intf) {
+          physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
+        })
+        this.deviceStore = physicalDevsStore
+        this.loadingGridData = false
+      },
+      onDragStart(event) {
+        this.tempArray = this.gridData.map(item => ({ ...item }))
+        this.draggingItem = this.gridData[event.oldIndex]
+      },
+
+      onBeforeDrop(event) {
+        const newIndex = event.relatedContext.index
+        const targetItem = this.tempArray[newIndex]
+
+        if (targetItem) {
+          this.draggingItem.physicalDev = targetItem.physicalDev
+          this.setInterfacesMap(this.draggingItem)
+        }
+        return false
+      },
+      onDragEnd(event) {
+        console.log('Drag Ended', event)
+      },
+      onDrag(event) {
+        console.log('Dragging...', event)
+      },
+      onDrop(event) {
+        console.log('Item Dropped', event)
+      },
+
+      getConnectedStr(deviceStatus) {
+        console.log('*** deviceStatus ***', deviceStatus)
+        const connected = deviceStatus.connected
+        const mbit = deviceStatus.mbit
+        const duplex = deviceStatus.duplex
+        const vendor = deviceStatus.vendor
+        const connectedStr =
+          connected === 'CONNECTED' ? 'connected' : connected === 'DISCONNECTED' ? 'disconnected' : 'unknown'
+        const duplexStr =
+          duplex === 'FULL_DUPLEX' ? 'full-duplex' : duplex === 'HALF_DUPLEX' ? 'half-duplex' : 'unknown'
+        return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
+      },
+      // used when mapping from comboboxes
+      setInterfacesMap(row) {
+        const oldValue = row.deviceName
+        const newValue = row.physicalDev
+
+        // Find the source and target records in gridData
+        const sourceRecord = this.gridData.find(currentRow => currentRow.deviceName === oldValue)
+        const targetRecord = this.gridData.find(currentRow => currentRow.deviceName === newValue)
+
+        // make sure sourceRecord & targetRecord are defined
+        if (!sourceRecord || !targetRecord || sourceRecord.name === targetRecord.name) {
+          return
+        }
+
+        // Clone the source and target records to avoid direct mutation
+        const sourceRecordCopy = { ...sourceRecord }
+        const targetRecordCopy = { ...targetRecord }
+
+        // switch data between records (interfaces) - remapping
+        sourceRecord.deviceName = newValue
+        sourceRecord.physicalDev = newValue
+        sourceRecord.macAddress = targetRecordCopy.macAddress
+        sourceRecord.duplex = targetRecordCopy.duplex
+        sourceRecord.vendor = targetRecordCopy.vendor
+        sourceRecord.mbit = targetRecordCopy.mbit
+        sourceRecord.connected = targetRecordCopy.connected
+
+        targetRecord.deviceName = oldValue
+        targetRecord.physicalDev = oldValue
+        targetRecord.macAddress = sourceRecordCopy.macAddress
+        targetRecord.duplex = sourceRecordCopy.duplex
+        targetRecord.vendor = sourceRecordCopy.vendor
+        targetRecord.mbit = sourceRecordCopy.mbit
+        targetRecord.connected = sourceRecordCopy.connected
+      },
+
+      // async autoRefreshInterfaces() {
+      //   if (!this.enableAutoRefresh) {
+      //     return
+      //   }
+      //   const interfaces = []
+
+      //   if (!this.rpcForAdmin) {
+      //     this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+      //   }
+      //   await new Promise((resolve, reject) => {
+      //     this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
+      //       if (ex) {
+      //         Util.handleException('Unable to refresh the interfaces')
+      //         reject(ex)
+      //         return
+      //       }
+      //       if (result === null) {
+      //         return
+      //       }
+      //       this.intfListLength = result.interfaces.length
+      //       result.interfaces.list.forEach(function (intf) {
+      //         if (!intf.isVlanInterface) {
+      //           interfaces.push(intf)
+      //         }
+      //       })
+      //       if (interfaces.length !== this.gridData.length) {
+      //         alert('There are new interfaces, please restart the wizard.')
+      //         return
+      //       }
+      //       this.rpcForAdmin.networkManager.getDeviceStatus((result2, ex2) => {
+      //         if (ex2) {
+      //           Util.handleException(ex2)
+      //           reject(ex2)
+      //           return
+      //         }
+      //         if (result === null) {
+      //           return
+      //         }
+      //         const deviceStatusMap = result2.list.reduce((map, item) => {
+      //           map[item.deviceName] = item
+      //           return map
+      //         }, {})
+
+      //         this.gridData.forEach(function (row) {
+      //           const deviceStatus = deviceStatusMap[row.physicalDev]
+      //           if (deviceStatus !== null) {
+      //             row.connected = deviceStatus.connected
+      //           }
+      //         })
+      //         if (this.enableAutoRefresh) {
+      //           setTimeout(this.autoRefreshInterfaces, 3000)
+      //         }
+      //         resolve()
+      //       })
+      //     })
+      //   })
+      // },
+
+      statusIcon(status) {
+        return status === 'CONNECTED' ? 'green' : 'grey'
+      },
+    },
   }
 </script>
+
+<style scoped>
+  /deep/ th,
+  /deep/ td {
+    border-right: 1px solid #ddd;
+    text-align: center;
+    vertical-align: middle;
+  }
+  /deep/ th:last-child,
+  /deep/ td:last-child {
+    border-right: none;
+  }
+</style>

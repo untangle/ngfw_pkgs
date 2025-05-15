@@ -356,8 +356,8 @@
           componentProps: {
             alert: { message, interfaces },
           },
-          width: 600,
-          height: 500,
+          width: 1000,
+          height: 800,
           buttons: [
             {
               name: this.$t('Done'),
@@ -414,6 +414,7 @@
         try {
           this.tableLoading.interfaces = true
           const rpc = await Util.setRpcJsonrpc('admin')
+          console.log('*rpc in loadSetting :*', rpc)
 
           // Prepare promises for fetching data
           const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
