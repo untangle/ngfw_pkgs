@@ -265,6 +265,7 @@
       },
 
       // Table data for interface listing table
+      // rowData iterate interface object
       rowData() {
         return this.interfaces?.map(intf => {
           const status = this.interfacesStatusMap?.[intf.symbolicDev]
