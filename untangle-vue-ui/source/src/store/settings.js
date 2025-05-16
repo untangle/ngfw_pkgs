@@ -37,7 +37,8 @@ const actions = {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
       const data = rpc.networkManager.getNetworkSettings().interfaces.list
-      commit('SET_INTERFACES', data)
+      const sortedData = await [...data].sort((a, b) => a.interfaceId - b.interfaceId)
+      commit('SET_INTERFACES', sortedData)
     } catch (err) {
       console.error('getInterfaces error:', err)
     }
@@ -91,6 +92,63 @@ const actions = {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
     }
+  },
+
+  // Delete selected Interface and update all interfaces
+  async deleteInterfaces({ state }, interfaces) {
+    try {
+      const rpc = await Util.setRpcJsonrpc('admin')
+
+      const fullSettings = JSON.parse(JSON.stringify(state.settings))
+
+      fullSettings.settings.interfaces = {
+        javaClass: 'java.util.LinkedList',
+        list: interfaces.map(intf => ({
+          ...intf,
+          javaClass: 'com.untangle.uvm.network.InterfaceSettings',
+        })),
+      }
+
+      return new Promise((resolve, reject) => {
+        rpc.networkManager.setNetworkSettings((response, exception) => {
+          if (Util.isDestroyed(this)) return
+
+          if (exception) {
+            Util.handleException(exception)
+            return reject(exception)
+          }
+
+          resolve(response)
+        }, fullSettings.settings)
+      })
+    } catch (err) {
+      Util.handleException(err)
+      return false
+    }
+  },
+  /**
+   * Check if settings are rolled back due to some reason
+   * Return the reason to present in the toast.
+   */
+  settingsRollBackReason(response) {
+    const condition = 'rolled_back_settings'
+    const output = response?.data?.output || ''
+    if (output.includes(condition)) {
+      const conditionIndex = output.indexOf(condition)
+      let errMessage = ''
+      if (conditionIndex !== -1) {
+        const startIndex = conditionIndex + condition.length
+        const endIndex = output.indexOf('\n', startIndex)
+
+        // Extract the substring
+        const result =
+          endIndex === -1 ? output.substring(startIndex).trim() : output.substring(startIndex, endIndex).trim()
+
+        errMessage = result
+      }
+      return errMessage
+    }
+    return null
   },
 }
 
