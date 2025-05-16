@@ -18,6 +18,7 @@
   import mixin from '../mixin'
   import Ipv6Static from './Ipv6Static.vue'
   import Ipv6Aliases from './Ipv6Aliases.vue'
+  import Ipv6Auto from './Ipv6Auto.vue'
 
   export default {
     components: {
@@ -25,6 +26,7 @@
       VRadioGroup,
       Ipv6Static,
       Ipv6Aliases,
+      Ipv6Auto,
     },
     mixins: [mixin],
 
@@ -48,6 +50,14 @@
       'intf.isWan'(isWan) {
         if (!isWan) {
           this.intf.v6ConfigType = CONFIG_TYPE.STATIC
+        }
+      },
+      'intf.v6Aliases'(v6Aliases) {
+        if (!v6Aliases) {
+          this.$set(this.intf, 'v6Aliases', {
+            javaClass: 'java.util.LinkedList',
+            list: [],
+          })
         }
       },
     },

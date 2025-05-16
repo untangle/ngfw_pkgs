@@ -11,7 +11,7 @@
       <v-row v-if="adding" no-gutters align="center" class="mt-2">
         <v-col class="grow">
           <!-- staticAddress -->
-          <ValidationProvider v-slot="{ errors }" rules="required|ip|unique_ip_address">
+          <ValidationProvider v-slot="{ errors }" rules="required">
             <u-text-field
               v-model="alias.staticAddress"
               :label="$t('address')"
@@ -51,8 +51,8 @@
 </template>
 <script>
   import cloneDeep from 'lodash/cloneDeep'
-  import { extend } from 'vee-validate'
   import defaults from '../../defaults'
+  import Util from '../../../../../../util/setupUtil'
   export default {
     inject: ['$intf', '$interfaces'],
     props: {
@@ -69,7 +69,7 @@
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.vrrp_alias }, // model for new vrrp alias
-        list: intf?.[this.vrrpAliases]?.length ? cloneDeep(intf[this.vrrpAliases]) : [],
+        list: intf?.[this.aliasKey]?.list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
       }
     },
     computed: {
@@ -87,55 +87,16 @@
         deep: true,
         handler(newList) {
           // using $set to maintain reactivity in case aliasKey not existing in interface settings
-          this.$set(this.intf, this.aliasKey, newList)
+          this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },
     },
-    created() {
-      extend('unique_ip_address', this.validateUniqueIpAddress)
-    },
     methods: {
-      /**
-       * Make sure the vrrp address of the alias being added does not conflict with any other
-       * interfaces.
-       *
-       * @param {string} value
-       *
-       * @returns {string|boolean}
-       */
-      validateUniqueIpAddress(value) {
-        // check aliases from other network interfaces
-        for (const networkInterface of this.interfaces) {
-          // ignore current interface, those will be checked from the current editable data
-          if (networkInterface.interfaceId === this.intf.interfaceId) {
-            continue
-          }
-          // check v4 aliases
-          if (networkInterface.InterfaceAlias?.length) {
-            for (const vrrpAlias of networkInterface.InterfaceAlias) {
-              if (vrrpAlias.staticAddress === value) {
-                return this.$t('address_conflicts_with_interface', [networkInterface.name])
-              }
-            }
-          }
-          // check v4 static address
-          if (networkInterface.v4StaticAddress === value) {
-            return this.$t('address_conflicts_with_interface', [networkInterface.name])
-          }
-        }
-        // check v4 addresses that are currently being added/edited on this interface
-        for (const v4Alias of this.list) {
-          if (v4Alias.ip4Address === value) {
-            return this.$t('address_conflicts_with_current_interface')
-          }
-        }
-        if (this.intf.v4StaticAddress === value) {
-          return this.$t('address_conflicts_with_current_interface')
-        }
-        return true
-      },
       onAddAlias() {
-        this.list.push(this.alias)
+        this.list.push({
+          ...this.alias,
+          staticNetmask: Util.getNetmask(this.alias.staticPrefix),
+        })
         this.adding = false
       },
       onRemoveAlias(index) {

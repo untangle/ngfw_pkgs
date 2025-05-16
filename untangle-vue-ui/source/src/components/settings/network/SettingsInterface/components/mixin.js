@@ -153,8 +153,6 @@ export default {
 
     /** returns interfaces options to be bridged */
     bridgedToOptions: ({ intf, interfaces, isBridged }) => {
-      console.log('bridgedToOptions interfaces :', interfaces)
-      console.log('bridgedToOptions record :', intf)
       let filter = []
 
       if (isBridged) {

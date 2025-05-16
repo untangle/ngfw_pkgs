@@ -14,7 +14,7 @@
 </template>
 <script>
   import { CONFIG_TYPE } from '../constants'
-  import CommonUtil from '../../../../../../util/util'
+  import util from '../../../../../../util/setupUtil'
   import Ipv4Dhcp from './Ipv4Dhcp.vue'
   import Ipv4Static from './Ipv4Static.vue'
   import Ipv4Pppoe from './Ipv4Pppoe.vue'
@@ -44,6 +44,14 @@
           this.intf.v4ConfigType = CONFIG_TYPE.STATIC
         }
       },
+      'intf.v4Aliases'(v4Aliases) {
+        if (!v4Aliases) {
+          this.$set(this.intf, 'v4Aliases', {
+            javaClass: 'java.util.LinkedList',
+            list: [],
+          })
+        }
+      },
     },
     mounted() {
       this.previousConfigType = this.intf.v4ConfigType
@@ -57,7 +65,7 @@
           if (newValue !== this.CONFIG_TYPE.PPPOE) {
             this.intf.v4PPPoEPassword = null
           } else if (this.intf.v4PPPoEPasswordEncrypted && !this.intf.v4PPPoEPassword) {
-            this.intf.v4PPPoEPassword = CommonUtil.getDecryptedPassword(this.intf.v4PPPoEPasswordEncrypted)
+            this.intf.v4PPPoEPassword = util.getDecryptedPassword(this.intf.v4PPPoEPasswordEncrypted)
           }
         }
       },
