@@ -38,6 +38,7 @@
       :column-defs="colDefs"
       :custom-grid-options="gridOptions"
       :row-actions="rowActions"
+      :fetching="tableLoading.interfaces"
       :framework-components="frameworkComponents"
       v-on="$listeners"
       @row-clicked="onSelectInterface"
@@ -71,6 +72,7 @@
   import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
   import RemapConfirmDialog from '@/components/Reusable/RemapInterfaceDialogue.vue'
+  import ConfirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
   export default {
     components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
@@ -91,6 +93,7 @@
         // all interfaces status, async fetched
         interfacesStatus: undefined,
         physicalDevsStore: [],
+        interfaces: [],
         intfOrderArr: [],
         selectedInterface: null,
         selectedInterfaceIndex: 0,
@@ -152,10 +155,6 @@
       }
     },
     computed: {
-      // interfaces filered and grouped (by category)
-      interfaces() {
-        return this.$store.getters['settings/interfaces']
-      },
       interfaceStatuses() {
         return this.$store.getters['settings/interfaceStatuses']
       },
@@ -165,13 +164,13 @@
           {
             headerName: $i18n.t('Id'),
             field: 'interfaceId',
-            flex: 1,
+            sort: 'asc',
+            minWidth: 70,
+            comparator: (a, b) => Number(a) - Number(b), // sort Interfaces  on the basis of ID
           },
           {
             headerName: $i18n.t('device'),
             field: 'device',
-            sort: 'asc',
-            flex: 1,
             valueFormatter: ({ value }) => deviceValueFormatter(value),
             cellClass: 'primary--text',
             comparator: (a, b) => {
@@ -188,8 +187,7 @@
               const span = document.createElement('span')
 
               span.innerText = value
-              span.title = value // this is for tooltip
-
+              span.title = value
               span.style.whiteSpace = 'nowrap'
               span.style.overflow = 'hidden'
               span.style.textOverflow = 'ellipsis'
@@ -203,41 +201,36 @@
             headerName: $i18n.t('operational_status'),
             field: 'status',
             cellRenderer: 'StatusRenderer',
-            flex: 1,
+            minWidth: 150,
             valueFormatter: ({ value }) => statusValueFormatter(value),
           },
           {
             headerName: $i18n.t('duplex'),
             field: 'duplex',
-            flex: 1,
+            minWidth: 150,
           },
           {
             headerName: $i18n.t('Config'),
             field: 'config',
-            flex: 1,
+            minWidth: 150,
           },
           {
             headerName: $i18n.t('speed'),
             field: 'speed',
-            flex: 1,
+            minWidth: 120,
           },
           {
             headerName: $i18n.t('is WAN'),
             field: 'isWan',
-            flex: 1,
+            minWidth: 100,
           },
           {
             headerName: $i18n.t('Current Address'),
             field: 'ipv4Address',
-            flex: 1,
           },
           {
             headerName: $i18n.t('Edit'),
             field: 'edit',
-            flex: 1,
-            suppressSizeToFit: true,
-            suppressMenu: true,
-            cellStyle: { textAlign: 'center' },
             cellRenderer(params) {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-pencil'
@@ -250,27 +243,52 @@
               })
               return icon
             },
+            suppressSizeToFit: true,
+            width: 100,
+            minWidth: 100,
+            maxWidth: 100,
+            suppressMenu: true,
+            cellStyle: { textAlign: 'center' },
           },
           {
             headerName: $i18n.t('Delete'),
             field: 'delete',
-            flex: 1,
-            suppressSizeToFit: true,
-            suppressMenu: true,
-            cellStyle: { textAlign: 'center' },
-            cellRenderer() {
+            cellRenderer(params) {
               const icon = document.createElement('i')
               icon.className = 'mdi mdi-delete'
-              icon.style.cursor = 'pointer'
               icon.style.fontSize = '18px'
               icon.title = 'Delete'
+              // ----- Conditional logic -----
+              const isVlanInterface = params.data.status?.intf?.isVlanInterface
+              const isMissing = params.data.status?.status?.connected === 'MISSING'
+
+              const isDisabled = !(isVlanInterface || isMissing)
+
+              if (isDisabled) {
+                icon.style.opacity = '0.3'
+                icon.style.cursor = 'not-allowed'
+              } else {
+                icon.style.cursor = 'pointer'
+                icon.addEventListener('click', event => {
+                  event.stopPropagation()
+                  params.context.componentParent.onDeleteInterface(params.data)
+                })
+              }
+
               return icon
             },
+            suppressSizeToFit: true,
+            suppressMenu: true,
+            width: 100,
+            minWidth: 100,
+            maxWidth: 100,
+            cellStyle: { textAlign: 'center' },
           },
         ]
       },
 
       // Table data for interface listing table
+      // rowData iterate interface object
       rowData() {
         return this.interfaces?.map(intf => {
           const status = this.interfacesStatusMap?.[intf.symbolicDev]
@@ -288,7 +306,6 @@
             ipv4Address: this.getIpv4Address(intf, status),
             type: this.getType(intf),
             originalType: intf.type,
-            // parentBridge: this.getParentBridge(intf), // delete function dependancy
           }
         })
       },
@@ -326,7 +343,7 @@
         if (!this.gridApi) return
 
         this.$nextTick(() => {
-          this.gridApi.deselectAll() // 🔹 important: clear old selection
+          this.gridApi.deselectAll() // clear old selection
 
           const node = this.gridApi.getDisplayedRowAtIndex(newIndex)
           if (node) {
@@ -337,14 +354,14 @@
       },
     },
     created() {
-      this.$store.dispatch('settings/getInterfaces') // make a call for getInterfaces to populate interfaces data from store
+      this.$store.dispatch('settings/getInterfaces') // update interfaces in the store
       this.$store.dispatch('settings/getNetworkSettings')
       this.$store.dispatch('settings/getInterfaceStatuses')
     },
-    mounted() {
-      this.loadSettings()
-      // Auto select first row (like `interfacesGridReconfigure`)
-      if (this.interfaces) {
+    async mounted() {
+      await this.loadSettings()
+
+      if (this.interfaces && this.interfaces.length > 0) {
         this.InterfacesSelectInitial(this.interfaces[0])
       }
     },
@@ -377,8 +394,7 @@
         })
       },
       dialogOpen() {
-        console.log('**dialogue**')
-        this.confirmDialog({
+        this.RemapConfirmDialog({
           message: 'hello',
           interfaces: this.interfaces,
           onConfirmYes: () => {
@@ -414,7 +430,6 @@
         try {
           this.tableLoading.interfaces = true
           const rpc = await Util.setRpcJsonrpc('admin')
-          console.log('*rpc in loadSetting :*', rpc)
 
           // Prepare promises for fetching data
           const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
@@ -424,9 +439,6 @@
           const interfaces = networkSettingsPromise?.interfaces?.list || []
           const intfStatusList = interfaceStatusPromise?.list || []
           const devStatusList = deviceStatusPromise?.list || []
-
-          // Filter out VLAN interfaces
-          // const filteredInterfaces = interfaces.filter(intf => !intf.isVlanInterface)
 
           const deviceStatusMap = {}
           devStatusList.forEach(dev => {
@@ -455,7 +467,8 @@
 
             return intf
           })
-
+          this.interfaces = mergedInterfaces
+          console.log('this.interfaces', this.interfaces)
           // Save final result
           this.interfacesStatus = mergedInterfaces
           // Save physical devices store
@@ -609,78 +622,6 @@
           await this.getInterfaceArp(this.symbolicDev)
         }
       },
-      async getDynamicRoutingOverview() {
-        const vm = this // Assuming you're using `this` to refer to the Vue instance
-
-        const runInterfaceTaskDelay = 100
-
-        // Delay the task to wait for dynamic settings to be populated
-        const delayTask = delay => new Promise(resolve => setTimeout(resolve, delay))
-
-        try {
-          await delayTask(runInterfaceTaskDelay)
-
-          const networkInterfaces = vm.settings?.interfaces // Access settings and interfaces from the Vue data
-          const ospfNetworks = vm.ospfNetworks // Assuming ospfNetworks is also part of your Vue data
-
-          if (!networkInterfaces || !ospfNetworks) {
-            await delayTask(runInterfaceTaskDelay)
-            return
-          }
-
-          const warningsMessages = []
-
-          // Check if dynamic routing is enabled
-          if (vm.settings.dynamicRoutingSettings?.enabled) {
-            // Check BGP settings
-            if (vm.settings.dynamicRoutingSettings.bgpEnabled) {
-              if (!vm.settings.dynamicRoutingSettings.bgpNeighbors?.list?.length) {
-                warningsMessages.push('At least one BGP neighbor must be configured.')
-              }
-              if (!vm.settings.dynamicRoutingSettings.bgpNetworks?.list?.length) {
-                warningsMessages.push('No BGP networks configured.')
-              }
-            }
-
-            // Check OSPF settings
-            if (vm.settings.dynamicRoutingSettings.ospfEnabled) {
-              if (!vm.settings.dynamicRoutingSettings.ospfAreas?.list?.length) {
-                warningsMessages.push('At least one OSPF area must be configured.')
-              }
-              if (!vm.settings.dynamicRoutingSettings.ospfNetworks?.list?.length) {
-                warningsMessages.push('No OSPF networks configured.')
-              }
-
-              // Check if at least one OSPF network is reachable
-              let atLeastOneReachableNetwork = false
-              const routingTable = await Rpc.directData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
-
-              routingTable.split('\n').forEach(route => {
-                if (route.includes(' via ') && !route.includes(' zebra ')) {
-                  const routeParts = route.match(/ via ([^\s]+) /)
-                  const gateway = routeParts[1]
-
-                  ospfNetworks.forEach(network => {
-                    if (network.enabled === true && Util.ipMatchesNetwork(gateway, network.network, network.prefix)) {
-                      atLeastOneReachableNetwork = true
-                    }
-                  })
-                }
-              })
-
-              if (!atLeastOneReachableNetwork) {
-                warningsMessages.push('At least one OSPF network must be reachable.')
-              }
-            }
-          }
-
-          // Update the Vue component's state with the warnings
-          vm.dynamicRoutingWarningsMessages = warningsMessages.join('<br>')
-          vm.dynamicRoutingWarningsCount = warningsMessages.length
-        } catch (error) {
-          console.error('Error in getDynamicRoutingOverview:', error)
-        }
-      },
       /**
        * Emits the edit event up to the host app, used for routing based on device
        * @param {Object} params - row click event params
@@ -688,7 +629,83 @@
        */
       onEditInterface(rowData) {
         this.intf = rowData.data
+        this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
+      },
+
+      async onDeleteInterface(rowData) {
+        const isVlanInterface = rowData?.status?.intf?.isVlanInterface
+        const connectedStatus = rowData?.status?.status?.connected
+        const name = rowData?.description || rowData?.status?.intf?.name
+
+        let msg = ''
+        if (isVlanInterface) msg = 'Delete VLAN Interface'
+        else if (connectedStatus === 'MISSING') msg = 'Delete Missing Interface'
+        else msg = 'Delete Interface'
+
+        const confirmed = await this.confirmDialog({
+          message: `Are you sure you want to delete <strong>${name}</strong>?`,
+          title: msg,
+        })
+
+        if (confirmed) {
+          await this.deleteInterface(rowData)
+        }
+      },
+      // In Ext JS saveSettings & setNetworkSettings which used for save overall setting data while updating anything.
+      // In Vue we are deleting interface updating deleteed interfaceslist with setting
+      // So while deleing Interfaces we update setting and pass it to the api call
+
+      async deleteInterface(rowData) {
+        const deletedId = rowData?.interfaceId || rowData?.status?.intf?.interfaceId
+        if (!deletedId) return
+
+        const updatedInterfaces = this.interfaces.filter(intf => intf.interfaceId !== deletedId)
+        this.interfaces = updatedInterfaces
+
+        try {
+          this.tableLoading.interfaces = true
+
+          await this.$store.dispatch('settings/deleteInterfaces', updatedInterfaces)
+
+          this.$vuntangle.toast.add('Network settings saved successfully!')
+          await this.loadSettings()
+        } catch (error) {
+          console.error('Delete failed:', error)
+          this.$vuntangle.toast.add('Failed to delete interface. Please try again.')
+        } finally {
+          this.tableLoading.interfaces = false
+        }
+      },
+
+      confirmDialog({ message }) {
+        return new Promise(resolve => {
+          this.$vuntangle.dialog.show({
+            title: this.$t('Delete VLAN Interface'),
+            component: ConfirmDialog,
+            componentProps: {
+              alert: { message },
+            },
+            width: 600,
+            height: 500,
+            buttons: [
+              {
+                name: this.$t('Yes'),
+                handler() {
+                  this.onClose()
+                  resolve(true)
+                },
+              },
+              {
+                name: this.$t('No'),
+                handler() {
+                  this.onClose()
+                  resolve(false)
+                },
+              },
+            ],
+          })
+        })
       },
       onGridReady(params) {
         this.gridApi = params.api
@@ -707,7 +724,7 @@
       async onSelectInterface({ data, node }) {
         const index = node ? node.rowIndex : null
         if (index !== null && this.selectedInterfaceIndex !== index) {
-          this.selectedInterfaceIndex = index // 🔹 update index so watcher can re-highlight
+          this.selectedInterfaceIndex = index //  update index so watcher can re-highlight
         }
         this.InerfaceDataForVendor = data?.status?.status
         this.selectedInterface = index
