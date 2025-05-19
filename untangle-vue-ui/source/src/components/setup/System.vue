@@ -41,7 +41,7 @@
                 <v-col class="mt-0 pt-0" cols="12">
                   <p class="text-h7 mt-1">Administrators receive email alerts and report summaries</p>
                   <span>Admin Email:</span>
-                  <ValidationProvider v-slot="{ errors }" :rules="{ required: true, email: true }">
+                  <ValidationProvider v-slot="{ errors }" :rules="{ email: true }">
                     <u-text-field v-model="adminEmail" :error-messages="errors">
                       <template v-if="errors.length" #append>
                         <u-errors-tooltip :errors="errors" />
