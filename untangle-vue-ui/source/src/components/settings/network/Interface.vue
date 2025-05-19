@@ -70,7 +70,7 @@
   import interfaceMixin from './interfaceMixin'
   import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
-  import confirmDialog from '@/components/Reusable/RemapInterfaceDialogue.vue'
+  import RemapConfirmDialog from '@/components/Reusable/RemapInterfaceDialogue.vue'
 
   export default {
     components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
@@ -349,10 +349,10 @@
       }
     },
     methods: {
-      confirmDialog({ message, interfaces, onConfirmNo = null, onConfirmYes = null }) {
+      RemapConfirmDialog({ message, interfaces, onConfirmNo = null, onConfirmYes = null }) {
         this.$vuntangle.dialog.show({
           title: this.$t('Remap Interfaces'),
-          component: confirmDialog,
+          component: RemapConfirmDialog,
           componentProps: {
             alert: { message, interfaces },
           },
