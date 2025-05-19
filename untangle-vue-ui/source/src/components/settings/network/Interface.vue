@@ -398,6 +398,7 @@
           message: 'hello',
           interfaces: this.interfaces,
           onConfirmYes: () => {
+            this.loadSettings()
             // TODO implement done functionality
             console.log('**yes**')
           },

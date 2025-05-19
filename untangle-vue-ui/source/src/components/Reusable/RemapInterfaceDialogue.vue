@@ -59,13 +59,13 @@
                       class="bg-grey-lighten-4 text-black border border-black d-flex align-center justify-center"
                       style="width: 80px; height: 36px"
                       menu-icon="mdi-chevron-down"
-                      @change="newValue => setInterfacesMap(item, newValue)"
+                      @change="newValue => setMapInterfaces(item, newValue)"
                     ></v-select>
                   </td>
-                  <td>{{ item.name }}</td>
-                  <td>{{ item.name }}</td>
-                  <td>{{ getConnectedStr(item) }}</td>
-                  <td>{{ item.macAddress }}</td>
+                  <td>{{ item.mbit }}</td>
+                  <td>{{ getDuplex(item) }}</td>
+                  <td>{{ getVendor(item) }}</td>
+                  <td v-html="renderMacAddress(item.macAddress)"></td>
                 </tr>
               </draggable>
             </template>
@@ -128,17 +128,6 @@
       async getSettings() {
         this.loadingGridData = true
         this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-
-        // this.networkSettings = await new Promise((resolve, reject) => {
-        //   this.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
-        //     if (ex) {
-        //       Util.handleException('Unable to load interface')
-        //       reject(ex)
-        //     } else {
-        //       resolve(result)
-        //     }
-        //   })
-        // })
         const physicalDevsStore = []
         this.intfOrderArr = []
         this.intfListLength = this.alert.interfaces.length
@@ -196,7 +185,7 @@
 
         if (targetItem) {
           this.draggingItem.physicalDev = targetItem.physicalDev
-          this.setInterfacesMap(this.draggingItem)
+          this.setMapInterfaces(this.draggingItem)
         }
         return false
       },
@@ -210,20 +199,26 @@
         console.log('Item Dropped', event)
       },
 
-      getConnectedStr(deviceStatus) {
-        console.log('*** deviceStatus ***', deviceStatus)
-        const connected = deviceStatus.connected
-        const mbit = deviceStatus.mbit
-        const duplex = deviceStatus.duplex
-        const vendor = deviceStatus.vendor
-        const connectedStr =
-          connected === 'CONNECTED' ? 'connected' : connected === 'DISCONNECTED' ? 'disconnected' : 'unknown'
-        const duplexStr =
-          duplex === 'FULL_DUPLEX' ? 'full-duplex' : duplex === 'HALF_DUPLEX' ? 'half-duplex' : 'unknown'
-        return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
+      getVendor(item) {
+        const vendor = item.vendor
+        return vendor
+      },
+
+      getDuplex(item) {
+        const duplex = item.duplex
+        return duplex === 'FULL_DUPLEX' ? 'full-duplex' : duplex === 'HALF_DUPLEX' ? 'half-duplex' : 'unknown'
+      },
+
+      renderMacAddress(mac) {
+        if (mac && mac.length > 0) {
+          const searchPrefix = mac.substring(0, 8).replace(/:/g, '')
+          const href = `http://standards.ieee.org/cgi-bin/ouisearch?${searchPrefix}`
+          return `<a href="${href}" target="_blank">${mac}</a>`
+        }
+        return '-'
       },
       // used when mapping from comboboxes
-      setInterfacesMap(row) {
+      setMapInterfaces(row) {
         const oldValue = row.deviceName
         const newValue = row.physicalDev
 
@@ -236,13 +231,15 @@
           return
         }
 
-        // Clone the source and target records to avoid direct mutation
+        // clone phantom records to manipulate (switch) data properly
         const sourceRecordCopy = { ...sourceRecord }
         const targetRecordCopy = { ...targetRecord }
 
         // switch data between records (interfaces) - remapping
         sourceRecord.deviceName = newValue
         sourceRecord.physicalDev = newValue
+        sourceRecord.systemDev = targetRecordCopy.systemDev
+        sourceRecord.symbolicDev = targetRecordCopy.symbolicDev
         sourceRecord.macAddress = targetRecordCopy.macAddress
         sourceRecord.duplex = targetRecordCopy.duplex
         sourceRecord.vendor = targetRecordCopy.vendor
@@ -251,6 +248,8 @@
 
         targetRecord.deviceName = oldValue
         targetRecord.physicalDev = oldValue
+        targetRecord.systemDev = sourceRecordCopy.systemDev
+        targetRecord.symbolicDev = sourceRecordCopy.symbolicDev
         targetRecord.macAddress = sourceRecordCopy.macAddress
         targetRecord.duplex = sourceRecordCopy.duplex
         targetRecord.vendor = sourceRecordCopy.vendor
