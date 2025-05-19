@@ -45,28 +45,25 @@ const Util = {
     return netMask ? netMask[1].split(' - ')[1] : ''
   },
   setRpcJsonrpc(root) {
-    const rpc = {
-      jsonrpc: null,
-      context: null,
-      wizardSettings: {},
-    }
+    let setupInfo
+    let rpcResponse = null
 
     try {
-      rpc.jsonrpc = new window.JSONRpcClient(`/${root}/JSON-RPC`)
-      rpc.context = rpc.jsonrpc.UvmContext || rpc.jsonrpc.SetupContext
-
-      if (rpc.context?.getSetupStartupInfo) {
-        Object.assign(rpc, rpc.context.getSetupStartupInfo())
-      } else if (rpc.context?.getSetupWizardStartupInfo) {
-        Object.assign(rpc, rpc.context.getSetupWizardStartupInfo())
-      } else {
-        vuntangle.toast.add(`No context found for ${root}`)
+      const rpc = {
+        jsonrpc: new window.JSONRpcClient(`/${root}/JSON-RPC`),
       }
+
+      setupInfo = rpc.jsonrpc.UvmContext
+        ? rpc.jsonrpc.UvmContext.getSetupStartupInfo()
+        : rpc.jsonrpc.SetupContext.getSetupWizardStartupInfo()
+
+      Object.assign(rpc, setupInfo)
+      rpcResponse = rpc
     } catch (error) {
-      vuntangle.toast.add(`Error in setRpcJsonrpc for ${root}`)
+      rpcResponse = null
     }
 
-    return rpc
+    return rpcResponse
   },
   getDecryptedPassword(encryptedPassword) {
     const rpc = this.setRpcJsonrpc('admin')
@@ -127,9 +124,7 @@ const Util = {
   // save and update wizard settings
   async updateWizardSettings(step) {
     const rpc = this.setRpcJsonrpc('setup')
-    const adminRpc = {
-      jsonrpc: new window.JSONRpcClient(`/admin/JSON-RPC`),
-    }
+    const adminRpc = this.setRpcJsonrpc('admin')
     if (!rpc.wizardSettings.wizardComplete) {
       rpc.wizardSettings.completedStep = step
       if (adminRpc.jsonrpc.UvmContext) {

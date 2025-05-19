@@ -217,10 +217,10 @@
       async onContinue() {
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
-          window.rpc = Object.assign(window.rpc || {}, {
-            // To avoid invalid security nonce
-            setup: new window.JSONRpcClient('/setup/JSON-RPC').SetupContext,
-          })
+          if (!window.rpc) {
+            window.rpc = new window.JSONRpcClient('/setup/JSON-RPC')
+          }
+          window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
             await new Promise((resolve, reject) => {
@@ -271,7 +271,6 @@
               this.adminEmail,
               this.installType.value,
             )
-            resolve()
           })
         } catch (error) {
           this.$store.commit('SET_LOADER', false) // Stop loader
