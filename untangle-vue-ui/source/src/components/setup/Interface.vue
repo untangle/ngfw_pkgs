@@ -347,7 +347,6 @@
             }
           }
 
-          console.log('*****', adminRpc)
           // save settings and continue to next step
           await new Promise((resolve, reject) => {
             adminRpc?.networkManager.setNetworkSettings((response, ex) => {
