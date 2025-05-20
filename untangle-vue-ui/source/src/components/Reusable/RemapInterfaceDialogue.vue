@@ -124,6 +124,10 @@
       console.log('****', this.alert.interfaces)
     },
     methods: {
+      done() {
+        console.log('updated Interfaces :', this.gridData)
+        this.$emit('confirm', this.gridData)
+      },
       async getSettings() {
         this.loadingGridData = true
         this.rpcForAdmin = Util.setRpcJsonrpc('admin')
