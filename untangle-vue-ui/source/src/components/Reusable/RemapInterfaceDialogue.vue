@@ -121,7 +121,6 @@
     created() {
       this.getSettings()
       // this.gridData = this.alert.interfaces
-      console.log('****', this.alert.message)
       console.log('****', this.alert.interfaces)
     },
     methods: {
@@ -135,10 +134,8 @@
         const devices = []
 
         forEach(this.alert.interfaces, function (intf) {
-          if (!intf.isVlanInterface) {
-            interfaces.push(intf)
-            devices.push({ physicalDev: intf.physicalDev })
-          }
+          interfaces.push(intf)
+          devices.push({ physicalDev: intf.physicalDev })
         })
 
         const deviceRecords = await new Promise((resolve, reject) => {
@@ -256,64 +253,6 @@
         targetRecord.mbit = sourceRecordCopy.mbit
         targetRecord.connected = sourceRecordCopy.connected
       },
-
-      // async autoRefreshInterfaces() {
-      //   if (!this.enableAutoRefresh) {
-      //     return
-      //   }
-      //   const interfaces = []
-
-      //   if (!this.rpcForAdmin) {
-      //     this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      //   }
-      //   await new Promise((resolve, reject) => {
-      //     this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
-      //       if (ex) {
-      //         Util.handleException('Unable to refresh the interfaces')
-      //         reject(ex)
-      //         return
-      //       }
-      //       if (result === null) {
-      //         return
-      //       }
-      //       this.intfListLength = result.interfaces.length
-      //       result.interfaces.list.forEach(function (intf) {
-      //         if (!intf.isVlanInterface) {
-      //           interfaces.push(intf)
-      //         }
-      //       })
-      //       if (interfaces.length !== this.gridData.length) {
-      //         alert('There are new interfaces, please restart the wizard.')
-      //         return
-      //       }
-      //       this.rpcForAdmin.networkManager.getDeviceStatus((result2, ex2) => {
-      //         if (ex2) {
-      //           Util.handleException(ex2)
-      //           reject(ex2)
-      //           return
-      //         }
-      //         if (result === null) {
-      //           return
-      //         }
-      //         const deviceStatusMap = result2.list.reduce((map, item) => {
-      //           map[item.deviceName] = item
-      //           return map
-      //         }, {})
-
-      //         this.gridData.forEach(function (row) {
-      //           const deviceStatus = deviceStatusMap[row.physicalDev]
-      //           if (deviceStatus !== null) {
-      //             row.connected = deviceStatus.connected
-      //           }
-      //         })
-      //         if (this.enableAutoRefresh) {
-      //           setTimeout(this.autoRefreshInterfaces, 3000)
-      //         }
-      //         resolve()
-      //       })
-      //     })
-      //   })
-      // },
 
       statusIcon(status) {
         return status === 'CONNECTED' ? 'green' : 'grey'

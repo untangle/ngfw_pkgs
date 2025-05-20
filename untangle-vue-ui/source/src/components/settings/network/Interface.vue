@@ -366,21 +366,22 @@
       }
     },
     methods: {
-      RemapConfirmDialog({ message, interfaces, onConfirmNo = null, onConfirmYes = null }) {
+      RemapConfirmDialog({ interfaces, onConfirmNo = null, onConfirmYes = null }) {
         this.$vuntangle.dialog.show({
           title: this.$t('Remap Interfaces'),
           component: RemapConfirmDialog,
           componentProps: {
-            alert: { message, interfaces },
+            alert: { interfaces },
           },
           width: 1000,
           height: 800,
           buttons: [
             {
               name: this.$t('Done'),
-              handler() {
-                this.onClose()
-                onConfirmYes()
+              handler({ component }) {
+                component.done()
+                // this.onClose()
+                // onConfirmYes()
               },
             },
             {
@@ -391,18 +392,27 @@
               },
             },
           ],
+          on: {
+            confirm: updatedInterfacesFromRemap => {
+              this.onClose()
+              onConfirmYes(updatedInterfacesFromRemap)
+            },
+          },
         })
       },
       dialogOpen() {
         this.RemapConfirmDialog({
-          message: 'hello',
           interfaces: this.interfaces,
-          onConfirmYes: () => {
-            this.loadSettings()
-            // TODO implement done functionality
+          onConfirmYes: updatedInterfacesFromRemap => {
             console.log('**yes**')
+            this.interfaces = updatedInterfacesFromRemap
           },
+          // () => {
+          //   // TODO implement done functionality
+          //   console.log('**yes**')
+          // },
           onConfirmNo: () => {
+            this.loadSettings()
             // implement Cancel functionality
             console.log('**No**')
           },
