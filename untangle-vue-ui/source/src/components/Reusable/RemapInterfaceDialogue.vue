@@ -7,9 +7,9 @@
 
       <div class="ma-2">
         <p>
-          <strong>Method 1:</strong><b>Drag and Drop</b> <span class="ml-1">the Device to the desired Interface </span
+          <strong>Method 1:</strong><b> Drag and Drop</b><span class="ml-1">the Device to the desired Interface </span
           ><br />
-          <strong>Method 2:</strong><b>Click on a Device</b>
+          <strong>Method 2:</strong><b> Click on a Device</b>
           <span class="ml-1"
             >to open a combo and choose the desired Device from a list. When another Device is selected the 2 Devices
             are switched.</span
@@ -90,6 +90,7 @@
         type: Object,
         required: true,
       },
+      setRef: Function,
     },
     data() {
       return {
@@ -105,7 +106,6 @@
         draggedItem: null,
         rpcForAdmin: null,
         interfacesForceContinue: false,
-        loadingGridData: true,
         tableFields: [
           { text: 'Icon', value: 'statusIcon', sortable: false },
           { text: 'Name', value: 'name', sortable: false },
@@ -118,28 +118,30 @@
         ],
       }
     },
+    mounted() {
+      this.setRef?.(this)
+    },
     created() {
-      this.getSettings()
-      // this.gridData = this.alert.interfaces
-      console.log('****', this.alert.interfaces)
+      this.remapInterfaces()
     },
     methods: {
       done() {
-        console.log('updated Interfaces :', this.gridData)
         this.$emit('confirm', this.gridData)
       },
-      async getSettings() {
-        this.loadingGridData = true
+      async remapInterfaces() {
         this.rpcForAdmin = Util.setRpcJsonrpc('admin')
         const physicalDevsStore = []
         this.intfOrderArr = []
-        this.intfListLength = this.alert.interfaces.length
+        this.intfListLength = this.alert.parentInterfaces.length
         const interfaces = []
         const devices = []
 
-        forEach(this.alert.interfaces, function (intf) {
-          interfaces.push(intf)
-          devices.push({ physicalDev: intf.physicalDev })
+        forEach(this.alert.parentInterfaces, intf => {
+          if (!intf.isVlanInterface) {
+            interfaces.push(intf)
+            devices.push({ physicalDev: intf.physicalDev })
+            this.intfOrderArr.push({ ...intf })
+          }
         })
 
         const deviceRecords = await new Promise((resolve, reject) => {
@@ -173,25 +175,24 @@
           physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
         })
         this.deviceStore = physicalDevsStore
-        this.loadingGridData = false
       },
       onDragStart(event) {
         this.tempArray = this.gridData.map(item => ({ ...item }))
         this.draggingItem = this.gridData[event.oldIndex]
       },
 
-      onBeforeDrop(event) {
-        const newIndex = event.relatedContext.index
-        const targetItem = this.tempArray[newIndex]
-
-        if (targetItem) {
-          this.draggingItem.physicalDev = targetItem.physicalDev
-          this.setMapInterfaces(this.draggingItem)
-        }
-        return false
+      onBeforeDrop() {
+        return true
       },
-      onDragEnd(event) {
-        console.log('Drag Ended', event)
+      onDragEnd() {
+        let i = 0
+        this.gridData.forEach(currentRow => {
+          const intf = this.intfOrderArr[i]
+          currentRow.interfaceId = intf.interfaceId
+          currentRow.name = intf.name
+          i++
+        })
+        return false
       },
       onDrag(event) {
         console.log('Dragging...', event)
@@ -218,44 +219,53 @@
         }
         return '-'
       },
+
       // used when mapping from comboboxes
       setMapInterfaces(row) {
         const oldValue = row.deviceName
         const newValue = row.physicalDev
 
-        // Find the source and target records in gridData
-        const sourceRecord = this.gridData.find(currentRow => currentRow.deviceName === oldValue)
-        const targetRecord = this.gridData.find(currentRow => currentRow.deviceName === newValue)
+        const sourceIndex = this.gridData.findIndex(intf => intf.deviceName === oldValue)
+        const targetIndex = this.gridData.findIndex(intf => intf.deviceName === newValue)
 
-        // make sure sourceRecord & targetRecord are defined
-        if (!sourceRecord || !targetRecord || sourceRecord.name === targetRecord.name) {
+        if (sourceIndex === -1 || targetIndex === -1 || sourceIndex === targetIndex) {
           return
         }
 
-        // clone phantom records to manipulate (switch) data properly
-        const sourceRecordCopy = { ...sourceRecord }
-        const targetRecordCopy = { ...targetRecord }
+        const source = this.gridData[sourceIndex]
+        const target = this.gridData[targetIndex]
 
-        // switch data between records (interfaces) - remapping
-        sourceRecord.deviceName = newValue
-        sourceRecord.physicalDev = newValue
-        sourceRecord.systemDev = targetRecordCopy.systemDev
-        sourceRecord.symbolicDev = targetRecordCopy.symbolicDev
-        sourceRecord.macAddress = targetRecordCopy.macAddress
-        sourceRecord.duplex = targetRecordCopy.duplex
-        sourceRecord.vendor = targetRecordCopy.vendor
-        sourceRecord.mbit = targetRecordCopy.mbit
-        sourceRecord.connected = targetRecordCopy.connected
+        // Only swap properties EXCLUDING 'interfaceId' and 'name'
+        const keysToSwap = Object.keys(source).filter(key => !['interfaceId', 'name'].includes(key))
+        keysToSwap.forEach(key => {
+          const temp = source[key]
+          source[key] = target[key]
+          target[key] = temp
+        })
 
-        targetRecord.deviceName = oldValue
-        targetRecord.physicalDev = oldValue
-        targetRecord.systemDev = sourceRecordCopy.systemDev
-        targetRecord.symbolicDev = sourceRecordCopy.symbolicDev
-        targetRecord.macAddress = sourceRecordCopy.macAddress
-        targetRecord.duplex = sourceRecordCopy.duplex
-        targetRecord.vendor = sourceRecordCopy.vendor
-        targetRecord.mbit = sourceRecordCopy.mbit
-        targetRecord.connected = sourceRecordCopy.connected
+        // Ensure deviceName and physicalDev are updated accordingly
+        source.deviceName = newValue
+        source.physicalDev = newValue
+        target.deviceName = oldValue
+        target.physicalDev = oldValue
+
+        // Apply the same to intfOrderArr
+        const sourceIntf = this.intfOrderArr[sourceIndex]
+        const targetIntf = this.intfOrderArr[targetIndex]
+
+        if (sourceIntf && targetIntf) {
+          const intfKeysToSwap = Object.keys(sourceIntf).filter(key => !['interfaceId', 'name'].includes(key))
+          intfKeysToSwap.forEach(key => {
+            const temp = sourceIntf[key]
+            sourceIntf[key] = targetIntf[key]
+            targetIntf[key] = temp
+          })
+
+          sourceIntf.deviceName = newValue
+          sourceIntf.physicalDev = newValue
+          targetIntf.deviceName = oldValue
+          targetIntf.physicalDev = oldValue
+        }
       },
 
       statusIcon(status) {

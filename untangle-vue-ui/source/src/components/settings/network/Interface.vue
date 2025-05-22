@@ -92,6 +92,7 @@
         },
         // all interfaces status, async fetched
         interfacesStatus: undefined,
+        adminRpc: null,
         physicalDevsStore: [],
         interfaces: [],
         intfOrderArr: [],
@@ -353,7 +354,12 @@
         })
       },
     },
-    created() {
+    async created() {
+      try {
+        this.adminRpc = await Util.setRpcJsonrpc('admin')
+      } catch (ex) {
+        Util.handleException(ex)
+      }
       this.$store.dispatch('settings/getInterfaces') // update interfaces in the store
       this.$store.dispatch('settings/getNetworkSettings')
       this.$store.dispatch('settings/getInterfaceStatuses')
@@ -366,22 +372,38 @@
       }
     },
     methods: {
-      RemapConfirmDialog({ interfaces, onConfirmNo = null, onConfirmYes = null }) {
+      RemapConfirmDialog({ parentInterfaces, onConfirmNo = null, onConfirmYes = null }) {
+        let dialogComponentRef = null
         this.$vuntangle.dialog.show({
           title: this.$t('Remap Interfaces'),
           component: RemapConfirmDialog,
           componentProps: {
-            alert: { interfaces },
+            alert: { parentInterfaces },
+            setRef: ref => (dialogComponentRef = ref),
           },
           width: 1000,
           height: 800,
+          on: {
+            confirm: updatedInterfaces => {
+              this.$nextTick(() => {
+                onConfirmYes(updatedInterfaces)
+              })
+            },
+          },
           buttons: [
             {
               name: this.$t('Done'),
-              handler({ component }) {
-                component.done()
-                // this.onClose()
-                // onConfirmYes()
+              async handler() {
+                if (dialogComponentRef?.done) {
+                  const updatedInterfaces = dialogComponentRef.gridData
+                  try {
+                    await onConfirmYes(updatedInterfaces)
+                    this.onClose()
+                  } catch (e) {
+                    Util.handleException(e)
+                  }
+                  dialogComponentRef.done()
+                }
               },
             },
             {
@@ -392,29 +414,25 @@
               },
             },
           ],
-          on: {
-            confirm: updatedInterfacesFromRemap => {
-              this.onClose()
-              onConfirmYes(updatedInterfacesFromRemap)
-            },
-          },
         })
       },
       dialogOpen() {
+        const originalInterfaces = JSON.stringify(this.interfaces)
         this.RemapConfirmDialog({
-          interfaces: this.interfaces,
-          onConfirmYes: updatedInterfacesFromRemap => {
-            console.log('**yes**')
-            this.interfaces = updatedInterfacesFromRemap
+          parentInterfaces: this.interfaces,
+          onConfirmYes: async updatedInterfacesFromRemap => {
+            try {
+              // Update settings only if remapping is done
+              if (JSON.stringify(updatedInterfacesFromRemap) !== originalInterfaces) {
+                await this.$store.dispatch('settings/setInterfaces', updatedInterfacesFromRemap)
+              }
+              this.loadSettings()
+            } catch (error) {
+              Util.handleException(error)
+            }
           },
-          // () => {
-          //   // TODO implement done functionality
-          //   console.log('**yes**')
-          // },
           onConfirmNo: () => {
             this.loadSettings()
-            // implement Cancel functionality
-            console.log('**No**')
           },
         })
       },
@@ -479,14 +497,12 @@
             return intf
           })
           this.interfaces = mergedInterfaces
-          console.log('this.interfaces', this.interfaces)
           // Save final result
           this.interfacesStatus = mergedInterfaces
           // Save physical devices store
           const physicalDevs = mergedInterfaces.map(intf => [intf.physicalDev, intf.physicalDev])
           this.physicalDevsStore = physicalDevs
         } catch (err) {
-          console.error('Error loading interfaces and status:', err)
           Util.handleException(err)
         } finally {
           this.tableLoading.interfaces = false
@@ -678,11 +694,9 @@
           this.tableLoading.interfaces = true
 
           await this.$store.dispatch('settings/deleteInterfaces', updatedInterfaces)
-
           this.$vuntangle.toast.add('Network settings saved successfully!')
           await this.loadSettings()
         } catch (error) {
-          console.error('Delete failed:', error)
           this.$vuntangle.toast.add('Failed to delete interface. Please try again.')
         } finally {
           this.tableLoading.interfaces = false
