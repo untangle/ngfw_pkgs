@@ -170,6 +170,12 @@
     components: {
       SetupLayout,
     },
+    props: {
+      rpc: {
+        type: Object,
+        required: true,
+      },
+    },
     data() {
       return {
         isLoading: false,
@@ -274,6 +280,7 @@
         }
       },
       async onSave() {
+        const adminRpc = Util.setRpcJsonrpc('admin')
         this.$store.commit('SET_LOADER', true)
         let shouldNavigate = true // Flag to manage navigation
         try {
@@ -306,7 +313,7 @@
                 return
               }
               try {
-                firstWanStatus = await window.rpc.networkManager.getInterfaceStatus(firstWan.interfaceId)
+                firstWanStatus = await adminRpc?.networkManager.getInterfaceStatus(firstWan.interfaceId)
               } catch (e) {
                 Util.handleException(e)
               }
@@ -348,7 +355,7 @@
 
           // save settings and continue to next step
           await new Promise((resolve, reject) => {
-            window.rpc.networkManager.setNetworkSettings((response, ex) => {
+            adminRpc?.networkManager.setNetworkSettings((response, ex) => {
               if (ex) {
                 Util.handleException(ex)
                 reject(ex)
