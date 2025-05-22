@@ -93,7 +93,22 @@ const actions = {
       Util.handleException(ex)
     }
   },
-
+  // update all interfaces
+  async setInterfaces({ state }, interfaces) {
+    try {
+      if (Util.isDestroyed(this, interfaces)) {
+        return
+      }
+      const rpc = await Util.setRpcJsonrpc('admin')
+      const settings = state.settings.settings
+      settings.interfaces.list = interfaces
+      await rpc.networkManager.setNetworkSettings(settings)
+      vuntangle.toast.add('Remap of Interfaces are saved successfully!')
+    } catch (ex) {
+      vuntangle.toast.add('Rolling back settings to previous version.')
+      Util.handleException(ex)
+    }
+  },
   // Delete selected Interface and update all interfaces
   async deleteInterfaces({ state }, interfaces) {
     try {
