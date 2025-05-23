@@ -6,12 +6,27 @@
         <div class="d-flex flex-column align-center mb-2">
           <v-img :src="require('@/assets/arista-logo-white.svg')" contain width="240" height="40" transition="false" />
         </div>
-        <div v-if="status" class="d-flex flex-row">
-          <div v-for="(step, idx) in wizardSteps" :key="idx">
-            <v-btn small text class="mx-2" :disabled="status.completed || wizardSteps.indexOf(currentStep) < idx">
+
+        <!-- Step Wizard -->
+        <div v-if="status" class="d-flex flex-nowrap align-center px-2 text-no-wrap" style="overflow-x: auto">
+          <div v-for="(step, idx) in wizardSteps" :key="idx" class="d-flex align-center">
+            <span
+              class="text-white font-weight-medium text-uppercase px-2 d-inline-block text-center"
+              :class="{
+                'opacity-4 pointer-events-none cursor-default':
+                  status.completed || wizardSteps.indexOf(currentStep) < idx,
+              }"
+            >
               {{ $t(getStepLabel(step)) }}
-            </v-btn>
-            <v-icon v-if="idx < wizardSteps.length - 1" small :disabled="wizardSteps.indexOf(currentStep) <= idx">
+            </span>
+            <v-icon
+              v-if="idx < wizardSteps.length - 1"
+              small
+              class="text-white"
+              :class="{
+                'opacity-4 pointer-events-none cursor-default': wizardSteps.indexOf(currentStep) <= idx,
+              }"
+            >
               mdi-chevron-right
             </v-icon>
           </div>
@@ -31,17 +46,16 @@
 
   export default {
     computed: {
-      ...mapGetters('setup', ['stepper', 'previousStep', 'wizardSteps']), // Map the stepper and previousStep getters
+      ...mapGetters('setup', ['stepper', 'previousStep', 'wizardSteps']),
       currentStep() {
-        // If previousStep exists, determine the next step; otherwise, default to the first step in stepper
         const previousStepIndex = this.wizardSteps.indexOf(this.previousStep)
         if (previousStepIndex >= 0 && previousStepIndex < this.wizardSteps.length) {
           return this.wizardSteps[previousStepIndex]
         }
-        return this.stepper[0] // Default to the first step if no previousStep or invalid index
+        return this.stepper[0]
       },
       status() {
-        return { completed: false } // Example status
+        return { completed: false }
       },
     },
 
@@ -56,3 +70,15 @@
     },
   }
 </script>
+
+<style scoped>
+  .opacity-4 {
+    opacity: 0.4 !important;
+  }
+  .pointer-events-none {
+    pointer-events: none !important;
+  }
+  .cursor-default {
+    cursor: default !important;
+  }
+</style>
