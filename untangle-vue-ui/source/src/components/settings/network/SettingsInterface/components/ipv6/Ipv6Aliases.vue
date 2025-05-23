@@ -62,6 +62,7 @@
     data({ $intf, $status }) {
       const intf = $intf()
       const status = $status()
+      console.log('status', status)
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v6_alias }, // model for new v6 alias
