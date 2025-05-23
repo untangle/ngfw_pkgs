@@ -38,8 +38,8 @@ export default {
       (intf.configType === 'ADDRESSED' || ['WWAN', 'VLAN', 'WIREGUARD', 'OPENVPN'].includes(type)),
 
     /** shows bound to options for specific types and `configType` not `BRIDGED` */
-    // showBoundToOptions: ({ type, intf }) =>
-    //   ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
+    showBoundToOptions: ({ type, intf }) =>
+      ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
 
     /** shows bridged to options only if `configType` is `BRIDGED` */
     isBridged: ({ intf }) => intf.configType === 'BRIDGED',
@@ -142,6 +142,8 @@ export default {
 
     /** returns interfaces options to be bound, based on interface type */
     boundToOptions: ({ intf, type, getBoundableNicsOptions, getBoundableInterfacesOptions }) => {
+      console.log('intf in boundToOptions', intf)
+      console.log('type in boundToOptions', type)
       if (type === 'VLAN') return getBoundableNicsOptions
       if (['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type)) {
         let includeAnyWan = true
@@ -176,6 +178,7 @@ export default {
         const enabledWans = this.interfaces.filter(
           intf => ['NIC', 'WWAN'].includes(intf.type) && intf.wan && intf.enabled,
         )
+        console.log('enabledWans', enabledWans)
         const options = enabledWans.map(wan => ({ value: wan.interfaceId, text: wan.name }))
         if (includeAnyWan) options.unshift({ value: 0, text: this.$vuntangle.$t('any_wan') })
         return options
@@ -187,9 +190,17 @@ export default {
      * used for VLAN bound interface
      * BUG? should NICs be `wan` & `enabled`
      */
-    getBoundableNicsOptions: ({ interfaces }) => {
-      const nics = interfaces.filter(intf => intf.type === 'NIC' || intf.type === 'BRIDGE')
-      return nics.map(nic => ({ value: nic.interfaceId, text: nic.name }))
+    getBoundableNicsOptions: ({ interfaces, intf }) => {
+      const nics = interfaces.filter(i => {
+        return (
+          i.interfaceId !== intf.interfaceId && // exclude current interface (edit mode)
+          !i.isVlanInterface // only real physical/virtual NICs, no VLANs
+        )
+      })
+      return nics.map(nic => ({
+        value: nic.interfaceId,
+        text: nic.name || nic.systemDev || `Interface ${nic.interfaceId}`,
+      }))
     },
 
     /**

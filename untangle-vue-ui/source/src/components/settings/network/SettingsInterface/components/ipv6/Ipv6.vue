@@ -61,5 +61,11 @@
         }
       },
     },
+
+    mounted() {
+      if (!this.intf.v6Aliases) {
+        this.$set(this.intf, 'v6Aliases', { javaClass: 'java.util.LinkedList', list: [] })
+      }
+    },
   }
 </script>

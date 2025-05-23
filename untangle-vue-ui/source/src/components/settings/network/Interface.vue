@@ -3,7 +3,10 @@
     <div class="d-flex align-center mb-2">
       <h1 class="headline">{{ $vuntangle.$t('interfaces') }}</h1>
       <v-spacer />
-      <v-menu offset-y left>
+      <u-btn :disabled="disabled" @click="onAddInterface">
+        {{ $vuntangle.$t('Add Tagged VLAN Interface') }}
+      </u-btn>
+      <!-- <v-menu offset-y left>
         <template #activator="{ on, attrs }">
           <u-btn :disabled="disabled" v-bind="attrs" v-on="on">
             {{ $vuntangle.$t('add_interface') }}
@@ -15,7 +18,7 @@
             <v-list-item-title class="font-weight-bold" v-text="item.text" />
           </v-list-item>
         </v-list>
-      </v-menu>
+      </v-menu> -->
     </div>
 
     <u-grid
@@ -52,7 +55,8 @@
 </template>
 
 <script>
-  import { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon } from 'vuetify/lib'
+  //  VMenu, VList, VListItem, VListItemTitle, VIcon
+  import { VContainer, VSpacer } from 'vuetify/lib'
   import StatusAndArpEntries from '../interface/StatusAndArpEntries.vue'
   import StatusRenderer from './StatusRenderer.vue'
   import interfaceMixin from './interfaceMixin'
@@ -61,7 +65,8 @@
   import ConfirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
   export default {
-    components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
+    // VMenu,VList,VListItem,VListItemTitle,VIcon
+    components: { VContainer, VSpacer, StatusAndArpEntries },
     mixins: [interfaceMixin],
     props: {
       disabled: { type: Boolean, default: false },
@@ -371,6 +376,9 @@
           const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
           const interfaceStatusPromise = rpc.networkManager.getInterfaceStatus()
           const deviceStatusPromise = rpc.networkManager.getDeviceStatus()
+          // vm.set('allowAddInterfaces', Rpc.directData('rpc.networkManager.getNextFreeInterfaceId', result[0]) != -1);
+          // const allowAddInterfaces = await rpc.networkManager.getNextFreeInterfaceId()
+          // console.log('allowAddInterfaces', allowAddInterfaces)
 
           const interfaces = networkSettingsPromise?.interfaces?.list || []
           const intfStatusList = interfaceStatusPromise?.list || []
@@ -568,6 +576,10 @@
         this.intf = rowData.data
         this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
+      },
+
+      onAddInterface() {
+        this.$router.push(`/settings/network/interfaces/add/VLAN`)
       },
 
       async onDeleteInterface(rowData) {

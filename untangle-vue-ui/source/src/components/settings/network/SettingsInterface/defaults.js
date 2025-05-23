@@ -5,8 +5,8 @@ export default {
     configType: 'ADDRESSED',
     enabled: true,
     wan: false,
-    v4ConfigType: 'DISABLED',
-    v6ConfigType: 'DISABLED',
+    v4ConfigType: 'STATIC',
+    v6ConfigType: 'STATIC',
   },
 
   bridge: {

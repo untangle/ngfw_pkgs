@@ -21,6 +21,7 @@
             </u-text-field>
           </ValidationProvider>
         </v-col>
+
         <!-- <v-col>
           <u-text-field v-model="configTypeTranslated" :label="$t('config_type')" />
         </v-col> -->
@@ -40,6 +41,32 @@
           </ValidationProvider>
         </v-col> -->
       </v-row>
+
+      <v-row v-if="type === 'VLAN'">
+        <!-- boundInterfaceId -->
+        <v-col>
+          <ValidationProvider v-slot="{ errors }" :rules="boundInterfaceIdRules">
+            <u-select
+              v-model="intf.boundInterfaceId"
+              :items="boundToOptions"
+              :label="$t('parent_interface')"
+              :error-messages="errors"
+            >
+              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+            </u-select>
+          </ValidationProvider>
+        </v-col>
+
+        <!-- vlanid -->
+        <v-col>
+          <ValidationProvider v-slot="{ errors }" :rules="vlanIdRules">
+            <u-text-field v-model="intf.vlanid" :label="$t('vlan_id')" placeholder="1 - 4094" :error-messages="errors">
+              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
+            </u-text-field>
+          </ValidationProvider>
+        </v-col>
+      </v-row>
+
       <v-row>
         <v-col>
           <span class="text font-weight-medium grey--text text--darken-2 ma-0 pa-0">Config Type</span>
@@ -71,31 +98,6 @@
             >
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </v-select>
-          </ValidationProvider>
-        </v-col>
-      </v-row>
-
-      <v-row v-if="type === 'VLAN'">
-        <!-- boundInterfaceId -->
-        <v-col>
-          <ValidationProvider v-slot="{ errors }" :rules="boundInterfaceIdRules">
-            <u-select
-              v-model="intf.boundInterfaceId"
-              :items="boundToOptions"
-              :label="$t('parent_interface')"
-              :error-messages="errors"
-            >
-              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-            </u-select>
-          </ValidationProvider>
-        </v-col>
-
-        <!-- vlanid -->
-        <v-col>
-          <ValidationProvider v-slot="{ errors }" :rules="vlanIdRules">
-            <u-text-field v-model="intf.vlanid" :label="$t('vlan_id')" placeholder="1 - 4094" :error-messages="errors">
-              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-            </u-text-field>
           </ValidationProvider>
         </v-col>
       </v-row>
@@ -192,9 +194,9 @@
       }
     },
     computed: {
-      configTypeTranslated() {
-        return this.$t(this.intf.configType.toLowerCase())
-      },
+      // configTypeTranslated() {
+      //   return this.$t(this.intf.configType.toLowerCase())
+      // },
       intf: ({ $intf }) => $intf(),
       interfaces: ({ $interfaces }) => $interfaces(),
       interfaceStatuses: ({ $interfaceStatuses }) => $interfaceStatuses(),
@@ -206,6 +208,10 @@
        * used to display a warning message when wan interface gets disabled
        * @returns {String} the interfaces names bound to this isWan
        */
+
+      isEditMode() {
+        return !!this.intf.interfaceId // if exists, it's Edit mode
+      },
       boundInterfaces() {
         if (!this.intf.isWan) {
           return ''
@@ -261,18 +267,44 @@
     },
     watch: {
       // update VLAN interface `wan` and `natEgress` options based on selected parent interface
-      // 'intf.boundInterfaceId'(id) {
-      //   if (!id || !this.intf) {
-      //     return
-      //   }
-      //   if (this.intf.type === 'VLAN') {
-      //     const parentIntf = this.interfaces.find(({ interfaceId }) => interfaceId === id)
-      //     this.intf.wan = parentIntf.wan
-      //   }
-      // },
+      'intf.boundInterfaceId'(id) {
+        if (!id || !this.intf) {
+          return
+        }
+        if (this.intf.type === 'VLAN') {
+          const parentIntf = this.interfaces.find(({ interfaceId }) => interfaceId === id)
+          this.intf.wan = parentIntf.wan
+        }
+      },
+      'intf.isWan'(isWan) {
+        if (!this.isEditMode) {
+          if (isWan) {
+            this.intf.v4NatEgressTraffic = true
+            this.intf.v4NatIngressTraffic = false
+          } else {
+            this.intf.v4NatEgressTraffic = false
+            this.intf.v4NatIngressTraffic = false
+          }
+        }
+      },
     },
     mounted() {
       this.selectedTab = this.tabs.length ? this.tabs[0].key : undefined
+      if (!this.isEditMode && this.tabs.some(t => t.key === 'ipv4')) {
+        this.selectedTab = 'ipv4'
+
+        // Set default config type and aliases
+        if (!this.intf.v4ConfigType) {
+          this.intf.v4ConfigType = CONFIG_TYPE.STATIC
+        }
+        if (!this.intf.v4Aliases) {
+          this.$set(this.intf, 'v4Aliases', { javaClass: 'java.util.LinkedList', list: [] })
+        }
+        // LOGIC FOR NAT TRAFFIC
+        // NAT defaults based on isWan for new interfaces
+        this.intf.v4NatEgressTraffic = this.intf.isWan
+        this.intf.v4NatIngressTraffic = false
+      }
     },
 
     methods: {

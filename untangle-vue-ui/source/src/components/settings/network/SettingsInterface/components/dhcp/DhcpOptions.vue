@@ -70,10 +70,19 @@
     data({ $intf, $status }) {
       const intf = $intf()
       const status = $status()
+
+      // Ensure dhcpOptions exists on the intf object
+      if (!intf.dhcpOptions) {
+        intf.dhcpOptions = {
+          javaClass: 'java.util.LinkedList',
+          list: [],
+        }
+      }
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.dhcp_options },
-        list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
+        // list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
+        list: status?.dhcpOptions?.list?.length ? cloneDeep(intf.dhcpOptions.list) : [],
         CONFIG_TYPE,
       }
     },
@@ -95,6 +104,12 @@
           this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },
+    },
+    mounted() {
+      if (!this.intf.interfaceId && this.list.length === 0) {
+        this.adding = true
+        this.alias = { ...defaults.dhcp_options }
+      }
     },
     methods: {
       onAddOption() {

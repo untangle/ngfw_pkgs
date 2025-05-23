@@ -151,19 +151,22 @@ export default {
   },
   directData(...args) {
     const commandResult = this.getCommand(...args)
-    if (!commandResult.context) {
+
+    if (commandResult.context == null) {
       if (typeof Util?.handleException === 'function') {
-        Util.handleException(commandResult.error?.toString())
+        Util.handleException(commandResult.error?.toString?.() || String(commandResult.error))
       }
-      throw new Error(commandResult.error)
+      throw commandResult.error // keep as original object, like Ext JS
     }
 
     try {
       return typeof commandResult.context === 'function'
-        ? commandResult.context(...commandResult.args)
+        ? commandResult.context.apply(null, commandResult.args)
         : commandResult.context
     } catch (ex) {
-      this.processException(null, ex, true)
+      if (typeof this.processException === 'function') {
+        this.processException(null, ex, true)
+      }
       return null
     }
   },
