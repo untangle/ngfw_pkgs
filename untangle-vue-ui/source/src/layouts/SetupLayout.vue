@@ -48,11 +48,12 @@
     computed: {
       ...mapGetters('setup', ['stepper', 'previousStep', 'wizardSteps']),
       currentStep() {
+        // If previousStep exists, determine the next step; otherwise, default to the first step in stepper
         const previousStepIndex = this.wizardSteps.indexOf(this.previousStep)
         if (previousStepIndex >= 0 && previousStepIndex < this.wizardSteps.length) {
           return this.wizardSteps[previousStepIndex]
         }
-        return this.stepper[0]
+        return this.stepper[0] // Default to the first step if no previousStep or invalid index
       },
       status() {
         return { completed: false }
