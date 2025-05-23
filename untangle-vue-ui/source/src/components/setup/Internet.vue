@@ -38,7 +38,7 @@
                     <ValidationProvider v-slot="{ errors }" rules="required">
                       <v-card-text class="pa-0 mt-2">Netmask:</v-card-text>
                       <v-autocomplete
-                        v-model="v4StaticPrefixModel"
+                        v-model="wan.v4StaticPrefix"
                         :items="v4NetmaskList"
                         outlined
                         dense
@@ -210,23 +210,28 @@
       }
     },
     computed: {
-      v4StaticPrefixModel: {
-        get() {
-          return this.wan.v4StaticPrefix ?? 24
-        },
-        set(value) {
-          this.wan.v4StaticPrefix = value
-        },
-      },
       passwordRequired() {
         return this.$store.state.setup?.status?.step ? this.$store.state.setup?.status.step === 'system' : true
       },
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
     },
+    watch: {
+      'wan.v4StaticPrefix': {
+        immediate: true,
+        handler(newVal) {
+          if (!newVal || newVal.value == null) {
+            const defaultItem = this.v4NetmaskList.find(item => item.value === 24)
+            if (defaultItem) {
+              this.wan.v4StaticPrefix = defaultItem
+            }
+          }
+        },
+      },
+    },
     created() {
       this.rpc = Util.setRpcJsonrpc('setup')
+      this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      // this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
       this.remote = this.rpc.remote
     },
     mounted() {
