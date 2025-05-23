@@ -188,7 +188,7 @@
           if (!wireless) {
             this.$vuntangle.confirm.show({
               title: `<i class="mdi mdi-alert" style="font-style: normal;"> ${this.$t('warning')}</i>`,
-              message: this.$t(`Loading User Interface...`),
+              message: this.$t(`No wireless interfaces found. Do you want to continue the setup?`),
               confirmLabel: this.$t('yes'),
               cancelLabel: this.$t('no'),
               action: async resolve => {
@@ -256,6 +256,7 @@
 
       async nextPage() {
         const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+        await Util.updateWizardSettings(this.currentStep)
         await this.setShowStep(this.wizardSteps[currentStepIndex + 1])
         await this.setShowPreviousStep(this.wizardSteps[currentStepIndex + 1])
       },
@@ -274,6 +275,7 @@
           this.saving = false
           await Promise.resolve()
           this.nextPage()
+          return
         }
         this.$store.commit('SET_LOADER', true)
         if (!this.rpc || !this.rpc.networkManager) {
