@@ -356,8 +356,7 @@
           let nextDisabled = true
           this.$store.commit('SET_LOADER', true)
 
-          await this.$vuntangle.toast.add(this.$t('Testing Connectivity...'))
-
+          await this.$vuntangle.toast.add('Testing Connectivity...')
           const result = await this.rpcForAdmin.connectivityTester.getStatus()
 
           if (!result.tcpWorking && !result.dnsWorking) {
@@ -458,7 +457,7 @@
         try {
           await this.$store.commit('SET_LOADER', true)
           // save settings before
-          self.$vuntangle.toast.add(self.$t('Saving settings ...'))
+          this.$vuntangle.toast.add('Saving settings ...')
           this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
             if (ex) {
               Util.handleException(self.$t('Unable to set Network Settings.'))
@@ -467,7 +466,7 @@
             }
             // then force the DHCP lease renew just in case
             // setNetworkSettings is not guaranteed to restart networking
-            self.$vuntangle.toast.add(self.$t('Renewing DHCP Lease...'))
+            this.$vuntangle.toast.add('Renewing DHCP Lease...')
             self.rpcForAdmin.networkManager.renewDhcpLease((r, e) => {
               if (e) {
                 Util.handleException(e)
