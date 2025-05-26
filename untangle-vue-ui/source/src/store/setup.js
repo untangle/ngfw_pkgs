@@ -88,7 +88,7 @@ const actions = {
             'Interfaces',
             'Internet',
             'InternalNetwork',
-            'Wireless',
+            // 'Wireless',
             'AutoUpgrades',
             'Complete',
           ]
