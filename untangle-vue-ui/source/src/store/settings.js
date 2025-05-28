@@ -103,7 +103,7 @@ const actions = {
       const settings = state.settings.settings
       settings.interfaces.list = interfaces
       await rpc.networkManager.setNetworkSettings(settings)
-      vuntangle.toast.add('Remap of Interfaces are saved successfully!')
+      vuntangle.toast.add('Successfully saved interface remapping.')
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
