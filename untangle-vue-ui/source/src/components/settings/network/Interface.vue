@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex flex-column pa-2" fluid>
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
     <div class="d-flex align-center mb-2">
       <h1 class="headline">{{ $vuntangle.$t('interfaces') }}</h1>
       <v-spacer />
