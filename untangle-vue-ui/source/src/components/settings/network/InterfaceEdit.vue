@@ -66,17 +66,21 @@
           this.$store.commit('SET_LOADER', true)
 
           const intfToSave = this.$refs.component.settingsCopy
-          if (Util.isDestroyed(this, intfToSave)) return
-
+          if (Util.isDestroyed(this, intfToSave)) {
+            this.isSaving = false
+            this.$store.commit('SET_LOADER', false)
+            return
+          }
           const cb = this.$store.state.setEditCallback
           if (cb) cb()
 
           await this.$store.dispatch('settings/setInterface', intfToSave)
-
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)
           this.$router.push('/settings/network/interfaces')
         } catch (ex) {
+          this.isSaving = false
+          this.$store.commit('SET_LOADER', false)
           Util.handleException(ex)
         }
       },

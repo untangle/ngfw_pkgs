@@ -59,14 +59,11 @@
       aliasKey: { type: Array, default: () => ['v6Aliases'] },
     },
 
-    data({ $intf, $status }) {
+    data({ $intf }) {
       const intf = $intf()
-      const status = $status()
-      console.log('status', status)
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v6_alias }, // model for new v6 alias
-        // list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
         list: intf?.[this.aliasKey]?.list ? cloneDeep(intf[this.aliasKey].list) : [],
       }
     },

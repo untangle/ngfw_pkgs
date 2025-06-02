@@ -21,33 +21,14 @@
             </u-text-field>
           </ValidationProvider>
         </v-col>
-
-        <!-- <v-col>
-          <u-text-field v-model="configTypeTranslated" :label="$t('config_type')" />
-        </v-col> -->
-
-        <!-- boundInterfaceId -->
-        <!-- <v-col v-if="showBoundToOptions">
-          <ValidationProvider v-slot="{ errors }" rules="required">
-            <u-select
-              v-model="intf.boundInterfaceId"
-              :items="boundToOptions"
-              i-p-s-e-c
-              :label="$t('bound_to')"
-              :error-messages="errors"
-            >
-              <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
-            </u-select>
-          </ValidationProvider>
-        </v-col> -->
       </v-row>
 
       <v-row v-if="type === 'VLAN'">
-        <!-- boundInterfaceId -->
+        <!-- vlanParent -->
         <v-col>
-          <ValidationProvider v-slot="{ errors }" :rules="boundInterfaceIdRules">
+          <ValidationProvider v-slot="{ errors }" :rules="vlanParentRules">
             <u-select
-              v-model="intf.boundInterfaceId"
+              v-model="intf.vlanParent"
               :items="boundToOptions"
               :label="$t('parent_interface')"
               :error-messages="errors"
@@ -57,10 +38,10 @@
           </ValidationProvider>
         </v-col>
 
-        <!-- vlanid -->
+        <!-- vlanTag -->
         <v-col>
-          <ValidationProvider v-slot="{ errors }" :rules="vlanIdRules">
-            <u-text-field v-model="intf.vlanid" :label="$t('vlan_id')" placeholder="1 - 4094" :error-messages="errors">
+          <ValidationProvider v-slot="{ errors }" :rules="vlanTagRules">
+            <u-text-field v-model="intf.vlanTag" :label="$t('vlan_id')" placeholder="1 - 4094" :error-messages="errors">
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-text-field>
           </ValidationProvider>
@@ -218,7 +199,7 @@
         }
         return this.interfaces
           .reduce((boundInterfaces, intf) => {
-            if (intf.boundInterfaceId === this.intf.interfaceId) {
+            if (intf.vlanParent === this.intf.interfaceId) {
               boundInterfaces.push(intf.name)
             }
             return boundInterfaces
@@ -267,7 +248,7 @@
     },
     watch: {
       // update VLAN interface `wan` and `natEgress` options based on selected parent interface
-      'intf.boundInterfaceId'(id) {
+      'intf.vlanParent'(id) {
         if (!id || !this.intf) {
           return
         }

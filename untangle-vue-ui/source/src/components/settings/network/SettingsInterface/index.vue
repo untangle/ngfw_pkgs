@@ -81,7 +81,6 @@
         // New mode
         this.settingsCopy = cloneDeep(defaults[this.type.toLowerCase()])
         this.status = {}
-        console.log('this.settingsCopy', this.settingsCopy)
       } else {
         this.settingsCopy = {}
         this.status = {}

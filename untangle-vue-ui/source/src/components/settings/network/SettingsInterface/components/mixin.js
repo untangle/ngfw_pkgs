@@ -68,7 +68,6 @@ export default {
      */
     interfaceNameRules: ({ $vuntangle, interfaceNames }) => ({
       required: true,
-      max: 10,
       regex: [
         /^[^!#$%^&]+$/,
         $vuntangle.$t(`This field can have alphanumerics or special characters other than ! # $ % ^ &`),
@@ -96,24 +95,24 @@ export default {
     }),
 
     /**
-     * boundInterfaceId vaidation rules
+     * vlanParent vaidation rules
      */
-    boundInterfaceIdRules: ({ interfaces, intf }) => {
+    vlanParentRules: ({ interfaces, intf }) => {
       return {
         required: true,
         vlan_duplicate: {
           interfaces,
           interfaceId: intf.interfaceId, // current interface id
-          boundInterfaceId: null, // passed by field value
-          vlanId: intf.vlanid,
+          vlanParent: null, // passed by field value
+          vlanTag: intf.vlanTag,
         },
       }
     },
 
     /**
-     * vlanID vaidation rules
+     * vlanTag vaidation rules
      */
-    vlanIdRules: ({ interfaces, intf }) => {
+    vlanTagRules: ({ interfaces, intf }) => {
       return {
         required: true,
         numeric: true,
@@ -122,8 +121,8 @@ export default {
         vlan_duplicate: {
           interfaces,
           interfaceId: intf.interfaceId, // current interface id
-          boundInterfaceId: intf.boundInterfaceId,
-          vlanId: null, // passed by field value
+          vlanParent: intf.vlanParent,
+          vlanTag: null, // passed by field value
         },
       }
     },
