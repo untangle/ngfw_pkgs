@@ -3,22 +3,17 @@
     <div class="d-flex align-center mb-2">
       <h1 class="headline">{{ $vuntangle.$t('interfaces') }}</h1>
       <v-spacer />
-      <u-btn :disabled="disabled" @click="onAddInterface">
+      <u-btn :disabled="disabled" class="mr-2" @click="dialogOpen">
+        <v-icon small class="ma-2">mdi-shuffle</v-icon>
+        {{ `Remap Interfaces` }}
+      </u-btn>
+      <u-btn :disabled="!allowAddInterfaces" @click="onAddInterface">
         {{ $vuntangle.$t('Add Tagged VLAN Interface') }}
       </u-btn>
-      <!-- <v-menu offset-y left>
-        <template #activator="{ on, attrs }">
-          <u-btn :disabled="disabled" v-bind="attrs" v-on="on">
-            {{ $vuntangle.$t('add_interface') }}
-            <v-icon small class="ml-1">mdi-chevron-down</v-icon>
-          </u-btn>
-        </template>
-        <v-list dense>
-          <v-list-item v-for="item in menuItems" :key="item.to" @click="$emit('add-interface', item.to)">
-            <v-list-item-title class="font-weight-bold" v-text="item.text" />
-          </v-list-item>
-        </v-list>
-      </v-menu> -->
+    </div>
+    <!-- Conditionally shown message (on the basis of allowAddInterfaces) -->
+    <div v-if="!allowAddInterfaces" class="mb-3 text-body-2 text-warning">
+      {{ $vuntangle.$t('You cannot add new interfaces at this time.') }}
     </div>
 
     <div
@@ -105,6 +100,7 @@
         panelHeight: 500,
         minHeight: 100,
         maxHeight: 800,
+        allowAddInterfaces: null,
         tableLoading: {
           interfaces: false,
           status: false,
@@ -171,15 +167,6 @@
             comparator: (a, b) => Number(a) - Number(b), // sort Interfaces  on the basis of ID
           },
           {
-            headerName: $i18n.t('device'),
-            field: 'device',
-            valueFormatter: ({ value }) => deviceValueFormatter(value),
-            cellClass: 'primary--text',
-            comparator: (a, b) => {
-              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
-            },
-          },
-          {
             headerName: $i18n.t('Name'),
             field: 'description',
             flex: 1,
@@ -199,6 +186,16 @@
               return span
             },
           },
+          {
+            headerName: $i18n.t('device'),
+            field: 'device',
+            valueFormatter: ({ value }) => deviceValueFormatter(value),
+            cellClass: 'primary--text',
+            comparator: (a, b) => {
+              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+            },
+          },
+
           {
             headerName: $i18n.t('operational_status'),
             field: 'status',
@@ -462,17 +459,14 @@
           const rpc = await Util.setRpcJsonrpc('admin')
 
           // Prepare promises for fetching data
-          const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
-          const interfaceStatusPromise = rpc.networkManager.getInterfaceStatus()
-          const deviceStatusPromise = rpc.networkManager.getDeviceStatus()
-          // vm.set('allowAddInterfaces', Rpc.directData('rpc.networkManager.getNextFreeInterfaceId', result[0]) != -1);
-          // const allowAddInterfaces = await rpc.networkManager.getNextFreeInterfaceId()
-          // console.log('allowAddInterfaces', allowAddInterfaces)
-
+          const networkSettingsPromise = await rpc.networkManager.getNetworkSettings()
+          const interfaceStatusPromise = await rpc.networkManager.getInterfaceStatus()
+          const deviceStatusPromise = await rpc.networkManager.getDeviceStatus()
+          const nextFreeId = await rpc.networkManager.getNextFreeInterfaceId(networkSettingsPromise)
           const interfaces = networkSettingsPromise?.interfaces?.list || []
           const intfStatusList = interfaceStatusPromise?.list || []
           const devStatusList = deviceStatusPromise?.list || []
-
+          this.allowAddInterfaces = nextFreeId !== -1
           const deviceStatusMap = {}
           devStatusList.forEach(dev => {
             deviceStatusMap[dev.deviceName] = dev
