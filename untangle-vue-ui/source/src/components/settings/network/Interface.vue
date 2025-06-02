@@ -21,7 +21,16 @@
       </v-menu> -->
     </div>
 
+    <div
+      v-if="tableLoading.interfaces"
+      class="d-flex flex-column align-center justify-center pa-6"
+      style="height: 200px"
+    >
+      <v-progress-circular :size="50" :width="4" color="primary" indeterminate />
+      <div class="mt-2">{{ $t('Loading...') }}</div>
+    </div>
     <u-grid
+      v-else
       id="appliance-interfaces"
       row-node-id="rowNodeId"
       :row-data="rowData"
@@ -62,6 +71,7 @@
   import interfaceMixin from './interfaceMixin'
   import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
+  import RemapConfirmDialog from '@/components/Reusable/RemapInterfaceDialogue.vue'
   import ConfirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
   export default {
@@ -79,9 +89,11 @@
           },
           suppressRowClickSelection: true,
           rowSelection: 'single',
+          dialog: false,
         },
         // all interfaces status, async fetched
         interfacesStatus: undefined,
+        adminRpc: null,
         physicalDevsStore: [],
         interfaces: [],
         intfOrderArr: [],
@@ -106,7 +118,15 @@
         frameworkComponents: {
           StatusRenderer,
         },
-        rowActions: [],
+        rowActions: [
+          {
+            icon: 'mdi-delete',
+            handler: ({ data }) => this.$emit('delete-interface', data.device),
+            isHidden: ({ data }) => {
+              return ['NIC', 'WIFI', 'WWAN'].includes(data.originalType) || data.parentBridge !== '-'
+            },
+          },
+        ],
         interfaceSourceConfig: {
           address: { displayName: this.$t('IPv4 Address') },
           device: { displayName: this.$t('Device') },
@@ -335,7 +355,12 @@
         })
       },
     },
-    created() {
+    async created() {
+      try {
+        this.adminRpc = await Util.setRpcJsonrpc('admin')
+      } catch (ex) {
+        Util.handleException(ex)
+      }
       this.$store.dispatch('settings/getInterfaces') // update interfaces in the store
       this.$store.dispatch('settings/getNetworkSettings')
       this.$store.dispatch('settings/getInterfaceStatuses')
@@ -348,6 +373,70 @@
       }
     },
     methods: {
+      RemapConfirmDialog({ parentInterfaces, onConfirmNo = null, onConfirmYes = null }) {
+        let dialogComponentRef = null
+        this.$vuntangle.dialog.show({
+          title: this.$t('Remap Interfaces'),
+          component: RemapConfirmDialog,
+          componentProps: {
+            alert: { parentInterfaces },
+            setRef: ref => (dialogComponentRef = ref),
+          },
+          width: 1000,
+          height: 800,
+          on: {
+            confirm: updatedInterfaces => {
+              this.$nextTick(() => {
+                onConfirmYes(updatedInterfaces)
+              })
+            },
+          },
+          buttons: [
+            {
+              name: this.$t('Done'),
+              async handler() {
+                if (dialogComponentRef?.done) {
+                  const updatedInterfaces = dialogComponentRef.gridData
+                  try {
+                    await onConfirmYes(updatedInterfaces)
+                    this.onClose()
+                  } catch (e) {
+                    Util.handleException(e)
+                  }
+                  dialogComponentRef.done()
+                }
+              },
+            },
+            {
+              name: this.$t('Cancel'),
+              handler() {
+                this.onClose()
+                onConfirmNo()
+              },
+            },
+          ],
+        })
+      },
+      dialogOpen() {
+        const originalInterfaces = JSON.stringify(this.interfaces)
+        this.RemapConfirmDialog({
+          parentInterfaces: this.interfaces,
+          onConfirmYes: async updatedInterfacesFromRemap => {
+            try {
+              // Update settings only if remapping is done
+              if (JSON.stringify(updatedInterfacesFromRemap) !== originalInterfaces) {
+                await this.$store.dispatch('settings/setInterfaces', updatedInterfacesFromRemap)
+              }
+              this.loadSettings()
+            } catch (error) {
+              Util.handleException(error)
+            }
+          },
+          onConfirmNo: () => {
+            this.loadSettings()
+          },
+        })
+      },
       startResize() {
         this.isResizing = true
         document.addEventListener('mousemove', this.onMouseMove)
@@ -412,14 +501,12 @@
             return intf
           })
           this.interfaces = mergedInterfaces
-          console.log('this.interfaces', this.interfaces)
           // Save final result
           this.interfacesStatus = mergedInterfaces
           // Save physical devices store
           const physicalDevs = mergedInterfaces.map(intf => [intf.physicalDev, intf.physicalDev])
           this.physicalDevsStore = physicalDevs
         } catch (err) {
-          console.error('Error loading interfaces and status:', err)
           Util.handleException(err)
         } finally {
           this.tableLoading.interfaces = false
@@ -566,7 +653,6 @@
           await this.getInterfaceArp(this.symbolicDev)
         }
       },
-
       /**
        * Emits the edit event up to the host app, used for routing based on device
        * @param {Object} params - row click event params
@@ -616,11 +702,9 @@
           this.tableLoading.interfaces = true
 
           await this.$store.dispatch('settings/deleteInterfaces', updatedInterfaces)
-
           this.$vuntangle.toast.add('Network settings saved successfully!')
           await this.loadSettings()
         } catch (error) {
-          console.error('Delete failed:', error)
           this.$vuntangle.toast.add('Failed to delete interface. Please try again.')
         } finally {
           this.tableLoading.interfaces = false
