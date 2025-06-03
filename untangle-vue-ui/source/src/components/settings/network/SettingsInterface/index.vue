@@ -35,7 +35,6 @@
     provide() {
       return {
         $isSaving: () => this.isSaving,
-        // $intf: () => this.intf,
         $intf: () => this.settingsCopy,
         $interfaces: () => this.interfaces,
         $interfaceStatuses: () => this.interfaceStatuses,

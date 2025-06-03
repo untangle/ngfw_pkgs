@@ -81,7 +81,6 @@
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.dhcp_options },
-        // list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
         list: status?.dhcpOptions?.list?.length ? cloneDeep(intf.dhcpOptions.list) : [],
         CONFIG_TYPE,
       }

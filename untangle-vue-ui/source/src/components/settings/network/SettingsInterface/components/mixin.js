@@ -141,8 +141,6 @@ export default {
 
     /** returns interfaces options to be bound, based on interface type */
     boundToOptions: ({ intf, type, getBoundableNicsOptions, getBoundableInterfacesOptions }) => {
-      console.log('intf in boundToOptions', intf)
-      console.log('type in boundToOptions', type)
       if (type === 'VLAN') return getBoundableNicsOptions
       if (['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type)) {
         let includeAnyWan = true
@@ -177,7 +175,6 @@ export default {
         const enabledWans = this.interfaces.filter(
           intf => ['NIC', 'WWAN'].includes(intf.type) && intf.wan && intf.enabled,
         )
-        console.log('enabledWans', enabledWans)
         const options = enabledWans.map(wan => ({ value: wan.interfaceId, text: wan.name }))
         if (includeAnyWan) options.unshift({ value: 0, text: this.$vuntangle.$t('any_wan') })
         return options

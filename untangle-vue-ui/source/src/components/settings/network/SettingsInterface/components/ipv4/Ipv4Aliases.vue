@@ -71,16 +71,9 @@
     data({ $intf, $status }) {
       const intf = $intf()
       const status = $status()
-
-      // Convert ['v4Aliases'] into actual nested key access
-      // const aliasKeyPath = this.aliasKey
-      // const intfList = intf?.[aliasKeyPath[0]]?.list || []
-      // const statusList = status?.[aliasKeyPath[0]]?.list || []
-
       return {
         adding: false,
         alias: { ...defaults.v4_alias },
-        // list: statusList.length ? cloneDeep(intfList) : []
         list: status?.[this.aliasKey[0]]?.list?.length ? cloneDeep(intf[this.aliasKey[0]].list) : [],
       }
     },

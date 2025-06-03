@@ -175,9 +175,6 @@
       }
     },
     computed: {
-      // configTypeTranslated() {
-      //   return this.$t(this.intf.configType.toLowerCase())
-      // },
       intf: ({ $intf }) => $intf(),
       interfaces: ({ $interfaces }) => $interfaces(),
       interfaceStatuses: ({ $interfaceStatuses }) => $interfaceStatuses(),

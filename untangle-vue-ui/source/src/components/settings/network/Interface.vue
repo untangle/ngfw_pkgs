@@ -59,7 +59,6 @@
 </template>
 
 <script>
-  //  VMenu, VList, VListItem, VListItemTitle, VIcon
   import { VContainer, VSpacer } from 'vuetify/lib'
   import StatusAndArpEntries from '../interface/StatusAndArpEntries.vue'
   import StatusRenderer from './StatusRenderer.vue'
@@ -70,7 +69,6 @@
   import ConfirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
   export default {
-    // VMenu,VList,VListItem,VListItemTitle,VIcon
     components: { VContainer, VSpacer, StatusAndArpEntries },
     mixins: [interfaceMixin],
     props: {
