@@ -38,8 +38,8 @@ export default {
       (intf.configType === 'ADDRESSED' || ['WWAN', 'VLAN', 'WIREGUARD', 'OPENVPN'].includes(type)),
 
     /** shows bound to options for specific types and `configType` not `BRIDGED` */
-    // showBoundToOptions: ({ type, intf }) =>
-    //   ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
+    showBoundToOptions: ({ type, intf }) =>
+      ['OPENVPN', 'WIREGUARD', 'IPSEC'].includes(type) && intf.configType !== 'BRIDGED',
 
     /** shows bridged to options only if `configType` is `BRIDGED` */
     isBridged: ({ intf }) => intf.configType === 'BRIDGED',
@@ -68,7 +68,6 @@ export default {
      */
     interfaceNameRules: ({ $vuntangle, interfaceNames }) => ({
       required: true,
-      max: 10,
       regex: [
         /^[^!#$%^&]+$/,
         $vuntangle.$t(`This field can have alphanumerics or special characters other than ! # $ % ^ &`),
@@ -96,24 +95,24 @@ export default {
     }),
 
     /**
-     * boundInterfaceId vaidation rules
+     * vlanParent vaidation rules
      */
-    boundInterfaceIdRules: ({ interfaces, intf }) => {
+    vlanParentRules: ({ interfaces, intf }) => {
       return {
         required: true,
         vlan_duplicate: {
           interfaces,
           interfaceId: intf.interfaceId, // current interface id
-          boundInterfaceId: null, // passed by field value
-          vlanId: intf.vlanid,
+          vlanParent: null, // passed by field value
+          vlanTag: intf.vlanTag,
         },
       }
     },
 
     /**
-     * vlanID vaidation rules
+     * vlanTag vaidation rules
      */
-    vlanIdRules: ({ interfaces, intf }) => {
+    vlanTagRules: ({ interfaces, intf }) => {
       return {
         required: true,
         numeric: true,
@@ -122,8 +121,8 @@ export default {
         vlan_duplicate: {
           interfaces,
           interfaceId: intf.interfaceId, // current interface id
-          boundInterfaceId: intf.boundInterfaceId,
-          vlanId: null, // passed by field value
+          vlanParent: intf.vlanParent,
+          vlanTag: null, // passed by field value
         },
       }
     },
@@ -187,9 +186,17 @@ export default {
      * used for VLAN bound interface
      * BUG? should NICs be `wan` & `enabled`
      */
-    getBoundableNicsOptions: ({ interfaces }) => {
-      const nics = interfaces.filter(intf => intf.type === 'NIC' || intf.type === 'BRIDGE')
-      return nics.map(nic => ({ value: nic.interfaceId, text: nic.name }))
+    getBoundableNicsOptions: ({ interfaces, intf }) => {
+      const nics = interfaces.filter(i => {
+        return (
+          i.interfaceId !== intf.interfaceId && // exclude current interface (edit mode)
+          !i.isVlanInterface // only real physical/virtual NICs, no VLANs
+        )
+      })
+      return nics.map(nic => ({
+        value: nic.interfaceId,
+        text: nic.name || nic.systemDev || `Interface ${nic.interfaceId}`,
+      }))
     },
 
     /**

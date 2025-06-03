@@ -27,18 +27,18 @@
       </v-col>
     </v-row>
 
-    <!-- v4StaticDNS1, v4StaticDNS2 (only if interface is WAN) -->
+    <!-- v4StaticDns1, v4StaticDns2 (only if interface is WAN) -->
     <v-row v-if="intf.isWan">
       <v-col>
         <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-          <u-text-field v-model="intf.v4StaticDNS1" :label="$t('primary_dns')" :error-messages="errors">
+          <u-text-field v-model="intf.v4StaticDns1" :label="$t('primary_dns')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
         </ValidationProvider>
       </v-col>
       <v-col>
         <ValidationProvider v-slot="{ errors }" :rules="{ required: true, ip: true }">
-          <u-text-field v-model="intf.v4StaticDNS2" :label="$t('secondary_dns')" :error-messages="errors">
+          <u-text-field v-model="intf.v4StaticDns2" :label="$t('secondary_dns')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
         </ValidationProvider>

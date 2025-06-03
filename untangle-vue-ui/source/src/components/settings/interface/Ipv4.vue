@@ -118,8 +118,8 @@
         * - v4StaticAddress
         * - v4StaticPrefix
         * - v4StaticGateway
-        * - v4StaticDNS1
-        * - v4StaticDNS2
+        * - v4StaticDns1
+        * - v4StaticDns2
       -->
     <template v-if="intfCopy.v4ConfigType === 'STATIC'">
       <v-row>
@@ -150,18 +150,18 @@
         </v-col>
       </v-row>
 
-      <!-- v4StaticDNS1, v4StaticDNS2 (only if interface is WAN) -->
+      <!-- v4StaticDns1, v4StaticDns2 (only if interface is WAN) -->
       <v-row v-if="intf.wan">
         <v-col>
           <ValidationProvider v-slot="{ errors }" rules="required|ip">
-            <u-text-field v-model="intfCopy.v4StaticDNS1" :label="$t('primary_dns')" :error-messages="errors">
+            <u-text-field v-model="intfCopy.v4StaticDns1" :label="$t('primary_dns')" :error-messages="errors">
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-text-field>
           </ValidationProvider>
         </v-col>
         <v-col>
           <ValidationProvider v-slot="{ errors }" rules="ip">
-            <u-text-field v-model="intfCopy.v4StaticDNS2" :label="$t('secondary_dns')" :error-messages="errors">
+            <u-text-field v-model="intfCopy.v4StaticDns2" :label="$t('secondary_dns')" :error-messages="errors">
               <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
             </u-text-field>
           </ValidationProvider>
@@ -271,8 +271,8 @@
           v4StaticAddress: this.intf.v4StaticAddress || '',
           v4StaticPrefix: this.intf.v4StaticPrefix || 24,
           v4StaticGateway: this.intf.v4StaticGateway || '',
-          v4StaticDNS1: this.intf.v4StaticDNS1 || '',
-          v4StaticDNS2: this.intf.v4StaticDNS2 || '',
+          v4StaticDns1: this.intf.v4StaticDns1 || '',
+          v4StaticDns2: this.intf.v4StaticDns2 || '',
           v4PPPoEUsername: this.intf.v4PPPoEUsername || '',
           v4PPPoEPassword: this.intf.v4PPPoEPassword || '',
           v4PPPoEUsePeerDNS: this.intf.v4PPPoEUsePeerDNS || false,

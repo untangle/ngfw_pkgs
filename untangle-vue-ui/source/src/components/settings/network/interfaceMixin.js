@@ -458,12 +458,12 @@ export default {
     getIpsecBoundTo(intf) {
       if (intf.type !== 'IPSEC') return '-'
 
-      if (intf.boundInterfaceId === 0) {
+      if (intf.vlanParent === 0) {
         return this.$vuntangle.$t('any_wan')
       }
 
-      const boundInterfaceId = intf.boundInterfaceId
-      const boundInterfaceStatus = this.interfacesStatus?.find(intf => intf.interfaceId === boundInterfaceId)
+      const vlanParent = intf.vlanParent
+      const boundInterfaceStatus = this.interfacesStatus?.find(intf => intf.interfaceId === vlanParent)
 
       if (boundInterfaceStatus) {
         const name = boundInterfaceStatus.name

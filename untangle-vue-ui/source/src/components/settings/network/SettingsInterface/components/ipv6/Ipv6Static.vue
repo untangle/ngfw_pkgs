@@ -37,14 +37,14 @@
     <v-row v-if="intf.isWan">
       <v-col>
         <ValidationProvider v-slot="{ errors }" rules="ip_v6">
-          <u-text-field v-model="intf.v6StaticDNS1" :label="$t('primary_dns')" :error-messages="errors">
+          <u-text-field v-model="intf.v6StaticDns1" :label="$t('primary_dns')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
         </ValidationProvider>
       </v-col>
       <v-col>
         <ValidationProvider v-slot="{ errors }" rules="ip_v6">
-          <u-text-field v-model="intf.v6StaticDNS2" :label="$t('secondary_dns')" :error-messages="errors">
+          <u-text-field v-model="intf.v6StaticDns2" :label="$t('secondary_dns')" :error-messages="errors">
             <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
           </u-text-field>
         </ValidationProvider>

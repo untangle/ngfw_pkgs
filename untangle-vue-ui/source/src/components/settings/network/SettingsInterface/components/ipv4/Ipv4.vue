@@ -55,6 +55,9 @@
     },
     mounted() {
       this.previousConfigType = this.intf.v4ConfigType
+      if (!this.intf.v4Aliases) {
+        this.$set(this.intf, 'v4Aliases', { javaClass: 'java.util.LinkedList', list: [] })
+      }
     },
     methods: {
       onChangeConfigType(newValue) {

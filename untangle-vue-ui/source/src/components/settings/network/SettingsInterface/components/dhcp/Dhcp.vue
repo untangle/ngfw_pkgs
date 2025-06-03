@@ -131,5 +131,10 @@
       intf: ({ $intf }) => $intf(),
       status: ({ $status }) => $status(),
     },
+    mounted() {
+      if (!this.intf.dhcpOptions) {
+        this.$set(this.intf, 'dhcpOptions', { javaClass: 'java.util.LinkedList', list: [] })
+      }
+    },
   }
 </script>
