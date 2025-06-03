@@ -75,22 +75,35 @@ const actions = {
    */
   async setInterface({ state }, updatedInterface) {
     try {
-      if (Util.isDestroyed(this, updatedInterface)) {
-        return
-      }
+      if (Util.isDestroyed(this, updatedInterface)) return
+
       const rpc = await Util.setRpcJsonrpc('admin')
       const settings = state.settings.settings
+
       const updatedIntf = settings.interfaces.list.find(i => i.interfaceId === updatedInterface.interfaceId)
+      // Handle new interface creation
+      if (!updatedIntf) {
+        const updatedInterfaces = [...settings.interfaces.list, updatedInterface]
+        return await rpc.networkManager.setNetworkSettings({
+          ...settings,
+          interfaces: {
+            ...settings.interfaces,
+            list: updatedInterfaces,
+          },
+        })
+      }
+
       Object.keys(updatedIntf).forEach(key => {
         if (Object.prototype.hasOwnProperty.call(updatedInterface, key)) {
           updatedIntf[key] = updatedInterface[key]
         }
       })
       await rpc.networkManager.setNetworkSettings(settings)
-      vuntangle.toast.add('Network settings saved successfully!')
+      await vuntangle.toast.add('Network settings saved successfully!')
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
+      throw ex
     }
   },
   // update all interfaces

@@ -2,13 +2,107 @@ export default {
   vlan: {
     name: '',
     type: 'VLAN',
+    javaClass: 'com.untangle.uvm.network.InterfaceSettings',
     configType: 'ADDRESSED',
     enabled: true,
+    disabled: false,
     wan: false,
-    v4ConfigType: 'DISABLED',
-    v6ConfigType: 'DISABLED',
-  },
+    addressed: true,
+    bridged: false,
+    bridgedTo: null,
+    symbolicDev: null,
+    physicalDev: null,
+    systemDev: null,
+    interfaceId: -1,
+    isVlanInterface: true,
+    isWan: false,
+    isWirelessInterface: false,
+    hidden: null,
+    reEnabled: false,
+    supportedConfigTypes: [],
+    imqDev: null,
+    vlanParent: null,
+    vlanTag: null,
 
+    // IPv4
+    v4ConfigType: 'STATIC',
+    v4NatEgressTraffic: true,
+    v4NatIngressTraffic: false,
+    v4StaticAddress: null,
+    v4StaticDns1: null,
+    v4StaticDns2: null,
+    v4StaticGateway: null,
+    v4StaticNetmask: null,
+    v4StaticPrefix: null,
+    v4AutoAddressOverride: null,
+    v4AutoDns1Override: null,
+    v4AutoDns2Override: null,
+    v4AutoGatewayOverride: null,
+    v4AutoNetmaskOverride: null,
+    v4AutoPrefixOverride: null,
+    v4PPPoEUsername: '',
+    v4PPPoEPassword: '',
+    v4PPPoEDns1: null,
+    v4PPPoEDns2: null,
+    v4PPPoERootDev: null,
+    v4PPPoEUsePeerDns: false,
+    v4Aliases: { javaClass: 'java.util.LinkedList', list: [] },
+
+    // IPv6
+    v6ConfigType: 'STATIC',
+    v6StaticAddress: null,
+    v6StaticDns1: null,
+    v6StaticDns2: null,
+    v6StaticGateway: null,
+    v6StaticPrefixLength: null,
+    v6Aliases: { javaClass: 'java.util.LinkedList', list: [] },
+
+    // DHCP
+    dhcpType: 'DISABLED',
+    dhcpDnsOverride: '',
+    dhcpGatewayOverride: null,
+    dhcpLeaseDuration: null,
+    dhcpNetmaskDuration: null,
+    dhcpOptions: { javaClass: 'java.util.LinkedList', list: [] },
+    dhcpPrefixOverride: null,
+    dhcpRangeStart: null,
+    dhcpRangeEnd: null,
+
+    // VRRP
+    vrrpEnabled: false,
+    vrrpId: null,
+    vrrpPriority: null,
+    vrrpAliases: { javaClass: 'java.util.LinkedList', list: [] },
+
+    // Bandwidth
+    uploadBandwidthKbps: null,
+    downloadBandwidthKbps: null,
+
+    // Wireless (not applicable but included for completeness)
+    wirelessChannel: null,
+    wirelessEncryption: null,
+    wirelessPassword: '',
+    wirelessSsid: '',
+
+    // Status fields
+    v4Address: null,
+    v4Dns1: null,
+    v4Dns2: null,
+    v4Gateway: null,
+    v4Netmask: null,
+    v4PrefixLength: null,
+    v6Address: null,
+    v6Gateway: null,
+    v6PrefixLength: null,
+
+    // Device info
+    connected: null,
+    deviceName: null,
+    duplex: null,
+    macAddress: null,
+    mbit: null,
+    vendor: null,
+  },
   bridge: {
     name: '',
     type: 'BRIDGE',
@@ -17,13 +111,18 @@ export default {
     wan: false,
     v4ConfigType: 'STATIC',
     v6ConfigType: 'DISABLED',
+    v4NatEgressTraffic: true,
+    v4NatIngressTraffic: false,
+    v4Aliases: { javaClass: 'java.util.LinkedList', list: [] },
+    v6Aliases: { javaClass: 'java.util.LinkedList', list: [] },
+    dhcpOptions: { javaClass: 'java.util.LinkedList', list: [] },
   },
 
   openvpn: {
     name: '',
     type: 'OPENVPN',
     configType: 'ADDRESSED',
-    boundInterfaceId: 0, // any WAN
+    vlanParent: 0, // any WAN
     enabled: true,
     wan: true,
     natEgress: true,
@@ -39,7 +138,7 @@ export default {
     name: '',
     type: 'WIREGUARD',
     configType: 'ADDRESSED',
-    boundInterfaceId: 0, // any WAN
+    vlanParent: 0, // any WAN
     enabled: true,
     wan: true,
     natEgress: true,
@@ -69,7 +168,7 @@ export default {
     name: '',
     type: 'IPSEC',
     configType: 'ADDRESSED',
-    boundInterfaceId: 0,
+    vlanParent: 0,
     enabled: true,
     wan: true,
     natEgress: false,
@@ -137,7 +236,7 @@ export default {
   dhcp_options: {
     enabled: true,
     value: '66,1.2.3.4',
-    description: '[no description]',
+    description: '',
     javaClass: 'com.untangle.uvm.network.DhcpOption',
   },
 }

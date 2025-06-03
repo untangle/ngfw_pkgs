@@ -59,13 +59,12 @@
       aliasKey: { type: Array, default: () => ['v6Aliases'] },
     },
 
-    data({ $intf, $status }) {
+    data({ $intf }) {
       const intf = $intf()
-      const status = $status()
       return {
         adding: false, // boolean telling to show the add fields
         alias: { ...defaults.v6_alias }, // model for new v6 alias
-        list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
+        list: intf?.[this.aliasKey]?.list ? cloneDeep(intf[this.aliasKey].list) : [],
       }
     },
     computed: {
@@ -86,6 +85,12 @@
           this.$set(this.intf[this.aliasKey], 'list', newList)
         },
       },
+    },
+    mounted() {
+      if (!this.intf.interfaceId && this.list.length === 0) {
+        this.adding = true
+        this.alias = { ...defaults.v6_alias }
+      }
     },
     created() {
       extend('unique_ip_v6_address', this.validateUniqueIpV6Address)
