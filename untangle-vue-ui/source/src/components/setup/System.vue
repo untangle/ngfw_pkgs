@@ -41,7 +41,7 @@
                 <v-col class="mt-0 pt-0" cols="12">
                   <p class="text-h7 mt-1">Administrators receive email alerts and report summaries</p>
                   <span>Admin Email:</span>
-                  <ValidationProvider v-slot="{ errors }" rules="required">
+                  <ValidationProvider v-slot="{ errors }" :rules="{ email: true }">
                     <u-text-field v-model="adminEmail" :error-messages="errors">
                       <template v-if="errors.length" #append>
                         <u-errors-tooltip :errors="errors" />
@@ -217,6 +217,9 @@
       async onContinue() {
         try {
           const currentStepIndex = this.wizardSteps.indexOf(this.currentStep)
+          if (!window.rpc) {
+            window.rpc = new window.JSONRpcClient('/setup/JSON-RPC')
+          }
           window.rpc.setup = new window.JSONRpcClient('/setup/JSON-RPC').SetupContext // To avoid invalid security nonce
           if (this.timezoneID !== this.timezone) {
             const timezoneId = this.timezone.split(' ')[1]
@@ -268,7 +271,6 @@
               this.adminEmail,
               this.installType.value,
             )
-            resolve()
           })
         } catch (error) {
           this.$store.commit('SET_LOADER', false) // Stop loader

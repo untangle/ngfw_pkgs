@@ -81,17 +81,13 @@ const actions = {
 
       if (!rpc.wizardSettings.steps || rpc.wizardSettings.steps.length === 0) {
         if (!rpc.remote) {
-          steps = [
-            'Welcome',
-            'License',
-            'ServerSettings',
-            'Interfaces',
-            'Internet',
-            'InternalNetwork',
-            'Wireless',
-            'AutoUpgrades',
-            'Complete',
-          ]
+          steps = ['Welcome', 'License', 'ServerSettings', 'Interfaces', 'Internet', 'InternalNetwork']
+
+          if (rpc.isWirelessInterface) {
+            steps.push('Wireless')
+          }
+
+          steps.push('AutoUpgrades', 'Complete')
         } else {
           steps = ['Welcome', 'Internet', 'Complete']
         }
