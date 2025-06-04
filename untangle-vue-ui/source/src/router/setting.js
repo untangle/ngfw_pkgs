@@ -7,7 +7,7 @@ import Dns from '@/components/settings/network/NgfwDns.vue'
 import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
 import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
-// import Interfaces from '@/components/settings/network/Interfaces.vue'
+import Services from '@/components/settings/network/SettingsServices/Services.vue'
 
 // routing
 import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
@@ -37,6 +37,11 @@ export default [
         path: 'network/interfaces',
         component: Interface,
         meta: { helpContext: 'dns' },
+      },
+      {
+        path: 'network/services',
+        component: Services,
+        meta: { helpContext: 'services' },
       },
       {
         path: 'network/interfaces/:device',
