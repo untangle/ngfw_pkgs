@@ -1,23 +1,21 @@
 <template>
-  <v-container class="d-flex flex-column pa-2" fluid>
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pl-14 pr-14 pa-8`">
     <ValidationObserver v-slot="{ passes }">
       <v-row justify="end">
-        <u-btn class="ma-4" :small="false" @click="passes(() => onSave('save'))">
+        <u-btn class="mb-3 mr-4" :small="false" @click="passes(() => onSave('save'))">
           {{ $vuntangle.$t('save') }}
         </u-btn>
       </v-row>
+      <v-row dense>
+        <span class="mx-3 mb-3 font-weight-medium text-grey">Hostname</span>
+        <v-col cols="11" class="ma-2"><v-divider /></v-col>
+      </v-row>
       <div style="border: 2px solid #ccc; border-radius: 8px; padding: 16px">
         <v-row>
-          <v-col cols="2"><v-divider /></v-col>
-          <span class="mx-2 font-weight-medium text-grey">Hostname</span>
-          <v-col><v-divider /></v-col>
-        </v-row>
-        <v-row dense>
           <v-col cols="4">
-            <span>Hostname : </span>
             <ValidationProvider v-slot="{ errors }" rules="required">
               <u-text-field
-                v-model="settings.hostname"
+                v-model="settings.hostName"
                 :label="$vuntangle.$t('host_name')"
                 maxlength="150"
                 :error-messages="errors"
@@ -27,15 +25,14 @@
               </u-text-field>
             </ValidationProvider>
           </v-col>
-          <v-col cols="6" class="pt-8">
-            <span class="pa-2">
+          <v-col cols="6" class="pt-4">
+            <span class="ma-1">
               <span class="text-grey ma-2">(eg: gateway)</span>
             </span>
           </v-col>
         </v-row>
-        <v-row dense>
+        <v-row>
           <v-col cols="4">
-            <span>Domain Name : </span>
             <ValidationProvider v-slot="{ errors }" :rules="{ required: true }">
               <u-text-field
                 v-model="settings.domainName"
@@ -47,8 +44,8 @@
               </u-text-field>
             </ValidationProvider>
           </v-col>
-          <v-col cols="6" class="pt-8">
-            <span class="pa-2">
+          <v-col cols="6" class="pt-4">
+            <span class="pa-1">
               <span class="text-grey ma-2">(eg: example.com)</span>
             </span>
           </v-col>
@@ -56,31 +53,30 @@
       </div>
       <div>
         <v-row align="center" no-gutters>
-          <v-col cols="2">
-            <v-divider />
-          </v-col>
-
-          <v-col cols="auto" class="d-flex align-center">
+          <v-col cols="auto" class="d-flex align-center mt-2">
             <v-checkbox
               v-model="settings.dynamicDnsServiceEnabled"
-              class="mr-1 ml-2"
+              class="ml-2"
               hide-details
               dense
               style="margin-bottom: 0"
             />
-            <span class="mt-1 mr-2 font-weight-medium text-grey">Dynamic DNS Service Configuration </span>
+            <span class="mt-2 mr-6 font-weight-medium text-grey">
+              <span class="mt-2">Dynamic DNS Service Configuration</span>
+            </span>
           </v-col>
 
-          <v-col>
+          <v-col cols="9" class="mt-3">
             <v-divider />
           </v-col>
         </v-row>
         <div
           v-show="settings.dynamicDnsServiceEnabled"
+          class="mt-5"
           style="border: 2px solid #ccc; border-radius: 8px; padding: 16px"
         >
-          <v-row cols="3">
-            <v-col>
+          <v-row dense>
+            <v-col cols="4">
               <span>Service :</span>
               <v-autocomplete
                 v-model="settings.dynamicDnsServiceName"
@@ -90,81 +86,85 @@
                 hide-details
                 return-object
                 placeholder="Select Type"
-                :error-messages="errors"
               >
               </v-autocomplete>
             </v-col>
-            <v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="4">
               <span>Username :</span>
-              <u-text-field v-model="settings.dynamicDnsServiceUsername" :error-messages="errors"> </u-text-field>
+              <u-text-field v-model="settings.dynamicDnsServiceUsername"> </u-text-field>
             </v-col>
-            <v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="4">
               <span>Password or API Token :</span>
-              <u-password v-model="settings.dynamicDnsServicePassword" :errors="errors" />
+              <u-password v-model="settings.dynamicDnsServicePassword" />
             </v-col>
-            <v-col v-show="settings.dynamicDnsServiceName === 'cloudflare'">
+          </v-row>
+          <v-row dense>
+            <v-col v-show="settings.dynamicDnsServiceName === 'cloudflare'" cols="6">
               <span>Zone :</span>
               <u-text-field
                 v-model="settings.dynamicDnsServiceZone"
-                :error-messages="errors"
                 :disabled="settings.dynamicDnsServiceName !== 'cloudflare'"
               >
               </u-text-field>
             </v-col>
-            <v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="4">
               <span>Hostname(s) :</span>
-              <u-text-field v-model="settings.dynamicDnsServiceHostnames" :error-messages="errors"> </u-text-field>
+              <u-text-field v-model="settings.dynamicDnsServiceHostnames"> </u-text-field>
             </v-col>
-            <v-col>
+          </v-row>
+          <v-row dense>
+            <v-col cols="4">
               <span>Interface :</span>
-              <!-- add below:items="allWanInterfaceNames" -->
-              <v-select
-                v-model="settings.dynamicDnsServiceWan"
-                attach
-                small-chips
-                deletable-chips
-                dense
-                outlined
-                hide-details
-                :placeholder="$vuntangle.$t('select')"
-              ></v-select>
+              <u-select v-model="settings.dynamicDnsServiceWan" :items="allWanInterfaceNames"> </u-select>
             </v-col>
           </v-row>
         </div>
         <p class="text-h7 mt-4 ml-2">
-          The Public Address is the address/URL that provides a public location for the Arista Server. This address will
-          be used in emails sent by the Arista Server to link back to services hosted on the Arista Server such as
-          Quarantine Digests and OpenVPN Client emails.
+          {{
+            `The Public Address is the address/URL that provides a public location for the ${rpc?.companyName} Server. This address will
+          be used in emails sent by the ${rpc?.companyName} Server to link back to services hosted on the ${rpc?.companyName} Server such as
+          Quarantine Digests and OpenVPN Client emails.`
+          }}
         </p>
         <v-radio-group v-model="settings.publicUrlMethod">
           <v-radio
             label="Use IP address from External interface (default)"
             value="external"
-            class="font-weight-medium text-body-2"
+            class="font-weight-bold text-body-2"
           ></v-radio>
-          <div class="ml-8 mb-4 text-body-6 text--secondary">
-            This works if your Arista Server has a routable public static IP address.
+          <div class="ml-10 mb-4 text-body-6 text--primary">
+            <p>
+              {{ `This works if your ${rpc?.companyName} Server has a routable public static IP address.` }}
+            </p>
           </div>
-          <v-radio label="Use Hostname" value="hostname" class="font-weight-medium text-body-2"></v-radio>
-          <div class="ml-8 mb-4 text-body-6 text--secondary">
-            This is recommended if the Arista Server's fully qualified domain name looks up to its IP address both
-            internally and externally. Current Hostname: arista.untangle.com
+          <v-radio label="Use Hostname" value="hostname" class="font-weight-bold text-body-2"></v-radio>
+          <div class="ml-10 mb-4 text-body-6 text--primary">
+            {{
+              `This is recommended if the ${rpc?.companyName} Server's fully qualified domain name looks up to its IP address both
+            internally and externally.`
+            }}
+            <br />
+            {{ `Current Hostname: ` }} <i>{{ ` ${fullHostName} ` }}</i>
           </div>
           <v-radio
             label="Use Manually Specified Address"
             value="address_and_port"
-            class="font-weight-medium text-body-2"
+            class="font-weight-bold text-body-2"
           ></v-radio>
-          <div class="ml-8 mb-4 text-body-6 text--secondary">
-            This is recommended if the Arista Server is installed behind another firewall with a port forward from the
-            specified hostname/IP that redirects traffic to the Arista Server.
+          <div class="ml-10 mb-4 text-body-6 text--primary">
+            {{
+              `This is recommended if the ${rpc?.companyName} Server is installed behind another firewall with a port forward from the
+            specified hostname/IP that redirects traffic to the ${rpc?.companyName} Server.`
+            }}
           </div>
-          <v-row
-            :class="{
-              'opacity-50 pointer-events-none': settings.publicUrlMethod !== 'address_and_port',
-            }"
-          >
-            <v-col cols="4">
+          <v-row dense>
+            <v-col cols="4" class="ml-10">
               <span>IP/Hostname : </span>
               <ValidationProvider v-slot="{ errors }">
                 <u-text-field
@@ -176,9 +176,11 @@
                 </u-text-field>
               </ValidationProvider>
             </v-col>
-            <v-col cols="4">
+          </v-row>
+          <v-row dense>
+            <v-col cols="4" class="ml-10">
               <span>Port : </span>
-              <ValidationProvider v-slot="{ errors }" rules="required|min_value:1|max_value:128">
+              <ValidationProvider v-slot="{ errors }" rules="required">
                 <u-text-field
                   v-model.number="settings.publicUrlPort"
                   type="number"
@@ -192,15 +194,18 @@
           </v-row>
         </v-radio-group>
       </div>
-      <!-- <u-btn class="mt-4" @click="onSaveSystem">{{ $vuntangle.$t('save') }}</u-btn> -->
     </ValidationObserver>
   </v-container>
 </template>
 <script>
-  import { extend } from 'vee-validate'
+  import Util from '@/util/setupUtil'
   export default {
     data() {
       return {
+        rpc: null,
+        rpcAdmin: null,
+        settings: null,
+        allWanInterfaceNames: [],
         serviceOptions: [
           { value: 'easydns', text: 'EasyDNS' },
           { value: 'zoneedit', text: 'ZoneEdit' },
@@ -216,22 +221,25 @@
           { value: 'cloudflare', text: 'Cloudflare' },
           { value: 'duckdns', text: 'DuckDNS' },
         ],
-        settings: {
-          'hostname': '',
-          'domainName': '',
-          'dynamicDnsServiceEnabled': false,
-          'dynamicDnsServiceName': null,
-          'dynamicDnsServiceUsername': null,
-          'dynamicDnsServicePassword': null,
-          'dynamicDnsServiceZone': null,
-          'dynamicDnsServiceHostnames': null,
-          'dynamicDnsServiceWan': 'Default',
-          'publicUrlMethod': 'address_and_port',
-        },
       }
     },
+    computed: {
+      fullHostName() {
+        const domain = this.settings.domainName
+        const host = this.settings.hostName
+        if (typeof domain === 'string' && domain.trim() !== '') {
+          return `${host}.${domain}`
+        } else {
+          return host
+        }
+      },
+    },
     created() {
-      extend('valide_password', this.validatePasswordField)
+      this.rpc = Util.setRpcJsonrpc('admin')
+      this.settings = this.rpc.networkManager.getNetworkSettings()
+      this.getEnableInterfaceNames()
+      const startUpInfo = this.rpc.jsonrpc.UvmContext.getWebuiStartupInfo()
+      Object.assign(this.rpc, startUpInfo)
     },
     methods: {
       validateHostName(event) {
@@ -243,14 +251,29 @@
           event.preventDefault()
         }
       },
-      validatePasswordField(value) {
-        if (!value) {
-          return this.$t('Hostname must be specified.')
-        }
-        return true
+      getEnableInterfaceNames() {
+        const enabledWanname = ['Default']
+        const interfaces = this.rpc.networkManager.getEnabledInterfaces()
+
+        interfaces.list.forEach(intf => {
+          if (intf.isWan) {
+            enabledWanname.push(intf.name)
+          }
+        })
+        this.allWanInterfaceNames = enabledWanname
       },
-      allWanInterfaceNames() {
-        // TODO Implementation getEnableInterfaceNames
+      async onSave() {
+        try {
+          if (this.settings.dynamicDnsServiceName && this.settings.dynamicDnsServiceName.value) {
+            this.settings.dynamicDnsServiceName = this.settings.dynamicDnsServiceName.value
+          }
+          await this.$store.dispatch('settings/setNetworkSettings', this.settings)
+          if (this.$store.state.settings.editCallback) {
+            this.$store.state.settings.editCallback()
+          }
+        } catch (error) {
+          Util.handleException(error)
+        }
       },
     },
   }

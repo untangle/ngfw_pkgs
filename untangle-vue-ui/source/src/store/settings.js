@@ -67,6 +67,17 @@ const actions = {
       console.error('getNetworkSettings error:', err)
     }
   },
+  async setNetworkSettings({ commit }, settings) {
+    try {
+      const rpc = await Util.setRpcJsonrpc('admin')
+      await rpc.networkManager.setNetworkSettings(settings)
+      vuntangle.toast.add('Network settings saved successfully!')
+      const data = rpc.networkManager.getNetworkSettings()
+      commit('SET_SETTINGS', data)
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
   /**
    * Updates a single interface
    * The save process works like:
