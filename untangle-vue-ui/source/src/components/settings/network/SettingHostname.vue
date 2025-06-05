@@ -248,9 +248,6 @@
       Object.assign(this.rpc, startUpInfo)
     },
     methods: {
-      isFieldModified(field) {
-        return this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
-      },
       async validate() {
         const isValid = await this.$refs.obs.validate()
         return isValid
