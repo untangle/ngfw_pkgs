@@ -361,6 +361,7 @@
       this.$store.dispatch('settings/getInterfaceStatuses')
     },
     async mounted() {
+      this.$store.commit('settings/setEditCallback', this.loadSettings)
       await this.loadSettings()
 
       if (this.interfaces && this.interfaces.length > 0) {
@@ -652,7 +653,6 @@
        */
       onEditInterface(rowData) {
         this.intf = rowData.data
-        this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
       },
 
