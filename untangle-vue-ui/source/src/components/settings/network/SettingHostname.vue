@@ -202,12 +202,6 @@
   import Util from '@/util/setupUtil'
   export default {
     mixins: [settingsMixin],
-    provide() {
-      return {
-        $isSaving: () => this.isSaving,
-        $newSettings: () => this.settingsCopy,
-      }
-    },
     props: {
       isSaving: { type: Boolean, default: false },
     },
@@ -254,6 +248,9 @@
       Object.assign(this.rpc, startUpInfo)
     },
     methods: {
+      isFieldModified(field) {
+        return this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
+      },
       async validate() {
         const isValid = await this.$refs.obs.validate()
         return isValid
@@ -281,3 +278,12 @@
     },
   }
 </script>
+<style scoped>
+  .modified-field >>> .v-input__control {
+    border: 1px solid red !important;
+    background-color: #fff5f5;
+  }
+  .modified-field >>> .v-icon {
+    color: red !important;
+  }
+</style>
