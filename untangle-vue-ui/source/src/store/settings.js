@@ -5,21 +5,18 @@ import vuntangle from '@/plugins/vuntangle'
 
 const getDefaultState = () => ({
   editCallback: null,
-  settings: {
-    networkSetting: {
-      interfaces: [],
-      interfaceStatuses: [],
-    },
+  networkSetting: {
+    interfaces: [],
+    interfaceStatuses: [],
   },
 })
 
 const getters = {
-  settings: state => state.settings || [],
-  networkSetting: state => state.settings.networkSetting || [],
-  interfaces: state => state.settings?.networkSetting?.interfaces || [],
-  interfaceStatuses: state => state.settings?.networkSetting?.interfaceStatuses || [],
+  networkSetting: state => state.networkSetting || [],
+  interfaces: state => state?.networkSetting?.interfaces || [],
+  interfaceStatuses: state => state?.networkSetting?.interfaceStatuses || [],
   interface: state => device => {
-    return state.settings.networkSetting.interfaces.find(intf => intf.physicalDev === device)
+    return state.networkSetting.interfaces.find(intf => intf.physicalDev === device)
   },
 }
 
@@ -27,9 +24,9 @@ const mutations = {
   setEditCallback(state, cb) {
     state.editCallback = cb
   },
-  SET_INTERFACES: (state, value) => set(state.settings.networkSetting, 'interfaces', value),
-  SET_INTERFACES_STATUSES: (state, value) => set(state.settings.networkSetting, 'interfaceStatuses', value),
-  SET_NETWORK_SETTINGS: (state, value) => set(state.settings, 'networkSetting', value),
+  SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
+  SET_INTERFACES_STATUSES: (state, value) => set(state.networkSetting, 'interfaceStatuses', value),
+  SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
 }
 
 const actions = {
@@ -78,7 +75,7 @@ const actions = {
       if (Util.isDestroyed(this, updatedInterface)) return
 
       const rpc = await Util.setRpcJsonrpc('admin')
-      const settings = state.settings.networkSetting
+      const settings = state.networkSetting
       const interfaces = Array.isArray(settings.interfaces) ? settings.interfaces : []
 
       const updatedIntf = interfaces.find(i => i.interfaceId === updatedInterface.interfaceId)
@@ -130,7 +127,7 @@ const actions = {
         return
       }
       const rpc = await Util.setRpcJsonrpc('admin')
-      const settings = state.settings.networkSetting
+      const settings = state.networkSetting
       settings.interfaces.list = interfaces
       await rpc.networkManager.setNetworkSettings(settings)
       vuntangle.toast.add('Successfully saved interface remapping.')
@@ -143,7 +140,7 @@ const actions = {
   async deleteInterfaces({ state }, interfaces) {
     try {
       const rpc = await Util.setRpcJsonrpc('admin')
-      const fullSettings = JSON.parse(JSON.stringify(state.settings.networkSetting))
+      const fullSettings = JSON.parse(JSON.stringify(state.networkSetting))
 
       fullSettings.interfaces = {
         javaClass: 'java.util.LinkedList',
