@@ -56,25 +56,11 @@
     },
     computed: {
       device: ({ $route }) => $route.params.device,
-      // interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
       title() {
         // when editing existing intf use original settings for title
         if (this.intf) {
           return this.$t('edit_interface', [`${this.intf.name} (${this.intf.systemDev})`])
         }
-        // when adding a new intf use cloned intf type for the title
-        // switch (this.settingsCopy.type) {
-        //   case 'VLAN':
-        //     return this.$t('add_x_interface', [this.$t('vlan')])
-        //   case 'WIREGUARD':
-        //     return this.$t('add_x_interface', [this.$t('wireguard')])
-        //   case 'OPENVPN':
-        //     return this.$t('add_x_interface', [this.$t('open_vpn')])
-        //   case 'IPSEC':
-        //     return this.$t('add_x_interface', [this.$t('ipsec_tunnel')])
-        //   case 'BRIDGE':
-        //     return this.$t('add_x_interface', [this.$t('bridge')])
-        // }
         return 'Edit Interface'
       },
     },
