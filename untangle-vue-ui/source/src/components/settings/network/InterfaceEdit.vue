@@ -78,6 +78,7 @@
           await this.$store.dispatch('settings/setInterface', this.intf)
           this.$store.commit('SET_LOADER', false)
           this.$router.push('/settings/network/interfaces')
+          this.isSaving = false
         } catch (ex) {
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)
