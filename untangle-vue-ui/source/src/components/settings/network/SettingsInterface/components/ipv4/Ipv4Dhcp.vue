@@ -150,7 +150,6 @@
   import { CONFIG_TYPE } from '../constants'
   import mixin from '../mixin'
   import Util from '../../../../../../util/setupUtil'
-  import CommonUtil from '../../../../../../util/util'
 
   export default {
     components: {
@@ -181,7 +180,7 @@
           const [intfIdResult, interfaceStatusResult] = await Promise.all([this.getIntfId(), this.getInterfaceStatus()])
 
           console.log('intfIdResult :', intfIdResult)
-          if (CommonUtil.isDestroyed(this)) {
+          if (Util.isDestroyed(this)) {
             return
           }
           const intfStatus = interfaceStatusResult.list.find(intfSt => intfSt.interfaceId === this.intf.interfaceId)
@@ -193,7 +192,7 @@
             console.log('interfaceId : ', interfaceId)
           }
         } catch (ex) {
-          if (!CommonUtil.isDestroyed(this)) {
+          if (!Util.isDestroyed(this)) {
             console.error(ex)
             Util.handleException(ex)
           }

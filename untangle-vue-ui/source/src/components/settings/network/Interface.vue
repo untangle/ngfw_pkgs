@@ -7,19 +7,13 @@
         <v-icon small class="ma-2">mdi-shuffle</v-icon>
         {{ `Remap Interfaces` }}
       </u-btn>
-      <v-menu offset-y left>
-        <template #activator="{ on, attrs }">
-          <u-btn :disabled="disabled" v-bind="attrs" v-on="on">
-            {{ $vuntangle.$t('add_interface') }}
-            <v-icon small class="ml-1">mdi-chevron-down</v-icon>
-          </u-btn>
-        </template>
-        <v-list dense>
-          <v-list-item v-for="item in menuItems" :key="item.to" @click="$emit('add-interface', item.to)">
-            <v-list-item-title class="font-weight-bold" v-text="item.text" />
-          </v-list-item>
-        </v-list>
-      </v-menu>
+      <u-btn :disabled="!allowAddInterfaces" @click="onAddInterface">
+        {{ $vuntangle.$t('Add Tagged VLAN Interface') }}
+      </u-btn>
+    </div>
+    <!-- Conditionally shown message (on the basis of allowAddInterfaces) -->
+    <div v-if="!allowAddInterfaces" class="mb-3 text-body-2 text-warning">
+      {{ $vuntangle.$t('You cannot add new interfaces at this time.') }}
     </div>
 
     <div
@@ -65,7 +59,7 @@
 </template>
 
 <script>
-  import { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon } from 'vuetify/lib'
+  import { VContainer, VSpacer } from 'vuetify/lib'
   import StatusAndArpEntries from '../interface/StatusAndArpEntries.vue'
   import StatusRenderer from './StatusRenderer.vue'
   import interfaceMixin from './interfaceMixin'
@@ -75,7 +69,7 @@
   import ConfirmDialog from '@/components/Reusable/ConfirmDialog.vue'
 
   export default {
-    components: { VContainer, VSpacer, VMenu, VList, VListItem, VListItemTitle, VIcon, StatusAndArpEntries },
+    components: { VContainer, VSpacer, StatusAndArpEntries },
     mixins: [interfaceMixin],
     props: {
       disabled: { type: Boolean, default: false },
@@ -104,6 +98,7 @@
         panelHeight: 500,
         minHeight: 100,
         maxHeight: 800,
+        allowAddInterfaces: null,
         tableLoading: {
           interfaces: false,
           status: false,
@@ -170,15 +165,6 @@
             comparator: (a, b) => Number(a) - Number(b), // sort Interfaces  on the basis of ID
           },
           {
-            headerName: $i18n.t('device'),
-            field: 'device',
-            valueFormatter: ({ value }) => deviceValueFormatter(value),
-            cellClass: 'primary--text',
-            comparator: (a, b) => {
-              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
-            },
-          },
-          {
             headerName: $i18n.t('Name'),
             field: 'description',
             flex: 1,
@@ -198,6 +184,16 @@
               return span
             },
           },
+          {
+            headerName: $i18n.t('device'),
+            field: 'device',
+            valueFormatter: ({ value }) => deviceValueFormatter(value),
+            cellClass: 'primary--text',
+            comparator: (a, b) => {
+              return a.localeCompare(b, undefined, { numeric: true, sensitivity: 'base' })
+            },
+          },
+
           {
             headerName: $i18n.t('operational_status'),
             field: 'status',
@@ -461,14 +457,14 @@
           const rpc = await Util.setRpcJsonrpc('admin')
 
           // Prepare promises for fetching data
-          const networkSettingsPromise = rpc.networkManager.getNetworkSettings()
-          const interfaceStatusPromise = rpc.networkManager.getInterfaceStatus()
-          const deviceStatusPromise = rpc.networkManager.getDeviceStatus()
-
+          const networkSettingsPromise = await rpc.networkManager.getNetworkSettings()
+          const interfaceStatusPromise = await rpc.networkManager.getInterfaceStatus()
+          const deviceStatusPromise = await rpc.networkManager.getDeviceStatus()
+          const nextFreeId = await rpc.networkManager.getNextFreeInterfaceId(networkSettingsPromise)
           const interfaces = networkSettingsPromise?.interfaces?.list || []
           const intfStatusList = interfaceStatusPromise?.list || []
           const devStatusList = deviceStatusPromise?.list || []
-
+          this.allowAddInterfaces = nextFreeId !== -1
           const deviceStatusMap = {}
           devStatusList.forEach(dev => {
             deviceStatusMap[dev.deviceName] = dev
@@ -658,6 +654,10 @@
         this.intf = rowData.data
         this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
+      },
+
+      onAddInterface() {
+        this.$router.push(`/settings/network/interfaces/add/VLAN`)
       },
 
       async onDeleteInterface(rowData) {

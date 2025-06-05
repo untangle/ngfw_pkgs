@@ -72,9 +72,9 @@
       const intf = $intf()
       const status = $status()
       return {
-        adding: false, // boolean telling to show the add fields
-        alias: { ...defaults.v4_alias }, // model for new v4 alias
-        list: status?.[this.aliasKey].list?.length ? cloneDeep(intf[this.aliasKey].list) : [],
+        adding: false,
+        alias: { ...defaults.v4_alias },
+        list: status?.[this.aliasKey[0]]?.list?.length ? cloneDeep(intf[this.aliasKey[0]].list) : [],
       }
     },
     computed: {
@@ -99,6 +99,16 @@
     },
     created() {
       extend('unique_ip_address', this.validateUniqueIpAddress)
+      if (!this.intf.v4Aliases) {
+        this.$set(this.intf, 'v4Aliases', { javaClass: 'java.util.LinkedList', list: [] })
+      }
+    },
+    mounted() {
+      if (!this.intf.interfaceId && this.list.length === 0) {
+        this.adding = true
+        this.alias.staticAddress = '192.168.100.1'
+        this.alias.staticPrefix = 24
+      }
     },
     methods: {
       onStaticPrefixChange(prefix) {
