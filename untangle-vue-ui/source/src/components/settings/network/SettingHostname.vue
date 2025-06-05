@@ -18,6 +18,7 @@
                 :label="$vuntangle.$t('host_name')"
                 maxlength="150"
                 :error-messages="errors"
+                :class="{ 'modified-field': isFieldModified('hostName') }"
                 @keydown="validateHostName"
               >
                 <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
@@ -198,6 +199,7 @@
 </template>
 <script>
   import cloneDeep from 'lodash/cloneDeep'
+  import { isEqual } from 'lodash'
   import settingsMixin from '../settingsMixin'
   import Util from '@/util/setupUtil'
   export default {
@@ -248,6 +250,12 @@
       Object.assign(this.rpc, startUpInfo)
     },
     methods: {
+      isFieldModified(field) {
+        const isModified = this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
+        console.log(`Modified check for ${field}:`, isModified)
+        return isModified
+        // return this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
+      },
       async validate() {
         const isValid = await this.$refs.obs.validate()
         return isValid
@@ -276,11 +284,19 @@
   }
 </script>
 <style scoped>
-  .modified-field >>> .v-input__control {
-    border: 1px solid red !important;
-    background-color: #fff5f5;
+  .modified-field.v-input {
+    position: relative;
   }
-  .modified-field >>> .v-icon {
-    color: red !important;
+
+  .modified-field.v-input::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top: 10px solid red;
+    border-right: 10px solid transparent;
+    width: 0;
+    height: 0;
+    z-index: 10;
   }
 </style>
