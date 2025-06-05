@@ -18,8 +18,10 @@
   </v-container>
 </template>
 <script>
+  import cloneDeep from 'lodash/cloneDeep'
   import settingsMixin from '../../settingsMixin'
   import Common from './components/Common.vue'
+  import defaults from './defaults'
 
   export default {
     components: {
@@ -33,7 +35,7 @@
     provide() {
       return {
         $isSaving: () => this.isSaving,
-        $intf: () => this.intf,
+        $intf: () => this.settingsCopy,
         $interfaces: () => this.interfaces,
         $interfaceStatuses: () => this.interfaceStatuses,
         $status: () => this.status,
@@ -44,6 +46,7 @@
     props: {
       settings: { type: Object, default: () => null },
       interfaces: { type: Array, default: () => [] },
+      type: { type: String, default: () => null },
       disabled: { type: Boolean, default: () => false },
       isSaving: { type: Boolean, default: false },
       interfaceStatuses: { type: Array, default: () => [] },
@@ -52,23 +55,35 @@
       return {
         intf: null,
         status: null,
+        settingsCopy: null,
       }
     },
     computed: {
       device: ({ $route }) => $route.params.device,
       title() {
-        // when editing existing intf use original settings for title
-        if (this.intf) {
-          return this.$t('edit_interface', [`${this.intf.name} (${this.intf.systemDev})`])
+        if (!this.device && this.type === 'VLAN') {
+          return this.$t('add_x_interface', [this.$t('vlan')])
+        } else {
+          return this.$t('edit_interface', [`${this.settingsCopy.name} (${this.settingsCopy.systemDev})`])
         }
-        return 'Edit Interface'
       },
     },
-    created() {
-      this.intf = this.device ? this.interfaces.find(i => i.systemDev === this.device) : {}
-      this.status = this.device ? this.interfaceStatuses.find(i => i.systemDev === this.device) : {}
-    },
 
+    created() {
+      if (this.device) {
+        // Edit mode
+        const found = this.interfaces.find(i => i.systemDev === this.device)
+        this.settingsCopy = found ? cloneDeep(found) : {}
+        this.status = this.interfaceStatuses.find(i => i.systemDev === this.device) || {}
+      } else if (this.type && defaults[this.type.toLowerCase()]) {
+        // New mode
+        this.settingsCopy = cloneDeep(defaults[this.type.toLowerCase()])
+        this.status = {}
+      } else {
+        this.settingsCopy = {}
+        this.status = {}
+      }
+    },
     methods: {
       async validate() {
         const isValid = await this.$refs.common.validate()
