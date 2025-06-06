@@ -7,7 +7,7 @@ import Dns from '@/components/settings/network/NgfwDns.vue'
 import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
 import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
-// import Interfaces from '@/components/settings/network/Interfaces.vue'
+import Hostname from '@/components/settings/network/Hostname.vue'
 
 // routing
 import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
@@ -31,6 +31,11 @@ export default [
       {
         path: 'network/dns',
         component: Dns,
+        meta: { helpContext: 'dns' },
+      },
+      {
+        path: 'network/hostname',
+        component: Hostname,
         meta: { helpContext: 'dns' },
       },
       {

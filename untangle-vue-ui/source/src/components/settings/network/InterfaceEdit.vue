@@ -71,13 +71,14 @@
             this.$store.commit('SET_LOADER', false)
             return
           }
-          const cb = this.$store.state.setEditCallback
-          if (cb) cb()
-
-          await this.$store.dispatch('settings/setInterface', intfToSave)
-          this.isSaving = false
+          if (this.$store.state.settings.editCallback) {
+            this.$store.state.settings.editCallback()
+          }
+          // Save interface settings by updating the current interface
+          await this.$store.dispatch('settings/setInterface', this.intf)
           this.$store.commit('SET_LOADER', false)
           this.$router.push('/settings/network/interfaces')
+          this.isSaving = false
         } catch (ex) {
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)

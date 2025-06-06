@@ -29,3 +29,20 @@
 .drawer-content-menu {
   box-shadow: none;
 }
+$modified-indicator-color: red;
+
+.modified-field.v-input {
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    border-top: 10px solid $modified-indicator-color;
+    border-right: 10px solid transparent;
+    width: 0;
+    height: 0;
+    z-index: 10;
+  }
+}
