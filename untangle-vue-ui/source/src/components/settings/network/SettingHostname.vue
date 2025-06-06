@@ -18,6 +18,7 @@
                 :label="$vuntangle.$t('host_name')"
                 maxlength="150"
                 :error-messages="errors"
+                :class="{ 'modified-field': isFieldModified('hostName') }"
                 @keydown="validateHostName"
               >
                 <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
@@ -38,6 +39,7 @@
                 :label="$vuntangle.$t('domain_name')"
                 maxlength="150"
                 :error-messages="errors"
+                :class="{ 'modified-field': isFieldModified('domainName') }"
               >
                 <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
               </u-text-field>
@@ -59,6 +61,7 @@
               hide-details
               dense
               style="margin-bottom: 0"
+              :class="{ 'modified-field': isFieldModified('dynamicDnsServiceEnabled') }"
             />
             <span class="mt-2 mr-6 font-weight-medium text-grey">
               <span class="mt-2">Dynamic DNS Service Configuration</span>
@@ -85,6 +88,7 @@
                 hide-details
                 return-object
                 placeholder="Select Type"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServiceName') }"
               >
               </v-autocomplete>
             </v-col>
@@ -92,13 +96,20 @@
           <v-row dense>
             <v-col cols="4">
               <span>Username :</span>
-              <u-text-field v-model="settingsCopy.dynamicDnsServiceUsername"> </u-text-field>
+              <u-text-field
+                v-model="settingsCopy.dynamicDnsServiceUsername"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServiceUsername') }"
+              >
+              </u-text-field>
             </v-col>
           </v-row>
           <v-row dense>
             <v-col cols="4">
               <span>Password or API Token :</span>
-              <u-password v-model="settingsCopy.dynamicDnsServicePassword" />
+              <u-password
+                v-model="settingsCopy.dynamicDnsServicePassword"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServicePassword') }"
+              />
             </v-col>
           </v-row>
           <v-row dense>
@@ -107,6 +118,7 @@
               <u-text-field
                 v-model="settingsCopy.dynamicDnsServiceZone"
                 :disabled="settingsCopy.dynamicDnsServiceName !== 'cloudflare'"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServiceName') }"
               >
               </u-text-field>
             </v-col>
@@ -114,13 +126,22 @@
           <v-row dense>
             <v-col cols="4">
               <span>Hostname(s) :</span>
-              <u-text-field v-model="settingsCopy.dynamicDnsServiceHostnames"> </u-text-field>
+              <u-text-field
+                v-model="settingsCopy.dynamicDnsServiceHostnames"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServiceHostnames') }"
+              >
+              </u-text-field>
             </v-col>
           </v-row>
           <v-row dense>
             <v-col cols="4">
               <span>Interface :</span>
-              <u-select v-model="settingsCopy.dynamicDnsServiceWan" :items="allWanInterfaceNames"> </u-select>
+              <u-select
+                v-model="settingsCopy.dynamicDnsServiceWan"
+                :items="allWanInterfaceNames"
+                :class="{ 'modified-field': isFieldModified('dynamicDnsServiceWan') }"
+              >
+              </u-select>
             </v-col>
           </v-row>
         </div>
@@ -136,13 +157,25 @@
             label="Use IP address from External interface (default)"
             value="external"
             class="font-weight-bold text-body-2"
+            :class="{
+              'v-input': true,
+              'modified-field': isFieldModified('publicUrlMethod') && settingsCopy.publicUrlMethod === 'external',
+            }"
           ></v-radio>
           <div class="ml-10 mb-4 text-body-6 text--primary">
             <p>
               {{ `This works if your ${rpc?.companyName} Server has a routable public static IP address.` }}
             </p>
           </div>
-          <v-radio label="Use Hostname" value="hostname" class="font-weight-bold text-body-2"></v-radio>
+          <v-radio
+            label="Use Hostname"
+            value="hostname"
+            class="font-weight-bold text-body-2"
+            :class="{
+              'v-input': true,
+              'modified-field': isFieldModified('publicUrlMethod') && settingsCopy.publicUrlMethod === 'hostname',
+            }"
+          ></v-radio>
           <div class="ml-10 mb-4 text-body-6 text--primary">
             {{
               `This is recommended if the ${rpc?.companyName} Server's fully qualified domain name looks up to its IP address both
@@ -155,6 +188,11 @@
             label="Use Manually Specified Address"
             value="address_and_port"
             class="font-weight-bold text-body-2"
+            :class="{
+              'v-input': true,
+              'modified-field':
+                isFieldModified('publicUrlMethod') && settingsCopy.publicUrlMethod === 'address_and_port',
+            }"
           ></v-radio>
           <div class="ml-10 mb-4 text-body-6 text--primary">
             {{
@@ -170,6 +208,7 @@
                   v-model="settingsCopy.publicUrlAddress"
                   :disabled="settingsCopy.publicUrlMethod !== 'address_and_port'"
                   :error-messages="errors"
+                  :class="{ 'modified-field': isFieldModified('publicUrlAddress') }"
                 >
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
@@ -185,6 +224,7 @@
                   type="number"
                   :disabled="settingsCopy.publicUrlMethod !== 'address_and_port'"
                   :error-messages="errors"
+                  :class="{ 'modified-field': isFieldModified('publicUrlPort') }"
                 >
                   <template v-if="errors.length" #append><u-errors-tooltip :errors="errors" /></template>
                 </u-text-field>
@@ -197,7 +237,9 @@
   </v-container>
 </template>
 <script>
+  import '../../../../src/scss/common.scss'
   import cloneDeep from 'lodash/cloneDeep'
+  import { isEqual } from 'lodash'
   import settingsMixin from '../settingsMixin'
   import Util from '@/util/setupUtil'
   export default {
@@ -248,6 +290,10 @@
       Object.assign(this.rpc, startUpInfo)
     },
     methods: {
+      isFieldModified(field) {
+        const isModified = this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
+        return isModified
+      },
       async validate() {
         const isValid = await this.$refs.obs.validate()
         return isValid
@@ -275,12 +321,3 @@
     },
   }
 </script>
-<style scoped>
-  .modified-field >>> .v-input__control {
-    border: 1px solid red !important;
-    background-color: #fff5f5;
-  }
-  .modified-field >>> .v-icon {
-    color: red !important;
-  }
-</style>
