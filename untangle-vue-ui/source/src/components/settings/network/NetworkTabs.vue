@@ -20,12 +20,14 @@
   import Dhcp from '@/components/settings/network/NgfwDhcp'
   import Dns from '@/components/settings/network/NgfwDns.vue'
   import Interface from '@/components/settings/network/Interface.vue'
+  import PortForward from '@/components/settings/network/PortForward.vue'
 
   export default {
     components: {
       Interface,
       Dhcp,
       Dns,
+      PortForward,
     },
     data() {
       return {
@@ -36,6 +38,7 @@
             icon: 'mdi-lan',
             items: [
               { name: 'interface', to: '/settings/network/interfaces' },
+              { name: 'port_forward', to: '/settings/network/port-forward' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],
@@ -52,6 +55,8 @@
             return Dhcp
           case 'dns':
             return Dns
+          case 'port_forward':
+            return PortForward
           default:
             return null // fallback
         }

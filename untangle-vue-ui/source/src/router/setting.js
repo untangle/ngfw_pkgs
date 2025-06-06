@@ -17,6 +17,7 @@ import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.
 // system  \
 import About from '@/components/settings/system/NgfwAbout'
 import Settings from '@/components/settings/system/NgfwSettings.vue'
+import PortForward from '@/components/settings/network/PortForward.vue'
 export default [
   {
     name: 'settings',
@@ -71,6 +72,11 @@ export default [
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
+      },
+      {
+        name: 'rule-list',
+        path: ':category/:ruleType',
+        component: PortForward,
       },
     ],
   },

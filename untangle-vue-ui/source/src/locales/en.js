@@ -7,4 +7,7 @@ export default {
   To_continue_you_must_log_account_online:
     'To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a free account.',
   about: 'About',
+  // Condition Types
+  dst_local: 'Destined Local',
+  dst_port: 'Destination Port',
 }
