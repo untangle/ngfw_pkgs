@@ -237,6 +237,7 @@
   </v-container>
 </template>
 <script>
+  import '../../../../src/scss/common.scss'
   import cloneDeep from 'lodash/cloneDeep'
   import { isEqual } from 'lodash'
   import settingsMixin from '../settingsMixin'
@@ -322,20 +323,3 @@
     },
   }
 </script>
-<style scoped>
-  .modified-field.v-input {
-    position: relative;
-  }
-
-  .modified-field.v-input::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: 0;
-    border-top: 10px solid red;
-    border-right: 10px solid transparent;
-    width: 0;
-    height: 0;
-    z-index: 10;
-  }
-</style>
