@@ -56,6 +56,9 @@
         return {}
       },
     },
+    mounted() {
+      console.log('this.$rpcClient in InterfaceEdit', this.$rpcClient)
+    },
     methods: {
       async onSave(validate) {
         try {

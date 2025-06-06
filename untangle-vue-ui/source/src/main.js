@@ -6,6 +6,10 @@ import router from './router'
 import store from './store'
 import App from './App'
 import './scss/common.scss'
+import { RpcPlugin } from '@/plugins/rpc'
+
+Vue.config.productionTip = false
+Vue.use(RpcPlugin) // Created in the Rpc plugins then you can accessable all over the vue with using - this.$rpcClient
 
 new Vue({
   vuetify,
