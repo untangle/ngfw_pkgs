@@ -292,9 +292,7 @@
     methods: {
       isFieldModified(field) {
         const isModified = this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
-        console.log(`Modified check for ${field}:`, isModified)
         return isModified
-        // return this.settings && !isEqual(this.settings[field], this.settingsCopy[field])
       },
       async validate() {
         const isValid = await this.$refs.obs.validate()
