@@ -139,7 +139,7 @@ const util = {
       case 'DNAT':
         actionStr = `<span class="primary--text font-weight-bold">
         ${i18n.t('action_new_destination_is')}
-        ${rule.action.dnat_address || '?'}${rule.action.dnat_port ? ':' + rule.action.dnat_port : ''}
+        ${rule.action.newDestination || '?'}${rule.action.newPort ? ':' + rule.action.newPort : ''}
         </span>`
         break
       case 'SNAT':

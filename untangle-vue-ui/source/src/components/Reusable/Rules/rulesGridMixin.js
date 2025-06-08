@@ -7,6 +7,7 @@ import {
   interfaceTypes,
   priorities,
   limitExceedActions,
+  invertToOp,
 } from '../../../constants'
 import actionsConfig from '../../../config/actionsConfig'
 import util from '../../../util/util'
@@ -109,8 +110,8 @@ export default {
 
     conditionsValue(conditions) {
       return conditions.list.map(cond => ({
-        type: i18n.t(cond.conditionType.toLowerCase()),
-        op: cond.invert ? '!=' : '==', // TODO add this in a constants file
+        conditionType: i18n.t(cond.conditionType.toLowerCase()),
+        op: invertToOp[cond.invert],
         value: i18n.t(this.getConditionValue(cond)),
       }))
     },
@@ -140,6 +141,8 @@ export default {
           break
         case 'DNAT':
           out.text = `${i18n.t('new_destination')}: ${data.newDestination}${data.newPort ? ':' + data.newPort : ''}`
+          data.action.newDestination = data.newDestination
+          data.action.newPort = data.newPort
           break
         case 'SET_PRIORITY':
           out.text = `${i18n.t('priority')}: ${i18n.t(priorities[action.priority])}`

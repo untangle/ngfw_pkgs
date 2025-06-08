@@ -36,7 +36,7 @@
   </div>
 </template>
 <script>
-  import { ruleDefs } from 'vuntangle'
+  import { ruleDefs } from '../Conditions/data/rulesDefinitions'
 
   import CheckboxRenderer from '../renderers/CheckboxRenderer.vue'
   import ConditionsRenderer from './ConditionsRenderer.vue'
@@ -179,6 +179,7 @@
        * @param {Object} event.data - the rule row data
        */
       showRuleDialog({ data }) {
+        console.log('showRuleDialog: ', data)
         // if grid is readonly do nothing
         if (this.readOnlyGrid) return
 

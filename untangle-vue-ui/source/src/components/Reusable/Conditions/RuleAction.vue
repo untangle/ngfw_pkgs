@@ -20,10 +20,10 @@
       </u-select>
     </ValidationProvider>
 
-    <!-- `dnat_address` and `dnat_port` fields for DNAT action -->
+    <!-- `newDestination` and `newPort` fields for DNAT action -->
     <ValidationProvider v-if="showDnatAddress" v-slot="{ errors }" rules="required|ip">
       <u-text-field
-        v-model="actionCopy.dnat_address"
+        v-model="actionCopy.newDestination"
         data-testid="actionDnatAddress"
         :label="$vuntangle.$t('address')"
         :error-messages="errors"
@@ -33,7 +33,7 @@
     </ValidationProvider>
     <ValidationProvider v-if="showDnatAddress" v-slot="{ errors }" rules="port">
       <u-text-field
-        v-model="actionCopy.dnat_port"
+        v-model="actionCopy.newPort"
         data-testid="actionDnatPort"
         :label="$vuntangle.$t('port_optional')"
         :error-messages="errors"
@@ -238,12 +238,12 @@
       },
 
       /**
-       * Removes the optional `dnat_port` field if null/empty
+       * Removes the optional `newPort` field if null/empty
        * It gets added back upon editing
        * * @param {String} port - port number
        */
       onDnatPortChange(port) {
-        if (!port) this.$delete(this.actionCopy, 'dnat_port')
+        if (!port) this.$delete(this.actionCopy, 'newPort')
       },
     },
   }

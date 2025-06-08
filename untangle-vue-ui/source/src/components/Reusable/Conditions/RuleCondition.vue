@@ -27,7 +27,7 @@
       </u-autocomplete>
       <u-text-field
         v-else
-        :value="$t(type.toLowerCase())"
+        :value="$t(conditionType.toLowerCase())"
         disabled
         style="width: 360px"
         class="flex-grow-0 flex-shrink-0"
@@ -36,9 +36,9 @@
 
     <!-- OPERATORS
       Operator selector behaving as follows:
-      - using is, is not (==, !=) for string values of a given condition type (default)
-      - using all operators (==, !=, >, <, >=, <=) for numeric values of a specific condition type
-      - disabled if type is not set
+      - using is, is not (==, !=) for string values of a given condition conditionType (default)
+      - using all operators (==, !=, >, <, >=, <=) for numeric values of a specific condition conditionType
+      - disabled if conditionType is not set
       - not shown if field is boolean
       Does not need a validator as the value is always set to a default
     -->
@@ -47,7 +47,7 @@
       v-model="conditionCopy.op"
       data-testid="conditionOperator"
       :items="conditionDef.ops || isOperatorOptions"
-      :disabled="!type || isObsolete"
+      :disabled="!conditionType || isObsolete"
       style="width: 200px"
       class="flex-grow-0 flex-shrink-0"
     >
@@ -56,21 +56,21 @@
     </u-select>
 
     <!-- VALUE
-      the condition value that can be entered using different input fields depending on the condition type
+      the condition value that can be entered using different input fields depending on the condition conditionType
       - by default it's a simple textfield
       - in case of application names/categories/ids it's an autocomplete field
       - in case of application productivity/risk it's a select field
-      see data/defs.js for each condition type definition, the type of input field
+      see data/defs.js for each condition conditionType definition, the conditionType of input field
 
       SOURCE_PORT and DESTINATION_PORT conditions have an extra field `portProtocols`
       based on that, the value field size is shorter to make space for port protocols selector
     -->
 
     <!--
-        default input text for string value of condition types
+        default input text for string value of condition conditionTypes
         used for conditions that does not have a specific field defined
         see (data/defs.js)
-        - disabled if condition type is not set
+        - disabled if condition conditionType is not set
         - using default `required` validation rule, along with other rules if specified in condition definition
       -->
     <ValidationProvider
@@ -83,7 +83,7 @@
       <u-text-field
         v-model="value"
         data-testid="conditionValue"
-        :disabled="!type || isObsolete"
+        :disabled="!conditionType || isObsolete"
         :placeholder="$vuntangle.$t('value')"
         :suffix="valueSuffix"
         :error-messages="errors"
@@ -93,9 +93,9 @@
     </ValidationProvider>
 
     <!-- select field
-        used for conditions types that have defined the value field being `select`
+        used for conditions conditionTypes that have defined the value field being `select`
         - using the `selectItems` from the condition definition as the possible values for the condition value
-        - disabled if condition type not set
+        - disabled if condition conditionType not set
         see (data/defs.js)
       -->
 
@@ -110,7 +110,7 @@
         v-model="value"
         data-testid="conditionValue"
         :items="conditionDef.selectItems || remoteItems"
-        :disabled="!type || isObsolete"
+        :disabled="!conditionType || isObsolete"
         :placeholder="$vuntangle.$t('value')"
         :loading="remoteLoading"
         :error-messages="errors"
@@ -121,9 +121,9 @@
       </u-select>
     </ValidationProvider>
     <!-- autocomplete field
-        used for conditions types that have defined the value field being `autocomplete`
+        used for conditions conditionTypes that have defined the value field being `autocomplete`
         the `autocompleteItems` are set via an event captured by the host app, triggering an API call than passes via props the values
-        this field applies for APPLICATION_NAME, APPLICATION_CATEGORY and APPLICATION_ID condition types
+        this field applies for APPLICATION_NAME, APPLICATION_CATEGORY and APPLICATION_ID condition conditionTypes
       -->
     <!-- <template v-if="conditionDef.field === 'autocomplete'"> -->
     <ValidationProvider
@@ -144,10 +144,10 @@
         :disabled="isObsolete"
       >
         <template #selection="{ item, index }">
-          <span v-if="type.startsWith('APPLICATION_CATEGORY')">
+          <span v-if="conditionType.startsWith('APPLICATION_CATEGORY')">
             {{ $vuntangle.$t(item.replace(/ /g, '_').toLowerCase()) }}
           </span>
-          <span v-if="type.startsWith('APPLICATION_NAME')">
+          <span v-if="conditionType.startsWith('APPLICATION_NAME')">
             {{ item }}
           </span>
           <span v-if="conditionDef.multiple">
@@ -169,7 +169,7 @@
             <v-list-item-action v-if="conditionDef.multiple" class="my-0 mr-2">
               <v-checkbox :input-value="active" dense :ripple="false" />
             </v-list-item-action>
-            <v-list-item-content v-if="type === 'APPLICATION_CATEGORY'">
+            <v-list-item-content v-if="conditionType === 'APPLICATION_CATEGORY'">
               {{ $vuntangle.$t(item.replace(/ /g, '_').toLowerCase()) }}
             </v-list-item-content>
             <v-list-item-content v-else> {{ item.text || item }} </v-list-item-content>
@@ -181,8 +181,8 @@
 
     <div v-if="conditionDef.field === 'boolean'" class="flex-grow-1">
       <v-radio-group v-model="value" data-testid="conditionValue" row class="mx-2 my-0 pa-0" hide-details>
-        <v-radio :label="$vuntangle.$t('yes')" :value="true" :ripple="false" />
-        <v-radio :label="$vuntangle.$t('no')" :value="false" :ripple="false" />
+        <v-radio :label="$vuntangle.$t('yes')" :value="'true'" :ripple="false" />
+        <v-radio :label="$vuntangle.$t('no')" :value="'false'" :ripple="false" />
       </v-radio-group>
     </div>
 
@@ -191,7 +191,7 @@
       the below select field is used only for this specific case
     -->
     <ValidationProvider
-      v-if="type === 'SOURCE_PORT' || type === 'DESTINATION_PORT'"
+      v-if="conditionType === 'SOURCE_PORT' || conditionType === 'DESTINATION_PORT'"
       v-slot="{ errors }"
       rules="required"
       tag="div"
@@ -219,7 +219,7 @@
       </u-select>
     </ValidationProvider>
 
-    <template v-if="type === 'LIMIT_RATE'">
+    <template v-if="conditionType === 'LIMIT_RATE'">
       <ValidationProvider v-slot="{ errors }" rules="required">
         <u-select
           v-model="conditionCopy.rate_unit"
@@ -248,11 +248,9 @@
   import cloneDeep from 'lodash/cloneDeep'
   import isEqual from 'lodash/isEqual'
   import { UAutocomplete, limitRateUnitOptions, limitBurstUnitOptions } from 'vuntangle'
-  import { isOperatorOptions, portProtocolOptions } from '../Conditions'
-  // import UAutocomplete from '../../components/UAutocomplete'
-  // import { isOperatorOptions, portProtocolOptions, limitRateUnitOptions, limitBurstUnitOptions } from '../../constants'
   import { conditionDefs } from './data/conditionsDefinitions'
   import { ruleDefs } from './data/rulesDefinitions'
+  import { isOperatorOptions, portProtocolOptions } from '@/constants/index'
 
   export default {
     components: {
@@ -268,9 +266,9 @@
     inject: ['$remoteData', '$features'],
     props: {
       condition: { conditionType: Object, default: () => {} },
-      ruleType: { type: String, default: undefined },
-      conditionIndex: { type: Number, default: undefined },
-      ruleConditions: { type: Array, default: () => [] },
+      ruleType: { conditionType: String, default: undefined },
+      conditionIndex: { conditionType: Number, default: undefined },
+      ruleConditions: { conditionType: Array, default: () => [] },
     },
     data() {
       return {
@@ -294,29 +292,29 @@
       remoteData: ({ $remoteData }) => $remoteData(),
 
       /**
-       * Returns a shorthand for the condition type
+       * Returns a shorthand for the condition conditionType
        * @param {Object} vm - vue instance
        * @param {Object} conditionCopy - condition being edited
        */
-      type: ({ conditionCopy }) => conditionCopy.conditionType,
+      conditionType: ({ conditionCopy }) => conditionCopy.conditionType,
 
       /**
        * Returns condition definition as found in
        * /src/shared/Conditions/data/conditionsDefinitions.js
        * @param {Object} vm - vue instance
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.$features - injected features from host app
        */
-      conditionDef: ({ type, $features }) => {
-        const condDef = conditionDefs[type] || {}
+      conditionDef: ({ conditionType, $features }) => {
+        const condDef = conditionDefs[conditionType] || {}
 
         /**
-         * according to CD-6091 which states that management interface type not implemented
-         * in ./src/constants defs the 'management' type has been excluded
+         * according to CD-6091 which states that management interface conditionType not implemented
+         * in ./src/constants defs the 'management' conditionType has been excluded
          * meaning that below `if` does nothing
          * + `hasManagementIntf` is only passed via features from local ui & not from cloud
          */
-        if ($features?.hasManagementIntf === false && type?.includes('INTERFACE_TYPE')) {
+        if ($features?.hasManagementIntf === false && conditionType?.includes('INTERFACE_TYPE')) {
           const mgmtIndex = condDef.selectItems.findIndex(i => i?.text === 'management')
           if (mgmtIndex !== -1) {
             delete condDef.selectItems[mgmtIndex]
@@ -329,7 +327,7 @@
        * Returns rule definition as found in
        * /src/shared/Conditions/data/rulesDefinitions.js
        * @param {Object} vm - vue instance
-       * @param {String} vm.ruleType - the rule type
+       * @param {String} vm.ruleType - the rule conditionType
        * @param {Object} vm.$features - injected features
        */
       ruleDef: ({ ruleType, $features }) => {
@@ -345,8 +343,8 @@
       },
 
       /**
-       * Returns options for the condition type selector filtered based on
-       * - condition types the rule might have
+       * Returns options for the condition conditionType selector filtered based on
+       * - condition conditionTypes the rule might have
        * - filter out already used conditions
        * - grouped by category: Source/Dest/Other
        * @param {Object} vm - vue instance
@@ -357,7 +355,7 @@
        * @param {Object} vm.$features - injected features from host app
        */
       conditionTypes: ({ conditionCopy, ruleDef, ruleConditions, $i18n, $features }) => {
-        // for qosmos some of the condition types have to be excluded (all inferred ones, productivity & risk)
+        // for qosmos some of the condition conditionTypes have to be excluded (all inferred ones, productivity & risk)
         const excludedQosmosConditions = [
           'APPLICATION_CATEGORY_INFERRED',
           'APPLICATION_NAME_INFERRED',
@@ -371,34 +369,36 @@
         let allTypes = ruleDef?.conditions
 
         if ($features.hasQosmos) {
-          allTypes = allTypes.filter(type => !excludedQosmosConditions.includes(type))
+          allTypes = allTypes.filter(conditionType => !excludedQosmosConditions.includes(conditionType))
         }
 
         // map of existing conditions already added to the rule, except the one which is selected
-        const existing = ruleConditions.map(cond => cond.type).filter(type => type !== conditionCopy?.type)
+        const existing = ruleConditions
+          .map(cond => cond.conditionType)
+          .filter(conditionType => conditionType !== conditionCopy?.conditionType)
         // filter out those existing conditions
-        const types = allTypes.filter(t => !existing.includes(t))
-        // create groups of condition types based on their dedicated category, e.g. source, destination
+        const conditionTypes = allTypes.filter(t => !existing.includes(t))
+        // create groups of condition conditionTypes based on their dedicated category, e.g. source, destination
         const groups = {}
 
-        types.forEach(type => {
-          const condDef = conditionDefs[type]
-          // filter out condition types above Layer 3 (for EOS)
+        conditionTypes.forEach(conditionType => {
+          const condDef = conditionDefs[conditionType]
+          // filter out condition conditionTypes above Layer 3 (for EOS)
           if ($features?.hasAboveLayer3Conditions === false && condDef.layer3 === false) return
-          if (!groups[condDef.category]) groups[condDef.category] = [type]
-          else groups[condDef.category].push(type)
+          if (!groups[condDef.category]) groups[condDef.category] = [conditionType]
+          else groups[condDef.category].push(conditionType)
         })
 
         // build out select component options ({ text, value}) based on above groups
         const options = []
-        Object.entries(groups).forEach(([group, types]) => {
+        Object.entries(groups).forEach(([group, conditionTypes]) => {
           options.push({
             header: $i18n.t(group),
           })
-          types.forEach(type => {
+          conditionTypes.forEach(conditionType => {
             options.push({
-              text: $i18n.t(type.toLowerCase()),
-              value: type,
+              text: $i18n.t(conditionType.toLowerCase()),
+              value: conditionType,
             })
           })
         })
@@ -410,19 +410,20 @@
        * This is mostly used for deprecated conditions which might still be present on some rules
        * When true it will disable all condition fields
        * @param {Object} vm - vue instance
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.ruleDef - the rule definition
        */
-      isObsolete: ({ type, ruleDef }) => !ruleDef.conditions.includes(type),
+      isObsolete: ({ conditionType, ruleDef }) => !ruleDef.conditions.includes(conditionType),
 
       /**
        * Returns validation rules for the condition value field
-       * By default value field is required, but for some specific types extra validators are added from condition definition
+       * By default value field is required, but for some specific conditionTypes extra validators are added from condition definition
        * @param {Object} vm - vue instance
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.conditionDef - the condition definition
        */
-      valueValidationRules: ({ type, conditionDef }) => (type ? `required|${conditionDef.extraRules || ''}` : ''),
+      valueValidationRules: ({ conditionType, conditionDef }) =>
+        conditionType ? `required|${conditionDef.extraRules || ''}` : '',
 
       /**
        * gets/sets the condition value needed to treat a special case for IP_PROTOCOL condition
@@ -431,10 +432,13 @@
        * so it has to do this get/set conversion for the condition value
        */
       value: {
-        get: ({ type, conditionCopy }) =>
-          conditionCopy.value && type === 'IP_PROTOCOL' ? (conditionCopy.value + '').split(',') : conditionCopy.value,
+        get: ({ conditionType, conditionCopy }) =>
+          conditionCopy.value && (conditionType === 'IP_PROTOCOL' || conditionType === 'PROTOCOL')
+            ? (conditionCopy.value + '').split(',')
+            : conditionCopy.value,
         set(value) {
-          if (this.type === 'IP_PROTOCOL') this.conditionCopy.value = value.join() || null
+          if (this.conditionType === 'IP_PROTOCOL' || this.conditionType === 'PROTOCOL')
+            this.conditionCopy.value = value.join() || null
           else this.conditionCopy.value = value
         },
       },
@@ -447,11 +451,11 @@
       /**
        * Returns select/autocomplete field options as [{ text, value }] or Array<String>
        * @param {Object} vm - vue instance
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.remoteData - the remoteData from host app
        */
-      remoteItems: ({ type, remoteData }) => {
-        switch (type) {
+      remoteItems: ({ conditionType, remoteData }) => {
+        switch (conditionType) {
           case 'APPLICATION_NAME':
           case 'APPLICATION_NAME_INFERRED': {
             return remoteData?.classifyApplications?.map(app => app.name) || []
@@ -488,10 +492,11 @@
       /**
        * Returns true for LIMIT_RATE action in limiting rules
        * @param {Object} vm - vue instance
-       * @param {String} vm.ruleType - the rule type
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.ruleType - the rule conditionType
+       * @param {String} vm.conditionType - the condition conditionType
        */
-      requiredCondition: ({ ruleType, type }) => ruleType === 'limiting-rules' && type === 'LIMIT_RATE',
+      requiredCondition: ({ ruleType, conditionType }) =>
+        ruleType === 'limiting-rules' && conditionType === 'LIMIT_RATE',
 
       /**
        * Returns a string denoting a required condition (e.g. LIMIT_RATE for limiting rules)
@@ -507,19 +512,21 @@
        * Returns a string suffix shown in value field
        * For now this is used just to show burst unit for BURST_SIZE condition
        * @param {Object} vm - vue instance
-       * @param {String} vm.type - the condition type
+       * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.conditionCopy - the edited condition
        * @param {Object} vm.$i18n - i18n engine
        */
-      valueSuffix: ({ type, conditionCopy, $i18n }) =>
-        type === 'BURST_SIZE' && conditionCopy.burst_unit ? $i18n.t(conditionCopy.burst_unit.toLowerCase()) : null,
+      valueSuffix: ({ conditionType, conditionCopy, $i18n }) =>
+        conditionType === 'BURST_SIZE' && conditionCopy.burst_unit
+          ? $i18n.t(conditionCopy.burst_unit.toLowerCase())
+          : null,
     },
 
     watch: {
       condition: {
         // sets conditionCopy upon condition prop change
         handler(newCond, oldCond) {
-          if (newCond.type === 'BURST_SIZE') {
+          if (newCond.conditionType === 'BURST_SIZE') {
             this.$emit('add-limit-rate')
           }
 
@@ -529,23 +536,26 @@
         immediate: true,
       },
 
-      // updates some condition props based on type
-      type: {
-        handler(type) {
-          if (!type) return
+      // updates some condition props based on conditionType
+      conditionType: {
+        handler(conditionType) {
+          if (!conditionType) return
+          if (conditionType === 'DST_PORT' || conditionType === 'PROTOCOL')
+            this.conditionCopy.op = this.conditionCopy.invert ? '!=' : '=='
+
           /**
            * for some conditions data is retrieved from the host app
            * so an event is triggered to fetch that data
            */
           if (
-            (type.startsWith('APPLICATION_NAME') || type.startsWith('APPLICATION_CATEGORY')) &&
+            (conditionType.startsWith('APPLICATION_NAME') || conditionType.startsWith('APPLICATION_CATEGORY')) &&
             !this.remoteData?.classifyApplications?.length
           ) {
             this.$emit('fetch-classify-apps')
           }
 
           // for SOURCE_PORT and DESTINATION_PORT it adds/removes the extra `port_protocol`
-          if (type === 'SOURCE_PORT' || type === 'DESTINATION_PORT') {
+          if (conditionType === 'SOURCE_PORT' || conditionType === 'DESTINATION_PORT') {
             if (!this.conditionCopy.port_protocol) {
               this.$set(this.conditionCopy, 'port_protocol', '6') // TCP by default as port_protocol is required
             }
@@ -554,8 +564,8 @@
           }
 
           // when adding BURST_SIZE condition and LIMIT_RATE condition already exists, set it's unit based on that
-          if (type === 'BURST_SIZE') {
-            const limitRateCondition = this.ruleConditions.find(cond => cond.type === 'LIMIT_RATE')
+          if (conditionType === 'BURST_SIZE') {
+            const limitRateCondition = this.ruleConditions.find(cond => cond.conditionType === 'LIMIT_RATE')
             this.conditionCopy.burst_unit = limitRateCondition?.rate_unit.split('_')[0] || 'PACKETS'
           }
         },
@@ -574,7 +584,7 @@
       },
 
       /**
-       * Tracks newConditionType used in type selector, to add a new condition when set
+       * Tracks newConditionType used in conditionType selector, to add a new condition when set
        */
       newConditionType(val) {
         if (val) {
@@ -602,7 +612,7 @@
        */
       'conditionCopy.op': {
         handler(value) {
-          if (this.type !== 'LIMIT_RATE') return
+          if (this.conditionType !== 'LIMIT_RATE') return
           // emit event to update LIMIT_RATE condition action based on GREATER or LESS
           this.$emit('set-limit-rule-action', value)
         },
@@ -617,7 +627,7 @@
     methods: {
       /**
        * Custom validator extender used for services
-       * @param {string} value - the condition type
+       * @param {string} value - the condition conditionType
        */
       validateService(value) {
         if (!this.remoteData?.serviceStatus) return true

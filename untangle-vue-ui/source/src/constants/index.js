@@ -380,11 +380,14 @@ const outgoingThreatLevels = {
  * Protocols used only for CLIENT_PORT & SERVER_PORT conditions
  */
 const portProtocols = {
-  '6': 'TCP',
-  '17': 'UDP',
-  '33': 'DCCP',
-  '132': 'SCTP',
-  '136': 'UDPLite',
+  'TCP': 'TCP',
+  'UDP': 'UDP',
+  'ICMP': 'ICMP',
+  'GRE': 'GRE',
+  'ESP': 'ESP',
+  'AH': 'AH',
+  'SCTP': 'SCTP',
+  'OSPF': 'OSPF',
 }
 
 // Denial of service protocols
@@ -689,6 +692,16 @@ const allOperators = {
   '>=': 'greater_or_equal',
   '<=': 'less_or_equal',
 }
+// op => invert
+const opToInvert = {
+  '==': false,
+  '!=': true,
+}
+// invert => op (reverse map)
+const invertToOp = Object.entries(opToInvert).reduce((acc, [op, invert]) => {
+  acc[invert] = op
+  return acc
+}, {})
 const isOperatorOptions = Object.entries(isOperators).map(([k, v]) => ({ text: v, value: k }))
 const onlyIsOperatorOptions = isOperatorOptions.filter(({ value }) => value === '==')
 const allOperatorOptions = Object.entries(allOperators).map(([k, v]) => ({ text: v, value: k }))
@@ -739,4 +752,6 @@ export {
   isOperatorOptions,
   allOperatorOptions,
   onlyIsOperatorOptions,
+  opToInvert,
+  invertToOp,
 }

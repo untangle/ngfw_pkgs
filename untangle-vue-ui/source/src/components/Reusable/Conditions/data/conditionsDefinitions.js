@@ -12,7 +12,7 @@ import {
   interfaceTypeOptions,
 } from 'vuntangle'
 
-import { portProtocolOptions } from '../../Conditions'
+import { portProtocolOptions } from '@/constants/index'
 
 export const conditionDefs = {
   APPLICATION_NAME: {
@@ -78,6 +78,10 @@ export const conditionDefs = {
   },
 
   // the CLIENT ones are not longer used, kept only for backward compatibility
+  CLIENT_TAGGED: {
+    layer3: true,
+    category: 'other',
+  },
   CLIENT_ADDRESS: {
     extraRules: 'ip_expression',
     layer3: true,
@@ -107,6 +111,10 @@ export const conditionDefs = {
   },
 
   // the SERVER ones are not used except SERVER_DNS_HINT as Server DNS Cache in other category
+  SERVER_TAGGED: {
+    layer3: true,
+    category: 'other',
+  },
   SERVER_ADDRESS: {
     extraRules: 'ip_expression',
     layer3: true,
@@ -139,7 +147,7 @@ export const conditionDefs = {
     category: 'other',
   },
 
-  SOURCE_ADDRESS: {
+  SRC_ADDR: {
     extraRules: 'ip_expression',
     layer3: true,
     category: 'source',
@@ -161,6 +169,12 @@ export const conditionDefs = {
     layer3: true,
     category: 'source',
   },
+  SRC_INTF: {
+    field: 'autocomplete',
+    multiple: true,
+    // autocompleteItems: protocolOptions,
+    category: 'source',
+  },
   SOURCE_INTERFACE_NAME: {
     category: 'source',
   },
@@ -176,7 +190,7 @@ export const conditionDefs = {
     category: 'source',
   },
 
-  DESTINATION_ADDRESS: {
+  DST_ADDR: {
     extraRules: 'ip_expression',
     layer3: true,
     category: 'destination',
@@ -199,7 +213,7 @@ export const conditionDefs = {
     category: 'destination',
   },
   DST_PORT: {
-    defaults: { op: '==', value: '' },
+    defaults: { op: '==', invert: false, value: '' },
     extraRules: 'port_expression',
     layer3: true,
     category: 'destination',
@@ -235,13 +249,8 @@ export const conditionDefs = {
     field: 'autocomplete',
     multiple: true,
     autocompleteItems: portProtocolOptions,
-    defaults: { op: '==', value: '', port_protocol: '6' },
     layer3: true,
     category: 'other',
-    // defaults: { op: '==', value: '' },
-    // extraRules: 'port_expression',
-    // layer3: true,
-    // category: 'destination',
   },
   IP_PROTOCOL: {
     field: 'autocomplete',

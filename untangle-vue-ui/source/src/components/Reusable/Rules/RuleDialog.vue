@@ -98,9 +98,9 @@
 </template>
 <script>
   import cloneDeep from 'lodash/cloneDeep'
-  // import { conditionDefs } from 'vuntangle'
   import { RuleCondition, RuleAction } from '../Conditions'
   import { conditionDefs } from '../Conditions/data/conditionsDefinitions'
+  import { opToInvert } from '@/constants/index'
 
   export default {
     components: { RuleCondition, RuleAction },
@@ -149,15 +149,15 @@
        * Adds a new condition to the rule
        * @param {String} type - condition type
        */
-      onAddCondition(type) {
+      onAddCondition(conditionType) {
         // BURST_SIZE condition requires LIMIT_RATE condition to be also present
-        if (type === 'BURST_SIZE') {
+        if (conditionType === 'BURST_SIZE') {
           const limitRateIndex = this.ruleCopy.conditions.list.findIndex(
             condition => condition.conditionType === 'LIMIT_RATE',
           )
           if (limitRateIndex === -1) {
             this.ruleCopy.conditions.list.push({
-              type: 'LIMIT_RATE',
+              conditionType: 'LIMIT_RATE',
               op: '<',
               value: '',
               rate_unit: 'PACKETS_PER_SECOND',
@@ -165,7 +165,10 @@
           }
         }
 
-        const condition = { type, ...(conditionDefs[type]?.defaults || { op: '==', value: '' }) }
+        const condition = {
+          conditionType,
+          ...(conditionDefs[conditionType]?.defaults || { op: '==', invert: false, value: '' }),
+        }
         this.ruleCopy.conditions.list.push(condition)
         this.newCondition.conditionType = undefined
       },
@@ -218,8 +221,32 @@
       async onAction() {
         const isValid = await this.$refs.obs.validate()
         if (!isValid) return
+        this.ruleCopy = this.syncRuleData()
+        console.log('ruleType: ', this.ruleCopy)
 
         this.$emit('update-rule', { rule: this.ruleCopy, type: this.ruleType })
+      },
+
+      syncRuleData() {
+        const ruleCopy = this.ruleCopy
+        // Update the rule object based on changes in action
+        switch (ruleCopy.action?.type) {
+          case 'DNAT':
+            ruleCopy.newDestination = ruleCopy.action.newDestination
+            ruleCopy.newPort = ruleCopy.action.newPort
+            break
+
+          default:
+            break
+        }
+
+        // Update invert/comparator based on condition operator value
+        ruleCopy.conditions.list.forEach(condition => {
+          if ('op' in condition) {
+            condition.invert = opToInvert[condition.op]
+          }
+        })
+        return ruleCopy
       },
     },
   }

@@ -1,6 +1,5 @@
 <template>
   <v-container fluid class="d-flex flex-column flex-grow-1 pa-2">
-    <!-- <policy-manager-alert :cloud-config-id="cloudConfigId" :cloud-disabled="cloudDisabled" /> -->
     <div :class="`shared-cmp d-flex flex-column flex-grow-1 ${cloudDisabled && 'disabled'}`">
       <div class="d-flex align-center">
         <h1 class="headline">{{ title }}</h1>
@@ -40,7 +39,6 @@
   import isEqual from 'lodash/isEqual'
 
   import util from '../../../util/util'
-  // import PolicyManagerAlert from '../../policy-manager/components/PolicyManagerAlert.vue'
   import RuleDialog from './RuleDialog.vue'
   import RulesGrid from './RulesGrid.vue'
 
@@ -51,7 +49,6 @@
       VDivider,
       RuleDialog,
       RulesGrid,
-      // PolicyManagerAlert,
     },
     inject: ['$features'],
     props: {

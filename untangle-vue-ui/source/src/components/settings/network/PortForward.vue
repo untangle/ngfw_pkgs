@@ -125,6 +125,12 @@
       // whole settings of the appliance
       boxSettings: ({ $store }) => $store.getters['settings/settings'],
 
+      // Network Settings
+      networkSettings: () => {
+        const rpc = Util.setRpcJsonrpc('admin')
+        return rpc.networkManager.getNetworkSettings()
+      },
+
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
 
@@ -135,37 +141,14 @@
        * @param {Array<string>} vm.ruleConfigs - names of the configurations
        * @returns {Object} - with mapping between config name and the rules
        */
-      rules: ({ boxSettings, ruleConfigs }) => {
+      rules: ({ networkSettings }) => {
         // if (templateRules) {
         //   return { 'bypass-rules': templateRules }
         // }
-        console.log('BoxSettings: ' + boxSettings)
-        console.log('ruleConfigs: ' + ruleConfigs)
-
-        const rpc = Util.setRpcJsonrpc('admin')
 
         // Prepare promises for fetching data
-        const networkSettings = rpc.networkManager.getNetworkSettings()
         console.log('networkSettingsPromise: ' + networkSettings)
-
         const rules = { 'port-forward-rules': networkSettings.portForwardRules }
-
-        // ruleConfigs.forEach(confName => {
-        //   const conf = ruleDefs[confName]
-        //   console.log('ruleDefs: ' + conf)
-        //   // for rules found in table chains have to lookup each chain
-        //   if (conf.chains) {
-        //     const chain = get(boxSettings, conf.chains)?.find(c => c.name === confName)
-        //     // if there are no command center rules defined do not show them
-        //     if (confName === 'command-center-rules' && !chain?.rules?.length) return
-        //     rules[confName] = chain.rules
-        //   }
-        //   // for rules not being in chains, e.g bypass rules
-        //   if (conf.path) {
-        //     rules[confName] = get(boxSettings, conf.path)?.rules
-        //   }
-        // })
-
         return rules
       },
 
@@ -260,32 +243,40 @@
        * than dispatching the store action to save the chain
        * @param {String} rules - the new / updated rules passed via #actions slot props
        */
-      onSave(updatedRules) {
+      async onSave(updatedRules) {
         console.log('updatedRules: ' + updatedRules)
-        // let result
-        // store.commit('SET_LOADER', true)
-        // switch (this.ruleType) {
-        //   case 'bypass': {
-        //     result = await store.dispatch('settings/setBypass', { bp: { rules: updatedRules['bypass-rules'] } })
-        //     break
-        //   }
-        //   case 'wan-rules': {
-        //     const wan = cloneDeep(this.boxSettings.wan)
-        //     const localChain = wan.policy_chains.find(chain => chain.name === 'user-wan-rules')
-        //     localChain.rules = updatedRules['user-wan-rules']
-        //     result = await store.dispatch('settings/setWan', { wan })
-        //     break
-        //   }
-        //   default: {
-        //     const table = cloneDeep(get(this.boxSettings, `firewall.tables.${this.ruleType}`))
-        //     Object.entries(updatedRules).forEach(([key, rules]) => {
-        //       const chain = table.chains.find(chain => chain.name === key)
-        //       chain.rules = rules
-        //     })
-        //     result = await store.dispatch('settings/setTable', table)
-        //   }
-        // }
-        // store.commit('SET_LOADER', false)
+        console.log('ruleType: ' + this.ruleType)
+        let result
+        store.commit('SET_LOADER', true)
+        switch (this.ruleType) {
+          case 'port-forward': {
+            const rpc = Util.setRpcJsonrpc('admin')
+            this.networkSettings.portForwardRules = this.rules['port-forward-rules']
+            result = await rpc.networkManager.setNetworkSettings(this.networkSettings)
+            console.log(result)
+            break
+          }
+          // case 'bypass': {
+          //   result = await store.dispatch('settings/setBypass', { bp: { rules: updatedRules['bypass-rules'] } })
+          //   break
+          // }
+          // case 'wan-rules': {
+          //   const wan = cloneDeep(this.boxSettings.wan)
+          //   const localChain = wan.policy_chains.find(chain => chain.name === 'user-wan-rules')
+          //   localChain.rules = updatedRules['user-wan-rules']
+          //   result = await store.dispatch('settings/setWan', { wan })
+          //   break
+          // }
+          default: {
+            // const table = cloneDeep(get(this.boxSettings, `firewall.tables.${this.ruleType}`))
+            // Object.entries(updatedRules).forEach(([key, rules]) => {
+            //   const chain = table.chains.find(chain => chain.name === key)
+            //   chain.rules = rules
+            // })
+            // result = await store.dispatch('settings/setTable', table)
+          }
+        }
+        store.commit('SET_LOADER', false)
         // if (result.success) {
         //   this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('rules')]))
         // } else {

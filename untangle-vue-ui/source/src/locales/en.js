@@ -8,6 +8,11 @@ export default {
     'To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a free account.',
   about: 'About',
   // Condition Types
+  client_tagged: 'Client Tagged',
+  dst_addr: 'Destination Address',
   dst_local: 'Destined Local',
   dst_port: 'Destination Port',
+  server_tagged: 'Server Tagged',
+  src_addr: 'Source Address',
+  src_intf: 'Source Interface',
 }
