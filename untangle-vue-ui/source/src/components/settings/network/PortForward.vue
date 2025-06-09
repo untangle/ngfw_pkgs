@@ -114,10 +114,7 @@
       title: ({ ruleType, $i18n }) => $i18n.t(ruleType.replace(/-/g, '_')),
 
       description: ({ ruleType, $i18n }) => {
-        if (ruleType === 'port-forward')
-          return $i18n.t(
-            "Port Forward rules forward sessions matching the configured criteria from a public IP to an IP on an internal (NAT'd) network. The rules are evaluated in order.",
-          )
+        if (ruleType === 'port-forward') return $i18n.t('port_forward_description')
         // if (ruleType === 'shaping') return $i18n.t('shaping_rules_description')
         // if (ruleType === 'bypass') return $i18n.t('bypass_description')
       },
@@ -146,8 +143,6 @@
         //   return { 'bypass-rules': templateRules }
         // }
 
-        // Prepare promises for fetching data
-        console.log('networkSettingsPromise: ' + networkSettings)
         const rules = { 'port-forward-rules': networkSettings.portForwardRules }
         return rules
       },
@@ -244,16 +239,12 @@
        * @param {String} rules - the new / updated rules passed via #actions slot props
        */
       async onSave(updatedRules) {
-        console.log('updatedRules: ' + updatedRules)
-        console.log('ruleType: ' + this.ruleType)
-        let result
-        store.commit('SET_LOADER', true)
+        this.$store.commit('SET_LOADER', true)
         switch (this.ruleType) {
           case 'port-forward': {
             const rpc = Util.setRpcJsonrpc('admin')
-            this.networkSettings.portForwardRules = this.rules['port-forward-rules']
-            result = await rpc.networkManager.setNetworkSettings(this.networkSettings)
-            console.log(result)
+            this.networkSettings.portForwardRules = updatedRules['port-forward-rules']
+            await rpc.networkManager.setNetworkSettings(this.networkSettings)
             break
           }
           // case 'bypass': {
@@ -276,7 +267,7 @@
             // result = await store.dispatch('settings/setTable', table)
           }
         }
-        store.commit('SET_LOADER', false)
+        this.$store.commit('SET_LOADER', false)
         // if (result.success) {
         //   this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('rules')]))
         // } else {

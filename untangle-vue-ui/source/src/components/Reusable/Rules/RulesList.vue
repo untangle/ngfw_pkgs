@@ -38,7 +38,7 @@
   import cloneDeep from 'lodash/cloneDeep'
   import isEqual from 'lodash/isEqual'
 
-  import util from '../../../util/util'
+  // import util from '../../../util/util'
   import RuleDialog from './RuleDialog.vue'
   import RulesGrid from './RulesGrid.vue'
 
@@ -137,7 +137,7 @@
           this.rulesCopy[type].list.splice(index, 1, rule)
         } else {
           // if added it sets an uuid and gets added to the list
-          rule.ruleId = util.uuidv4()
+          rule.ruleId = -1
           this.rulesCopy[type].list.push(rule)
         }
         this.editRule = undefined

@@ -692,6 +692,11 @@ const allOperators = {
   '>=': 'greater_or_equal',
   '<=': 'less_or_equal',
 }
+
+const isOperatorOptions = Object.entries(isOperators).map(([k, v]) => ({ text: v, value: k }))
+const onlyIsOperatorOptions = isOperatorOptions.filter(({ value }) => value === '==')
+const allOperatorOptions = Object.entries(allOperators).map(([k, v]) => ({ text: v, value: k }))
+
 // op => invert
 const opToInvert = {
   '==': false,
@@ -702,9 +707,10 @@ const invertToOp = Object.entries(opToInvert).reduce((acc, [op, invert]) => {
   acc[invert] = op
   return acc
 }, {})
-const isOperatorOptions = Object.entries(isOperators).map(([k, v]) => ({ text: v, value: k }))
-const onlyIsOperatorOptions = isOperatorOptions.filter(({ value }) => value === '==')
-const allOperatorOptions = Object.entries(allOperators).map(([k, v]) => ({ text: v, value: k }))
+
+const javaClassMap = {
+  'port-forward-rules-condition': 'com.untangle.uvm.network.PortForwardRuleCondition',
+}
 
 export {
   addressTypes,
@@ -748,10 +754,11 @@ export {
   riskLevelOptions,
   daysOfWeekOptions,
 
-  // mfw local ui conditions operators
+  // local ui conditions operators
   isOperatorOptions,
   allOperatorOptions,
   onlyIsOperatorOptions,
   opToInvert,
   invertToOp,
+  javaClassMap,
 }

@@ -31,6 +31,7 @@ export default {
   methods: {
     getConditionValue(cond) {
       let value = ''
+      let interfaceMap = {}
       const type = cond.conditionType.replace('_INFERRED', '')
 
       switch (type) {
@@ -53,6 +54,14 @@ export default {
         case 'SOURCE_INTERFACE_TYPE':
         case 'DESTINATION_INTERFACE_TYPE':
           value = i18n.t(interfaceTypes[cond.value])
+          break
+
+        case 'SRC_INTF':
+          interfaceMap = util.getInterfaceMap(true, true)
+          value = cond.value
+            .split(',')
+            .map(id => i18n.t(interfaceMap[id] || id))
+            .join(', ')
           break
 
         case 'APPLICATION_PRODUCTIVITY':
@@ -110,7 +119,7 @@ export default {
 
     conditionsValue(conditions) {
       return conditions.list.map(cond => ({
-        conditionType: i18n.t(cond.conditionType.toLowerCase()),
+        type: i18n.t(cond.conditionType.toLowerCase()),
         op: invertToOp[cond.invert],
         value: i18n.t(this.getConditionValue(cond)),
       }))

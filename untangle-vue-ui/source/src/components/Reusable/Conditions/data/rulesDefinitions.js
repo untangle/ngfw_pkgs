@@ -17,18 +17,38 @@ export const ruleDefs = {
     ],
     actions: ['DNAT'],
     default: {
+      javaClass: 'com.untangle.uvm.network.PortForwardRule',
       action: { type: 'DNAT', newDestination: '' },
       conditions: {
         javaClass: 'java.util.LinkedList',
         list: [
-          { conditionType: 'DST_LOCAL', op: '==', value: 'true' },
-          { conditionType: 'DST_PORT', op: '==', value: '80' },
-          { conditionType: 'PROTOCOL', op: '==', value: 'TCP' },
+          {
+            javaClass: 'com.untangle.uvm.network.PortForwardRuleCondition',
+            conditionType: 'DST_LOCAL',
+            op: '==',
+            invert: false,
+            value: 'true',
+            isObsolete: true,
+          },
+          {
+            javaClass: 'com.untangle.uvm.network.PortForwardRuleCondition',
+            conditionType: 'DST_PORT',
+            op: '==',
+            invert: false,
+            value: '80',
+          },
+          {
+            javaClass: 'com.untangle.uvm.network.PortForwardRuleCondition',
+            conditionType: 'PROTOCOL',
+            op: '==',
+            invert: false,
+            value: 'TCP',
+          },
         ],
       },
       description: '',
       enabled: true,
-      ruleId: null,
+      ruleId: -1,
     },
   },
   'prioritization-rules': {

@@ -250,7 +250,7 @@
   import { UAutocomplete, limitRateUnitOptions, limitBurstUnitOptions } from 'vuntangle'
   import { conditionDefs } from './data/conditionsDefinitions'
   import { ruleDefs } from './data/rulesDefinitions'
-  import { isOperatorOptions, portProtocolOptions } from '@/constants/index'
+  import { invertToOp, isOperatorOptions, portProtocolOptions } from '@/constants/index'
 
   export default {
     components: {
@@ -413,7 +413,10 @@
        * @param {String} vm.conditionType - the condition conditionType
        * @param {Object} vm.ruleDef - the rule definition
        */
-      isObsolete: ({ conditionType, ruleDef }) => !ruleDef.conditions.includes(conditionType),
+      isObsolete({ conditionCopy, ruleDef }) {
+        if (conditionCopy.isObsolete) return true
+        return !ruleDef.conditions.includes(conditionCopy.conditionType)
+      },
 
       /**
        * Returns validation rules for the condition value field
@@ -433,11 +436,16 @@
        */
       value: {
         get: ({ conditionType, conditionCopy }) =>
-          conditionCopy.value && (conditionType === 'IP_PROTOCOL' || conditionType === 'PROTOCOL')
+          conditionCopy.value &&
+          (conditionType === 'IP_PROTOCOL' || conditionType === 'PROTOCOL' || conditionType === 'SRC_INTF')
             ? (conditionCopy.value + '').split(',')
             : conditionCopy.value,
         set(value) {
-          if (this.conditionType === 'IP_PROTOCOL' || this.conditionType === 'PROTOCOL')
+          if (
+            this.conditionType === 'IP_PROTOCOL' ||
+            this.conditionType === 'PROTOCOL' ||
+            this.conditionType === 'SRC_INTF'
+          )
             this.conditionCopy.value = value.join() || null
           else this.conditionCopy.value = value
         },
@@ -540,8 +548,22 @@
       conditionType: {
         handler(conditionType) {
           if (!conditionType) return
-          if (conditionType === 'DST_PORT' || conditionType === 'PROTOCOL')
-            this.conditionCopy.op = this.conditionCopy.invert ? '!=' : '=='
+
+          // Disable editing Destination Local condition
+          if (conditionType === 'DST_LOCAL') this.conditionCopy.isObsolete = true
+
+          // Set operator based on invert value
+          if (
+            conditionType === 'DST_LOCAL' ||
+            conditionType === 'DST_PORT' ||
+            conditionType === 'PROTOCOL' ||
+            conditionType === 'DST_ADDR' ||
+            conditionType === 'SRC_ADDR' ||
+            conditionType === 'SRC_INTF' ||
+            conditionType === 'CLIENT_TAGGED' ||
+            conditionType === 'SERVER_TAGGED'
+          )
+            this.conditionCopy.op = invertToOp[this.conditionCopy.invert || false]
 
           /**
            * for some conditions data is retrieved from the host app

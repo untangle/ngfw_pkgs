@@ -13,6 +13,7 @@ import {
 } from 'vuntangle'
 
 import { portProtocolOptions } from '@/constants/index'
+import util from '@/util/util'
 
 export const conditionDefs = {
   APPLICATION_NAME: {
@@ -172,7 +173,7 @@ export const conditionDefs = {
   SRC_INTF: {
     field: 'autocomplete',
     multiple: true,
-    // autocompleteItems: protocolOptions,
+    autocompleteItems: util.getInterfaceList(true, true),
     category: 'source',
   },
   SOURCE_INTERFACE_NAME: {
@@ -213,7 +214,7 @@ export const conditionDefs = {
     category: 'destination',
   },
   DST_PORT: {
-    defaults: { op: '==', invert: false, value: '' },
+    defaults: { op: '==', value: '' },
     extraRules: 'port_expression',
     layer3: true,
     category: 'destination',
@@ -240,8 +241,7 @@ export const conditionDefs = {
     category: 'other',
   },
   DST_LOCAL: {
-    field: 'boolean',
-    defaults: { op: '==', value: true },
+    defaults: { op: '==', value: true, isObsolete: true },
     layer3: true,
     category: 'other',
   },

@@ -100,7 +100,7 @@
   import cloneDeep from 'lodash/cloneDeep'
   import { RuleCondition, RuleAction } from '../Conditions'
   import { conditionDefs } from '../Conditions/data/conditionsDefinitions'
-  import { opToInvert } from '@/constants/index'
+  import { javaClassMap, opToInvert } from '@/constants/index'
 
   export default {
     components: { RuleCondition, RuleAction },
@@ -222,11 +222,13 @@
         const isValid = await this.$refs.obs.validate()
         if (!isValid) return
         this.ruleCopy = this.syncRuleData()
-        console.log('ruleType: ', this.ruleCopy)
 
         this.$emit('update-rule', { rule: this.ruleCopy, type: this.ruleType })
       },
 
+      /**
+       * Syncs Data between backend model and vue model
+       */
       syncRuleData() {
         const ruleCopy = this.ruleCopy
         // Update the rule object based on changes in action
@@ -239,11 +241,14 @@
           default:
             break
         }
-
-        // Update invert/comparator based on condition operator value
         ruleCopy.conditions.list.forEach(condition => {
+          // Update invert/comparator based on condition operator value
           if ('op' in condition) {
             condition.invert = opToInvert[condition.op]
+          }
+          // Add javaClass if not present in each condition
+          if (!('javaClass' in condition)) {
+            condition.javaClass = javaClassMap[this.ruleType + '-condition']
           }
         })
         return ruleCopy

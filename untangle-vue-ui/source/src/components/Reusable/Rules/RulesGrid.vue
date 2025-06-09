@@ -179,7 +179,6 @@
        * @param {Object} event.data - the rule row data
        */
       showRuleDialog({ data }) {
-        console.log('showRuleDialog: ', data)
         // if grid is readonly do nothing
         if (this.readOnlyGrid) return
 
