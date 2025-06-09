@@ -115,8 +115,7 @@
       async setVrrpmaster() {
         if (this.intf.vrrpEnabled && this.intf.interfaceId > 0) {
           try {
-            const rpc = Util.setRpcJsonrpc('admin')
-            this.vrrpmaster = await rpc.networkManager.isVrrpMaster(this.intf.interfaceId)
+            this.vrrpmaster = await window.rpc.networkManager.isVrrpMaster(this.intf.interfaceId)
           } catch (ex) {
             Util.handleException(ex)
           }
