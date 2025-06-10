@@ -352,7 +352,7 @@
     },
     async created() {
       try {
-        this.adminRpc = await Util.setRpcJsonrpc('admin')
+        this.adminRpc = await window.rpc
       } catch (ex) {
         Util.handleException(ex)
       }
@@ -455,7 +455,7 @@
       async loadSettings() {
         try {
           this.tableLoading.interfaces = true
-          const rpc = await Util.setRpcJsonrpc('admin')
+          const rpc = await window.rpc
 
           // Prepare promises for fetching data
           const networkSettingsPromise = await rpc.networkManager.getNetworkSettings()

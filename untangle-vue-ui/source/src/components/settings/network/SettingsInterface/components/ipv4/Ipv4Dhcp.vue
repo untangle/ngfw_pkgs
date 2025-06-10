@@ -170,7 +170,7 @@
       interfaces: ({ $interfaces }) => $interfaces(),
     },
     async created() {
-      this.rpc = await Util.setRpcJsonrpc('admin')
+      this.rpc = await window.rpc
     },
 
     methods: {

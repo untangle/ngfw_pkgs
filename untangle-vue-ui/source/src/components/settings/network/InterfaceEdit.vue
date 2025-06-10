@@ -37,7 +37,7 @@
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
-      settings: ({ $store }) => $store.getters['settings/settings'],
+      settings: ({ $store }) => $store.getters['settings/networkSetting'],
       interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
 
       // Determine if editing existing or creating new interface
