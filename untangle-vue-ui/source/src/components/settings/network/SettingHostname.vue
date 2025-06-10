@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pl-14 pr-14 pa-8`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
     <ValidationObserver ref="obs">
       <div class="d-flex align-center">
         <v-spacer />
