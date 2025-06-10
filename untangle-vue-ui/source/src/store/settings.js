@@ -63,10 +63,9 @@ const actions = {
   },
   async setNetworkSettings({ commit }, settings) {
     try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      await rpc.networkManager.setNetworkSettings(settings)
+      await window.rpc.networkManager.setNetworkSettings(settings)
       vuntangle.toast.add('Network settings saved successfully!')
-      const data = rpc.networkManager.getNetworkSettings()
+      const data = window.rpc.networkManager.getNetworkSettings()
       commit('SET_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
@@ -123,7 +122,6 @@ const actions = {
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
-      throw ex
     }
   },
   // update all interfaces
