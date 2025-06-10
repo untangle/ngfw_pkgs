@@ -75,7 +75,7 @@
             this.$store.state.settings.editCallback()
           }
           // Save interface settings by updating the current interface
-          await this.$store.dispatch('settings/setInterface', this.intf)
+          await this.$store.dispatch('settings/setInterface', intfToSave)
           this.$store.commit('SET_LOADER', false)
           this.$router.push('/settings/network/interfaces')
           this.isSaving = false
