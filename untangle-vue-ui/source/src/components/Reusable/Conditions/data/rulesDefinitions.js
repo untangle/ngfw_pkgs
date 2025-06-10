@@ -48,7 +48,7 @@ export const ruleDefs = {
       },
       description: '',
       enabled: true,
-      ruleId: -1,
+      ruleId: null,
     },
   },
   'prioritization-rules': {

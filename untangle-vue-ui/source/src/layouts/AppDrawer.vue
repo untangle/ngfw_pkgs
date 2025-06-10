@@ -123,7 +123,7 @@
             match: '/settings/network',
             items: [
               { name: 'interface', to: '/settings/network/interfaces' },
-              { name: 'port_forward', to: '/settings/network/port-forward' },
+              { name: 'port_forward', to: '/settings/network/port-forward-rules' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],

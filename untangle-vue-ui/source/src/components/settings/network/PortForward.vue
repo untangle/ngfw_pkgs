@@ -114,7 +114,7 @@
       title: ({ ruleType, $i18n }) => $i18n.t(ruleType.replace(/-/g, '_')),
 
       description: ({ ruleType, $i18n }) => {
-        if (ruleType === 'port-forward') return $i18n.t('port_forward_description')
+        if (ruleType === 'port-forward-rules') return $i18n.t('port_forward_description')
         // if (ruleType === 'shaping') return $i18n.t('shaping_rules_description')
         // if (ruleType === 'bypass') return $i18n.t('bypass_description')
       },

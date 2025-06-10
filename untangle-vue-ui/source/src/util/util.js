@@ -307,34 +307,38 @@ const util = {
   },
 
   getInterfaceList(wanMatchers, anyMatcher) {
-    this.fetchInterfaceData()
-    const interfaces = cloneDeep(this.baseInterfaceList)
+    try {
+      this.fetchInterfaceData()
+      const interfaces = cloneDeep(this.baseInterfaceList)
 
-    if (wanMatchers) {
-      interfaces.unshift({ value: 'wan', text: i18n.t('any_wan') })
-      interfaces.unshift({ value: 'non_wan', text: i18n.t('any_non_wan') })
-    }
-    if (anyMatcher) {
-      interfaces.unshift({ value: 'any', text: i18n.t('any') })
-    }
+      if (wanMatchers) {
+        interfaces.unshift({ value: 'wan', text: i18n.t('any_wan') })
+        interfaces.unshift({ value: 'non_wan', text: i18n.t('any_non_wan') })
+      }
+      if (anyMatcher) {
+        interfaces.unshift({ value: 'any', text: i18n.t('any') })
+      }
 
-    return interfaces
+      return interfaces
+    } catch (error) {}
   },
 
   getInterfaceMap(wanMatchers, anyMatcher) {
-    this.fetchInterfaceData()
-    const map = { ...this.baseInterfaceMap }
+    try {
+      this.fetchInterfaceData()
+      const map = { ...this.baseInterfaceMap }
 
-    map.ipsec = 'ipsec_vpn'
-    if (wanMatchers) {
-      map.wan = 'any_wan'
-      map.non_wan = 'any_non_wan'
-    }
-    if (anyMatcher) {
-      map.any = 'any'
-    }
+      map.ipsec = 'ipsec_vpn'
+      if (wanMatchers) {
+        map.wan = 'any_wan'
+        map.non_wan = 'any_non_wan'
+      }
+      if (anyMatcher) {
+        map.any = 'any'
+      }
 
-    return map
+      return map
+    } catch (error) {}
   },
 }
 
