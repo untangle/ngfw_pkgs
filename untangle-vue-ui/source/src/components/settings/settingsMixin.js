@@ -39,6 +39,14 @@ export default {
       immediate: true,
       handler(value) {
         this.$emit('update:isChanged', value)
+        window.parent.postMessage(
+          {
+            source: 'vue-iframe-app', // A unique identifier
+            type: 'isDirtyChange',
+            isDirty: value,
+          },
+          '*',
+        ) // '*' means allow communication with any origin.
       },
     },
   },
