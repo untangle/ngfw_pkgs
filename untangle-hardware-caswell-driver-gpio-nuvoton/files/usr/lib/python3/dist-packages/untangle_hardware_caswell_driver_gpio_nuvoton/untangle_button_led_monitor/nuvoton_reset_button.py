@@ -40,6 +40,10 @@ class NuvotonResetButton(Button):
         "w8": {
             "status": 62,
             "clear": 63
+        },
+        "Q8W": {
+            "status": 62,
+            "clear": 63
         }
     }
 

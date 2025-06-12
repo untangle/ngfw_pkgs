@@ -26,6 +26,12 @@ class NuvotonLeds(Leds):
                 "off":  [{ 'id': 64, 'value': 1 }],
                 "on":   [{ 'id': 64, 'value': 0 }],
             },
+        },
+        "Q8W": {
+            "wifi": {
+                "off":  [{ 'id': 64, 'value': 1 }],
+                "on":   [{ 'id': 64, 'value': 0 }],
+            },
         }
     }
 
