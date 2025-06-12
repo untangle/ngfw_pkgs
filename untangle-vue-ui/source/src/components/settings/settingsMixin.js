@@ -39,6 +39,7 @@ export default {
       immediate: true,
       handler(value) {
         this.$emit('update:isChanged', value)
+        // TODO show similar popup on Vue screen
         window.parent.postMessage(
           {
             source: 'vue-iframe-app', // A unique identifier
