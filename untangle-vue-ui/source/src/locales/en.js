@@ -7,4 +7,17 @@ export default {
   To_continue_you_must_log_account_online:
     'To continue, you must log in using your ETM Dashboard account. If you do not have one, you can create a free account.',
   about: 'About',
+  access_point: 'AP',
+  debug: 'Debug',
+  info: 'Info',
+  loglevel: 'Log Level',
+  no_channel_match: 'No Channel Match',
+  regularatory_country: 'Regulatory Country',
+  ssid_regex_validation_message: 'Only letters, numbers, "-", "_", "=", ".", and spaces are allowed',
+  warn: 'Warn',
+  wireless_adapter_driver_support: 'Adapter driver may not support regulatory country channels',
+  wireless_password_regex_validation_message:
+    'Only alphanumeric characters and the following symbols are allowed: ~ @ # % _ = , ! - / ? ( ) [ ] \\ ^ $ + * . |',
+  wpa1: 'WPA',
+  wpa12: 'WPA / WPA2',
 }

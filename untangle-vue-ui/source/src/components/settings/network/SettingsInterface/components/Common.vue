@@ -60,7 +60,7 @@
       </v-row>
 
       <!-- bridgedTo -->
-      <v-row v-if="isBridged && !intf.isWirelessInterface" class="mb-2">
+      <v-row v-if="isBridged" class="mb-2">
         <v-col>
           <ValidationProvider v-slot="{ errors }" rules="required">
             <v-select
@@ -148,6 +148,7 @@
   import Ipv6 from './ipv6/Ipv6.vue'
   import Dhcp from './dhcp/Dhcp.vue'
   import Vrrp from './vrrp/Vrrp.vue'
+  import Wifi from './wifi/Wifi.vue'
 
   export default {
     components: {
@@ -156,6 +157,7 @@
       Ipv6,
       Vrrp,
       Dhcp,
+      Wifi,
       VRow,
       VCol,
       VSelect,
@@ -227,6 +229,8 @@
                 { cmp: 'Ipv6', key: 'ipv6' },
               ]
             : []),
+          // WIFI
+          ...(intf.isWirelessInterface ? [{ cmp: 'Wifi', key: 'wifi' }] : []),
           // DHCP
           ...(showDhcp ? [{ cmp: 'Dhcp', key: 'dhcp' }] : []),
           // QOS
