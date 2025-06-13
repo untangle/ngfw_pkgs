@@ -9,6 +9,7 @@ const getDefaultState = () => ({
     interfaces: [],
     interfaceStatuses: [],
   },
+  dynamicLists: {},
 })
 
 const getters = {
@@ -18,6 +19,7 @@ const getters = {
   interface: state => device => {
     return state.networkSetting.interfaces.find(intf => intf.physicalDev === device)
   },
+  dynamicLists: state => state.dynamicLists || [],
 }
 
 const mutations = {
@@ -27,6 +29,9 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_INTERFACES_STATUSES: (state, value) => set(state.networkSetting, 'interfaceStatuses', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
+  SET_DYNAMIC_LISTS: (state, value) => {
+    state.dynamicLists = { dynamicLists: value }
+  },
 }
 
 const actions = {
@@ -71,6 +76,71 @@ const actions = {
       Util.handleException(err)
     }
   },
+  async getDynamicBlockList({ commit }) {
+    try {
+      const data = await window.rpc.appManager.app('dynamic-blocklists').getSettings()
+      commit('SET_DYNAMIC_LISTS', data)
+    } catch (err) {
+      console.error('getDynamicBlockList error:', err)
+    }
+  },
+  async saveDynamicLists({ commit }, data) {
+    try {
+      await window.rpc.appManager.app('dynamic-blocklists').setSettings(data, true)
+      const response = await window.rpc.appManager.app('dynamic-blocklists').getSettings()
+      commit('SET_DYNAMIC_LISTS', response)
+      return { success: true }
+    } catch (ex) {
+      Util.handleException(ex)
+      return { success: false }
+    }
+  },
+  async startDynamicLists({ commit }, data) {
+    try {
+      await window.rpc.appManager.app('dynamic-blocklists').setSettings(data, false)
+      await window.rpc.appManager.app('dynamic-blocklists').start()
+      const response = await window.rpc.appManager.app('dynamic-blocklists').getSettings()
+      commit('SET_DYNAMIC_LISTS', response)
+      return { success: true }
+    } catch (ex) {
+      Util.handleException(ex)
+      return { success: false }
+    }
+  },
+  async stopDynamicLists({ commit }, data) {
+    try {
+      await window.rpc.appManager.app('dynamic-blocklists').setSettings(data, true)
+      await window.rpc.appManager.app('dynamic-blocklists').stop()
+      const response = await window.rpc.appManager.app('dynamic-blocklists').getSettings()
+      commit('SET_DYNAMIC_LISTS', response)
+      return { success: true }
+    } catch (ex) {
+      Util.handleException(ex)
+      return { success: false }
+    }
+  },
+  async runJobsByConfigIds({ commit }, data) {
+    try {
+      const response = await window.rpc.appManager.app('dynamic-blocklists').runJobsByConfigIds(data)
+      commit('SET_DYNAMIC_LISTS', response)
+      return { success: true }
+    } catch (ex) {
+      Util.handleException(ex)
+      return { success: false }
+    }
+  },
+  async getdynamicListsDefaultSettings({ commit }) {
+    try {
+      const data = await window.rpc.appManager.app('dynamic-blocklists').onResetDefaults()
+      console.log('SET STOP RESPONSE : ', data)
+      commit('SET_DYNAMIC_LISTS', data)
+      return { success: true }
+    } catch (ex) {
+      Util.handleException(ex)
+      return { success: false }
+    }
+  },
+
   /**
    * Updates a single interface
    * The save process works like:
