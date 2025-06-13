@@ -16,6 +16,7 @@ export default {
   ssid_regex_validation_message: 'Only letters, numbers, "-", "_", "=", ".", and spaces are allowed',
   warn: 'Warn',
   wireless_adapter_driver_support: 'Adapter driver may not support regulatory country channels',
+  wireless_logs: 'Wireless Logs',
   wireless_password_regex_validation_message:
     'Only alphanumeric characters and the following symbols are allowed: ~ @ # % _ = , ! - / ? ( ) [ ] \\ ^ $ + * . |',
   wpa1: 'WPA',

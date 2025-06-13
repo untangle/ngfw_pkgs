@@ -187,7 +187,6 @@
       },
 
       countryCodeItems() {
-        console.log('countryCodeItems')
         const wirelessCountryList = []
         const countryCodes = window.rpc.networkManager.getWirelessValidRegulatoryCountryCodes(this.intf.systemDev)
 

@@ -46,6 +46,29 @@
       @mouseup="stopResize"
     >
       <div class="resize-handle d-flex justify-center align-center" @mousedown.prevent="startResize"></div>
+      <div v-if="wirelessLogs">
+        <v-card class="pa-3 fill-height d-flex flex-column">
+          <div class="d-flex justify-space-between align-center mb-2">
+            <h1 class="headline">{{ $t('wireless_logs') }}</h1>
+            <u-btn @click="handleTableRefresh('wirelessLogs')">
+              {{ $t('Refresh') }}
+            </u-btn>
+          </div>
+          <ValidationProvider>
+            <v-textarea
+              :value="wirelessLogs"
+              outlined
+              :placeholder="$t('Wireless Interface Logs')"
+              :readonly="true"
+              hide-details
+              class="file-content"
+              rows="8"
+            >
+            </v-textarea>
+          </ValidationProvider>
+        </v-card>
+      </div>
+      <div class="d-flex justify-center align-center"></div>
       <StatusAndArpEntries
         :interface-source-config="interfaceSourceConfig"
         :interface-status-data="interfaceStatusData"
@@ -137,6 +160,7 @@
         },
         interfaceStatusData: {},
         arpEntries: [],
+        wirelessLogs: '',
         interfaceStatusLinkMap: {
           1: 'macAddress',
           2: 'rxbytes',
@@ -511,6 +535,12 @@
         this.symbolicDev = symbolicDev
         await this.getInterfaceStatus(item.symbolicDev)
         await this.getInterfaceArp(item.symbolicDev)
+        await this.setWirelessIntfLogs(item)
+      },
+
+      async setWirelessIntfLogs(intfc) {
+        this.wirelessLogs = ''
+        if (intfc.isWirelessInterface) this.wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.symbolicDev)
       },
 
       async getInterfaceStatus(symbolicDev) {
@@ -644,6 +674,8 @@
           await this.getInterfaceStatus(this.symbolicDev)
         } else if (source === 'arp') {
           await this.getInterfaceArp(this.symbolicDev)
+        } else if (source === 'wirelessLogs') {
+          await this.setWirelessIntfLogs(this.selectedInterface)
         }
       },
       /**
@@ -752,12 +784,13 @@
           this.selectedInterfaceIndex = index //  update index so watcher can re-highlight
         }
         this.InerfaceDataForVendor = data?.status?.status
-        this.selectedInterface = index
+        this.selectedInterface = this.interfaces[index]
         const symbolicDev = data.symbolicDev || data.device
         this.symbolicDev = symbolicDev
         if (!symbolicDev) return
         await this.getInterfaceStatus(symbolicDev)
         await this.getInterfaceArp(symbolicDev)
+        await this.setWirelessIntfLogs(this.selectedInterface)
       },
     },
   }
