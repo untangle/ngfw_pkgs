@@ -85,7 +85,7 @@
 
       cloudDisabled: ({ cloudConfigId, hasCloudPolicies, type }) => {
         if (cloudConfigId) return true
-        return hasCloudPolicies && ['filter', 'port-forward', 'shaping', 'nat'].includes(type)
+        return hasCloudPolicies && ['filter', 'port-forward-rules', 'shaping', 'nat'].includes(type)
       },
     },
 

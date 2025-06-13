@@ -241,7 +241,7 @@
       async onSave(updatedRules) {
         this.$store.commit('SET_LOADER', true)
         switch (this.ruleType) {
-          case 'port-forward': {
+          case 'port-forward-rules': {
             const rpc = Util.setRpcJsonrpc('admin')
             this.networkSettings.portForwardRules = updatedRules['port-forward-rules']
             await rpc.networkManager.setNetworkSettings(this.networkSettings)

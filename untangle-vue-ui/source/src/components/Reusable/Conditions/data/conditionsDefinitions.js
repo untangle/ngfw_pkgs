@@ -81,6 +81,7 @@ export const conditionDefs = {
   // the CLIENT ones are not longer used, kept only for backward compatibility
   CLIENT_TAGGED: {
     layer3: true,
+    extraRules: 'required',
     category: 'other',
   },
   CLIENT_ADDRESS: {
@@ -114,6 +115,7 @@ export const conditionDefs = {
   // the SERVER ones are not used except SERVER_DNS_HINT as Server DNS Cache in other category
   SERVER_TAGGED: {
     layer3: true,
+    extraRules: 'required',
     category: 'other',
   },
   SERVER_ADDRESS: {
