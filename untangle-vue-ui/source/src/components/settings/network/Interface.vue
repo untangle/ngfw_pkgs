@@ -1,5 +1,5 @@
 <template>
-  <v-container class="d-flex flex-column pa-2" fluid>
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
     <div class="d-flex align-center mb-2">
       <h1 class="headline">{{ $vuntangle.$t('interfaces') }}</h1>
       <v-spacer />
@@ -352,7 +352,7 @@
     },
     async created() {
       try {
-        this.adminRpc = await Util.setRpcJsonrpc('admin')
+        this.adminRpc = await window.rpc
       } catch (ex) {
         Util.handleException(ex)
       }
@@ -361,6 +361,7 @@
       this.$store.dispatch('settings/getInterfaceStatuses')
     },
     async mounted() {
+      this.$store.commit('settings/setEditCallback', this.loadSettings)
       await this.loadSettings()
 
       if (this.interfaces && this.interfaces.length > 0) {
@@ -454,7 +455,7 @@
       async loadSettings() {
         try {
           this.tableLoading.interfaces = true
-          const rpc = await Util.setRpcJsonrpc('admin')
+          const rpc = await window.rpc
 
           // Prepare promises for fetching data
           const networkSettingsPromise = await rpc.networkManager.getNetworkSettings()
@@ -652,7 +653,6 @@
        */
       onEditInterface(rowData) {
         this.intf = rowData.data
-        this.$store.commit('setEditCallback', () => this.loadSettings)
         this.$router.push(`/settings/network/interfaces/${rowData.data.device}`)
       },
 

@@ -129,7 +129,6 @@
         this.$emit('confirm', this.gridData)
       },
       async remapInterfaces() {
-        this.rpcForAdmin = Util.setRpcJsonrpc('admin')
         const physicalDevsStore = []
         this.intfOrderArr = []
         this.intfListLength = this.alert.parentInterfaces.length
@@ -145,7 +144,7 @@
         })
 
         const deviceRecords = await new Promise((resolve, reject) => {
-          this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
+          window.rpc.networkManager.getDeviceStatus((result, ex) => {
             if (ex) {
               Util.handleException(ex)
               reject(ex)

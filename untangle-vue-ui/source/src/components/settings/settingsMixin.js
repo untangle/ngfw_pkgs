@@ -5,11 +5,8 @@ export default {
   props: {
     settings: { type: [Object, Array], default: null },
     disabled: { type: Boolean, default: false },
-    // matches styles to ETM, uses h1 for page titles and makes the component expand the whole width
     classicView: { type: Boolean, required: false, default: false },
-    // used to show / hide the description field; shown for mfw-ui but hidden in ETM
     showDescription: { type: Boolean, default: false },
-    // keeping isChanged separate from isDirty until we make CD-5042 change for all appliance components
     isChanged: { type: Boolean, default: false },
   },
 
@@ -42,6 +39,15 @@ export default {
       immediate: true,
       handler(value) {
         this.$emit('update:isChanged', value)
+        // TODO show similar popup on Vue screen
+        window.parent.postMessage(
+          {
+            source: 'vue-iframe-app', // A unique identifier
+            type: 'isDirtyChange',
+            isDirty: value,
+          },
+          '*',
+        ) // '*' means allow communication with any origin.
       },
     },
   },
