@@ -17,6 +17,9 @@ export default {
     /** isDisabledv6 */
     isDisabledv6: ({ intf }) => intf.v6ConfigType === 'DISABLED',
 
+    /** isDisabled */
+    isDisabled: ({ intf }) => intf.configType === 'DISABLED',
+
     /** isAutov6 */
     isAutov6: ({ intf }) => intf.v6ConfigType === 'AUTO',
 
@@ -46,9 +49,16 @@ export default {
 
     /** show tabs */
     showTabs: ({ tabs, intf, type, isBridgedInterface }) => {
+      const hasTabs = (tabs || []).length
+
+      // If type is 'WIFI' and isBridgedInterface is true, return based on tabs length
+      if (intf.isWirelessInterface && isBridgedInterface) {
+        return hasTabs
+      }
+
       return (
-        (tabs || []).length &&
-        !(intf.configType === 'BRIDGED' && type !== 'WIFI' && type !== 'BRIDGE') &&
+        hasTabs &&
+        !(intf.configType === 'BRIDGED' && !intf.isWirelessInterface && type !== 'BRIDGE') &&
         !isBridgedInterface
       )
     },
@@ -206,9 +216,8 @@ export default {
      * @param interfaces
      * @returns {boolean}
      */
-    isBridgedInterface: ({ intf, interfaces }) => {
-      const bridgedInterface = interfaces.filter(i => i.bridgedInterfaces?.includes(intf.interfaceId))
-      return bridgedInterface.length > 0
+    isBridgedInterface: ({ intf }) => {
+      return intf.configType === 'BRIDGED'
     },
   },
 }

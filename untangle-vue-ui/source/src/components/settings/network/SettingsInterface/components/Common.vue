@@ -209,7 +209,7 @@
       /**
        * returns an array of components to be shown as tabs
        */
-      tabs: ({ intf, isAddressed, showDhcp, interfaces }) => {
+      tabs: ({ intf, isAddressed, showDhcp, interfaces, isDisabled }) => {
         const intfIdToNameMap = {}
         const parentBridgedIntfMap = {}
         // let isBridged = false
@@ -230,7 +230,7 @@
               ]
             : []),
           // WIFI
-          ...(intf.isWirelessInterface ? [{ cmp: 'Wifi', key: 'wifi' }] : []),
+          ...(!isDisabled && intf.isWirelessInterface ? [{ cmp: 'Wifi', key: 'wifi' }] : []),
           // DHCP
           ...(showDhcp ? [{ cmp: 'Dhcp', key: 'dhcp' }] : []),
           // QOS
