@@ -1,24 +1,21 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import { dateTimeFormats, vuntangleEnLocale, vuntangleDeLocale, vuntangleJaLocale } from 'vuntangle'
+import { vuntangleEnLocale1 } from '../locales'
 import vuntangle from '@/plugins/vuntangle'
-import vuntangleEnLocale1 from '@/locales'
 
 Vue.use(VueI18n)
 
 const i18n = new VueI18n({
   locale: 'en',
-  fallbackLocale: {
-    'en': ['vuntangleEnLocale'],
-    'de': ['vuntangleDeLocale'],
-    'ja': ['vuntangleJaLocale'],
-  },
+  fallbackLocale: 'en', // Don't use object fallback unless needed
   messages: {
-    vuntangleEnLocale,
-    vuntangleDeLocale,
-    vuntangleJaLocale,
-    // vuntangleEnLocale1,
-    vuntangleEnLocale1,
+    en: {
+      ...vuntangleEnLocale, // Base translations from vuntangle package
+      ...vuntangleEnLocale1, // Override or extend with local ones
+    },
+    de: vuntangleDeLocale,
+    ja: vuntangleJaLocale,
   },
   silentTranslationWarn: true,
   dateTimeFormats,
