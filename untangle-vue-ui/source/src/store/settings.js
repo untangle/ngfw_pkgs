@@ -66,7 +66,7 @@ const actions = {
       await window.rpc.networkManager.setNetworkSettings(settings)
       vuntangle.toast.add('Network settings saved successfully!')
       const data = window.rpc.networkManager.getNetworkSettings()
-      commit('SET_SETTINGS', data)
+      commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
     }

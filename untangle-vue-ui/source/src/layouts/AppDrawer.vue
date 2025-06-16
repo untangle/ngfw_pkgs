@@ -126,6 +126,7 @@
               { name: 'hostname', to: '/settings/network/hostname' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
+              { name: 'services', to: '/settings/network/services' },
             ],
           },
           {
