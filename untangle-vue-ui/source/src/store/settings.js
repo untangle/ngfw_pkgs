@@ -133,7 +133,17 @@ const actions = {
       }
       const settings = state.networkSetting
       settings.interfaces.list = interfaces
-      await window.rpc.networkManager.setNetworkSettings(settings)
+      const vlanInterfaces = settings.interfaces.filter(intf => intf.isVlanInterface)
+      await window.rpc.networkManager.setNetworkSettings({
+        ...settings,
+        interfaces: {
+          javaClass: 'java.util.LinkedList',
+          list: [...interfaces, ...vlanInterfaces].map(intf => ({
+            ...intf,
+            javaClass: 'com.untangle.uvm.network.InterfaceSettings',
+          })),
+        },
+      })
       vuntangle.toast.add('Successfully saved interface remapping.')
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
