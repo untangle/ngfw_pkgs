@@ -1,0 +1,76 @@
+export const ruleDefs = {
+  'port-forward-rules': {
+    name: 'port_forward_rules',
+    // chains: 'firewall.tables.port-forward.chains',
+    conditions: [
+      'DST_ADDR',
+      'DST_PORT',
+      'SRC_ADDR',
+      'SRC_INTF',
+      'DST_LOCAL',
+      'PROTOCOL',
+      'CLIENT_TAGGED',
+      'SERVER_TAGGED',
+    ],
+    actions: ['DNAT'],
+    default: {
+      action: { type: 'DNAT', dnat_address: '' },
+      conditions: [
+        { type: 'DST_LOCAL', op: '==', value: true },
+        { type: 'DST_PORT', op: '==', value: '80' },
+        { type: 'PROTOCOL', op: '==', value: 'TCP' },
+      ],
+      description: '',
+      enabled: true,
+      ruleId: null,
+    },
+  },
+
+  'nat-rules': {
+    name: 'nat_rules',
+    // chains: 'firewall.tables.nat.chains',
+    conditions: [
+      'DST_ADDR',
+      'DST_PORT',
+      'DST_INTF',
+      'SRC_ADDR',
+      'SRC_INTF',
+      'PROTOCOL',
+      'CLIENT_TAGGED',
+      'SERVER_TAGGED',
+    ],
+    actions: ['SNAT', 'MASQUERADE'],
+    default: {
+      action: { type: 'SNAT', snat_address: '' },
+      conditions: [],
+      description: '',
+      enabled: true,
+      ruleId: null,
+    },
+  },
+
+  'filter-rules': {
+    name: 'filter_rules',
+    // chains: 'firewall.tables.nat.chains',
+    conditions: [
+      'DST_ADDR',
+      'DST_PORT',
+      'DST_INTF',
+      'SRC_MAC',
+      'SRC_ADDR',
+      'SRC_INTF',
+      'PROTOCOL',
+      'CLIENT_TAGGED',
+      'SERVER_TAGGED',
+    ],
+    actions: ['ACCEPT', 'REJECT', 'DROP'],
+    default: {
+      action: { type: 'DROP' },
+      conditions: [],
+      description: '',
+      enabled: true,
+      ipv6Enabled: false,
+      ruleId: null,
+    },
+  },
+}
