@@ -22,7 +22,7 @@
       features: {
         hasWireguard: false,
         hasOpenVpn: false,
-        hasBridged: false,
+        hasBridged: true,
       },
     }),
 
@@ -34,15 +34,10 @@
     },
 
     mounted() {
-      this.setFeatures()
       this.getInterfacesStatus()
     },
 
     methods: {
-      setFeatures() {
-        this.features.hasBridged = true
-      },
-
       async getInterfacesStatus() {
         const interfaces = await window.rpc.networkManager.getNetworkSettings().interfaces.list
         const intfStatusList = await window.rpc.networkManager.getInterfaceStatus()
