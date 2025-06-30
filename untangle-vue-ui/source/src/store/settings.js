@@ -2,22 +2,17 @@
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
-// import api from '@/plugins/api'
-import InterfacesStatusDummy from '@/mock_JSON/InterfacesStatusDummy.json'
-import InterfacesDummy from '@/mock_JSON/InterfacesDummy.json'
 
 const getDefaultState = () => ({
   editCallback: null,
   networkSetting: {
     interfaces: [],
-    interfaceStatuses: [],
   },
 })
 
 const getters = {
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
-  interfaceStatuses: state => state?.networkSetting?.interfaceStatuses || [],
   interface: state => device => {
     return state.networkSetting.interfaces.find(intf => intf.physicalDev === device)
   },
@@ -28,34 +23,17 @@ const mutations = {
     state.editCallback = cb
   },
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
-  SET_INTERFACES_STATUSES: (state, value) => set(state.networkSetting, 'interfaceStatuses', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
 }
 
 const actions = {
   async getInterfaces({ commit }) {
     try {
-      //  const rpc = await Util.setRpcJsonrpc('admin')
-      // const data = rpc.networkManager.getNetworkSettings().interfaces.list
-      // const sortedData = await [...data].sort((a, b) => a.interfaceId - b.interfaceId)
-      commit('SET_INTERFACES', await InterfacesDummy)
+      const rpc = await Util.setRpcJsonrpc('admin')
+      const data = rpc.networkManager.getNetworkSettings().interfaces
+      commit('SET_INTERFACES', await data)
     } catch (err) {
       console.error('getInterfaces error:', err)
-    }
-  },
-  async getInterfaceStatuses({ commit }) {
-    try {
-      // const interfaces = await window.rpc.networkManager.getNetworkSettings().interfaces.list
-      // const intfStatusList = await window.rpc.networkManager.getInterfaceStatus()
-      // const interfaceWithStatus = interfaces.map(intf => {
-      //   const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
-      //   return { ...intf, ...status }
-      // })
-      // commit('SET_INTERFACES_STATUSES', interfaceWithStatus)
-      commit('SET_INTERFACES_STATUSES', await InterfacesStatusDummy)
-    } catch (err) {
-      console.error('getInterfaces error:', err)
-      Util.handleException(err)
     }
   },
   async getNetworkSettings({ commit }) {

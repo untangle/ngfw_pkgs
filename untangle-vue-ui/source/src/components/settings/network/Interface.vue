@@ -12,8 +12,6 @@
 <script>
   import { Interfaces } from 'vuntangle'
   import interfaceMixin from './interfaceMixin'
-  import InterfacesStatusDummy from '@/mock_JSON/InterfacesStatusDummy.json'
-  import InterfacesDummy from '@/mock_JSON/InterfacesDummy.json'
 
   export default {
     components: { Interfaces },
@@ -26,14 +24,13 @@
         hasOpenVpn: false,
         hasBridged: false,
       },
-      interfaces: InterfacesDummy,
     }),
 
     computed: {
       // interfaces filered and grouped (by category)
-      // interfaces() {
-      //   return this.$store.getters['settings/interfaces']
-      // },
+      interfaces() {
+        return this.$store.getters['settings/interfaces']
+      },
     },
 
     mounted() {
@@ -43,22 +40,18 @@
 
     methods: {
       setFeatures() {
-        // const platform = this.$store.getters['hardware/platform']
-        // this.features.hasOpenVpn = platform === 'OPENWRT'
         this.features.hasBridged = true
       },
 
       async getInterfacesStatus() {
-        // const interfaces = await window.rpc.networkManager.getNetworkSettings().interfaces.list
+        const interfaces = await window.rpc.networkManager.getNetworkSettings().interfaces.list
         const intfStatusList = await window.rpc.networkManager.getInterfaceStatus()
-        console.log('intfStatusList', intfStatusList)
 
-        // const interfaceWithStatus = interfaces.map(intf => {
-        //   const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
-        //   return { ...intf, ...status }
-        // })
-        this.interfacesStatus = InterfacesStatusDummy
-        console.log('this.interfacesStatus', this.interfacesStatus)
+        const interfaceWithStatus = interfaces.map(intf => {
+          const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
+          return { ...intf, ...status }
+        })
+        this.interfacesStatus = interfaceWithStatus
       },
 
       onRefresh() {
