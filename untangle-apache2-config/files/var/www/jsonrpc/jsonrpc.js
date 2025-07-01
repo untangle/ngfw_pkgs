@@ -25,6 +25,7 @@
  */
 
 var jsonRpcNonce = "";
+var apiVersion = "v1";
 
 /* escape a character */
 
@@ -738,11 +739,11 @@ JSONRpcClient.prototype._makeRequest = function (methodName, args, cb)
 
   if (this.objectID)
   {
-    obj += "\".obj#" + this.objectID + "." + methodName +"\"";
+    obj += "\".obj#" + this.objectID + "." + methodName + "." + apiVersion + "\"";
   }
   else
   {
-    obj += "\"" + methodName + "\"";
+    obj += "\"" + methodName + "." + apiVersion + "\"";
   }
 
   if (cb)
