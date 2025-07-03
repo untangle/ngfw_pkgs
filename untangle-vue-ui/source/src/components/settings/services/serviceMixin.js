@@ -1,6 +1,4 @@
-import api from '@/plugins/api'
 import uris from '@/util/uris'
-
 export default {
   data() {
     return {
@@ -19,8 +17,8 @@ export default {
      */
     async checkLicense() {
       if (!this.licenseNodeName) return
-      const response = await api.get(`/api/license/enabled/${this.licenseNodeName}`)
-      this.isLicensed = response?.result || false
+      const response = await window.rpc.UvmContext.licenseManager().getLicense(this.licenseNodeName).valid
+      this.isLicensed = response || response
     },
 
     /**
@@ -28,7 +26,7 @@ export default {
      * Fetches the URI for license management
      */
     async getManageLicenseUri() {
-      this.manageLicenseUri = await uris.translate(uris.list.subscriptions)
+      this.manageLicenseUri = await window.rpc.uriManager.getUriWithPath(uris.list.subscriptions)
     },
   },
 }
