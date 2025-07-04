@@ -29,7 +29,7 @@ const mutations = {
 const actions = {
   async getInterfaces({ commit }) {
     try {
-      const data = window.rpc.networkManager.getNetworkSettingsV2().interfaces
+      const data = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
       commit('SET_INTERFACES', await data)
     } catch (err) {
       console.error('getInterfaces error:', err)
@@ -45,7 +45,7 @@ const actions = {
   },
   async setNetworkSettings({ commit }, settings) {
     try {
-      await window.rpc.networkManager.setNetworkSettings(settings)
+      await window.rpc.networkManager.setNetworkSettingsV2(settings)
       vuntangle.toast.add('Network settings saved successfully!')
       const data = window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
@@ -70,7 +70,7 @@ const actions = {
       //     // Handle new interface creation
       if (!updatedIntf) {
         const updatedInterfaces = [...interfaces, updatedInterface]
-        return await window.rpc.networkManager.setNetworkSettings({
+        return await window.rpc.networkManager.setNetworkSettingsV2({
           ...settings,
           interfaces: {
             javaClass: 'java.util.LinkedList',
@@ -89,7 +89,7 @@ const actions = {
         }
       })
 
-      await window.rpc.networkManager.setNetworkSettings({
+      await window.rpc.networkManager.setNetworkSettingsV2({
         ...settings,
         interfaces: {
           javaClass: 'java.util.LinkedList',
@@ -116,7 +116,7 @@ const actions = {
       const settings = state.networkSetting
       settings.interfaces.list = interfaces
       const vlanInterfaces = settings.interfaces.filter(intf => intf.isVlanInterface)
-      await window.rpc.networkManager.setNetworkSettings({
+      await window.rpc.networkManager.setNetworkSettingsV2({
         ...settings,
         interfaces: {
           javaClass: 'java.util.LinkedList',
@@ -146,7 +146,7 @@ const actions = {
       }
 
       return new Promise((resolve, reject) => {
-        window.rpc.networkManager.setNetworkSettings((response, exception) => {
+        window.rpc.networkManager.setNetworkSettingsV2((response, exception) => {
           if (Util.isDestroyed(this)) return
 
           if (exception) {
