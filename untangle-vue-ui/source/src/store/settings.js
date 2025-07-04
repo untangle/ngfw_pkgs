@@ -29,8 +29,7 @@ const mutations = {
 const actions = {
   async getInterfaces({ commit }) {
     try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      const data = rpc.networkManager.getNetworkSettings().interfaces
+      const data = window.rpc.networkManager.getNetworkSettingsV2().interfaces
       commit('SET_INTERFACES', await data)
     } catch (err) {
       console.error('getInterfaces error:', err)
@@ -38,7 +37,7 @@ const actions = {
   },
   async getNetworkSettings({ commit }) {
     try {
-      const data = await window.rpc.networkManager.getNetworkSettings()
+      const data = await window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       console.error('getNetworkSettings error:', err)
@@ -48,7 +47,7 @@ const actions = {
     try {
       await window.rpc.networkManager.setNetworkSettings(settings)
       vuntangle.toast.add('Network settings saved successfully!')
-      const data = window.rpc.networkManager.getNetworkSettings()
+      const data = window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
