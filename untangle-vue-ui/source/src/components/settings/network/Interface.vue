@@ -40,7 +40,7 @@
     methods: {
       async getInterfacesStatus() {
         const interfaces = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
-        const intfStatusList = await window.rpc.networkManager.getAllInterfacesStatus()
+        const intfStatusList = await window.rpc.networkManager.getAllInterfacesStatusV2()
 
         const interfaceWithStatus = interfaces.map(intf => {
           const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
