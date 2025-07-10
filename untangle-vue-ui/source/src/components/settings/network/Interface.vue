@@ -29,8 +29,12 @@
     computed: {
       // interfaces filered and grouped (by category)
       interfaces() {
-        return this.$store.getters['settings/interfaces']
+        return this.$store.getters['settings/networkSetting'].interfaces
       },
+    },
+
+    created() {
+      this.$store.dispatch('settings/getNetworkSettings') // update interfaces in the store
     },
 
     mounted() {
@@ -39,14 +43,8 @@
 
     methods: {
       async getInterfacesStatus() {
-        const interfaces = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
         const intfStatusList = await window.rpc.networkManager.getAllInterfacesStatusV2()
-
-        const interfaceWithStatus = interfaces.map(intf => {
-          const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
-          return { ...intf, ...status }
-        })
-        this.interfacesStatus = interfaceWithStatus
+        this.interfacesStatus = intfStatusList
       },
 
       onRefresh() {
