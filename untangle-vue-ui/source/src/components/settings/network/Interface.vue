@@ -7,11 +7,14 @@
     @add-interface="onAddInterface"
     @edit-interface="onEditInterface"
     @delete-interface="onDelete"
+    @get-arp-data="getArpData"
+    @set-wireless-intf-logs="setWirelessIntfLogs"
   />
 </template>
 <script>
   import { Interfaces } from 'vuntangle'
   import interfaceMixin from './interfaceMixin'
+  import Rpc from '@/util/Rpc'
 
   export default {
     components: { Interfaces },
@@ -19,10 +22,12 @@
     data: () => ({
       // all interfaces status, async fetched
       interfacesStatus: undefined,
+      arpEntriesData: [],
       features: {
         hasWireguard: false,
         hasOpenVpn: false,
         hasBridged: true,
+        hasStatusTable: true,
       },
     }),
 
@@ -39,12 +44,52 @@
 
     mounted() {
       this.getInterfacesStatus()
+      // this.setWirelessIntfLogs()
     },
 
     methods: {
       async getInterfacesStatus() {
         const intfStatusList = await window.rpc.networkManager.getAllInterfacesStatusV2()
         this.interfacesStatus = intfStatusList
+      },
+
+      async getArpData(device, callback) {
+        if (!device) {
+          this.arpEntriesData = []
+          return
+        }
+        const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', device)
+        const connections = []
+        const macAddressList = []
+
+        result.split('\n').forEach(row => {
+          if (row.trim() === '') return
+          const items = row.trim().split(/\s+/)
+          const address = items[0] || null
+          const macAddress = items[2] || null
+          if (macAddress) macAddressList.push(macAddress)
+          connections.push({ address, macAddress, vendor: null })
+        })
+
+        if (macAddressList.length > 0) {
+          const list = { javaClass: 'java.util.LinkedList', list: macAddressList }
+          const lookUpResult = await Rpc.directData('rpc.networkManager.lookupMacVendorList', list)
+          const macVendorMap = lookUpResult.map || {}
+          connections.forEach(conn => {
+            if (macVendorMap[conn.macAddress]) {
+              conn.vendor = macVendorMap[conn.macAddress]
+            }
+          })
+        }
+
+        this.arpEntriesData = connections
+        callback?.(connections) // Send back result
+      },
+
+      async setWirelessIntfLogs(intfc, callback) {
+        let wirelessLogs = ''
+        if (intfc.type === 'WIFI') wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.device)
+        callback?.(wirelessLogs)
       },
 
       onRefresh() {
