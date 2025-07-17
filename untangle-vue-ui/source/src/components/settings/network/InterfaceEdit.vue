@@ -11,7 +11,6 @@
       :features="features"
       @renew-dhcp="onRenewDhcp"
       @delete="onDelete"
-      @get-status-wan-test="onGetStatusWanTest"
       @get-wifi-channels="onGetWifiChannels"
       @get-country-code-items="onGetCountryItems"
       @get-wireless-channels="onGetWirelessChannels"
@@ -31,8 +30,6 @@
   import { SettingsInterface } from 'vuntangle'
   import Util from '../../../util/setupUtil'
   import interfaceMixin from './interfaceMixin'
-  import api from '@/plugins/api'
-  // import vuntangle from '~/plugins/vuntangle'
 
   export default {
     components: {
@@ -41,7 +38,6 @@
     mixins: [interfaceMixin],
     data: () => ({
       status: null,
-      manageLicenseUri: undefined,
       isBridged: undefined,
       bridgedInterfaceName: undefined,
       isSaving: false,
@@ -55,8 +51,6 @@
       interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
     },
     async mounted() {
-      console.log('**interfaces*', this.interfaces)
-      console.log('**settings*', this.settings)
       await this.setFeatures()
       this.isBridgedInterface()
       // Call getStatus conditionally only if not adding a new interface
@@ -68,15 +62,14 @@
     },
     methods: {
       setFeatures() {
-        // this.features.hasVrrp = this.settings.configType === 'ADDRESSED'
         this.features.hasPppoe = true
         this.features.hasBridged = true
-        this.features.hasGatewayMetric = this.settings.wan // this.intf.isWan // for v4StaticGateway show if isWan true
+        this.features.hasGatewayMetric = this.settings.wan
         this.features.hasNatIngress = true
       },
       getInterfaceStatus(device) {
         return new Promise((resolve, reject) => {
-          window.rpc.networkManager.getInterfaceStatus((result, error) => {
+          window.rpc.networkManager.getInterfaceStatusV2((result, error) => {
             if (error) {
               reject(error)
             } else {
@@ -127,26 +120,28 @@
         ]
         cb(response ?? null)
       },
+
       async onGetCountryItems(device, cb) {
         const response = await window.rpc.networkManager.getWirelessValidRegulatoryCountryCodes(device)
         cb(response ?? null)
       },
+
       async onGetWirelessChannels(device, newValue, cb) {
         const response = await window.rpc.networkManager.getWirelessChannels(device, newValue)
         cb(response ?? null)
       },
+
       async onWirelessRegulatoryCompliant(device, cb) {
         const response = await window.rpc.networkManager.isWirelessRegulatoryCompliant(device)
         cb(response ?? null)
       },
+
       async onSave(newSettings, validate) {
         try {
           const isValid = await validate()
           if (!isValid) return
           this.isSaving = true
           this.$store.commit('SET_LOADER', true)
-          // const intfToSave = this.$refs.component.settingsCopy
-          // if (Util.isDestroyed(this, intfToSave)) {
           if (Util.isDestroyed(this, newSettings)) {
             this.isSaving = false
             this.$store.commit('SET_LOADER', false)
@@ -154,7 +149,6 @@
           }
           const cb = this.$store.state.setEditCallback
           if (cb) cb()
-          // await this.$store.dispatch('settings/setInterface', intfToSave)
           await this.$store.dispatch('settings/setInterface', newSettings)
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)
@@ -165,14 +159,7 @@
           Util.handleException(ex)
         }
       },
-      // remove this from ngfw
-      // only for MFW
-      // handled in vuntangle
-      // not needed in ngfw
-      async onGetStatusWanTest(l3device, cb) {
-        const response = await api.get(`/api/status/wantest/${l3device}`)
-        cb(response)
-      },
+
       /**
        * Removes the interface
        * - show a confirm dialog
