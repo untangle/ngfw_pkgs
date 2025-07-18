@@ -52,13 +52,13 @@
         this.interfacesStatus = intfStatusList
       },
 
-      async getInterfaceArp(device, callback) {
-        if (!device) {
+      async getInterfaceArp(symbolicDev, callback) {
+        if (!symbolicDev) {
           this.arpEntriesData = []
           return
         }
 
-        const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', device)
+        const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', symbolicDev)
         const connections = []
         const macAddressList = []
 
