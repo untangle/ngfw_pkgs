@@ -14,7 +14,7 @@ const getters = {
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
   interface: state => device => {
-    return state.networkSetting.interfaces.find(intf => intf.physicalDev === device)
+    return state.networkSetting.interfaces.find(intf => intf.device === device)
   },
 }
 
