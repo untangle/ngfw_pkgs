@@ -54,6 +54,19 @@ const router = new VueRouter({
   routes,
 })
 router.beforeEach((to, from, next) => {
+  /**
+   * On every iframe URL change, the iframe's window context is reset,
+   * causing `window.rpc` to become null and triggering the JSONRpcClient constructor.
+   * As a result, methods like `nonce` and `listMethod` are called repeatedly.
+   *
+   * To prevent this, when the app is accessed via an iframe, the `rpc` instance is retrieved
+   * from the parent ExtJS tab (`rpcOwner`) and assigned to the current window.
+   * This ensures the JSONRpcClient is not reinitialized on every load.
+   *
+   * Local or console-based execution flows remain unaffected.
+   */
+  const rpcOwner = window.top || window.parent
+  if (rpcOwner.rpc && !window.rpc) window.rpc = rpcOwner.rpc
   if (!window.rpc) {
     try {
       window.rpc = new window.JSONRpcClient('/admin/JSON-RPC')
