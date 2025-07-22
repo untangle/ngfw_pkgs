@@ -1,4 +1,4 @@
-// import cloneDeep from 'lodash/cloneDeep'
+import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
@@ -59,52 +59,34 @@ const actions = {
    * - apply changes to the edited interface
    * - then save the entire set of interfaces
    */
-  async setInterface({ state }, updatedInterface) {
-    try {
-      if (Util.isDestroyed(this, updatedInterface)) return
-
-      const settings = state.networkSetting
-      const interfaces = Array.isArray(settings.interfaces) ? settings.interfaces : []
-
-      const updatedIntf = interfaces.find(i => i.interfaceId === updatedInterface.interfaceId)
-      //     // Handle new interface creation
-      if (!updatedIntf) {
-        const updatedInterfaces = [...interfaces, updatedInterface]
-        return await window.rpc.networkManager.setNetworkSettingsV2({
-          ...settings,
-          interfaces: {
-            javaClass: 'java.util.LinkedList',
-            list: updatedInterfaces.map(intf => ({
-              ...intf,
-              javaClass: 'com.untangle.uvm.network.InterfaceSettings',
-            })),
-          },
-        })
-      }
-
-      // Update in place
-      Object.keys(updatedIntf).forEach(key => {
-        if (Object.prototype.hasOwnProperty.call(updatedInterface, key)) {
-          updatedIntf[key] = updatedInterface[key]
-        }
-      })
-
-      await window.rpc.networkManager.setNetworkSettingsV2({
-        ...settings,
-        interfaces: {
-          javaClass: 'java.util.LinkedList',
-          list: settings.interfaces.map(intf => ({
-            ...intf,
-            javaClass: 'com.untangle.uvm.network.InterfaceSettings',
-          })),
-        },
-      })
-
-      await vuntangle.toast.add('Network settings saved successfully!')
-    } catch (ex) {
-      vuntangle.toast.add('Rolling back settings to previous version.')
-      Util.handleException(ex)
+  setInterface({ state, dispatch }, intf) {
+    const interfaces = cloneDeep(state.networkSetting.interfaces)
+    // Find the interface to update
+    const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
+    // apply changes made to the interface
+    if (updatedInterface) {
+      Object.assign(updatedInterface, { ...intf })
+    } else {
+      interfaces.push(intf)
     }
+    const payload = {
+      interfaces,
+      javaClass: 'com.untangle.uvm.network.generic.NetworkSettingsGeneric',
+    }
+    // Save updated interface list
+    return new Promise(resolve => {
+      window.rpc.networkManager.setNetworkSettingsV2(async ex => {
+        if (Util.isDestroyed(this, interfaces)) {
+          return
+        }
+        if (ex) {
+          Util.handleException(ex)
+          return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+        }
+        await Promise.allSettled([dispatch('getInterfaces')])
+        return resolve({ success: true })
+      }, payload)
+    })
   },
   // update all interfaces
 
@@ -161,30 +143,6 @@ const actions = {
       Util.handleException(err)
       return false
     }
-  },
-  /**
-   * Check if settings are rolled back due to some reason
-   * Return the reason to present in the toast.
-   */
-  settingsRollBackReason(response) {
-    const condition = 'rolled_back_settings'
-    const output = response?.data?.output || ''
-    if (output.includes(condition)) {
-      const conditionIndex = output.indexOf(condition)
-      let errMessage = ''
-      if (conditionIndex !== -1) {
-        const startIndex = conditionIndex + condition.length
-        const endIndex = output.indexOf('\n', startIndex)
-
-        // Extract the substring
-        const result =
-          endIndex === -1 ? output.substring(startIndex).trim() : output.substring(startIndex, endIndex).trim()
-
-        errMessage = result
-      }
-      return errMessage
-    }
-    return null
   },
 }
 
