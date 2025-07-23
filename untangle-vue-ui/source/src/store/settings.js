@@ -1,5 +1,6 @@
 // import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
+import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
 
@@ -132,36 +133,36 @@ const actions = {
       Util.handleException(ex)
     }
   },
-  // Delete selected Interface and update all interfaces
-  deleteInterfaces({ state }, interfaces) {
+  /* Delete selected Interface and update all interfaces */
+  deleteInterface({ state, dispatch }, intf) {
     try {
-      const fullSettings = JSON.parse(JSON.stringify(state.networkSetting))
+      const interfaces = cloneDeep(state.networkSetting.interfaces)
+      const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
-      fullSettings.interfaces = {
-        javaClass: 'java.util.LinkedList',
-        list: interfaces.map(intf => ({
-          ...intf,
-          javaClass: 'com.untangle.uvm.network.InterfaceSettings',
-        })),
+      /* Selected interfaces will be removed from the list of interfaces */
+      if (index >= 0) {
+        interfaces.splice(index, 1)
       }
-
-      return new Promise((resolve, reject) => {
-        window.rpc.networkManager.setNetworkSettingsV2((response, exception) => {
-          if (Util.isDestroyed(this)) return
-
-          if (exception) {
-            Util.handleException(exception)
-            return reject(exception)
+      return new Promise(resolve => {
+        window.rpc.networkManager.setNetworkSettingsV2(async ex => {
+          if (Util.isDestroyed(this, interfaces)) {
+            return
           }
-
-          resolve(response)
-        }, fullSettings)
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+          // force a full settings load
+          await Promise.allSettled([dispatch('getNetworkSettings')])
+          return resolve({ success: true })
+        }, interfaces)
       })
     } catch (err) {
       Util.handleException(err)
       return false
     }
   },
+
   /**
    * Check if settings are rolled back due to some reason
    * Return the reason to present in the toast.
