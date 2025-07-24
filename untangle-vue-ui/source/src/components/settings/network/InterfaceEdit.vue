@@ -67,6 +67,7 @@
           window.rpc.networkManager.getAllInterfacesStatusV2((result, error) => {
             if (error) {
               reject(error)
+              return
             }
             if (result && Array.isArray(result)) {
               this.status = result.find(item => item.device === this.device)
@@ -78,13 +79,7 @@
       // get dhcp result
       getRenewDhcpLease(interfaceId) {
         return new Promise((resolve, reject) => {
-          window.rpc.networkManager.renewDhcpLease((result, error) => {
-            if (error) {
-              reject(error)
-            } else {
-              resolve(result)
-            }
-          }, interfaceId)
+          window.rpc.networkManager.renewDhcpLease(resolve, reject, interfaceId)
         })
       },
 
@@ -109,7 +104,7 @@
           }
           cb()
         } catch (ex) {
-          console.error(ex)
+          this.$vuntangle.toast.add(ex)
           Util.handleException(ex)
         }
       },

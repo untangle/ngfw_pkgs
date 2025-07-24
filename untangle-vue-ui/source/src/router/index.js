@@ -6,6 +6,7 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
+import vuntangle from '@/plugins/vuntangle'
 
 /**
  * Override .push() to catch navigation failures.
@@ -65,8 +66,6 @@ router.beforeEach((to, from, next) => {
    *
    * Local or console-based execution flows remain unaffected.
    */
-  const rpcOwner = window.top || window.parent
-  if (rpcOwner.rpc && !window.rpc) window.rpc = rpcOwner.rpc
   if (!window.rpc) {
     try {
       window.rpc = new window.JSONRpcClient('/admin/JSON-RPC')
@@ -81,7 +80,7 @@ router.beforeEach((to, from, next) => {
         }
       }
     } catch (ex) {
-      console.log(ex)
+      vuntangle.toast.add(ex)
       if (to.name === 'setup') {
         return next({ name: 'wizard' })
       }
