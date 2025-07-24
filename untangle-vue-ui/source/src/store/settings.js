@@ -136,7 +136,7 @@ const actions = {
   /* Delete selected Interface and update all interfaces */
   deleteInterface({ state, dispatch }, intf) {
     try {
-      const networkSettings = JSON.parse(JSON.stringify(state.networkSetting))
+      const networkSettings = cloneDeep(state.networkSetting)
       const interfaces = cloneDeep(state.networkSetting.interfaces)
       const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
@@ -164,7 +164,6 @@ const actions = {
       return false
     }
   },
-
   /**
    * Check if settings are rolled back due to some reason
    * Return the reason to present in the toast.
