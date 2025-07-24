@@ -136,6 +136,7 @@ const actions = {
   /* Delete selected Interface and update all interfaces */
   deleteInterface({ state, dispatch }, intf) {
     try {
+      const networkSettings = JSON.parse(JSON.stringify(state.networkSetting))
       const interfaces = cloneDeep(state.networkSetting.interfaces)
       const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
@@ -143,9 +144,10 @@ const actions = {
       if (index >= 0) {
         interfaces.splice(index, 1)
       }
+      networkSettings.interfaces = interfaces
       return new Promise(resolve => {
         window.rpc.networkManager.setNetworkSettingsV2(async ex => {
-          if (Util.isDestroyed(this, interfaces)) {
+          if (Util.isDestroyed(this, networkSettings)) {
             return
           }
           if (ex) {
@@ -155,7 +157,7 @@ const actions = {
           // force a full settings load
           await Promise.allSettled([dispatch('getNetworkSettings')])
           return resolve({ success: true })
-        }, interfaces)
+        }, networkSettings)
       })
     } catch (err) {
       Util.handleException(err)

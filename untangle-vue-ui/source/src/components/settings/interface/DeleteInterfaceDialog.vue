@@ -21,6 +21,8 @@
           this.$vuntangle.toast.add(this.$t('deleted_successfully', [this.$t('interface')]))
           // notify consumer of success
           this.$emit('update')
+        } else {
+          this.$vuntangle.toast.add(this.$t('unable_to_save', [response.message]))
         }
 
         this.$emit('progress-hide')
