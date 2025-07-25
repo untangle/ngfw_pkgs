@@ -59,6 +59,7 @@
       setFeatures() {
         this.features.hasPppoe = true
         this.features.hasNatIngress = true
+        this.features.hasBridged = true
       },
 
       // get the interface status
