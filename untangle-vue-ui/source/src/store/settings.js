@@ -1,5 +1,6 @@
 // import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
+import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
 
@@ -7,16 +8,14 @@ const getDefaultState = () => ({
   editCallback: null,
   networkSetting: {
     interfaces: [],
-    interfaceStatuses: [],
   },
 })
 
 const getters = {
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
-  interfaceStatuses: state => state?.networkSetting?.interfaceStatuses || [],
   interface: state => device => {
-    return state.networkSetting.interfaces.find(intf => intf.physicalDev === device)
+    return state.networkSetting.interfaces.find(intf => intf.device === device)
   },
 }
 
@@ -25,43 +24,34 @@ const mutations = {
     state.editCallback = cb
   },
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
-  SET_INTERFACES_STATUSES: (state, value) => set(state.networkSetting, 'interfaceStatuses', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
 }
 
 const actions = {
   async getInterfaces({ commit }) {
     try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      const data = rpc.networkManager.getNetworkSettings().interfaces.list
-      const sortedData = await [...data].sort((a, b) => a.interfaceId - b.interfaceId)
-      commit('SET_INTERFACES', sortedData)
+      const data = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
+      commit('SET_INTERFACES', await data)
     } catch (err) {
       console.error('getInterfaces error:', err)
-    }
-  },
-  async getInterfaceStatuses({ commit }) {
-    try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      const interfaces = rpc.networkManager.getNetworkSettings().interfaces.list
-      const intfStatusList = rpc.networkManager.getInterfaceStatus()
-      const interfaceWithStatus = interfaces.map(intf => {
-        const status = intfStatusList.list.find(j => j.interfaceId === intf.interfaceId)
-        return { ...intf, ...status }
-      })
-      commit('SET_INTERFACES_STATUSES', interfaceWithStatus)
-    } catch (err) {
-      console.error('getInterfaces error:', err)
-      Util.handleException(err)
     }
   },
   async getNetworkSettings({ commit }) {
     try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      const data = rpc.networkManager.getNetworkSettings()
+      const data = await window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       console.error('getNetworkSettings error:', err)
+    }
+  },
+  async setNetworkSettings({ commit }, settings) {
+    try {
+      await window.rpc.networkManager.setNetworkSettingsV2(settings)
+      vuntangle.toast.add('Network settings saved successfully!')
+      const data = window.rpc.networkManager.getNetworkSettingsV2()
+      commit('SET_NETWORK_SETTINGS', data)
+    } catch (err) {
+      Util.handleException(err)
     }
   },
   /**
@@ -74,7 +64,6 @@ const actions = {
     try {
       if (Util.isDestroyed(this, updatedInterface)) return
 
-      const rpc = await Util.setRpcJsonrpc('admin')
       const settings = state.networkSetting
       const interfaces = Array.isArray(settings.interfaces) ? settings.interfaces : []
 
@@ -82,7 +71,7 @@ const actions = {
       //     // Handle new interface creation
       if (!updatedIntf) {
         const updatedInterfaces = [...interfaces, updatedInterface]
-        return await rpc.networkManager.setNetworkSettings({
+        return await window.rpc.networkManager.setNetworkSettingsV2({
           ...settings,
           interfaces: {
             javaClass: 'java.util.LinkedList',
@@ -101,7 +90,7 @@ const actions = {
         }
       })
 
-      await rpc.networkManager.setNetworkSettings({
+      await window.rpc.networkManager.setNetworkSettingsV2({
         ...settings,
         interfaces: {
           javaClass: 'java.util.LinkedList',
@@ -116,7 +105,6 @@ const actions = {
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
-      throw ex
     }
   },
   // update all interfaces
@@ -126,41 +114,50 @@ const actions = {
       if (Util.isDestroyed(this, interfaces)) {
         return
       }
-      const rpc = await Util.setRpcJsonrpc('admin')
       const settings = state.networkSetting
       settings.interfaces.list = interfaces
-      await rpc.networkManager.setNetworkSettings(settings)
+      const vlanInterfaces = settings.interfaces.filter(intf => intf.isVlanInterface)
+      await window.rpc.networkManager.setNetworkSettingsV2({
+        ...settings,
+        interfaces: {
+          javaClass: 'java.util.LinkedList',
+          list: [...interfaces, ...vlanInterfaces].map(intf => ({
+            ...intf,
+            javaClass: 'com.untangle.uvm.network.InterfaceSettings',
+          })),
+        },
+      })
       vuntangle.toast.add('Successfully saved interface remapping.')
     } catch (ex) {
       vuntangle.toast.add('Rolling back settings to previous version.')
       Util.handleException(ex)
     }
   },
-  // Delete selected Interface and update all interfaces
-  async deleteInterfaces({ state }, interfaces) {
+  /* Delete selected Interface and update all interfaces */
+  deleteInterface({ state, dispatch }, intf) {
     try {
-      const rpc = await Util.setRpcJsonrpc('admin')
-      const fullSettings = JSON.parse(JSON.stringify(state.networkSetting))
+      const networkSettings = cloneDeep(state.networkSetting)
+      const interfaces = cloneDeep(state.networkSetting.interfaces)
+      const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
-      fullSettings.interfaces = {
-        javaClass: 'java.util.LinkedList',
-        list: interfaces.map(intf => ({
-          ...intf,
-          javaClass: 'com.untangle.uvm.network.InterfaceSettings',
-        })),
+      /* Selected interfaces will be removed from the list of interfaces */
+      if (index >= 0) {
+        interfaces.splice(index, 1)
       }
-
-      return new Promise((resolve, reject) => {
-        rpc.networkManager.setNetworkSettings((response, exception) => {
-          if (Util.isDestroyed(this)) return
-
-          if (exception) {
-            Util.handleException(exception)
-            return reject(exception)
+      networkSettings.interfaces = interfaces
+      return new Promise(resolve => {
+        window.rpc.networkManager.setNetworkSettingsV2(async ex => {
+          if (Util.isDestroyed(this, networkSettings)) {
+            return
           }
-
-          resolve(response)
-        }, fullSettings)
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+          // force a full settings load
+          await Promise.allSettled([dispatch('getNetworkSettings')])
+          return resolve({ success: true })
+        }, networkSettings)
       })
     } catch (err) {
       Util.handleException(err)
