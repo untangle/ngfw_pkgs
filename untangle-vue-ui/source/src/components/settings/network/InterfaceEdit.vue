@@ -88,12 +88,9 @@
         try {
           const interfaceToUpdate = this.interfaces.find(i => i.device === device)
           const interfaceId = interfaceToUpdate.interfaceId
-          const [dhcpResult, statusResult] = await Promise.all([
-            this.getRenewDhcpLease(interfaceId),
-            this.getInterfaceStatus(),
-          ])
+          await this.getRenewDhcpLease(interfaceId)
+          const statusResult = await this.getInterfaceStatus()
 
-          console.log('dhcpResult :', dhcpResult)
           if (Util.isDestroyed(this)) {
             return
           }
