@@ -1,4 +1,3 @@
-import cloneDeep from 'lodash/cloneDeep'
 import { set } from 'vue'
 import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
@@ -76,13 +75,19 @@ const actions = {
     }
     // Save updated interface list
     return new Promise(resolve => {
-      window.rpc.networkManager.setNetworkSettingsV2(async ex => {
+      window.rpc.networkManager.setNetworkSettingsV2(async (ex, result) => {
         if (Util.isDestroyed(this, interfaces)) {
           return
         }
         if (ex) {
           Util.handleException(ex)
           return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+        }
+        if (result?.code && result?.message) {
+          return resolve({
+            success: false,
+            message: result.message.slice(0, 100),
+          })
         }
         await Promise.allSettled([dispatch('getInterfaces')])
         return resolve({ success: true })
