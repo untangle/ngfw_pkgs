@@ -66,6 +66,8 @@ router.beforeEach((to, from, next) => {
    *
    * Local or console-based execution flows remain unaffected.
    */
+  // const rpcOwner = window.top || window.parent
+  // if (rpcOwner.rpc && !window.rpc) window.rpc = rpcOwner.rpc
   if (!window.rpc) {
     try {
       window.rpc = new window.JSONRpcClient('/admin/JSON-RPC')

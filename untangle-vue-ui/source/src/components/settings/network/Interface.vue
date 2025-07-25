@@ -23,6 +23,7 @@
       // all interfaces status, async fetched
       interfacesStatus: undefined,
       arpEntriesData: [],
+      wirelessLogs: '',
       features: {
         hasWireguard: false,
         hasOpenVpn: false,
@@ -104,9 +105,13 @@
         callback?.(connections) // Send back result
       },
       async setWirelessIntfLogs(intfc, callback) {
-        let wirelessLogs = ''
-        if (intfc.type === 'WIFI') wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.symbolicDev)
-        callback?.(wirelessLogs)
+        if (intfc.type === 'WIFI') {
+          this.wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.device)
+        } else {
+          this.wirelessLogs = ''
+        }
+
+        callback?.(this.wirelessLogs)
       },
 
       onRefresh() {
