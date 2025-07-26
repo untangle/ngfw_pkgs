@@ -38,7 +38,11 @@
     data: () => ({
       status: null,
       isSaving: false,
-      features: {},
+      features: {
+        hasPppoe: true,
+        hasNatIngress: true,
+        hasBridged: true,
+      },
     }),
     computed: {
       device: ({ $route }) => $route.params.device,
@@ -47,7 +51,6 @@
       intfSetting: ({ $store, device }) => $store.getters['settings/interface'](device),
     },
     async mounted() {
-      await this.setFeatures()
       // Call getStatus conditionally only if not adding a new interface
       if (this.device) {
         await this.getInterfaceStatus()
@@ -56,12 +59,6 @@
       this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.intfSetting?.type).toLowerCase()}`)
     },
     methods: {
-      setFeatures() {
-        this.features.hasPppoe = true
-        this.features.hasNatIngress = true
-        this.features.hasBridged = true
-      },
-
       // get the interface status
       getInterfaceStatus() {
         return new Promise((resolve, reject) => {
