@@ -6,6 +6,7 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
+import vuntangle from '@/plugins/vuntangle'
 
 /**
  * Override .push() to catch navigation failures.
@@ -73,7 +74,7 @@ router.beforeEach((to, from, next) => {
       if (window.rpc) {
         const startUpInfo = window.rpc.UvmContext.getWebuiStartupInfo()
         Object.assign(window.rpc, startUpInfo)
-        if (!from.name && to.name.includes('setup-') && to.name !== 'setup-wizard') {
+        if (!from.name && to.name?.includes('setup-') && to.name !== 'setup-wizard') {
           next({ name: 'wizard' })
         } else if (to.name === 'login') next({ name: 'home' })
         else {
@@ -81,6 +82,7 @@ router.beforeEach((to, from, next) => {
         }
       }
     } catch (ex) {
+      vuntangle.toast.add(ex)
       if (to.name === 'setup') {
         return next({ name: 'wizard' })
       }
