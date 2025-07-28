@@ -89,9 +89,6 @@
           await this.getRenewDhcpLease(interfaceId)
           const statusResult = await this.getInterfaceStatus()
 
-          if (Util.isDestroyed(this)) {
-            return
-          }
           if (statusResult) {
             const statusWithoutId = { ...statusResult }
             delete statusWithoutId.interfaceId
@@ -145,9 +142,6 @@
           if (!isValid) return
           // push changes via store actions
           this.$store.commit('SET_LOADER', true)
-          if (Util.isDestroyed(this)) {
-            return
-          }
           this.isSaving = true
           // Save interface settings by updating the current interface- newSettings
           const resultIntf = await this.$store.dispatch('settings/setInterface', newSettings)
