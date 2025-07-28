@@ -48,7 +48,7 @@
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
-      intfSetting: ({ $store, device }) => $store.getters['settings/interface'](device),
+      intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
     },
     async mounted() {
       // Call getStatus conditionally only if not adding a new interface
