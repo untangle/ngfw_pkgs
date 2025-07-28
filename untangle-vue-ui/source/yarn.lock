@@ -7846,9 +7846,9 @@ vuex@^3.6.2:
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
-"vuntangle@git+ssh://git@github.com/untangle/vuntangle.git#ngfw-15227-Interface-edit-functionality":
+vuntangle@untangle/vuntangle:
   version "1.58.84"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#8e2cc445db332b8a8b6497f8312874c01692b2e3"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#8efe83867a7a4fe172eb735dfe8f316ce0dc28ec"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"
