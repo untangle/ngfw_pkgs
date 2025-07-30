@@ -24,6 +24,10 @@
  *
  */
 
+/*
+This file is deployed at /var/www/jsonrpc/jsonrpc.js and used by ExtJS
+*/
+
 var jsonRpcNonce = "";
 
 /* escape a character */
