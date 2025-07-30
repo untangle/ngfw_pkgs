@@ -160,8 +160,13 @@
         }
       },
 
+      /** onDelete should be passed for the Edit Interface component.
+       * this.intfSetting should represent the current interface being edited.
+       * Pass the router with the interface path as a callback function,
+       * which will be used for redirection after a successful operation.
+       */
       onDelete() {
-        this.deleteInterfaceHandler(this.settings, () => {
+        this.deleteInterfaceHandler(this.intfSetting, () => {
           this.$router.push('/settings/network/interfaces')
         })
       },
