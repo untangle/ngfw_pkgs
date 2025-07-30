@@ -13,8 +13,7 @@ export default {
      * @param {*} successCallback callback to be executed in case of success
      */
     async deleteInterfaceHandler(intf, successCallback = () => {}) {
-      // const hasWanPolicy = this.$store.getters['settings/hasWanPolicy'](intf.interfaceId)
-      const showDialog = intf.wan === false || intf.wan === true // actual condition intf.wan === true && !hasWanPolicy
+      const showDialog = intf.wan === false || intf.wan === true
       const interfacesCopy = cloneDeep(this.$store.getters['settings/interfaces'])
       const affectedChildInterfaces = this.showDeleteWarning(intf, interfacesCopy)
       if (affectedChildInterfaces.length) {
