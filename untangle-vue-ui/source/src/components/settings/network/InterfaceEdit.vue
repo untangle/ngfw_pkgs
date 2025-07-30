@@ -48,7 +48,7 @@
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
-      intfSetting: ({ $store, device }) => $store.getters['settings/interface'](device),
+      intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
     },
     async mounted() {
       // Call getStatus conditionally only if not adding a new interface
@@ -56,7 +56,7 @@
         await this.getInterfaceStatus()
       }
       // set the help context for this device type (e.g. interfaces_wwan)
-      this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.intfSetting?.type)?.toLowerCase()}`)
+      this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.intfSetting?.type).toLowerCase()}`)
     },
     methods: {
       // get the interface status
@@ -89,9 +89,6 @@
           await this.getRenewDhcpLease(interfaceId)
           const statusResult = await this.getInterfaceStatus()
 
-          if (Util.isDestroyed(this)) {
-            return
-          }
           if (statusResult) {
             const statusWithoutId = { ...statusResult }
             delete statusWithoutId.interfaceId
@@ -145,9 +142,6 @@
           if (!isValid) return
           // push changes via store actions
           this.$store.commit('SET_LOADER', true)
-          if (Util.isDestroyed(this)) {
-            return
-          }
           this.isSaving = true
           // Save interface settings by updating the current interface- newSettings
           const resultIntf = await this.$store.dispatch('settings/setInterface', newSettings)

@@ -14,6 +14,11 @@ fi
 systemctl --no-block stop suricata || true
 deb-systemd-helper disable suricata.service
 
+# Remove legacy or conflicting logrotate file if it exists
+if [ -f /etc/logrotate.d/suricata.log ]; then
+    rm -f /etc/logrotate.d/suricata.log
+fi
+
 # Override the suricata package logrotate config so as to avoid having .backup log files created
 # The /usr/share/untangle-suricata-config/logrotate.conf file is the same as the default suricata logrotate file
 # except it adds the delaycompress config item

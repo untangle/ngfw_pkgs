@@ -53,13 +53,50 @@ const actions = {
       Util.handleException(err)
     }
   },
+
+  /**
+   * Persists the updated list of network interfaces to the backend using RPC.
+   * This action sends a payload to the backend containing all network interfaces
+   * and a required Java class identifier. It handles errors from both RPC exceptions
+   * and response objects with error codes. On success, it commits the updated interfaces
+   * to the Vuex state.
+   */
+  setNetworkSettingV2({ commit }, interfaces) {
+    try {
+      const payload = {
+        interfaces,
+        javaClass: 'com.untangle.uvm.network.generic.NetworkSettingsGeneric',
+      }
+      const data = new Promise(resolve => {
+        window.rpc.networkManager.setNetworkSettingsV2((ex, result) => {
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({
+              success: false,
+              message: result.message.slice(0, 100),
+            })
+          }
+          commit('SET_INTERFACES', interfaces)
+          return resolve({ success: true })
+        }, payload)
+      })
+      return data
+    } catch (err) {
+      console.error('setInterfaces error:', err)
+    }
+  },
+
   /**
    * Updates a single interface
    * The save process works like:
    * - apply changes to the edited interface
    * - then save the entire set of interfaces
    */
-  setInterface({ state, dispatch }, intf) {
+  async setInterface({ state, dispatch }, intf) {
     const interfaces = cloneDeep(state.networkSetting.interfaces)
     // Find the interface to update
     const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
@@ -69,30 +106,8 @@ const actions = {
     } else {
       interfaces.push(intf)
     }
-    const payload = {
-      interfaces,
-      javaClass: 'com.untangle.uvm.network.generic.NetworkSettingsGeneric',
-    }
     // Save updated interface list
-    return new Promise(resolve => {
-      window.rpc.networkManager.setNetworkSettingsV2(async (ex, result) => {
-        if (Util.isDestroyed(this, interfaces)) {
-          return
-        }
-        if (ex) {
-          Util.handleException(ex)
-          return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
-        }
-        if (result?.code && result?.message) {
-          return resolve({
-            success: false,
-            message: result.message.slice(0, 100),
-          })
-        }
-        await Promise.allSettled([dispatch('getInterfaces')])
-        return resolve({ success: true })
-      }, payload)
-    })
+    return await dispatch('setNetworkSettingV2', interfaces)
   },
   // update all interfaces
 
