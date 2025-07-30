@@ -2,20 +2,23 @@
   <v-container>
     <settings-interface
       ref="component"
-      :settings="settingsObject"
+      :settings="intfSetting"
       :is-saving="isSaving"
       :type="type"
       :interfaces="interfaces"
-      :interface-statuses="interfaceStatuses"
+      :status="status"
+      :features="features"
+      @renew-dhcp="onRenewDhcp"
       @delete="onDelete"
       @get-wifi-channels="onGetWifiChannels"
       @get-country-code-items="onGetCountryItems"
       @get-wireless-channels="onGetWirelessChannels"
       @get-wireless-regulatory-compliant="onWirelessRegulatoryCompliant"
+      @get-vrrp-master="getVrrpMaster"
     >
-      <template #actions="{ isDirty, validate }">
+      <template #actions="{ newSettings, isDirty, validate }">
         <u-btn to="/settings/network/interfaces" class="mr-2">{{ $t('back_to_list') }}</u-btn>
-        <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(validate)">
+        <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(newSettings, validate)">
           {{ $t('save') }}
         </u-btn>
       </template>
@@ -26,48 +29,85 @@
 <script>
   import { SettingsInterface } from 'vuntangle'
   import Util from '../../../util/setupUtil'
-  import defaults from '../network/SettingsInterface/defaults'
   import interfaceMixin from './interfaceMixin'
-
   export default {
     components: {
       SettingsInterface,
     },
     mixins: [interfaceMixin],
     data: () => ({
+      status: null,
       isSaving: false,
+      features: {
+        hasPppoe: true,
+        hasNatIngress: true,
+        hasBridged: true,
+      },
     }),
     computed: {
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
-      settings: ({ $store }) => $store.getters['settings/networkSetting'],
-      interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
-
-      // Determine if editing existing or creating new interface
-      settingsObject() {
-        const existing = this.device ? this.interfaces.find(i => i.systemDev === this.device) : null
-
-        // If editing, return existing interface
-        if (existing) return existing
-
-        // If adding, return cloned default settings
-        if (this.type && defaults[this.type]) {
-          return { ...defaults[this.type] }
-        }
-
-        // Fallback empty object
-        return {}
-      },
+      intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
+    },
+    async mounted() {
+      // Call getStatus conditionally only if not adding a new interface
+      if (this.device) {
+        await this.getInterfaceStatus()
+      }
+      // set the help context for this device type (e.g. interfaces_wwan)
+      this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.intfSetting?.type).toLowerCase()}`)
     },
     methods: {
+      // get the interface status
+      getInterfaceStatus() {
+        return new Promise((resolve, reject) => {
+          window.rpc.networkManager.getAllInterfacesStatusV2((result, error) => {
+            if (error) {
+              reject(error)
+              return
+            }
+            if (result && Array.isArray(result)) {
+              this.status = result.find(item => item.device === this.device)
+            }
+            resolve(this.status)
+          })
+        })
+      },
+      // get dhcp result
+      getRenewDhcpLease(interfaceId) {
+        return new Promise((resolve, reject) => {
+          window.rpc.networkManager.renewDhcpLease(resolve, reject, interfaceId)
+        })
+      },
+
+      // renews DHCP and refetches status
+      async onRenewDhcp(device, cb) {
+        try {
+          const interfaceToUpdate = this.interfaces.find(i => i.device === device)
+          const interfaceId = interfaceToUpdate.interfaceId
+          await this.getRenewDhcpLease(interfaceId)
+          const statusResult = await this.getInterfaceStatus()
+
+          if (statusResult) {
+            const statusWithoutId = { ...statusResult }
+            delete statusWithoutId.interfaceId
+            Object.assign(interfaceToUpdate, statusWithoutId) // update interface with the new values
+          }
+          cb()
+        } catch (ex) {
+          this.$vuntangle.toast.add(ex)
+          Util.handleException(ex)
+        }
+      },
+
       /** returns box Wi-Fi channels */
       async onGetWifiChannels(countryCode, cb) {
         if (countryCode === '') {
-          countryCode = await window.rpc.networkManager.getWirelessRegulatoryCountryCode(this.settings.systemDev)
+          countryCode = await window.rpc.networkManager.getWirelessRegulatoryCountryCode(this.intfSetting?.systemDev)
         }
         const response = (await window.rpc.networkManager.getWirelessChannels(
-          this.settings.systemDev,
+          this.intfSetting?.systemDev,
           countryCode,
         )) || [{ frequency: this.$t('no_channel_match'), channel: -1 }]
         cb(response ?? null)
@@ -90,31 +130,33 @@
         cb(response ?? null)
       },
 
-      async onSave(validate) {
+      /** fetches and returns whether the given interface is the VRRP master */
+      async getVrrpMaster(interfaceId, cb) {
+        const response = await window.rpc.networkManager.isVrrpMaster(interfaceId)
+        cb(response ?? null)
+      },
+
+      async onSave(newSettings, validate) {
         try {
           const isValid = await validate()
           if (!isValid) return
-
-          this.isSaving = true
+          // push changes via store actions
           this.$store.commit('SET_LOADER', true)
-
-          const intfToSave = this.$refs.component.settingsCopy
-          if (Util.isDestroyed(this, intfToSave)) {
-            this.isSaving = false
-            this.$store.commit('SET_LOADER', false)
-            return
+          this.isSaving = true
+          // Save interface settings by updating the current interface- newSettings
+          const resultIntf = await this.$store.dispatch('settings/setInterface', newSettings)
+          if (resultIntf?.success) {
+            this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
+          } else {
+            this.$vuntangle.toast.add(this.$t('rolled_back_settings', [resultIntf.message]))
           }
-          const cb = this.$store.state.setEditCallback
-          if (cb) cb()
-
-          await this.$store.dispatch('settings/setInterface', intfToSave)
-          this.isSaving = false
-          this.$store.commit('SET_LOADER', false)
+          // return to main interfaces screen on success or error toast to avoid blank screen
           this.$router.push('/settings/network/interfaces')
         } catch (ex) {
+          Util.handleException(ex)
+        } finally {
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)
-          Util.handleException(ex)
         }
       },
 
