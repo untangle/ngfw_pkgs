@@ -8,6 +8,7 @@ const getDefaultState = () => ({
   networkSetting: {
     interfaces: [],
   },
+  systemSetting: null,
 })
 
 const getters = {
@@ -16,6 +17,7 @@ const getters = {
   interface: state => device => {
     return state.networkSetting.interfaces.find(intf => intf.device === device)
   },
+  systemSetting: state => state.systemSetting || {},
 }
 
 const mutations = {
@@ -24,6 +26,7 @@ const mutations = {
   },
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
+  SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
 }
 
 const actions = {
@@ -43,14 +46,64 @@ const actions = {
       console.error('getNetworkSettings error:', err)
     }
   },
+
+  /* get system settings configuration */
+  async getSystemSettings({ commit }) {
+    try {
+      // const data = await window.rpc.networkManager.getSystemSettingsV2()
+      const data = await {
+        'dynamicDnsServiceName': 'cloudflare',
+        'hostName': 'untangle',
+        'publicUrlPort': 443,
+        'javaClass': 'com.untangle.uvm.generic.SystemSettingsGeneric',
+        'httpPort': 80,
+        'dynamicDnsServiceEnabled': true,
+        'dynamicDnsServiceZone': 'myzone',
+        'httpsPort': 443,
+        'dynamicDnsServiceHostnames': 'myhostname',
+        'dynamicDnsServicePassword': 'passwd',
+        'publicUrlAddress': 'hostname.example.com',
+        'publicUrlMethod': 'address_and_port',
+        'domainName': 'example.com',
+        'dynamicDnsServiceUsername': 'MyUsername',
+        'dynamicDnsServiceWan': 'External',
+      }
+      commit('SET_SYSTEM_SETTINGS', data)
+    } catch (err) {
+      console.error('getSystemSettings error:', err)
+    }
+  },
   async setNetworkSettings({ commit }, settings) {
     try {
       await window.rpc.networkManager.setNetworkSettingsV2(settings)
-      vuntangle.toast.add('Network settings saved successfully!')
+      vuntangle.toast.add('System settings saved successfully!')
       const data = window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
+    }
+  },
+
+  /* setSystemSettings will update system regarding configurations */
+  setSystemSettings({ dispatch }, systemSettings) {
+    try {
+      return new Promise(resolve => {
+        window.rpc.networkManager.setSystemSettingsV2(async ex => {
+          if (Util.isDestroyed(this, systemSettings)) {
+            return
+          }
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+          // fetch updated settings after successful save
+          await dispatch('getSystemSettings')
+          return resolve({ success: true })
+        }, systemSettings)
+      })
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
   },
 
