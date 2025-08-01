@@ -224,6 +224,8 @@
             if (defaultItem) {
               this.wan.v4StaticPrefix = defaultItem.value
             }
+          } else if (newVal.value) {
+            this.wan.v4StaticPrefix = newVal.value
           }
         },
       },
