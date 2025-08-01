@@ -219,10 +219,10 @@
       'wan.v4StaticPrefix': {
         immediate: true,
         handler(newVal) {
-          if (!newVal || newVal.value == null) {
+          if (!newVal) {
             const defaultItem = this.v4NetmaskList.find(item => item.value === 24)
             if (defaultItem) {
-              this.wan.v4StaticPrefix = defaultItem
+              this.wan.v4StaticPrefix = defaultItem.value
             }
           }
         },
@@ -356,6 +356,7 @@
       },
       async testConnectivity(testType, cb) {
         try {
+          console.log('***********')
           // build test fail message if any
           let message = ''
           let nextDisabled = true
