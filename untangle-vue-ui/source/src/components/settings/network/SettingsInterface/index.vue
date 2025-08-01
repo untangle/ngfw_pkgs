@@ -76,9 +76,9 @@
         const found = this.interfaces.find(i => i.systemDev === this.device)
         this.settingsCopy = found ? cloneDeep(found) : {}
         this.status = this.interfaceStatuses.find(i => i.systemDev === this.device) || {}
-      } else if (this.type && defaults[this.type.toLowerCase()]) {
+      } else if (this.type && defaults[this.type?.toLowerCase()]) {
         // New mode
-        this.settingsCopy = cloneDeep(defaults[this.type.toLowerCase()])
+        this.settingsCopy = cloneDeep(defaults[this.type?.toLowerCase()])
         this.status = {}
       } else {
         this.settingsCopy = {}

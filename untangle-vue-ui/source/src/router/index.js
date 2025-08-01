@@ -6,6 +6,7 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
+import vuntangle from '@/plugins/vuntangle'
 
 /**
  * Override .push() to catch navigation failures.
