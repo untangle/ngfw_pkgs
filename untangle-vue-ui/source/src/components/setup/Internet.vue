@@ -356,7 +356,6 @@
       },
       async testConnectivity(testType, cb) {
         try {
-          console.log('***********')
           // build test fail message if any
           let message = ''
           let nextDisabled = true
