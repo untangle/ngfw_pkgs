@@ -1,6 +1,5 @@
 <template>
   <div>
-    <AppVariantInjector />
     <blank-layout
       v-if="
         embedded ||
@@ -14,17 +13,11 @@
   </div>
 </template>
 <script>
-  import { AppVariantInjector } from 'vuntangle'
   import { BlankLayout, DefaultLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, BlankLayout, AppVariantInjector },
+    components: { DefaultLayout, BlankLayout },
 
-    provide() {
-      return {
-        APP_VARIANT: 'NGFW',
-      }
-    },
     data() {
       return {
         embedded: false,

@@ -31,7 +31,7 @@ echo ">>> Step 7: Run docker compose build"
 PACKAGE=untangle-vue-ui FORCE=1 VERBOSE=1 UPLOAD=local docker compose -f docker-compose-ngfw-ui-build.yml run build
 
 echo ">>> Step 8: Verify .deb package was created"
-DEB_FILE=$(ls untangle-vue-ui_17.4.0*.deb 2>/dev/null || true)
+DEB_FILE=$(ls untangle-vue-ui_*.deb 2>/dev/null || true)
 
 if [ -z "$DEB_FILE" ]; then
     echo "ERROR: No .deb file was generated."
@@ -44,7 +44,7 @@ echo ">>> Step 9: SCP .deb to remote server"
 scp "$DEB_FILE" root@ngfw.untangle.com:/tmp/
 
 echo ">>> Step 10: Install .deb and reboot remote server (combined)"
-ssh root@ngfw.untangle.com "dpkg -i /tmp/untangle-vue-ui_17.4.0*.deb && reboot"
+ssh root@ngfw.untangle.com "dpkg -i /tmp/untangle-vue-ui_*.deb && reboot"
 
 
 echo ">>> DONE — Remote system is rebooting"
