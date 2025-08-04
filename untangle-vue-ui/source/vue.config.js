@@ -69,5 +69,11 @@ module.exports = {
       config.resolve.alias.set('vue-i18n', path.resolve('./node_modules/vue-i18n'))
       config.resolve.alias.set('vuetify', path.resolve('./node_modules/vuetify'))
     }
+
+    // Define APP_VARIANT for global access
+    config.plugin('define').tap(args => {
+      args[0]['process.env'].APP_VARIANT = JSON.stringify('NGFW')
+      return args
+    })
   },
 }
