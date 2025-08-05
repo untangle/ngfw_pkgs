@@ -56,47 +56,34 @@
         await this.getInterfaceStatus()
       }
       // set the help context for this device type (e.g. interfaces_wwan)
-      this.$store.commit('SET_HELP_CONTEXT', `interfaces_${(this.type || this.intfSetting?.type).toLowerCase()}`)
+      const type = this.type || this.intfSetting?.type
+      if (type) {
+        this.$store.commit('SET_HELP_CONTEXT', `interfaces_${type.toLowerCase()}`)
+      }
     },
     methods: {
       // get the interface status
-      getInterfaceStatus() {
-        return new Promise((resolve, reject) => {
-          window.rpc.networkManager.getAllInterfacesStatusV2((result, error) => {
-            if (error) {
-              reject(error)
-              return
-            }
-            if (result && Array.isArray(result)) {
-              this.status = result.find(item => item.device === this.device)
-            }
-            resolve(this.status)
-          })
+      async getInterfaceStatus() {
+        const result = await new Promise((resolve, reject) => {
+          window.rpc.networkManager.getInterfaceStatusV2((res, err) => (err ? reject(err) : resolve(res)), this.device)
         })
-      },
-      // get dhcp result
-      getRenewDhcpLease(interfaceId) {
-        return new Promise((resolve, reject) => {
-          window.rpc.networkManager.renewDhcpLease(resolve, reject, interfaceId)
-        })
+
+        return (this.status = result)
       },
 
       // renews DHCP and refetches status
       async onRenewDhcp(device, cb) {
         try {
-          const interfaceToUpdate = this.interfaces.find(i => i.device === device)
-          const interfaceId = interfaceToUpdate.interfaceId
-          await this.getRenewDhcpLease(interfaceId)
-          const statusResult = await this.getInterfaceStatus()
-
-          if (statusResult) {
-            const statusWithoutId = { ...statusResult }
-            delete statusWithoutId.interfaceId
-            Object.assign(interfaceToUpdate, statusWithoutId) // update interface with the new values
+          let interfaceId
+          if (this.intfSetting?.device === device) interfaceId = this.intfSetting?.interfaceId
+          else interfaceId = this.interfaces.find(intf => intf.device === device)?.interfaceId
+          interfaceId = undefined
+          if (interfaceId) {
+            await window.rpc.networkManager.renewDhcpLease(interfaceId)
+            await this.getInterfaceStatus()
           }
           cb()
         } catch (ex) {
-          this.$vuntangle.toast.add(ex)
           Util.handleException(ex)
         }
       },
