@@ -219,11 +219,13 @@
       'wan.v4StaticPrefix': {
         immediate: true,
         handler(newVal) {
-          if (!newVal || newVal.value == null) {
+          if (!newVal) {
             const defaultItem = this.v4NetmaskList.find(item => item.value === 24)
             if (defaultItem) {
-              this.wan.v4StaticPrefix = defaultItem
+              this.wan.v4StaticPrefix = defaultItem.value
             }
+          } else if (newVal.value) {
+            this.wan.v4StaticPrefix = newVal.value
           }
         },
       },
