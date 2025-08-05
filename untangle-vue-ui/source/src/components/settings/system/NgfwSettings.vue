@@ -4,9 +4,6 @@
 <script>
   import { ApplianceSystem } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
-  // import appliances from '@/plugins/ut/ut-appliances'
-  // import api from '@/plugins/ut/ut-api'
-  // import util from '@/plugins/ut/ut-util'
 
   export default {
     components: { ApplianceSystem },
@@ -28,6 +25,3 @@
     },
   }
 </script>
-
-/** BoxSettings is coming from settingsMixin which is getting an full setting of appliances - need to impliment,
-currently assign it as networkSetting (for avioding errors) */
