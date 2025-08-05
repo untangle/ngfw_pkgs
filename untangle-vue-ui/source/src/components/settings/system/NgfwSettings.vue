@@ -1,11 +1,5 @@
 <template>
-  <appliance-system
-    :box-settings="systemSettings"
-    :support-access-enabled="true"
-    :show-refresh-settings="true"
-    :show-remote-support="true"
-    @save-web-ports="onSaveWebPorts"
-  />
+  <appliance-system :system-settings="systemSettings" :support-access-enabled="true" @save-web-ports="onSaveWebPorts" />
 </template>
 <script>
   import { ApplianceSystem } from 'vuntangle'
@@ -24,10 +18,6 @@
     created() {
       this.$store.dispatch('settings/getSystemSettings') // update current system setting from store store
     },
-    mounted() {
-      console.log('systemSettings', this.systemSettings)
-    },
-
     methods: {
       async onSaveWebPorts({ system, cb }) {
         this.$store.commit('SET_LOADER', true)

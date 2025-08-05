@@ -50,24 +50,7 @@ const actions = {
   /* get system settings configuration */
   async getSystemSettings({ commit }) {
     try {
-      // const data = await window.rpc.networkManager.getSystemSettingsV2()
-      const data = await {
-        'dynamicDnsServiceName': 'cloudflare',
-        'hostName': 'untangle',
-        'publicUrlPort': 443,
-        'javaClass': 'com.untangle.uvm.generic.SystemSettingsGeneric',
-        'httpPort': 80,
-        'dynamicDnsServiceEnabled': true,
-        'dynamicDnsServiceZone': 'myzone',
-        'httpsPort': 443,
-        'dynamicDnsServiceHostnames': 'myhostname',
-        'dynamicDnsServicePassword': 'passwd',
-        'publicUrlAddress': 'hostname.example.com',
-        'publicUrlMethod': 'address_and_port',
-        'domainName': 'example.com',
-        'dynamicDnsServiceUsername': 'MyUsername',
-        'dynamicDnsServiceWan': 'External',
-      }
+      const data = await window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
     } catch (err) {
       console.error('getSystemSettings error:', err)
@@ -88,7 +71,7 @@ const actions = {
   setSystemSettings({ dispatch }, systemSettings) {
     try {
       return new Promise(resolve => {
-        window.rpc.networkManager.setSystemSettingsV2(async ex => {
+        window.rpc.systemManager.setSystemSettingsV2(async ex => {
           if (Util.isDestroyed(this, systemSettings)) {
             return
           }
