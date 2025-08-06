@@ -76,8 +76,7 @@
         try {
           let interfaceId
           if (this.intfSetting?.device === device) interfaceId = this.intfSetting?.interfaceId
-          else interfaceId = this.interfaces.find(intf => intf.device === device)?.interfaceId
-          interfaceId = undefined
+          else interfaceId = this.interfaces?.find(intf => intf.device === device)?.interfaceId
           if (interfaceId) {
             await window.rpc.networkManager.renewDhcpLease(interfaceId)
             await this.getInterfaceStatus()
