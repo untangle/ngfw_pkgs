@@ -55,11 +55,6 @@
       if (this.device) {
         await this.getInterfaceStatus()
       }
-      // set the help context for this device type (e.g. interfaces_wwan)
-      const type = this.type || this.intfSetting?.type
-      if (type) {
-        this.$store.commit('SET_HELP_CONTEXT', `interfaces_${type.toLowerCase()}`)
-      }
     },
     methods: {
       // get the interface status
