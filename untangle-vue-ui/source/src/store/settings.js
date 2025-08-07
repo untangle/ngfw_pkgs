@@ -48,8 +48,11 @@ const actions = {
   },
 
   /* get system settings configuration */
-  async getSystemSettings({ commit }) {
+  async getSystemSettings({ state, commit }, refetch) {
     try {
+      if (state.systemSetting && !refetch) {
+        return
+      }
       const data = await window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
     } catch (err) {
@@ -59,7 +62,7 @@ const actions = {
   async setNetworkSettings({ commit }, settings) {
     try {
       await window.rpc.networkManager.setNetworkSettingsV2(settings)
-      vuntangle.toast.add('System settings saved successfully!')
+      vuntangle.toast.add('Network settings saved successfully!')
       const data = window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
@@ -70,26 +73,28 @@ const actions = {
   /* setSystemSettings will update system regarding configurations */
   setSystemSettings({ dispatch }, systemSettings) {
     try {
-      return new Promise(resolve => {
-        window.rpc.systemManager.setSystemSettingsV2(async ex => {
-          if (Util.isDestroyed(this, systemSettings)) {
-            return
-          }
+      const data = new Promise(resolve => {
+        window.rpc.systemManager.setSystemSettingsV2(async (ex, result) => {
           if (ex) {
             Util.handleException(ex)
             return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
           }
+
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({ success: false, message: result.message.slice(0, 100) })
+          }
           // fetch updated settings after successful save
-          await dispatch('getSystemSettings')
+          await dispatch('getSystemSettings', true)
           return resolve({ success: true })
         }, systemSettings)
       })
+      return data
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
   },
-
   /**
    * Persists the updated list of network interfaces to the backend using RPC.
    * This action sends a payload to the backend containing all network interfaces

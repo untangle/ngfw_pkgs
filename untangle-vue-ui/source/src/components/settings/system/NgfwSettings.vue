@@ -3,17 +3,15 @@
 </template>
 <script>
   import { ApplianceSystem } from 'vuntangle'
-  import settingsMixin from '../settingsMixin'
 
   export default {
     components: { ApplianceSystem },
-    mixins: [settingsMixin],
 
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
     },
     created() {
-      this.$store.dispatch('settings/getSystemSettings') // update current system setting from store store
+      this.$store.dispatch('settings/getSystemSettings', true) // update current system setting from store store
     },
     methods: {
       async onSaveWebPorts({ system, cb }) {
