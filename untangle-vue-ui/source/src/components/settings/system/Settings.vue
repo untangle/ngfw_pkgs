@@ -11,7 +11,7 @@
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
     },
     created() {
-      this.$store.dispatch('settings/getSystemSettings', true) // update current system setting from store store
+      this.$store.dispatch('settings/getSystemSettings', false) // update current system setting from store store
     },
     methods: {
       async onSaveWebPorts({ system, cb }) {
