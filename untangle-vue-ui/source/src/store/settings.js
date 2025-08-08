@@ -14,7 +14,7 @@ const getters = {
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
   interface: state => device => {
-    return state.networkSetting.interfaces.find(intf => intf.device === device)
+    return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
 }
 
@@ -35,8 +35,11 @@ const actions = {
       console.error('getInterfaces error:', err)
     }
   },
-  async getNetworkSettings({ commit }) {
+  async getNetworkSettings({ state, commit }, refetch) {
     try {
+      if (state.networkSetting && !refetch) {
+        return
+      }
       const data = await window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
