@@ -127,6 +127,7 @@ const actions = {
       })
       return data
     } catch (err) {
+      Util.handleException(err)
       console.error('setInterfaces error:', err)
     }
   },
