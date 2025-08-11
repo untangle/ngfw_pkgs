@@ -35,7 +35,7 @@ const actions = {
       const data = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
       commit('SET_INTERFACES', await data)
     } catch (err) {
-      console.error('getInterfaces error:', err)
+      Util.handleException(err)
     }
   },
   async getNetworkSettings({ commit }) {
@@ -43,7 +43,7 @@ const actions = {
       const data = await window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
-      console.error('getNetworkSettings error:', err)
+      Util.handleException(err)
     }
   },
 
@@ -56,7 +56,7 @@ const actions = {
       const data = await window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
     } catch (err) {
-      console.error('getSystemSettings error:', err)
+      Util.handleException(err)
     }
   },
   async setNetworkSettings({ commit }, settings) {
@@ -128,7 +128,6 @@ const actions = {
       return data
     } catch (err) {
       Util.handleException(err)
-      console.error('setInterfaces error:', err)
     }
   },
 
