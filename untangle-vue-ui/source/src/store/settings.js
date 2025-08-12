@@ -35,6 +35,7 @@ const actions = {
       console.error('getInterfaces error:', err)
     }
   },
+
   async getNetworkSettings({ state, commit }, refetch) {
     try {
       if (state.networkSetting && !refetch) {
@@ -46,16 +47,6 @@ const actions = {
       console.error('getNetworkSettings error:', err)
     }
   },
-  async setNetworkSettings({ commit }, settings) {
-    try {
-      await window.rpc.networkManager.setNetworkSettingsV2(settings)
-      vuntangle.toast.add('Network settings saved successfully!')
-      const data = window.rpc.networkManager.getNetworkSettingsV2()
-      commit('SET_NETWORK_SETTINGS', data)
-    } catch (err) {
-      Util.handleException(err)
-    }
-  },
 
   /**
    * Persists the updated list of network interfaces to the backend using RPC.
@@ -64,12 +55,9 @@ const actions = {
    * and response objects with error codes. On success, it commits the updated interfaces
    * to the Vuex state.
    */
-  setNetworkSettingV2({ commit }, interfaces) {
+  setNetworkSettingV2({ dispatch }, payload) {
     try {
-      const payload = {
-        interfaces,
-        javaClass: 'com.untangle.uvm.network.generic.NetworkSettingsGeneric',
-      }
+      payload.javaClass = 'com.untangle.uvm.network.generic.NetworkSettingsGeneric'
       const data = new Promise(resolve => {
         window.rpc.networkManager.setNetworkSettingsV2((ex, result) => {
           if (ex) {
@@ -83,7 +71,7 @@ const actions = {
               message: result.message.slice(0, 100),
             })
           }
-          commit('SET_INTERFACES', interfaces)
+          dispatch('getNetworkSettings', true)
           return resolve({ success: true })
         }, payload)
       })
@@ -110,15 +98,12 @@ const actions = {
       interfaces.push(intf)
     }
     // Save updated interface list
-    return await dispatch('setNetworkSettingV2', interfaces)
+    return await dispatch('setNetworkSettingV2', { interfaces })
   },
-  // update all interfaces
 
+  // update all interfaces
   async setInterfaces({ state }, interfaces) {
     try {
-      if (Util.isDestroyed(this, interfaces)) {
-        return
-      }
       const settings = state.networkSetting
       settings.interfaces.list = interfaces
       const vlanInterfaces = settings.interfaces.filter(intf => intf.isVlanInterface)
@@ -138,6 +123,7 @@ const actions = {
       Util.handleException(ex)
     }
   },
+
   /* Delete selected Interface and update all interfaces */
   deleteInterface({ state, dispatch }, intf) {
     try {
@@ -152,15 +138,12 @@ const actions = {
       networkSettings.interfaces = interfaces
       return new Promise(resolve => {
         window.rpc.networkManager.setNetworkSettingsV2(async ex => {
-          if (Util.isDestroyed(this, networkSettings)) {
-            return
-          }
           if (ex) {
             Util.handleException(ex)
             return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
           }
           // force a full settings load
-          await Promise.allSettled([dispatch('getNetworkSettings')])
+          await Promise.allSettled([dispatch('getNetworkSettings', true)])
           return resolve({ success: true })
         }, networkSettings)
       })

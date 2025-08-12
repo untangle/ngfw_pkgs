@@ -1,14 +1,27 @@
 <template>
   <v-card flat class="ma-0 text--secondary">
-    <h4 v-if="!affectedChildInterfaces.length" v-html="$t('delete_interface_confirm', [intf.name])" />
+    <h4 v-if="!affectedInterfaces.length" v-html="$t('delete_interface_confirm', [intf.name])" />
+
+    <!-- bridged interfaces -->
+    <div v-if="affectedInterfaces.length" class="mb-4">
+      <p class="ma-0 font-weight-medium">
+        {{ $t('following_interfaces_have_this_as_bridged_to') }}
+      </p>
+      <ul>
+        <li v-for="iface in affectedInterfaces" :key="iface">
+          <span v-html="$t('interface_is_bridged_to', [iface, intf.name])" />
+        </li>
+      </ul>
+    </div>
   </v-card>
 </template>
 <script>
   export default {
     props: {
       intf: { type: Object, default: () => null },
-      affectedChildInterfaces: { type: Array, default: () => [] },
+      affectedInterfaces: { type: Array, default: () => [] },
     },
+
     methods: {
       async action() {
         this.$emit('progress-show')

@@ -54,8 +54,7 @@
         this.$store.commit('SET_LOADER', true)
         this.interfacesStatus = await new Promise((resolve, reject) =>
           window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
-        )
-        this.$store.commit('SET_LOADER', false)
+        ).finally(() => this.$store.commit('SET_LOADER', false))
       },
 
       /**
@@ -127,10 +126,9 @@
         callback?.(this.wirelessLogs)
       },
 
-      onRefresh() {
+      async onRefresh() {
         this.$store.commit('SET_LOADER', true)
-        this.$store.dispatch('settings/getInterfaces')
-        this.$store.commit('SET_LOADER', false)
+        await this.$store.dispatch('settings/getInterfaces').finally(() => this.$store.commit('SET_LOADER', false))
         this.getInterfacesStatus()
       },
 
