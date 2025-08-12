@@ -124,7 +124,7 @@
           // push changes via store actions
           this.$store.commit('SET_LOADER', true)
           this.isSaving = true
-          // Save interface settings by updating the current interface- newSettings
+          // Save interface settings by updating the current/new interface- newSettings
           const resultIntf = await this.$store.dispatch('settings/setInterface', newSettings)
           if (resultIntf?.success) {
             this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
