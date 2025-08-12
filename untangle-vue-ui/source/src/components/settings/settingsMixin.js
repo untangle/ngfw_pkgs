@@ -1,6 +1,8 @@
 import cloneDeep from 'lodash/cloneDeep'
 import isEqual from 'lodash/isEqual'
 
+let reloaded = false
+
 export default {
   props: {
     settings: { type: [Object, Array], default: null },
@@ -51,5 +53,16 @@ export default {
     onUndo() {
       this.settingsCopy = cloneDeep(this.settings)
     },
+  },
+
+  /**
+   * Lifecycle hook to detect browser reload.
+   * If a reload is detected, calls the `onBrowserRefresh` method.
+   */
+  beforeMount() {
+    if (!reloaded) {
+      reloaded = true
+      this.onBrowserRefresh?.()
+    }
   },
 }

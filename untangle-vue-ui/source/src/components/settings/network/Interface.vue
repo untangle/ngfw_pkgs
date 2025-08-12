@@ -4,6 +4,7 @@
     :interfaces-status="interfacesStatus"
     :features="features"
     @refresh="onRefresh"
+    @refresh-status="onInterfaceStatusRefresh"
     @add-interface="onAddInterface"
     @edit-interface="onEditInterface"
     @delete-interface="onDelete"
@@ -13,12 +14,13 @@
 </template>
 <script>
   import { Interfaces } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
   import interfaceMixin from './interfaceMixin'
   import Rpc from '@/util/Rpc'
 
   export default {
     components: { Interfaces },
-    mixins: [interfaceMixin],
+    mixins: [interfaceMixin, settingsMixin],
     data: () => ({
       // all interfaces status, async fetched
       interfacesStatus: undefined,
@@ -34,13 +36,13 @@
 
     computed: {
       // interfaces filered and grouped (by category)
-      interfaces() {
-        return this.$store.getters['settings/networkSetting'].interfaces
+      interfaces({ $store }) {
+        return $store.getters['settings/networkSetting'].interfaces
       },
     },
 
     created() {
-      this.$store.dispatch('settings/getNetworkSettings') // update interfaces in the store
+      this.$store.dispatch('settings/getNetworkSettings')
     },
 
     mounted() {
@@ -49,10 +51,19 @@
 
     methods: {
       async getInterfacesStatus() {
-        const intfStatusList = await window.rpc.networkManager.getAllInterfacesStatusV2()
-        this.interfacesStatus = intfStatusList
+        this.$store.commit('SET_LOADER', true)
+        this.interfacesStatus = await new Promise((resolve, reject) =>
+          window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
+        ).finally(() => this.$store.commit('SET_LOADER', false))
       },
 
+      /**
+       * Fetches ARP entries for the given symbolic device.
+       * If no device is provided, clears the arpEntriesData.
+       *
+       * @param {string} symbolicDev - The symbolic device identifier.
+       * @param {function} callback - Optional callback to handle the result.
+       */
       async getInterfaceArp(symbolicDev, callback) {
         if (!symbolicDev) {
           this.arpEntriesData = []
@@ -104,6 +115,7 @@
         this.arpEntriesData = connections
         callback?.(connections) // Send back result
       },
+
       async setWirelessIntfLogs(intfc, callback) {
         if (intfc.type === 'WIFI') {
           this.wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.device)
@@ -114,11 +126,24 @@
         callback?.(this.wirelessLogs)
       },
 
-      onRefresh() {
+      async onRefresh() {
         this.$store.commit('SET_LOADER', true)
-        this.$store.dispatch('settings/getInterfaces')
+        await this.$store.dispatch('settings/getInterfaces').finally(() => this.$store.commit('SET_LOADER', false))
         this.getInterfacesStatus()
-        this.$store.commit('SET_LOADER', false)
+      },
+
+      async onInterfaceStatusRefresh(device) {
+        if (!device) return
+
+        const result = await new Promise((resolve, reject) => {
+          window.rpc.networkManager.getInterfaceStatusV2((res, err) => (err ? reject(err) : resolve(res)), device)
+        })
+        this.interfacesStatus = this.interfacesStatus.map(intf => {
+          if (intf.device === device) {
+            return { ...intf, ...result }
+          }
+          return intf
+        })
       },
 
       /**
@@ -149,6 +174,14 @@
         if (intf) {
           this.deleteInterfaceHandler(intf)
         }
+      },
+
+      /**
+       * Optional hook triggered on browser refresh.
+       * Fetches updated network settings and updates the store.
+       */
+      onBrowserRefresh() {
+        this.$store.dispatch('settings/getNetworkSettings', true)
       },
     },
   }
