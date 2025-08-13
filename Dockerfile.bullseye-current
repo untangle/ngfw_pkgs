@@ -1,0 +1,30 @@
+# This image template is specific for the ngfw-UI project
+
+FROM untangleinc/ngfw:bullseye-build-multiarch
+
+# Add official Debian mirror for fallback packages
+RUN echo "deb http://deb.debian.org/debian bullseye main non-free" >> /etc/apt/sources.list
+
+# Install dependencies for nvm and build tools
+RUN apt-get update && \
+    apt-get install -y curl ca-certificates build-essential && \
+    apt-get clean
+
+# Set environment variables for nvm and Node.js
+ENV NVM_DIR=/root/.nvm
+ENV NODE_VERSION=20.19.2
+ENV PATH="$NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH"
+
+# Install nvm, Node.js, enable corepack (for Yarn), install Yarn, create symlinks
+RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash && \
+    . "$NVM_DIR/nvm.sh" && \
+    nvm install $NODE_VERSION && \
+    nvm use $NODE_VERSION && \
+    nvm alias default $NODE_VERSION && \
+    npm install -g corepack && \
+    corepack enable && \
+    yarn set version stable && \
+    ln -s "$(which yarn)" /usr/local/bin/yarn && \
+    ln -s "$(which yarn)" /usr/local/bin/yarnpkg
+
+

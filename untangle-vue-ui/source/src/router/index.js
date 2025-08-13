@@ -6,7 +6,7 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
-import vuntangle from '@/plugins/vuntangle'
+import Util from '@/util/setupUtil'
 
 /**
  * Override .push() to catch navigation failures.
@@ -54,43 +54,53 @@ const router = new VueRouter({
   base: process.env.VUE_APP_BASE_URL,
   routes,
 })
+
+/**
+ * Vue Router navigation guard to initialize shared JSON-RPC client.
+ *
+ * This ensures the `window.rpc` is only initialized once per session,
+ * even when Vue is loaded inside an iframe that reloads on tab changes.
+ * The client is reused across iframe loads to prevent redundant `getNonce` or `listMethods` calls.
+ */
 router.beforeEach((to, from, next) => {
-  /**
-   * On every iframe URL change, the iframe's window context is reset,
-   * causing `window.rpc` to become null and triggering the JSONRpcClient constructor.
-   * As a result, methods like `nonce` and `listMethod` are called repeatedly.
-   *
-   * To prevent this, when the app is accessed via an iframe, the `rpc` instance is retrieved
-   * from the parent ExtJS tab (`rpcOwner`) and assigned to the current window.
-   * This ensures the JSONRpcClient is not reinitialized on every load.
-   *
-   * Local or console-based execution flows remain unaffected.
-   */
-  // const rpcOwner = window.top || window.parent
-  // if (rpcOwner.rpc && !window.rpc) window.rpc = rpcOwner.rpc
-  if (!window.rpc) {
-    try {
-      window.rpc = new window.JSONRpcClient('/admin/JSON-RPC')
-      if (window.rpc) {
-        const startUpInfo = window.rpc.UvmContext.getWebuiStartupInfo()
-        Object.assign(window.rpc, startUpInfo)
-        if (!from.name && to.name?.includes('setup-') && to.name !== 'setup-wizard') {
-          next({ name: 'wizard' })
-        } else if (to.name === 'login') next({ name: 'home' })
-        else {
-          next()
-        }
-      }
-    } catch (ex) {
-      vuntangle.toast.add(ex)
-      if (to.name === 'setup') {
-        return next({ name: 'wizard' })
-      }
-      next()
+  try {
+    const rpcOwner = window.top || window.parent
+
+    // Reuse shared RPC client if available from parent
+    if (rpcOwner?.rpc && !window.rpc) {
+      window.rpc = rpcOwner.rpc
     }
-  } else if (to.name === 'login') {
-    next({ name: 'home' })
-  } else next()
+
+    // Initialize RPC client if not already set
+    if (!window.rpc) {
+      const rpcClient = new window.JSONRpcClient('/admin/JSON-RPC')
+      const startupInfo = rpcClient?.UvmContext?.getWebuiStartupInfo()
+
+      if (startupInfo && typeof startupInfo === 'object') {
+        Object.assign(rpcClient, startupInfo)
+      }
+
+      window.rpc = rpcClient
+    }
+
+    // Redirect logic
+    if (!from?.name && to?.name?.includes('setup-') && to?.name !== 'setup-wizard') {
+      return next({ name: 'wizard' })
+    }
+
+    if (to?.name === 'login') {
+      return next({ name: 'home' })
+    }
+
+    next()
+  } catch (error) {
+    Util.handleException(error)
+    // Fallback redirect on initialization failure
+    if (to?.name === 'setup') {
+      return next({ name: 'wizard' })
+    }
+    next()
+  }
 })
 
 export default router

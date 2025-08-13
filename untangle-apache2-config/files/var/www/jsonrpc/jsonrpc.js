@@ -283,11 +283,11 @@ function toJSON(o)
         markerHead = o;
       }
 
-      if (o.constructor === Date)
+      if (Object.prototype.toString.call(o) === '[object Date]')
       {
         return '{javaClass: "java.util.Date", time: ' + o.valueOf() + '}';
       }
-      else if (o.constructor === Array)
+      else if (Array.isArray(o))
       {
         for (i = 0; i < o.length; i++)
         {
