@@ -48,7 +48,6 @@ const actions = {
         return
       }
       const data = await window.rpc.networkManager.getNetworkSettingsV2()
-      console.log('data', data)
       commit('SET_NETWORK_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
