@@ -8,6 +8,7 @@ import {
   limitExceedActions,
 } from 'vuntangle/constants'
 
+import { cloneDeep } from 'lodash'
 import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
@@ -247,6 +248,94 @@ const util = {
     }
 
     return BigInt(0)
+  },
+
+  /**
+   * Fetch list of interfaces for SRC_INTF autocompleteItems
+   * This is called a lot of times when initializing condition sets for rules.
+   * Previously we loaded network settings for each call.  Now we do it once and
+   * only refresh after 30 seconds since the last build.
+   */
+  baseInterfaceList: null,
+  baseInterfaceMap: null,
+  interfaceLastUpdated: null,
+  interfaceMaxAge: 30 * 1000,
+  fetchInterfaceData() {
+    const currentTime = new Date().getTime()
+    if (
+      this.baseInterfaceList === null ||
+      this.baseInterfaceMap === null ||
+      this.interfaceLastUpdated === null ||
+      this.interfaceLastUpdated + this.interfaceMaxAge < currentTime
+    ) {
+      this.interfaceLastUpdated = currentTime
+      const networkSettings = window.rpc.networkManager.getNetworkSettings()
+
+      const data = []
+      const map = {}
+
+      // Physical interfaces
+      networkSettings.interfaces.list.forEach(intf => {
+        const key = intf.interfaceId.toString()
+        const label = intf.name
+        const item = { value: key, text: label }
+        data.push(item)
+        map[key] = label
+      })
+
+      // Virtual interfaces
+      networkSettings.virtualInterfaces.list.forEach(intf => {
+        const key = intf.interfaceId.toString()
+        const label = intf.name
+        const item = { value: key, text: label }
+        data.push(item)
+        map[key] = label
+      })
+
+      // Static IPsec entry
+      const ipsecItem = { value: 'ipsec', text: i18n.t('ipsec_vpn') }
+      data.push(ipsecItem)
+      map.ipsec = ipsecItem.text
+
+      // Store base list and map
+      this.baseInterfaceList = data
+      this.baseInterfaceMap = map
+    }
+  },
+
+  getInterfaceList(wanMatchers, anyMatcher) {
+    try {
+      this.fetchInterfaceData()
+      const interfaces = cloneDeep(this.baseInterfaceList)
+
+      if (wanMatchers) {
+        interfaces.unshift({ value: 'wan', text: i18n.t('any_wan') })
+        interfaces.unshift({ value: 'non_wan', text: i18n.t('any_non_wan') })
+      }
+      if (anyMatcher) {
+        interfaces.unshift({ value: 'any', text: i18n.t('any') })
+      }
+
+      return interfaces
+    } catch (error) {}
+  },
+
+  getInterfaceMap(wanMatchers, anyMatcher) {
+    try {
+      this.fetchInterfaceData()
+      const map = { ...this.baseInterfaceMap }
+
+      map.ipsec = 'ipsec_vpn'
+      if (wanMatchers) {
+        map.wan = 'any_wan'
+        map.non_wan = 'any_non_wan'
+      }
+      if (anyMatcher) {
+        map.any = 'any'
+      }
+
+      return map
+    } catch (error) {}
   },
 }
 
