@@ -21,8 +21,6 @@ const mutations = {
   RESET: state => Object.assign(state, getDefaultState()),
   SET_FETCHING: (state, value) => (state.fetching = value),
   SET_DATA: (state, value) => (state.data = value),
-  /// changes after the
-  SET_HELP_CONTEXT: (state, value) => (state.helpContext = value),
   SET_LOADER: (state, value) => (state.pageLoad = value),
   SET_MINI_DRAWER: (state, value) => {
     state.miniDrawer = value

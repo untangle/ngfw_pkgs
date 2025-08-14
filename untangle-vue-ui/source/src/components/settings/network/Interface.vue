@@ -29,7 +29,6 @@
       features: {
         hasWireguard: false,
         hasOpenVpn: false,
-        hasBridged: true,
         hasStatusTable: true,
       },
     }),
