@@ -9,7 +9,7 @@ const getDefaultState = () => ({
     interfaces: [],
   },
   systemSetting: null,
-  enabledInterfaces: [],
+  enabledWanInterfaces: [],
 })
 
 const getters = {
@@ -19,7 +19,7 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
-  enabledInterfaces: state => state.enabledInterfaces,
+  enabledWanInterfaces: state => state.enabledWanInterfaces,
 }
 
 const mutations = {
@@ -29,7 +29,7 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
-  SET_ENABLED_INTERFACES: (state, value) => set(state, 'enabledInterfaces', value),
+  SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
 }
 
 const actions = {
@@ -81,7 +81,7 @@ const actions = {
           enabledWanname.push(intf.name)
         }
       })
-      commit('SET_ENABLED_INTERFACES', enabledWanname)
+      commit('SET_ENABLED_WAN_INTERFACES', enabledWanname)
       return { success: true, message: null, enabledWanname } //  success
     } catch (err) {
       Util.handleException(err)
