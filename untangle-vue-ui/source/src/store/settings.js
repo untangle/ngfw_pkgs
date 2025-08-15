@@ -9,6 +9,7 @@ const getDefaultState = () => ({
     interfaces: [],
   },
   systemSetting: null,
+  enabledWanInterfaces: [],
 })
 
 const getters = {
@@ -18,6 +19,7 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  enabledWanInterfaces: state => state.enabledWanInterfaces,
 }
 
 const mutations = {
@@ -27,6 +29,7 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
+  SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
 }
 
 const actions = {
@@ -52,13 +55,34 @@ const actions = {
   },
 
   /* get system settings configuration */
-  async getSystemSettings({ state, commit }, refetch) {
+  getSystemSettings({ state, commit }, refetch) {
     try {
       if (state.systemSetting && !refetch) {
         return
       }
-      const data = await window.rpc.systemManager.getSystemSettingsV2()
+      const data = window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /*
+   * get list of all enabled interfaces
+   * it is used in the hostname for listing interface list
+   */
+  async getEnabledInterfaces({ commit }) {
+    try {
+      const enabledWanname = ['Default']
+      const interfaces = await window.rpc.networkManager.getEnabledInterfaces()
+      interfaces.list.forEach(intf => {
+        if (intf.isWan) {
+          enabledWanname.push(intf.name)
+        }
+      })
+      commit('SET_ENABLED_WAN_INTERFACES', enabledWanname)
+      return { success: true, message: null, enabledWanname } //  success
     } catch (err) {
       Util.handleException(err)
     }
