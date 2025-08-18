@@ -1,5 +1,4 @@
 import { set } from 'vue'
-import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
 
@@ -153,17 +152,15 @@ const actions = {
    * - then save the entire set of interfaces
    */
   async setInterface({ state, dispatch }, intf) {
-    const networkSettings = cloneDeep(state.networkSetting)
-    const interfaces = cloneDeep(state.networkSetting.interfaces)
+    const networkSettings = state.networkSetting
     // Find the interface to update
-    const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
+    const updatedInterface = networkSettings.interfaces.find(i => i.interfaceId === intf.interfaceId)
     // apply changes made to the interface
     if (updatedInterface) {
       Object.assign(updatedInterface, { ...intf })
     } else {
-      interfaces.push(intf)
+      networkSettings.interfaces.push(intf)
     }
-    networkSettings.interfaces = interfaces
     // Save updated interface list
     return await dispatch('setNetworkSettingV2', networkSettings)
   },
@@ -194,15 +191,13 @@ const actions = {
   /* Delete selected Interface and update all interfaces */
   async deleteInterface({ state, dispatch }, intf) {
     try {
-      const networkSettings = cloneDeep(state.networkSetting)
-      const interfaces = cloneDeep(state.networkSetting.interfaces)
-      const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
+      const networkSettings = state.networkSetting
+      const index = networkSettings.interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
       /* Selected interfaces will be removed from the list of interfaces */
       if (index >= 0) {
-        interfaces.splice(index, 1)
+        networkSettings.interfaces.splice(index, 1)
       }
-      networkSettings.interfaces = interfaces
       return await dispatch('setNetworkSettingV2', networkSettings)
     } catch (err) {
       Util.handleException(err)
