@@ -153,6 +153,7 @@ const actions = {
    * - then save the entire set of interfaces
    */
   async setInterface({ state, dispatch }, intf) {
+    const networkSettings = cloneDeep(state.networkSetting)
     const interfaces = cloneDeep(state.networkSetting.interfaces)
     // Find the interface to update
     const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
@@ -162,8 +163,9 @@ const actions = {
     } else {
       interfaces.push(intf)
     }
+    networkSettings.interfaces = interfaces
     // Save updated interface list
-    return await dispatch('setNetworkSettingV2', { interfaces })
+    return await dispatch('setNetworkSettingV2', networkSettings)
   },
 
   // update all interfaces
@@ -192,6 +194,7 @@ const actions = {
   /* Delete selected Interface and update all interfaces */
   async deleteInterface({ state, dispatch }, intf) {
     try {
+      const networkSettings = cloneDeep(state.networkSetting)
       const interfaces = cloneDeep(state.networkSetting.interfaces)
       const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
@@ -199,7 +202,8 @@ const actions = {
       if (index >= 0) {
         interfaces.splice(index, 1)
       }
-      return await dispatch('setNetworkSettingV2', { interfaces })
+      networkSettings.interfaces = interfaces
+      return await dispatch('setNetworkSettingV2', networkSettings)
     } catch (err) {
       Util.handleException(err)
       return false
