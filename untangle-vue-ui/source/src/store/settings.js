@@ -1,4 +1,5 @@
 import { set } from 'vue'
+import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
 
@@ -152,7 +153,7 @@ const actions = {
    * - then save the entire set of interfaces
    */
   async setInterface({ state, dispatch }, intf) {
-    const networkSettings = state.networkSetting
+    const networkSettings = cloneDeep(state.networkSetting)
     // Find the interface to update
     const updatedInterface = networkSettings.interfaces.find(i => i.interfaceId === intf.interfaceId)
     // apply changes made to the interface
@@ -191,7 +192,7 @@ const actions = {
   /* Delete selected Interface and update all interfaces */
   async deleteInterface({ state, dispatch }, intf) {
     try {
-      const networkSettings = state.networkSetting
+      const networkSettings = cloneDeep(state.networkSetting)
       const index = networkSettings.interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
       /* Selected interfaces will be removed from the list of interfaces */
