@@ -153,17 +153,17 @@ const actions = {
    * - then save the entire set of interfaces
    */
   async setInterface({ state, dispatch }, intf) {
-    const interfaces = cloneDeep(state.networkSetting.interfaces)
+    const networkSettings = cloneDeep(state.networkSetting)
     // Find the interface to update
-    const updatedInterface = interfaces.find(i => i.interfaceId === intf.interfaceId)
+    const updatedInterface = networkSettings.interfaces.find(i => i.interfaceId === intf.interfaceId)
     // apply changes made to the interface
     if (updatedInterface) {
       Object.assign(updatedInterface, { ...intf })
     } else {
-      interfaces.push(intf)
+      networkSettings.interfaces.push(intf)
     }
     // Save updated interface list
-    return await dispatch('setNetworkSettingV2', { interfaces })
+    return await dispatch('setNetworkSettingV2', networkSettings)
   },
 
   // update all interfaces
@@ -190,28 +190,16 @@ const actions = {
   },
 
   /* Delete selected Interface and update all interfaces */
-  deleteInterface({ state, dispatch }, intf) {
+  async deleteInterface({ state, dispatch }, intf) {
     try {
       const networkSettings = cloneDeep(state.networkSetting)
-      const interfaces = cloneDeep(state.networkSetting.interfaces)
-      const index = interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
+      const index = networkSettings.interfaces.findIndex(i => i.interfaceId === intf.interfaceId)
 
       /* Selected interfaces will be removed from the list of interfaces */
       if (index >= 0) {
-        interfaces.splice(index, 1)
+        networkSettings.interfaces.splice(index, 1)
       }
-      networkSettings.interfaces = interfaces
-      return new Promise(resolve => {
-        window.rpc.networkManager.setNetworkSettingsV2(async ex => {
-          if (ex) {
-            Util.handleException(ex)
-            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
-          }
-          // force a full settings load
-          await Promise.allSettled([dispatch('getNetworkSettings', true)])
-          return resolve({ success: true })
-        }, networkSettings)
-      })
+      return await dispatch('setNetworkSettingV2', networkSettings)
     } catch (err) {
       Util.handleException(err)
       return false
