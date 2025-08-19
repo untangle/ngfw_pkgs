@@ -17,7 +17,7 @@ import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.
 // system  \
 import About from '@/components/settings/system/NgfwAbout'
 import Settings from '@/components/settings/system/NgfwSettings.vue'
-import RulesList from '@/components/rules/RulesList.vue'
+import RulesList from '@/components/settings/rules/RulesList.vue'
 export default [
   {
     name: 'settings',

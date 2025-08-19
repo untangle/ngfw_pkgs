@@ -5,9 +5,7 @@ import vuntangle from '@/plugins/vuntangle'
 
 const getDefaultState = () => ({
   editCallback: null,
-  networkSetting: {
-    interfaces: [],
-  },
+  networkSetting: null,
 })
 
 const getters = {

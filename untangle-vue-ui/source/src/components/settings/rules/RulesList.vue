@@ -11,10 +11,13 @@
   import { get } from 'lodash'
   import cloneDeep from 'lodash/cloneDeep'
   import { RulesList } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
   import store from '@/store'
+  import util from '@/util/util'
 
   export default {
     components: { RulesList },
+    mixins: [settingsMixin],
 
     /**
      * Using provide/inject to pass extra data to rules list vuntangle component to avoid props drilling
@@ -91,23 +94,30 @@
         ruleConfigs.forEach(confName => {
           // For Network Settings Rules
           if (networkRules.includes(confName)) {
-            rules[confName] = get(networkSettings, confName.replace(/-/g, '_'), [])
+            rules[confName] = get(networkSettings, confName.replace(/-/g, '_')) || []
           }
         })
         return rules
       },
 
-      // the interfaces array as {text, value} used in select fields
-      interfaces: ({ $store }) => $store.getters['settings/getInterfaces'],
+      /**
+       * Returns the interfaces list based on the network settings and rule type
+       * @param {Object} vm - vue instance
+       * @param {Object} vm.networkSettings - appliance settings
+       * @param {String} vm.ruleType - type of the rule
+       * @returns {Array} - list of interfaces usable for select fields
+       */
+      interfaces: ({ networkSettings, ruleType }) => {
+        let interfaces = []
+        if (['port-forward', 'nat'].includes(ruleType)) {
+          interfaces = util.getInterfaceList(networkSettings, true, true)
+        }
+        return interfaces
+      },
     },
 
     created() {
-      this.ruleConfigs.forEach(confName => {
-        // For Network Settings Rules Fetch Network Settings
-        if (this.networkRules.includes(confName)) {
-          store.dispatch('settings/getNetworkSettings')
-        }
-      })
+      this.fetchSettings(false)
     },
 
     methods: {
@@ -116,12 +126,21 @@
        * Calls respective store dispatchers to re-fetch the rules based on their type
        */
       onRefresh() {
+        this.fetchSettings(true)
+      },
+
+      /**
+       * Fetches the settings and updates the store.
+       * If refetch is true, it forces a re-fetch of the settings.
+       * @param {boolean} refetch - Whether to force a re-fetch of the settings.
+       */
+      fetchSettings(refetch) {
         store.commit('SET_LOADER', true)
         Promise.all(
           this.ruleConfigs.map(async confName => {
             // For Network Settings Rules Refresh Network Settings
             if (this.networkRules.includes(confName)) {
-              await store.dispatch('settings/getNetworkSettings', true)
+              await store.dispatch('settings/getNetworkSettings', refetch)
             }
           }),
         ).finally(() => {
@@ -153,6 +172,13 @@
         ).finally(() => {
           store.commit('SET_LOADER', false)
         })
+      },
+
+      /**
+       * Optional hook triggered on browser refresh. refetches the settings.
+       */
+      onBrowserRefresh() {
+        this.fetchSettings(true)
       },
     },
   }
