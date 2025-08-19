@@ -16,7 +16,7 @@ import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
 import About from '@/components/settings/system/NgfwAbout'
-import Settings from '@/components/settings/system/NgfwSettings.vue'
+import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 export default [
   {
