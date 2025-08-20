@@ -93,7 +93,6 @@ router.beforeEach((to, from, next) => {
 
     next()
   } catch (error) {
-    console.error(error)
     // Fallback redirect on initialization failure
     if (to?.name === 'setup') {
       return next({ name: 'wizard' })
