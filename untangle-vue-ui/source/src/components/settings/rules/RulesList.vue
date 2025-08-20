@@ -33,7 +33,6 @@
      * $remoteData - provides data which is outside of the rules
      * $remoteData.interfaces
      *    - must be an array of interfaces usable for select fields: { text: 'interface_name', value: 'interface_id' }
-     * $features.hasRuleLogs - whether appliance supports Rule Logs introduced in 6.1 for access, filter & bypass rules
      *
      * $readOnly - wheather appliance is offline in ETM and rules cannot be edited but just listed
      */
@@ -42,9 +41,7 @@
         $remoteData: () => ({
           interfaces: this.interfaces,
         }),
-        $features: {
-          hasRuleLogs: true,
-        },
+        $features: {},
         $readOnly: false,
       }
     },
@@ -65,7 +62,7 @@
     },
 
     computed: {
-      // one of the 7 rule types coming from route
+      // Rule type coming from route
       ruleType: ({ $route }) => $route.params.ruleType,
 
       // translated main title of the view based on the rule type
@@ -73,6 +70,7 @@
 
       description: ({ ruleType, $i18n }) => {
         if (ruleType === 'port-forward') return $i18n.t('port_forward_description')
+        if (ruleType === 'nat') return $i18n.t('nat_description')
       },
 
       // the network settings from the store
