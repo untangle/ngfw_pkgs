@@ -6,7 +6,6 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
-import Util from '@/util/setupUtil'
 
 /**
  * Override .push() to catch navigation failures.
@@ -94,7 +93,7 @@ router.beforeEach((to, from, next) => {
 
     next()
   } catch (error) {
-    Util.handleException(error)
+    console.error(error)
     // Fallback redirect on initialization failure
     if (to?.name === 'setup') {
       return next({ name: 'wizard' })
