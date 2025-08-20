@@ -54,8 +54,6 @@
     },
 
     async created() {
-      this.rpc = Util.setRpcJsonrpc('setup')
-      this.rpcForAdmin = Util.setRpcJsonrpc('admin')
       await this.initializeRpc()
       await this.onSyncSteps()
       await this.onAfterRender()
@@ -141,7 +139,6 @@
           }
           this.rpc.wizardSettings.completedStep = this.prevStep || null
           this.rpc.wizardSettings.wizardComplete = !this.nextStep
-
           this.rpcForAdmin?.jsonrpc?.UvmContext?.setWizardSettings?.((result, ex) => {
             if (ex) {
               Util.handleException(ex)
@@ -160,6 +157,8 @@
           // Only for local.
           return
         }
+        this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+
         this.networkSettings = await new Promise((resolve, reject) => {
           this?.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
             if (ex) {

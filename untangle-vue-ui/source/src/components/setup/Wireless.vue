@@ -70,16 +70,6 @@
               </ValidationProvider>
             </v-col>
           </v-row>
-
-          <!-- Buttons -->
-          <!-- <v-row class="justify-space-between mt-16 px-4">
-            <v-col cols="auto align-self-end">
-              <u-btn :small="false" @click="onClickBack">Back</u-btn>
-            </v-col>
-            <v-col cols="auto align-self-end">
-              <u-btn :small="false" @click="passes(onSave)">Next</u-btn>
-            </v-col>
-          </v-row> -->
         </v-container>
         <div class="d-flex justify-space-between pa-7" style="position: relative">
           <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>

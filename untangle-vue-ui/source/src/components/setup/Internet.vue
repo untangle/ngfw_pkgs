@@ -166,17 +166,6 @@
             <v-icon left>mdi-autorenew</v-icon> Run Setup Wizard Locally
           </u-btn>
         </div>
-
-        <v-dialog v-model="dialog" persistent max-width="290px">
-          <v-card>
-            <v-card-title>Warning!</v-card-title>
-            <v-card-text>No internal interfaces found. Do you want to continue the setup?</v-card-text>
-            <v-card-actions class="justify-end">
-              <v-btn class="green--text text--darken-1" text @click="onConfirm">Yes</v-btn>
-              <v-btn class="red--text text--darken-1" text @click="onCancel">No</v-btn>
-            </v-card-actions>
-          </v-card>
-        </v-dialog>
       </v-container>
     </div>
   </v-card>
@@ -232,9 +221,9 @@
     },
     created() {
       this.rpc = Util.setRpcJsonrpc('setup')
+      this.remote = this.rpc.remote
       this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-      this.remote = this.rpc.remote
     },
     mounted() {
       this.getSettings()
