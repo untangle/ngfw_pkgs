@@ -116,7 +116,7 @@
         })
       },
       getTitle() {
-        if (this.adminRpc.isCCHidden) {
+        if (this.adminRpc?.isCCHidden) {
           this.title = 'Automatic Upgrades'
         } else {
           this.title = 'Automatic Upgrades and ETM Dashboard Access'
