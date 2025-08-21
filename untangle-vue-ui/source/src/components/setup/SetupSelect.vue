@@ -1,6 +1,5 @@
 <template>
   <v-container class="text-center flex-grow-1">
-    <SetupLayout />
     <div class="d-flex flex-column align-center pt-16 pb-0 mb-16">
       <v-img :src="require('@/assets/BrandingLogo.png')" contain transition="false" max-height="80" class="my-4" />
       <br />
@@ -85,7 +84,6 @@
       return {
         resuming: false,
         remoteReachable: null,
-        showLicense: false,
         localesEn: locales || null,
         presentStepFromStore: null,
         dialog: false,
@@ -96,11 +94,6 @@
         rpc: null,
         isNonDefaultPassword: null,
         isResetWizardAuthentication: false,
-        warningDiaglog: false,
-        windowWidth: window.innerWidth,
-        adminRpc: null,
-        updatedSettings: null,
-        index: 0,
       }
     },
     computed: {
@@ -120,24 +113,13 @@
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
       if (rpcResponseForSetup) {
         this.rpc = rpcResponseForSetup
-      }
-
-      const setupRpc = Util.setRpcJsonrpc('setup')
-
-      this.remoteReachable = setupRpc.jsonrpc.SetupContext.getRemoteReachable()
-      const rpcResponseForAdmin = Util.setRpcJsonrpc('admin')
-
-      if (rpcResponseForAdmin) {
-        this.adminRpc = rpcResponseForAdmin
+        this.remoteReachable = this.rpc.jsonrpc.SetupContext.getRemoteReachable()
       }
     },
 
     methods: {
       ...mapActions('setup', ['setShowStep', 'setShowPreviousStep', 'setSetupContext']),
 
-      handleResize() {
-        this.windowWidth = window.innerWidth
-      },
       showDialog() {
         this.dialog = true
       },

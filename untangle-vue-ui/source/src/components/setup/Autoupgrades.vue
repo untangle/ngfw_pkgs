@@ -83,6 +83,7 @@
         description: '',
         title: '',
         isProcessing: false,
+        adminRpc: null,
       }
     },
     created() {
@@ -115,8 +116,7 @@
         })
       },
       getTitle() {
-        const rpc = Util.setRpcJsonrpc('admin')
-        if (rpc.isCCHidden) {
+        if (this.adminRpc?.isCCHidden) {
           this.title = 'Automatic Upgrades'
         } else {
           this.title = 'Automatic Upgrades and ETM Dashboard Access'
@@ -125,6 +125,7 @@
       getSettings() {
         try {
           const rpc = Util.setRpcJsonrpc('admin')
+          this.adminRpc = rpc
           const result = rpc.systemManager.getSettings()
           this.initialValues.autoUpgrade = result.autoUpgrade
           this.initialValues.cloudEnabled = result.cloudEnabled
@@ -149,7 +150,6 @@
         }
       },
       async onSave() {
-        const rpc = Util.setRpcJsonrpc('admin')
         // if no changes skip to next step
         if (
           this.initialValues.autoUpgrade === this.systemSettings.autoUpgrade &&
@@ -161,7 +161,7 @@
         if (this.systemSettings.cloudEnabled) {
           this.systemSettings.supportEnabled = true
         }
-        await rpc.systemManager.setSettings(this.systemSettings)
+        await this.adminRpc.systemManager.setSettings(this.systemSettings)
         this.nextPage()
       },
       async nextPage() {
