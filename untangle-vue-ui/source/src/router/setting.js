@@ -49,11 +49,6 @@ export default [
         // helpContext handled in InterfaceEdit component based on interface type
       },
       {
-        name: 'rule-list',
-        path: ':category/:ruleType',
-        component: RulesList,
-      },
-      {
         path: 'network/networkTabs',
         component: NetworkTabs,
         meta: { helpContext: 'dns' },
@@ -77,6 +72,11 @@ export default [
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
+      },
+      {
+        name: 'rule-list',
+        path: ':category/:ruleType',
+        component: RulesList,
       },
     ],
   },
