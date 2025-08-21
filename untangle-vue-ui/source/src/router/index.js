@@ -1,12 +1,10 @@
 import Vue from 'vue'
 import VueRouter, { isNavigationFailure, NavigationFailureType } from 'vue-router'
 import { UPageNotFound } from 'vuntangle'
-import setup from './setup'
 import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import Dashboard from '@/components/Dashboard/Main'
-import Util from '@/util/setupUtil'
 
 /**
  * Override .push() to catch navigation failures.
@@ -42,7 +40,7 @@ const baseRoutes = [
   },
 ]
 
-const routes = baseRoutes.concat(auth, setup, setting, wizard, {
+const routes = baseRoutes.concat(auth, setting, wizard, {
   path: '*',
   name: 'page-not-found',
   component: UPageNotFound,
@@ -94,7 +92,6 @@ router.beforeEach((to, from, next) => {
 
     next()
   } catch (error) {
-    Util.handleException(error)
     // Fallback redirect on initialization failure
     if (to?.name === 'setup') {
       return next({ name: 'wizard' })

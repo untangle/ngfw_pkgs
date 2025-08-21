@@ -145,17 +145,6 @@
         </v-card-actions>
       </v-card>
     </v-dialog>
-
-    <v-dialog v-model="warningDiaglog" max-width="400">
-      <v-card>
-        <v-card-title class="headline"></v-card-title>
-        <v-card-text></v-card-text>
-        <v-card-actions>
-          <v-spacer></v-spacer>
-          <v-btn color="primary" text @click="closeWarningDialog">OK</v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-dialog>
   </v-card>
 </template>
 
@@ -196,7 +185,6 @@
         loadingForChangeAddress: false,
         timeout: 30000,
         dialog: false,
-        warningDiaglog: false,
         isProcessing: false,
       }
     },

@@ -17,7 +17,6 @@ const state = () => ({
   },
   isLoading: false,
   loadingMessage: 'Loading...',
-  currentStepIndex: 0,
 })
 
 const getters = {
