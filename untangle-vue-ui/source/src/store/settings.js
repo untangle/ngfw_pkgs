@@ -2,6 +2,7 @@ import { set } from 'vue'
 import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
+import { EVENT_ACTIONS } from '@/constants/actions'
 
 const getDefaultState = () => ({
   editCallback: null,
@@ -102,6 +103,12 @@ const actions = {
           }
           // fetch updated settings after successful save
           await dispatch('getSystemSettings', true)
+          window.parent.postMessage(
+            {
+              action: EVENT_ACTIONS.REFRESH_SYSTEM_SETTINGS,
+            },
+            window.location.origin,
+          )
           return resolve({ success: true })
         }, systemSettings)
       })
@@ -135,6 +142,13 @@ const actions = {
             })
           }
           dispatch('getNetworkSettings', true)
+
+          window.parent.postMessage(
+            {
+              action: EVENT_ACTIONS.REFRESH_NETWORK_SETTINGS,
+            },
+            window.location.origin,
+          )
           return resolve({ success: true })
         }, payload)
       })
