@@ -10,7 +10,7 @@ import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
 // import Interfaces from '@/components/settings/network/Interfaces.vue'
 
 // routing
-import StaticRoutes from '@/components/settings/routing/NgfwStaticRoutes.vue'
+import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 
 // services
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
