@@ -41,14 +41,16 @@
         $remoteData: () => ({
           interfaces: this.interfaces,
         }),
-        $features: {},
+        $features: {
+          hasIpv6Support: true,
+        },
         $readOnly: false,
       }
     },
     data() {
       return {
         // Network rules config names
-        networkRules: ['port-forward-rules', 'nat-rules'],
+        networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules'],
         /**
          * a map between rule type (port-forward rules, nat rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -57,6 +59,8 @@
         rulesMap: {
           'port-forward': ['port-forward-rules'],
           'nat': ['nat-rules'],
+          'bypass': ['bypass-rules'],
+          'filter': ['filter-rules'],
         },
       }
     },
@@ -71,6 +75,8 @@
       description: ({ ruleType, $i18n }) => {
         if (ruleType === 'port-forward') return $i18n.t('port_forward_description')
         if (ruleType === 'nat') return $i18n.t('nat_description')
+        if (ruleType === 'bypass') return $i18n.t('bypass_description')
+        if (ruleType === 'filter') return $i18n.t('filter_description')
       },
 
       // the network settings from the store
@@ -107,7 +113,7 @@
        */
       interfaces: ({ networkSettings, ruleType }) => {
         let interfaces = []
-        if (['port-forward', 'nat'].includes(ruleType)) {
+        if (['port-forward', 'nat', 'bypass', 'filter'].includes(ruleType)) {
           interfaces = util.getInterfaceList(networkSettings, true, true)
         }
         return interfaces
