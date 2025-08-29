@@ -18,16 +18,22 @@
   import { cloneDeep } from 'lodash'
   import { StaticRoutes } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
+  import Rpc from '@/util/Rpc'
+  import Util from '@/util/setupUtil'
 
   export default {
     components: { StaticRoutes },
     mixins: [settingsMixin],
 
+    data() {
+      return {
+        currentRoutes: null,
+      }
+    },
+
     computed: {
       // Routes is coming from the networkSettings from store
       routes: ({ $store }) => $store.getters['settings/staticRoutes'],
-      // Get Current Route  from the Store
-      currentRoutes: ({ $store }) => $store.getters['settings/currentRoutes'],
       // Interfaces from store which is need to be shown in the Next Hop
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
       // the network settings from the store
@@ -36,17 +42,25 @@
 
     created() {
       this.fetchSettings(false)
-      this.fetchCurrentRoutes(false)
+      this.fetchCurrentRoutes()
     },
 
     methods: {
       /**
        * The fetchCurrentRoutes function is triggered every time the screen is displayed.
        * To refresh the current routes, we use the same function.
-       * Calling this function updates the store and retrieves the latest routes.
        */
-      async fetchCurrentRoutes(refetch) {
-        await this.$store.dispatch('settings/getCurrentRoutes', refetch)
+      async fetchCurrentRoutes() {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const data = await Rpc.asyncData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
+          this.currentRoutes = data
+          return data
+        } catch (err) {
+          Util.handleException(err)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
 
       /**
@@ -91,7 +105,6 @@
        */
       onBrowserRefresh() {
         this.fetchSettings(true)
-        this.fetchCurrentRoutes(true)
       },
     },
   }

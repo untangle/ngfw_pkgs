@@ -4,14 +4,12 @@ import Util from '@/util/setupUtil'
 import vuntangle from '@/plugins/vuntangle'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
-import Rpc from '@/util/Rpc'
 
 const getDefaultState = () => ({
   editCallback: null,
   networkSetting: null,
   systemSetting: null,
   enabledWanInterfaces: [],
-  currentRoutes: {},
 })
 
 const getters = {
@@ -23,7 +21,6 @@ const getters = {
   systemSetting: state => state.systemSetting || {},
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
-  currentRoutes: state => state.currentRoutes || {},
 }
 
 const mutations = {
@@ -34,9 +31,6 @@ const mutations = {
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
-  SET_CURRENT_ROUTES: (state, value) => {
-    state.currentRoutes = value
-  },
 }
 
 const actions = {
@@ -90,23 +84,6 @@ const actions = {
       })
       commit('SET_ENABLED_WAN_INTERFACES', enabledWanname)
       return { success: true, message: null, enabledWanname } //  success
-    } catch (err) {
-      Util.handleException(err)
-    }
-  },
-
-  /*
-   * get current route details
-   * it is used in Routes for showing Current routes Details along with static routes
-   */
-  async getCurrentRoutes({ state, commit }, refetch) {
-    try {
-      if (state.currentRoutes && !refetch) {
-        return
-      }
-      const data = await Rpc.asyncData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
-      commit('SET_CURRENT_ROUTES', data)
-      return data
     } catch (err) {
       Util.handleException(err)
     }
