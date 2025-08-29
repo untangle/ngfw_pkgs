@@ -19,7 +19,8 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
-  enabledWanInterfaces: state => state.enabledWanInterfaces,
+  enabledWanInterfaces: state => state.enabledWanInterfaces || [],
+  staticRoutes: state => state?.networkSetting?.staticRoutes || [],
 }
 
 const mutations = {
