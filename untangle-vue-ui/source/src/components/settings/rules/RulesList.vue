@@ -1,9 +1,21 @@
 <template>
-  <rules-list :title="title" :description="description" :rules="rules" :type="ruleType" @refresh="onRefresh">
+  <rules-list
+    :title="title"
+    :description="description"
+    :rules="rules"
+    :type="ruleType"
+    @refresh="onRefresh"
+    @rules-change="validateRulesAndSetWarning"
+  >
     <template #actions="{ updatedRules, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(updatedRules)">
         {{ $t('save') }}
       </u-btn>
+    </template>
+    <template #extra-fields>
+      <u-alert v-if="warning" :error="true" class="mb-1">
+        <span>{{ $t(warning) }}<br /></span>
+      </u-alert>
     </template>
   </rules-list>
 </template>
@@ -62,6 +74,8 @@
           'bypass': ['bypass-rules'],
           'filter': ['filter-rules'],
         },
+        // warning message to be shown in the extra-fields slot
+        warning: null,
       }
     },
 
@@ -117,6 +131,17 @@
           interfaces = util.getInterfaceList(networkSettings, true, true)
         }
         return interfaces
+      },
+    },
+
+    watch: {
+      rules: {
+        deep: true,
+        immediate: true,
+        // Whenever rules change, check for warnings
+        handler(newVal) {
+          this.validateRulesAndSetWarning(newVal)
+        },
       },
     },
 
@@ -176,6 +201,47 @@
         ).finally(() => {
           store.commit('SET_LOADER', false)
         })
+      },
+
+      /**
+       * Validates the given set of rules based on the current rule type,
+       * and updates the component's `warning` property if conflicts or
+       * unsafe configurations are detected.
+       *
+       * - For `bypass` rules: Checks if any SRC_ADDR overlaps with LAN IPs.
+       * - For other rule types: Different validations can be added as needed.
+       *
+       * @param {Object} rules - The rules object to validate, keyed by rule type
+       *                         (e.g., { 'bypass-rules': [...] }).
+       * @returns {void} - Updates `this.warning` in-place with a translated
+       *                   warning message string or `null` if no conflicts.
+       */
+      validateRulesAndSetWarning(rules) {
+        if (this.ruleType === 'bypass') {
+          const lanIpAddrs = util.getLanIpAddrs(this.networkSettings)
+
+          const hasConflict = rules?.['bypass-rules']?.some(rule =>
+            rule.conditions?.some(condition => {
+              if (condition?.type !== 'SRC_ADDR') return false
+
+              // Split by commas (can contain individual IPs or ranges)
+              const condValues = condition.value.split(',').map(v => v.trim())
+
+              return condValues.some(expr =>
+                lanIpAddrs.some(
+                  lanIp =>
+                    expr.includes('-')
+                      ? util.isIpInRange(lanIp, expr) // Range check
+                      : lanIp === expr, // Direct match
+                ),
+              )
+            }),
+          )
+
+          this.warning = hasConflict ? this.$t('bypass_rules_warning_lan_ip_addrs') : null
+        } else {
+          this.warning = null
+        }
       },
 
       /**

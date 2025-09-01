@@ -9,6 +9,7 @@ import {
 } from 'vuntangle/constants'
 
 import { cloneDeep } from 'lodash'
+import * as ipaddr from 'ipaddr.js'
 import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
@@ -320,6 +321,66 @@ const util = {
 
       return map
     } catch (error) {}
+  },
+
+  /**
+   * Gets the list of LAN IPv4 addresses from network settings
+   * @param {NetworkSettings} networkSettings
+   * @returns LAN IPv4 address List
+   */
+  getLanIpAddrs(networkSettings) {
+    const baseLans =
+      networkSettings?.interfaces
+        ?.filter(intf => !intf.isWan && intf.v4StaticAddress)
+        ?.map(intf => intf.v4StaticAddress) || []
+
+    const virtualLans =
+      networkSettings?.virtualInterfaces
+        ?.filter(intf => !intf.isWan && intf.v4StaticAddress)
+        ?.map(intf => intf.v4StaticAddress) || []
+    return [...baseLans, ...virtualLans]
+  },
+
+  /**
+   * Checks whether a given IP address lies within a specified inclusive range.
+   *
+   * @param {string} ip - The target IP address (e.g., "192.168.1.15").
+   * @param {string} range - The range in "start-end" format
+   *                         (e.g., "192.168.1.10-192.168.1.20").
+   * @returns {boolean} - True if the IP lies within the range, false otherwise.
+   *
+   * @example
+   * isIpInRange("192.168.1.15", "192.168.1.10-192.168.1.20") // => true
+   * isIpInRange("192.168.1.25", "192.168.1.10-192.168.1.20") // => false
+   */
+  isIpInRange(ip, range) {
+    const [startStr, endStr] = range.split('-').map(s => s.trim())
+    const start = ipaddr.parse(startStr).toByteArray()
+    const end = ipaddr.parse(endStr).toByteArray()
+    const target = ipaddr.parse(ip.trim()).toByteArray()
+
+    return this.compareBytes(target, start) >= 0 && this.compareBytes(target, end) <= 0
+  },
+
+  /**
+   * Compares two byte arrays (representing IPv4/IPv6 addresses).
+   *
+   * @param {number[]} a - First IP address as a byte array.
+   * @param {number[]} b - Second IP address as a byte array.
+   * @returns {number} - Returns:
+   *   -1 if `a < b`,
+   *    0 if `a === b`,
+   *    1 if `a > b`.
+   *
+   * @example
+   * compareBytes([192,168,1,1], [192,168,1,2]) // => -1
+   */
+  compareBytes(a, b) {
+    for (let i = 0; i < a.length; i++) {
+      if (a[i] < b[i]) return -1
+      if (a[i] > b[i]) return 1
+    }
+    return 0
   },
 }
 
