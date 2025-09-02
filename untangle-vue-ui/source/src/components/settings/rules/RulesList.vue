@@ -224,16 +224,19 @@
             rule.conditions?.some(condition => {
               if (condition?.type !== 'SRC_ADDR') return false
 
-              // Split by commas (can contain individual IPs or ranges)
+              // Split by commas (can contain IPs, ranges, or IP/mask format)
               const condValues = condition.value.split(',').map(v => v.trim())
 
               return condValues.some(expr =>
-                lanIpAddrs.some(
-                  lanIp =>
-                    expr.includes('-')
-                      ? util.isIpInRange(lanIp, expr) // Range check
-                      : lanIp === expr, // Direct match
-                ),
+                lanIpAddrs.some(lanIp => {
+                  if (expr.includes('-')) {
+                    return util.isIpInRange(lanIp, expr) // Range check
+                  } else {
+                    // Strip /mask if present (e.g., 192.168.56.186/24 → 192.168.56.186)
+                    const baseIp = expr.includes('/') ? expr.split('/')[0] : expr
+                    return lanIp === baseIp
+                  }
+                }),
               )
             }),
           )
