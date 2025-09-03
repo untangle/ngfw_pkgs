@@ -21,6 +21,7 @@ const getters = {
   systemSetting: state => state.systemSetting || {},
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
+  dnsSettings: state => state?.networkSetting?.dnsSettings || {},
 }
 
 const mutations = {
