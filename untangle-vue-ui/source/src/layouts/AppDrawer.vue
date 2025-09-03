@@ -125,6 +125,7 @@
               { name: 'interface', to: '/settings/network/interfaces' },
               { name: 'port_forward', to: '/settings/network/port-forward' },
               { name: 'nat', to: '/settings/network/nat' },
+              { name: 'bypass', to: '/settings/network/bypass' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
             ],
@@ -135,6 +136,13 @@
             active: false,
             match: '/settings/routing',
             items: [{ name: 'static_routes', to: '/settings/routing/routes' }],
+          },
+          {
+            name: 'firewall',
+            icon: 'mdi-shield-half-full',
+            active: false,
+            match: '/settings/firewall',
+            items: [{ name: 'filter', to: '/settings/firewall/filter' }],
           },
           {
             name: 'system',

@@ -1,9 +1,21 @@
 <template>
-  <rules-list :title="title" :description="description" :rules="rules" :type="ruleType" @refresh="onRefresh">
+  <rules-list
+    :title="title"
+    :description="description"
+    :rules="rules"
+    :type="ruleType"
+    @refresh="onRefresh"
+    @rules-change="validateRulesAndSetWarning"
+  >
     <template #actions="{ updatedRules, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(updatedRules)">
         {{ $t('save') }}
       </u-btn>
+    </template>
+    <template #extra-fields>
+      <u-alert v-if="warning" :error="true" class="mb-1">
+        <span>{{ $t(warning) }}<br /></span>
+      </u-alert>
     </template>
   </rules-list>
 </template>
@@ -41,14 +53,16 @@
         $remoteData: () => ({
           interfaces: this.interfaces,
         }),
-        $features: {},
+        $features: {
+          hasIpv6Support: true,
+        },
         $readOnly: false,
       }
     },
     data() {
       return {
         // Network rules config names
-        networkRules: ['port-forward-rules', 'nat-rules'],
+        networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules'],
         /**
          * a map between rule type (port-forward rules, nat rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -57,7 +71,11 @@
         rulesMap: {
           'port-forward': ['port-forward-rules'],
           'nat': ['nat-rules'],
+          'bypass': ['bypass-rules'],
+          'filter': ['filter-rules'],
         },
+        // warning message to be shown in the extra-fields slot
+        warning: null,
       }
     },
 
@@ -71,6 +89,8 @@
       description: ({ ruleType, $i18n }) => {
         if (ruleType === 'port-forward') return $i18n.t('port_forward_description')
         if (ruleType === 'nat') return $i18n.t('nat_description')
+        if (ruleType === 'bypass') return $i18n.t('bypass_description')
+        if (ruleType === 'filter') return $i18n.t('filter_description')
       },
 
       // the network settings from the store
@@ -107,10 +127,21 @@
        */
       interfaces: ({ networkSettings, ruleType }) => {
         let interfaces = []
-        if (['port-forward', 'nat'].includes(ruleType)) {
+        if (['port-forward', 'nat', 'bypass', 'filter'].includes(ruleType)) {
           interfaces = util.getInterfaceList(networkSettings, true, true)
         }
         return interfaces
+      },
+    },
+
+    watch: {
+      rules: {
+        deep: true,
+        immediate: true,
+        // Whenever rules change, check for warnings
+        handler(newVal) {
+          this.validateRulesAndSetWarning(newVal)
+        },
       },
     },
 
@@ -170,6 +201,50 @@
         ).finally(() => {
           store.commit('SET_LOADER', false)
         })
+      },
+
+      /**
+       * Validates the given set of rules based on the current rule type,
+       * and updates the component's `warning` property if conflicts or
+       * unsafe configurations are detected.
+       *
+       * - For `bypass` rules: Checks if any SRC_ADDR overlaps with LAN IPs.
+       * - For other rule types: Different validations can be added as needed.
+       *
+       * @param {Object} rules - The rules object to validate, keyed by rule type
+       *                         (e.g., { 'bypass-rules': [...] }).
+       * @returns {void} - Updates `this.warning` in-place with a translated
+       *                   warning message string or `null` if no conflicts.
+       */
+      validateRulesAndSetWarning(rules) {
+        if (this.ruleType === 'bypass') {
+          const lanIpAddrs = util.getLanIpAddrs(this.networkSettings)
+
+          const hasConflict = rules?.['bypass-rules']?.some(rule =>
+            rule.conditions?.some(condition => {
+              if (condition?.type !== 'SRC_ADDR') return false
+
+              // Split by commas (can contain IPs, ranges, or IP/mask format)
+              const condValues = condition.value.split(',').map(v => v.trim())
+
+              return condValues.some(expr =>
+                lanIpAddrs.some(lanIp => {
+                  if (expr.includes('-')) {
+                    return util.isIpInRange(lanIp, expr) // Range check
+                  } else {
+                    // Strip /mask if present (e.g., 192.168.56.186/24 → 192.168.56.186)
+                    const baseIp = expr.includes('/') ? expr.split('/')[0] : expr
+                    return lanIp === baseIp
+                  }
+                }),
+              )
+            }),
+          )
+
+          this.warning = hasConflict ? this.$t('bypass_rules_warning_lan_ip_addrs') : null
+        } else {
+          this.warning = null
+        }
       },
 
       /**
