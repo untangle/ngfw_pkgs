@@ -10,6 +10,7 @@
     @delete-interface="onDelete"
     @get-arp-data="getInterfaceArp"
     @set-wireless-intf-logs="setWirelessIntfLogs"
+    @set-remap-interfaces="setRemappedInterfaces"
   />
 </template>
 <script>
@@ -123,6 +124,20 @@
         }
 
         callback?.(this.wirelessLogs)
+      },
+
+      /** Updates the remapped interfaces and invokes a callback with the response. */
+      async setRemappedInterfaces(interfaces) {
+        this.$store.commit('SET_LOADER', true)
+        const response = await this.$store
+          .dispatch('settings/setInterfaces', interfaces)
+          .finally(() => this.$store.commit('SET_LOADER', false))
+        if (response?.success) {
+          this.$vuntangle.toast.add(this.$t('interfaces_remapped_successfully'))
+          this.getInterfacesStatus()
+        } else {
+          this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]))
+        }
       },
 
       async onRefresh() {
