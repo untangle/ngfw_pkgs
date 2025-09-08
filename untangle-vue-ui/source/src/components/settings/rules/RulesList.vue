@@ -17,6 +17,14 @@
         <span>{{ $t(warning) }}<br /></span>
       </u-alert>
     </template>
+    <template #rules-footer>
+      <div v-if="footer">
+        <v-divider class="my-2" />
+        <u-alert class="mb-1">
+          <span v-html="footer"></span>
+        </u-alert>
+      </div>
+    </template>
   </rules-list>
 </template>
 <script>
@@ -76,6 +84,7 @@
         },
         // warning message to be shown in the extra-fields slot
         warning: null,
+        footer: null,
       }
     },
 
@@ -95,6 +104,9 @@
 
       // the network settings from the store
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+
+      // the system settings from the store
+      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -147,6 +159,9 @@
 
     created() {
       this.fetchSettings(false)
+      if (this.ruleType === 'port-forward') {
+        this.setPortForwardWarnings()
+      }
     },
 
     methods: {
@@ -170,6 +185,9 @@
             // For Network Settings Rules Refresh Network Settings
             if (this.networkRules.includes(confName)) {
               await store.dispatch('settings/getNetworkSettings', refetch)
+            }
+            if (confName === 'port-forward-rules') {
+              await store.dispatch('settings/getSystemSettings', false)
             }
           }),
         ).finally(() => {
@@ -204,12 +222,71 @@
       },
 
       /**
+       * Sets the footer warnings for port forwarding based on current network interfaces
+       * and system settings. It checks each interface's status and generates appropriate
+       * warnings about reserved ports for HTTP and HTTPS access.
+       */
+      async setPortForwardWarnings() {
+        try {
+          const status = await new Promise((resolve, reject) =>
+            window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
+          )
+
+          const networkSettingsCopy = cloneDeep(this.networkSettings || {})
+          const interfaces = networkSettingsCopy.interfaces || []
+
+          const statusMap = (Array.isArray(status) ? status : []).reduce((map, s) => {
+            if (s?.interfaceId) map[s.interfaceId] = s
+            return map
+          }, {})
+
+          interfaces.forEach(iface => {
+            const intfStatus = statusMap[iface.interfaceId]
+            if (intfStatus) Object.assign(iface, intfStatus)
+          })
+
+          const rows = interfaces
+            .filter(intf => intf?.v4Address)
+            .map(intf => {
+              const https = this.$t('port_forward_https', [intf.v4Address, this.systemSettings?.httpsPort || ''])
+
+              let http = ''
+              if (!intf.wan) {
+                http = this.$t('port_forward_http', [intf.v4Address, this.systemSettings?.httpPort || ''])
+              }
+
+              if (intf.wan) {
+                const bridged = interfaces
+                  .filter(sub => sub.configType === 'BRIDGED' && sub.bridgedTo === intf.interfaceId)
+                  .map(subIntf =>
+                    this.$t('port_forward_http_on', [
+                      intf.v4Address,
+                      this.systemSettings?.httpPort || '',
+                      subIntf?.name || '',
+                    ]),
+                  )
+                  .join('<br/>')
+                http = bridged || http
+              }
+
+              return `<tr><td>${https}</td><td>${http || ''}</td></tr>`
+            })
+
+          this.footer = `
+            <p>${this.$t('port_forward_reserved_title')}</p>
+            <table style="width:100%; border-collapse: collapse;">
+              <tbody>${rows.join('')}</tbody>
+            </table>
+          `
+        } catch (err) {
+          this.footer = '' // safe fallback
+        }
+      },
+
+      /**
        * Validates the given set of rules based on the current rule type,
        * and updates the component's `warning` property if conflicts or
        * unsafe configurations are detected.
-       *
-       * - For `bypass` rules: Checks if any SRC_ADDR overlaps with LAN IPs.
-       * - For other rule types: Different validations can be added as needed.
        *
        * @param {Object} rules - The rules object to validate, keyed by rule type
        *                         (e.g., { 'bypass-rules': [...] }).
@@ -219,32 +296,48 @@
       validateRulesAndSetWarning(rules) {
         if (this.ruleType === 'bypass') {
           const lanIpAddrs = util.getLanIpAddrs(this.networkSettings)
-
-          const hasConflict = rules?.['bypass-rules']?.some(rule =>
-            rule.conditions?.some(condition => {
-              if (condition?.type !== 'SRC_ADDR') return false
-
-              // Split by commas (can contain IPs, ranges, or IP/mask format)
-              const condValues = condition.value.split(',').map(v => v.trim())
-
-              return condValues.some(expr =>
-                lanIpAddrs.some(lanIp => {
-                  if (expr.includes('-')) {
-                    return util.isIpInRange(lanIp, expr) // Range check
-                  } else {
-                    // Strip /mask if present (e.g., 192.168.56.186/24 → 192.168.56.186)
-                    const baseIp = expr.includes('/') ? expr.split('/')[0] : expr
-                    return lanIp === baseIp
-                  }
-                }),
-              )
-            }),
-          )
+          const hasConflict = this.isBypassRuleConflict(rules['bypass-rules'], lanIpAddrs)
 
           this.warning = hasConflict ? this.$t('bypass_rules_warning_lan_ip_addrs') : null
         } else {
           this.warning = null
         }
+      },
+
+      /**
+       * Checks if any bypass rule's SRC_ADDR condition conflicts with LAN IP addresses.
+       * A conflict occurs if a bypass rule would inadvertently include LAN IPs,
+       * potentially exposing internal traffic to bypass filtering.
+       *
+       * @param {Array} bypassRules - Array of bypass rule objects to check.
+       * @param {Array} lanIpAddrs - Array of LAN IP addresses as strings.
+       * @returns {boolean} - True if a conflict is found, false otherwise.
+       */
+      isBypassRuleConflict(bypassRules, lanIpAddrs) {
+        if (!bypassRules || bypassRules.length === 0 || !lanIpAddrs || lanIpAddrs.length === 0) {
+          return false
+        }
+
+        return bypassRules?.some(rule =>
+          rule.conditions?.some(condition => {
+            if (condition?.type !== 'SRC_ADDR') return false
+
+            // Split by commas (can contain IPs, ranges, or IP/mask format)
+            const condValues = condition.value.split(',').map(v => v.trim())
+
+            return condValues.some(expr =>
+              lanIpAddrs.some(lanIp => {
+                if (expr.includes('-')) {
+                  return util.isIpInRange(lanIp, expr) // Range check
+                } else {
+                  // Strip /mask if present (e.g., 192.168.56.186/24 → 192.168.56.186)
+                  const baseIp = expr.includes('/') ? expr.split('/')[0] : expr
+                  return lanIp === baseIp
+                }
+              }),
+            )
+          }),
+        )
       },
 
       /**
