@@ -18,9 +18,12 @@
       </u-alert>
     </template>
     <template #rules-footer>
-      <u-alert v-if="footer" class="mb-1">
-        <span v-html="footer"></span>
-      </u-alert>
+      <div v-if="footer">
+        <v-divider class="my-2" />
+        <u-alert class="mb-1">
+          <span v-html="footer"></span>
+        </u-alert>
+      </div>
     </template>
   </rules-list>
 </template>
@@ -102,6 +105,9 @@
       // the network settings from the store
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
 
+      // the system settings from the store
+      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
 
@@ -180,6 +186,9 @@
             if (this.networkRules.includes(confName)) {
               await store.dispatch('settings/getNetworkSettings', refetch)
             }
+            if (confName === 'port-forward-rules') {
+              await store.dispatch('settings/getSystemSettings', false)
+            }
           }),
         ).finally(() => {
           store.commit('SET_LOADER', false)
@@ -213,6 +222,68 @@
       },
 
       /**
+       * Sets the footer warnings for port forwarding based on current network interfaces
+       * and system settings. It checks each interface's status and generates appropriate
+       * warnings about reserved ports for HTTP and HTTPS access.
+       */
+      async setPortForwardWarnings() {
+        try {
+          const status = await new Promise((resolve, reject) =>
+            window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
+          )
+
+          const networkSettingsCopy = cloneDeep(this.networkSettings || {})
+          const interfaces = networkSettingsCopy.interfaces || []
+
+          const statusMap = (Array.isArray(status) ? status : []).reduce((map, s) => {
+            if (s?.interfaceId) map[s.interfaceId] = s
+            return map
+          }, {})
+
+          interfaces.forEach(iface => {
+            const intfStatus = statusMap[iface.interfaceId]
+            if (intfStatus) Object.assign(iface, intfStatus)
+          })
+
+          const rows = interfaces
+            .filter(intf => intf?.v4Address)
+            .map(intf => {
+              const https = this.$t('port_forward_https', [intf.v4Address, this.systemSettings?.httpsPort || ''])
+
+              let http = ''
+              if (!intf.wan) {
+                http = this.$t('port_forward_http', [intf.v4Address, this.systemSettings?.httpPort || ''])
+              }
+
+              if (intf.wan) {
+                const bridged = interfaces
+                  .filter(sub => sub.configType === 'BRIDGED' && sub.bridgedTo === intf.interfaceId)
+                  .map(subIntf =>
+                    this.$t('port_forward_http_on', [
+                      intf.v4Address,
+                      this.systemSettings?.httpPort || '',
+                      subIntf?.name || '',
+                    ]),
+                  )
+                  .join('<br/>')
+                http = bridged || http
+              }
+
+              return `<tr><td>${https}</td><td>${http || ''}</td></tr>`
+            })
+
+          this.footer = `
+            <p>${this.$t('port_forward_reserved_title')}</p>
+            <table style="width:100%; border-collapse: collapse;">
+              <tbody>${rows.join('')}</tbody>
+            </table>
+          `
+        } catch (err) {
+          this.footer = '' // safe fallback
+        }
+      },
+
+      /**
        * Validates the given set of rules based on the current rule type,
        * and updates the component's `warning` property if conflicts or
        * unsafe configurations are detected.
@@ -231,64 +302,6 @@
         } else {
           this.warning = null
         }
-      },
-
-      /**
-       * Sets the footer warnings for port forwarding based on current network interfaces
-       * and system settings. It checks each interface's status and generates appropriate
-       * warnings about reserved ports for HTTP and HTTPS access.
-       */
-      async setPortForwardWarnings() {
-        const status = await new Promise((resolve, reject) =>
-          window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
-        )
-        this.$store.dispatch('settings/getSystemSettings', false)
-        const systemSettings = this.$store.getters['settings/systemSetting']
-        const networkSettingsCopy = cloneDeep(this.networkSettings)
-        console.log('Interface status:', status)
-        console.log('System settings:', systemSettings)
-        console.log('network settings:', networkSettingsCopy)
-        const interfaces = networkSettingsCopy?.interfaces || []
-        const httpsWarnings = []
-        const httpWarnings = []
-
-        // Build a quick lookup map for status by interfaceId
-        const statusMap = (status || []).reduce((map, s) => {
-          map[s.interfaceId] = s
-          return map
-        }, {})
-
-        // Update interfaces with status
-        interfaces.forEach(iface => {
-          const intfStatus = statusMap[iface.interfaceId]
-          if (intfStatus) Object.assign(iface, intfStatus)
-        })
-
-        // Generate warnings
-        interfaces.forEach(intf => {
-          if (!intf.v4Address) return
-
-          httpsWarnings.push(this.$t('port_forward_https', [intf.v4Address, systemSettings?.httpsPort]))
-
-          if (!intf.wan) {
-            httpWarnings.push(this.$t('port_forward_http', [intf.v4Address, systemSettings?.httpPort]))
-          }
-
-          if (intf.wan) {
-            interfaces
-              .filter(sub => sub.configType === 'BRIDGED' && sub.bridgedTo === intf.interfaceId)
-              .forEach(subIntf => {
-                httpWarnings.push(
-                  this.$t('port_forward_http_on', [intf.v4Address, systemSettings?.httpPort, subIntf.name]),
-                )
-              })
-          }
-        })
-
-        // Combine into <ul>
-        const listItems = [...httpsWarnings, ...httpWarnings].map(item => `<li>${item}</li>`).join('')
-
-        this.footer = `<p>${this.$t('port_forward_reserved_title')}</p><ul>${listItems}</ul>`
       },
 
       /**
