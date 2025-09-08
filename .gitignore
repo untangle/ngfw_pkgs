@@ -12,3 +12,9 @@ debootstrap.log
 *.buildinfo
 .pybuild
 *.egg-info
+*.deb
+*.debian.tar.xz
+*.orig.tar.xz
+*.dsc
+*.changes
+*.upload
