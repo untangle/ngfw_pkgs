@@ -1,7 +1,6 @@
 import { set } from 'vue'
 import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
-import vuntangle from '@/plugins/vuntangle'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
 
@@ -151,47 +150,20 @@ const actions = {
     }
   },
 
-  /**
-   * Updates a single interface
-   * The save process works like:
-   * - apply changes to the edited interface
-   * - then save the entire set of interfaces
-   */
-  async setInterface({ state, dispatch }, intf) {
+  /** update all interfaces */
+  async setInterfaces({ state, dispatch }, interfaces) {
     const networkSettings = cloneDeep(state.networkSetting)
-    // Find the interface to update
-    const updatedInterface = networkSettings.interfaces.find(i => i.interfaceId === intf.interfaceId)
-    // apply changes made to the interface
-    if (updatedInterface) {
-      Object.assign(updatedInterface, { ...intf })
-    } else {
-      networkSettings.interfaces.push(intf)
-    }
+
+    interfaces.forEach(intf => {
+      const existing = networkSettings.interfaces.find(i => i.interfaceId === intf.interfaceId)
+      if (existing) {
+        Object.assign(existing, intf) // update existing
+      } else {
+        networkSettings.interfaces.push(intf) // add new
+      }
+    })
     // Save updated interface list
     return await dispatch('setNetworkSettingV2', networkSettings)
-  },
-
-  // update all interfaces
-  async setInterfaces({ state }, interfaces) {
-    try {
-      const settings = state.networkSetting
-      settings.interfaces.list = interfaces
-      const vlanInterfaces = settings.interfaces.filter(intf => intf.isVlanInterface)
-      await window.rpc.networkManager.setNetworkSettingsV2({
-        ...settings,
-        interfaces: {
-          javaClass: 'java.util.LinkedList',
-          list: [...interfaces, ...vlanInterfaces].map(intf => ({
-            ...intf,
-            javaClass: 'com.untangle.uvm.network.InterfaceSettings',
-          })),
-        },
-      })
-      vuntangle.toast.add('Successfully saved interface remapping.')
-    } catch (ex) {
-      vuntangle.toast.add('Rolling back settings to previous version.')
-      Util.handleException(ex)
-    }
   },
 
   /* Delete selected Interface and update all interfaces */
