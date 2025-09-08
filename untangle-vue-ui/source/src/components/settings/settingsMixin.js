@@ -59,7 +59,7 @@ export default {
    * Lifecycle hook to detect browser reload.
    * If a reload is detected, calls the `onBrowserRefresh` method.
    */
-  beforeMount() {
+  created() {
     if (!reloaded) {
       reloaded = true
       this.onBrowserRefresh?.()
