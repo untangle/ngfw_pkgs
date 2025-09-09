@@ -236,7 +236,7 @@
           const interfaces = networkSettingsCopy.interfaces || []
 
           const statusMap = (Array.isArray(status) ? status : []).reduce((map, s) => {
-            if (s?.interfaceId) map[s.interfaceId] = s
+            if (s && s.interfaceId) map[s.interfaceId] = s
             return map
           }, {})
 
@@ -245,38 +245,36 @@
             if (intfStatus) Object.assign(iface, intfStatus)
           })
 
-          const rows = interfaces
-            .filter(intf => intf?.v4Address)
-            .map(intf => {
-              const https = this.$t('port_forward_https', [intf.v4Address, this.systemSettings?.httpsPort || ''])
+          // Collect HTTPS IPs (all interfaces with an IPv4)
+          const httpsIps = interfaces
+            .filter(intf => intf && intf.v4Address)
+            .map(intf => intf.v4Address)
+            .join(', ')
 
-              let http = ''
-              if (!intf.wan) {
-                http = this.$t('port_forward_http', [intf.v4Address, this.systemSettings?.httpPort || ''])
-              }
-
+          // Collect HTTP IPs:
+          // - For non-WAN: include its IP
+          // - For WAN: include ONLY bridged entries "(Bridge Interface: Name)" if any; otherwise include nothing
+          const httpEntries = interfaces
+            .filter(intf => intf && intf.v4Address)
+            .flatMap(intf => {
               if (intf.wan) {
                 const bridged = interfaces
                   .filter(sub => sub.configType === 'BRIDGED' && sub.bridgedTo === intf.interfaceId)
                   .map(subIntf =>
-                    this.$t('port_forward_http_on', [
-                      intf.v4Address,
-                      this.systemSettings?.httpPort || '',
-                      subIntf?.name || '',
-                    ]),
+                    this.$t('port_forward_http_bridge', [intf.v4Address, (subIntf && subIntf.name) || '']),
                   )
-                  .join('<br/>')
-                http = bridged || http
+                return bridged.length ? bridged : []
               }
-
-              return `<tr><td>${https}</td><td>${http || ''}</td></tr>`
+              return [intf.v4Address]
             })
 
+          const httpIps = httpEntries.join(', ')
+
+          // Build footer text
           this.footer = `
             <p>${this.$t('port_forward_reserved_title')}</p>
-            <table style="width:100%; border-collapse: collapse;">
-              <tbody>${rows.join('')}</tbody>
-            </table>
+            <p>${this.$t('port_forward_https_usage', [this.systemSettings?.httpsPort || '443', httpsIps])}<br />
+              ${this.$t('port_forward_http_usage', [this.systemSettings?.httpPort || '80', httpIps])}</p>
           `
         } catch (err) {
           this.footer = '' // safe fallback
