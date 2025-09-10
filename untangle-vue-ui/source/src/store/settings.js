@@ -9,6 +9,7 @@ const getDefaultState = () => ({
   networkSetting: null,
   systemSetting: null,
   enabledWanInterfaces: [],
+  uriSettings: null,
 })
 
 const getters = {
@@ -21,6 +22,7 @@ const getters = {
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
   dnsSettings: state => state?.networkSetting?.dnsSettings || {},
+  uriSettings: state => state?.uriSettings || {},
 }
 
 const mutations = {
@@ -31,6 +33,7 @@ const mutations = {
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
+  SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
 }
 
 const actions = {
@@ -177,6 +180,20 @@ const actions = {
         networkSettings.interfaces.splice(index, 1)
       }
       return await dispatch('setNetworkSettingV2', networkSettings)
+    } catch (err) {
+      Util.handleException(err)
+      return false
+    }
+  },
+
+  // fetch uri settings
+  async getUriSettings({ state, commit }, refetch) {
+    try {
+      if (state.uriSettings && !refetch) {
+        return
+      }
+      const data = await window.rpc.uriManager.getSettings()
+      commit('SET_URI_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
       return false
