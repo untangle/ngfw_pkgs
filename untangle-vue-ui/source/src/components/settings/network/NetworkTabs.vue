@@ -17,7 +17,7 @@
 
 <script>
   // network
-  import Dhcp from '@/components/settings/network/NgfwDhcp'
+  import Dhcp from '@/components/settings/network/Dhcp'
   import Dns from '@/components/settings/network/Dns.vue'
   import Interface from '@/components/settings/network/Interface.vue'
 

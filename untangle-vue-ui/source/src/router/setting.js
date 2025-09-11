@@ -2,7 +2,7 @@ import Main from '../components/settings/Main.vue'
 // import Main from '../components/settings/network/SettingsInterface/index.vue'
 
 // network
-import Dhcp from '@/components/settings/network/NgfwDhcp'
+import Dhcp from '@/components/settings/network/Dhcp'
 import Dns from '@/components/settings/network/Dns.vue'
 import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
