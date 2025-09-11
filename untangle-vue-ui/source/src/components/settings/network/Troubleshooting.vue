@@ -1,5 +1,5 @@
 <template>
-  <Troubleshooting :result="result" @run-test="onRunTest" />
+  <Troubleshooting :result="result" @run-test="onRunTest" @export-output="onExportOutput" />
 </template>
 <script>
   import { Troubleshooting } from 'vuntangle'
@@ -74,7 +74,7 @@
               return
             }
             // integrate with readOutput loop
-            this.readOutput(resultReader, text, test)
+            this.readOutput(resultReader, text, test, params)
           },
           params?.command,
           params?.args,
@@ -86,8 +86,9 @@
        * @param resultReader reader object from rpc
        * @param text array of text lines
        * @param test test object from vuntangle component
+       * @param params parameters for the test
        */
-      readOutput(resultReader, text, test) {
+      readOutput(resultReader, text, test, params) {
         let result = text.join('')
         if (!resultReader) return
 
@@ -102,17 +103,35 @@
           if (res !== null) {
             text.push(res)
             setTimeout(function () {
-              self.readOutput(resultReader, text, test)
+              self.readOutput(resultReader, text, test, params)
             }, 1000)
           } else {
             test.isRunning = false
             text.push(new Date().toString() + ' - Test Completed')
             text.push('\n\n--------------------------------------------------------\n\n')
+            if (params?.args?.FILENAME) {
+              test.exportFilename = params.args.FILENAME
+              params.args.FILENAME = ''
+            }
           }
 
           result = text.join('')
           test.output = result
         })
+      },
+
+      /**
+       * handler for export-output event
+       * submits the hidden form to download the output file
+       * @param filename name of the file to be downloaded
+       */
+      onExportOutput(filename) {
+        const downloadForm = document.getElementById('downloadForm')
+
+        downloadForm.type.value = 'NetworkTestExport'
+        downloadForm.arg1.value = filename
+
+        // downloadForm.submit()
       },
     },
   }
