@@ -1,16 +1,16 @@
 <template>
-  <settings-dynamic ref="dynamicRoutes" :settings="dynamicRoutingSettings" @refresh="onRefresh">
+  <settings-dynamic-routes ref="dynamicRoutes" :settings="dynamicRoutingSettings" @refresh="onRefresh">
     <template #actions="{ newSettings, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings)">{{ $t('save') }}</u-btn>
     </template>
-  </settings-dynamic>
+  </settings-dynamic-routes>
 </template>
 <script>
-  import { SettingsDynamic } from 'vuntangle'
+  import { SettingsDynamicRoutes } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
 
   export default {
-    components: { SettingsDynamic },
+    components: { SettingsDynamicRoutes },
     mixins: [settingsMixin],
 
     data: () => ({
