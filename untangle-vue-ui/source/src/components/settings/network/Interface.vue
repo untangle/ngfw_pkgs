@@ -37,7 +37,7 @@
     computed: {
       // interfaces filered and grouped (by category)
       interfaces({ $store }) {
-        return $store.getters['settings/networkSetting'].interfaces
+        return $store.getters['settings/networkSetting'].interfaces || []
       },
     },
 
