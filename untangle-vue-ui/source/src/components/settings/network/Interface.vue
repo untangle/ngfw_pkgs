@@ -31,7 +31,6 @@
         hasWireguard: false,
         hasOpenVpn: false,
         hasStatusTable: true,
-        hasNoExportCsv: true,
       },
     }),
 
