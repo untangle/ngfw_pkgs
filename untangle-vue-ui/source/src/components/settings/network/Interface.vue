@@ -32,6 +32,7 @@
         hasOpenVpn: false,
         hasStatusTable: true,
         hasNoIpsecTunnel: true,
+        hasNoExportCsv: true,
       },
     }),
 
