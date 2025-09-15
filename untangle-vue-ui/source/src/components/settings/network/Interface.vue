@@ -31,6 +31,7 @@
         hasWireguard: false,
         hasOpenVpn: false,
         hasStatusTable: true,
+        hasNoIpsecTunnel: true,
       },
     }),
 
