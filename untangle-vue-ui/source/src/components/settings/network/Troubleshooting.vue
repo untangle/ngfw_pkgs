@@ -1,13 +1,14 @@
 <template>
-  <Troubleshooting :result="result" @run-test="onRunTest" @export-output="onExportOutput" />
+  <Troubleshooting @run-test="onRunTest" @export-output="onExportOutput" />
 </template>
 <script>
   import { Troubleshooting } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
   import Util from '@/util/setupUtil'
 
   export default {
     components: { Troubleshooting },
-    mixins: [],
+    mixins: [settingsMixin],
 
     provide() {
       return {
@@ -18,10 +19,6 @@
         }),
       }
     },
-
-    data: () => ({
-      result: '',
-    }),
 
     computed: {
       // uri settings from store
@@ -49,6 +46,7 @@
 
     created() {
       this.$store.dispatch('settings/getUriSettings', false)
+      this.$store.dispatch('settings/getNetworkSettings', false)
     },
 
     methods: {
@@ -132,6 +130,13 @@
         downloadForm.arg1.value = filename
 
         // downloadForm.submit()
+      },
+
+      /**
+       * Optional hook triggered on browser refresh. refetches the settings.
+       */
+      onBrowserRefresh() {
+        this.$store.dispatch('settings/getNetworkSettings', true)
       },
     },
   }
