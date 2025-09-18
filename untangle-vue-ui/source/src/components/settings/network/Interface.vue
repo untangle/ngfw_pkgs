@@ -31,13 +31,15 @@
         hasWireguard: false,
         hasOpenVpn: false,
         hasStatusTable: true,
+        hasNoIpsecTunnel: true,
+        hasNoExportCsv: true,
       },
     }),
 
     computed: {
       // interfaces filered and grouped (by category)
       interfaces({ $store }) {
-        return $store.getters['settings/networkSetting'].interfaces
+        return $store.getters['settings/networkSetting'].interfaces || []
       },
     },
 

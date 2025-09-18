@@ -136,7 +136,10 @@
             icon: 'mdi-call-split',
             active: false,
             match: '/settings/routing',
-            items: [{ name: 'static_routes', to: '/settings/routing/routes' }],
+            items: [
+              { name: 'static_routes', to: '/settings/routing/routes' },
+              { name: 'dynamic_routes', to: '/settings/routing/dynamicRoutes' },
+            ],
           },
           {
             name: 'firewall',

@@ -2,12 +2,12 @@ import Main from '../components/settings/Main.vue'
 // import Main from '../components/settings/network/SettingsInterface/index.vue'
 
 // network
-import Dhcp from '@/components/settings/network/NgfwDhcp'
+import Dhcp from '@/components/settings/network/Dhcp'
 import Dns from '@/components/settings/network/Dns.vue'
 import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
 import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
-// import Interfaces from '@/components/settings/network/Interfaces.vue'
+import DynamicRoutes from '@/components/settings/routing/DynamicRoutes.vue'
 
 // routing
 import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
@@ -62,6 +62,10 @@ export default [
         path: 'routing/routes',
         component: StaticRoutes,
         meta: { helpContext: 'static_routes' },
+      },
+      {
+        path: 'routing/dynamicRoutes',
+        component: DynamicRoutes,
       },
       {
         path: 'services/dynamic-blocklist',
