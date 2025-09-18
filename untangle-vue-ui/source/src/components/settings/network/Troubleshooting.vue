@@ -134,9 +134,9 @@
             },
             filename,
           )
-          this.$vuntangle.toast.add(this.$vuntangle.$t('downloading_packet_dump'))
+          this.$vuntangle.toast.add(this.$vuntangle.$t('exporting_packet_dump'))
         } catch {
-          this.$vuntangle.toast.add(this.$vuntangle.$t('download_failed_try_again'), 'error')
+          this.$vuntangle.toast.add(this.$vuntangle.$t('export_failed_try_again'), 'error')
         }
       },
 
