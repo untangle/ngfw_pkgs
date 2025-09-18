@@ -5,6 +5,7 @@
   import { Troubleshooting } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
   import Util from '@/util/setupUtil'
+  import util from '@/util/util'
 
   export default {
     components: { Troubleshooting },
@@ -120,16 +121,23 @@
 
       /**
        * handler for export-output event
-       * submits the hidden form to download the output file
+       * downloads the file from server
        * @param filename name of the file to be downloaded
        */
-      onExportOutput(filename) {
-        const downloadForm = document.getElementById('downloadForm')
-
-        downloadForm.type.value = 'NetworkTestExport'
-        downloadForm.arg1.value = filename
-
-        // downloadForm.submit()
+      async onExportOutput(filename) {
+        try {
+          await util.downloadFile(
+            '/admin/download',
+            {
+              type: 'NetworkTestExport',
+              arg1: filename,
+            },
+            filename,
+          )
+          this.$vuntangle.toast.add(this.$vuntangle.$t('downloading_packet_dump'))
+        } catch {
+          this.$vuntangle.toast.add(this.$vuntangle.$t('download_failed_try_again'), 'error')
+        }
       },
 
       /**
