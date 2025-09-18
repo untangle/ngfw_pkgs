@@ -18,6 +18,7 @@ import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.
 import About from '@/components/settings/system/NgfwAbout'
 import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
+import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 export default [
   {
     name: 'settings',
@@ -47,6 +48,10 @@ export default [
         path: 'network/interfaces/add/:type',
         component: InterfaceEdit,
         // helpContext handled in InterfaceEdit component based on interface type
+      },
+      {
+        path: 'network/troubleshooting',
+        component: Troubleshooting,
       },
       {
         path: 'network/networkTabs',

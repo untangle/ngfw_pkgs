@@ -10,6 +10,7 @@ import {
 
 import { cloneDeep } from 'lodash'
 import * as ipaddr from 'ipaddr.js'
+import axios from 'axios'
 import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
@@ -381,6 +382,32 @@ const util = {
       if (a[i] > b[i]) return 1
     }
     return 0
+  },
+
+  /**
+   * Download a file from the server via POST request.
+   *
+   * @param {string} url - API endpoint (e.g. '/admin/download')
+   * @param {Object} params - Key/value pairs for form data
+   * @param {string} filename - Suggested filename for saving
+   * @returns {Promise<void>}
+   */
+  async downloadFile(url, params, filename) {
+    const response = await axios.post(url, new URLSearchParams(params), {
+      responseType: 'blob',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      withCredentials: true,
+    })
+    const blob = new Blob([response.data])
+    const link = document.createElement('a')
+    link.href = URL.createObjectURL(blob)
+    link.download = filename
+    document.body.appendChild(link)
+    link.click()
+    link.remove()
+    return true
   },
 }
 
