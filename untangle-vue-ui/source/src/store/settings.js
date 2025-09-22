@@ -10,6 +10,7 @@ const getDefaultState = () => ({
   systemSetting: null,
   enabledWanInterfaces: [],
   uriSettings: null,
+  systemTimeZones: [],
 })
 
 const getters = {
@@ -19,6 +20,7 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
   dnsSettings: state => state?.networkSetting?.dnsSettings || {},
@@ -32,6 +34,7 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
+  SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
 }
@@ -67,6 +70,35 @@ const actions = {
       const data = window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
       return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /*
+   * Retrieve system timezones and transform them into the list item format
+   * required by Vuntangle components.
+   */
+  getSystemTimeZones({ commit }) {
+    try {
+      const timeZones = []
+      const systemTimeZones = window.rpc.systemManager.getTimeZones()
+      const jsonStr = systemTimeZones.replace(/'/g, '"')
+      const timezonesArray = JSON.parse(jsonStr)
+
+      if (timezonesArray && Array.isArray(timezonesArray)) {
+        for (let i = 0; i < timezonesArray.length; i++) {
+          const [zone, offset] = timezonesArray[i]
+
+          const tzObject = {
+            text: `(${offset}) ${zone}`,
+            value: zone,
+          }
+          timeZones.push(tzObject)
+        }
+      }
+      commit('SET_SYSTEM_TIMEZONES', timeZones)
+      return { success: true, message: null, timeZones }
     } catch (err) {
       Util.handleException(err)
     }
@@ -150,6 +182,32 @@ const actions = {
       return data
     } catch (err) {
       Util.handleException(err)
+    }
+  },
+  /**
+   * Synchronize the system time using the NTP (Network Time Protocol) service
+   */
+  async doForceTimeSync() {
+    try {
+      return await new Promise(resolve => {
+        window.rpc.UvmContext.forceTimeSync((ex, result) => {
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({
+              success: false,
+              message: result.message.slice(0, 100),
+            })
+          }
+          return resolve({ success: true })
+        })
+      })
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
   },
 
