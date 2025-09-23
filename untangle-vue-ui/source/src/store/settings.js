@@ -25,6 +25,11 @@ const getters = {
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
   dnsSettings: state => state?.networkSetting?.dnsSettings || {},
   uriSettings: state => state?.uriSettings || {},
+  /**
+   * Check expert mode is enabled via RPC.
+   * Avoids using Rpc.directData method by getting the value directly from window.rpc.
+   */
+  isExpertMode: () => window?.rpc?.isExpertMode || false,
 }
 
 const mutations = {
