@@ -211,6 +211,39 @@ const actions = {
     }
   },
 
+  /* factory reset */
+  factoryReset() {
+    try {
+      window.rpc.UvmContext.configManager().doFactoryReset()
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* reboot */
+  reboot() {
+    try {
+      window.rpc.UvmContext.rebootBox()
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* shutdown */
+  shutdown() {
+    try {
+      window.rpc.UvmContext.shutdownBox()
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
   /** update all interfaces */
   async setInterfaces({ state, dispatch }, interfaces) {
     const networkSettings = cloneDeep(state.networkSetting)

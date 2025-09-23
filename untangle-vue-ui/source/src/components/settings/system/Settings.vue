@@ -3,10 +3,14 @@
     :system-settings="systemSettings"
     :company-name="companyName"
     :system-time-zones="systemTimeZones"
+    :show-remote-support="true"
     :support-access-enabled="true"
     :all-wan-interface-names="enabledWanInterfaces"
     @save-settings="onSaveSettings"
     @force-time-sync="onForceTimeSync"
+    @factory-reset="onFactoryReset"
+    @reboot="onReboot"
+    @shutdown="onShutdown"
     @refresh-settings="onRefreshSettings"
   />
 </template>
@@ -57,6 +61,31 @@
         if (!response.success) {
           this.$vuntangle.toast.add(this.$vuntangle.$t('force_time_sync_failed'), 'error')
         }
+      },
+
+      /*
+       * Factory resset handler
+       */
+      async onFactoryReset() {
+        this.$store.commit('SET_LOADER', true)
+        await new Promise(resolve => setTimeout(resolve, 1000))
+        this.$store.commit('SET_LOADER', false)
+        document.location.href = '/error/factoryDefaults'
+        await this.$store.dispatch('settings/factoryReset')
+      },
+
+      /*
+       * System reboot handler
+       */
+      async onReboot() {
+        await this.$store.dispatch('settings/reboot')
+      },
+
+      /*
+       * System reboot handler
+       */
+      async onShutdown() {
+        await this.$store.dispatch('settings/shutdown')
       },
 
       /* Handler to refresh settings */
