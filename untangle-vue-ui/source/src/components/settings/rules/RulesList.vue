@@ -70,7 +70,7 @@
     data() {
       return {
         // Network rules config names
-        networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules'],
+        networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules', 'access-rules'],
         /**
          * a map between rule type (port-forward rules, nat rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -81,6 +81,7 @@
           'nat': ['nat-rules'],
           'bypass': ['bypass-rules'],
           'filter': ['filter-rules'],
+          'access': ['access-rules'],
         },
         // warning message to be shown in the extra-fields slot
         warning: null,
@@ -139,7 +140,7 @@
        */
       interfaces: ({ networkSettings, ruleType }) => {
         let interfaces = []
-        if (['port-forward', 'nat', 'bypass', 'filter'].includes(ruleType)) {
+        if (['port-forward', 'nat', 'bypass', 'filter', 'access'].includes(ruleType)) {
           interfaces = util.getInterfaceList(networkSettings, true, true)
         }
         return interfaces
@@ -208,6 +209,12 @@
           this.ruleConfigs.map(async confName => {
             // For Network Settings Rules Save Network Settings
             if (this.networkRules.includes(confName)) {
+              if (confName === 'access-rules') {
+                const confirmed = await this.showAccessRulesWarning()
+                if (!confirmed) {
+                  return
+                }
+              }
               const networkSettingsCopy = cloneDeep(this.networkSettings)
               Object.entries(updatedRules).forEach(([key, rules]) => {
                 networkSettingsCopy[key.replace(/-/g, '_')] = rules
@@ -336,6 +343,33 @@
             )
           }),
         )
+      },
+
+      /**
+       * Displays a confirmation dialog when Access Rules are saved.
+       *
+       * Shows a modal with a title, message, and Yes/No buttons.
+       * Resolves a Promise with `true` if the user clicks Yes,
+       * or `false` if the user clicks No or cancels the dialog.
+       * @returns {Promise<boolean>} Resolves to true/false based on user choice.
+       */
+      showAccessRulesWarning() {
+        return new Promise(resolve => {
+          this.$vuntangle.confirm.show({
+            title: this.$t('access_rules_changed'),
+            message: this.$t('access_rules_warning'),
+            confirmLabel: this.$vuntangle.$t('yes'),
+            cancelLabel: this.$vuntangle.$t('no'),
+            action() {
+              this.onClose()
+              resolve(true)
+            },
+            cancel() {
+              this.onClose()
+              resolve(false)
+            },
+          })
+        })
       },
 
       /**
