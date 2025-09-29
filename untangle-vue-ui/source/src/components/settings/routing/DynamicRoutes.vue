@@ -4,8 +4,9 @@
     :network-settings="networkSettings"
     :settings="dynamicRoutingSettings"
     :status-table-data="statusTableData"
+    :warnings-messages="warningsMessages"
     @refresh="onRefresh"
-    @fetch-routing-table-status="fetchRoutingTableStatus"
+    @dynamic-routing-overview="getDynamicRoutingOverview"
   >
     <template #actions="{ newSettings, isDirty, validate }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
@@ -18,6 +19,7 @@
   import settingsMixin from '../settingsMixin'
   import Rpc from '@/util/Rpc'
   import Util from '@/util/setupUtil'
+  import util from '@/util/util'
 
   export default {
     components: { SettingsDynamicRoutes },
@@ -25,9 +27,8 @@
 
     data() {
       return {
-        warningsMessages: [],
-        warningsCount: 0,
         statusTableData: [],
+        warningsMessages: [],
       }
     },
 
@@ -43,24 +44,6 @@
     methods: {
       async fetchNetworkSettings(refetch) {
         await this.$store.dispatch('settings/getNetworkSettings', refetch)
-      },
-
-      /**
-       * The fetchRoutingTableStatus function is triggered every time the screen is displayed.
-       * To refresh the current routes, we use the same function.
-       */
-      async fetchRoutingTableStatus(cb) {
-        try {
-          const response = await Rpc.asyncData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
-          // Call the callback if provided
-          if (cb) cb(response ?? null)
-          // Return the response for awaiting
-          return response ?? null
-        } catch (err) {
-          Util.handleException(err)
-          if (cb) cb(null)
-          return null
-        }
       },
 
       /** fetch Dynamic Routing Status */
@@ -182,17 +165,76 @@
         }
       },
 
+      async getDynamicRoutingOverview() {
+        if (!this.networkSettings?.interfaces || !this.dynamicRoutingSettings?.ospfNetworks) {
+          setTimeout(() => this.getDynamicRoutingOverview(), 100)
+          return
+        }
+        const warnings = []
+        if (this.dynamicRoutingSettings.enabled) {
+          // --- BGP Checks ---
+          if (this.dynamicRoutingSettings.bgpEnabled) {
+            if (!this.dynamicRoutingSettings.bgpNeighbors?.length) {
+              warnings.push(this.$t('bgp_neighbor_required'))
+            }
+            if (!this.dynamicRoutingSettings.bgpNetworks?.length) {
+              warnings.push(this.$t('no_bgp_networks_configured'))
+            }
+          }
+          // --- OSPF Checks ---
+          if (this.dynamicRoutingSettings.ospfEnabled) {
+            if (!this.dynamicRoutingSettings.ospfAreas?.length) {
+              warnings.push(this.$t('ospf_area_configured'))
+            }
+            if (!this.dynamicRoutingSettings.ospfNetworks?.length) {
+              warnings.push(this.$t('ospf_networks_configured'))
+            }
+          }
+
+          // Determine if at least one OSPF network is reachable through a gateway or "via"
+          // Otherwise, it's almost certain that nothing will exchange.
+          // This would be the case where you only "want" to exchange LAN networks, but without
+          // specifying the WAN network too (where presumably exchanges will occur),
+          // the ospfd daemon won't run there.
+          let atLeastOneReachable = false
+          let routes = ''
+          routes = await Rpc.asyncData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
+          routes?.split('\n').forEach(route => {
+            if (route.includes(' via ') && !route.includes(' zebra ')) {
+              const routeParts = route.match(/ via ([^\s]+) /)
+              if (routeParts?.[1]) {
+                const gateway = routeParts[1]
+                this.dynamicRoutingSettings.ospfNetworks.forEach(network => {
+                  if (network.enabled && util.ipMatchesNetwork(gateway, network.network, network.prefix)) {
+                    atLeastOneReachable = true
+                  }
+                })
+              }
+            }
+          })
+
+          if (!atLeastOneReachable) {
+            warnings.push(this.$t('ospf_network_reachable'))
+          }
+          // Update local state
+          this.warningsMessages = warnings
+        }
+      },
+
       async onSave(updatedSettings, validate) {
         const isValid = await validate()
         if (!isValid) return
         this.$store.commit('SET_LOADER', true)
-        const networkdynamicRoutingSettings = cloneDeep(this.networkSettings)
-        networkdynamicRoutingSettings.dynamicRoutingSettings = updatedSettings
-        await Promise.all([
-          this.$store.dispatch('settings/setNetworkSettingV2', networkdynamicRoutingSettings),
-        ]).finally(() => {
+        try {
+          const networkdynamicRoutingSettings = cloneDeep(this.networkSettings)
+          networkdynamicRoutingSettings.dynamicRoutingSettings = updatedSettings
+          await this.$store.dispatch('settings/setNetworkSettingV2', networkdynamicRoutingSettings)
+          await this.getDynamicRoutingOverview()
+        } catch (ex) {
+          Util.handleException(ex)
+        } finally {
           this.$store.commit('SET_LOADER', false)
-        })
+        }
       },
 
       /**
