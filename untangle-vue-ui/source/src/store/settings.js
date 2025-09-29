@@ -25,6 +25,7 @@ const getters = {
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
   dnsSettings: state => state?.networkSetting?.dnsSettings || {},
   uriSettings: state => state?.uriSettings || {},
+  dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
 }
 
 const mutations = {
