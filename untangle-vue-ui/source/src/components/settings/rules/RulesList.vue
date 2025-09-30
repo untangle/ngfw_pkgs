@@ -101,6 +101,7 @@
         if (ruleType === 'nat') return $i18n.t('nat_description')
         if (ruleType === 'bypass') return $i18n.t('bypass_description')
         if (ruleType === 'filter') return $i18n.t('filter_description')
+        if (ruleType === 'access') return $i18n.t('read_only_rules_description')
       },
 
       // the network settings from the store
