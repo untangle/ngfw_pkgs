@@ -7,6 +7,7 @@
     :warnings-messages="warningsMessages"
     @refresh="onRefresh"
     @dynamic-routing-overview="getDynamicRoutingOverview"
+    @app-settings="getAppSettings"
   >
     <template #actions="{ newSettings, isDirty, validate }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
@@ -219,6 +220,12 @@
           // Update local state
           this.warningsMessages = warnings
         }
+      },
+
+      /** Retrieves the application settings for a given app asynchronously */
+      async getAppSettings(appname, cb) {
+        const response = await window.rpc.UvmContext.appManager().app(appname)
+        cb(response ?? null)
       },
 
       async onSave(updatedSettings, validate) {
