@@ -25,6 +25,7 @@ const getters = {
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
   dnsSettings: state => state?.networkSetting?.dnsSettings || {},
   uriSettings: state => state?.uriSettings || {},
+  dynamicListSettings: state => state.dynamicListSettings || {},
 }
 
 const mutations = {
@@ -37,6 +38,7 @@ const mutations = {
   SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
+  SET_DYNAMIC_LISTS_SETTINGS: (state, value) => set(state, 'dynamicListSettings', value),
 }
 
 const actions = {
@@ -288,6 +290,64 @@ const actions = {
     } catch (err) {
       Util.handleException(err)
       return false
+    }
+  },
+
+  async getDynamicListSettings({ commit }) {
+    try {
+      const data = await window.rpc.appManager.app('dynamic-blocklists').getDynamicBlockListsSettingsV2()
+      commit('SET_DYNAMIC_LISTS_SETTINGS', data)
+    } catch (err) {
+      Util.handleException(err)
+      return false
+    }
+  },
+
+  setDynamicListSettings({ dispatch }, dynamicListSettings) {
+    try {
+      const data = new Promise(resolve => {
+        window.rpc.appManager.app('dynamic-blocklists').setDynamicBlockListSettingsV2(async (ex, result) => {
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({ success: false, message: result.message.slice(0, 100) })
+          }
+          // fetch updated settings after successful save
+          await dispatch('getDynamicListSettings', true)
+          sendEvent(EVENT_ACTIONS.REFRESH_SYSTEM_SETTINGS)
+          return resolve({ success: true })
+        }, dynamicListSettings)
+      })
+      return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+  async getDynamicListsDefaultSettings({ dispatch }) {
+    try {
+      const data = await new Promise(resolve => {
+        window.rpc.appManager.app('dynamic-blocklists').onResetDefaultsV2(response => {
+          // response contains the actual data, not an error
+          if (response?.code && response?.message) {
+            Util.handleException(response.message)
+            return resolve({ success: false, message: response.message.slice(0, 100) })
+          }
+
+          // if response has a property like javaClass, treat as success
+          dispatch('getDynamicListSettings', true)
+          sendEvent(EVENT_ACTIONS.REFRESH_SYSTEM_SETTINGS)
+          resolve({ success: true, data: response })
+        })
+      })
+      return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
   },
 }
