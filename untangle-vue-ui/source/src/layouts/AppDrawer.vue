@@ -128,8 +128,8 @@
               { name: 'bypass', to: '/settings/network/bypass' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
-              { name: 'troubleshooting', to: '/settings/network/troubleshooting' },
               { name: 'advanced', to: '/settings/network/advanced' },
+              { name: 'troubleshooting', to: '/settings/network/troubleshooting' },
             ],
           },
           {
