@@ -409,6 +409,38 @@ const util = {
     link.remove()
     return true
   },
+
+  /**
+   * Checks if a given IP address belongs to a specific network.
+   *
+   * @param {string} ip - The IP address to check
+   * @param {string} network - The base network address
+   * @param {number|string} netmask - The network mask. Can be:
+   *                                  - A number for CIDR notation (e.g., 24)
+   *                                  - A string for dotted-decimal format (e.g., "255.255.255.0")
+   * @returns {boolean} True if the IP belongs to the network, false otherwise.
+   */
+  ipMatchesNetwork(ip, network, netmask) {
+    let dots
+    let netmaskInteger = 0
+
+    if (Number.isInteger(netmask)) {
+      // CIDR notation like /24
+      netmaskInteger = Math.pow(2, 32) - Math.pow(2, 32 - netmask)
+    } else {
+      // Dotted-decimal mask like 255.255.255.0
+      dots = netmask.split('.')
+      netmaskInteger = ((+dots[0] * 256 + +dots[1]) * 256 + +dots[2]) * 256 + +dots[3]
+    }
+
+    dots = network.split('.')
+    const networkInteger = ((+dots[0] * 256 + +dots[1]) * 256 + +dots[2]) * 256 + +dots[3]
+
+    dots = ip.split('.')
+    const ipInteger = ((+dots[0] * 256 + +dots[1]) * 256 + +dots[2]) * 256 + +dots[3]
+
+    return (ipInteger & netmaskInteger) === (networkInteger & netmaskInteger)
+  },
 }
 
 export default util

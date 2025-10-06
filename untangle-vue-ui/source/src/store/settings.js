@@ -30,6 +30,7 @@ const getters = {
    * Avoids using Rpc.directData method by getting the value directly from window.rpc.
    */
   isExpertMode: () => window?.rpc?.isExpertMode || false,
+  dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
 }
 
 const mutations = {
