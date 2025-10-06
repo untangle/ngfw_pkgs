@@ -128,6 +128,7 @@
               { name: 'bypass', to: '/settings/network/bypass' },
               { name: 'dhcp', to: '/settings/network/dhcp' },
               { name: 'dns', to: '/settings/network/dns' },
+              { name: 'advanced', to: '/settings/network/advanced' },
               { name: 'troubleshooting', to: '/settings/network/troubleshooting' },
             ],
           },
@@ -146,7 +147,10 @@
             icon: 'mdi-shield-half-full',
             active: false,
             match: '/settings/firewall',
-            items: [{ name: 'filter', to: '/settings/firewall/filter' }],
+            items: [
+              { name: 'filter', to: '/settings/firewall/filter' },
+              { name: 'access', to: '/settings/firewall/access' },
+            ],
           },
           {
             name: 'system',
