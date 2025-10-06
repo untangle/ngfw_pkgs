@@ -8,6 +8,7 @@ import Interface from '@/components/settings/network/Interface.vue'
 import NetworkTabs from '@/components/settings/network/NetworkTabs.vue'
 import InterfaceEdit from '@/components/settings/network/InterfaceEdit.vue'
 import DynamicRoutes from '@/components/settings/routing/DynamicRoutes.vue'
+import Advanced from '@/components/settings/advanced/Advanced.vue'
 
 // routing
 import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
@@ -38,7 +39,12 @@ export default [
       {
         path: 'network/interfaces',
         component: Interface,
-        meta: { helpContext: 'dns' },
+        meta: { helpContext: 'interface' },
+      },
+      {
+        path: 'network/advanced',
+        component: Advanced,
+        meta: { helpContext: 'advanced' },
       },
       {
         path: 'network/interfaces/:device',
