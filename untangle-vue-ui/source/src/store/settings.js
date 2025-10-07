@@ -11,6 +11,7 @@ const getDefaultState = () => ({
   enabledWanInterfaces: [],
   uriSettings: null,
   systemTimeZones: [],
+  shieldSettings: null,
 })
 
 const getters = {
@@ -32,6 +33,7 @@ const getters = {
    */
   isExpertMode: () => window?.rpc?.isExpertMode || false,
   dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
+  shieldSettings: state => state?.shieldSettings || {},
 }
 
 const mutations = {
@@ -45,6 +47,7 @@ const mutations = {
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
   SET_DYNAMIC_LISTS_SETTINGS: (state, value) => set(state, 'dynamicListSettings', value),
+  SET_SHIELD_SETTINGS: (state, value) => set(state, 'shieldSettings', value),
 }
 
 const actions = {
@@ -351,6 +354,46 @@ const actions = {
         })
       })
       return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  // Fetch Shield Settings
+  async getShieldSettings({ state, commit }, refetch) {
+    try {
+      if (state.uriSettings && !refetch) {
+        return
+      }
+      const data = await window.rpc.appManager.app('shield').getSettingsV2()
+      commit('SET_SHIELD_SETTINGS', data)
+    } catch (err) {
+      Util.handleException(err)
+      return false
+    }
+  },
+
+  /* setShieldSettings will update system regarding configurations */
+  async setShieldSettings({ dispatch }, shieldSettings) {
+    try {
+      const result = await new Promise(resolve => {
+        window.rpc.appManager.app('shield').setSettingsV2(async (ex, res) => {
+          if (ex) return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          if (res?.code && res?.message) return resolve({ success: false, message: res.message.slice(0, 100) })
+
+          // Fetch updated settings after successful save
+          await dispatch('getShieldSettings', true)
+          return resolve({ success: true })
+        }, shieldSettings)
+      })
+
+      // Handle RPC-level errors (optional logging)
+      if (!result.success) {
+        Util.handleException(result.message)
+      }
+
+      return result
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
