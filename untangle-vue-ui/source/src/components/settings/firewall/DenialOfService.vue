@@ -2,6 +2,9 @@
   <v-container fluid class="pa-0">
     <settings-shield ref="component" :settings="settings">
       <template #actions="{ newSettings, isDirty }">
+        <u-btn class="mr-2" @click="onRefresh">
+          {{ $vuntangle.$t('refresh') }}
+        </u-btn>
         <u-btn :disabled="!isDirty" @click="onSave(newSettings)">
           {{ $vuntangle.$t('save') }}
         </u-btn>
@@ -67,6 +70,14 @@
         await store
           .dispatch('settings/setShieldSettings', newSettings)
           .finally(() => this.$store.commit('SET_LOADER', false))
+      },
+
+      /**
+       * Dispatches action to refresh the shield settings
+       */
+      onRefresh() {
+        this.$store.commit('SET_LOADER', true)
+        store.dispatch('settings/getShieldSettings', true).finally(() => this.$store.commit('SET_LOADER', false))
       },
     },
   }
