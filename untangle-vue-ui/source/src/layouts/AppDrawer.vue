@@ -150,6 +150,7 @@
             items: [
               { name: 'filter', to: '/settings/firewall/filter' },
               { name: 'access', to: '/settings/firewall/access' },
+              { name: 'denial_of_service', to: '/settings/firewall/denial-of-service' },
             ],
           },
           {

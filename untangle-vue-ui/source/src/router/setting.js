@@ -20,6 +20,7 @@ import About from '@/components/settings/system/NgfwAbout'
 import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
+import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 export default [
   {
     name: 'settings',
@@ -72,6 +73,10 @@ export default [
       {
         path: 'routing/dynamicRoutes',
         component: DynamicRoutes,
+      },
+      {
+        path: 'firewall/denial-of-service',
+        component: DenialOfService,
       },
       {
         path: 'services/dynamic-blocklist',
