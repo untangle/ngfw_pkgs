@@ -12,11 +12,15 @@
     @reboot="onReboot"
     @shutdown="onShutdown"
     @refresh-settings="onRefreshSettings"
+    @export-backup="onExportBackup"
+    @restore-backup="onRestoreBackup"
   />
 </template>
 <script>
   import { ApplianceSystem } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
+  import util from '@/util/util'
+  import Util from '@/util/setupUtil'
 
   export default {
     components: { ApplianceSystem },
@@ -86,6 +90,35 @@
        */
       async onShutdown() {
         await this.$store.dispatch('settings/shutdown')
+      },
+
+      /*
+       * Backup restore handler
+       */
+      async onRestoreBackup(data) {
+        try {
+          const response = await util.uploadFile('/admin/v2/upload', data.restoreData)
+          data.cbWithRes(response)
+        } catch (ex) {
+          Util.handleException(ex)
+          data.cb(ex)
+        }
+      },
+
+      /*
+       * Export backup file handler
+       */
+      async onExportBackup() {
+        try {
+          await util.downloadFile('/admin/download', {
+            type: 'backup',
+          })
+          return { success: true }
+        } catch (ex) {
+          util.handleException(ex)
+          this.$vuntangle.toast.add(this.$vuntangle.$t('export_failed_try_again'), 'error')
+          return { success: false }
+        }
       },
 
       /* Handler to refresh settings */
