@@ -363,7 +363,7 @@ const actions = {
   // Fetch Shield Settings
   async getShieldSettings({ state, commit }, refetch) {
     try {
-      if (state.uriSettings && !refetch) {
+      if (state.shieldSettings && !refetch) {
         return
       }
       const data = await window.rpc.appManager.app('shield').getSettingsV2()

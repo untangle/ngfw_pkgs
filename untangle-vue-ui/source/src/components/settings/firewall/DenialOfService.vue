@@ -1,6 +1,6 @@
 <template>
-  <v-container fluid class="pa-0">
-    <settings-shield ref="component" :settings="settings">
+  <v-container fluid class="d-flex flex-column flex-grow-1 pa-2">
+    <settings-shield ref="component" :settings="shieldSettings">
       <template #actions="{ newSettings, isDirty }">
         <u-btn class="mr-2" @click="onRefresh">
           {{ $vuntangle.$t('refresh') }}
@@ -15,6 +15,7 @@
 
 <script>
   import { SettingsShield } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
   import store from '@/store'
   import util from '@/util/util'
 
@@ -22,6 +23,7 @@
     components: {
       SettingsShield,
     },
+    mixins: [settingsMixin],
 
     provide() {
       return {
@@ -37,7 +39,7 @@
 
     computed: {
       // the shield settings from store
-      settings: ({ $store }) => $store.getters['settings/shieldSettings'],
+      shieldSettings: ({ $store }) => $store.getters['settings/shieldSettings'],
 
       // the network settings from the store
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
@@ -52,8 +54,7 @@
     },
 
     created() {
-      store.dispatch('settings/getShieldSettings', false)
-      store.dispatch('settings/getNetworkSettings', false)
+      this.fetchSettings(false, false)
     },
 
     methods: {
@@ -76,8 +77,32 @@
        * Dispatches action to refresh the shield settings
        */
       onRefresh() {
+        this.fetchSettings(true, true)
+      },
+
+      /**
+       * Dispatches action to fetch the network and shield settings
+       * @param shieldRefetch
+       * @param networkRefetch
+       */
+      async fetchSettings(shieldRefetch, networkRefetch) {
         this.$store.commit('SET_LOADER', true)
-        store.dispatch('settings/getShieldSettings', true).finally(() => this.$store.commit('SET_LOADER', false))
+        try {
+          await Promise.all([
+            this.$store.dispatch('settings/getShieldSettings', shieldRefetch),
+            this.$store.dispatch('settings/getNetworkSettings', networkRefetch),
+          ])
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Optional hook triggered on browser refresh.
+       * Fetches updated shield and network settings and updates the store.
+       */
+      onBrowserRefresh() {
+        this.fetchSettings(true, false)
       },
     },
   }
