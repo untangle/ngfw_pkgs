@@ -63,7 +63,6 @@
        * @param {Object} newSettings - new settings to be saved
        */
       async onSave(newSettings) {
-        console.log('Save Clicked With newSettings:', newSettings)
         const isValid = await this.$refs.component.validate()
         if (!isValid) return
 
