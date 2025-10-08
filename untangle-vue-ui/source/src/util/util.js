@@ -400,6 +400,16 @@ const util = {
       },
       withCredentials: true,
     })
+
+    // Try to get filename from Content-Disposition
+    const disposition = response.headers['content-disposition']
+    if (!filename && disposition && disposition.includes('filename=')) {
+      const matches = disposition.match(/filename="?([^"]+)"?/)
+      if (matches != null && matches[1]) {
+        filename = matches[1]
+      }
+    }
+
     const blob = new Blob([response.data])
     const link = document.createElement('a')
     link.href = URL.createObjectURL(blob)
@@ -408,6 +418,26 @@ const util = {
     link.click()
     link.remove()
     return true
+  },
+
+  /**
+   * Upload a file on the input endpoint.
+   *
+   * @param {string} url - API endpoint
+   * @param {Object} params - Key/value pairs for form data, must contain 'file' param consisting of base64 file contents
+   * @returns {Promise<void>}
+   */
+  async uploadFile(url, params) {
+    const formData = new FormData()
+    for (const key in params) {
+      formData.append(key, params[key])
+    }
+
+    const response = await axios.post(url, formData, {
+      headers: { 'Content-Type': 'multipart/form-data' },
+      withCredentials: true,
+    })
+    return response.data
   },
 
   /**
