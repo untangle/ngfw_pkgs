@@ -4,8 +4,12 @@
     :description="description"
     :rules="rules"
     :type="ruleType"
+    :hide-export-csv-button="true"
+    :hide-export-data-button="false"
+    :hide-import-data-button="false"
     @refresh="onRefresh"
-    @rules-change="validateRulesAndSetWarning"
+    @export-data="onExportData"
+    @rules-change="onRulesChange"
   >
     <template #actions="{ updatedRules, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(updatedRules)">
@@ -86,6 +90,7 @@
         // warning message to be shown in the extra-fields slot
         warning: null,
         footer: null,
+        updatedRules: null,
       }
     },
 
@@ -154,7 +159,7 @@
         immediate: true,
         // Whenever rules change, check for warnings
         handler(newVal) {
-          this.validateRulesAndSetWarning(newVal)
+          this.onRulesChange(newVal)
         },
       },
     },
@@ -173,6 +178,26 @@
        */
       onRefresh() {
         this.fetchSettings(true)
+      },
+
+      /**
+       * Exports the updated rules to a json file
+       */
+      onExportData() {
+        util.exportGridData(
+          this.ruleConfigs[0],
+          this.updatedRules[this.ruleConfigs[0]] || this.rules[this.ruleConfigs[0]] || [],
+        )
+      },
+
+      /**
+       * Handler when rules change in the grid
+       * Updates local updatedRules and checks for warnings
+       * @param {Object} updatedRules - the updated rules object from the grid
+       */
+      onRulesChange(updatedRules) {
+        this.updatedRules = updatedRules
+        this.validateRulesAndSetWarning(updatedRules)
       },
 
       /**
