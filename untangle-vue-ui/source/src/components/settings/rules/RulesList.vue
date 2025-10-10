@@ -5,10 +5,10 @@
     :rules="rules"
     :type="ruleType"
     :hide-export-csv-button="true"
-    :hide-export-data-button="false"
-    :hide-import-data-button="false"
+    :hide-export-settings-button="false"
+    :hide-import-settings-button="false"
     @refresh="onRefresh"
-    @export-data="onExportData"
+    @export-settings="onExportSettings"
     @rules-change="onRulesChange"
   >
     <template #actions="{ updatedRules, isDirty }">
@@ -183,8 +183,8 @@
       /**
        * Exports the updated rules to a json file
        */
-      onExportData() {
-        util.exportGridData(
+      onExportSettings() {
+        util.exportGridSettings(
           this.ruleConfigs[0],
           this.updatedRules[this.ruleConfigs[0]] || this.rules[this.ruleConfigs[0]] || [],
         )

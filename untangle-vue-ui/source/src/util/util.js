@@ -441,11 +441,11 @@ const util = {
   },
 
   /**
-   * Calls gridSettings handler and exports grid data to a json file
+   * Calls gridSettings handler and exports grid settings to a json file
    * @param {String} gridName
    * @param {Array} gridData
    */
-  exportGridData(gridName, gridData) {
+  exportGridSettings(gridName, gridData) {
     try {
       this.downloadFile('/admin/gridSettings', {
         type: 'export',

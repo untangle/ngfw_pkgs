@@ -1,6 +1,6 @@
 <template>
   <v-container fluid class="d-flex flex-column flex-grow-1 pa-2">
-    <settings-shield ref="component" :settings="shieldSettings" @export-data="onExportData">
+    <settings-shield ref="component" :settings="shieldSettings" @export-settings="onExportSettings">
       <template #actions="{ newSettings, isDirty }">
         <u-btn class="mr-2" @click="onRefresh">
           {{ $vuntangle.$t('refresh') }}
@@ -83,8 +83,8 @@
        * Exports the updated rules to a json file
        * @param {Array} updatedRules - the updated rules to be exported
        */
-      onExportData(updatedRules) {
-        util.exportGridData('shield-rules', updatedRules)
+      onExportSettings(updatedRules) {
+        util.exportGridSettings('shield-rules', updatedRules || [])
       },
 
       /**
