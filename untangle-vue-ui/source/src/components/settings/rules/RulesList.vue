@@ -184,7 +184,7 @@
        * Exports the updated rules to a json file
        */
       onExportSettings() {
-        util.exportGridSettings(
+        this.exportGridSettings(
           this.ruleConfigs[0],
           this.updatedRules[this.ruleConfigs[0]] || this.rules[this.ruleConfigs[0]] || [],
         )

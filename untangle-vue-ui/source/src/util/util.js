@@ -441,23 +441,6 @@ const util = {
   },
 
   /**
-   * Calls gridSettings handler and exports grid settings to a json file
-   * @param {String} gridName
-   * @param {Array} gridData
-   */
-  exportGridSettings(gridName, gridData) {
-    try {
-      this.downloadFile('/admin/gridSettings', {
-        type: 'export',
-        gridName,
-        gridData: JSON.stringify(gridData),
-      })
-    } catch {
-      this.$vuntangle.toast.add(this.$vuntangle.$t('export_failed_try_again'), 'error')
-    }
-  },
-
-  /**
    * Checks if a given IP address belongs to a specific network.
    *
    * @param {string} ip - The IP address to check

@@ -1,6 +1,11 @@
 <template>
   <v-container fluid class="d-flex flex-column flex-grow-1 pa-2">
-    <settings-shield ref="component" :settings="shieldSettings" @export-settings="onExportSettings">
+    <settings-shield
+      ref="component"
+      :settings="shieldSettings"
+      @export-settings="onExportSettings"
+      @import-settings="onImportSettings"
+    >
       <template #actions="{ newSettings, isDirty }">
         <u-btn class="mr-2" @click="onRefresh">
           {{ $vuntangle.$t('refresh') }}
@@ -34,6 +39,13 @@
           hasIpv6Support: true,
         },
         $readOnly: false,
+      }
+    },
+    data() {
+      return {
+        gridName: 'shield-rules',
+        idProperty: 'ruleId',
+        exportOmitProperties: ['ruleId'],
       }
     },
 
@@ -80,11 +92,16 @@
       },
 
       /**
-       * Exports the updated rules to a json file
-       * @param {Array} updatedRules - the updated rules to be exported
+       * Imports the rules from a json file
+       * @param {Object} data - the import mode and the file to be imported
+       * @param {Array} existingSettings - the existing rules from child component
        */
-      onExportSettings(updatedRules) {
-        util.exportGridSettings('shield-rules', updatedRules || [])
+      async onImportSettings(data, existingSettings) {
+        existingSettings.shield_rules = await settingsMixin.methods.onImportSettings.call(
+          this,
+          data,
+          existingSettings?.shield_rules || [],
+        )
       },
 
       /**
