@@ -60,7 +60,8 @@ export default {
      * @param {Array} existingSettings The settings to be exported.
      */
     onExportSettings(existingSettings) {
-      const settings = existingSettings || []
+      if (!existingSettings) return
+      const settings = existingSettings
       if (this.exportOmitProperties) {
         settings.forEach(setting => {
           this.exportOmitProperties.forEach(prop => {

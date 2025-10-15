@@ -9,6 +9,7 @@
     :hide-import-settings-button="false"
     @refresh="onRefresh"
     @export-settings="onExportSettings"
+    @import-settings="onImportSettings"
     @rules-change="onRulesChange"
   >
     <template #actions="{ updatedRules, isDirty }">
@@ -34,7 +35,7 @@
 <script>
   import { get } from 'lodash'
   import cloneDeep from 'lodash/cloneDeep'
-  import { RulesList } from 'vuntangle'
+  import { RulesList, SettingsImport } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
   import store from '@/store'
   import util from '@/util/util'
@@ -73,6 +74,8 @@
     },
     data() {
       return {
+        idProperty: 'ruleId',
+        exportOmitProperties: ['ruleId'],
         // Network rules config names
         networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules', 'access-rules'],
         /**
@@ -117,6 +120,8 @@
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
+
+      gridName: ({ ruleConfigs }) => ruleConfigs[0],
 
       /**
        * Returns the actual rules extracted from settings based on each configuration
@@ -180,14 +185,19 @@
         this.fetchSettings(true)
       },
 
-      /**
-       * Exports the updated rules to a json file
-       */
-      onExportSettings() {
-        this.exportGridSettings(
-          this.ruleConfigs[0],
-          this.updatedRules[this.ruleConfigs[0]] || this.rules[this.ruleConfigs[0]] || [],
-        )
+      onImportSettings(rulesList, ruleType) {
+        if (!rulesList?.[ruleType]) return
+        this.$vuntangle.dialog.show({
+          title: this.$vuntangle.$t('import_settings'),
+          component: SettingsImport,
+          componentEvents: {
+            import: async data => {
+              rulesList[ruleType] = await settingsMixin.methods.onImportSettings.call(this, data, rulesList[ruleType])
+            },
+          },
+          width: 600,
+          actionLabel: this.$vuntangle.$t('import'),
+        })
       },
 
       /**
