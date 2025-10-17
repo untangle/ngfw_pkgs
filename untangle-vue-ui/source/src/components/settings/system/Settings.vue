@@ -62,16 +62,16 @@
       async onSaveSettings({ system, cb }) {
         this.$store.commit('SET_LOADER', true)
         const response = await this.$store.dispatch('settings/setSystemSettings', system)
-        await this.$store.dispatch('settings/setAppSettings', {
+        await this.$store.dispatch('apps/setAppSettings', {
           appName: 'http',
           settings: system.httpSettings,
         })
-        await this.$store.dispatch('settings/setAppSettings', {
+        await this.$store.dispatch('apps/setAppSettings', {
           appName: 'ftp',
           settings: system.ftpSettings,
         })
         await this.$store
-          .dispatch('settings/setAppSettings', {
+          .dispatch('apps/setAppSettings', {
             appName: 'smtp',
             settings: system.smtpSettings,
           })
