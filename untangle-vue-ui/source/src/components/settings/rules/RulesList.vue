@@ -8,9 +8,7 @@
     :hide-export-settings-button="false"
     :hide-import-settings-button="false"
     @refresh="onRefresh"
-    @export-settings="onExportSettings"
-    @import-settings="onImportSettings"
-    @rules-change="onRulesChange"
+    @rules-change="validateRulesAndSetWarning"
   >
     <template #actions="{ updatedRules, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(updatedRules)">
@@ -35,7 +33,7 @@
 <script>
   import { get } from 'lodash'
   import cloneDeep from 'lodash/cloneDeep'
-  import { RulesList, SettingsImport } from 'vuntangle'
+  import { RulesList } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
   import store from '@/store'
   import util from '@/util/util'
@@ -74,8 +72,6 @@
     },
     data() {
       return {
-        idProperty: 'ruleId',
-        exportOmitProperties: ['ruleId'],
         // Network rules config names
         networkRules: ['port-forward-rules', 'nat-rules', 'bypass-rules', 'filter-rules', 'access-rules'],
         /**
@@ -93,7 +89,6 @@
         // warning message to be shown in the extra-fields slot
         warning: null,
         footer: null,
-        updatedRules: null,
       }
     },
 
@@ -120,8 +115,6 @@
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
-
-      gridName: ({ ruleConfigs }) => ruleConfigs[0],
 
       /**
        * Returns the actual rules extracted from settings based on each configuration
@@ -164,7 +157,7 @@
         immediate: true,
         // Whenever rules change, check for warnings
         handler(newVal) {
-          this.onRulesChange(newVal)
+          this.validateRulesAndSetWarning(newVal)
         },
       },
     },
@@ -183,31 +176,6 @@
        */
       onRefresh() {
         this.fetchSettings(true)
-      },
-
-      onImportSettings(rulesList, ruleType) {
-        if (!rulesList?.[ruleType]) return
-        this.$vuntangle.dialog.show({
-          title: this.$vuntangle.$t('import_settings'),
-          component: SettingsImport,
-          componentEvents: {
-            import: async data => {
-              rulesList[ruleType] = await settingsMixin.methods.onImportSettings.call(this, data, rulesList[ruleType])
-            },
-          },
-          width: 600,
-          actionLabel: this.$vuntangle.$t('import'),
-        })
-      },
-
-      /**
-       * Handler when rules change in the grid
-       * Updates local updatedRules and checks for warnings
-       * @param {Object} updatedRules - the updated rules object from the grid
-       */
-      onRulesChange(updatedRules) {
-        this.updatedRules = updatedRules
-        this.validateRulesAndSetWarning(updatedRules)
       },
 
       /**

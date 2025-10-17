@@ -1,5 +1,11 @@
 <template>
-  <settings-dns ref="dns" :settings="dnsSettings">
+  <settings-dns
+    ref="dns"
+    :settings="dnsSettings"
+    :enable-export-settings="true"
+    :enable-import-settings="true"
+    :enable-export-csv="false"
+  >
     <template #actions="{ newSettings, isDirty }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings)">{{ $t('save') }}</u-btn>
     </template>
