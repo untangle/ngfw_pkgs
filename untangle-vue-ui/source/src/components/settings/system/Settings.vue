@@ -1,6 +1,10 @@
 <template>
   <appliance-system
     :system-settings="systemSettings"
+    :http-settings="httpSettings"
+    :ftp-settings="ftpSettings"
+    :smtp-settings="smtpSettings"
+    :is-expert-mode="isExpertMode"
     :company-name="companyName"
     :system-time-zones="systemTimeZones"
     :show-remote-support="true"
@@ -28,6 +32,10 @@
 
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+      httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http'),
+      ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp'),
+      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
+      isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
       systemTimeZones: ({ $store }) => $store.getters['settings/systemTimeZones'],
       networkSetting: ({ $store }) => $store.getters['settings/networkSetting'],
       enabledWanInterfaces: ({ $store }) => $store.getters['settings/enabledWanInterfaces'],
@@ -38,6 +46,9 @@
     created() {
       // update current system setting from store store
       this.$store.dispatch('settings/getSystemSettings', false)
+      this.$store.dispatch('apps/getHttpSettings')
+      this.$store.dispatch('apps/getFtpSettings')
+      this.$store.dispatch('apps/getSmtpSettings')
       // get list of all wan interfaces which is used to show in the hostname interface selection
       this.$store.dispatch('settings/getEnabledInterfaces')
       this.$store.dispatch('settings/getSystemTimeZones')
@@ -46,12 +57,24 @@
     methods: {
       /*
        * Saving system changes with particular tab
-       * This function commanly used saving all settings configurations
+       * This function commonly used saving all settings configurations
        */
       async onSaveSettings({ system, cb }) {
         this.$store.commit('SET_LOADER', true)
-        const response = await this.$store
-          .dispatch('settings/setSystemSettings', system)
+        const response = await this.$store.dispatch('settings/setSystemSettings', system)
+        await this.$store.dispatch('apps/setAppSettings', {
+          appName: 'http',
+          settings: system.httpSettings,
+        })
+        await this.$store.dispatch('apps/setAppSettings', {
+          appName: 'ftp',
+          settings: system.ftpSettings,
+        })
+        await this.$store
+          .dispatch('apps/setAppSettings', {
+            appName: 'smtp',
+            settings: system.smtpSettings,
+          })
           .finally(() => this.$store.commit('SET_LOADER', false))
         cb(response.success)
       },
