@@ -11,7 +11,14 @@
       </template>
     </no-license>
 
-    <settings-dynamic-block-lists :settings="dynamicListsSettings" :disabled="!isLicensed" @update-settings="onSave">
+    <settings-dynamic-block-lists
+      :settings="dynamicListsSettings"
+      :status="status"
+      :disabled="!isLicensed"
+      @update-settings="onSave"
+      @delete-configuration="onDeleteConfiguration"
+      @refresh="fetchStatus"
+    >
       <template #actions="{ newSettings, disabled, isDirty }">
         <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
           {{ $vuntangle.$t('reset_to_defaults') }}
@@ -54,6 +61,17 @@
     },
 
     methods: {
+      /**
+       * Fetches the status for the dynamic lists and
+       * formats the timestamp of each configuration to human readabale values
+       */
+      async fetchStatus() {
+        this.$store.commit('SET_LOADER', true)
+        const response = await window.rpc.appManager.app('dynamic-blocklists').status()
+        this.$store.commit('SET_LOADER', false)
+        this.status = response || []
+      },
+
       /** Resets the dynamic blocklists to its default configuration */
       onResetDefaults() {
         this.$vuntangle.confirm.show({
@@ -68,15 +86,37 @@
           },
         })
       },
+      /**
+       * dispatches action to save the updated dynamic list
+       * @param {Object} newSettings - new settings to be saved
+       */
       async onSave(newSettings) {
         this.$store.commit('SET_LOADER', true)
         const response = await this.$store.dispatch('settings/setDynamicListSettings', newSettings)
         this.$store.commit('SET_LOADER', false)
-        if (response.success) {
-          this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('dynamic_blocklist')]))
-        } else {
+        if (!response.success) {
           this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]))
         }
+      },
+      /**
+       * Handler for `delete-configuration` event, removing that configuration from settings
+       * @param {String} configurationId -  id of blocklist row
+       */
+      async onDeleteConfiguration(configurationId) {
+        this.$store.commit('SET_LOADER', true)
+        // Get the latest dynamicListSettings from the store
+        const currentSettings = this.dynamicListsSettings
+        // Remove the configuration with the given ID
+        const updatedConfSettings = currentSettings.configurations.filter(config => config.id !== configurationId)
+        const newSettings = {
+          ...currentSettings,
+          configurations: updatedConfSettings,
+        }
+        const response = await this.$store.dispatch('settings/setDynamicListSettings', newSettings)
+        if (!response.success) {
+          this.$vuntangle.toast.add(this.$t('an_error_occurred'), 'error')
+        }
+        this.$store.commit('SET_LOADER', false)
       },
     },
   }
