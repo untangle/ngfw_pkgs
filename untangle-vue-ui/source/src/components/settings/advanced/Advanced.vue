@@ -4,6 +4,10 @@
     :is-expert-mode="isExpertMode"
     :settings="networkSettings"
     :network-status="networkStatus"
+    :interfaces="interfaces"
+    :interfacesforQosRule="interfacesforQosRule"
+    :qos-statistics="qosStatistics"
+    @get-qos-statistics="getQosStatistics"
     @get-network-card-status="getNetworkCardStatus"
   >
     <template #actions="{ newSettings, isDirty, validate }">
@@ -19,6 +23,7 @@
   import settingsMixin from '../settingsMixin'
   import Rpc from '../../../util/Rpc'
   import Util from '../../../util/setupUtil'
+  import util from '@/util/util'
 
   export default {
     components: { SettingsAdvanced },
@@ -27,18 +32,30 @@
     data() {
       return {
         networkStatus: [],
+        qosStatistics: [],
       }
     },
 
     computed: {
       /* network settings from the store */
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
-      /** Gets the expert mode status from the settings store */
+      /* Gets the expert mode status from the settings store */
       isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
+
+      /* Get list of interfaces from the settings store */
+      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      /**
+       * returns the interfaces for condition value from network settings
+       * @param {Object} vm.networkSettings
+       */
+      interfacesforQosRule: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
     },
 
     created() {
       this.fetchSettings(false)
+      this.getQosStatistics()
     },
 
     methods: {
@@ -144,6 +161,31 @@
           this.$store.commit('SET_LOADER', false)
         }
       },
+
+      /**
+       * Retrieves and processes QoS statistics.
+       * It fetches QoS data using an RPC call, parses the result,
+       * converts the 'sent' property to an integer, and updates the qosStatistics data property.
+       */
+      async getQosStatistics() {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'QOS', null)
+          if (!result) return
+          const jsonSafe = await result.replace(/'/g, '"')
+          const list = JSON.parse(jsonSafe)
+          list.forEach(entry => {
+            entry.sent = parseInt(entry.sent, 10)
+          })
+
+          this.qosStatistics = list
+        } catch (err) {
+          Util.handleException(err)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
       /**
        * Optional hook triggered on browser refresh.
        * Fetches updated network settings and updates the store.
