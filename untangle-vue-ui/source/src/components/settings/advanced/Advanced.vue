@@ -5,6 +5,7 @@
     :settings="networkSettings"
     :network-status="networkStatus"
     :interfaces="interfaces"
+    :interfacesforQosRule="interfacesforQosRule"
     :qos-statistics="qosStatistics"
     @get-qos-statistics="getQosStatistics"
     @get-network-card-status="getNetworkCardStatus"
@@ -22,6 +23,7 @@
   import settingsMixin from '../settingsMixin'
   import Rpc from '../../../util/Rpc'
   import Util from '../../../util/setupUtil'
+  import util from '@/util/util'
 
   export default {
     components: { SettingsAdvanced },
@@ -39,8 +41,16 @@
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
       /* Gets the expert mode status from the settings store */
       isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
+
       /* Get list of interfaces from the settings store */
       interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      /**
+       * returns the interfaces for condition value from network settings
+       * @param {Object} vm.networkSettings
+       */
+      interfacesforQosRule: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
     },
 
     created() {
