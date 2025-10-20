@@ -4,6 +4,9 @@
     :is-expert-mode="isExpertMode"
     :settings="networkSettings"
     :network-status="networkStatus"
+    :interfaces="interfaces"
+    :qos-statistics="qosStatistics"
+    @get-qos-statistics="getQosStatistics"
     @get-network-card-status="getNetworkCardStatus"
   >
     <template #actions="{ newSettings, isDirty, validate }">
@@ -27,18 +30,22 @@
     data() {
       return {
         networkStatus: [],
+        qosStatistics: [],
       }
     },
 
     computed: {
       /* network settings from the store */
       networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
-      /** Gets the expert mode status from the settings store */
+      /* Gets the expert mode status from the settings store */
       isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
+      /* Get list of interfaces from the settings store */
+      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
     },
 
     created() {
       this.fetchSettings(false)
+      this.getQosStatistics()
     },
 
     methods: {
@@ -144,6 +151,31 @@
           this.$store.commit('SET_LOADER', false)
         }
       },
+
+      /**
+       * Retrieves and processes QoS statistics.
+       * It fetches QoS data using an RPC call, parses the result,
+       * converts the 'sent' property to an integer, and updates the qosStatistics data property.
+       */
+      async getQosStatistics() {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'QOS', null)
+          if (!result) return
+          const jsonSafe = await result.replace(/'/g, '"')
+          const list = JSON.parse(jsonSafe)
+          list.forEach(entry => {
+            entry.sent = parseInt(entry.sent, 10)
+          })
+
+          this.qosStatistics = list
+        } catch (err) {
+          Util.handleException(err)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
       /**
        * Optional hook triggered on browser refresh.
        * Fetches updated network settings and updates the store.
