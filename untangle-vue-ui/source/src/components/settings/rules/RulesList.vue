@@ -4,6 +4,9 @@
     :description="description"
     :rules="rules"
     :type="ruleType"
+    :hide-export-csv-button="true"
+    :hide-export-settings-button="false"
+    :hide-import-settings-button="false"
     @refresh="onRefresh"
     @rules-change="validateRulesAndSetWarning"
   >
