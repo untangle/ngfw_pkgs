@@ -302,9 +302,12 @@ const actions = {
     }
   },
 
-  async getDynamicListSettings({ commit }) {
+  getDynamicListSettings({ state, commit }, refetch) {
     try {
-      const data = await window.rpc.appManager.app('dynamic-blocklists').getDynamicBlockListsSettingsV2()
+      if (state.dynamicListSettings && !refetch) {
+        return
+      }
+      const data = window.rpc.appManager.app('dynamic-blocklists').getDynamicBlockListsSettingsV2()
       commit('SET_DYNAMIC_LISTS_SETTINGS', data)
     } catch (err) {
       Util.handleException(err)
