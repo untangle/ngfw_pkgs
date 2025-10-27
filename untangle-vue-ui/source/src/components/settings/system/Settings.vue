@@ -46,9 +46,9 @@
     created() {
       // update current system setting from store store
       this.$store.dispatch('settings/getSystemSettings', false)
-      this.$store.dispatch('apps/getHttpSettings')
-      this.$store.dispatch('apps/getFtpSettings')
-      this.$store.dispatch('apps/getSmtpSettings')
+      this.$store.dispatch('apps/getAndCommitAppSettings', 'http')
+      this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp')
+      this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp')
       // get list of all wan interfaces which is used to show in the hostname interface selection
       this.$store.dispatch('settings/getEnabledInterfaces')
       this.$store.dispatch('settings/getSystemTimeZones')

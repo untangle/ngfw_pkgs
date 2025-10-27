@@ -12,11 +12,13 @@
     </no-license>
 
     <settings-dynamic-block-lists
+      v-if="dynamicListsSettings"
       :settings="dynamicListsSettings"
       :status="status"
       :disabled="!isLicensed"
       @update-settings="onSave"
       @delete-configuration="onDeleteConfiguration"
+      @download="onDownload"
       @refresh="fetchStatus"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
@@ -48,14 +50,11 @@
       }
     },
     computed: {
-      dynamicListsSettings: ({ $store }) => $store.getters['settings/dynamicListSettings'],
+      dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists'),
     },
-
     created() {
-      // update current system setting from store store
-      this.$store.dispatch('settings/getDynamicListSettings', false)
+      this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
     },
-
     mounted() {
       this.fetchStatus()
     },
@@ -78,10 +77,16 @@
           title: this.$vuntangle.$t('confirm'),
           message: this.$vuntangle.$t('dynamic_blocklist_reset_warning'),
           action: async resolve => {
-            const response = await this.$store.dispatch('settings/getDynamicListsDefaultSettings')
-            if (!response.success) {
-              this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]))
+            this.$store.commit('SET_LOADER', true)
+            // Call API to reset defaults
+            const response = await window.rpc.appManager.app('dynamic-blocklists').onResetDefaultsV2()
+            if (response?.success !== false) {
+              // Refresh the Vuex store with new default settings
+              await this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
+            } else {
+              this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]), 'error')
             }
+            this.$store.commit('SET_LOADER', false)
             resolve()
           },
         })
@@ -92,7 +97,10 @@
        */
       async onSave(newSettings) {
         this.$store.commit('SET_LOADER', true)
-        const response = await this.$store.dispatch('settings/setDynamicListSettings', newSettings)
+        const response = await this.$store.dispatch('apps/setAppSettings', {
+          appName: 'dynamic-blocklists',
+          settings: newSettings,
+        })
         this.$store.commit('SET_LOADER', false)
         if (!response.success) {
           this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]))
@@ -112,11 +120,30 @@
           ...currentSettings,
           configurations: updatedConfSettings,
         }
-        const response = await this.$store.dispatch('settings/setDynamicListSettings', newSettings)
+        const response = await this.$store.dispatch('apps/setAppSettings', {
+          appName: 'dynamic-blocklists',
+          settings: newSettings,
+        })
         if (!response.success) {
           this.$vuntangle.toast.add(this.$t('an_error_occurred'), 'error')
         }
         this.$store.commit('SET_LOADER', false)
+      },
+
+      /**
+       * Handler for `download` event @delete-configuration="onDeleteConfiguration"
+       * @param {String[]} configurationIds - UUIDs of the configurations to be refreshed
+       */
+      async onDownload(configurationIds) {
+        this.$store.commit('SET_LOADER', true)
+        const response = await window.rpc.appManager.app('dynamic-blocklists').runJobsByConfigIdsV2(configurationIds)
+        if (response?.success !== false) {
+          await this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
+          this.fetchStatus()
+        } else {
+          this.$store.commit('SET_LOADER', false)
+          this.$vuntangle.toast.add(this.$vuntangle.$t('an_error_occurred'), 'error')
+        }
       },
     },
   }
