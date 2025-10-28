@@ -163,8 +163,8 @@
 
       /**
        * Retrieves and processes QoS statistics.
-       * This function fetches QoS status via an RPC call to `rpc.networkManager.getStatus` with 'QOS' as a parameter.
-       * It then attempts to extract a JSON string from the RPC result, parses it, and transforms the data,
+       * This function fetches QoS status via an RPC call, extracts a JSON string using a utility function,
+       * parses it, and transforms the data for display.
        */
       async getQosStatistics() {
         this.$store.commit('SET_LOADER', true)
@@ -173,15 +173,11 @@
           const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'QOS', null)
           if (!result) return
 
-          const jsonMatch = result.match(/\[[\s\S]*\]/)
-          if (!jsonMatch) {
+          const jsonString = util.extractJsonArrayString(result)
+          if (!jsonString) {
             this.qosStatistics = []
             return
           }
-
-          const jsonString = jsonMatch[0]
-            .replace(/([{,]\s*)'([^']+?)'\s*:/g, '$1"$2":') // Keys
-            .replace(/:\s*'([^']+?)'/g, ':"$1"') // Values
 
           let list
           try {
@@ -191,7 +187,6 @@
             return
           }
 
-          // Data transformation (optional numeric conversion)
           this.qosStatistics = list.map(item => ({
             ...item,
             sent: parseInt(item.sent) || 0,
