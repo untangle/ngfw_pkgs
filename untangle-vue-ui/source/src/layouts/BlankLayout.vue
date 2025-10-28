@@ -2,6 +2,7 @@
   <v-app>
     <!-- Importing nav bar takes care of language setting, but keep it hidden on blank layout -->
     <app-nav v-show="false" />
+    <dynamic-drawer />
     <v-main>
       <router-view class="d-flex flex-column fill-height" />
     </v-main>
@@ -17,7 +18,9 @@
 </template>
 <script>
   import AppNav from './AppNav.vue'
+  import DynamicDrawer from './DynamicDrawer.vue'
+
   export default {
-    components: { AppNav },
+    components: { AppNav, DynamicDrawer },
   }
 </script>
