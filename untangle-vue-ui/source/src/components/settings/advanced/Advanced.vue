@@ -5,7 +5,7 @@
     :settings="networkSettings"
     :network-status="networkStatus"
     :interfaces="interfaces"
-    :interfacesforQosRule="interfacesforQosRule"
+    :interfacesfor-qos-rule="interfacesforQosRule"
     :qos-statistics="qosStatistics"
     @get-qos-statistics="getQosStatistics"
     @get-network-card-status="getNetworkCardStatus"
@@ -55,7 +55,6 @@
 
     created() {
       this.fetchSettings(false)
-      this.getQosStatistics()
     },
 
     methods: {
@@ -164,21 +163,39 @@
 
       /**
        * Retrieves and processes QoS statistics.
-       * It fetches QoS data using an RPC call, parses the result,
-       * converts the 'sent' property to an integer, and updates the qosStatistics data property.
+       * This function fetches QoS status via an RPC call to `rpc.networkManager.getStatus` with 'QOS' as a parameter.
+       * It then attempts to extract a JSON string from the RPC result, parses it, and transforms the data,
        */
       async getQosStatistics() {
         this.$store.commit('SET_LOADER', true)
+
         try {
           const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'QOS', null)
           if (!result) return
-          const jsonSafe = await result.replace(/'/g, '"')
-          const list = JSON.parse(jsonSafe)
-          list.forEach(entry => {
-            entry.sent = parseInt(entry.sent, 10)
-          })
 
-          this.qosStatistics = list
+          const jsonMatch = result.match(/\[[\s\S]*\]/)
+          if (!jsonMatch) {
+            this.qosStatistics = []
+            return
+          }
+
+          const jsonString = jsonMatch[0]
+            .replace(/([{,]\s*)'([^']+?)'\s*:/g, '$1"$2":') // Keys
+            .replace(/:\s*'([^']+?)'/g, ':"$1"') // Values
+
+          let list
+          try {
+            list = JSON.parse(jsonString)
+          } catch (err) {
+            this.qosStatistics = []
+            return
+          }
+
+          // Data transformation (optional numeric conversion)
+          this.qosStatistics = list.map(item => ({
+            ...item,
+            sent: parseInt(item.sent) || 0,
+          }))
         } catch (err) {
           Util.handleException(err)
         } finally {
