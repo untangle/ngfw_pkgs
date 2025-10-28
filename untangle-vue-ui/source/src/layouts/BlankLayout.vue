@@ -1,5 +1,7 @@
 <template>
   <v-app>
+    <!-- Importing nav bar takes care of language setting, but keep it hidden on blank layout -->
+    <app-nav v-show="false" />
     <v-main>
       <router-view class="d-flex flex-column fill-height" />
     </v-main>
@@ -14,5 +16,8 @@
   </v-app>
 </template>
 <script>
-  export default {}
+  import AppNav from './AppNav.vue'
+  export default {
+    components: { AppNav },
+  }
 </script>

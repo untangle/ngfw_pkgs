@@ -109,6 +109,9 @@
       theme: store.getters['settings/theme'],
     }),
     computed: {
+      languageSettings() {
+        return this.$store.getters['settings/languageSettings']
+      },
       upgradeStatus() {
         return store.getters['settings/upgradeStatus']
       },
@@ -126,6 +129,16 @@
       '$vuntangle.theme'(theme) {
         this.theme = theme
       },
+      languageSettings: {
+        handler() {
+          this.setLanguage()
+        },
+        deep: true,
+      },
+    },
+
+    created() {
+      this.$store.dispatch('settings/getLanguageSettings')
     },
 
     methods: {
@@ -137,6 +150,11 @@
         await api.get('/auth/logout?url=/admin&realm=Administrator')
         window.rpc = undefined
         this.$router.push({ name: 'login' })
+      },
+      setLanguage() {
+        if (this.languageSettings && this.languageSettings.language) {
+          this.$i18n.setLocale(this.languageSettings.language)
+        }
       },
     },
   }

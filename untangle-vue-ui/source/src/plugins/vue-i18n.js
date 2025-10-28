@@ -47,9 +47,12 @@ i18n.availableLocalesForUI = [
  * Set the current used locale (language) code
  */
 i18n.setLocale = locale => {
-  localStorage.setItem('i18n', locale)
-  i18n.locale = locale
-  vuntangle.locale = locale
+  const isLocaleAvailable = i18n.availableLocalesForUI.some(availableLocale => availableLocale.code === locale)
+  // set the input locale only if it is available, or else set english
+  const localeToSet = isLocaleAvailable ? locale : 'en'
+  localStorage.setItem('i18n', localeToSet)
+  i18n.locale = localeToSet
+  vuntangle.locale = localeToSet
 }
 
 i18n.setLocale(localStorage.getItem('i18n') || 'en')
