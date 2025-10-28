@@ -39,21 +39,6 @@ const actions = {
     return null
   },
 
-  /* get http settings */
-  async getHttpSettings({ commit, dispatch }) {
-    try {
-      const data = await dispatch('getAppSettings', 'http')
-      commit('SET_SETTINGS', {
-        appName: 'http',
-        value: data,
-      })
-
-      return { success: true, message: null, data } //  success
-    } catch (err) {
-      Util.handleException(err)
-    }
-  },
-
   /* setAppSettings will update system regarding configurations */
   async setAppSettings({ dispatch }, { appName, settings }) {
     if (!settings) {
@@ -70,7 +55,8 @@ const actions = {
           if (res?.code && res?.message) return resolve({ success: false, message: res.message.slice(0, 100) })
 
           // Fetch updated settings after successful save
-          await dispatch(`get${appName.charAt(0).toUpperCase() + appName.slice(1)}Settings`)
+          await dispatch('getAndCommitAppSettings', appName)
+
           return resolve({ success: true })
         }, settings)
       })
@@ -87,29 +73,11 @@ const actions = {
     }
   },
 
-  /* get ftp settings */
-  async getFtpSettings({ commit, dispatch }) {
+  async getAndCommitAppSettings({ commit, dispatch }, appName) {
     try {
-      const data = await dispatch('getAppSettings', 'ftp')
-      commit('SET_SETTINGS', {
-        appName: 'ftp',
-        value: data,
-      })
-      return { success: true, message: null, data } //  success
-    } catch (err) {
-      Util.handleException(err)
-    }
-  },
-
-  /* get smtp settings */
-  async getSmtpSettings({ commit, dispatch }) {
-    try {
-      const data = await dispatch('getAppSettings', 'smtp')
-      commit('SET_SETTINGS', {
-        appName: 'smtp',
-        value: data,
-      })
-      return { success: true, message: null, data } //  success
+      const data = await dispatch('getAppSettings', appName)
+      commit('SET_SETTINGS', { appName, value: data })
+      return { success: true, data }
     } catch (err) {
       Util.handleException(err)
     }
