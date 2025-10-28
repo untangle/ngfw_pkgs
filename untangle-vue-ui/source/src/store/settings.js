@@ -12,9 +12,11 @@ const getDefaultState = () => ({
   uriSettings: null,
   systemTimeZones: [],
   shieldSettings: null,
+  languageSettings: null,
 })
 
 const getters = {
+  languageSettings: state => state.languageSettings,
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
   interface: state => device => {
@@ -46,9 +48,22 @@ const mutations = {
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
   SET_SHIELD_SETTINGS: (state, value) => set(state, 'shieldSettings', value),
+  SET_LANGUAGE_SETTINGS: (state, value) => set(state, 'languageSettings', value),
 }
 
 const actions = {
+  async getLanguageSettings({ commit }) {
+    if (!window.rpc) {
+      return
+    }
+    try {
+      const data = await window.rpc.languageManager.getLanguageSettings()
+      commit('SET_LANGUAGE_SETTINGS', data)
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   async getInterfaces({ commit }) {
     try {
       const data = await window.rpc.networkManager.getNetworkSettingsV2().interfaces
