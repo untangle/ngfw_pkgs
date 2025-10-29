@@ -1,4 +1,4 @@
-import BlankLayout from '@/layouts/BlankLayout.vue'
+import DynamicLayout from '@/layouts/DynamicLayout.vue'
 import wizard from '@/components/setup/Wizard.vue'
 
 export default [
@@ -6,6 +6,6 @@ export default [
     path: '/setup',
     name: 'wizard',
     component: wizard,
-    meta: { layout: BlankLayout },
+    meta: { layout: DynamicLayout },
   },
 ]

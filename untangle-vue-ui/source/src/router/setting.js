@@ -28,6 +28,10 @@ export default [
     component: Main,
     children: [
       {
+        path: 'network',
+        redirect: 'network/interfaces',
+      },
+      {
         path: 'network/dhcp',
         component: Dhcp,
         meta: { helpContext: 'dhcp' },
