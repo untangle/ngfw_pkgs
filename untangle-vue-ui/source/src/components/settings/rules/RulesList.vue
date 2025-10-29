@@ -160,13 +160,21 @@
           this.validateRulesAndSetWarning(newVal)
         },
       },
+
+      ruleType: {
+        immediate: true,
+        handler() {
+          if (this.ruleType === 'port-forward') {
+            this.setPortForwardWarnings()
+          } else {
+            this.footer = null
+          }
+        },
+      },
     },
 
     created() {
       this.fetchSettings(false)
-      if (this.ruleType === 'port-forward') {
-        this.setPortForwardWarnings()
-      }
     },
 
     methods: {

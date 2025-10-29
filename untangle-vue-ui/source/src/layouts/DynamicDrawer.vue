@@ -111,27 +111,6 @@
               { name: 'troubleshooting', to: '/settings/network/troubleshooting' },
             ],
           },
-          // {
-          //   name: 'routing',
-          //   icon: 'mdi-call-split',
-          //   active: false,
-          //   match: '/settings/routing',
-          //   items: [
-          //     { name: 'static_routes', to: '/settings/routing/routes' },
-          //     { name: 'dynamic_routes', to: '/settings/routing/dynamicRoutes' },
-          //   ],
-          // },
-          // {
-          //   name: 'firewall',
-          //   icon: 'mdi-shield-half-full',
-          //   active: false,
-          //   match: '/settings/firewall',
-          //   items: [
-          //     { name: 'filter', to: '/settings/firewall/filter' },
-          //     { name: 'access', to: '/settings/firewall/access' },
-          //     { name: 'denial_of_service', to: '/settings/firewall/denial-of-service' },
-          //   ],
-          // },
           {
             name: 'system',
             icon: 'mdi-cog',

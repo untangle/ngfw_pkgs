@@ -1,6 +1,6 @@
 <template>
   <div>
-    <blank-layout
+    <dynamic-layout
       v-if="
         embedded ||
         $route.name === 'login' ||
@@ -13,10 +13,10 @@
   </div>
 </template>
 <script>
-  import { BlankLayout, DefaultLayout } from '@/layouts'
+  import { DynamicLayout, DefaultLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, BlankLayout },
+    components: { DefaultLayout, DynamicLayout },
 
     data() {
       return {

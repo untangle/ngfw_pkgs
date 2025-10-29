@@ -1,5 +1,5 @@
-import BlankLayout from './BlankLayout.vue'
+import DynamicLayout from './DynamicLayout.vue'
 import DefaultLayout from './DefaultLayout.vue'
 import SetupLayout from './SetupLayout.vue'
 
-export { BlankLayout, DefaultLayout, SetupLayout }
+export { DynamicLayout, DefaultLayout, SetupLayout }

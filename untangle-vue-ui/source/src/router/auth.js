@@ -1,4 +1,4 @@
-import BlankLayout from '@/layouts/BlankLayout'
+import DynamicLayout from '@/layouts/DynamicLayout'
 import Login from '@/components/auth/Login'
 
 export default [
@@ -6,6 +6,6 @@ export default [
     path: '/login',
     name: 'login',
     component: Login,
-    meta: { layout: BlankLayout },
+    meta: { layout: DynamicLayout },
   },
 ]
