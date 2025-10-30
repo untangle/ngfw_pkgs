@@ -40,6 +40,7 @@
 
     created() {
       this.fetchNetworkSettings(false)
+      this.onRefresh()
     },
 
     methods: {
@@ -90,7 +91,9 @@
               if (columnName === 'dev') {
                 // lookup interface mapping from Vuex store
                 const interfaceRecord = this.networkSettings.interfaces.find(iface => iface.symbolicDev === columnValue)
-                row.interface = interfaceRecord ? interfaceRecord.interfaceId : columnValue
+                row.interface = interfaceRecord
+                  ? `${interfaceRecord.name} [${interfaceRecord.interfaceId}]`
+                  : columnValue
               }
 
               if (['dev', 'metric', 'gw', 'proto'].includes(columnName)) {
@@ -144,7 +147,7 @@
             const columns = line?.split(' ')
             const dev = columns[5]?.split(':')[0]
             const interfaceRecord = this.networkSettings.interfaces.find(iface => iface.symbolicDev === dev)
-            const interfaceId = interfaceRecord ? interfaceRecord.interfaceId : dev
+            const interfaceId = interfaceRecord ? `${interfaceRecord.name} [${interfaceRecord.interfaceId}]` : dev
             ospfStore.push({
               neighbor: columns[0],
               address: columns[4],
@@ -251,6 +254,7 @@
        */
       onBrowserRefresh() {
         this.fetchNetworkSettings(true)
+        this.onRefresh()
       },
     },
   }
