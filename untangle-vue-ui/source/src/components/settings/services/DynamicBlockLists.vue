@@ -20,6 +20,7 @@
       @delete-configuration="onDeleteConfiguration"
       @download="onDownload"
       @refresh="fetchStatus"
+      @download-csv="initiateDownload"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
         <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
@@ -36,6 +37,7 @@
 <script>
   import { SettingsDynamicBlockLists, NoLicense } from 'vuntangle'
   import serviceMixin from './serviceMixin'
+  import vuntangle from '@/plugins/vuntangle'
 
   export default {
     components: {
@@ -143,6 +145,30 @@
         } else {
           this.$store.commit('SET_LOADER', false)
           this.$vuntangle.toast.add(this.$vuntangle.$t('an_error_occurred'), 'error')
+        }
+      },
+      /**
+       * Handler for `download-csv` event
+       * that fetches the ip list and than saves it to local CSV file
+       * @param {Array} configurationId - id of blocklist row
+       */
+      async initiateDownload(configurationId) {
+        try {
+          this.$store.commit('SET_LOADER', true)
+          const response = await window.rpc.appManager.app('dynamic-blocklists').exportCsvV2(configurationId)
+          this.$store.commit('SET_LOADER', false)
+
+          // Check if response is empty, null, or undefined
+          if (!response || response.length === 0) {
+            this.$vuntangle.toast.add(this.$vuntangle.$t('export_failed'), 'error')
+            return
+          }
+
+          // Process and download CSV file
+          vuntangle.util.processDynamicListDownload(`block-list-${configurationId}.csv`, response)
+        } catch (error) {
+          this.$store.commit('SET_LOADER', false)
+          this.$vuntangle.toast.add(this.$vuntangle.$t('export_failed'), 'error')
         }
       },
     },
