@@ -471,6 +471,27 @@ const util = {
 
     return (ipInteger & netmaskInteger) === (networkInteger & netmaskInteger)
   },
+
+  /**
+   * Extracts and normalizes a JSON array string from a raw RPC response.
+   * Handles cases where the response includes extra logs or single-quoted JSON.
+   *
+   * @param {string} rawResult - The raw RPC result string.
+   * @returns {string|null} - A cleaned JSON string (ready for JSON.parse), or null if not found.
+   */
+  extractJsonArrayString(rawResult) {
+    if (!rawResult) return null
+
+    const jsonMatch = rawResult.match(/\[[\s\S]*\]/)
+    if (!jsonMatch) return null
+
+    // Normalize single-quoted JSON into valid JSON
+    const jsonString = jsonMatch[0]
+      .replace(/([{,]\s*)'([^']+?)'\s*:/g, '$1"$2":') // convert single-quoted keys
+      .replace(/:\s*'([^']+?)'/g, ':"$1"') // convert single-quoted values
+
+    return jsonString
+  },
 }
 
 export default util

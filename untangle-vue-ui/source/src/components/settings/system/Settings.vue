@@ -1,6 +1,7 @@
 <template>
   <appliance-system
     :system-settings="systemSettings"
+    :device-temperature-info="deviceTemperatureInfo"
     :http-settings="httpSettings"
     :ftp-settings="ftpSettings"
     :smtp-settings="smtpSettings"
@@ -11,6 +12,7 @@
     :support-access-enabled="true"
     :all-wan-interface-names="enabledWanInterfaces"
     @save-settings="onSaveSettings"
+    @refresh-device-temperature-info="onRefreshDeviceTemperatureInfo"
     @force-time-sync="onForceTimeSync"
     @factory-reset="onFactoryReset"
     @reboot="onReboot"
@@ -32,6 +34,7 @@
 
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+      deviceTemperatureInfo: ({ $store }) => $store.getters['settings/deviceTemperatureInfo'],
       httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http'),
       ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp'),
       smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
@@ -46,6 +49,7 @@
     created() {
       // update current system setting from store store
       this.$store.dispatch('settings/getSystemSettings', false)
+      this.$store.dispatch('settings/getDeviceTemperatureInfo')
       this.$store.dispatch('apps/getAndCommitAppSettings', 'http')
       this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp')
       this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp')
@@ -106,6 +110,13 @@
        */
       async onReboot() {
         await this.$store.dispatch('settings/reboot')
+      },
+
+      /*
+       * Device temperature refresh handler
+       */
+      async onRefreshDeviceTemperatureInfo() {
+        await this.$store.dispatch('settings/getDeviceTemperatureInfo')
       },
 
       /*
