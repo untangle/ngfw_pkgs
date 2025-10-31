@@ -8,6 +8,7 @@ const getDefaultState = () => ({
   editCallback: null,
   networkSetting: null,
   systemSetting: null,
+  deviceTemperatureInfo: null,
   enabledWanInterfaces: [],
   uriSettings: null,
   systemTimeZones: [],
@@ -23,6 +24,7 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  deviceTemperatureInfo: state => state.deviceTemperatureInfo || {},
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
@@ -44,6 +46,7 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
+  SET_DEVICE_TEMP_INFO: (state, value) => set(state, 'deviceTemperatureInfo', value),
   SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
@@ -53,7 +56,7 @@ const mutations = {
 
 const actions = {
   async getLanguageSettings({ commit }) {
-    if (!window.rpc) {
+    if (!window.rpc || !window.rpc.languageManager) {
       return
     }
     try {
@@ -93,6 +96,17 @@ const actions = {
       }
       const data = window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* get device temperature information configuration */
+  async getDeviceTemperatureInfo({ commit }) {
+    try {
+      const data = await window.rpc.systemManager.getDeviceTemperatureInfo()
+      commit('SET_DEVICE_TEMP_INFO', data)
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
@@ -198,8 +212,6 @@ const actions = {
             })
           }
           dispatch('getNetworkSettings', true)
-
-          sendEvent(EVENT_ACTIONS.REFRESH_NETWORK_SETTINGS)
           return resolve({ success: true })
         }, payload)
       })
