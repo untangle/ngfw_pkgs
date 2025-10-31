@@ -56,7 +56,7 @@ const mutations = {
 
 const actions = {
   async getLanguageSettings({ commit }) {
-    if (!window.rpc) {
+    if (!window.rpc || !window.rpc.languageManager) {
       return
     }
     try {
