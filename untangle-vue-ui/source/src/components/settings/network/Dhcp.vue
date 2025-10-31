@@ -49,7 +49,7 @@
        * @function onFetchLeases
        * @returns {Promise<void>}
        */
-      async onFetchLeases() {
+      async onFetchLeases(callback) {
         // Set the fetching flag to true to indicate that the data is being fetched.
         this.fetching = true
         try {
@@ -79,6 +79,7 @@
           Util.handleException(err)
           this.leases = []
         } finally {
+          if (callback) callback(this.leases)
           this.fetching = false
         }
       },
