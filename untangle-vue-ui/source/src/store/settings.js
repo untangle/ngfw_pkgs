@@ -56,7 +56,7 @@ const mutations = {
 
 const actions = {
   async getLanguageSettings({ commit }) {
-    if (!window.rpc) {
+    if (!window.rpc || !window.rpc.languageManager) {
       return
     }
     try {
@@ -212,8 +212,6 @@ const actions = {
             })
           }
           dispatch('getNetworkSettings', true)
-
-          sendEvent(EVENT_ACTIONS.REFRESH_NETWORK_SETTINGS)
           return resolve({ success: true })
         }, payload)
       })
