@@ -7996,8 +7996,8 @@ vuex@^3.6.2:
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
 vuntangle@untangle/vuntangle:
-  version "1.59.82"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#45eab3367b1acb03a2e22ad97f9b8b7e82a8762a"
+  version "1.59.84"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#953bd959b37b06054bd56bcd9f427e09b36c5e06"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"
