@@ -1,6 +1,7 @@
 import { set } from 'vue'
 import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
+import util from '@/util/util'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
 
@@ -14,6 +15,7 @@ const getDefaultState = () => ({
   systemTimeZones: [],
   shieldSettings: null,
   languageSettings: null,
+  accessRuleSshEnabled: false,
 })
 
 const getters = {
@@ -37,6 +39,7 @@ const getters = {
   isExpertMode: () => window?.rpc?.isExpertMode || false,
   dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
   shieldSettings: state => state?.shieldSettings || {},
+  accessRuleSshEnabled: state => state.accessRuleSshEnabled,
 }
 
 const mutations = {
@@ -52,6 +55,7 @@ const mutations = {
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
   SET_SHIELD_SETTINGS: (state, value) => set(state, 'shieldSettings', value),
   SET_LANGUAGE_SETTINGS: (state, value) => set(state, 'languageSettings', value),
+  SET_ACCESS_RULE_SSH_ENABLED: (state, value) => set(state, 'accessRuleSshEnabled', value),
 }
 
 const actions = {
@@ -76,13 +80,14 @@ const actions = {
     }
   },
 
-  async getNetworkSettings({ state, commit }, refetch) {
+  async getNetworkSettings({ state, commit, dispatch }, refetch) {
     try {
       if (state.networkSetting && !refetch) {
         return
       }
       const data = await window.rpc.networkManager.getNetworkSettingsV2()
       commit('SET_NETWORK_SETTINGS', data)
+      dispatch('setAccessRuleSshEnabled')
     } catch (err) {
       Util.handleException(err)
     }
@@ -365,6 +370,11 @@ const actions = {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
+  },
+
+  setAccessRuleSshEnabled({ state, commit }) {
+    const accessRules = state?.networkSetting?.access_rules || []
+    commit('SET_ACCESS_RULE_SSH_ENABLED', util.getRuleEnabledStatus(accessRules, 'Allow SSH'))
   },
 }
 

@@ -492,6 +492,22 @@ const util = {
 
     return jsonString
   },
+
+  /**
+   * filters the rules array to find a rule by description.
+   * returns the enabled status of the rule.
+   * @param {*} rules
+   * @param {*} description
+   * @returns
+   */
+  getRuleEnabledStatus(rules, description) {
+    if (!Array.isArray(rules)) return
+
+    const filteredRule = rules.find(rule => rule.description === description)
+    const isEnabled = filteredRule ? !!filteredRule.enabled : false
+
+    return isEnabled
+  },
 }
 
 export default util
