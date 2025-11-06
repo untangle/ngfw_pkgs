@@ -68,6 +68,7 @@
           hasIpv6Support: true,
         },
         $readOnly: false,
+        $applications: {},
       }
     },
     data() {
@@ -222,7 +223,7 @@
             // For Network Settings Rules Save Network Settings
             if (this.networkRules.includes(confName)) {
               if (confName === 'access-rules') {
-                const confirmed = await this.showAccessRulesWarning()
+                const confirmed = await this.showAccessRulesWarning(updatedRules)
                 if (!confirmed) {
                   return
                 }
@@ -365,23 +366,77 @@
        * or `false` if the user clicks No or cancels the dialog.
        * @returns {Promise<boolean>} Resolves to true/false based on user choice.
        */
-      showAccessRulesWarning() {
-        return new Promise(resolve => {
-          this.$vuntangle.confirm.show({
+      showAccessRulesWarning(updatedRules) {
+        const accessRules = updatedRules['access-rules']
+        const isBlockAllEnabled = util.getRuleEnabledStatus(accessRules, 'Block All')
+        const isSshEnabled = util.getRuleEnabledStatus(accessRules, 'Allow SSH')
+        const prevSshEnabled = store.getters['settings/accessRuleSshEnabled']
+        const prevAccessRules = store.getters['settings/networkSetting']?.access_rules || []
+
+        // Case 1: Block All rule cannot be disabled
+        if (!isBlockAllEnabled) {
+          return new Promise(resolve => {
+            this.$vuntangle.confirm.show({
+              title: this.$t('failed'),
+              message: this.$t('access_rules_block_all_missing_or_disabled'),
+              buttons: [
+                {
+                  name: this.$t('ok'),
+                  props: {
+                    minWidth: null,
+                    small: false,
+                    depressed: true,
+                    class: 'text-capitalize',
+                  },
+                  handler() {
+                    this.onClose()
+                    resolve(false)
+                  },
+                },
+              ],
+              cancel() {
+                this.onClose()
+                resolve(false)
+              },
+            })
+          })
+        }
+
+        // Case 2 or 3: SSH enabled or rules count changed
+        let confirmConfig = null
+
+        if (accessRules?.length !== prevAccessRules.length) {
+          confirmConfig = {
             title: this.$t('access_rules_changed'),
             message: this.$t('access_rules_warning'),
-            confirmLabel: this.$vuntangle.$t('yes'),
-            cancelLabel: this.$vuntangle.$t('no'),
-            action() {
-              this.onClose()
-              resolve(true)
-            },
-            cancel() {
-              this.onClose()
-              resolve(false)
-            },
+          }
+        } else if (isSshEnabled && !prevSshEnabled) {
+          confirmConfig = {
+            title: this.$t('access_rules_allow_ssh_enabled'),
+            message: this.$t('access_rules_allow_ssh_warning'),
+          }
+        }
+
+        if (confirmConfig) {
+          return new Promise(resolve => {
+            this.$vuntangle.confirm.show({
+              ...confirmConfig,
+              confirmLabel: this.$vuntangle.$t('yes'),
+              cancelLabel: this.$vuntangle.$t('no'),
+              action() {
+                this.onClose()
+                resolve(true)
+              },
+              cancel() {
+                this.onClose()
+                resolve(false)
+              },
+            })
           })
-        })
+        }
+
+        // Default: everything fine
+        return Promise.resolve(true)
       },
 
       /**
