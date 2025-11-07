@@ -91,7 +91,10 @@
       async login() {
         this.error = false
         const response = await api.post('/auth/login?url=/admin&realm=Administrator', this.credentials)
-        if (!response.data.includes('login-form')) {
+        const data = response.data
+        if (data.includes('login-form') || data.includes('username') || data.includes('password')) {
+          this.error = true
+        } else {
           this.$router.push({ name: 'home' })
         }
       },

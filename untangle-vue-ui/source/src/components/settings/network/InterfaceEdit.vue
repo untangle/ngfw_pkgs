@@ -8,6 +8,7 @@
       :interfaces="interfaces"
       :status="status"
       :features="features"
+      @check-network-availability="isNetworkAvailable"
       @renew-dhcp="onRenewDhcp"
       @delete="onDelete"
       @get-wifi-channels="onGetWifiChannels"
@@ -57,6 +58,21 @@
       }
     },
     methods: {
+      // check if network is available
+      async isNetworkAvailable(network, cb) {
+        const result = await new Promise((resolve, reject) => {
+          window.rpc.UvmContext.netspaceManager().isNetworkAvailable(
+            (res, err) => (err ? reject(err) : resolve(res)),
+            'networking',
+            network,
+          )
+        })
+        if (cb) {
+          cb(result)
+        }
+        return (this.status = result)
+      },
+
       // get the interface status
       async getInterfaceStatus() {
         const result = await new Promise((resolve, reject) => {
