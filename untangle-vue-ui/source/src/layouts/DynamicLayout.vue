@@ -21,32 +21,5 @@
   export default {
     name: 'DynamicLayout',
     components: { DynamicDrawer },
-
-    computed: {
-      languageSettings() {
-        return this.$store.getters['settings/languageSettings']
-      },
-    },
-
-    watch: {
-      languageSettings: {
-        handler() {
-          this.setLanguage()
-        },
-        deep: true,
-      },
-    },
-
-    created() {
-      this.$store.dispatch('settings/getLanguageSettings')
-    },
-
-    methods: {
-      setLanguage() {
-        if (this.languageSettings && this.languageSettings.language) {
-          this.$i18n.setLocale(this.languageSettings.language)
-        }
-      },
-    },
   }
 </script>
