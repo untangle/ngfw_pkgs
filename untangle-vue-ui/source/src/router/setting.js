@@ -16,7 +16,7 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 // services
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
-import About from '@/components/settings/system/NgfwAbout'
+import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
