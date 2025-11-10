@@ -26,6 +26,7 @@
 
     beforeMount() {
       this.embedded = window.location !== window.parent.location
+      this._provided.embedded = this.embedded
     },
   }
 </script>

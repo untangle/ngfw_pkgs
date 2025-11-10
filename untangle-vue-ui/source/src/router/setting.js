@@ -32,6 +32,10 @@ export default [
         redirect: 'network/interfaces',
       },
       {
+        path: 'system',
+        redirect: 'system/settings',
+      },
+      {
         path: 'network/dhcp',
         component: Dhcp,
         meta: { helpContext: 'dhcp' },

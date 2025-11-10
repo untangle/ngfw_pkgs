@@ -161,6 +161,8 @@
           return this.allNavItems.filter(
             item => item.name === 'network' || item.name === 'routing' || item.name === 'firewall',
           )
+        } else if (path.includes('/settings/system')) {
+          return this.allNavItems.filter(item => item.name === 'system')
         }
         return []
       },
