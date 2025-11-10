@@ -14,6 +14,7 @@
     @save-settings="onSaveSettings"
     @refresh-device-temperature-info="onRefreshDeviceTemperatureInfo"
     @force-time-sync="onForceTimeSync"
+    @language-sync="onLanguageSync"
     @factory-reset="onFactoryReset"
     @reboot="onReboot"
     @shutdown="onShutdown"
@@ -27,10 +28,12 @@
   import settingsMixin from '../settingsMixin'
   import util from '@/util/util'
   import Util from '@/util/setupUtil'
+  import Rpc from '@/util/Rpc'
 
   export default {
     components: { ApplianceSystem },
     mixins: [settingsMixin],
+    inject: ['embedded'],
 
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
@@ -46,6 +49,18 @@
         return window?.rpc?.companyName || null
       },
     },
+
+    watch: {
+      'systemSettings.languageSettings.language': {
+        handler(newValue, oldValue) {
+          if (newValue && oldValue && newValue !== oldValue && newValue.split('-').length === 2) {
+            this.$i18n.setLocale(newValue.split('-')[1])
+            if (this.embedded) window.top.location.reload()
+          }
+        },
+      },
+    },
+
     created() {
       // update current system setting from store store
       this.$store.dispatch('settings/getSystemSettings', false)
@@ -92,6 +107,18 @@
         if (!response.success) {
           this.$vuntangle.toast.add(this.$vuntangle.$t('force_time_sync_failed'), 'error')
         }
+      },
+
+      /* Handler to synchronize language */
+      onLanguageSync() {
+        this.$store.commit('SET_LOADER', true)
+        Rpc.asyncData('rpc.languageManager.synchronizeLanguage')
+          .then(function () {
+            window.location.reload()
+          })
+          .finally(() => {
+            this.$store.commit('SET_LOADER', false)
+          })
       },
 
       /*
