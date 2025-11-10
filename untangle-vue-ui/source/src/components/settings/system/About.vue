@@ -51,7 +51,7 @@
       },
     },
 
-    async mounted() {
+    async created() {
       await this.getServerData()
       await this.loadLicenses()
       await this.getLegalUrl()
@@ -84,7 +84,7 @@
           // Fetch account info if UID is valid
           if (uid && uid.length === 19) {
             const account = await util.fetchAccountInfo(uid)
-            if (account) data.push({ name: 'account', value: account })
+            if (account && account.account) data.push({ name: 'account', value: account.account })
           }
 
           // Add remaining server data to the array

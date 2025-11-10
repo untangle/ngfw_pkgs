@@ -528,19 +528,27 @@ const util = {
   },
 
   /**
-   * Fetches account information for a given UID from the store.
+   * Fetches account information from the store.
    * @param {string} uid - The user ID.
-   * @returns {Promise<object|null>} The account data or null if an error occurs.
+   * @returns {Promise<Object>} A promise that resolves with the account data.
    */
   async fetchAccountInfo(uid) {
-    try {
-      const storeUrl = await this.getStoreUrl()
-      const url = `${storeUrl}?action=find_account&uid=${encodeURIComponent(uid)}`
-      const response = await axios.get(url)
-      return response.data?.account || null
-    } catch (err) {
-      return null
-    }
+    const storeUrl = await this.getStoreUrl()
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      const callbackName = `jsonpCallback_${Date.now()}`
+
+      window[callbackName] = data => {
+        resolve(data)
+        delete window[callbackName]
+        document.body.removeChild(script)
+      }
+
+      script.src = `${storeUrl}?action=find_account&uid=${encodeURIComponent(uid)}&callback=${callbackName}`
+      script.onerror = reject
+      document.body.appendChild(script)
+    })
   },
 }
 
