@@ -14,6 +14,7 @@ import axios from 'axios'
 import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
+import Rpc from '@/util/Rpc'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
@@ -507,6 +508,47 @@ const util = {
     const isEnabled = filteredRule ? !!filteredRule.enabled : false
 
     return isEnabled
+  },
+
+  /**
+   * Retrieves the store URL by replacing the API version path.
+   * @returns {Promise<string>} The formatted store URL.
+   */
+  async getStoreUrl() {
+    const url = await window.rpc.storeUrl.replace('/api/v1', '/store/open.php')
+    return url
+  },
+
+  /**
+   * Reloads licenses by making a direct RPC call.
+   * @returns {Promise<void>}
+   */
+  async reloadLicenses() {
+    await Rpc.directData('rpc.UvmContext.licenseManager.reloadLicenses', true)
+  },
+
+  /**
+   * Fetches account information from the store.
+   * @param {string} uid - The user ID.
+   * @returns {Promise<Object>} A promise that resolves with the account data.
+   */
+  async fetchAccountInfo(uid) {
+    const storeUrl = await this.getStoreUrl()
+
+    return new Promise((resolve, reject) => {
+      const script = document.createElement('script')
+      const callbackName = `jsonpCallback_${Date.now()}`
+
+      window[callbackName] = data => {
+        resolve(data)
+        delete window[callbackName]
+        document.body.removeChild(script)
+      }
+
+      script.src = `${storeUrl}?action=find_account&uid=${encodeURIComponent(uid)}&callback=${callbackName}`
+      script.onerror = reject
+      document.body.appendChild(script)
+    })
   },
 }
 

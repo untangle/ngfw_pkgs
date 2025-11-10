@@ -4,12 +4,12 @@
   </v-container>
 </template>
 <script>
-  import { NgfwAbout, Dns, Dhcp, StaticRoutes, Settings } from '@/ngfw'
+  import { About, Dns, Dhcp, StaticRoutes, Settings } from '@/ngfw'
   import { DynamicBlockLists } from '@/services'
   import store from '@/store'
 
   export default {
-    components: { NgfwAbout, Dns, Dhcp, StaticRoutes, Settings, DynamicBlockLists },
+    components: { About, Dns, Dhcp, StaticRoutes, Settings, DynamicBlockLists },
 
     async beforeRouteEnter(to, from, next) {
       await store.dispatch('settings/fetchNetworkSettings')

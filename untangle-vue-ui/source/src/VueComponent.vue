@@ -9,10 +9,10 @@
 </template>
 <script>
   import { VApp } from 'vuetify/lib'
-  import { NgfwAbout, Dns } from '@/ngfw'
+  import { About, Dns } from '@/ngfw'
 
   export default {
-    components: { NgfwAbout, Dns, VApp },
+    components: { About, Dns, VApp },
     props: {
       component: { type: String, default: undefined },
     },
