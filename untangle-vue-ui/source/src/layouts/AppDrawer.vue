@@ -160,6 +160,7 @@
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'logging', to: '/settings/system/logging' },
               { name: 'about', to: '/settings/system/about' },
             ],
           },
