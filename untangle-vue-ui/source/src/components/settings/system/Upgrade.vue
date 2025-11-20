@@ -1,0 +1,307 @@
+<template>
+  <v-container>
+    <!-- Upgrades settings section -->
+    <u-alert class="my-4">
+      <template v-if="upgradeText">
+        {{ $t('system_running_latest_version') }}
+      </template>
+      <template v-else-if="showUpgradeIssues">
+        {{ $t('Unable to upgrade') }}
+        <div v-html="upgradeIssueText"></div>
+      </template>
+      <template v-else-if="showUpgradeButton">
+        {{ $t('new_version_available') }}
+        <u-btn :small="false" class="ml-4" @click="onUpgradeNowClick">{{ $t('upgrade_now') }}</u-btn>
+      </template>
+    </u-alert>
+    <u-section>
+      <appliance-upgrade :settings="settings">
+        <template #boxActions="{ upgradeData }">
+          <u-btn class="mt-4" @click="onSaveAutoUpgrade(upgradeData)">{{ $t('save') }}</u-btn>
+        </template>
+      </appliance-upgrade>
+    </u-section>
+
+    <!-- Disk Health Warning Dialog -->
+    <v-dialog v-model="diskHealthDialog" max-width="500">
+      <v-card>
+        <v-card-title>{{ $t('warning') }}</v-card-title>
+        <v-card-text>
+          <div v-html="diskHealthMessage"></div>
+        </v-card-text>
+        <v-card-actions>
+          <v-spacer />
+          <u-btn @click="cancelDiskIssue">{{ $t('cancel') }}</u-btn>
+          <u-btn color="primary" @click="proceedWithDiskIssue">{{ $t('ok') }}</u-btn>
+        </v-card-actions>
+      </v-card>
+    </v-dialog>
+
+    <!-- Download Progress Dialog -->
+    <v-dialog v-model="downloadDialog" persistent max-width="420">
+      <v-card class="pa-4 text-center">
+        <v-progress-circular v-if="downloadProgress === 0" indeterminate size="32" class="mb-3" />
+        <v-progress-linear v-else :value="downloadProgress * 100" height="8" class="mb-3" />
+        <div>{{ downloadText }}</div>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="upgradeDialog" persistent max-width="600">
+      <v-card class="pa-4 text-center">
+        <v-progress-circular v-if="showSpinner" indeterminate size="24" class="mb-3" />
+        <v-card-title>{{ upgradeDialogTitle }}</v-card-title>
+      </v-card>
+    </v-dialog>
+
+    <v-dialog v-model="showDialog" persistent max-width="300">
+      <v-card class="pa-4 text-center">
+        <v-progress-circular v-if="showSpinner" indeterminate size="24" class="mb-3" />
+        <v-card-title>{{ title }}</v-card-title>
+        <v-card-text>{{ text }}</v-card-text>
+        <u-btn @click="closeWarning">{{ $t('ok') }}</u-btn>
+      </v-card>
+    </v-dialog>
+  </v-container>
+</template>
+<script>
+  import { ApplianceUpgrade } from 'vuntangle'
+  import store from '@/store'
+  import Util from '@/util/setupUtil'
+
+  export default {
+    components: { ApplianceUpgrade },
+    data: () => ({
+      showUpgradeButton: false,
+      isUpgradeAvailable: null,
+      showUpgradeIssues: false,
+      upgradeIssueText: '',
+      upgradeText: false,
+      diskHealthMessage: '',
+      diskHealthDialog: false,
+      downloadDialog: false,
+      downloadText: '',
+      checkDownloadStatus: false,
+      downloadProgress: 0,
+      upgradeDialog: false,
+      upgradeDialogTitle: '',
+      showSpinner: false,
+      title: '',
+      text: '',
+      showDialog: false,
+    }),
+
+    computed: {
+      settings: ({ $store }) => $store.getters['settings/systemSetting'],
+    },
+
+    created() {
+      this.$store.dispatch('settings/getSystemSettings', false)
+      this.checkUpgrades()
+    },
+
+    methods: {
+      closeWarning() {
+        this.showDialog = false
+      },
+
+      async checkUpgrades() {
+        this.$store.commit('SET_LOADER', true)
+
+        this.isUpgradeAvailable = await new Promise((resolve, reject) =>
+          window.rpc.systemManager.upgradesAvailable((res, err) => (err ? reject(err) : resolve(res))),
+        ).finally(() => this.$store.commit('SET_LOADER', false))
+
+        if (this.isUpgradeAvailable) {
+          this.canUpgrade()
+        } else {
+          this.upgradeText = true
+        }
+        this.$store.commit('SET_LOADER', false)
+      },
+
+      async canUpgrade() {
+        try {
+          const result = await window.rpc.systemManager.canUpgrade()
+          this.showUpgradeIssues = false
+          this.showUpgradeButton = false
+          const issues = result?.set || {}
+          this.upgradeIssueText = issues
+          const numIssues = Object.keys(issues).length
+          if (numIssues === 0) {
+            this.showUpgradeButton = true
+            this.upgradeIssueText = ''
+          } else {
+            this.showUpgradeButton = false
+            this.upgradeIssueText = this.formatIssueMessage(issues)
+            this.showUpgradeIssues = true
+          }
+        } catch (ex) {
+          Util.handleException(ex)
+        }
+      },
+
+      formatIssueMessage(issues) {
+        let msg = `Upgrades are ready but unable to install:<br/>`
+        switch (issues) {
+          case 'LOW_DISK':
+            msg += `• ${this.$t('Not enough disk space')}`
+            break
+          default:
+            msg += `${this.$t('Unknown issue:')}: ${issues}`
+            break
+        }
+        return msg
+      },
+
+      // saves the auto upgrade settings
+      async onSaveAutoUpgrade(upgradeData) {
+        if (!upgradeData.enabled) {
+          upgradeData.autoUpgradeDays = ''
+        }
+        if (upgradeData.enabled) {
+          if (upgradeData.autoUpgradeDays === '') {
+            this.title = this.$t('Warning!')
+            this.text = this.$t('Please set automatic upgrade days schedule!')
+            this.showDialog = true
+            return
+          }
+        }
+        store.commit('SET_LOADER', true)
+        const response = await store.dispatch('settings/setSystemSettings', upgradeData)
+        if (response.success) {
+          this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('settings')]))
+        } else {
+          this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response.message]))
+        }
+        store.commit('SET_LOADER', false)
+      },
+
+      async onUpgradeNowClick() {
+        const diskHealthStatus = await window.rpc.systemManager.checkDiskHealth()
+        if (diskHealthStatus.includes("'fail'")) {
+          this.diskHealthMessage = this.$t(
+            'Drive health check failed. Disk issues could cause upgrade failures or data loss.<br>Are you sure you want to proceed with upgrade ?',
+          )
+          this.diskHealthDialog = true
+        } else {
+          this.downloadUpgrades()
+        }
+      },
+
+      proceedWithDiskIssue() {
+        this.diskHealthDialog = false
+        this.setSkipDiskCheckFlag(true)
+        this.downloadUpgrades()
+      },
+
+      cancelDiskIssue() {
+        this.diskHealthDialog = false
+      },
+
+      setSkipDiskCheckFlag(skipDiskCheck) {
+        window.rpc.systemManager.setSkipDiskCheck(skipDiskCheck)
+      },
+
+      async downloadUpgrades() {
+        this.downloadText = this.$t('Downloading Upgrade...')
+        this.checkDownloadStatus = true
+        const downloadUpgrades = await window.rpc.systemManager.downloadUpgrades()
+        this.checkDownloadStatus = false
+
+        if (downloadUpgrades) {
+          this.upgrade()
+        } else {
+          this.showDialog = true
+          this.title = this.$t('warning')
+          this.text = this.$t('Downloading upgrades failed.')
+          this.setSkipDiskCheckFlag(false)
+        }
+        this.getDownloadStatus()
+      },
+
+      async getDownloadStatus() {
+        if (!this.checkDownloadStatus) return
+        this.downloadDialog = true
+        let downloadStatus = await window.rpc.systemManager.getDownloadStatus()
+        if (!this.checkDownloadStatus) return
+
+        downloadStatus =
+          `${this.$t('Package')}: ${downloadStatus.downloadCurrentFileCount} / ${
+            downloadStatus.downloadTotalFileCount
+          }<br>` + `${this.$t('Speed')}: ${downloadStatus.downloadCurrentFileRate}`
+
+        // Calculate progress
+        let fileProgress = 0
+        if (downloadStatus.downloadCurrentFileProgress) {
+          fileProgress = parseFloat(downloadStatus.downloadCurrentFileProgress.replace('%', '')) / 100
+        }
+
+        let fileIndex = parseFloat(downloadStatus.downloadCurrentFileCount)
+        if (fileIndex > 0) fileIndex -= 1
+
+        const totalFiles = downloadStatus.downloadTotalFileCount || 1
+
+        const percent = (fileIndex + fileProgress) / totalFiles
+
+        // Match ExtJS logic (0.99 * percent)
+        this.downloadProgress = 0.99 * percent
+
+        if (percent < 1 && this.checkDownloadStatus) {
+          setTimeout(() => this.getDownloadStatus(), 500)
+        } else {
+          // completed
+          this.downloadDialog = false
+        }
+      },
+
+      async upgrade() {
+        Util.ignoreExceptions = true
+        this.ignoreUpgradeExceptions = true
+
+        this.upgradeDialog = true
+        this.upgradeDialogTitle = this.$t('Please wait. Launching Upgrade...')
+        this.showSpinner = true
+
+        await new Promise((resolve, reject) => {
+          window.rpc.systemManager.upgrade((res, err) => {
+            if (err) {
+              reject(err)
+              return
+            }
+            this.startProcessingUpgradePhase()
+            this.showSpinner = false
+            resolve(res)
+          })
+        })
+      },
+
+      startProcessingUpgradePhase() {
+        this.upgradeDialogTitle = this.$t('Please wait. Processing Upgrade...')
+        this.upgradeDialog = false
+        this.showUpgradeFinalMessage()
+      },
+
+      showUpgradeFinalMessage() {
+        this.showSpinner = false
+        this.showDialog = true
+        this.title = this.$t('Upgrade in Progress')
+        this.text = this.$t(
+          'The upgrades have been downloaded and are now being applied. DO NOT REBOOT AT THIS TIME. Please be patient this process will take a few minutes. After the upgrade is complete you will be able to log in again.',
+        )
+      },
+
+      onClickOk() {
+        window.location.reload()
+        this.showDialog = false
+      },
+
+      /**
+       * Optional hook triggered on browser refresh.
+       * Fetches updated system settings and updates the store.
+       */
+      onBrowserRefresh() {
+        this.$store.dispatch('settings/getSystemSettings', true)
+      },
+    },
+  }
+</script>

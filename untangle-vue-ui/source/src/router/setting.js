@@ -17,6 +17,7 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
 import About from '@/components/settings/system/About'
+import Upgrade from '@/components/settings/system/Upgrade'
 import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
@@ -99,6 +100,11 @@ export default [
       {
         path: 'system/settings',
         component: Settings,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/upgrade',
+        component: Upgrade,
         meta: { helpContext: 'system_settings' },
       },
       {
