@@ -155,9 +155,6 @@
 
       // saves the auto upgrade settings
       async onSaveAutoUpgrade(upgradeData) {
-        if (!upgradeData.enabled) {
-          upgradeData.autoUpgradeDays = ''
-        }
         if (upgradeData.enabled) {
           if (upgradeData.autoUpgradeDays === '') {
             this.title = this.$t('Warning!')
