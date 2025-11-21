@@ -5,7 +5,6 @@ import setup from './setup'
 import auth from './auth'
 import settings from './settings'
 import apps from './apps'
-import system from './system'
 
 Vue.use(Vuex)
 
@@ -88,7 +87,6 @@ export default new Store({
     setup,
     settings,
     apps,
-    system,
   },
   state: getDefaultState,
   getters,
