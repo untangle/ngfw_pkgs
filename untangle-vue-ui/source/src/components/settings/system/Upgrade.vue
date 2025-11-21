@@ -6,7 +6,7 @@
         {{ $t('system_running_latest_version') }}
       </template>
       <template v-else-if="showUpgradeIssues">
-        {{ $t('Unable to upgrade') }}
+        {{ $t('unable_to_upgrade') }}
         <div v-html="upgradeIssueText"></div>
       </template>
       <template v-else-if="showUpgradeButton">
@@ -111,7 +111,7 @@
           window.rpc.systemManager.upgradesAvailable((res, err) => (err ? reject(err) : resolve(res))),
         ).finally(() => this.$store.commit('SET_LOADER', false))
 
-        if (this.isUpgradeAvailable) {
+        if (!this.isUpgradeAvailable) {
           this.canUpgrade()
         } else {
           this.upgradeText = true
@@ -145,13 +145,13 @@
       },
 
       formatIssueMessage(issues) {
-        let msg = `Upgrades are ready but unable to install:<br/>`
+        let msg = `upgrades_are_ready_but_unable_to_install<br/>`
         switch (issues) {
           case 'LOW_DISK':
-            msg += `• ${this.$t('Not enough disk space')}`
+            msg += `• ${this.$t('not_enough_disk_space')}`
             break
           default:
-            msg += `${this.$t('Unknown issue:')}: ${issues}`
+            msg += `${this.$t('unknown_issue')}: ${issues}`
             break
         }
         return msg
@@ -161,8 +161,8 @@
       async onSaveAutoUpgrade(upgradeData) {
         if (upgradeData.enabled) {
           if (upgradeData.autoUpgradeDays === '') {
-            this.title = this.$t('Warning!')
-            this.text = this.$t('Please set automatic upgrade days schedule!')
+            this.title = this.$t('warning')
+            this.text = this.$t('automatic_upgrade_message')
             this.showDialog = true
             return
           }
@@ -183,9 +183,7 @@
           window.rpc.systemManager.checkDiskHealth((res, err) => (err ? reject(err) : resolve(res))),
         ).finally(() => this.$store.commit('SET_LOADER', false))
         if (diskHealthStatus.includes("'fail'")) {
-          this.diskHealthMessage = this.$t(
-            'Drive health check failed. Disk issues could cause upgrade failures or data loss.<br>Are you sure you want to proceed with upgrade ?',
-          )
+          this.diskHealthMessage = this.$t('disk_health_message')
           this.diskHealthDialog = true
         } else {
           this.downloadUpgrades()
@@ -207,7 +205,7 @@
       },
 
       async downloadUpgrades() {
-        this.downloadText = this.$t('Downloading Upgrade...')
+        this.downloadText = this.$t('downloading_upgrade')
         this.checkDownloadStatus = true
 
         this.$store.commit('SET_LOADER', true)
@@ -221,7 +219,7 @@
         } else {
           this.showDialog = true
           this.title = this.$t('warning')
-          this.text = this.$t('Downloading upgrades failed.')
+          this.text = this.$t('downloading_failed')
           this.setSkipDiskCheckFlag(false)
         }
         this.getDownloadStatus()
@@ -234,9 +232,9 @@
         if (!this.checkDownloadStatus) return
 
         downloadStatus =
-          `${this.$t('Package')}: ${downloadStatus.downloadCurrentFileCount} / ${
+          `${this.$t('package')}: ${downloadStatus.downloadCurrentFileCount} / ${
             downloadStatus.downloadTotalFileCount
-          }<br>` + `${this.$t('Speed')}: ${downloadStatus.downloadCurrentFileRate}`
+          }<br>` + `${this.$t('speed')}: ${downloadStatus.downloadCurrentFileRate}`
 
         // Calculate progress
         let fileProgress = 0
@@ -267,7 +265,7 @@
         this.ignoreUpgradeExceptions = true
 
         this.upgradeDialog = true
-        this.upgradeDialogTitle = this.$t('Please wait. Launching Upgrade...')
+        this.upgradeDialogTitle = this.$t('launching_message')
         this.showSpinner = true
 
         await new Promise((resolve, reject) => {
@@ -284,7 +282,7 @@
       },
 
       startProcessingUpgradePhase() {
-        this.upgradeDialogTitle = this.$t('Please wait. Processing Upgrade...')
+        this.upgradeDialogTitle = this.$t('upgrade_message')
         this.upgradeDialog = false
         this.showUpgradeFinalMessage()
       },
@@ -292,10 +290,8 @@
       showUpgradeFinalMessage() {
         this.showSpinner = false
         this.showDialog = true
-        this.title = this.$t('Upgrade in Progress')
-        this.text = this.$t(
-          'The upgrades have been downloaded and are now being applied. DO NOT REBOOT AT THIS TIME. Please be patient this process will take a few minutes. After the upgrade is complete you will be able to log in again.',
-        )
+        this.title = this.$t('upgrade_in_progress')
+        this.text = this.$t('upgrade_complete_message')
       },
 
       onClickOk() {
