@@ -111,7 +111,7 @@
           window.rpc.systemManager.upgradesAvailable((res, err) => (err ? reject(err) : resolve(res))),
         ).finally(() => this.$store.commit('SET_LOADER', false))
 
-        if (!this.isUpgradeAvailable) {
+        if (this.isUpgradeAvailable) {
           this.canUpgrade()
         } else {
           this.upgradeText = true
