@@ -23,7 +23,7 @@ import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 
 // Administration
-import Administration from '@/components/settings/administration/Administration.vue'
+import Admin from '@/components/settings/administration/Admin.vue'
 
 export default [
   {
@@ -107,7 +107,7 @@ export default [
       },
       {
         path: 'administration/admin',
-        component: Administration,
+        component: Admin,
         meta: { helpContext: 'administration' },
       },
       {

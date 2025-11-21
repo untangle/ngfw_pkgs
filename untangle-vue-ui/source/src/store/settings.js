@@ -175,7 +175,6 @@ const actions = {
         return
       }
       const data = await window.rpc.adminManager.getSettingsV2()
-      console.log('data', data)
       commit('SET_ADMIN_SETTINGS', data)
       return { success: true, message: null, data } //  success
     } catch (err) {

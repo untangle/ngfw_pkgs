@@ -1,19 +1,19 @@
 <template>
   <!-- Main administration component wrapping AdministrationAdmin from vuntangle -->
-  <AdministrationAdmin :settings="adminSettings" :system-settings="systemSettings">
-    <template #actions="{ newSettings, newSystemSettings, isDirty, validate }">
-      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, newSystemSettings, validate)">{{
+  <settings-admin :settings="settings">
+    <template #actions="{ newSettings, isDirty, validate }">
+      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
         $t('save')
       }}</u-btn>
     </template>
-  </AdministrationAdmin>
+  </settings-admin>
 </template>
 
 <script>
-  import { AdministrationAdmin } from 'vuntangle'
+  import { SettingsAdmin } from 'vuntangle'
 
   export default {
-    components: { AdministrationAdmin },
+    components: { SettingsAdmin },
 
     computed: {
       /**
@@ -26,6 +26,13 @@
        * @returns {Object} System settings object.
        */
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+      /**
+       * Combines admin and system settings into a single object.
+       * @returns {Object} Combined settings object.
+       */
+      settings() {
+        return { ...this.adminSettings, system: this.systemSettings }
+      },
     },
 
     /** Fetches initial admin and system settings. */
@@ -48,35 +55,32 @@
       /**
        * Handles saving of new administration and system settings.
        * Validates settings, identifies changes, and dispatches actions to update the store.
-       * @param {Object} newSettings - The new admin settings.
-       * @param {Object} newSystemSettings - The new system settings.
+       * @param {Object} newSettings - The new combined settings object, where system settings are under the 'system' key.
        * @param {Function} validate - Validation function for the settings form.
        */
-      async onSaveSettings(newSettings, newSystemSettings, validate) {
-        const isValid = await validate()
-        if (!isValid) return
+      async onSaveSettings(newSettings, validate) {
+        if (!(await validate())) return
 
+        const { system: newSystemSettings, ...newAdminSettings } = newSettings
         const changes = []
 
-        // Check if admin settings have changed and push update action if they have
-        if (!this.isEqual(newSettings, this.adminSettings)) {
-          changes.push(this.$store.dispatch('settings/setAdminSettings', newSettings))
+        if (!this.isEqual(newAdminSettings, this.adminSettings)) {
+          changes.push(this.$store.dispatch('settings/setAdminSettings', newAdminSettings))
         }
 
-        // Check if system settings have changed and push update action if they have
         if (!this.isEqual(newSystemSettings, this.systemSettings)) {
           changes.push(this.$store.dispatch('settings/setSystemSettings', newSystemSettings))
         }
 
-        // If no changes were detected, do nothing
-        if (changes.length === 0) return
+        if (!changes.length) return
 
         this.$store.commit('SET_LOADER', true)
-        await Promise.all(changes).finally(() => {
+        try {
+          await Promise.all(changes)
+        } finally {
           this.$store.commit('SET_LOADER', false)
-        })
+        }
       },
-
       /**
        * Compares two objects for equality by converting them to JSON strings.
        * @returns {boolean} True if the objects are equal, false otherwise.
