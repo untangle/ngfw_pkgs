@@ -14,6 +14,7 @@ const getDefaultState = () => ({
   shieldSettings: null,
   languageSettings: null,
   accessRuleSshEnabled: false,
+  systemLogs: {}, // system logs stored by logName
 })
 
 const getters = {
@@ -38,6 +39,11 @@ const getters = {
   dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
   shieldSettings: state => state?.shieldSettings || {},
   accessRuleSshEnabled: state => state.accessRuleSshEnabled,
+  /**
+   * Get logs for a given log.
+   * Usage: getters.getLogs('uvm')
+   */
+  getLogsByName: state => logName => state.systemLogs[logName] || null,
 }
 
 const mutations = {
@@ -54,6 +60,16 @@ const mutations = {
   SET_SHIELD_SETTINGS: (state, value) => set(state, 'shieldSettings', value),
   SET_LANGUAGE_SETTINGS: (state, value) => set(state, 'languageSettings', value),
   SET_ACCESS_RULE_SSH_ENABLED: (state, value) => set(state, 'accessRuleSshEnabled', value),
+  /**
+   * Dynamically set logs for an app
+   * Usage: commit('SET_LOGS', { logName: 'uvm', value: data })
+   */
+  SET_LOGS(state, { logName, value }) {
+    if (!state.systemLogs) {
+      set(state, 'systemLogs', {})
+    }
+    set(state.systemLogs, logName, value)
+  },
 }
 
 const actions = {
@@ -372,6 +388,25 @@ const actions = {
   setAccessRuleSshEnabled({ state, commit }) {
     const accessRules = state?.networkSetting?.access_rules || []
     commit('SET_ACCESS_RULE_SSH_ENABLED', util.getRuleEnabledStatus(accessRules, 'Allow SSH'))
+  },
+
+  getLogsByName({ commit, state }, { logName, refetch }) {
+    let logs
+    try {
+      if (state.systemLogs && state.systemLogs[logName] && !refetch) {
+        // just return logs from store
+        logs = state.systemLogs[logName]
+        return { success: true, logs }
+      }
+
+      if (logName === 'uvm') {
+        logs = window.rpc.systemManager.getUvmLogs()
+      }
+      commit('SET_LOGS', { logName, value: logs })
+      return { success: true, logs }
+    } catch (err) {
+      Util.handleException(err)
+    }
   },
 }
 

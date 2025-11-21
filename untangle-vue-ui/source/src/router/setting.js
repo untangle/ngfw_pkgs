@@ -21,6 +21,7 @@ import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
+import Logging from '@/components/settings/system/Logging.vue'
 export default [
   {
     name: 'settings',
@@ -94,6 +95,11 @@ export default [
       {
         path: 'system/about',
         component: About,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/logging',
+        component: Logging,
         meta: { helpContext: 'system_settings' },
       },
       {
