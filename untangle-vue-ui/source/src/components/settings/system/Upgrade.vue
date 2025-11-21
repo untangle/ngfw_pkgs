@@ -121,7 +121,11 @@
 
       async canUpgrade() {
         try {
-          const result = await window.rpc.systemManager.canUpgrade()
+          this.$store.commit('SET_LOADER', true)
+          const result = await new Promise((resolve, reject) =>
+            window.rpc.systemManager.canUpgrade((res, err) => (err ? reject(err) : resolve(res))),
+          ).finally(() => this.$store.commit('SET_LOADER', false))
+
           this.showUpgradeIssues = false
           this.showUpgradeButton = false
           const issues = result?.set || {}
@@ -174,7 +178,10 @@
       },
 
       async onUpgradeNowClick() {
-        const diskHealthStatus = await window.rpc.systemManager.checkDiskHealth()
+        this.$store.commit('SET_LOADER', true)
+        const diskHealthStatus = await new Promise((resolve, reject) =>
+          window.rpc.systemManager.checkDiskHealth((res, err) => (err ? reject(err) : resolve(res))),
+        ).finally(() => this.$store.commit('SET_LOADER', false))
         if (diskHealthStatus.includes("'fail'")) {
           this.diskHealthMessage = this.$t(
             'Drive health check failed. Disk issues could cause upgrade failures or data loss.<br>Are you sure you want to proceed with upgrade ?',
@@ -202,7 +209,11 @@
       async downloadUpgrades() {
         this.downloadText = this.$t('Downloading Upgrade...')
         this.checkDownloadStatus = true
-        const downloadUpgrades = await window.rpc.systemManager.downloadUpgrades()
+
+        this.$store.commit('SET_LOADER', true)
+        const downloadUpgrades = await new Promise((resolve, reject) =>
+          window.rpc.systemManager.downloadUpgrades((res, err) => (err ? reject(err) : resolve(res))),
+        ).finally(() => this.$store.commit('SET_LOADER', false))
         this.checkDownloadStatus = false
 
         if (downloadUpgrades) {
