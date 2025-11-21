@@ -110,10 +110,7 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [
-          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
-          // { name: 'Network', to: '/settings/network/networkTabs', icon: 'mdi-lan' },
-        ],
+        rootNavItems: [{ name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' }],
 
         settingsNavItems: [
           {
@@ -130,6 +127,18 @@
               { name: 'dns', to: '/settings/network/dns' },
               { name: 'advanced', to: '/settings/network/advanced' },
               { name: 'troubleshooting', to: '/settings/network/troubleshooting' },
+            ],
+          },
+          {
+            name: 'administration',
+            icon: 'mdi-account-cog',
+            active: false,
+            match: '/settings/administration',
+            items: [
+              { name: 'admin', to: '/settings/administration/admin' },
+              { name: 'certificates', to: '' },
+              { name: 'snmp', to: '' },
+              { name: 'google', to: '' },
             ],
           },
           {

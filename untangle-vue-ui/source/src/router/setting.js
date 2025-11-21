@@ -22,6 +22,10 @@ import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
+
+// Administration
+import Admin from '@/components/settings/administration/Admin.vue'
+
 export default [
   {
     name: 'settings',
@@ -101,6 +105,11 @@ export default [
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'administration/admin',
+        component: Admin,
+        meta: { helpContext: 'administration' },
       },
       {
         path: 'system/upgrade',
