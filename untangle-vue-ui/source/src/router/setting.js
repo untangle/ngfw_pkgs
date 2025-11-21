@@ -17,6 +17,7 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
 import About from '@/components/settings/system/About'
+import Upgrade from '@/components/settings/system/Upgrade'
 import Settings from '@/components/settings/system/Settings.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
@@ -109,6 +110,11 @@ export default [
         path: 'administration/admin',
         component: Admin,
         meta: { helpContext: 'administration' },
+      },
+      {
+        path: 'system/upgrade',
+        component: Upgrade,
+        meta: { helpContext: 'system_settings' },
       },
       {
         name: 'rule-list',

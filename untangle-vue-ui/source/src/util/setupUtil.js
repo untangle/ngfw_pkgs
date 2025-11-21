@@ -4,6 +4,7 @@ import vuntangle from '@/plugins/vuntangle'
 import HandleExceptionAlert from '@/components/Reusable/HandleExceptionAlert.vue'
 
 const Util = {
+  ignoreExceptions: false,
   v4NetmaskList: [
     [32, '/32 - 255.255.255.255'],
     [31, '/31 - 255.255.255.254'],
@@ -138,6 +139,8 @@ const Util = {
   },
 
   handleException(exception) {
+    if (Util.ignoreExceptions) return
+
     if (!exception) {
       vuntangle.toast.add(`Null Exception!`)
       return
@@ -175,6 +178,7 @@ const Util = {
 
     /** Handle session timeout / authorization lost */
     if (exception.response && exception.response.includes('loginPage')) {
+      Util.ignoreExceptions = true
       this.showWarningMessage(
         'Session timed out.Press OK to return to the login page.',
         details,
@@ -196,6 +200,7 @@ const Util = {
       exception.message?.includes('Service Temporarily Unavailable') ||
       exception.message?.includes('This application is not currently available')
     ) {
+      Util.ignoreExceptions = true
       this.showWarningMessage(
         'The connection to the server has been lost.Press OK to return to the login page.',
         details,
