@@ -14,6 +14,7 @@ const getDefaultState = () => ({
   shieldSettings: null,
   languageSettings: null,
   accessRuleSshEnabled: false,
+  adminSetting: null,
   systemLogs: {}, // system logs stored by logName
 })
 
@@ -39,6 +40,7 @@ const getters = {
   dynamicRoutingSettings: state => state?.networkSetting?.dynamicRoutingSettings || {},
   shieldSettings: state => state?.shieldSettings || {},
   accessRuleSshEnabled: state => state.accessRuleSshEnabled,
+  adminSetting: state => state.adminSetting || {},
   /**
    * Get logs for a given log.
    * Usage: getters.getLogs('uvm')
@@ -60,6 +62,7 @@ const mutations = {
   SET_SHIELD_SETTINGS: (state, value) => set(state, 'shieldSettings', value),
   SET_LANGUAGE_SETTINGS: (state, value) => set(state, 'languageSettings', value),
   SET_ACCESS_RULE_SSH_ENABLED: (state, value) => set(state, 'accessRuleSshEnabled', value),
+  SET_ADMIN_SETTINGS: (state, value) => set(state, 'adminSetting', value),
   /**
    * Dynamically set logs for an app
    * Usage: commit('SET_LOGS', { logName: 'uvm', value: data })
@@ -181,6 +184,20 @@ const actions = {
     }
   },
 
+  /* get Admin settings configuration */
+  async getAdminSettings({ state, commit }, refetch) {
+    try {
+      if (state.adminSetting && !refetch) {
+        return
+      }
+      const data = await window.rpc.adminManager.getSettingsV2()
+      commit('SET_ADMIN_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   /* setSystemSettings will update system regarding configurations */
   setSystemSettings({ dispatch }, systemSettings) {
     try {
@@ -238,6 +255,41 @@ const actions = {
       Util.handleException(err)
     }
   },
+
+  /**
+   * Dispatches admin settings to the backend via RPC.
+   * This action sends the provided admin settings to the 'adminManager' service.
+   * returning a success or failure status along with an error message if applicable.
+   * Upon successful saving, it triggers a refetch of the admin settings to ensure
+   * @param {object} { dispatch } - Vuex action context for dispatching other actions.
+   * @param {object} adminettings - The administration settings object to be saved.
+   * @returns {Promise<object>} A promise that resolves with an object indicating
+   */
+  setAdminSettings({ dispatch }, adminettings) {
+    try {
+      const data = new Promise(resolve => {
+        window.rpc.adminManager.setSettingsV2(async (ex, result) => {
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({ success: false, message: result.message.slice(0, 100) })
+          }
+          // fetch updated settings after successful save
+          await dispatch('getAdminSettings', true)
+          return resolve({ success: true })
+        }, adminettings)
+      })
+      return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
   /**
    * Synchronize the system time using the NTP (Network Time Protocol) service
    */

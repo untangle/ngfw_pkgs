@@ -18,9 +18,13 @@ import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.
 // system  \
 import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
+import Upgrade from '@/components/settings/system/Upgrade'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
+
+// Administration
+import Admin from '@/components/settings/administration/Admin.vue'
 import Logging from '@/components/settings/system/Logging.vue'
 export default [
   {
@@ -105,6 +109,16 @@ export default [
       {
         path: 'system/settings',
         component: Settings,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'administration/admin',
+        component: Admin,
+        meta: { helpContext: 'administration' },
+      },
+      {
+        path: 'system/upgrade',
+        component: Upgrade,
         meta: { helpContext: 'system_settings' },
       },
       {
