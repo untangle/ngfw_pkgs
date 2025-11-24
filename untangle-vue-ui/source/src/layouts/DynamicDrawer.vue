@@ -136,6 +136,7 @@
             items: [
               { name: 'settings', to: '/settings/system/settings' },
               { name: 'about', to: '/settings/system/about' },
+              { name: 'upgrade', to: '/settings/system/upgrade' },
             ],
           },
           {
