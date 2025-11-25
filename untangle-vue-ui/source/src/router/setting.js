@@ -25,7 +25,7 @@ import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 
 // Administration
 import Admin from '@/components/settings/administration/Admin.vue'
-
+import Logging from '@/components/settings/system/Logging.vue'
 export default [
   {
     name: 'settings',
@@ -99,6 +99,11 @@ export default [
       {
         path: 'system/about',
         component: About,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/logging',
+        component: Logging,
         meta: { helpContext: 'system_settings' },
       },
       {
