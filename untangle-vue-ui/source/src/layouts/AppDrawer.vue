@@ -138,7 +138,7 @@
               { name: 'admin', to: '/settings/administration/admin' },
               { name: 'certificates', to: '' },
               { name: 'snmp', to: '' },
-              { name: 'google', to: '' },
+              { name: 'google', to: '/settings/administration/google' },
             ],
           },
           {

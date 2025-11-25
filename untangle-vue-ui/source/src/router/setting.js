@@ -26,6 +26,7 @@ import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 // Administration
 import Admin from '@/components/settings/administration/Admin.vue'
 import Logging from '@/components/settings/system/Logging.vue'
+import Google from '@/components/settings/administration/Google.vue'
 export default [
   {
     name: 'settings',
@@ -35,6 +36,10 @@ export default [
       {
         path: 'network',
         redirect: 'network/interfaces',
+      },
+      {
+        path: 'administration',
+        redirect: 'administration/admin',
       },
       {
         path: 'system',
@@ -115,6 +120,10 @@ export default [
         path: 'administration/admin',
         component: Admin,
         meta: { helpContext: 'administration' },
+      },
+      {
+        path: 'administration/google',
+        component: Google,
       },
       {
         path: 'system/upgrade',
