@@ -13,6 +13,7 @@ const getDefaultState = () => ({
   pageLoad: false,
   cachedComponents: ['ReportDetails'],
   helpContext: null,
+  miniDrawer: localStorage.getItem('mini-drawer') === 'true',
 
   fetching: false,
   data: undefined,
