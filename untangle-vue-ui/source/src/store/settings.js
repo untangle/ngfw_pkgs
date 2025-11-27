@@ -208,7 +208,6 @@ const actions = {
   /* get Google Settings configuration */
   async getGoogleSettings({ state, commit }, refetch) {
     try {
-      console.log(state, refetch)
       if (state.googleSettings && !refetch) {
         return
       }
@@ -319,6 +318,30 @@ const actions = {
         }, adminettings)
       })
       return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /**
+   * Dispatches google settings to the backend via RPC.
+   * @param {object} { dispatch } - Vuex action context for dispatching other actions.
+   * @param {object} googleSettings - The googleSettings settings object to be saved.
+   * @returns {object} An object indicating success status with message
+   */
+  async setGoogleSettings({ dispatch }, googleSettings) {
+    try {
+      const apiMethod = Rpc.asyncPromise('rpc.UvmContext.googleManager.setSettings', googleSettings)
+      const result = await apiMethod()
+      if (result?.code && result?.message) {
+        Util.handleException(result.message)
+        return { success: false, message: result.message.slice(0, 100) }
+      }
+      // fetch updated settings after successful save
+      await dispatch('getGoogleSettings', true)
+      await dispatch('getIsGoogleDriveConnected')
+      return { success: true }
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
