@@ -1,6 +1,6 @@
 <template>
   <!-- Main administration component wrapping AdministrationAdmin from vuntangle -->
-  <settings-admin :settings="settings">
+  <settings-admin :settings="commonSettings">
     <template #actions="{ newSettings, isDirty, validate }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
         $t('save')
@@ -32,7 +32,7 @@
        * Combines admin and system settings into a single object.
        * @returns {Object} Combined settings object.
        */
-      settings() {
+      commonSettings() {
         return { ...this.adminSettings, system: this.systemSettings }
       },
     },
