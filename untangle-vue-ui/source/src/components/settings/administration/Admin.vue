@@ -11,9 +11,11 @@
 
 <script>
   import { SettingsAdmin } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
 
   export default {
     components: { SettingsAdmin },
+    mixins: [settingsMixin],
 
     computed: {
       /**

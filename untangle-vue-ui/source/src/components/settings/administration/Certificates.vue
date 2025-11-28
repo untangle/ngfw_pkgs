@@ -4,9 +4,11 @@
 
 <script>
   import { SettingsCertificates } from 'vuntangle'
+  import settingsMixin from '../settingsMixin'
 
   export default {
     components: { SettingsCertificates },
+    mixins: [settingsMixin],
 
     computed: {
       /**
