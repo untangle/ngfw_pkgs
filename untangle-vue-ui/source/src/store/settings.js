@@ -16,6 +16,7 @@ const getDefaultState = () => ({
   accessRuleSshEnabled: false,
   adminSetting: null,
   systemLogs: {}, // system logs stored by logName
+  certificatesInformation: null,
 })
 
 const getters = {
@@ -46,6 +47,9 @@ const getters = {
    * Usage: getters.getLogs('uvm')
    */
   getLogsByName: state => logName => state.systemLogs[logName] || null,
+
+  /* Retrieves the certificates information from the state. */
+  certificatesInformation: state => state.certificatesInformation || {},
 }
 
 const mutations = {
@@ -73,6 +77,7 @@ const mutations = {
     }
     set(state.systemLogs, logName, value)
   },
+  SET_CERTIFICATES_INFORMATION: (state, value) => set(state, 'certificatesInformation', value),
 }
 
 const actions = {
@@ -344,6 +349,22 @@ const actions = {
     try {
       window.rpc.UvmContext.shutdownBox()
       return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Get Certificate  */
+
+  async getCertificatesInformation({ state, commit }, refetch) {
+    if (state.certificatesInformation && !refetch) {
+      return
+    }
+    try {
+      const data = await window.rpc.UvmContext.certificateManager().getRootCertificateInformation()
+      commit('SET_CERTIFICATES_INFORMATION', data)
+      return { success: true, data }
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }

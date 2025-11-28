@@ -136,7 +136,7 @@
             match: '/settings/administration',
             items: [
               { name: 'admin', to: '/settings/administration/admin' },
-              { name: 'certificates', to: '' },
+              { name: 'certificates', to: '/settings/administration/certificates' },
               { name: 'snmp', to: '' },
               { name: 'google', to: '' },
             ],
