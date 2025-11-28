@@ -3475,9 +3475,9 @@ electron-to-chromium@^1.5.173:
   integrity sha512-rFCxROw7aOe4uPTfIAx+rXv9cEcGx+buAF4npnhtTqCJk5KDFRnh3+KYj7rdVh6lsFt5/aPs+Irj9rZ33WMA7w==
 
 electron-to-chromium@^1.5.249:
-  version "1.5.260"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.260.tgz#73f555d3e9b9fd16ff48fc406bbad84efa9b86c7"
-  integrity sha512-ov8rBoOBhVawpzdre+Cmz4FB+y66Eqrk6Gwqd8NGxuhv99GQ8XqMAr351KEkOt7gukXWDg6gJWEMKgL2RLMPtA==
+  version "1.5.262"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.262.tgz#c31eed591c6628908451c9ca0f0758ed514aa003"
+  integrity sha512-NlAsMteRHek05jRUxUR0a5jpjYq9ykk6+kO0yRaMi5moe7u0fVIOeQ3Y30A8dIiWFBNUoQGi1ljb1i5VtS9WQQ==
 
 element-resize-detector@^1.2.1:
   version "1.2.4"
@@ -7996,8 +7996,8 @@ vuex@^3.6.2:
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
 vuntangle@untangle/vuntangle:
-  version "1.60.10"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#2108d2b8e83949cf05f1f2ac2c7b41648fd694e1"
+  version "1.60.16"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#bbe885fadd5f958ed46d26bc5eddb3d1db01c3a1"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"
