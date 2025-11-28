@@ -14,6 +14,7 @@
 <script>
   import { SettingsGoogle } from 'vuntangle'
   import Rpc from '@/util/Rpc'
+  import Util from '@/util/setupUtil'
 
   export default {
     components: { SettingsGoogle },
@@ -97,6 +98,11 @@
           .finally(() => this.$store.commit('SET_LOADER', false))
       },
 
+      /**
+       * handler for select root directory
+       * Gets google cloud app details from back-end
+       * opens google picker iframe in callback implementation
+       */
       async selectRootDirectory(cb) {
         try {
           const result = await Rpc.asyncPromise('rpc.UvmContext.googleManager.getGoogleCloudApp')()
@@ -113,13 +119,16 @@
 
             cb(googlePickerMessageData)
           } else {
-            console.error('getGoogleCloudApp did not return a client ID')
+            this.$vuntangle.toast.add(this.$t('an_error_occurred'), 'error')
           }
         } catch (ex) {
-          console.error('Error in selectRootDirectory:', ex)
+          Util.handleException(ex)
         }
       },
 
+      /**
+       * Builds a refresh task to get the google drive configuration status and google settings
+       */
       buildGoogleRefreshTask() {
         if (this.refreshGoogleTask) return
 
@@ -155,7 +164,6 @@
             }
 
             try {
-              // Run async RPC calls (native Promise)
               me.$store.dispatch('settings/getIsGoogleDriveConnected')
               me.$store.dispatch('settings/getGoogleSettings', true)
 
@@ -165,7 +173,7 @@
                 this.stop()
               }
             } catch (ex) {
-              console.error(ex)
+              this.$vuntangle.toast.add(this.$t('an_error_occurred') + ex.message, 'error')
             }
           },
         }
