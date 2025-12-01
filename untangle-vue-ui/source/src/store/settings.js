@@ -2,6 +2,7 @@ import { set } from 'vue'
 import { cloneDeep } from 'lodash'
 import Util from '@/util/setupUtil'
 import util from '@/util/util'
+import Rpc from '@/util/Rpc'
 
 const getDefaultState = () => ({
   editCallback: null,
@@ -15,6 +16,8 @@ const getDefaultState = () => ({
   languageSettings: null,
   accessRuleSshEnabled: false,
   adminSetting: null,
+  googleSettings: null,
+  isGoogleDriveConnected: false,
   systemLogs: {}, // system logs stored by logName
   certificatesInformation: null,
 })
@@ -42,6 +45,8 @@ const getters = {
   shieldSettings: state => state?.shieldSettings || {},
   accessRuleSshEnabled: state => state.accessRuleSshEnabled,
   adminSetting: state => state.adminSetting || {},
+  googleSettings: state => state.googleSettings || {},
+  isGoogleDriveConnected: state => state.isGoogleDriveConnected || false,
   /**
    * Get logs for a given log.
    * Usage: getters.getLogs('uvm')
@@ -67,6 +72,8 @@ const mutations = {
   SET_LANGUAGE_SETTINGS: (state, value) => set(state, 'languageSettings', value),
   SET_ACCESS_RULE_SSH_ENABLED: (state, value) => set(state, 'accessRuleSshEnabled', value),
   SET_ADMIN_SETTINGS: (state, value) => set(state, 'adminSetting', value),
+  SET_GOOGLE_SETTINGS: (state, value) => set(state, 'googleSettings', value),
+  SET_IS_GOOGLE_DRIVE_CONNECTED: (state, value) => set(state, 'isGoogleDriveConnected', value),
   /**
    * Dynamically set logs for an app
    * Usage: commit('SET_LOGS', { logName: 'uvm', value: data })
@@ -203,6 +210,33 @@ const actions = {
     }
   },
 
+  /* get Google Settings configuration */
+  async getGoogleSettings({ state, commit }, refetch) {
+    try {
+      if (state.googleSettings && !refetch) {
+        return
+      }
+      const result = Rpc.asyncPromise('rpc.UvmContext.googleManager.getSettings')
+      const data = await result()
+      commit('SET_GOOGLE_SETTINGS', data)
+      return { success: true, message: null, data }
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* check google drive connection status */
+  async getIsGoogleDriveConnected({ commit }) {
+    try {
+      const result = Rpc.asyncPromise('rpc.UvmContext.googleManager.isGoogleDriveConnected')
+      const isConnected = await result()
+      commit('SET_IS_GOOGLE_DRIVE_CONNECTED', isConnected)
+      return { success: true, message: null, isConnected }
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   /* setSystemSettings will update system regarding configurations */
   setSystemSettings({ dispatch }, systemSettings) {
     try {
@@ -289,6 +323,30 @@ const actions = {
         }, adminettings)
       })
       return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /**
+   * Dispatches google settings to the backend via RPC.
+   * @param {object} { dispatch } - Vuex action context for dispatching other actions.
+   * @param {object} googleSettings - The googleSettings settings object to be saved.
+   * @returns {object} An object indicating success status with message
+   */
+  async setGoogleSettings({ dispatch }, googleSettings) {
+    try {
+      const apiMethod = Rpc.asyncPromise('rpc.UvmContext.googleManager.setSettings', googleSettings)
+      const result = await apiMethod()
+      if (result?.code && result?.message) {
+        Util.handleException(result.message)
+        return { success: false, message: result.message.slice(0, 100) }
+      }
+      // fetch updated settings after successful save
+      await dispatch('getGoogleSettings', true)
+      await dispatch('getIsGoogleDriveConnected')
+      return { success: true }
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
