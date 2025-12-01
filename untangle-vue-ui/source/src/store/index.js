@@ -3,7 +3,7 @@ import Vuex, { Store } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import setup from './setup'
 import auth from './auth'
-import settings from './settings'
+import settings from './config'
 import apps from './apps'
 
 Vue.use(Vuex)

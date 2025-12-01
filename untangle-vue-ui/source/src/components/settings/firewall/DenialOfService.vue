@@ -39,10 +39,10 @@
 
     computed: {
       // the shield settings from store
-      shieldSettings: ({ $store }) => $store.getters['settings/shieldSettings'],
+      shieldSettings: ({ $store }) => $store.getters['config/shieldSettings'],
 
       // the network settings from the store
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
 
       /**
        * eturns the interfaces for condition value from network settings
@@ -68,7 +68,7 @@
 
         this.$store.commit('SET_LOADER', true)
         await store
-          .dispatch('settings/setShieldSettings', newSettings)
+          .dispatch('config/setShieldSettings', newSettings)
           .finally(() => this.$store.commit('SET_LOADER', false))
       },
 
@@ -88,8 +88,8 @@
         this.$store.commit('SET_LOADER', true)
         try {
           await Promise.all([
-            this.$store.dispatch('settings/getShieldSettings', shieldRefetch),
-            this.$store.dispatch('settings/getNetworkSettings', networkRefetch),
+            this.$store.dispatch('config/getShieldSettings', shieldRefetch),
+            this.$store.dispatch('config/getNetworkSettings', networkRefetch),
           ])
         } finally {
           this.$store.commit('SET_LOADER', false)

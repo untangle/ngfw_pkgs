@@ -20,12 +20,12 @@
        * Retrieves admin settings from the Vuex store.
        * @returns {Object} Admin settings object.
        */
-      adminSettings: ({ $store }) => $store.getters['settings/adminSetting'],
+      adminSettings: ({ $store }) => $store.getters['config/adminSetting'],
       /**
        * Retrieves system settings from the Vuex store.
        * @returns {Object} System settings object.
        */
-      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+      systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
       /**
        * Combines admin and system settings into a single object.
        * @returns {Object} Combined settings object.
@@ -44,12 +44,12 @@
     methods: {
       /* Fetches admin settings from the backend and updates the store. */
       async fetchAdminSettings(refetch) {
-        await this.$store.dispatch('settings/getAdminSettings', refetch)
+        await this.$store.dispatch('config/getAdminSettings', refetch)
       },
 
       /* Fetches system settings from the backend and updates the store. */
       async fetchSystemSettings(refetch) {
-        await this.$store.dispatch('settings/getSystemSettings', refetch)
+        await this.$store.dispatch('config/getSystemSettings', refetch)
       },
 
       /**
@@ -65,11 +65,11 @@
         const changes = []
 
         if (!this.isEqual(newAdminSettings, this.adminSettings)) {
-          changes.push(this.$store.dispatch('settings/setAdminSettings', newAdminSettings))
+          changes.push(this.$store.dispatch('config/setAdminSettings', newAdminSettings))
         }
 
         if (!this.isEqual(newSystemSettings, this.systemSettings)) {
-          changes.push(this.$store.dispatch('settings/setSystemSettings', newSystemSettings))
+          changes.push(this.$store.dispatch('config/setSystemSettings', newSystemSettings))
         }
 
         if (!changes.length) return
