@@ -22,10 +22,13 @@ import Upgrade from '@/components/settings/system/Upgrade'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
+import Logging from '@/components/settings/system/Logging.vue'
 
 // Administration
 import Admin from '@/components/settings/administration/Admin.vue'
-import Logging from '@/components/settings/system/Logging.vue'
+import Certificates from '@/components/settings/administration/Certificates.vue'
+import Google from '@/components/settings/administration/Google.vue'
+
 export default [
   {
     name: 'settings',
@@ -35,6 +38,10 @@ export default [
       {
         path: 'network',
         redirect: 'network/interfaces',
+      },
+      {
+        path: 'administration',
+        redirect: 'administration/admin',
       },
       {
         path: 'system',
@@ -115,6 +122,15 @@ export default [
         path: 'administration/admin',
         component: Admin,
         meta: { helpContext: 'administration' },
+      },
+      {
+        path: 'administration/certificates',
+        component: Certificates,
+        meta: { helpContext: 'certificates' },
+      },
+      {
+        path: 'administration/google',
+        component: Google,
       },
       {
         path: 'system/upgrade',
