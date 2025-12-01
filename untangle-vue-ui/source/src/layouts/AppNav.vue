@@ -106,14 +106,14 @@
 
   export default {
     data: () => ({
-      theme: store.getters['settings/theme'],
+      theme: store.getters['config/theme'],
     }),
     computed: {
       languageSettings() {
-        return this.$store.getters['settings/languageSettings']
+        return this.$store.getters['config/languageSettings']
       },
       upgradeStatus() {
-        return store.getters['settings/upgradeStatus']
+        return store.getters['config/upgradeStatus']
       },
     },
 
@@ -122,7 +122,7 @@
       theme: {
         immediate: true,
         handler(theme) {
-          if (theme) store.dispatch('settings/setTheme', theme)
+          if (theme) store.dispatch('config/setTheme', theme)
         },
       },
       // set selection if theme changes from somewhere else
@@ -138,7 +138,7 @@
     },
 
     created() {
-      this.$store.dispatch('settings/getLanguageSettings')
+      this.$store.dispatch('config/getLanguageSettings')
     },
 
     methods: {
