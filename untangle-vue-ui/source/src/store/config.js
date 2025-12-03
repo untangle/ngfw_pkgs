@@ -20,6 +20,7 @@ const getDefaultState = () => ({
   isGoogleDriveConnected: false,
   systemLogs: {}, // system logs stored by logName
   certificatesInformation: null,
+  rootCertificates: null,
 })
 
 const getters = {
@@ -55,6 +56,8 @@ const getters = {
 
   /* Retrieves the certificates information from the state. */
   certificatesInformation: state => state.certificatesInformation || {},
+  /* Retrieves the list of root certificates from the state. */
+  rootCertificates: state => state.rootCertificates || [],
 }
 
 const mutations = {
@@ -85,6 +88,8 @@ const mutations = {
     set(state.systemLogs, logName, value)
   },
   SET_CERTIFICATES_INFORMATION: (state, value) => set(state, 'certificatesInformation', value),
+  /* Set Root Certificates */
+  SET_ROOT_CERTIFICATES: (state, value) => set(state, 'rootCertificates', value),
 }
 
 const actions = {
@@ -422,6 +427,21 @@ const actions = {
     try {
       const data = await window.rpc.UvmContext.certificateManager().getRootCertificateInformation()
       commit('SET_CERTIFICATES_INFORMATION', data)
+      return { success: true, data }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Get Root Certificate List */
+  async getRootCertificateList({ state, commit }, refetch) {
+    if (state.rootCertificates && !refetch) {
+      return
+    }
+    try {
+      const data = await window.rpc.UvmContext.certificateManager().getRootCertificateList()
+      commit('SET_ROOT_CERTIFICATES', data)
       return { success: true, data }
     } catch (err) {
       Util.handleException(err)
