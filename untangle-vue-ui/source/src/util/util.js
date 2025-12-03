@@ -550,6 +550,27 @@ const util = {
       document.body.appendChild(script)
     })
   },
+
+  /**
+   * Constructs the certificate subject string from certificate details.
+   * @param {Object} details - Object containing certificate details like commonName, country, etc.
+   * @returns {string} The formatted certificate subject string.
+   */
+  createCertSubject(details) {
+    const certSubject = [
+      '/CN=' + details.commonName,
+      '/C=' + details.country,
+      '/ST=' + details.state,
+      '/L=' + details.locality,
+      '/O=' + details.organization,
+    ]
+
+    if (details.organizationalUnit && details.organizationalUnit.length > 0) {
+      certSubject.push('/OU=' + details.organizationalUnit)
+    }
+
+    return certSubject.join('')
+  },
 }
 
 export default util
