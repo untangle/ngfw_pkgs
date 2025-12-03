@@ -163,6 +163,18 @@
             ],
           },
           {
+            name: 'administration',
+            icon: 'mdi-account-cog',
+            active: false,
+            match: '/settings/administration',
+            items: [
+              { name: 'admin', to: '/settings/administration/admin' },
+              { name: 'certificates', to: '/settings/administration/certificates' },
+              { name: 'snmp', to: '' },
+              { name: 'google', to: '/settings/administration/google' },
+            ],
+          },
+          {
             name: 'system',
             icon: 'mdi-cog',
             active: false,

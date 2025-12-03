@@ -48,7 +48,7 @@
     computed: {
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
-      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      interfaces: ({ $store }) => $store.getters['config/interfaces'],
       intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
     },
     async mounted() {
@@ -141,7 +141,7 @@
           this.$store.commit('SET_LOADER', true)
           this.isSaving = true
           // Save interface settings by updating the current/new interface- newSettings
-          const resultIntf = await this.$store.dispatch('settings/setInterfaces', [newSettings])
+          const resultIntf = await this.$store.dispatch('config/setInterfaces', [newSettings])
           if (resultIntf?.success) {
             this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
           } else {

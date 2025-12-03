@@ -75,7 +75,7 @@ const util = {
         value = i18n.t(addressTypeOptions.find(o => o.value === value)?.text)
       }
       if (c.type.includes('_INTERFACE_ZONE') && c.value !== null) {
-        value = store.getters['settings/interfaceById'](parseInt(value))?.name
+        value = store.getters['config/interfaceById'](parseInt(value))?.name
       }
       if (c.type === 'IP_PROTOCOL' && c.value !== null) {
         const strVal = c.value + '' // make sure it's a string
@@ -165,7 +165,7 @@ const util = {
         break
       }
       case 'WAN_POLICY': {
-        const policy = store.getters['settings/policyById'](rule.action?.policy)
+        const policy = store.getters['config/policyById'](rule.action?.policy)
         actionStr = `<span class="primary--text font-weight-bold">
           ${i18n.t('action_wan_policy_is')} ${policy?.description || '?'}</span>`
         break
