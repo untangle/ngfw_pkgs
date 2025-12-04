@@ -67,11 +67,7 @@
       /* download root certificate */
       async downloadRootCertificate(arg) {
         try {
-          await Util.downloadFile(
-            '/admin/download',
-            { type: 'certificate_download', arg1: arg },
-            'root_certificate.pem',
-          )
+          await Util.downloadFile('/admin/download', { type: 'certificate_download', arg1: arg }, 'root_authority.crt')
         } catch (err) {
           Util.handleException(err)
         }
