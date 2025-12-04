@@ -2,6 +2,7 @@
   <settings-certificates
     :certificates-information="certificatesInformation"
     @certificate-generator="certificteGenerator"
+    @download-root-certificate="downloadRootCertificate"
   />
 </template>
 
@@ -60,6 +61,19 @@
             Util.handleException(err)
             cb(err, false) // error
           }
+        }
+      },
+
+      /* download root certificate */
+      async downloadRootCertificate(arg) {
+        try {
+          await Util.downloadFile(
+            '/admin/download',
+            { type: 'certificate_download', arg1: arg },
+            'root_certificate.pem',
+          )
+        } catch (err) {
+          Util.handleException(err)
         }
       },
 
