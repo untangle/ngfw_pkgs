@@ -18,7 +18,7 @@ const actions = {
    * @param {Function} dispatch
    */
   async checkAuth({ rootState, commit, dispatch }) {
-    await dispatch('settings/getSettings', true, { root: true })
+    await dispatch('config/getSettings', true, { root: true })
     commit('SET_IS_AUTH', !!rootState.settings.settings)
 
     if (rootState.settings.settings) {

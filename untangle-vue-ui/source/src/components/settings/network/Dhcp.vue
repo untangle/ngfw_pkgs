@@ -25,7 +25,7 @@
     },
 
     computed: {
-      dhcpSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      dhcpSettings: ({ $store }) => $store.getters['config/networkSetting'],
     },
 
     created() {
@@ -40,7 +40,7 @@
        * @param {boolean} refetch - Whether to force a re-fetch of the settings.
        */
       async fetchSettings(refetch) {
-        await this.$store.dispatch('settings/getNetworkSettings', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
       },
 
       /**
@@ -92,7 +92,7 @@
         const isValid = await validate()
         if (!isValid) return
         this.$store.commit('SET_LOADER', true)
-        await Promise.all([this.$store.dispatch('settings/setNetworkSettingV2', newDhcpSettings)]).finally(() => {
+        await Promise.all([this.$store.dispatch('config/setNetworkSettingV2', newDhcpSettings)]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
       },

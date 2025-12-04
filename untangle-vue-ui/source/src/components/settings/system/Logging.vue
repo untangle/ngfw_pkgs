@@ -33,8 +33,8 @@
      * Fetches the initial 'uvm' log when the component is created.
      */
     async created() {
-      await this.$store.dispatch('settings/getLogsByName', { logName: 'uvm', refetch: true })
-      this.logs = this.$store.getters['settings/getLogsByName']('uvm')
+      await this.$store.dispatch('config/getLogsByName', { logName: 'uvm', refetch: true })
+      this.logs = this.$store.getters['config/getLogsByName']('uvm')
     },
 
     methods: {
@@ -45,8 +45,8 @@
        */
       async onLogsTabChanged(tabName) {
         try {
-          await this.$store.dispatch('settings/getLogsByName', { logName: tabName, refetch: false })
-          this.logs = this.$store.getters['settings/getLogsByName'](tabName)
+          await this.$store.dispatch('config/getLogsByName', { logName: tabName, refetch: false })
+          this.logs = this.$store.getters['config/getLogsByName'](tabName)
           return { success: true }
         } catch (ex) {
           util.handleException(ex)
@@ -60,8 +60,8 @@
        */
       async onReload(tabName) {
         try {
-          await this.$store.dispatch('settings/getLogsByName', { logName: tabName, refetch: true })
-          this.logs = this.$store.getters['settings/getLogsByName'](tabName)
+          await this.$store.dispatch('config/getLogsByName', { logName: tabName, refetch: true })
+          this.logs = this.$store.getters['config/getLogsByName'](tabName)
           return { success: true }
         } catch (ex) {
           util.handleException(ex)

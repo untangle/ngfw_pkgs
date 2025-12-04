@@ -36,11 +36,11 @@
 
     computed: {
       // Routes is coming from the networkSettings from store
-      routes: ({ $store }) => $store.getters['settings/staticRoutes'],
+      routes: ({ $store }) => $store.getters['config/staticRoutes'],
       // Interfaces from store which is need to be shown in the Next Hop
-      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      interfaces: ({ $store }) => $store.getters['config/interfaces'],
       // the network settings from the store
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
     },
 
     created() {
@@ -72,7 +72,7 @@
        * @param {boolean} refetch - Whether to force a re-fetch of the settings.
        */
       async fetchSettings(refetch) {
-        await this.$store.dispatch('settings/getNetworkSettings', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
       },
 
       onRefresh() {
@@ -97,7 +97,7 @@
         })
         const networkSettingsCopy = cloneDeep(this.networkSettings)
         networkSettingsCopy.staticRoutes = routes
-        await Promise.all([this.$store.dispatch('settings/setNetworkSettingV2', networkSettingsCopy)]).finally(() => {
+        await Promise.all([this.$store.dispatch('config/setNetworkSettingV2', networkSettingsCopy)]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
       },
