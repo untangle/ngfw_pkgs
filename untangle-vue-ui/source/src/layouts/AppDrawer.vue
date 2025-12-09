@@ -130,6 +130,13 @@
             ],
           },
           {
+            name: 'Local Directory',
+            icon: 'mdi-account-cog',
+            active: false,
+            match: '/settings/directory',
+            items: [{ name: 'Local Users', to: '/settings/directory/localDirectory', icon: 'mdi-file-cog-outline' }],
+          },
+          {
             name: 'administration',
             icon: 'mdi-account-cog',
             active: false,
@@ -170,8 +177,8 @@
             items: [
               { name: 'settings', to: '/settings/system/settings' },
               { name: 'logging', to: '/settings/system/logging' },
-              { name: 'about', to: '/settings/system/about' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
+              { name: 'about', to: '/settings/system/about' },
             ],
           },
           {

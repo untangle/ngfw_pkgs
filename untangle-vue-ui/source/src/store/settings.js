@@ -26,6 +26,8 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  users: state => state.users || [],
+  timeZoneOffset: state => state.timeZoneOffset || 0,
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || {},
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
@@ -55,6 +57,8 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
+  SET_USERS: (state, value) => set(state, 'users', value),
+  SET_TIME_ZONE_OFF_SET: (state, value) => set(state, 'timeZoneOffset', value),
   SET_DEVICE_TEMP_INFO: (state, value) => set(state, 'deviceTemperatureInfo', value),
   SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
@@ -118,6 +122,32 @@ const actions = {
       }
       const data = window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /** get timeZoneOffset */
+  getTimeZoneOffSet({ commit }) {
+    try {
+      const data = window.rpc.timeZoneOffset
+      commit('SET_TIME_ZONE_OFF_SET', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* get users configuration */
+  getUsers({ state, commit }, refetch) {
+    try {
+      if (state.users && !refetch) {
+        return
+      }
+      const result = window.rpc.UvmContext.localDirectory()
+      const data = result.getUsersV2()
+      commit('SET_USERS', data)
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
@@ -195,6 +225,32 @@ const actions = {
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
+    }
+  },
+
+  /* setUsers will update users regarding configurations */
+  setUsersSettings({ dispatch }, usersSettings) {
+    try {
+      const data = new Promise(resolve => {
+        window.rpc.UvmContext.localDirectory().setUsersV2(async (ex, result) => {
+          if (ex) {
+            Util.handleException(ex)
+            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          }
+
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            return resolve({ success: false, message: result.message.slice(0, 100) })
+          }
+          // fetch updated settings after successful save
+          await dispatch('getUsers', true)
+          return resolve({ success: true })
+        }, usersSettings)
+      })
+      return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
     }
   },
 
