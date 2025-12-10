@@ -59,7 +59,7 @@ const getters = {
   /* Retrieves the certificates information from the state. */
   certificatesInformation: state => state.certificatesInformation || {},
   /* Retrieves the list of root certificates from the state. */
-  rootCertificates: state => state.rootCertificates || [],
+  rootCertificates: state => state.rootCertificates?.list || [],
 }
 
 const mutations = {
@@ -476,7 +476,7 @@ const actions = {
 
   /* Get Certificate  */
 
-  async getCertificatesInformation({ state, commit }, refetch) {
+  async getRootCertificateInformation({ state, commit }, refetch) {
     if (state.certificatesInformation && !refetch) {
       return
     }

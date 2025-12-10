@@ -1,9 +1,17 @@
 <template>
   <settings-certificates
-    :certificates-information="certificatesInformation"
+    :settings="commonSettings"
     @certificate-generator="certificteGenerator"
     @download-root-certificate="downloadRootCertificate"
-  />
+    @delete-certificate="deleteCertificate"
+    @set-root-certificate="setRootCertificate"
+  >
+    <template #actions="{ newSettings, isDirty, validate }">
+      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
+        $t('save')
+      }}</u-btn>
+    </template>
+  </settings-certificates>
 </template>
 
 <script>
@@ -23,6 +31,9 @@
        */
       certificatesInformation: ({ $store }) => $store.getters['config/certificatesInformation'],
       rootCertificates: ({ $store }) => $store.getters['config/rootCertificates'],
+      commonSettings() {
+        return { certificatesInformation: this.certificatesInformation, rootCertificates: this.rootCertificates }
+      },
     },
 
     created() {
@@ -35,7 +46,7 @@
        * @param {boolean} refetch - Whether to refetch the data from the server.
        */
       async loadCertificates(refetch) {
-        await this.$store.dispatch('config/getCertificatesInformation', refetch)
+        await this.$store.dispatch('config/getRootCertificateInformation', refetch)
         await this.$store.dispatch('config/getRootCertificateList', refetch)
       },
       /**
@@ -74,6 +85,47 @@
           )
         } catch (err) {
           Util.handleException(err)
+        }
+      },
+
+      /**
+       * Sets the active root certificate.
+       * @param {string} payload.data.fileName - The name of the certificate file.
+       * @param {Function} payload.cb - Callback function to handle success or error.
+       */
+      async setRootCertificate({ data, cb }) {
+        try {
+          await Rpc.asyncData('rpc.UvmContext.certificateManager.setActiveRootCertificate', data.fileName)
+          await this.loadCertificates(true)
+          cb(null, true) // success
+        } catch (err) {
+          Util.handleException(err)
+          cb(err, false) // error
+        }
+      },
+
+      /**
+       * Deletes a certificate.
+       * @param {Object} payload.data - Data containing the certificate details.
+       * @param {string} payload.certMode - The mode of the certificate (e.g., 'ROOT').
+       * @param {Function} payload.cb - Callback function to handle success or error.
+       */
+      async deleteCertificate({ data, certMode, cb }) {
+        try {
+          const validation = Util.canDeleteCertificate(data)
+
+          if (!validation.allowed) {
+            cb(validation.message, false)
+            return
+          }
+          await Rpc.asyncData('rpc.UvmContext.certificateManager.removeCertificate', certMode, data.fileName)
+          if (certMode === 'ROOT') {
+            await this.loadCertificates(true)
+          }
+          cb(null, true) // success
+        } catch (err) {
+          Util.handleException(err)
+          cb(err, false) // error
         }
       },
 

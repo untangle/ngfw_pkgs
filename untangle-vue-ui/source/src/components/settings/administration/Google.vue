@@ -30,10 +30,10 @@
        * Retrieves Google settings from the Vuex store.
        * @returns {Object} Google settings object.
        */
-      googleSettings: ({ $store }) => $store.getters['settings/googleSettings'],
+      googleSettings: ({ $store }) => $store.getters['config/googleSettings'],
 
       /* Checks if Google Drive is connected from the Vuex store */
-      isGoogleDriveConnected: ({ $store }) => $store.getters['settings/isGoogleDriveConnected'],
+      isGoogleDriveConnected: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
 
       /**
        * Returns the current Google settings.
@@ -49,8 +49,8 @@
 
     /** Fetches initial admin and system settings. */
     created() {
-      this.$store.dispatch('settings/getGoogleSettings', false)
-      this.$store.dispatch('settings/getIsGoogleDriveConnected')
+      this.$store.dispatch('config/getGoogleSettings', false)
+      this.$store.dispatch('config/getIsGoogleDriveConnected')
       this.buildGoogleRefreshTask()
     },
 
