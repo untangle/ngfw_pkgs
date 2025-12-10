@@ -91,11 +91,11 @@
     }),
 
     computed: {
-      settings: ({ $store }) => $store.getters['settings/systemSetting'],
+      settings: ({ $store }) => $store.getters['config/systemSetting'],
     },
 
     created() {
-      this.$store.dispatch('settings/getSystemSettings', false)
+      this.$store.dispatch('config/getSystemSettings', false)
       this.checkUpgrades()
     },
 
@@ -168,7 +168,7 @@
           }
         }
         store.commit('SET_LOADER', true)
-        const response = await store.dispatch('settings/setSystemSettings', upgradeData)
+        const response = await store.dispatch('config/setSystemSettings', upgradeData)
         if (response.success) {
           this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('settings')]))
         } else {
@@ -304,7 +304,7 @@
        * Fetches updated system settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getSystemSettings', true)
+        this.$store.dispatch('config/getSystemSettings', true)
       },
     },
   }

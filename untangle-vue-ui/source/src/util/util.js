@@ -75,7 +75,7 @@ const util = {
         value = i18n.t(addressTypeOptions.find(o => o.value === value)?.text)
       }
       if (c.type.includes('_INTERFACE_ZONE') && c.value !== null) {
-        value = store.getters['settings/interfaceById'](parseInt(value))?.name
+        value = store.getters['config/interfaceById'](parseInt(value))?.name
       }
       if (c.type === 'IP_PROTOCOL' && c.value !== null) {
         const strVal = c.value + '' // make sure it's a string
@@ -165,7 +165,7 @@ const util = {
         break
       }
       case 'WAN_POLICY': {
-        const policy = store.getters['settings/policyById'](rule.action?.policy)
+        const policy = store.getters['config/policyById'](rule.action?.policy)
         actionStr = `<span class="primary--text font-weight-bold">
           ${i18n.t('action_wan_policy_is')} ${policy?.description || '?'}</span>`
         break
@@ -549,6 +549,27 @@ const util = {
       script.onerror = reject
       document.body.appendChild(script)
     })
+  },
+
+  /**
+   * Constructs the certificate subject string from certificate details.
+   * @param {Object} details - Object containing certificate details like commonName, country, etc.
+   * @returns {string} The formatted certificate subject string.
+   */
+  createCertSubject(details) {
+    const certSubject = [
+      '/CN=' + details.commonName,
+      '/C=' + details.country,
+      '/ST=' + details.state,
+      '/L=' + details.locality,
+      '/O=' + details.organization,
+    ]
+
+    if (details.organizationalUnit && details.organizationalUnit.length > 0) {
+      certSubject.push('/OU=' + details.organizationalUnit)
+    }
+
+    return certSubject.join('')
   },
 }
 

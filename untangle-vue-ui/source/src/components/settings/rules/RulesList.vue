@@ -109,10 +109,10 @@
       },
 
       // the network settings from the store
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
 
       // the system settings from the store
-      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
+      systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -198,10 +198,10 @@
           this.ruleConfigs.map(async confName => {
             // For Network Settings Rules Refresh Network Settings
             if (this.networkRules.includes(confName)) {
-              await store.dispatch('settings/getNetworkSettings', refetch)
+              await store.dispatch('config/getNetworkSettings', refetch)
             }
             if (confName === 'port-forward-rules') {
-              await store.dispatch('settings/getSystemSettings', false)
+              await store.dispatch('config/getSystemSettings', false)
             }
           }),
         ).finally(() => {
@@ -233,7 +233,7 @@
                 networkSettingsCopy[key.replace(/-/g, '_')] = rules
               })
 
-              await store.dispatch('settings/setNetworkSettingV2', networkSettingsCopy)
+              await store.dispatch('config/setNetworkSettingV2', networkSettingsCopy)
             }
           }),
         ).finally(() => {
@@ -370,8 +370,8 @@
         const accessRules = updatedRules['access-rules']
         const isBlockAllEnabled = util.getRuleEnabledStatus(accessRules, 'Block All')
         const isSshEnabled = util.getRuleEnabledStatus(accessRules, 'Allow SSH')
-        const prevSshEnabled = store.getters['settings/accessRuleSshEnabled']
-        const prevAccessRules = store.getters['settings/networkSetting']?.access_rules || []
+        const prevSshEnabled = store.getters['config/accessRuleSshEnabled']
+        const prevAccessRules = store.getters['config/networkSetting']?.access_rules || []
 
         // Case 1: Block All rule cannot be disabled
         if (!isBlockAllEnabled) {
