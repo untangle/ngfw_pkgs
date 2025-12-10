@@ -19,6 +19,7 @@ import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.
 import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
 import Upgrade from '@/components/settings/system/Upgrade'
+import LocalDirectory from '@/components/settings/system/LocalDirectory.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
@@ -114,9 +115,17 @@ export default [
         meta: { helpContext: 'system_settings' },
       },
       {
+        path: 'directory/localDirectory',
+        component: LocalDirectory,
+      },
+      {
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/upgrade',
+        component: Upgrade,
       },
       {
         path: 'administration/admin',

@@ -141,6 +141,12 @@
             ],
           },
           {
+            name: 'Local Directory',
+            icon: 'mdi-apps',
+            active: false,
+            items: [{ name: 'Local Users', to: '/settings/directory/localDirectory' }],
+          },
+          {
             name: 'services',
             icon: 'mdi-apps',
             active: false,
