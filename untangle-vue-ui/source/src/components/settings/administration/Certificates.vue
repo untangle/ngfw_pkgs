@@ -112,7 +112,7 @@
        */
       async deleteCertificate({ data, certMode, cb }) {
         try {
-          const validation = this.canDeleteCertificate(data)
+          const validation = Util.canDeleteCertificate(data)
 
           if (!validation.allowed) {
             cb(validation.message, false)
