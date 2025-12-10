@@ -24,15 +24,15 @@
     }),
 
     computed: {
-      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
-      users: ({ $store }) => $store.getters['settings/users'],
-      timeZoneOffset: ({ $store }) => $store.getters['settings/timeZoneOffset'],
+      systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
+      users: ({ $store }) => $store.getters['config/users'],
+      timeZoneOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
     },
 
     created() {
-      this.$store.dispatch('settings/getSystemSettings', false)
-      this.$store.dispatch('settings/getUsers', false)
-      this.$store.dispatch('settings/getTimeZoneOffSet')
+      this.$store.dispatch('config/getSystemSettings', false)
+      this.$store.dispatch('config/getUsers', false)
+      this.$store.dispatch('config/getTimeZoneOffSet')
       this.getOriginalpassword()
       this.processUsers()
     },
@@ -111,8 +111,8 @@
         // Make sure we set the userlist last because that function will generate
         // the user credentials and shared secret configs for the freeradius server
         await Promise.all([
-          // this.$store.dispatch('settings/setSystemSettings', systemSettings),
-          this.$store.dispatch('settings/setUsersSettings', processedUsers),
+          // this.$store.dispatch('config/setSystemSettings', systemSettings),
+          this.$store.dispatch('config/setUsersSettings', processedUsers),
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
@@ -123,8 +123,8 @@
        * Fetches updated system settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getSystemSettings', true)
-        this.$store.dispatch('settings/getUsers', true)
+        this.$store.dispatch('config/getSystemSettings', true)
+        this.$store.dispatch('config/getUsers', true)
       },
     },
   }
