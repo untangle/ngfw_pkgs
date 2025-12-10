@@ -550,6 +550,54 @@ const util = {
       document.body.appendChild(script)
     })
   },
+
+  /**
+   * Constructs the certificate subject string from certificate details.
+   * @param {Object} details - Object containing certificate details like commonName, country, etc.
+   * @returns {string} The formatted certificate subject string.
+   */
+  createCertSubject(details) {
+    const certSubject = [
+      '/CN=' + details.commonName,
+      '/C=' + details.country,
+      '/ST=' + details.state,
+      '/L=' + details.locality,
+      '/O=' + details.organization,
+    ]
+
+    if (details.organizationalUnit && details.organizationalUnit.length > 0) {
+      certSubject.push('/OU=' + details.organizationalUnit)
+    }
+
+    return certSubject.join('')
+  },
+
+  /**
+   * Determines if a certificate can be deleted based on certain conditions.
+   * A certificate cannot be deleted if it's the system's Apache certificate ('apache.pem')
+   * or if it is assigned to one or more services (HTTPS, SMTPS, IPsec, RADIUS).
+   *
+   * @param {object} data - The certificate data object.
+   * @param {string} data.fileName - The file name of the certificate.
+   * @returns {{allowed: boolean, message?: string}} An object indicating if deletion is allowed and an optional error message.
+   */
+  canDeleteCertificate(data) {
+    if (data.fileName === 'apache.pem') {
+      return {
+        allowed: false,
+        message: 'system_certificate_cannot_removed_error_message',
+      }
+    }
+
+    if (data.httpsServer || data.smtpsServer || data.ipsecServer || data.radiusServer) {
+      return {
+        allowed: false,
+        message: 'certificate_assigned_to_one_or_more_services_error_message',
+      }
+    }
+
+    return { allowed: true }
+  },
 }
 
 export default util
