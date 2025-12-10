@@ -16,6 +16,7 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 // services
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
+import Email from '@/components/settings/system/Email'
 import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
 import Upgrade from '@/components/settings/system/Upgrade'
@@ -102,6 +103,11 @@ export default [
         path: 'services/dynamic-blocklist',
         component: DynamicBlockLists,
         meta: { helpContext: 'dynamic_lists' },
+      },
+      {
+        path: 'system/email',
+        component: Email,
+        meta: { helpContext: 'system_settings' },
       },
       {
         path: 'system/about',
