@@ -6,9 +6,10 @@ import Rpc from '@/util/Rpc'
 
 const getDefaultState = () => ({
   editCallback: null,
+  mailSender: {},
   networkSetting: null,
   systemSetting: null,
-  deviceTemperatureInfo: null,
+  deviceTemperatureInfo: '',
   enabledWanInterfaces: [],
   uriSettings: null,
   systemTimeZones: [],
@@ -24,6 +25,7 @@ const getDefaultState = () => ({
 })
 
 const getters = {
+  mailSender: state => state.mailSender || {},
   languageSettings: state => state.languageSettings,
   networkSetting: state => state.networkSetting || [],
   interfaces: state => state?.networkSetting?.interfaces || [],
@@ -31,9 +33,9 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
   timeZoneOffset: state => state.timeZoneOffset || 0,
-  deviceTemperatureInfo: state => state.deviceTemperatureInfo || {},
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
@@ -66,6 +68,7 @@ const mutations = {
   setEditCallback(state, cb) {
     state.editCallback = cb
   },
+  SET_MAIL_SENDER: (state, value) => set(state, 'mailSender', value),
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
@@ -97,6 +100,35 @@ const mutations = {
 }
 
 const actions = {
+  async getMailSender({ state, commit }, refetch) {
+    try {
+      if (state.mailSender && !refetch) {
+        return
+      }
+      const data = await window.rpc.UvmContext.mailSender().getSettingsV2()
+      commit('SET_MAIL_SENDER', data)
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  async setMailSender({ dispatch }, emailServerSettings) {
+    try {
+      const apiMethod = Rpc.asyncPromise('rpc.UvmContext.mailSender().setSettingsV2', emailServerSettings)
+      const result = await apiMethod()
+      if (result?.code && result?.message) {
+        Util.handleException(result.message)
+        return { success: false, message: result.message.slice(0, 100) }
+      }
+      // fetch updated settings after successful save
+      await dispatch('getMailSender', true)
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
   async getLanguageSettings({ commit }) {
     if (!window.rpc || !window.rpc.languageManager) {
       return
@@ -298,29 +330,46 @@ const actions = {
     }
   },
 
-  /* setSystemSettings will update system regarding configurations */
-  setSystemSettings({ dispatch }, systemSettings) {
+  /**
+   * setSystemSettings will update system regarding configurations
+   * @param {object} { dispatch }
+   * @param {object} systemSettings
+   * @returns {Promise<object>}
+   */
+  async setSystemSettings({ dispatch }, systemSettings) {
     try {
-      const data = new Promise(resolve => {
-        window.rpc.systemManager.setSystemSettingsV2(async (ex, result) => {
+      const result = await new Promise(resolve => {
+        window.rpc.systemManager.setSystemSettingsV2((ex, res) => {
           if (ex) {
-            Util.handleException(ex)
-            return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+            return resolve({
+              success: false,
+              message: ex?.toString()?.slice(0, 100) || 'Unknown error',
+            })
           }
-
-          if (result?.code && result?.message) {
-            Util.handleException(result.message)
-            return resolve({ success: false, message: result.message.slice(0, 100) })
+          if (res?.code && res?.message) {
+            return resolve({
+              success: false,
+              message: res.message.slice(0, 100),
+            })
           }
-          // fetch updated settings after successful save
-          await dispatch('getSystemSettings', true)
           return resolve({ success: true })
         }, systemSettings)
       })
-      return data
+
+      if (result.success) {
+        // fetch updated settings after successful save
+        await dispatch('getSystemSettings', true)
+      } else {
+        Util.handleException(result.message)
+      }
+
+      return result
     } catch (err) {
       Util.handleException(err)
-      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+      return {
+        success: false,
+        message: err?.toString()?.slice(0, 100) || 'Unknown error',
+      }
     }
   },
   /**

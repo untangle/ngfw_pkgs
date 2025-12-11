@@ -188,6 +188,7 @@
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
               { name: 'about', to: '/settings/system/about' },
