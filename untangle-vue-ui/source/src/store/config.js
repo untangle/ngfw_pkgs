@@ -36,7 +36,6 @@ const getters = {
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
   timeZoneOffset: state => state.timeZoneOffset || 0,
-  deviceTemperatureInfo: state => state.deviceTemperatureInfo || {},
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
