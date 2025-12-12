@@ -10,6 +10,7 @@ const getDefaultState = () => ({
   networkSetting: null,
   systemSetting: null,
   deviceTemperatureInfo: '',
+  radiusLogsInfo: null,
   enabledWanInterfaces: [],
   uriSettings: null,
   systemTimeZones: [],
@@ -36,6 +37,7 @@ const getters = {
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
   timeZoneOffset: state => state.timeZoneOffset || 0,
+  radiusLogsInfo: state => state.radiusLogsInfo || '',
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],
@@ -75,6 +77,7 @@ const mutations = {
   SET_USERS: (state, value) => set(state, 'users', value),
   SET_TIME_ZONE_OFF_SET: (state, value) => set(state, 'timeZoneOffset', value),
   SET_DEVICE_TEMP_INFO: (state, value) => set(state, 'deviceTemperatureInfo', value),
+  SET_RADIUS_LOGS: (state, value) => set(state, 'radiusLogsInfo', value),
   SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
   SET_ENABLED_WAN_INTERFACES: (state, value) => set(state, 'enabledWanInterfaces', value),
   SET_URI_SETTINGS: (state, value) => set(state, 'uriSettings', value),
@@ -209,6 +212,17 @@ const actions = {
       const data = await window.rpc.systemManager.getDeviceTemperatureInfo()
       commit('SET_DEVICE_TEMP_INFO', data)
       return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /** get radius logs information */
+  async getRadiusLogFile({ commit }) {
+    try {
+      const data = await window.rpc.UvmContext.localDirectory().getRadiusLogFile()
+      commit('SET_RADIUS_LOGS', data)
+      return { success: true, message: null, data }
     } catch (err) {
       Util.handleException(err)
     }

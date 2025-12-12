@@ -121,6 +121,10 @@ export default [
         meta: { helpContext: 'system_settings' },
       },
       {
+        path: 'system/local-directory',
+        component: LocalDirectory,
+      },
+      {
         path: 'directory/localDirectory',
         component: LocalDirectory,
       },
@@ -128,10 +132,6 @@ export default [
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
-      },
-      {
-        path: 'system/upgrade',
-        component: Upgrade,
       },
       {
         path: 'administration/admin',
