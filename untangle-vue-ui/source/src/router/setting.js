@@ -25,11 +25,7 @@ import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 import Logging from '@/components/settings/system/Logging.vue'
-
-// Administration
-import Admin from '@/components/settings/administration/Admin.vue'
-import Certificates from '@/components/settings/administration/Certificates.vue'
-import Google from '@/components/settings/administration/Google.vue'
+import Administration from '@/components/settings/system/Administration.vue'
 
 export default [
   {
@@ -40,10 +36,6 @@ export default [
       {
         path: 'network',
         redirect: 'network/interfaces',
-      },
-      {
-        path: 'administration',
-        redirect: 'administration/admin',
       },
       {
         path: 'system',
@@ -129,23 +121,16 @@ export default [
         component: Settings,
         meta: { helpContext: 'system_settings' },
       },
+
+      {
+        path: 'system/administration',
+        component: Administration,
+        meta: { helpContext: 'system_settings' },
+      },
+
       {
         path: 'system/upgrade',
         component: Upgrade,
-      },
-      {
-        path: 'administration/admin',
-        component: Admin,
-        meta: { helpContext: 'administration' },
-      },
-      {
-        path: 'administration/certificates',
-        component: Certificates,
-        meta: { helpContext: 'certificates' },
-      },
-      {
-        path: 'administration/google',
-        component: Google,
       },
       {
         path: 'system/upgrade',
