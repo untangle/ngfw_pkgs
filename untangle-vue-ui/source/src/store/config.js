@@ -23,6 +23,7 @@ const getDefaultState = () => ({
   systemLogs: {}, // system logs stored by logName
   certificatesInformation: null,
   rootCertificates: null,
+  serverCertificateVerification: null,
 })
 
 const getters = {
@@ -64,6 +65,7 @@ const getters = {
   certificatesInformation: state => state.certificatesInformation || {},
   /* Retrieves the list of root certificates from the state. */
   rootCertificates: state => state.rootCertificates?.list || [],
+  serverCertificateVerification: state => state.serverCertificateVerification || [],
 }
 
 const mutations = {
@@ -100,6 +102,7 @@ const mutations = {
   SET_CERTIFICATES_INFORMATION: (state, value) => set(state, 'certificatesInformation', value),
   /* Set Root Certificates */
   SET_ROOT_CERTIFICATES: (state, value) => set(state, 'rootCertificates', value),
+  SET_SERVER_CERTIFICATE_VERIFICATION: (state, value) => set(state, 'serverCertificateVerification', value),
 }
 
 const actions = {
@@ -561,6 +564,21 @@ const actions = {
     try {
       const data = await window.rpc.UvmContext.certificateManager().getRootCertificateList()
       commit('SET_ROOT_CERTIFICATES', data)
+      return { success: true, data }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Get ServerCertificateVerification details */
+  async getServerCertificateVerification({ state, commit }, refetch) {
+    if (state.serverCertificateVerification && !refetch) {
+      return
+    }
+    try {
+      const data = await window.rpc.UvmContext.certificateManager().validateActiveInspectorCertificates()
+      commit('SET_SERVER_CERTIFICATE_VERIFICATION', data)
       return { success: true, data }
     } catch (err) {
       Util.handleException(err)

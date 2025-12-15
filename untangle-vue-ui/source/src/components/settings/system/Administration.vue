@@ -58,6 +58,8 @@
        */
       rootCertificates: ({ $store }) => $store.getters['config/rootCertificates'],
 
+      serverCertificateVerification: ({ $store }) => $store.getters['config/serverCertificateVerification'],
+
       /**
        * Combines various settings into a single object for the Administration component.
        * @returns {Object} Combined settings object.
@@ -70,6 +72,7 @@
           certificatesInformation: this.certificatesInformation,
           rootCertificates: this.rootCertificates,
           googleDriveIsConfigured: this.isGoogleDriveConnected,
+          serverCertificateVerification: this.serverCertificateVerification,
         }
       },
     },
@@ -86,6 +89,7 @@
       this.loadCertificates(false)
       this.$store.dispatch('config/getGoogleSettings', false)
       this.$store.dispatch('config/getIsGoogleDriveConnected')
+      this.$store.dispatch('config/getServerCertificateVerification', false)
     },
 
     methods: {
