@@ -135,11 +135,12 @@
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'administration', to: '/settings/system/administration' },
               { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
               { name: 'Local Directory', to: '/settings/system/local-directory' },
-              { name: 'about', to: '/settings/system/about' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
+              { name: 'about', to: '/settings/system/about' },
             ],
           },
           {

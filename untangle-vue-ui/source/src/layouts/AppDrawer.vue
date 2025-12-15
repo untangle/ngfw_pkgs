@@ -130,18 +130,6 @@
             ],
           },
           {
-            name: 'administration',
-            icon: 'mdi-account-cog',
-            active: false,
-            match: '/settings/administration',
-            items: [
-              { name: 'admin', to: '/settings/administration/admin' },
-              { name: 'certificates', to: '' },
-              { name: 'snmp', to: '' },
-              { name: 'google', to: '' },
-            ],
-          },
-          {
             name: 'routing',
             icon: 'mdi-call-split',
             active: false,
@@ -163,24 +151,13 @@
             ],
           },
           {
-            name: 'administration',
-            icon: 'mdi-account-cog',
-            active: false,
-            match: '/settings/administration',
-            items: [
-              { name: 'admin', to: '/settings/administration/admin' },
-              { name: 'certificates', to: '/settings/administration/certificates' },
-              { name: 'snmp', to: '' },
-              { name: 'google', to: '/settings/administration/google' },
-            ],
-          },
-          {
             name: 'system',
             icon: 'mdi-cog',
             active: false,
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'administration', to: '/settings/system/administration' },
               { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
               { name: 'Local Directory', to: '/settings/system/local-directory' },
