@@ -1,12 +1,14 @@
 <template>
   <settings-local-directory
-    :users="processedUsers"
+    :settings="processedUsers"
     :time-zone-offset="timeZoneOffset"
-    @get-show-secret-qr="getSecretQR"
+    :radius-logs-info="radiusLogsInfo"
+    @get-secret-qr="getSecretQr"
     @get-secret-key="getSecretKey"
+    @refresh-radius-logs-info="onRefreshRadiusLogFileInfo"
   >
-    <template #actions="{ usersSettings, isDirty, validate }">
-      <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(usersSettings, validate)"> {{ $t('save') }}</u-btn>
+    <template #actions="{ newSettings, isDirty, validate }">
+      <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(newSettings, validate)"> {{ $t('save') }}</u-btn>
     </template>
   </settings-local-directory>
 </template>
@@ -27,12 +29,14 @@
       systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
       users: ({ $store }) => $store.getters['config/users'],
       timeZoneOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
+      radiusLogsInfo: ({ $store }) => $store.getters['config/radiusLogsInfo'],
     },
 
     created() {
       this.$store.dispatch('config/getSystemSettings', false)
       this.$store.dispatch('config/getUsers', false)
       this.$store.dispatch('config/getTimeZoneOffSet')
+      this.$store.dispatch('config/getRadiusLogFile')
       this.getOriginalpassword()
       this.processUsers()
     },
@@ -66,7 +70,11 @@
         cb(response ?? null)
       },
 
-      async getSecretQR(username, twofactorSecretKey, cb) {
+      async onRefreshRadiusLogFileInfo() {
+        await this.$store.dispatch('config/getRadiusLogFile')
+      },
+
+      async getSecretQr(username, twofactorSecretKey, cb) {
         const response = await Rpc.asyncData(
           'rpc.UvmContext.localDirectory.showSecretQR',
           username,
@@ -77,12 +85,11 @@
       },
 
       // saves the auto upgrade settings
-      async onSave(usersSettings, validate) {
+      async onSave(newSettings, validate) {
         const isValid = await validate()
         if (!isValid) return
         store.commit('SET_LOADER', true)
-        // this.$store.commit('SET_LOADER', false)
-        const processedUsers = usersSettings.map(u => {
+        const processedUsers = newSettings.map(u => {
           const user = { ...u }
 
           // Handle password
