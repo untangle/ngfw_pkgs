@@ -113,6 +113,10 @@ export default [
         meta: { helpContext: 'system_settings' },
       },
       {
+        path: 'system/local-directory',
+        component: LocalDirectory,
+      },
+      {
         path: 'directory/localDirectory',
         component: LocalDirectory,
       },

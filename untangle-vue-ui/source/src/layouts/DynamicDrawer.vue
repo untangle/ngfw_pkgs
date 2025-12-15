@@ -138,15 +138,10 @@
               { name: 'email_menu', to: '/settings/system/email' },
               { name: 'administration', to: '/settings/system/administration' },
               { name: 'logging', to: '/settings/system/logging' },
+              { name: 'Local Directory', to: '/settings/system/local-directory' },
               { name: 'about', to: '/settings/system/about' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
             ],
-          },
-          {
-            name: 'Local Directory',
-            icon: 'mdi-apps',
-            active: false,
-            items: [{ name: 'Local Users', to: '/settings/directory/localDirectory' }],
           },
           {
             name: 'services',
