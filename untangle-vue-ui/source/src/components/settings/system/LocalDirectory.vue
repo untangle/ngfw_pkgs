@@ -1,6 +1,7 @@
 <template>
   <settings-local-directory
     :settings="processedUsers"
+    :system-settings="systemSettings"
     :time-zone-offset="timeZoneOffset"
     :radius-logs-info="radiusLogsInfo"
     @get-secret-qr="getSecretQr"
@@ -8,7 +9,7 @@
     @refresh-radius-logs-info="onRefreshRadiusLogFileInfo"
   >
     <template #actions="{ newSettings, isDirty, validate }">
-      <u-btn :min-width="null" :disabled="!isDirty" @click="onSave(newSettings, validate)"> {{ $t('save') }}</u-btn>
+      <u-btn :disabled="!isDirty" @click="onSave(newSettings, validate)"> {{ $t('save') }}</u-btn>
     </template>
   </settings-local-directory>
 </template>
