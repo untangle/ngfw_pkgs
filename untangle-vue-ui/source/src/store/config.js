@@ -353,24 +353,28 @@ const actions = {
    * @param {object} systemSettings
    * @returns {Promise<object>}
    */
-  async setSystemSettings({ dispatch }, systemSettings) {
+  async setSystemSettings({ dispatch }, { systemSettings, dirtyRadiusFields }) {
     try {
       const result = await new Promise(resolve => {
-        window.rpc.systemManager.setSystemSettingsV2((ex, res) => {
-          if (ex) {
-            return resolve({
-              success: false,
-              message: ex?.toString()?.slice(0, 100) || 'Unknown error',
-            })
-          }
-          if (res?.code && res?.message) {
-            return resolve({
-              success: false,
-              message: res.message.slice(0, 100),
-            })
-          }
-          return resolve({ success: true })
-        }, systemSettings)
+        window.rpc.systemManager.setSystemSettingsV2(
+          (ex, res) => {
+            if (ex) {
+              return resolve({
+                success: false,
+                message: ex?.toString()?.slice(0, 100) || 'Unknown error',
+              })
+            }
+            if (res?.code && res?.message) {
+              return resolve({
+                success: false,
+                message: res.message.slice(0, 100),
+              })
+            }
+            return resolve({ success: true })
+          },
+          systemSettings,
+          dirtyRadiusFields,
+        )
       })
 
       if (result.success) {

@@ -134,55 +134,50 @@
 
       // saves the auto upgrade settings
       async onSave(newSettings, validate) {
+        let dirtyRadiusFields = false
         const isValid = await validate()
         if (!isValid && validate) return
         store.commit('SET_LOADER', true)
 
         const { systemSettings: newSystemSettings, usersSettings: newUsersSettings } = newSettings
-        const changes = []
 
         if (!this.isEqual(newSystemSettings, this.systemSettings)) {
-          changes.push(this.$store.dispatch('config/setSystemSettings', newSystemSettings))
+          dirtyRadiusFields = true
         }
-        if (!this.isEqual(newSystemSettings, this.systemSettings)) {
-          if (!this.isEqual(newUsersSettings, this.processedUsers)) {
-            const processedUsers = newUsersSettings.map(u => {
-              const user = { ...u }
+        const processedUsers = newUsersSettings.map(u => {
+          const user = { ...u }
 
-              // Handle password
-              if (!user.password) {
-                user.password = ''
-              }
-
-              if (user.password.length > 0) {
-                user.passwordBase64Hash = Util.base64encode(user.password)
-                user.password = ''
-              }
-
-              // Handle expirationTime logic
-              if (user.localForever === true) {
-                user.expirationTime = 0
-              } else {
-                if (!(user.localExpires instanceof Date)) {
-                  user.localExpires = new Date(user.localExpires)
-                }
-                user.expirationTime = user.localExpires.getTime()
-              }
-
-              return user
-            })
-            console.log('***********')
-            changes.push(this.$store.dispatch('config/setUsersSettings', processedUsers))
+          // Handle password
+          if (!user.password) {
+            user.password = ''
           }
-        }
+          // calculate the passwordBase64Hash for any changed passwords and remove cleartext
+          if (user.password.length > 0) {
+            user.passwordBase64Hash = Util.base64encode(user.password)
+            user.password = ''
+          }
+
+          // use localForever and localExpires to set the correct expirationTime
+          if (user.localForever === true) {
+            user.expirationTime = 0
+          } else {
+            if (!(user.localExpires instanceof Date)) {
+              user.localExpires = new Date(user.localExpires)
+            }
+            user.expirationTime = user.localExpires.getTime()
+          }
+
+          return user
+        })
 
         // Make sure we set the userlist last because that function will generate
         // the user credentials and shared secret configs for the freeradius server
-        try {
-          await Promise.all(changes)
-        } finally {
+        await Promise.all([
+          this.$store.dispatch('config/setSystemSettings', { systemSettings: newSystemSettings, dirtyRadiusFields }),
+          this.$store.dispatch('config/setUsersSettings', processedUsers),
+        ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
-        }
+        })
       },
 
       /**
