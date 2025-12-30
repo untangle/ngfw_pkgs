@@ -173,7 +173,10 @@
         // Make sure we set the userlist last because that function will generate
         // the user credentials and shared secret configs for the freeradius server
         await Promise.all([
-          this.$store.dispatch('config/setSystemSettings', { systemSettings: newSystemSettings, dirtyRadiusFields }),
+          this.$store.dispatch('config/setSystemSettingsWithRadius', {
+            systemSettings: newSystemSettings,
+            dirtyRadiusFields,
+          }),
           this.$store.dispatch('config/setUsersSettings', processedUsers),
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
