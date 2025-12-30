@@ -9,6 +9,7 @@
     @test-radius-proxy-login="getTestRadiusProxy"
     @refresh-ad-account-status="getAdAccountStatus"
     @create-ad-account-status="createComputerAccount"
+    @get-original-password="getDecryptedPassword"
   >
     <template #actions="{ newSettings, isDirty, validate }">
       <u-btn :disabled="!isDirty" @click="onSave(newSettings, validate)"> {{ $t('save') }}</u-btn>
@@ -48,11 +49,10 @@
     },
 
     created() {
-      this.$store.dispatch('config/getSystemSettings', false)
       this.$store.dispatch('config/getUsers', false)
+      this.$store.dispatch('config/getSystemSettings', false)
       this.$store.dispatch('config/getTimeZoneOffSet')
       this.$store.dispatch('config/getRadiusLogFile')
-      this.getOriginalpassword()
       this.processUsers()
     },
 
@@ -67,14 +67,6 @@
             localExpires: isForever ? new Date() : new Date(user.expirationTime),
           }
         })
-      },
-
-      getOriginalpassword() {
-        const encryptedPassword = this.systemSettings.radiusProxyEncryptedPassword
-        if (encryptedPassword !== null && encryptedPassword !== '') {
-          const password = Util.getDecryptedPassword(encryptedPassword)
-          this.systemSettings.radiusProxyPassword = password
-        }
       },
 
       async getSecretKey(cb) {
@@ -121,6 +113,11 @@
           this.$store.commit('SET_LOADER', false),
         )
         cb(response.output ?? null)
+      },
+
+      getDecryptedPassword(cb) {
+        const result = Util.getDecryptedPassword(this.systemSettings.radiusProxyEncryptedPassword)
+        cb(result ?? null)
       },
 
       async getSecretQr(username, twofactorSecretKey, cb) {
@@ -189,8 +186,8 @@
        * Fetches updated system settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('config/getSystemSettings', true)
         this.$store.dispatch('config/getUsers', true)
+        this.$store.dispatch('config/getSystemSettings', true)
       },
     },
   }
