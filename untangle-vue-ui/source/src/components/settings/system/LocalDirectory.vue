@@ -17,6 +17,7 @@
 </template>
 <script>
   import { SettingsLocalDirectory } from 'vuntangle'
+  import isEqual from 'lodash/isEqual'
   import store from '@/store'
   import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
@@ -141,7 +142,7 @@
 
         const { systemSettings: newSystemSettings, usersSettings: newUsersSettings } = newSettings
 
-        if (!this.isEqual(newSystemSettings, this.systemSettings)) {
+        if (!isEqual(newSystemSettings, this.systemSettings)) {
           dirtyRadiusFields = true
         }
         const processedUsers = newUsersSettings.map(u => {
@@ -181,14 +182,6 @@
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
-      },
-
-      /**
-       * Compares two objects for equality by converting them to JSON strings.
-       * @returns {boolean} True if the objects are equal, false otherwise.
-       */
-      isEqual(obj1, obj2) {
-        return JSON.stringify(obj1) === JSON.stringify(obj2)
       },
 
       /**
