@@ -8,6 +8,8 @@
     @download-root-certificate="downloadRootCertificate"
     @delete-certificate="deleteCertificate"
     @set-root-certificate="setRootCertificate"
+    @handle-file-import="handleFileImport"
+    @upload-certificate="uploadCertificate"
   >
     <template #actions="{ newSettings, isDirty, validate }">
       <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
@@ -22,6 +24,7 @@
   import settingsMixin from '../settingsMixin'
   import Rpc from '../../../util/Rpc'
   import Util from '@/util/util'
+  import util from '@/util/setupUtil'
 
   export default {
     components: { SettingsAdministration },
@@ -159,7 +162,7 @@
             this.$vuntangle.toast.add(this.$t('an_error_occurred'), 'error')
           }
         } catch (ex) {
-          Util.handleException(ex)
+          util.handleException(ex)
         }
       },
 
@@ -284,7 +287,7 @@
             await this.loadCertificates(true)
             cb(null, true) // success
           } catch (err) {
-            Util.handleException(err)
+            util.handleException(err)
             cb(err, false) // error
           }
         }
@@ -299,7 +302,7 @@
             'root_certificate.crt',
           )
         } catch (err) {
-          Util.handleException(err)
+          util.handleException(err)
         }
       },
 
@@ -314,7 +317,7 @@
           await this.loadCertificates(true)
           cb(null, true) // success
         } catch (err) {
-          Util.handleException(err)
+          util.handleException(err)
           cb(err, false) // error
         }
       },
@@ -339,11 +342,71 @@
           }
           cb(null, true) // success
         } catch (err) {
-          Util.handleException(err)
+          util.handleException(err)
           cb(err, false) // error
         }
       },
 
+      /**
+       * Handles file import for certificates.
+       * This function uploads a certificate file to the server.
+       * @param {Object} payload - The payload object.
+       * @param {File} payload.file - The file to be imported.
+       * @param {string} payload.argument - Additional argument for the upload.
+       * @param {Function} payload.cb - Callback function to handle the response.
+       */
+      async handleFileImport({ file, argument, cb }) {
+        if (!file) {
+          this.$vuntangle.toast.add(this.$t('please_choose_a_file'), 'error')
+          return
+        }
+
+        try {
+          const response = await Util.uploadFile('/admin/upload', {
+            filename: file,
+            argument,
+            formName: 'upload_form',
+            type: 'certificate_upload',
+          })
+          const parseData = response?.msg ? JSON.parse(response.msg) : {}
+          cb(parseData)
+        } catch (err) {
+          util.handleException(err)
+        }
+      },
+
+      /**
+       * Uploads a certificate to the server using an RPC call.
+       * This function is used to upload a certificate with its key and other data.
+       * @param {Object} payload - The payload object.
+       * @param {string} payload.certMode - The certificate mode (e.g., 'ROOT').
+       * @param {Function} payload.cb - Callback function to handle success or error.
+       */
+      async uploadCertificate({ certMode, certData, keyData, extraData, cb }) {
+        try {
+          const response = await Rpc.asyncData(
+            'rpc.UvmContext.certificateManager.uploadCertificate',
+            certMode,
+            certData,
+            keyData,
+            extraData,
+          )
+
+          if (response.result !== 0) {
+            cb(response.output, false)
+            return
+          }
+
+          if (certMode === 'ROOT') {
+            await this.loadCertificates(true)
+          }
+
+          cb(response.output, true)
+        } catch (err) {
+          util.handleException(err)
+          cb(err, false)
+        }
+      },
       /* Optional hook triggered on browser refresh.
        */
       onBrowserRefresh() {
