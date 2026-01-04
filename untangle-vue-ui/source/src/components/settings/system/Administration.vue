@@ -20,6 +20,7 @@
 </template>
 
 <script>
+  import { isEqual } from 'lodash'
   import { SettingsAdministration } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
   import Rpc from '../../../util/Rpc'
@@ -61,7 +62,17 @@
        */
       rootCertificates: ({ $store }) => $store.getters['config/rootCertificates'],
 
+      /**
+       * Retrieves server certificate verification setting from the Vuex store.
+       * @returns {boolean} Server certificate verification status.
+       */
       serverCertificateVerification: ({ $store }) => $store.getters['config/serverCertificateVerification'],
+
+      /**
+       * Retrieves server certificates from the Vuex store.
+       * @returns {Array} List of server certificates.
+       */
+      serverCertificates: ({ $store }) => $store.getters['config/serverCertificates'],
 
       /**
        * Combines various settings into a single object for the Administration component.
@@ -76,10 +87,10 @@
           rootCertificates: this.rootCertificates,
           googleDriveIsConfigured: this.isGoogleDriveConnected,
           serverCertificateVerification: this.serverCertificateVerification,
+          serverCertificates: this.serverCertificates,
         }
       },
     },
-
     /**
      * Lifecycle hook that fetches initial admin and system settings,
      * builds the Google refresh task, loads certificates, and dispatches
@@ -92,10 +103,10 @@
       this.loadCertificates(false)
       this.$store.dispatch('config/getGoogleSettings', false)
       this.$store.dispatch('config/getIsGoogleDriveConnected')
-      this.$store.dispatch('config/getServerCertificateVerification', false)
     },
 
     methods: {
+      isEqual,
       /* Fetches admin settings from the backend and updates the store. */
       async fetchAdminSettings(refetch) {
         await this.$store.dispatch('config/getAdminSettings', refetch)
@@ -220,6 +231,37 @@
       },
 
       /**
+       * Maps server certificates to system settings.
+       * This function resets the certificate-related properties in the system settings
+       * and then maps the server certificates to their respective properties based on their usage flags.
+       * @param {Object} systemSettings - The system settings object to be updated.
+       * @param {Array} serverCertificates - The list of server certificates.
+       * @returns {Object} The updated system settings object.
+       */
+      mapServerCertificatesToSystemSettings(systemSettings, serverCertificates) {
+        // reset first (important)
+        systemSettings.webCertificate = null
+        systemSettings.mailCertificate = null
+        systemSettings.ipsecCertificate = null
+        systemSettings.radiusCertificate = null
+
+        serverCertificates.forEach(cert => {
+          if (cert.httpsServer) {
+            systemSettings.webCertificate = cert.fileName
+          }
+          if (cert.smtpsServer) {
+            systemSettings.mailCertificate = cert.fileName
+          }
+          if (cert.ipsecServer) {
+            systemSettings.ipsecCertificate = cert.fileName
+          }
+          if (cert.radiusServer) {
+            systemSettings.radiusCertificate = cert.fileName
+          }
+        })
+        return systemSettings
+      },
+      /**
        * Handles saving of new administration, system and Google settings.
        * Validates settings, identifies changes, and dispatches actions to update the store.
        * @param {Object} newSettings - The new combined settings object, where system settings are under the 'system' key and google settings are under 'googleSettings' key.
@@ -228,9 +270,14 @@
       async onSaveSettings(newSettings, validate) {
         if (validate && !(await validate())) return
 
-        const { admin: newAdminSettings, system: newSystemSettings, googleSettings: newGoogleSettings } = newSettings
+        const {
+          admin: newAdminSettings,
+          system: newSystemSettings,
+          googleSettings: newGoogleSettings,
+          serverCertificates,
+        } = newSettings
         const changes = []
-
+        this.mapServerCertificatesToSystemSettings(newSystemSettings, serverCertificates)
         if (!this.isEqual(newAdminSettings, this.adminSettings)) {
           changes.push(this.$store.dispatch('config/setAdminSettings', newAdminSettings))
         }
@@ -244,27 +291,25 @@
         }
 
         if (!changes.length) return
-
         this.$store.commit('SET_LOADER', true)
         try {
           await Promise.all(changes)
+          this.loadCertificates(true)
+          this.$vuntangle.toast.add(this.$vuntangle.$t('administration_settings_saved'))
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
       },
-      /**
-       * Compares two objects for equality by converting them to JSON strings.
-       * @returns {boolean} True if the objects are equal, false otherwise.
-       */
-      isEqual(obj1, obj2) {
-        return JSON.stringify(obj1) === JSON.stringify(obj2)
-      },
+
       /**
        * Loads certificate information from the store.
        * @param {boolean} refetch - Whether to refetch the data from the server.
        */
       async loadCertificates(refetch) {
+        await this.$store.dispatch('config/getServerCertificateList', refetch)
         await this.$store.dispatch('config/getRootCertificateInformation', refetch)
+        await this.$store.dispatch('config/getServerCertificateVerification', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
         await this.$store.dispatch('config/getRootCertificateList', refetch)
       },
       /**
@@ -339,6 +384,8 @@
           await Rpc.asyncData('rpc.UvmContext.certificateManager.removeCertificate', certMode, data.fileName)
           if (certMode === 'ROOT') {
             await this.loadCertificates(true)
+          } else if (certMode === 'SERVER') {
+            await this.$store.dispatch('config/getServerCertificateList', true)
           }
           cb(null, true) // success
         } catch (err) {

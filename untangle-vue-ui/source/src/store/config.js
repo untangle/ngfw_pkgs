@@ -24,6 +24,7 @@ const getDefaultState = () => ({
   certificatesInformation: null,
   rootCertificates: null,
   serverCertificateVerification: null,
+  serverCertificates: null,
 })
 
 const getters = {
@@ -64,8 +65,11 @@ const getters = {
   /* Retrieves the certificates information from the state. */
   certificatesInformation: state => state.certificatesInformation || {},
   /* Retrieves the list of root certificates from the state. */
-  rootCertificates: state => state.rootCertificates?.list || [],
+  rootCertificates: state => state.rootCertificates || [],
+  /* Retrieves the server certificate verification from the state. */
   serverCertificateVerification: state => state.serverCertificateVerification || [],
+  /* Retrieves the server certificates from the state. */
+  serverCertificates: state => state.serverCertificates || [],
 }
 
 const mutations = {
@@ -103,6 +107,7 @@ const mutations = {
   /* Set Root Certificates */
   SET_ROOT_CERTIFICATES: (state, value) => set(state, 'rootCertificates', value),
   SET_SERVER_CERTIFICATE_VERIFICATION: (state, value) => set(state, 'serverCertificateVerification', value),
+  SET_SERVER_CERTIFICATES: (state, value) => set(state, 'serverCertificates', value),
 }
 
 const actions = {
@@ -610,7 +615,7 @@ const actions = {
       return
     }
     try {
-      const data = await window.rpc.UvmContext.certificateManager().getRootCertificateList()
+      const data = await window.rpc.UvmContext.certificateManager().getRootCertificateListV2()
       commit('SET_ROOT_CERTIFICATES', data)
       return { success: true, data }
     } catch (err) {
@@ -627,6 +632,21 @@ const actions = {
     try {
       const data = await window.rpc.UvmContext.certificateManager().validateActiveInspectorCertificates()
       commit('SET_SERVER_CERTIFICATE_VERIFICATION', data)
+      return { success: true, data }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Get Server Certificate List */
+  async getServerCertificateList({ state, commit }, refetch) {
+    if (state.serverCertificates && !refetch) {
+      return
+    }
+    try {
+      const data = await window.rpc.UvmContext.certificateManager().getServerCertificateListV2()
+      commit('SET_SERVER_CERTIFICATES', data)
       return { success: true, data }
     } catch (err) {
       Util.handleException(err)
