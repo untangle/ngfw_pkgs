@@ -2,12 +2,15 @@
   <email
     :mail-sender-settings="mailSender"
     :company-name="companyName"
+    @email-test="sendTestEmail"
     @save-email-server-settings="onSaveEmailServerSettings"
     @refresh-settings="onRefreshSettings"
   />
 </template>
 <script>
   import { Email } from 'vuntangle'
+  import Util from '@/util/util'
+  import Rpc from '@/util/Rpc'
 
   /**
    * Wrapper component for email settings.
@@ -48,6 +51,27 @@
     },
 
     methods: {
+      /**
+       * Send test email
+       * @param {object} email - The email address to send test mail to.
+       * @param {function} cb - The callback function.
+       */
+      async sendTestEmail({ email, cb }) {
+        try {
+          const apiMethod = Rpc.asyncPromise('rpc.UvmContext.mailSender().sendTestMessageV2', email)
+          const result = await apiMethod()
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            cb(result.message)
+          } else {
+            cb(result)
+          }
+        } catch (err) {
+          Util.handleException(err)
+          cb(err)
+        }
+      },
+
       /**
        * Saves email server settings.
        * @param {object} emailServerSettings - The email server settings to save.
