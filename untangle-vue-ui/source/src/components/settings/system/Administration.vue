@@ -295,7 +295,6 @@
         try {
           await Promise.all(changes)
           this.loadCertificates(true)
-          this.$vuntangle.toast.add(this.$vuntangle.$t('administration_settings_saved'))
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
