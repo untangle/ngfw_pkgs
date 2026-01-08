@@ -39,7 +39,9 @@
      */
     provide() {
       return {
-        $remoteData: () => ({}),
+        $remoteData: () => ({
+          classes: this.classes,
+        }),
         $features: {
           hasIpv6Support: true,
           hasClassCondition: true,
@@ -66,6 +68,7 @@
         rulesMap: {
           'alert': ['alert-rules'],
         },
+        classes: [],
       }
     },
     computed: {
@@ -73,6 +76,9 @@
       title: () => {},
 
       description: () => {},
+
+      // the Class Fields for Event Rules Classes
+      classFields: ({ $store }) => $store.getters['config/classFieldsData'],
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -97,6 +103,10 @@
       },
     },
 
+    created() {
+      this.fetchClassFields()
+    },
+
     methods: {
       /** Rules change listner, updates the settings */
       onRulesChange(updatedRules) {
@@ -104,6 +114,19 @@
         if (!isEqual(get(this.settingsCopy, this.ruleConfigs[0].replace(/-/g, '_')), newRules)) {
           this.settingsCopy[this.ruleConfigs[0].replace(/-/g, '_')] = newRules
           this.$emit('settings-change', this.settingsCopy, this.isDirty)
+        }
+      },
+
+      fetchClassFields() {
+        this.$store.commit('SET_LOADER', true)
+        this.$store.dispatch('config/getClassFieldsData').finally(() => this.$store.commit('SET_LOADER', false))
+
+        for (const className of Object.keys(this.classFields).sort()) {
+          this.classes.push({
+            text: className,
+            value: '*' + className + '*',
+            description: this.classFields[className].description,
+          })
         }
       },
     },

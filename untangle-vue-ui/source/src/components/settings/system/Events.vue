@@ -41,8 +41,8 @@
 </template>
 <script>
   import { VTabsItems, VTabItem, VContainer, VSpacer } from 'vuetify/lib'
+  import { cloneDeep, isEqual } from 'lodash'
   import EventRulesList from '../rules/EventRulesList.vue'
-  import store from '@/store'
 
   export default {
     components: {
@@ -56,7 +56,6 @@
     data() {
       return {
         selectedTab: 0,
-        isDirty: false,
         settingsCopy: null,
       }
     },
@@ -64,6 +63,21 @@
     computed: {
       // the event settings from the store
       eventSettings: ({ $store }) => $store.getters['config/eventSettings'],
+
+      isDirty: ({ eventSettings, settingsCopy }) => !isEqual(eventSettings, settingsCopy),
+    },
+
+    watch: {
+      /**
+       * settings watcher firing only once and only when incoming settings are undefined
+       */
+      eventSettings: {
+        immediate: true,
+        handler(eventSettings) {
+          // must clone settings
+          this.settingsCopy = eventSettings ? cloneDeep(eventSettings) : undefined
+        },
+      },
     },
 
     created() {
@@ -85,26 +99,29 @@
        */
       async fetchSettings(refetch) {
         this.$store.commit('SET_LOADER', true)
-        await store.dispatch('config/getEventSettings', refetch).finally(() => this.$store.commit('SET_LOADER', false))
-      },
-
-      onSettingsChange(updatedSettings, isDirty) {
-        this.isDirty = isDirty
-        this.settingsCopy = updatedSettings
-      },
-
-      async onSaveSettings(newSettings) {
-        this.$store.commit('SET_LOADER', true)
-        await store
-          .dispatch('config/setEventSettings', newSettings)
+        await this.$store
+          .dispatch('config/getEventSettings', refetch)
           .finally(() => this.$store.commit('SET_LOADER', false))
       },
 
       /**
-       * Optional hook triggered on browser refresh. refetches the settings.
+       * Update the local settings copy
+       * @param {object} updatedSettings - The updated settings object
+       * @param {boolean} isDirty - Whether the settings have changed
        */
-      onBrowserRefresh() {
-        this.fetchSettings(true)
+      onSettingsChange(updatedSettings) {
+        this.settingsCopy = updatedSettings
+      },
+
+      /**
+       * Save the settings to the store
+       * @param {object} newSettings - The settings object to save
+       */
+      async onSaveSettings(newSettings) {
+        this.$store.commit('SET_LOADER', true)
+        await this.$store
+          .dispatch('config/setEventSettings', newSettings)
+          .finally(() => this.$store.commit('SET_LOADER', false))
       },
     },
   }
