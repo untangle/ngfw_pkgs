@@ -1,5 +1,5 @@
 #!/bin/dash
 
-/bin/rm -f /var/cache/untangle-geoip/GeoLite2-City.*
+/bin/rm -f /var/cache/untangle-geoip/GeoLite2-Country.*
 
 exit 0

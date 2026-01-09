@@ -1,0 +1,99 @@
+#!/bin/sh
+#
+# This file is part of the untangle-geoip-database package.  We hook into
+# the monthly cron process to download a new database file for the
+# Uvm GeographyManager.  We put the new file in the expected location
+# with the .update extension and Uvm will take care of the rest.
+#
+
+# You can uncomment the following to debug script execution
+#set -x
+
+# This is the URL where we download the database update tarball
+NETURL=https://downloads.edge.arista.com/download.php
+
+# This is the location for the temporary working copy we download
+TEMPFILE=/tmp/geoip-download.tar.gz
+
+# This is the name of the update file the Uvm will watch for
+UPFILE=/var/cache/untangle-geoip/GeoLite2-Country.update
+
+# This is the path where we extract the update tarball
+COUNTRYPATH=/tmp/geoip-update
+
+# This is the full path to the database file extracted from the update tarball
+COUNTRYFILE=/tmp/geoip-update/GeoLite2-Country.mmdb
+
+# Get the UID so we can pass it in the download request
+UID=`cat /usr/share/untangle/conf/uid`
+
+# Remove any existing temporary file that may have been downloaded
+if [ -f $TEMPFILE ]; then
+    /bin/rm -f $TEMPFILE
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP download file\n"
+	exit 1
+    fi
+fi
+
+# Remove any existing extraction directory that may have been created
+if [ -d $COUNTRYPATH ]; then
+    /bin/rm -r -f $COUNTRYPATH
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP extraction directory\n"
+	exit 1
+    fi
+fi
+
+# Download the update from the external server
+/usr/bin/wget -O $TEMPFILE $NETURL?resource=geoipCountry&uid=$UID
+wait
+if [ $? -ne 0 ]; then
+    printf "Unable to download new GeoIP database\n"
+    exit 1
+fi
+
+# Make sure we actually received the file
+if [ ! -f $TEMPFILE ]; then
+    printf "Unable to download GeoIP database file\n"
+    exit 1
+fi
+
+# Create a directory where we can extract the update files
+/bin/mkdir $COUNTRYPATH
+if [ ! -d $COUNTRYPATH ]; then
+    printf "Unable to create temporary update directory\n"
+    exit 1
+fi
+
+# Extract the files from the tarball to a temporary directory
+/bin/tar xvfz $TEMPFILE --directory $COUNTRYPATH --strip=1
+wait
+if [ $? -ne 0 ]; then
+    printf "Unable to extract GeoIP update file\n"
+    exit 1
+fi
+
+# Make sure the update database file isn't empty
+if [ ! -s $COUNTRYFILE ]; then
+    printf "The extracted GeoIP database file is empty\n"
+    exit 1
+fi
+
+# Remove any existing update file
+if [ -f $UPFILE ]; then
+    /bin/rm -f $UPFILE
+    if [ $? -ne 0 ]; then
+	printf "Unable to remove existing GeoIP update file\n"
+	exit 1
+    fi
+fi
+
+# Copy the update file to where the Uvm will look for it
+/bin/cp $COUNTRYFILE $UPFILE
+
+# Remove the downloaded file and extraction directory
+/bin/rm -f $TEMPFILE
+/bin/rm -r -f $COUNTRYFILE
+
+exit 0

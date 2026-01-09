@@ -1,8 +1,13 @@
 #!/bin/sh
 
-DATABASE_TARBALL=GeoLite2-City.mmdb.tar.gz
+# Remove old city DB file
+/bin/rm -f /var/cache/untangle-geoip/GeoLite2-City.*
+# Remove old monthly cron
+/bin/rm -f /etc/cron.monthly/geoip-update
+
+DATABASE_TARBALL=GeoLite2-Country.tar.gz
 cd /var/cache/untangle-geoip
-tar --strip-components=1 -xzf $DATABASE_TARBALL $(tar -tzf $DATABASE_TARBALL  | grep mmdb)
+tar --strip-components=1 -xzf $DATABASE_TARBALL $(tar -tzf $DATABASE_TARBALL  | grep GeoLite2)
 rm -f $DATABASE_TARBALL
 cd -
 
