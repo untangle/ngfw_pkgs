@@ -15,9 +15,7 @@
     @import-certificates="importCertificates"
   >
     <template #actions="{ newSettings, isDirty, validate }">
-      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
-        $t('save')
-      }}</u-btn>
+      <u-btn :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{ $t('save') }}</u-btn>
     </template>
   </settings-administration>
 </template>
@@ -547,10 +545,9 @@
 
           if (response.result !== 0) {
             cb(response.output, false)
-            await this.$store.dispatch('config/getServerCertificateList', true)
             return
           }
-
+          await this.$store.dispatch('config/getServerCertificateList', true)
           cb(response.output, true)
         } catch (err) {
           cb(err, false)
