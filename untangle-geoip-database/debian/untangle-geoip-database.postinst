@@ -10,7 +10,9 @@
 
 DATABASE_TARBALL=GeoCountry.tar.gz
 cd /var/cache/untangle-geoip
+MMDB_FILE=$(tar -tzf $DATABASE_TARBALL | grep mmdb | cut -d/ -f2)
 tar --strip-components=1 -xzf $DATABASE_TARBALL $(tar -tzf $DATABASE_TARBALL  | grep mmdb)
+mv $MMDB_FILE GeoCountry.mmdb
 rm -f $DATABASE_TARBALL
 cd -
 
