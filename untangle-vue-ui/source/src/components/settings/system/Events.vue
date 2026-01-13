@@ -269,8 +269,6 @@
       },
 
       onSettingsChange(updatedSettings) {
-        console.log('***********settings-change***********', updatedSettings)
-        console.log('isDirty:', this.isDirty)
         this.settingsCopy = updatedSettings
       },
 
