@@ -14,8 +14,8 @@ my %types = (
 );
 
 my $tree = MaxMind::DB::Writer::Tree->new(
-  database_type => 'GeoLite2-Country',
-  description => { en => 'GeoLite2-Country' },
+  database_type => 'GeoCountry',
+  description => { en => 'GeoCountry' },
   ip_version => 6,
   map_key_type_callback => sub { $types{ $_[0] } },
   record_size => 32,
@@ -51,7 +51,7 @@ use MaxMind::DB::Reader;
 
 my $ip = shift @ARGV or die 'Usage: perl examples/02-reader.pl [ip_address]';
 
-my $reader = MaxMind::DB::Reader->new( file => '/var/cache/untangle-geoip/GeoLite2-Country.mmdb' );
+my $reader = MaxMind::DB::Reader->new( file => '/var/cache/untangle-geoip/GeoCountry.mmdb' );
 
 my $record = $reader->record_for_address( $ip );
 say np $record;

@@ -19,7 +19,7 @@ done
 
 # geoip
 rm /etc/cron.monthly/geoip-update
-rm -f /var/cache/untangle-geoip/GeoLite2-Country.mmdb.gz
+rm -f /var/cache/untangle-geoip/GeoCountry.mmdb.gz
 # leaving this commented out for now, as MaxMind::DB::Writer seems
 # non-functional, and requires all of build-essential to be installed
 # anyway (see NGFW-13137)

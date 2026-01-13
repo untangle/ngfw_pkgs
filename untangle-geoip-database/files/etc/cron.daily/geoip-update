@@ -1,5 +1,4 @@
 #!/bin/sh
-exec &> >(logger -t uvmreports)
 #
 # This file is part of the untangle-geoip-database package.  We hook into
 # the monthly cron process to download a new database file for the
@@ -11,110 +10,98 @@ exec &> >(logger -t uvmreports)
 #set -x
 
 # This is the URL where we download the database update tarball
-NETURL=https://downloads.edge.arista.com/download.php
+NETURL="https://downloads.edge.arista.com/download.php"
 
 # This is the location for the temporary working copy we download
-TEMPFILE=/tmp/geoip-download.tar.gz
+TEMPFILE="/tmp/geoip-download.tar.gz"
 
 # This is the name of the update file the Uvm will watch for
-UPFILE=/var/cache/untangle-geoip/GeoLite2-Country.update
-
-# This is the current GeoIP database file
-DBFILE=/usr/share/untangle/geoip/GeoLite2-Country.mmdb
+UPFILE="/var/cache/untangle-geoip/GeoCountry.update"
 
 # This is the path where we extract the update tarball
-TARBALLPATH=/tmp/geoip-update
-
-# This is the full path to the database file extracted from the update tarball
-TEMPDBFILE="$TARBALLPATH/GeoLite2-Country.mmdb"
+TARBALLPATH="/tmp/geoip-update"
 
 # Get the UID so we can pass it in the download request
-UID=`cat /usr/share/untangle/conf/uid`
+UID="$(cat /usr/share/untangle/conf/uid)"
 
-# Remove any existing temporary file that may have been downloaded
-if [ -f $TEMPFILE ]; then
-    /bin/rm -f $TEMPFILE
-    if [ $? -ne 0 ]; then
-	printf "Unable to remove existing GeoIP download file\n"
-	exit 1
-    fi
-fi
+MAX_RETRIES=5
+SLEEP_SECS=10
 
-# Remove any existing extraction directory that may have been created
-if [ -d $TARBALLPATH ]; then
-    /bin/rm -r -f $TARBALLPATH
-    if [ $? -ne 0 ]; then
-	printf "Unable to remove existing GeoIP extraction directory\n"
-	exit 1
-    fi
-fi
+cleanup() {
+    rm -f "$TEMPFILE"
+    rm -rf "$TARBALLPATH"
+}
 
-# Download the update from the external server
-for i in 1 2 3; do
-    /usr/bin/wget -O $TEMPFILE $NETURL?resource=geoipCountry&uid=$UID
-    if [ $? -eq 0 ]; then
+cleanup
+
+# Download with manual retry
+i=1
+while [ $i -le $MAX_RETRIES ]; do
+    echo "Downloading GeoIP DB (attempt $i/$MAX_RETRIES)..."
+
+    if /usr/bin/wget \
+        --timeout=30 \
+        --read-timeout=30 \
+        --retry-connrefused \
+        -O "$TEMPFILE" \
+        "$NETURL?resource=geoipCountry&uid=$UID"
+    then
         break
     fi
-    if [ $i -eq 3 ]; then
-        printf "Unable to download new GeoIP database\n"
+
+    if [ $i -eq $MAX_RETRIES ]; then
+        echo "ERROR: Unable to download GeoIP database after retries"
         exit 1
     fi
-    sleep 5
+
+    i=$((i + 1))
+    sleep $SLEEP_SECS
 done
 
 # Make sure we actually received the file
-if [ ! -f $TEMPFILE ]; then
-    printf "Unable to download GeoIP database file\n"
+if [ ! -s "$TEMPFILE" ]; then
+    echo "ERROR: Unable to download GeoIP database file"
     exit 1
 fi
 
-# Create a directory where we can extract the update files
-/bin/mkdir $TARBALLPATH
-if [ ! -d $TARBALLPATH ]; then
-    printf "Unable to create temporary update directory\n"
+if ! gzip -t "$TEMPFILE" >/dev/null 2>&1; then
+    echo "ERROR: Downloaded file is not a valid gzip archive"
     exit 1
 fi
 
-# Extract the files from the tarball to a temporary directory
-/bin/tar xvfz $TEMPFILE --directory $TARBALLPATH --strip=1
-wait
-if [ $? -ne 0 ]; then
-    printf "Unable to extract GeoIP update file\n"
+# Extract
+mkdir -p "$TARBALLPATH" || {
+    echo "ERROR: Unable to create extraction directory"
+    exit 1
+}
+
+if ! tar xzf "$TEMPFILE" -C "$TARBALLPATH" --strip=1; then
+    echo "ERROR: Unable to extract GeoIP update file"
+    cleanup
     exit 1
 fi
 
-# Make sure the update database file isn't empty
-if [ ! -s $TEMPDBFILE ]; then
-    printf "The extracted GeoIP database file is empty\n"
+# This is the full path to the database file extracted from the update tarball
+TEMPDBFILE="$(find "$TARBALLPATH" -name 'Geo*Country.mmdb' -type f | head -1)"
+
+if [ -z "$TEMPDBFILE" ] || [ ! -s "$TEMPDBFILE" ]; then
+    echo "ERROR: GeoIP database file not found or empty after extraction"
+    cleanup
     exit 1
 fi
 
-# If the md5 sums are the same, then we don't need to do anything
-if [ -f $DBFILE ]; then
-    NEWSUM=`md5sum $TEMPDBFILE | awk '{print $1}'`
-    OLDSUM=`md5sum $DBFILE | awk '{print $1}'`
-    if [ "$NEWSUM" = "$OLDSUM" ]; then
-        # Remove the downloaded file and extraction directory
-        /bin/rm -f $TEMPFILE
-        /bin/rm -r -f $TARBALLPATH
-        exit 0
-    fi
-fi
+# Publish update
+rm -f "$UPFILE" || {
+    echo "ERROR: Unable to remove existing GeoIP update file"
+    cleanup
+    exit 1
+}
 
-# Remove any existing update file
-if [ -f $UPFILE ]; then
-    /bin/rm -f $UPFILE
-    if [ $? -ne 0 ]; then
-	printf "Unable to remove existing GeoIP update file\n"
-	exit 1
-    fi
-fi
+cp "$TEMPDBFILE" "$UPFILE" || {
+    echo "ERROR: Unable to publish GeoIP update"
+    cleanup
+    exit 1
+}
 
-# Copy the update file to where the Uvm will look for it
-/bin/cp $TEMPDBFILE $UPFILE
-
-# Remove the downloaded file and extraction directory
-/bin/rm -f $TEMPFILE
-/bin/rm -r -f $TEMPDBFILE
-
+cleanup
 exit 0
