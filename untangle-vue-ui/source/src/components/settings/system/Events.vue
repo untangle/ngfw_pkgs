@@ -25,11 +25,11 @@
         <!-- Tab Content -->
         <v-tabs-items v-model="selectedTab">
           <v-tab-item>
-            <EventRulesList
+            <!-- <EventRulesList
               rule-type="alert"
               :settings="eventSettings"
               @settings-change="onSettingsChange"
-            ></EventRulesList>
+            ></EventRulesList> -->
           </v-tab-item>
           <v-tab-item> </v-tab-item>
           <v-tab-item> </v-tab-item>
@@ -53,7 +53,7 @@
   import { VTabsItems, VTabItem, VContainer, VSpacer } from 'vuetify/lib'
   import { cloneDeep, isEqual } from 'lodash'
   import { EmailTemplate } from 'vuntangle'
-  import EventRulesList from '../rules/EventRulesList.vue'
+  // import EventRulesList from '../rules/EventRulesList.vue'
   import Util from '@/util/setupUtil'
 
   export default {
@@ -62,7 +62,7 @@
       VSpacer,
       VTabsItems,
       VTabItem,
-      EventRulesList,
+      // EventRulesList,
       EmailTemplate,
     },
 
