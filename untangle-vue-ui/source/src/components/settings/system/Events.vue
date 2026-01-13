@@ -98,10 +98,16 @@
        * @param {boolean} refetch - Whether to force a re-fetch of the settings.
        */
       async fetchSettings(refetch) {
+        const dispatches = [
+          this.$store.dispatch('config/getEventSettings', refetch),
+          this.$store.dispatch('config/getClassFieldsData'),
+        ]
+
         this.$store.commit('SET_LOADER', true)
-        await this.$store
-          .dispatch('config/getEventSettings', refetch)
-          .finally(() => this.$store.commit('SET_LOADER', false))
+
+        await Promise.all(dispatches).finally(() => {
+          this.$store.commit('SET_LOADER', false)
+        })
       },
 
       /**

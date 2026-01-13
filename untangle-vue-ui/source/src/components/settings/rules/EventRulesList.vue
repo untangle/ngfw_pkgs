@@ -9,13 +9,21 @@
     :hide-export-settings-button="false"
     :hide-import-settings-button="false"
     style="height: 878px"
+    @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
   ></rules-list>
 </template>
 <script>
   import { get, isEqual } from 'lodash'
-  import { RulesList } from 'vuntangle'
+  import { RulesList, conditionDefs } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
+  import {
+    booleanOperatorOptions,
+    booleanValueOptions,
+    invertOptions,
+    numericOptions,
+    textOperatorOptions,
+  } from '@/constants/index'
 
   export default {
     components: { RulesList },
@@ -40,7 +48,8 @@
     provide() {
       return {
         $remoteData: () => ({
-          classes: this.classes,
+          classFields: this.classFields,
+          conditions: this.conditions,
         }),
         $features: {
           hasIpv6Support: true,
@@ -68,7 +77,33 @@
         rulesMap: {
           'alert': ['alert-rules'],
         },
-        classes: [],
+
+        /**
+         * Object to store the class fields apu data stored systematically.
+         * Provided to vuntangle components
+         * Helps to dynamically set ruleDefs and conditionDefs conditions
+         */
+        classFields: [],
+
+        // ruleDefs conditions. dynamically changed on class field change.
+        conditions: [],
+
+        // Default condition object for conditionDefs
+        defaultCondition: {
+          dynamic: true,
+          extraRules: null,
+          target: 'OTHER',
+          field: null,
+          ops: invertOptions,
+          multiple: false,
+          autocompleteItems: null,
+          selectItems: null,
+          defaults: {
+            op: '=',
+            value: '',
+            javaClass: 'com.untangle.uvm.event.generic.EventRuleConditionGeneric',
+          },
+        },
       }
     },
     computed: {
@@ -78,7 +113,10 @@
       description: () => {},
 
       // the Class Fields for Event Rules Classes
-      classFields: ({ $store }) => $store.getters['config/classFieldsData'],
+      classFieldsData: ({ $store }) => $store.getters['config/classFieldsData'],
+
+      // flag to denote that ruletype requires all classes option
+      requireAllClasses: ({ ruleType }) => [].includes(ruleType),
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -94,7 +132,7 @@
         const rules = {}
 
         ruleConfigs.forEach(confName => {
-          // For Network Settings Rules
+          // For Event Settings Rules
           if (eventRules.includes(confName)) {
             rules[confName] = get(settingsCopy, confName.replace(/-/g, '_')) || []
           }
@@ -105,6 +143,10 @@
 
     created() {
       this.fetchClassFields()
+    },
+
+    beforeDestroy() {
+      this.removeDynamicConditions()
     },
 
     methods: {
@@ -118,16 +160,95 @@
       },
 
       fetchClassFields() {
-        this.$store.commit('SET_LOADER', true)
-        this.$store.dispatch('config/getClassFieldsData').finally(() => this.$store.commit('SET_LOADER', false))
+        const me = this
+        for (const className of Object.keys(this.classFieldsData).sort()) {
+          const conditionsMap = {}
+          const conditionsOrder = []
+          this.classFieldsData[className].fields.forEach(function (field) {
+            const condition = {}
+            const fieldNames = field.name.split('.')
+            const ignoreFieldName = fieldNames[fieldNames.length - 1]
+            if (ignoreFieldName === 'class' || ignoreFieldName === 'timeStamp') {
+              return
+            }
 
-        for (const className of Object.keys(this.classFields).sort()) {
-          this.classes.push({
+            if (field.values) {
+              condition.field = 'select'
+              condition.ops = booleanOperatorOptions
+              condition.selectItems = field.values
+            } else {
+              switch (field.type.toLowerCase()) {
+                case 'boolean':
+                  condition.field = 'select'
+                  condition.ops = booleanOperatorOptions
+                  condition.selectItems = booleanValueOptions
+                  break
+                case 'double':
+                case 'float':
+                case 'integer':
+                case 'int':
+                case 'long':
+                case 'short':
+                  condition.extraRules = 'numeric'
+                  condition.ops = numericOptions
+                  break
+                default:
+                  condition.ops = textOperatorOptions
+                  break
+              }
+            }
+
+            const newCondition = Object.assign({}, me.defaultCondition, condition)
+            conditionsMap[field.name] = newCondition
+            conditionsOrder.push(newCondition.name)
+          })
+
+          this.classFields.push({
             text: className,
             value: '*' + className + '*',
-            description: this.classFields[className].description,
+            description: this.classFieldsData[className].description,
+            conditions: conditionsMap,
+            conditionsOrder,
           })
         }
+        if (this.requireAllClasses)
+          this.classFields.push({
+            text: 'All',
+            value: '*All*',
+            description: 'Match all classes (NOT RECOMMENDED!)',
+            conditions: {},
+            conditionsOrder: [],
+          })
+      },
+
+      /**
+       * Based on classname selected updated the conditions
+       * @param {String} className Selected clssname from rules dialog
+       */
+      onLoadClassConditions(className) {
+        // Firt remove previous class conditions if any
+        this.removeDynamicConditions()
+
+        const classField = this.classFields.find(f => f.value === className)
+        if (classField) {
+          const conditionsMap = classField.conditions
+          for (const key in conditionsMap) {
+            conditionDefs[key] = conditionsMap[key]
+          }
+          this.conditions = Object.keys(conditionsMap)
+        }
+      },
+
+      /**
+       * Removes unnecessary conditions from conditionDefs
+       */
+      removeDynamicConditions() {
+        this.conditions = Object.keys([])
+        Object.keys(conditionDefs).forEach(function (key) {
+          if (conditionDefs[key].dynamic === true) {
+            this.$delete(conditionDefs, key)
+          }
+        }, this)
       },
     },
   }
