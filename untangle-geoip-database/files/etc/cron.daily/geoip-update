@@ -36,7 +36,7 @@ cleanup
 
 # Download with manual retry
 i=1
-while [ $i -le $MAX_RETRIES ]; do
+while [ "$i" -le "$MAX_RETRIES" ]; do
     echo "Downloading GeoIP DB (attempt $i/$MAX_RETRIES)..."
 
     if /usr/bin/wget \
@@ -49,13 +49,13 @@ while [ $i -le $MAX_RETRIES ]; do
         break
     fi
 
-    if [ $i -eq $MAX_RETRIES ]; then
+    if [ "$i" -eq "$MAX_RETRIES" ]; then
         echo "ERROR: Unable to download GeoIP database after retries"
         exit 1
     fi
 
-    i=$((i + 1))
-    sleep $SLEEP_SECS
+    i=`expr "$i" + 1`
+    sleep "$SLEEP_SECS"
 done
 
 # Make sure we actually received the file
