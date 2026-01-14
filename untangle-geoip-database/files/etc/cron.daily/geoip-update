@@ -10,31 +10,34 @@
 #set -x
 
 # This is the URL where we download the database update tarball
-NETURL="https://downloads.edge.arista.com/download.php"
+NETURL=https://downloads.edge.arista.com/download.php
 
 # This is the location for the temporary working copy we download
-TEMPFILE="/tmp/geoip-download.tar.gz"
+TEMPFILE=/tmp/geoip-download.tar.gz
 
 # This is the name of the update file the Uvm will watch for
-UPFILE="/var/cache/untangle-geoip/GeoCountry.update"
+UPFILE=/var/cache/untangle-geoip/GeoCountry.update
 
 # This is the path where we extract the update tarball
-TARBALLPATH="/tmp/geoip-update"
+CITYPATH=/tmp/geoip-update
+
+# This is the full path to the database file extracted from the update tarball
+CITYFILE=/tmp/geoip-update/GeoCountry.mmdb
 
 # Get the UID so we can pass it in the download request
-UID="$(cat /usr/share/untangle/conf/uid)"
+UID=`cat /usr/share/untangle/conf/uid`
 
 MAX_RETRIES=5
 SLEEP_SECS=10
 
 cleanup() {
     rm -f "$TEMPFILE"
-    rm -rf "$TARBALLPATH"
+    rm -rf "$CITYPATH"
 }
 
 cleanup
 
-# Download with manual retry
+# Download the update from the external server
 i=1
 while [ "$i" -le "$MAX_RETRIES" ]; do
     echo "Downloading GeoIP DB (attempt $i/$MAX_RETRIES)..."
@@ -64,25 +67,27 @@ if [ ! -s "$TEMPFILE" ]; then
     exit 1
 fi
 
-if ! gzip -t "$TEMPFILE" >/dev/null 2>&1; then
-    echo "ERROR: Downloaded file is not a valid gzip archive"
+# Make sure we actually received the file
+if [ ! -f $TEMPFILE ]; then
+    echo "Unable to download GeoIP database file"
     exit 1
 fi
 
-# Extract
-mkdir -p "$TARBALLPATH" || {
-    echo "ERROR: Unable to create extraction directory"
+# Create a directory where we can extract the update files
+/bin/mkdir $CITYPATH
+if [ ! -d $CITYPATH ]; then
+    echo "Unable to create temporary update directory"
     exit 1
-}
+fi
 
-if ! tar xzf "$TEMPFILE" -C "$TARBALLPATH" --strip=1; then
+# Extract the files from the tarball to a temporary directory
+if ! tar xzf "$TEMPFILE" -C "$CITYPATH" --strip=1; then
     echo "ERROR: Unable to extract GeoIP update file"
     cleanup
     exit 1
 fi
 
-# This is the full path to the database file extracted from the update tarball
-TEMPDBFILE="$(find "$TARBALLPATH" -name 'Geo*Country.mmdb' -type f | head -1)"
+TEMPDBFILE="$(find "$CITYPATH" -name 'Geo*Country.mmdb' -type f | head -1)"
 
 if [ -z "$TEMPDBFILE" ] || [ ! -s "$TEMPDBFILE" ]; then
     echo "ERROR: GeoIP database file not found or empty after extraction"
@@ -90,18 +95,19 @@ if [ -z "$TEMPDBFILE" ] || [ ! -s "$TEMPDBFILE" ]; then
     exit 1
 fi
 
-# Publish update
-rm -f "$UPFILE" || {
-    echo "ERROR: Unable to remove existing GeoIP update file"
-    cleanup
-    exit 1
-}
+# Remove any existing update file
+if [ -f $UPFILE ]; then
+    /bin/rm -f $UPFILE
+    if [ $? -ne 0 ]; then
+	echo "Unable to remove existing GeoIP update file"
+	exit 1
+    fi
+fi
 
-cp "$TEMPDBFILE" "$UPFILE" || {
-    echo "ERROR: Unable to publish GeoIP update"
-    cleanup
-    exit 1
-}
+# Copy the update file to where the Uvm will look for it
+/bin/cp $CITYFILE $UPFILE
+
+# Remove the downloaded file and extraction directory
 
 cleanup
 exit 0
