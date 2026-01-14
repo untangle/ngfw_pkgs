@@ -172,6 +172,7 @@
               return
             }
 
+            condition.description = field.description
             if (field.values) {
               condition.field = 'select'
               condition.ops = booleanOperatorOptions
