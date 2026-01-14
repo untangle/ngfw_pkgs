@@ -40,8 +40,12 @@
      * Those were prefixed with `$` to make a distinction between other local props/data from components
      *
      * $remoteData - provides data which is outside of the rules
-     * $remoteData.interfaces
-     *    - must be an array of interfaces usable for select fields: { text: 'interface_name', value: 'interface_id' }
+     * $remoteData.classFields
+     *    - must be an array of classFields usable for Class Name Selection
+     * $remoteData.conditions
+     *    - must be an array of conditions usable for updating local rulDefs in vuntangle RuleCondition
+     *
+     * $features: booleans to enable/disable faetures
      *
      * $readOnly - wheather appliance is offline in ETM and rules cannot be edited but just listed
      */
@@ -110,6 +114,7 @@
       // translated main title of the view based on the rule type
       title: () => {},
 
+      // description for the rules
       description: () => {},
 
       // the Class Fields for Event Rules Classes
@@ -159,6 +164,9 @@
         }
       },
 
+      /**
+       * Updates class fields list to be shared to vuntangle via remoteData
+       */
       fetchClassFields() {
         const me = this
         for (const className of Object.keys(this.classFieldsData).sort()) {
