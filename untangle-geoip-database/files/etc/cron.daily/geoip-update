@@ -19,10 +19,10 @@ TEMPFILE=/tmp/geoip-download.tar.gz
 UPFILE=/var/cache/untangle-geoip/GeoCountry.update
 
 # This is the path where we extract the update tarball
-CITYPATH=/tmp/geoip-update
+DOWNLOADPATH=/tmp/geoip-update
 
 # This is the full path to the database file extracted from the update tarball
-CITYFILE=/tmp/geoip-update/GeoCountry.mmdb
+DATABASEFILE=/tmp/geoip-update/GeoCountry.mmdb
 
 # Get the UID so we can pass it in the download request
 UID=`cat /usr/share/untangle/conf/uid`
@@ -32,7 +32,7 @@ SLEEP_SECS=10
 
 cleanup() {
     rm -f "$TEMPFILE"
-    rm -rf "$CITYPATH"
+    rm -rf "$DOWNLOADPATH"
 }
 
 cleanup
@@ -74,20 +74,20 @@ if [ ! -f $TEMPFILE ]; then
 fi
 
 # Create a directory where we can extract the update files
-/bin/mkdir $CITYPATH
-if [ ! -d $CITYPATH ]; then
+/bin/mkdir $DOWNLOADPATH
+if [ ! -d $DOWNLOADPATH ]; then
     echo "Unable to create temporary update directory"
     exit 1
 fi
 
 # Extract the files from the tarball to a temporary directory
-if ! tar xzf "$TEMPFILE" -C "$CITYPATH" --strip=1; then
+if ! tar xzf "$TEMPFILE" -C "$DOWNLOADPATH" --strip=1; then
     echo "ERROR: Unable to extract GeoIP update file"
     cleanup
     exit 1
 fi
 
-TEMPDBFILE="$(find "$CITYPATH" -name 'Geo*Country.mmdb' -type f | head -1)"
+TEMPDBFILE="$(find "$DOWNLOADPATH" -name 'Geo*Country.mmdb' -type f | head -1)"
 
 if [ -z "$TEMPDBFILE" ] || [ ! -s "$TEMPDBFILE" ]; then
     echo "ERROR: GeoIP database file not found or empty after extraction"
@@ -105,7 +105,7 @@ if [ -f $UPFILE ]; then
 fi
 
 # Copy the update file to where the Uvm will look for it
-/bin/cp $CITYFILE $UPFILE
+/bin/cp $DATABASEFILE $UPFILE
 
 # Remove the downloaded file and extraction directory
 
