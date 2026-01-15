@@ -10,6 +10,8 @@ const getDefaultState = () => ({
   networkSetting: null,
   systemSetting: null,
   eventSettings: null,
+  templateParameters: null,
+  defaultEmailSettings: null,
   classFieldsData: null,
   deviceTemperatureInfo: '',
   radiusLogsInfo: null,
@@ -39,6 +41,8 @@ const getters = {
   },
   systemSetting: state => state.systemSetting || {},
   eventSettings: state => state.eventSettings || {},
+  templateParameters: state => state.templateParameters || [],
+  defaultEmailSettings: state => state.defaultEmailSettings || {},
   classFieldsData: state => state.classFieldsData || {},
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
@@ -85,6 +89,8 @@ const mutations = {
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
   SET_EVENT_SETTINGS: (state, value) => set(state, 'eventSettings', value),
+  SET_TEMPLATE_PARAMETERS: (state, value) => set(state, 'templateParameters', value),
+  SET_DEFAULT_EMAIL_SETTINGS: (state, value) => set(state, 'defaultEmailSettings', value),
   SET_CLASS_FIELDS_DATA: (state, value) => set(state, 'classFieldsData', value),
   SET_USERS: (state, value) => set(state, 'users', value),
   SET_TIME_ZONE_OFF_SET: (state, value) => set(state, 'timeZoneOffset', value),
@@ -213,6 +219,34 @@ const actions = {
     try {
       const data = window.rpc.eventManager.getClassFields()
       commit('SET_CLASS_FIELDS_DATA', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* get template parameters */
+  getTemplateParameters({ state, commit }, refetch) {
+    try {
+      if (state.templateParameters && !refetch) {
+        return
+      }
+      const data = window.rpc.eventManager.getTemplateParameters()
+      commit('SET_TEMPLATE_PARAMETERS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* get default email settings */
+  getDefaultEmailSettings({ state, commit }, refetch) {
+    try {
+      if (state.defaultEmailSettings && !refetch) {
+        return
+      }
+      const data = window.rpc.eventManager.defaultEmailSettingsV2()
+      commit('SET_DEFAULT_EMAIL_SETTINGS', data)
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
