@@ -243,7 +243,7 @@
         await Promise.all([
           this.$store.dispatch('config/getEventSettings', refetch),
           this.$store.dispatch('config/getTemplateParameters', refetch),
-          this.$store.dispatch('config/getClassFieldsData', refetch),
+          this.$store.dispatch('config/getClassFieldsData'),
           this.$store.dispatch('config/getDefaultEmailSettings', refetch),
         ]).finally(() => this.$store.commit('SET_LOADER', false))
       },
@@ -268,6 +268,11 @@
         }
       },
 
+      /**
+       * Update the local settings copy
+       * @param {object} updatedSettings - The updated settings object
+       * @param {boolean} isDirty - Whether the settings have changed
+       */
       onSettingsChange(updatedSettings) {
         this.settingsCopy = updatedSettings
       },
@@ -283,7 +288,7 @@
         await this.$store.dispatch('config/setEventSettings', newSettings)
         await Promise.all([
           this.$store.dispatch('config/getTemplateParameters', true),
-          this.$store.dispatch('config/getClassFieldsData', true),
+          this.$store.dispatch('config/getClassFieldsData'),
           this.$store.dispatch('config/getDefaultEmailSettings', true),
         ]).finally(() => this.$store.commit('SET_LOADER', false))
       },

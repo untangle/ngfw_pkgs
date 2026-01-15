@@ -27,7 +27,6 @@ import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 import Logging from '@/components/settings/system/Logging.vue'
 import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
-import Events from '@/components/settings/system/Events.vue'
 
 export default [
   {
