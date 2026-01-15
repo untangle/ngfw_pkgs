@@ -118,10 +118,6 @@ export default [
         component: LocalDirectory,
       },
       {
-        path: 'directory/localDirectory',
-        component: LocalDirectory,
-      },
-      {
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },

@@ -1,6 +1,8 @@
 <template>
   <settings-administration
     :settings="commonSettings"
+    :interfaces="interfaces"
+    @get-interface-status="getInterfaceStatus"
     @google-drive-configure="googleDriveConfigure"
     @google-drive-disconnect="googleDriveDisconnect"
     @select-directory="selectRootDirectory"
@@ -10,11 +12,10 @@
     @set-root-certificate="setRootCertificate"
     @handle-file-import="handleFileImport"
     @upload-certificate="uploadCertificate"
+    @import-certificates="importCertificates"
   >
     <template #actions="{ newSettings, isDirty, validate }">
-      <u-btn :min-width="null" :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{
-        $t('save')
-      }}</u-btn>
+      <u-btn :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{ $t('save') }}</u-btn>
     </template>
   </settings-administration>
 </template>
@@ -30,6 +31,12 @@
   export default {
     components: { SettingsAdministration },
     mixins: [settingsMixin],
+
+    data() {
+      return {
+        interfaces: [],
+      }
+    },
 
     computed: {
       /**
@@ -115,6 +122,20 @@
       /* Fetches system settings from the backend and updates the store. */
       async fetchSystemSettings(refetch) {
         await this.$store.dispatch('config/getSystemSettings', refetch)
+      },
+
+      /* Get netStatus values on  the basis of  interfaces list */
+      getInterfaceStatus() {
+        return new Promise((resolve, reject) => {
+          window.rpc.networkManager.getInterfaceStatus((result, error) => {
+            if (error) {
+              reject(error)
+            } else {
+              this.interfaces = result.list
+              resolve(result)
+            }
+          })
+        })
       },
 
       /**
@@ -232,14 +253,19 @@
 
       /**
        * Maps server certificates to system settings.
+       *
        * This function resets the certificate-related properties in the system settings
        * and then maps the server certificates to their respective properties based on their usage flags.
+       * It iterates over a list of server certificates and updates the system settings
+       * with the filenames of the certificates that are designated for specific services
+       * like HTTPS, SMTPS, IPsec, and RADIUS.
+       *
        * @param {Object} systemSettings - The system settings object to be updated.
        * @param {Array} serverCertificates - The list of server certificates.
        * @returns {Object} The updated system settings object.
        */
       mapServerCertificatesToSystemSettings(systemSettings, serverCertificates) {
-        // reset first (important)
+        // Reset certificate properties before mapping to ensure a clean state.
         systemSettings.webCertificate = null
         systemSettings.mailCertificate = null
         systemSettings.ipsecCertificate = null
@@ -308,35 +334,70 @@
         await this.$store.dispatch('config/getServerCertificateList', refetch)
         await this.$store.dispatch('config/getRootCertificateInformation', refetch)
         await this.$store.dispatch('config/getServerCertificateVerification', refetch)
-        await this.$store.dispatch('config/getNetworkSettings', refetch)
         await this.$store.dispatch('config/getRootCertificateList', refetch)
       },
       /**
        * Generates a certificate based on the provided details and mode.
+       * This function creates a certificate subject and alternative names from the details,
+       * then generates a root, server, or CSR certificate based on the certMode.
        * @param {Object} details - Certificate details.
        * @param {string} certMode - Mode of the certificate (e.g., 'ROOT').
        * @param {Function} cb - Callback function to handle success or error.
        */
-
       async certificteGenerator({ details, certMode, cb }) {
+        // Create a certificate subject from the provided details
         const certSubject = Util.createCertSubject(details)
+        // Create alternative names for the certificate
+        const altNames = Util.createAltNames(details.altNames)
 
-        if (certMode === 'ROOT') {
-          try {
+        try {
+          if (certMode === 'ROOT') {
             await Rpc.asyncData(
               'rpc.UvmContext.certificateManager.generateCertificateAuthority',
               details.commonName,
               certSubject,
             )
+
             await this.loadCertificates(true)
-            cb(null, true) // success
-          } catch (err) {
-            util.handleException(err)
-            cb(err, false) // error
+            cb(null, true)
+            return
           }
+
+          if (certMode === 'SERVER') {
+            const result = await Rpc.asyncData(
+              'rpc.UvmContext.certificateManager.generateServerCertificate',
+              certSubject,
+              altNames,
+            )
+
+            if (result === false) {
+              const err = new Error('VALIDATION_FAILED')
+              err.code = 'VALIDATION_FAILED'
+              throw err
+            }
+
+            await this.$store.dispatch('config/getServerCertificateList', true)
+            cb(null, true)
+            return
+          }
+
+          if (certMode === 'CSR') {
+            await Util.downloadFile(
+              '/admin/download',
+              {
+                type: 'certificate_download',
+                arg1: 'csr',
+                arg2: certSubject,
+                arg3: altNames,
+              },
+              'server_certificate.csr',
+            )
+            cb(null, true)
+          }
+        } catch (err) {
+          cb(err, false)
         }
       },
-
       /* download root certificate */
       async downloadRootCertificate(arg) {
         try {
@@ -403,7 +464,7 @@
        */
       async handleFileImport({ file, argument, cb }) {
         if (!file) {
-          this.$vuntangle.toast.add(this.$t('please_choose_a_file'), 'error')
+          cb(new Error(this.$t('please_choose_a_file')), false)
           return
         }
 
@@ -414,10 +475,23 @@
             formName: 'upload_form',
             type: 'certificate_upload',
           })
-          const parseData = response?.msg ? JSON.parse(response.msg) : {}
-          cb(parseData)
+
+          if (response?.success === false) {
+            cb(new Error(response.msg), false)
+            return
+          }
+
+          let detail = {}
+          try {
+            detail = JSON.parse(response.msg)
+          } catch {
+            cb(new Error(this.$t('invalid_certificate_file')), false)
+            return
+          }
+
+          cb(detail, true)
         } catch (err) {
-          util.handleException(err)
+          cb(new Error(this.$t('upload_failed')), false)
         }
       },
 
@@ -446,6 +520,9 @@
           if (certMode === 'ROOT') {
             await this.loadCertificates(true)
           }
+          if (certMode === 'SERVER') {
+            await this.$store.dispatch('config/getServerCertificateList', true)
+          }
 
           cb(response.output, true)
         } catch (err) {
@@ -453,6 +530,30 @@
           cb(err, false)
         }
       },
+
+      /**
+       * Imports the signed certificate using an RPC call.
+       * After the import, it invokes a callback with the result and refreshes the server certificate list on success.
+       */
+      async importCertificates({ certData, extraData, cb }) {
+        try {
+          const response = await Rpc.asyncData(
+            'rpc.UvmContext.certificateManager.importSignedRequest',
+            certData,
+            extraData,
+          )
+
+          if (response.result !== 0) {
+            cb(response.output, false)
+            return
+          }
+          await this.$store.dispatch('config/getServerCertificateList', true)
+          cb(response.output, true)
+        } catch (err) {
+          cb(err, false)
+        }
+      },
+
       /* Optional hook triggered on browser refresh.
        */
       onBrowserRefresh() {
