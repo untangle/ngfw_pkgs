@@ -140,10 +140,6 @@ export default [
       {
         path: 'system/upgrade',
         component: Upgrade,
-      },
-      {
-        path: 'system/upgrade',
-        component: Upgrade,
         meta: { helpContext: 'system_settings' },
       },
       {
