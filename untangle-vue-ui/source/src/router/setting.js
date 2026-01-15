@@ -27,6 +27,7 @@ import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 import Logging from '@/components/settings/system/Logging.vue'
 import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
+import Events from '@/components/settings/system/Events.vue'
 
 export default [
   {
@@ -132,10 +133,6 @@ export default [
         path: 'system/events',
         component: Events,
         meta: { helpContext: 'system_settings' },
-      },
-      {
-        path: 'system/upgrade',
-        component: Upgrade,
       },
       {
         path: 'system/upgrade',
