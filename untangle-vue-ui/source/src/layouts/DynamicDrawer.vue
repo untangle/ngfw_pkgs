@@ -136,6 +136,7 @@
             items: [
               { name: 'settings', to: '/settings/system/settings' },
               { name: 'administration', to: '/settings/system/administration' },
+              { name: 'events', to: '/settings/system/events' },
               { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
               { name: 'Local Directory', to: '/settings/system/local-directory' },

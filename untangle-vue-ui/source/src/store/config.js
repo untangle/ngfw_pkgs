@@ -9,6 +9,8 @@ const getDefaultState = () => ({
   mailSender: {},
   networkSetting: null,
   systemSetting: null,
+  eventSettings: null,
+  classFieldsData: null,
   deviceTemperatureInfo: '',
   radiusLogsInfo: null,
   enabledWanInterfaces: [],
@@ -36,6 +38,8 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
+  eventSettings: state => state.eventSettings || {},
+  classFieldsData: state => state.classFieldsData || {},
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
   timeZoneOffset: state => state.timeZoneOffset || 0,
@@ -80,6 +84,8 @@ const mutations = {
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
   SET_SYSTEM_SETTINGS: (state, value) => set(state, 'systemSetting', value),
+  SET_EVENT_SETTINGS: (state, value) => set(state, 'eventSettings', value),
+  SET_CLASS_FIELDS_DATA: (state, value) => set(state, 'classFieldsData', value),
   SET_USERS: (state, value) => set(state, 'users', value),
   SET_TIME_ZONE_OFF_SET: (state, value) => set(state, 'timeZoneOffset', value),
   SET_DEVICE_TEMP_INFO: (state, value) => set(state, 'deviceTemperatureInfo', value),
@@ -182,6 +188,31 @@ const actions = {
       }
       const data = window.rpc.systemManager.getSystemSettingsV2()
       commit('SET_SYSTEM_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* get event settings configuration */
+  getEventSettings({ state, commit }, refetch) {
+    try {
+      if (state.eventSettings && !refetch) {
+        return
+      }
+      const data = window.rpc.eventManager.getSettingsV2()
+      commit('SET_EVENT_SETTINGS', data)
+      return { success: true, message: null, data } //  success
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /* Get the class fields condition data for event rules */
+  getClassFieldsData({ commit }) {
+    try {
+      const data = window.rpc.eventManager.getClassFields()
+      commit('SET_CLASS_FIELDS_DATA', data)
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
@@ -503,6 +534,32 @@ const actions = {
         }, adminettings)
       })
       return data
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /** Saves Event Settings */
+  async setEventSettings({ dispatch }, eventSettings) {
+    try {
+      const result = await new Promise(resolve => {
+        window.rpc.eventManager.setSettingsV2(async (ex, res) => {
+          if (ex) return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
+          if (res?.code && res?.message) return resolve({ success: false, message: res.message.slice(0, 100) })
+
+          // Fetch updated settings after successful save
+          await dispatch('getEventSettings', true)
+          return resolve({ success: true })
+        }, eventSettings)
+      })
+
+      // Handle RPC-level errors (optional logging)
+      if (!result.success) {
+        Util.handleException(result.message)
+      }
+
+      return result
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
