@@ -15,6 +15,7 @@ import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
 import Rpc from '@/util/Rpc'
+import { VTypes } from '@/util/VTypes'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
@@ -570,6 +571,34 @@ const util = {
     }
 
     return certSubject.join('')
+  },
+
+  /**
+   * Creates a comma-separated string of Subject Alternative Names (SANs).
+   * @param {string} altNames - A string of comma-separated alternative names.
+   * @returns {string} A formatted string of SANs for use in certificate generation.
+   */
+  createAltNames(altNames) {
+    if (!altNames || altNames.length === 0) {
+      return ''
+    }
+
+    const hostnameRegex =
+      /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/
+    const altNameTokens = altNames.split(',')
+    const altNamesArray = []
+
+    for (let i = 0; i < altNameTokens.length; i++) {
+      const altName = altNameTokens[i].trim()
+      if (VTypes.ipAddress.validate(altName)) {
+        altNamesArray.push('IP:' + altName + ',DNS:' + altName)
+      } else if (hostnameRegex.test(altName)) {
+        altNamesArray.push('DNS:' + altName)
+      } else {
+        altNamesArray.push(altName)
+      }
+    }
+    return altNamesArray.join(',')
   },
 
   /**

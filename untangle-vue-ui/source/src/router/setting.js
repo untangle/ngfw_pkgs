@@ -131,11 +131,6 @@ export default [
         component: Administration,
         meta: { helpContext: 'system_settings' },
       },
-
-      {
-        path: 'system/upgrade',
-        component: Upgrade,
-      },
       {
         path: 'system/upgrade',
         component: Upgrade,
