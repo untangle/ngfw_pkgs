@@ -32,7 +32,9 @@
             ></EventRulesList>
           </v-tab-item>
           <v-tab-item> </v-tab-item>
-          <v-tab-item> </v-tab-item>
+          <v-tab-item>
+            <SysLog :settings="eventSettings" @settings-change="onSettingsChange" />
+          </v-tab-item>
           <v-tab-item>
             <EmailTemplate
               ref="emailTemplate"
@@ -52,7 +54,7 @@
 <script>
   import { VTabsItems, VTabItem, VContainer, VSpacer } from 'vuetify/lib'
   import { cloneDeep, isEqual } from 'lodash'
-  import { EmailTemplate } from 'vuntangle'
+  import { EmailTemplate, SysLog } from 'vuntangle'
   import EventRulesList from '../rules/EventRulesList.vue'
   import Util from '@/util/setupUtil'
 
@@ -64,6 +66,7 @@
       VTabItem,
       EventRulesList,
       EmailTemplate,
+      SysLog,
     },
 
     data() {
@@ -282,8 +285,10 @@
        * @param {object} newSettings - The settings object to save
        */
       async onSaveSettings(newSettings) {
-        const isValid = await this.$refs.emailTemplate.validate()
-        if (!isValid) return
+        if (this.$refs.emailTemplate) {
+          const isValid = await this.$refs.emailTemplate.validate()
+          if (!isValid) return
+        }
         this.$store.commit('SET_LOADER', true)
         await this.$store.dispatch('config/setEventSettings', newSettings)
         await Promise.all([
