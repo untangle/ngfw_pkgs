@@ -114,7 +114,7 @@
       isEqual,
 
       /**
-       * 🔑 Centralized loader for initial load & refresh
+       * Centralized loader for initial load & refresh
        * @param {boolean} refetch - force reload from backend
        */
       async loadInitialData(refetch = false) {
