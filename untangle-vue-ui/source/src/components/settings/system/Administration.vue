@@ -15,6 +15,9 @@
     @import-certificates="importCertificates"
   >
     <template #actions="{ newSettings, isDirty, validate }">
+      <u-btn class="mr-2" @click="onBrowserRefresh">
+        {{ $vuntangle.$t('refresh') }}
+      </u-btn>
       <u-btn :disabled="!isDirty" @click="onSaveSettings(newSettings, validate)">{{ $t('save') }}</u-btn>
     </template>
   </settings-administration>
@@ -104,16 +107,34 @@
      * actions to get Google settings and Google Drive connection status.
      */
     created() {
-      this.fetchAdminSettings(false)
-      this.fetchSystemSettings(false)
-      this.buildGoogleRefreshTask()
-      this.loadCertificates(false)
-      this.$store.dispatch('config/getGoogleSettings', false)
-      this.$store.dispatch('config/getIsGoogleDriveConnected')
+      this.loadInitialData(false)
     },
 
     methods: {
       isEqual,
+
+      /**
+       * Centralized loader for initial load & refresh
+       * @param {boolean} refetch - force reload from backend
+       */
+      async loadInitialData(refetch = false) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await Promise.all([
+            this.fetchAdminSettings(refetch),
+            this.fetchSystemSettings(refetch),
+            this.loadCertificates(refetch),
+            this.$store.dispatch('config/getGoogleSettings', refetch),
+            this.$store.dispatch('config/getIsGoogleDriveConnected'),
+          ])
+
+          // setup logic (not an API call)
+          this.buildGoogleRefreshTask()
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
       /* Fetches admin settings from the backend and updates the store. */
       async fetchAdminSettings(refetch) {
         await this.$store.dispatch('config/getAdminSettings', refetch)
@@ -557,9 +578,7 @@
       /* Optional hook triggered on browser refresh.
        */
       onBrowserRefresh() {
-        this.loadCertificates(true)
-        this.fetchAdminSettings(true)
-        this.fetchSystemSettings(true)
+        this.loadInitialData(true)
       },
     },
   }
