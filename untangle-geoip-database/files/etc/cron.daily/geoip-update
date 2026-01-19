@@ -1,0 +1,111 @@
+#!/bin/sh
+#
+# This file is part of the untangle-geoip-database package.  We hook into
+# the monthly cron process to download a new database file for the
+# Uvm GeographyManager.  We put the new file in the expected location
+# with the .update extension and Uvm will take care of the rest.
+#
+
+# You can uncomment the following to debug script execution
+#set -x
+
+# This is the URL where we download the database update tarball
+NETURL=https://downloads.edge.arista.com/download.php
+
+# This is the location for the temporary working copy we download
+TEMPFILE=/tmp/geoip-download.tar.gz
+
+# This is the name of the update file the Uvm will watch for
+UPFILE=/var/cache/untangle-geoip/GeoCountry.update
+
+# This is the path where we extract the update tarball
+DOWNLOADPATH=/tmp/geoip-update
+
+# Get the UID so we can pass it in the download request
+UID=`cat /usr/share/untangle/conf/uid`
+
+MAX_RETRIES=5
+SLEEP_SECS=10
+
+cleanup() {
+    rm -f "$TEMPFILE"
+    rm -rf "$DOWNLOADPATH"
+}
+
+cleanup
+
+# Download the update from the external server
+i=1
+while [ "$i" -le "$MAX_RETRIES" ]; do
+    echo "Downloading GeoIP DB (attempt $i/$MAX_RETRIES)..."
+
+    if /usr/bin/wget \
+        --timeout=30 \
+        --read-timeout=30 \
+        --retry-connrefused \
+        -O "$TEMPFILE" \
+        "$NETURL?resource=geoipCountry&uid=$UID"
+    then
+        break
+    fi
+
+    if [ "$i" -eq "$MAX_RETRIES" ]; then
+        echo "ERROR: Unable to download GeoIP database after retries"
+        exit 1
+    fi
+
+    i=`expr "$i" + 1`
+    sleep "$SLEEP_SECS"
+done
+
+# Make sure we actually received the file
+if [ ! -s "$TEMPFILE" ]; then
+    echo "ERROR: Unable to download GeoIP database file"
+    exit 1
+fi
+
+# Make sure we actually received the file
+if [ ! -f $TEMPFILE ]; then
+    echo "Unable to download GeoIP database file"
+    exit 1
+fi
+
+# Create a directory where we can extract the update files
+/bin/mkdir $DOWNLOADPATH
+if [ ! -d $DOWNLOADPATH ]; then
+    echo "Unable to create temporary update directory"
+    exit 1
+fi
+
+# Extract the files from the tarball to a temporary directory
+if ! tar xzf "$TEMPFILE" -C "$DOWNLOADPATH" --strip=1; then
+    echo "ERROR: Unable to extract GeoIP update file"
+    cleanup
+    exit 1
+fi
+
+# This is the full path to the database file extracted from the update tarball
+TEMPDBFILE=`find "$DOWNLOADPATH" -name 'Geo*Country.mmdb' -type f | head -n 1`
+
+if [ -z "$TEMPDBFILE" ] || [ ! -s "$TEMPDBFILE" ]; then
+    echo "ERROR: GeoIP database file not found or empty after extraction"
+    cleanup
+    exit 1
+fi
+
+# Remove any existing update file
+if [ -f $UPFILE ]; then
+    /bin/rm -f $UPFILE
+    if [ $? -ne 0 ]; then
+	echo "Unable to remove existing GeoIP update file"
+	exit 1
+    fi
+fi
+
+# Copy the update file to where the Uvm will look for it
+/bin/cp "$TEMPDBFILE" "$UPFILE"
+
+# Remove the downloaded file and extraction directory
+
+cleanup
+exit 0
