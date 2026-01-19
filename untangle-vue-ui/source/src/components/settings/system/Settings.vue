@@ -4,7 +4,7 @@
     :device-temperature-info="deviceTemperatureInfo"
     :http-settings="httpSettings"
     :ftp-settings="ftpSettings"
-    :smtp-settings="smtpSettings"
+    :smtp-settings="smtp"
     :is-expert-mode="isExpertMode"
     :company-name="companyName"
     :system-time-zones="systemTimeZones"
@@ -48,6 +48,9 @@
       companyName() {
         return window?.rpc?.companyName || null
       },
+      smtp() {
+        return this.smtpSettings?.smtpSettings || {}
+      },
     },
 
     watch: {
@@ -65,9 +68,9 @@
       // update current system setting from store store
       this.$store.dispatch('config/getSystemSettings', false)
       this.$store.dispatch('config/getDeviceTemperatureInfo')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'http')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp')
+      this.$store.dispatch('apps/loadAppData', 'http')
+      this.$store.dispatch('apps/loadAppData', 'smtp')
+      this.$store.dispatch('apps/loadAppData', 'ftp')
       // get list of all wan interfaces which is used to show in the hostname interface selection
       this.$store.dispatch('config/getEnabledInterfaces')
       this.$store.dispatch('config/getSystemTimeZones')
