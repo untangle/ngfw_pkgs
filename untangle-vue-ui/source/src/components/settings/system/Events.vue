@@ -28,12 +28,18 @@
             <EventRulesList
               rule-type="alert"
               :settings="eventSettings"
-              @settings-change="onSettingsChange"
+              @settings-change="onSettingsChange($event, 'alerts')"
             ></EventRulesList>
           </v-tab-item>
-          <v-tab-item> </v-tab-item>
           <v-tab-item>
-            <SysLog :settings="eventSettings" @settings-change="onSettingsChange" />
+            <EventRulesList
+              rule-type="trigger"
+              :settings="eventSettings"
+              @settings-change="onSettingsChange($event, 'triggers')"
+            ></EventRulesList>
+          </v-tab-item>
+          <v-tab-item>
+            <SysLog :settings="eventSettings" @settings-change="onSettingsChange($event, 'syslog')" />
           </v-tab-item>
           <v-tab-item>
             <EmailTemplate
@@ -43,7 +49,7 @@
               :email-template-defaults="defaultEmailSettings"
               @default-email-settings="getDefaultEmailSettings"
               @email-alert-format="getEmailAlertFormat"
-              @settings-change="onSettingsChange"
+              @settings-change="onSettingsChange($event, 'email_template')"
             />
           </v-tab-item>
         </v-tabs-items>
@@ -130,103 +136,85 @@
 
     methods: {
       processEventData() {
-        try {
-          const classFields = {}
-          const classes = []
-
-          Object.keys(this.classFields).forEach(className => {
-            const classInfo = this.classFields[className]
-
-            classes.push([className, classInfo.description])
-
-            const conditions = []
-            const conditionsOrder = []
-
-            classInfo.fields.forEach(field => {
-              const fieldNames = field.name?.split('.') || []
-              const ignoreFieldName = fieldNames[fieldNames.length - 1]
-
-              if (ignoreFieldName === 'class' || ignoreFieldName === 'timeStamp') {
-                return
-              }
-
-              // Default display name
-              if (field.name) {
-                field.displayName = field.name
-              }
-
-              // Field type normalization
-              if (field.values) {
-                field.type = 'select'
-                field.comparator = 'boolean'
-              } else {
-                switch ((field.type || '').toLowerCase()) {
-                  case 'boolean':
-                    field.type = 'boolean'
-                    field.comparator = 'boolean'
-                    field.values = [
-                      [true, this.$t('true')],
-                      [false, this.$t('false')],
-                    ]
-                    break
-
-                  case 'double':
-                  case 'float':
-                  case 'integer':
-                  case 'int':
-                  case 'long':
-                  case 'short':
-                    field.type = 'number'
-                    field.comparator = 'numeric'
-                    break
-
-                  default:
-                    field.type = 'text'
-                    field.comparator = 'text'
-                }
-              }
-
-              // Clone default condition & merge
-              const newCondition = {
-                ...cloneDeep(this.defaultCondition),
-                ...field,
-              }
-
-              conditions[newCondition.name] = newCondition
-              conditionsOrder.push(newCondition.name)
-            })
-
-            classFields[className] = {
-              description: classInfo.description,
-              conditions,
-              conditionsOrder,
-            }
-          })
-
-          const allClassFields = {
-            ...cloneDeep(classFields),
-            All: {
-              description: this.$t('match_all_cases'),
-              conditions: [],
-              conditionsOrder: [],
-            },
-          }
-
-          const allClasses = [...classes, ['All', allClassFields.All.description]]
-
-          this.processedClassFields = classFields
-          this.allClassFields = allClassFields
-
-          this.classes = classes.sort((a, b) => a[0].localeCompare(b[0]))
-          this.allClasses = allClasses.sort((a, b) => a[0].localeCompare(b[0]))
-
-          this.targetFields = []
-          this.templateUnmatched = ''
-
-          this.syslogServersGridEmpty = !(this.eventSettings?.syslogServers?.list?.length > 0)
-        } catch (err) {
-          Util.handleException(err)
-        }
+        // try {
+        //   const classFields = {}
+        //   const classes = []
+        //   Object.keys(this.classFields).forEach(className => {
+        //     const classInfo = this.classFields[className]
+        //     classes.push([className, classInfo.description])
+        //     const conditions = []
+        //     const conditionsOrder = []
+        //     classInfo.fields.forEach(field => {
+        //       const fieldNames = field.name?.split('.') || []
+        //       const ignoreFieldName = fieldNames[fieldNames.length - 1]
+        //       if (ignoreFieldName === 'class' || ignoreFieldName === 'timeStamp') {
+        //         return
+        //       }
+        //       // Default display name
+        //       if (field.name) {
+        //         field.displayName = field.name
+        //       }
+        //       // Field type normalization
+        //       if (field.values) {
+        //         field.type = 'select'
+        //         field.comparator = 'boolean'
+        //       } else {
+        //         switch ((field.type || '').toLowerCase()) {
+        //           case 'boolean':
+        //             field.type = 'boolean'
+        //             field.comparator = 'boolean'
+        //             field.values = [
+        //               [true, this.$t('true')],
+        //               [false, this.$t('false')],
+        //             ]
+        //             break
+        //           case 'double':
+        //           case 'float':
+        //           case 'integer':
+        //           case 'int':
+        //           case 'long':
+        //           case 'short':
+        //             field.type = 'number'
+        //             field.comparator = 'numeric'
+        //             break
+        //           default:
+        //             field.type = 'text'
+        //             field.comparator = 'text'
+        //         }
+        //       }
+        //       // Clone default condition & merge
+        //       const newCondition = {
+        //         ...cloneDeep(this.defaultCondition),
+        //         ...field,
+        //       }
+        //       conditions[newCondition.name] = newCondition
+        //       conditionsOrder.push(newCondition.name)
+        //     })
+        //     classFields[className] = {
+        //       description: classInfo.description,
+        //       conditions,
+        //       conditionsOrder,
+        //     }
+        //   })
+        //   const allClassFields = {
+        //     ...cloneDeep(classFields),
+        //     All: {
+        //       description: this.$t('match_all_cases'),
+        //       conditions: [],
+        //       conditionsOrder: [],
+        //     },
+        //   }
+        //   const allClasses = [...classes, ['All', allClassFields.All.description]]
+        //   this.processedClassFields = classFields
+        //   this.allClassFields = allClassFields
+        //   this.classes = classes.sort((a, b) => a[0].localeCompare(b[0]))
+        //   this.allClasses = allClasses.sort((a, b) => a[0].localeCompare(b[0]))
+        //   this.targetFields = []
+        //   this.templateUnmatched = ''
+        //   this.syslogServersGridEmpty = !(this.eventSettings?.syslogServers?.list?.length > 0)
+        // } catch (err) {
+        //   Util.handleException(err)
+        // }
       },
       /**
        * Handler when using grid 'Refresh' action
@@ -276,8 +264,21 @@
        * @param {object} updatedSettings - The updated settings object
        * @param {boolean} isDirty - Whether the settings have changed
        */
-      onSettingsChange(updatedSettings) {
-        this.settingsCopy = updatedSettings
+      onSettingsChange(updatedSettings, tabName) {
+        if (tabName === 'alerts') this.settingsCopy.alert_rules = updatedSettings.alert_rules
+        else if (tabName === 'triggers') this.settingsCopy.trigger_rules = updatedSettings.trigger_rules
+        else if (tabName === 'syslog') {
+          this.settingsCopy.syslogServers = updatedSettings.syslogServers
+          this.settingsCopy.syslogEnabled = updatedSettings.syslogEnabled
+          this.settingsCopy.syslogHost = updatedSettings.syslogHost
+          this.settingsCopy.syslogPort = updatedSettings.syslogPort
+          this.settingsCopy.syslogProtocol = updatedSettings.syslogProtocol
+          // Add other syslog related settings change here
+        } else {
+          this.settingsCopy.emailSubject = updatedSettings.emailSubject
+          this.settingsCopy.emailBody = updatedSettings.emailBody
+          this.settingsCopy.emailConvert = updatedSettings.emailConvert
+        }
       },
 
       /**
