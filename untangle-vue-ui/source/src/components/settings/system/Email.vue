@@ -2,6 +2,8 @@
   <email
     :mail-sender-settings="mailSender"
     :company-name="companyName"
+    :global-safe-list="globalSafeList"
+    :user-safe-list="userSafeList"
     @email-test="sendTestEmail"
     @save-email-server-settings="onSaveEmailServerSettings"
     @refresh-settings="onRefreshSettings"
@@ -30,6 +32,14 @@
        * @returns {object}
        */
       smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
+
+      userSafeList() {
+        return this.smtpSettings?.userSafeList || []
+      },
+      globalSafeList() {
+        return this.smtpSettings?.globalSafeList || []
+      },
+
       /**
        * Expert mode status from Vuex store.
        * @returns {boolean}
@@ -47,6 +57,7 @@
      * Fetches mail sender settings when the component is created.
      */
     created() {
+      this.$store.dispatch('apps/loadAppData', 'smtp')
       this.$store.dispatch('config/getMailSender', true)
     },
 
@@ -77,25 +88,35 @@
        * @param {object} emailServerSettings - The email server settings to save.
        * @param {function} cb - The callback function.
        */
-      onSaveEmailServerSettings({ emailServerSettings, cb }) {
+      async onSaveEmailServerSettings({ updatedSettings, cb }) {
         this.$store.commit('SET_LOADER', true)
-        this.$store
-          .dispatch('config/setMailSender', emailServerSettings)
-          // prettier-ignore
-          .then(response => {
-            cb(response)
-          })
-          .finally(() => {
-            this.$store.commit('SET_LOADER', false)
-          })
+        try {
+          // Save email server settings
+          const response = await this.$store.dispatch('config/setMailSender', updatedSettings.emailServerSettings)
+          // Save global safelist if provided
+          if (updatedSettings.globalSafeList) {
+            await this.$store.dispatch('apps/setGlobalSafeList', updatedSettings.globalSafeList)
+          }
+          // Reload SMTP app data
+          await this.$store.dispatch('apps/loadAppData', 'smtp')
+          // Call the callback with the original response
+          cb(response)
+        } catch (error) {
+          // Optionally, handle error or pass it to the callback
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
-
       /**
        * Refreshes mail sender settings.
        */
       onRefreshSettings() {
         this.$store.commit('SET_LOADER', true)
-        this.$store.dispatch('config/getMailSender', true).finally(() => {
+
+        Promise.all([
+          this.$store.dispatch('apps/loadAppData', 'smtp'),
+          this.$store.dispatch('config/getMailSender', true),
+        ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
       },
