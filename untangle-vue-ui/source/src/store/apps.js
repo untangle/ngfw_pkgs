@@ -92,7 +92,7 @@ const actions = {
       // Wrap callback inside params or try this:
       app
         .getSafelistAdminView()
-        .replaceSafelistV2('GLOBAL', safeList)
+        .replaceSafelist('GLOBAL', safeList)
         .then(() => {
           resolve({ success: true })
         })
