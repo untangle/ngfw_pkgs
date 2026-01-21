@@ -42,6 +42,8 @@
      * $remoteData - provides data which is outside of the rules
      * $remoteData.classFields
      *    - must be an array of classFields usable for Class Name Selection
+     * $remoteData.targetFields
+     *    - must be an array of classFields usable for Tag Target Selection
      * $remoteData.conditions
      *    - must be an array of conditions usable for updating local rulDefs in vuntangle RuleCondition
      *
@@ -53,6 +55,7 @@
       return {
         $remoteData: () => ({
           classFields: this.classFields,
+          targetFields: this.targetFields,
           conditions: this.conditions,
         }),
         $features: {
@@ -72,7 +75,7 @@
     data() {
       return {
         // Event rules config names
-        eventRules: ['alert-rules'],
+        eventRules: ['alert-rules', 'trigger-rules'],
         /**
          * a map between rule type (alert rules, trigger rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -80,14 +83,21 @@
          */
         rulesMap: {
           'alert': ['alert-rules'],
+          'trigger': ['trigger-rules'],
         },
 
         /**
-         * Object to store the class fields apu data stored systematically.
+         * Object to store the class fields data stored systematically.
          * Provided to vuntangle components
          * Helps to dynamically set ruleDefs and conditionDefs conditions
          */
         classFields: [],
+
+        /**
+         * Object to store the target fields. Provided to vuntangle components.
+         * Used to dynamically change the select items for Tag Target action in Trigger Rules.
+         */
+        targetFields: [],
 
         // ruleDefs conditions. dynamically changed on class field change.
         conditions: [],
@@ -243,6 +253,7 @@
           const conditionsMap = classField.conditions
           for (const key in conditionsMap) {
             conditionDefs[key] = conditionsMap[key]
+            if (this.ruleType === 'trigger') this.targetFields.push(key)
           }
           this.conditions = Object.keys(conditionsMap)
         }
@@ -253,6 +264,7 @@
        */
       removeDynamicConditions() {
         this.conditions = Object.keys([])
+        this.targetFields = []
         Object.keys(conditionDefs).forEach(function (key) {
           if (conditionDefs[key].dynamic === true) {
             this.$delete(conditionDefs, key)
