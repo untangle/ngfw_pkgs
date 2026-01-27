@@ -190,6 +190,43 @@ const Util = {
     }
   },
 
+  /** Validates multiple tabs within a component using ValidationObserver. */
+  /**
+   * Asynchronously validates multiple tabs within a component.
+   * It iterates through each tab, validates it using its ref, and tracks the first invalid tab.
+   * If an invalid tab is found and a setSelectedTab function is provided, it sets the active tab to the invalid one.
+   *
+   * @param {Array<Object>} params.tabs - An array of tab objects, each expected to have a 'key' and 'valid' property.
+   * @param {Object} params.refs - An object containing references to the validation components for each tab, keyed by tab.key.
+   * @param {Function} [params.setSelectedTab] - An optional function to set the currently selected tab.
+   * @returns {Promise<boolean>} A promise that resolves to true if all tabs are valid, false otherwise.
+   */
+  async validateTabs({ tabs, refs, setSelectedTab }) {
+    let invalidTab = null
+
+    const promises = tabs.map(async tab => {
+      if (!refs[tab.key]) {
+        tab.valid = true
+        return true
+      }
+      const valid = await refs[tab.key].validate()
+      tab.valid = valid
+
+      if (!valid && !invalidTab) {
+        invalidTab = tab.key
+      }
+      return valid
+    })
+
+    const results = await Promise.all(promises)
+
+    if (invalidTab && setSelectedTab) {
+      setSelectedTab(invalidTab)
+    }
+
+    return !results.includes(false)
+  },
+
   isDestroyed(...args) {
     return args.some(arg => typeof arg === 'object' && arg?.$isUnmounted)
   },
