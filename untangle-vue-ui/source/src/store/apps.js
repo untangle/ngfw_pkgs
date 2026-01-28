@@ -118,9 +118,16 @@ const actions = {
 
   deleteSafelists(_, userSafeList) {
     const app = window.rpc.appManager.app('smtp')
-    if (!app) return Promise.resolve({ success: false })
-    app.getSafelistAdminView().deleteSafelists(userSafeList)
-    return Promise.resolve({ success: true })
+    if (!app) return
+    return new Promise(resolve => {
+      app.getSafelistAdminView().deleteSafelists((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, userSafeList)
+    })
   },
 
   getApp(_, appName) {
