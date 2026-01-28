@@ -29,9 +29,11 @@ const getDefaultState = () => ({
   rootCertificates: null,
   serverCertificateVerification: null,
   serverCertificates: null,
+  publicUrl: null,
 })
 
 const getters = {
+  publicUrl: state => state.publicUrl,
   mailSender: state => state.mailSender || {},
   languageSettings: state => state.languageSettings,
   networkSetting: state => state.networkSetting || [],
@@ -84,6 +86,7 @@ const mutations = {
   setEditCallback(state, cb) {
     state.editCallback = cb
   },
+  SET_PUBLIC_URL: (state, value) => set(state, 'publicUrl', value),
   SET_MAIL_SENDER: (state, value) => set(state, 'mailSender', value),
   SET_INTERFACES: (state, value) => set(state.networkSetting, 'interfaces', value),
   SET_NETWORK_SETTINGS: (state, value) => set(state, 'networkSetting', value),
@@ -123,6 +126,18 @@ const mutations = {
 }
 
 const actions = {
+  async getPublicUrl({ commit }, refetch) {
+    try {
+      if (!refetch) {
+        return
+      }
+      const data = await window.rpc.UvmContext.networkManager().getPublicUrl()
+      commit('SET_PUBLIC_URL', data)
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   async getMailSender({ state, commit }, refetch) {
     try {
       if (state.mailSender && !refetch) {

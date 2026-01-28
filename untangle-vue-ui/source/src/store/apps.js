@@ -85,20 +85,34 @@ const mutations = {
  * Actions
  */
 const actions = {
+  setSmtpSettingsWOSafeList(_, smtpSettings) {
+    const app = window.rpc.appManager.app('smtp')
+    if (!app) return
+    return new Promise(resolve => {
+      app.setSmtpSettingsWithoutSafelists((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, smtpSettings)
+    })
+  },
   setGlobalSafeList(_, safeList) {
     const app = window.rpc.appManager.app('smtp')
     if (!app) return
     return new Promise(resolve => {
-      // Wrap callback inside params or try this:
-      app
-        .getSafelistAdminView()
-        .replaceSafelist('GLOBAL', safeList)
-        .then(() => {
+      app.getSafelistAdminView().replaceSafelist(
+        (ex, res) => {
+          if (ex || res?.code) {
+            Util.handleException(ex || res.message)
+            return resolve({ success: false })
+          }
           resolve({ success: true })
-        })
-        .catch(() => {
-          resolve({ success: false })
-        })
+        },
+        'GLOBAL',
+        safeList,
+      )
     })
   },
 
@@ -128,7 +142,7 @@ const actions = {
 
     const result = { ...baseSettings }
 
-    // Optionally augment with registry data
+    // Optionally argument with registry data
     if (registry) {
       for (const item of registry) {
         try {
