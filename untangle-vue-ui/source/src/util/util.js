@@ -627,6 +627,14 @@ const util = {
 
     return { allowed: true }
   },
+
+  /**
+   *
+   * @returns
+   */
+  isPolicyManagerInstalled() {
+    return Rpc.directData('rpc.appManager.app', 'policy-manager')
+  },
 }
 
 export default util

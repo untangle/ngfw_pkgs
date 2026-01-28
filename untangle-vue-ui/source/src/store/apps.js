@@ -55,6 +55,7 @@ const APP_RPC_REGISTRY = {
  */
 const getDefaultState = () => ({
   settings: {}, // all app settings stored by appName
+  appViews: null, // list of per-policy app view states
 })
 
 /**
@@ -66,6 +67,7 @@ const getters = {
    * Usage: getters.getSettings('http')
    */
   getSettings: state => appName => state.settings[appName] || null,
+  appViews: state => state.appViews || [], // list of per-policy app view states
 }
 
 const mutations = {
@@ -79,6 +81,7 @@ const mutations = {
     }
     set(state.settings, appName, value)
   },
+  SET_APP_VIEWS: (state, appViews) => set(state, 'appViews', appViews),
 }
 
 /**
@@ -167,6 +170,23 @@ const actions = {
         resolve({ success: true })
       }, settings)
     })
+  },
+
+  /**
+   * Gets the app views for all policies.
+   * @param {*} param0  commit
+   * @returns Promise that resolves to the list of app views
+   */
+  getAppViews({ state, commit }, refetch) {
+    try {
+      if (state.appViews && !refetch) {
+        return
+      }
+      const data = window.rpc.appManager.getAppsViewsV2()
+      commit('SET_APP_VIEWS', data || [])
+    } catch (err) {
+      Util.handleException(err)
+    }
   },
 }
 
