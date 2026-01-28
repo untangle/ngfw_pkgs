@@ -9,6 +9,7 @@
     @email-test="sendTestEmail"
     @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
+    @purge-user-safe-list="onPurgeUserSafeList"
   />
 </template>
 <script>
@@ -128,6 +129,15 @@
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
+      },
+      async onPurgeUserSafeList(userEmails) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/deleteSafelists', userEmails)
+          await this.$store.dispatch('apps/loadAppData', 'smtp')
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
     },
   }

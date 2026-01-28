@@ -25,32 +25,45 @@
         <!-- Tab Content -->
         <v-tabs-items v-model="selectedTab">
           <v-tab-item>
-            <EventRulesList
-              rule-type="alert"
-              :settings="eventSettings"
-              @settings-change="onSettingsChange($event, 'alerts')"
-            ></EventRulesList>
+            <ValidationObserver ref="alertRulesList">
+              <EventRulesList
+                rule-type="alert"
+                :settings="eventSettings"
+                @settings-change="onSettingsChange($event, 'alerts')"
+              />
+            </ValidationObserver>
           </v-tab-item>
           <v-tab-item>
-            <EventRulesList
-              rule-type="trigger"
-              :settings="eventSettings"
-              @settings-change="onSettingsChange($event, 'triggers')"
-            ></EventRulesList>
+            <ValidationObserver ref="triggerRulesList">
+              <EventRulesList
+                rule-type="trigger"
+                :settings="eventSettings"
+                @settings-change="onSettingsChange($event, 'triggers')"
+              />
+            </ValidationObserver>
           </v-tab-item>
           <v-tab-item>
-            <SysLog :settings="eventSettings" @settings-change="onSettingsChange($event, 'syslog')" />
+            <ValidationObserver ref="sysLog">
+              <SysLog
+                ref="syslog"
+                :settings="eventSettings"
+                @settings-change="onSettingsChange($event, 'syslog')"
+                v-on="$listeners"
+              />
+            </ValidationObserver>
           </v-tab-item>
           <v-tab-item>
-            <EmailTemplate
-              ref="emailTemplate"
-              :settings="eventSettings"
-              :template-parameters="templateParameters"
-              :email-template-defaults="defaultEmailSettings"
-              @default-email-settings="getDefaultEmailSettings"
-              @email-alert-format="getEmailAlertFormat"
-              @settings-change="onSettingsChange($event, 'email_template')"
-            />
+            <ValidationObserver ref="emailtemplate">
+              <EmailTemplate
+                ref="emailTemplate"
+                :settings="eventSettings"
+                :template-parameters="templateParameters"
+                :email-template-defaults="defaultEmailSettings"
+                @default-email-settings="getDefaultEmailSettings"
+                @email-alert-format="getEmailAlertFormat"
+                @settings-change="onSettingsChange($event, 'email_template')"
+              />
+            </ValidationObserver>
           </v-tab-item>
         </v-tabs-items>
       </div>
@@ -91,6 +104,12 @@
           visible: true,
           allowMultiple: false,
         },
+        tabs: [
+          { key: 'alertRulesList', valid: true },
+          { key: 'triggerRulesList', valid: true },
+          { key: 'sysLog', valid: true },
+          { key: 'emailTemplate', valid: true },
+        ],
       }
     },
 
@@ -131,7 +150,6 @@
 
     async created() {
       await this.loadEvents(false)
-      this.processEventData()
     },
 
     methods: {
@@ -187,10 +205,8 @@
         else if (tabName === 'triggers') this.settingsCopy.trigger_rules = updatedSettings.trigger_rules
         else if (tabName === 'syslog') {
           this.settingsCopy.syslogServers = updatedSettings.syslogServers
-          this.settingsCopy.syslogEnabled = updatedSettings.syslogEnabled
-          this.settingsCopy.syslogHost = updatedSettings.syslogHost
-          this.settingsCopy.syslogPort = updatedSettings.syslogPort
-          this.settingsCopy.syslogProtocol = updatedSettings.syslogProtocol
+            ? updatedSettings.syslogServers.map(s => ({ ...s }))
+            : []
           // Add other syslog related settings change here
         } else {
           this.settingsCopy.emailSubject = updatedSettings.emailSubject
@@ -204,6 +220,8 @@
        * @param {object} newSettings - The settings object to save
        */
       async onSaveSettings(newSettings) {
+        // validate all tabs before saving and return to invalid tab
+        if (await !this.validate()) return
         if (this.$refs.emailTemplate) {
           const isValid = await this.$refs.emailTemplate.validate()
           if (!isValid) return
@@ -222,7 +240,26 @@
        */
       onBrowserRefresh() {
         this.loadEvents(true)
-        this.processEventData()
+      },
+
+      /**
+       * validate all tabs before saving
+       */
+      async validate() {
+        const isValid = await Util.validateTabs({
+          tabs: this.tabs,
+          refs: this.$refs,
+        })
+
+        // If any tab is invalid, switch to the first invalid one
+        if (!isValid) {
+          const invalidIndex = this.tabs.findIndex(tab => tab.valid === false)
+          if (invalidIndex !== -1) {
+            this.selectedTab = invalidIndex
+          }
+        }
+
+        return isValid
       },
     },
   }
