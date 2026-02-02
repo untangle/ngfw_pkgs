@@ -89,7 +89,7 @@ const actions = {
     const app = window.rpc.appManager.app('smtp')
     if (!app) return
     return new Promise(resolve => {
-      app.setSmtpSettingsWithoutSafelists((ex, res) => {
+      app.setSmtpSettingsWithoutSafelistsV2((ex, res) => {
         if (ex || res?.code) {
           Util.handleException(ex || res.message)
           return resolve({ success: false })
