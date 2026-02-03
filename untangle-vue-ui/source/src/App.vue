@@ -24,9 +24,29 @@
       }
     },
 
+    created() {
+      // Use browser-level events to catch iframe destruction
+      // These fire even when ExtJS destroys the iframe abruptly
+      window.addEventListener('beforeunload', this.handleUnload)
+      window.addEventListener('pagehide', this.handleUnload)
+    },
+
     beforeMount() {
       this.embedded = window.location !== window.parent.location
       this._provided.embedded = this.embedded
+    },
+
+    beforeUnmount() {
+      // Cleanup event listeners
+      window.removeEventListener('beforeunload', this.handleUnload)
+      window.removeEventListener('pagehide', this.handleUnload)
+    },
+
+    methods: {
+      handleUnload() {
+        // Reset loader when iframe is being unloaded/destroyed
+        this.$store.commit('SET_LOADER', false)
+      },
     },
   }
 </script>
