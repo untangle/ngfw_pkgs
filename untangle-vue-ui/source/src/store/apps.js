@@ -82,6 +82,15 @@ const mutations = {
     set(state.settings, appName, value)
   },
   SET_APP_VIEWS: (state, appViews) => set(state, 'appViews', appViews),
+  SET_APP_VIEW: (state, { policyId, appView }) => {
+    if (!state.appViews) {
+      set(state, 'appViews', [])
+    }
+    const index = state.appViews.findIndex(av => String(av.policyId) === policyId)
+    if (index >= 0) {
+      state.appViews.splice(index, 1, appView)
+    }
+  },
 }
 
 /**
@@ -184,6 +193,21 @@ const actions = {
       }
       const data = window.rpc.appManager.getAppsViewsV2()
       commit('SET_APP_VIEWS', data || [])
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /**
+   * Gets the app views for policy with given Id.
+   * Updates the appViews state with the fetched data.
+   * @param {*} param0 commit
+   * @param {*} policyId
+   */
+  getAppView({ commit }, policyId) {
+    try {
+      const data = window.rpc.appManager.getAppsViewV2(policyId)
+      commit('SET_APP_VIEW', { policyId, appView: data || [] })
     } catch (err) {
       Util.handleException(err)
     }
