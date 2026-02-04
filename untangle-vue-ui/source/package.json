@@ -28,7 +28,7 @@
     "vuetify": "^2.7.2",
     "vuex": "^3.6.2",
     "vuex-persist": "^3.1.3",
-    "vuntangle": "untangle/vuntangle"
+    "vuntangle": "git+ssh://gerrit.corp.arista.io:29418/efw/vuntangle"
   },
   "devDependencies": {
     "@sentry/webpack-plugin": "^1.15.1",
