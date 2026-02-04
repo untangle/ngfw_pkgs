@@ -8,7 +8,7 @@
     :hide-export-csv-button="true"
     :hide-export-settings-button="false"
     :hide-import-settings-button="false"
-    style="height: 878px"
+    :style="{ height: ruleType === 'syslog' ? '423px' : '878px' }"
     @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
   ></rules-list>
@@ -57,6 +57,7 @@
           classFields: this.classFields,
           targetFields: this.targetFields,
           conditions: this.conditions,
+          syslogServers: this.syslogServers,
         }),
         $features: {
           hasIpv6Support: true,
@@ -75,7 +76,7 @@
     data() {
       return {
         // Event rules config names
-        eventRules: ['alert-rules', 'trigger-rules'],
+        eventRules: ['alert-rules', 'trigger-rules', 'syslog-rules'],
         /**
          * a map between rule type (alert rules, trigger rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -84,6 +85,7 @@
         rulesMap: {
           'alert': ['alert-rules'],
           'trigger': ['trigger-rules'],
+          'syslog': ['syslog-rules'],
         },
 
         /**
@@ -153,6 +155,10 @@
           }
         })
         return rules
+      },
+
+      syslogServers: ({ settingsCopy }) => {
+        return get(settingsCopy, 'syslogServers') || []
       },
     },
 

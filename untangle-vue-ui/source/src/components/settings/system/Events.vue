@@ -50,6 +50,11 @@
                 @settings-change="onSettingsChange($event, 'syslog')"
                 v-on="$listeners"
               />
+              <EventRulesList
+                rule-type="syslog"
+                :settings="eventSettings"
+                @settings-change="onSettingsChange($event, 'syslog')"
+              />
             </ValidationObserver>
           </v-tab-item>
           <v-tab-item>
@@ -207,6 +212,8 @@
           this.settingsCopy.syslogServers = updatedSettings.syslogServers
             ? updatedSettings.syslogServers.map(s => ({ ...s }))
             : []
+
+          this.settingsCopy.syslog_rules = updatedSettings.syslog_rules ? updatedSettings.syslog_rules : []
           // Add other syslog related settings change here
         } else {
           this.settingsCopy.emailSubject = updatedSettings.emailSubject
