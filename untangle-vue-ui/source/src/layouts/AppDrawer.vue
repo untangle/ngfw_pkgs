@@ -170,8 +170,10 @@
             name: 'services',
             icon: 'mdi-apps',
             active: false,
+            match: '/settings/services',
             items: [
-              { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }, // uncomment for development
+              { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
+              { name: 'policy_manager', to: '/settings/services/policy-manager' },
             ],
           },
         ],
