@@ -1,257 +1,400 @@
 <template>
-  <v-container fluid :class="`d-flex flex-column flex-grow-1 pl-3 pt-2`">
-    <div class="d-flex align-center mb-2">
-      <v-menu v-if="policyManagerInstalled && !installMode" offset-y content-class="policy-menu">
-        <template #activator="{ on }">
-          <v-btn color="primary" v-on="on"
-            ><v-icon small class="mr-2">mdi-file-document-outline</v-icon>{{ selectedPolicy.name }}
-            <v-icon small class="ml-2">mdi-chevron-down</v-icon></v-btn
-          >
-        </template>
-        <v-treeview
-          :items="hierarchicalPolicies"
-          item-key="policyId"
-          item-text="name"
-          activatable
-          hoverable
-          dense
-          open-all
-          @update:active="onPolicyChange"
-        ></v-treeview>
-      </v-menu>
-      <v-btn v-if="installMode" color="primary" @click="backToPolicy">
-        <v-icon small class="mr-2">mdi-arrow-left</v-icon>
-        {{ $vuntangle.$t('back_to_apps') }} [{{ selectedPolicy.name }}]
-      </v-btn>
-      <p v-if="autoInstallApps" class="body-3 mb-0 ml-3">
-        {{ $vuntangle.$t('installing_recommended_apps') }}
-      </p>
-      <p v-if="policyManagerInstalled && installMode" class="body-3 mb-0 ml-3">
-        {{ $vuntangle.$t('available_apps_for') }}
-        <span
-          ><v-icon small class="mb-1 mr-1">mdi-file-document-outline</v-icon
-          ><strong>{{ selectedPolicy.name }}</strong></span
-        >
-      </p>
-      <v-spacer></v-spacer>
-      <v-btn v-if="policyManagerInstalled && !installMode" color="primary" @click="managePolicies">
-        <v-icon small class="mr-2">mdi-cog</v-icon>
-        {{ $vuntangle.$t('manage_policies') }}
-      </v-btn>
-      <v-btn
-        v-if="!installMode && !isRestricted && isRegistered && licenseServerConnectivity"
-        color="primary"
-        class="ml-2"
-        @click="installApps"
-      >
-        <v-icon small class="mr-2">mdi-plus</v-icon>
-        {{ $vuntangle.$t('install_apps') }}
-      </v-btn>
-    </div>
-    <div class="d-flex flex-column fill-height">
-      <h1 class="headline mb-2 mt-5">{{ $vuntangle.$t('apps') }}</h1>
-      <v-divider class="my-2 pt-2" />
+  <v-container fluid class="apps-view">
+    <!-- Apps Toolbar - Policy selector and action buttons -->
+    <apps-toolbar
+      v-if="selectedPolicy"
+      :policy-manager-installed="policyManagerInstalled"
+      :install-mode="installMode"
+      :selected-policy="selectedPolicy"
+      :hierarchical-policies="hierarchicalPolicies"
+      :auto-install-apps="autoInstallApps"
+      :show-install-button="showInstallButton"
+      @policy-change="onPolicyChange"
+      @manage-policies="managePolicies"
+      @install-apps="installApps"
+      @back-to-policy="backToPolicy"
+      @refresh="refreshApps"
+    />
+
+    <!-- Main Content Area -->
+    <div v-if="selectedPolicy" class="apps-view__content">
+      <!-- Page Title -->
+      <h1 class="apps-view__title">{{ $vuntangle.$t('apps') }}</h1>
+
+      <!-- Divider -->
+      <v-divider class="apps-view__divider" />
+
+      <!-- Installed Apps Grid (default view) -->
       <installed-apps v-if="!installMode" :installed-apps="installedApps" />
-      <installable-apps v-else :apps="installableApps" />
+
+      <!-- Installable Apps Grid (install mode) -->
+      <installable-apps v-else :apps="installableApps" :policy-id="policyId" />
     </div>
   </v-container>
 </template>
 
 <script>
-  import InstalledApps from './InstalledApps.vue'
-  import InstallableApps from './InstallableApps.vue'
+  import InstalledApps from './containers/InstalledApps.vue'
+  import InstallableApps from './containers/InstallableApps.vue'
+  import AppsToolbar from './components/AppsToolbar.vue'
   import util from '@/util/util'
-  import { appDescription } from '@/constants/index'
+  import { buildPolicyHierarchy, getInstalledApps, getInstallableApps } from '@/utils/appFiltering'
 
+  // Constants
+  const DEFAULT_POLICY_ID = 1
+  const AUTO_INSTALL_POLL_INTERVAL = 250 // milliseconds
+  const INSTALL_STATUS_FINISHED = 'finish'
+
+  /**
+   * AppsView Component
+   *
+   * Main view for managing installed and installable applications.
+   * Supports policy-based app management with dynamic filtering.
+   *
+   * Features:
+   * - View installed apps for a policy
+   * - Install new apps for a policy
+   * - Policy hierarchy navigation
+   * - Auto-install monitoring with polling
+   * - Installation status tracking
+   *
+   * @component
+   */
   export default {
     name: 'AppsView',
+
     components: {
       InstalledApps,
       InstallableApps,
+      AppsToolbar,
     },
+
     data() {
       return {
+        // Toggle between installed apps view and install mode
         installMode: false,
+
+        // Flag indicating if auto-install is in progress
         autoInstallApps: false,
+
+        // Polling timeout reference for auto-install monitoring
         timeout: null,
       }
     },
+
     computed: {
-      policyManagerInstalled: () => util.isPolicyManagerInstalled(),
-      isRestricted: () => util.isRestricted(),
-      isRegistered: () => util.isRegistered(),
-      licenseServerConnectivity: () => util.getLicenseServerConnectivity(),
+      // ============================================
+      // System State Computed Properties
+      // ============================================
+
+      /**
+       * Check if policy manager is installed
+       * @returns {boolean}
+       */
+      policyManagerInstalled() {
+        return !!util.isPolicyManagerInstalled()
+      },
+
+      /**
+       * Check if system is in restricted mode
+       * @returns {boolean}
+       */
+      isRestricted() {
+        return !!util.isRestricted()
+      },
+
+      /**
+       * Check if system is registered with Untangle
+       * @returns {boolean}
+       */
+      isRegistered() {
+        return !!util.isRegistered()
+      },
+
+      /**
+       * Check if license server is reachable
+       * @returns {boolean}
+       */
+      licenseServerConnectivity() {
+        return !!util.getLicenseServerConnectivity()
+      },
+
+      /**
+       * Determine if install button should be shown
+       * Requires: not in install mode, not restricted, registered, and license server connectivity
+       * @returns {boolean}
+       */
+      showInstallButton() {
+        return !this.installMode && !this.isRestricted && this.isRegistered && this.licenseServerConnectivity
+      },
+
+      // ============================================
+      // Vuex Store Computed Properties
+      // ============================================
+
+      /**
+       * Get policy manager settings from store
+       * @returns {Object|null}
+       */
       policyManagerSettings: ({ $store }) => $store.getters['apps/getSettings']('policy-manager'),
+
+      /**
+       * Get list of all policies
+       * @returns {Array<Object>}
+       */
       policies: ({ policyManagerSettings }) => (policyManagerSettings ? policyManagerSettings.policies || [] : []),
-      appViews: ({ $store }) => $store.getters['apps/appViews'],
-      policyId: ({ $route }) => $route.params.policyId || 1,
+
+      /**
+       * Get normalized app views by policy ID (O(1) lookup)
+       * @returns {Object<number, Object>}
+       */
+      appViewsByPolicy: ({ $store }) => $store.getters['apps/appViewsByPolicy'],
+
+      /**
+       * Get apps currently being installed
+       * @returns {Object<string, {policyId: number, status: string}>}
+       */
+      installingApps: ({ $store }) => $store.getters['apps/installingApps'],
+
+      // ============================================
+      // Route and Policy Computed Properties
+      // ============================================
+
+      /**
+       * Get current policy ID from route params
+       * @returns {number}
+       */
+      policyId: ({ $route }) => parseInt($route.params.policyId, 10) || DEFAULT_POLICY_ID,
+
+      /**
+       * Get currently selected policy object
+       * @returns {Object|null}
+       */
       selectedPolicy({ policies, policyId }) {
+        if (!policies || policies.length === 0) {
+          return null
+        }
+        // Find policy matching the route param, fallback to first policy
         return policies.find(p => p.policyId.toString() === policyId.toString()) || policies[0]
       },
-      hierarchicalPolicies() {
-        const policyMap = {}
-        this.policies.forEach(policy => {
-          policyMap[policy.policyId] = { ...policy, children: [] }
-        })
 
-        const tree = []
-        this.policies.forEach(policy => {
-          if (!policy.parentId) {
-            tree.push(policyMap[policy.policyId])
-          } else if (policyMap[policy.parentId]) {
-            policyMap[policy.parentId].children.push(policyMap[policy.policyId])
-          }
-        })
-
-        return tree
+      /**
+       * Build hierarchical structure of policies (parent-child relationships)
+       * @returns {Array<Object>}
+       */
+      hierarchicalPolicies({ policies }) {
+        return buildPolicyHierarchy(policies)
       },
+
+      // ============================================
+      // App Lists Computed Properties
+      // ============================================
+
+      /**
+       * Get list of installed apps for current policy
+       * Includes apps from parent policies (marked as inherited)
+       * @returns {Array<Object>}
+       */
       installedApps() {
-        if (!this.appViews || !this.selectedPolicy) return []
-        const policyMap = this.policies.reduce((acc, policy) => {
-          acc[policy.policyId] = policy
-          return acc
-        }, {})
+        return getInstalledApps({
+          appViewsByPolicy: this.appViewsByPolicy,
+          selectedPolicy: this.selectedPolicy,
+          policies: this.policies,
+          $vuntangle: this.$vuntangle,
+          installingApps: this.installingApps,
+        })
+      },
 
-        let currentPolicy = this.selectedPolicy
-        const policyHierarchy = [currentPolicy.policyId]
+      /**
+       * Get list of installable apps for current policy
+       * Filters out already installed apps
+       * @returns {Array<Object>}
+       */
+      installableApps() {
+        return getInstallableApps({
+          appViewsByPolicy: this.appViewsByPolicy,
+          selectedPolicy: this.selectedPolicy,
+          installingApps: this.installingApps,
+        })
+      },
+    },
 
-        while (currentPolicy && currentPolicy.parentId) {
-          currentPolicy = policyMap[currentPolicy.parentId]
-          if (currentPolicy) {
-            policyHierarchy.push(currentPolicy.policyId)
-          }
+    watch: {
+      /**
+       * Watch install mode changes to clear installation statuses
+       * Clears 'finish' statuses when navigating between views
+       */
+      installMode(newVal, oldVal) {
+        // Clear finished installation statuses when toggling between views
+        if (newVal !== oldVal) {
+          this.clearFinishedInstallStatuses()
         }
+      },
 
-        const allApps = policyHierarchy.reduce((acc, policyId) => {
-          const view = this.appViews.find(v => v.policyId === policyId)
-          return acc.concat(view ? view.instances : [])
-        }, [])
+      /**
+       * Watch selected policy changes
+       * Saves selected policy ID to store for persistence
+       */
+      selectedPolicy: {
+        immediate: true,
+        handler(newPolicy) {
+          if (newPolicy && newPolicy.policyId) {
+            this.$store.commit('apps/SET_SELECTED_POLICY_ID', newPolicy.policyId)
+          }
+        },
+      },
 
-        const appNames = [...new Set(allApps.filter(app => app.policyId !== null).map(app => app.appName))]
-
-        let apps = appNames.map(appName => {
-          for (const policyId of policyHierarchy) {
-            const view = this.appViews.find(v => v.policyId === policyId)
-            const app = (view ? view.instances : []).find(a => a.appName === appName)
-            if (app) {
-              const _app = { ...app }
-              if (app.policyId && app.policyId !== this.selectedPolicy.policyId) {
-                _app.parentPolicy = policyMap[app.policyId].name
-              }
-              const appProperties = view.appProperties.find(prop => prop.name === appName)
-              const license = view.licenseMap[appName]
-              _app.hasPowerButton = appProperties ? appProperties.hasPowerButton : false
-              _app.displayName = appProperties ? appProperties.displayName : appName
-              _app.licenseMessage = util.getLicenseMessage(license, this.$vuntangle)
-              _app.powerCls = this.getPowerClass(_app, view.runStates[_app.id], appProperties.daemon)
-              _app.installing = false
-              _app.props = appProperties || {}
-              return _app
+      /**
+       * Watch policy ID changes from route
+       * Validates policy exists and redirects to default if not found
+       */
+      policyId: {
+        immediate: true,
+        handler(newPolicyId) {
+          // Only validate after policies are loaded
+          if (newPolicyId && this.policies.length > 0) {
+            const policyExists = this.policies.find(p => p.policyId === newPolicyId)
+            if (!policyExists) {
+              // Policy doesn't exist, redirect to default policy
+              this.$router.replace(`/apps/${DEFAULT_POLICY_ID}`)
             }
           }
-          return null
-        })
-
-        apps = apps.sort(function (a, b) {
-          if (a.props.viewPosition < b.props.viewPosition) {
-            return -1
-          }
-          return 1
-        })
-
-        return apps.filter(Boolean)
-      },
-      installableApps() {
-        if (!this.appViews || !this.selectedPolicy) return []
-        const policyView = this.appViews.find(v => v.policyId === this.selectedPolicy.policyId)
-        if (!policyView) return []
-
-        let installableApps = []
-        policyView.installable.forEach(appName => {
-          const app = policyView.appProperties.find(a => a.name === appName)
-          if (app && app.type === 'FILTER') {
-            installableApps.push({
-              name: app.name,
-              displayName: app.displayName,
-              description: appDescription[app.name],
-              route: '#apps/' + policyView.policyId + '/' + app.name,
-              viewPosition: app.viewPosition,
-            })
-          }
-        })
-
-        installableApps = installableApps.sort(function (a, b) {
-          if (a.viewPosition < b.viewPosition) {
-            return -1
-          }
-          return 1
-        })
-        return installableApps
+        },
       },
     },
+
     created() {
+      // Load policy manager settings
       this.$store.dispatch('apps/loadAppData', 'policy-manager')
-      // Need to fetch all app views only once
+
+      // Load app views for all policies
       this.$store.dispatch('apps/getAppViews', false)
-      // For each policy, fetch its app view and update the store
+
+      // Load app view for current policy
       this.$store.dispatch('apps/getAppView', this.policyId)
     },
+
     mounted() {
+      // Start polling for auto-install status
       this.poll()
     },
+
     beforeDestroy() {
+      // Clean up polling timeout
       clearTimeout(this.timeout)
     },
+
     methods: {
-      onPolicyChange(active) {
-        if (active.length > 0) {
-          const changedPolicy = this.policies.find(p => p.policyId === active[0])
+      /**
+       * Handle policy change from toolbar dropdown
+       * @param {number} policyId - Selected policy ID
+       */
+      onPolicyChange(policyId) {
+        const changedPolicy = this.policies.find(p => p.policyId === policyId)
+        if (changedPolicy) {
           this.$router.push(`/apps/${changedPolicy.policyId}`)
         }
       },
+
+      /**
+       * Navigate to policy management settings
+       */
       managePolicies() {
         this.$router.push('/settings/services/dynamic-blocklist')
       },
+
+      /**
+       * Enter install mode to show installable apps
+       */
       installApps() {
         this.installMode = true
       },
 
+      /**
+       * Exit install mode and return to installed apps view
+       */
       backToPolicy() {
         this.installMode = false
       },
-      poll() {
-        const flag = window.rpc.appManager.isAutoInstallAppsFlag()
 
+      /**
+       * Refresh app views from backend
+       * Forces a fresh fetch of all app data for all policies
+       * Useful when apps have been installed/removed externally
+       */
+      refreshApps() {
+        // Refresh all app views from backend (force refetch)
+        this.$store.dispatch('apps/getAppViews', true)
+      },
+
+      /**
+       * Clear installation statuses for apps that have finished installing
+       * Only clears apps with 'finish' status, preserves 'progress' status
+       */
+      clearFinishedInstallStatuses() {
+        const installingApps = this.installingApps
+
+        Object.keys(installingApps).forEach(appName => {
+          if (installingApps[appName].status === INSTALL_STATUS_FINISHED) {
+            this.$store.commit('apps/SET_APP_INSTALL_STATUS', {
+              appName,
+              policyId: installingApps[appName].policyId,
+              status: null, // Clear status
+            })
+          }
+        })
+      },
+
+      /**
+       * Poll for auto-install flag from RPC
+       * Continues polling while auto-install is active
+       * Uses recursive setTimeout for controlled interval
+       */
+      poll() {
+        // Check auto-install flag from RPC
+        const flag = window.rpc.appManager.isAutoInstallAppsFlag()
         this.autoInstallApps = flag
+
+        // Stop polling if flag is false or component is destroyed
         if (!flag || this._isDestroyed) return
 
+        // Clear existing timeout before setting new one
         clearTimeout(this.timeout)
+
+        // Schedule next poll
         this.timeout = setTimeout(() => {
           this.poll()
-        }, 250)
-      },
-      getPowerClass(app, runState, daemon) {
-        const on = runState === 'RUNNING'
-        const targetState = app.targetState
-        const daemonRunning =
-          on && daemon != null ? window.rpc.directData('rpc.UvmContext.daemonManager.isRunning', daemon) : true
-        const inconsistent = targetState !== runState || (runState === 'RUNNING' && !daemonRunning)
-
-        if (inconsistent) {
-          return 'inconsistent'
-        } else if (on) {
-          return 'on'
-        } else {
-          return ''
-        }
+        }, AUTO_INSTALL_POLL_INTERVAL)
       },
     },
   }
 </script>
 
-<style scoped>
-  .policy-menu {
-    background-color: white;
-    z-index: 1;
+<style lang="scss" scoped>
+  .apps-view {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    padding-left: 0.75rem;
+    padding-top: 0.5rem;
+
+    &__content {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+    }
+
+    &__title {
+      font-size: 1.5rem;
+      font-weight: 400;
+      margin-bottom: 0.5rem;
+      margin-top: 1.25rem;
+    }
+
+    &__divider {
+      margin-top: 0.5rem;
+      margin-bottom: 0.5rem;
+      padding-top: 0.5rem;
+    }
   }
 </style>

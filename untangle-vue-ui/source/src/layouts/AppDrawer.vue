@@ -110,10 +110,6 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [
-          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
-          { name: 'apps', to: `/apps/1`, icon: 'mdi-apps' },
-        ],
 
         settingsNavItems: [
           {
@@ -184,6 +180,15 @@
     computed: {
       mini() {
         return this.$store.state.miniDrawer
+      },
+      selectedPolicyId() {
+        return this.$store.getters['apps/selectedPolicyId'] || 1
+      },
+      rootNavItems() {
+        return [
+          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          { name: 'apps', to: `/apps/${this.selectedPolicyId}`, icon: 'mdi-apps' },
+        ]
       },
     },
     watch: {

@@ -1,5 +1,17 @@
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
+
+/**
+ * Constants for app installation status
+ * @readonly
+ * @enum {string}
+ */
+export const APP_INSTALL_STATUS = Object.freeze({
+  PROGRESS: 'progress', // App is currently being installed
+  FINISH: 'finish', // App installation completed successfully
+  ERROR: 'error', // App installation failed
+})
+
 /**
  * Why do we need an RPC Registry?
  *
@@ -55,7 +67,10 @@ const APP_RPC_REGISTRY = {
  */
 const getDefaultState = () => ({
   settings: {}, // all app settings stored by appName
-  appViews: null, // list of per-policy app view states
+  appViews: null, // list of per-policy app view states (kept for backward compatibility)
+  appViewsByPolicy: {}, // normalized app views by policyId for O(1) lookup
+  installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
+  selectedPolicyId: null, // currently selected policy ID
 })
 
 /**
@@ -68,6 +83,34 @@ const getters = {
    */
   getSettings: state => appName => state.settings[appName] || null,
   appViews: state => state.appViews || [], // list of per-policy app view states
+  /**
+   * Get all app views normalized by policyId (O(1) lookup)
+   * Usage: getters['apps/appViewsByPolicy']
+   */
+  appViewsByPolicy: state => state.appViewsByPolicy || {},
+  /**
+   * Get app view for a specific policy (O(1) lookup)
+   * Usage: getters['apps/getAppViewByPolicy'](policyId)
+   */
+  getAppViewByPolicy: state => policyId => state.appViewsByPolicy[policyId] || null,
+  /**
+   * Get installing apps
+   * Usage: getters['apps/installingApps']
+   */
+  installingApps: state => state.installingApps || {},
+  /**
+   * Check if a specific app is installing
+   * Usage: getters['apps/isAppInstalling'](appName)
+   */
+  isAppInstalling: state => appName => {
+    const installing = state.installingApps[appName]
+    return installing ? installing.status === 'progress' : false
+  },
+  /**
+   * Get selected policy ID
+   * Usage: getters['apps/selectedPolicyId']
+   */
+  selectedPolicyId: state => state.selectedPolicyId,
 }
 
 const mutations = {
@@ -81,15 +124,56 @@ const mutations = {
     }
     set(state.settings, appName, value)
   },
-  SET_APP_VIEWS: (state, appViews) => set(state, 'appViews', appViews),
+  SET_APP_VIEWS: (state, appViews) => {
+    set(state, 'appViews', appViews)
+    // Normalize appViews by policyId for O(1) lookup
+    const normalized = (appViews || []).reduce((acc, view) => {
+      acc[view.policyId] = view
+      return acc
+    }, {})
+    set(state, 'appViewsByPolicy', normalized)
+  },
   SET_APP_VIEW: (state, { policyId, appView }) => {
+    // Update array (backward compatibility)
     if (!state.appViews) {
       set(state, 'appViews', [])
     }
     const index = state.appViews.findIndex(av => String(av.policyId) === policyId)
     if (index >= 0) {
       state.appViews.splice(index, 1, appView)
+    } else {
+      state.appViews.push(appView)
     }
+    // Update normalized object (O(1) lookup)
+    if (!state.appViewsByPolicy) {
+      set(state, 'appViewsByPolicy', {})
+    }
+    set(state.appViewsByPolicy, policyId, appView)
+  },
+  /**
+   * Set app installation status
+   * Usage: commit('SET_APP_INSTALL_STATUS', { appName: 'web-filter', policyId: 1, status: 'progress' })
+   * Status can be: 'progress', 'finish', or null (to clear)
+   */
+  SET_APP_INSTALL_STATUS(state, { appName, policyId, status }) {
+    if (!state.installingApps) {
+      set(state, 'installingApps', {})
+    }
+    if (status === null) {
+      // Clear the installation status
+      const newInstallingApps = { ...state.installingApps }
+      delete newInstallingApps[appName]
+      set(state, 'installingApps', newInstallingApps)
+    } else {
+      set(state.installingApps, appName, { policyId, status })
+    }
+  },
+  /**
+   * Set selected policy ID
+   * Usage: commit('SET_SELECTED_POLICY_ID', policyId)
+   */
+  SET_SELECTED_POLICY_ID(state, policyId) {
+    set(state, 'selectedPolicyId', policyId)
   },
 }
 
@@ -210,6 +294,45 @@ const actions = {
       commit('SET_APP_VIEW', { policyId, appView: data || [] })
     } catch (err) {
       Util.handleException(err)
+    }
+  },
+
+  /**
+   * Install an app for a specific policy
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, policyId }
+   * @returns {Promise<Object>} - { success: boolean, instance?: Object, error?: string }
+   */
+  async installApp({ commit, dispatch }, { appName, policyId }) {
+    try {
+      // Set installing status to 'progress'
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'progress' })
+
+      // Call RPC to instantiate app
+      const instance = await new Promise(resolve => {
+        window.rpc.appManager.instantiate(
+          res => {
+            resolve(res)
+          },
+          appName,
+          policyId,
+        )
+      })
+
+      // Refresh app views to get updated data
+      await dispatch('getAppViews', true)
+      await dispatch('getAppView', policyId)
+
+      // Set installing status to 'finish'
+      // Status will be cleared when user navigates to installed apps view
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'finish' })
+
+      return { success: true, instance }
+    } catch (error) {
+      // Clear installing status on error
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: null })
+      Util.handleException(error)
+      return { success: false, error: error.message || 'Installation failed' }
     }
   },
 }
