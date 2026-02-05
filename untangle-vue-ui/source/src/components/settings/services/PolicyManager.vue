@@ -32,7 +32,7 @@
        * @returns {Object} The settings object for the current application.
        */
       settings() {
-        return this.$store.getters['apps/getSettings'](this.appName)
+        return this.$store.getters['apps/getSettings'](this.appName)?.settings
       },
     },
 
