@@ -5,7 +5,7 @@ module.exports = {
   transpileDependencies: ['vuntangle', 'ip6'],
   publicPath: process.env.VUE_APP_BASE_URL,
   devServer: {
-    host: 'localhost',
+    host: 'ngfw-ui.untangle.com',
     port: 9090,
     proxy: {
       // proxy URLs to backend development server
