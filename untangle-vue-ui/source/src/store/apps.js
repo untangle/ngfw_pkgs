@@ -2,7 +2,7 @@ import { set } from 'vue'
 import Util from '@/util/setupUtil'
 
 /**
- * Constants for app installation status
+  * Constants for app installation status
  * @readonly
  * @enum {string}
  */
@@ -13,36 +13,33 @@ export const APP_INSTALL_STATUS = Object.freeze({
 })
 
 /**
- * Why do we need an RPC Registry?
+ * Why do we need a Bootstrap Registry?
  *
- * The RPC registry centralizes all runtime API calls required to build
- * complete application settings without permanently storing large or
- * infrequently used data in Vuex/state.
+ * The Bootstrap Registry defines API calls that are automatically invoked
+ * when a screen loads or when a refresh operation is triggered, without
+ * any specific user interaction.
  *
  * For example:
- * - The `smtp` app requires multiple API calls (settings, safelists,
- *   inbox data, company name, etc.) to fully initialize its UI.
- *   Instead of storing all this data upfront, we load it dynamically
- *   at runtime using this registry.
+ * - The `smtp` app requires multiple API calls (safelists, inbox data, etc.)
+ *   to fully initialize its UI when the screen loads.
+ *   These bootstrap calls happen automatically to prepare the view.
  *
- * - Other apps (e.g. dynamic-blocklist) only need basic get/set settings
- *   calls and do not require additional registry entries.
+ * - Other apps (e.g. dynamic-blocklist) only need basic settings
+ *   and do not require additional bootstrap entries.
+ *
+ * Important:
+ * - This registry contains ONLY auto-load/refresh APIs
+ * - APIs triggered by specific user actions (button clicks, form submissions)
+ *   should NOT be added here
  *
  * Benefits:
- * - Reduces storage/state size by avoiding unnecessary persistence
- * - Loads only what is required for a specific app
- * - Keeps API logic organized and extensible per app
- * - Allows different apps to have different initialization needs
- *
- * In short, the registry defines *what extra data* an app needs at runtime
- * beyond its canonical backend settings.
+ * - Centralizes initial data loading logic per app
+ * - Keeps API logic organized and extensible
+ * - Allows different apps to have different bootstrap requirements
+ * - Clear separation between auto-load and user-triggered operations
  */
-const APP_RPC_REGISTRY = {
+const APP_BOOTSTRAP_REGISTRY = {
   smtp: [
-    {
-      key: 'smtpSettings',
-      call: app => app.getSettingsV2(),
-    },
     {
       key: 'globalSafeList',
       call: app => app.getSafelistAdminView().getSafelistContents('GLOBAL'),
@@ -63,10 +60,10 @@ const APP_RPC_REGISTRY = {
 }
 
 /**
- * State
+ * Apps store
  */
 const getDefaultState = () => ({
-  settings: {}, // all app settings stored by appName
+  store: {}, // all app settings stored by appName
   appViews: null, // list of per-policy app view states (kept for backward compatibility)
   appViewsByPolicy: {}, // normalized app views by policyId for O(1) lookup
   installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
@@ -82,7 +79,7 @@ const getters = {
    * Get settings for a given app name.
    * Usage: getters.getSettings('http')
    */
-  getSettings: state => appName => state.settings[appName] || null,
+  getSettings: state => appName => state.store[appName] || null,
   appViews: state => state.appViews || [], // list of per-policy app view states
   /**
    * Get all app views normalized by policyId (O(1) lookup)
@@ -125,10 +122,68 @@ const mutations = {
    * Usage: commit('SET_SETTINGS', { appName: 'http', value: data })
    */
   SET_SETTINGS(state, { appName, value }) {
-    if (!state.settings) {
-      set(state, 'settings', {})
+    if (!state.store) {
+      set(state, 'store', {})
     }
-    set(state.settings, appName, value)
+    set(state.store, appName, value)
+  },
+  SET_APP_VIEWS: (state, appViews) => {
+    set(state, 'appViews', appViews)
+    // Normalize appViews by policyId for O(1) lookup
+    const normalized = (appViews || []).reduce((acc, view) => {
+      acc[view.policyId] = view
+      return acc
+    }, {})
+    set(state, 'appViewsByPolicy', normalized)
+  },
+  SET_APP_VIEW: (state, { policyId, appView }) => {
+    // Update array (backward compatibility)
+    if (!state.appViews) {
+      set(state, 'appViews', [])
+    }
+    const index = state.appViews.findIndex(av => String(av.policyId) === policyId)
+    if (index >= 0) {
+      state.appViews.splice(index, 1, appView)
+    } else {
+      state.appViews.push(appView)
+    }
+    // Update normalized object (O(1) lookup)
+    if (!state.appViewsByPolicy) {
+      set(state, 'appViewsByPolicy', {})
+    }
+    set(state.appViewsByPolicy, policyId, appView)
+  },
+  /**
+   * Set app installation status
+   * Usage: commit('SET_APP_INSTALL_STATUS', { appName: 'web-filter', policyId: 1, status: 'progress' })
+   * Status can be: 'progress', 'finish', or null (to clear)
+   */
+  SET_APP_INSTALL_STATUS(state, { appName, policyId, status }) {
+    if (!state.installingApps) {
+      set(state, 'installingApps', {})
+    }
+    if (status === null) {
+      // Clear the installation status
+      const newInstallingApps = { ...state.installingApps }
+      delete newInstallingApps[appName]
+      set(state, 'installingApps', newInstallingApps)
+    } else {
+      set(state.installingApps, appName, { policyId, status })
+    }
+  },
+  /**
+   * Set selected policy ID
+   * Usage: commit('SET_SELECTED_POLICY_ID', policyId)
+   */
+  SET_SELECTED_POLICY_ID(state, policyId) {
+    set(state, 'selectedPolicyId', policyId)
+  },
+  /**
+   * Set auto install apps flag
+   * Usage: commit('SET_AUTO_INSTALL_APPS', true/false)
+   */
+  SET_AUTO_INSTALL_APPS(state, value) {
+    set(state, 'autoInstallApps', value)
   },
   SET_APP_VIEWS: (state, appViews) => {
     set(state, 'appViews', appViews)
@@ -194,57 +249,98 @@ const mutations = {
  * Actions
  */
 const actions = {
-  setGlobalSafeList(_, safeList) {
-    const app = window.rpc.appManager.app('smtp')
+  async setSmtpSettingsWOSafeList({ dispatch }, _, smtpSettings) {
+    const app = await dispatch('getApp', 'smtp')
     if (!app) return
     return new Promise(resolve => {
-      // Wrap callback inside params or try this:
-      app
-        .getSafelistAdminView()
-        .replaceSafelist('GLOBAL', safeList)
-        .then(() => {
+      app.setSmtpSettingsWithoutSafelistsV2((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, smtpSettings)
+    })
+  },
+  async setGlobalSafeList({ dispatch }, _, safeList) {
+    const app = await dispatch('getApp', 'smtp')
+    if (!app) return
+    return new Promise(resolve => {
+      app.getSafelistAdminView().replaceSafelist(
+        (ex, res) => {
+          if (ex || res?.code) {
+            Util.handleException(ex || res.message)
+            return resolve({ success: false })
+          }
           resolve({ success: true })
-        })
-        .catch(() => {
-          resolve({ success: false })
-        })
+        },
+        'GLOBAL',
+        safeList,
+      )
     })
   },
 
-  deleteSafelists(_, userSafeList) {
-    const app = window.rpc.appManager.app('smtp')
-    if (!app) return Promise.resolve({ success: false })
-    app.getSafelistAdminView().deleteSafelists(userSafeList)
-    return Promise.resolve({ success: true })
+  async deleteSafelists({ dispatch }, _, userSafeList) {
+    const app = await dispatch('getApp', 'smtp')
+    if (!app) return
+    return new Promise(resolve => {
+      app.getSafelistAdminView().deleteSafelists((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, userSafeList)
+    })
   },
 
-  getApp(_, appName) {
+  async getApp(_, appName) {
     try {
-      const app = window.rpc.appManager.app(appName)
+      const app = await window.rpc.appManager.app(appName)
       return app
     } catch (err) {
       Util.handleException(err)
       return null
     }
   },
-  async getAppSettings({ dispatch }, appName) {
-    const app = await dispatch('getApp', appName)
+  /**
+   * Get settings for a given app using getSettingsV2().
+   * @param {string} appName - The name of the app (e.g., 'smtp', 'http')
+   * @param {Object|null} app - Optional app object. If not provided, it will be fetched via getApp
+   * @returns {Promise<Object|null>} The app settings object or null if app is unavailable
+   *
+   * Usage:
+   * - With app object: dispatch('getAppSettings', { appName: 'smtp', app: appObject })
+   * - Without app object: dispatch('getAppSettings', { appName: 'smtp' })
+   */
+  async getAppSettings({ dispatch }, { appName, app = null }) {
+    if (!app) {
+      app = await dispatch('getApp', appName)
+    }
     if (app) {
       return await app.getSettingsV2()
     }
     return null
   },
+  /**
+   * Load initial/bootstrap data for an app.
+   * This includes the app's canonical settings plus any bootstrap APIs defined in APP_BOOTSTRAP_REGISTRY.
+   * Typically called when a screen loads or when refresh is triggered.
+   *
+   * @param {string} appName - The name of the app (e.g., 'smtp')
+   * @returns {Promise<Object>} Object containing settings and all bootstrap data
+   */
   async loadAppData({ commit, dispatch }, appName) {
-    const registry = APP_RPC_REGISTRY[appName]
+    const registry = APP_BOOTSTRAP_REGISTRY[appName]
     const app = await dispatch('getApp', appName)
     if (!app) return
 
     // ALWAYS load canonical backend settings
-    const baseSettings = (await dispatch('getAppSettings', appName)) || {}
+    const baseSettings = (await dispatch('getAppSettings', { appName, app })) || {}
 
-    const result = { ...baseSettings }
+    const result = { settings: baseSettings }
 
-    // Optionally augment with registry data
+    // Optionally argument with bootstrap registry data
     if (registry) {
       for (const item of registry) {
         try {

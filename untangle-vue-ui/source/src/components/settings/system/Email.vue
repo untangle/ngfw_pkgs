@@ -1,11 +1,13 @@
 <template>
   <email
+    :smtp-settings="smtpSettings"
+    :public-url="publicUrl"
     :mail-sender-settings="mailSender"
     :company-name="companyName"
     :global-safe-list="globalSafeList"
     :user-safe-list="userSafeList"
     @email-test="sendTestEmail"
-    @save-email-server-settings="onSaveEmailServerSettings"
+    @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
     @purge-user-safe-list="onPurgeUserSafeList"
   />
@@ -21,8 +23,8 @@
    */
   export default {
     components: { Email },
-
     computed: {
+      publicUrl: ({ $store }) => $store.getters['config/publicUrl'],
       /**
        * Mail sender settings from Vuex store.
        * @returns {object}
@@ -32,13 +34,16 @@
        * SMTP settings from Vuex store.
        * @returns {object}
        */
-      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
+      smtpAppSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
 
+      smtpSettings() {
+        return this.smtpAppSettings?.settings || {}
+      },
       userSafeList() {
-        return this.smtpSettings?.userSafeList || []
+        return this.smtpAppSettings?.userSafeList || []
       },
       globalSafeList() {
-        return this.smtpSettings?.globalSafeList || []
+        return this.smtpAppSettings?.globalSafeList || []
       },
 
       /**
@@ -60,6 +65,7 @@
     created() {
       this.$store.dispatch('apps/loadAppData', 'smtp')
       this.$store.dispatch('config/getMailSender', true)
+      this.$store.dispatch('config/getPublicUrl', true)
     },
 
     methods: {
@@ -85,23 +91,25 @@
       },
 
       /**
-       * Saves email server settings.
-       * @param {object} emailServerSettings - The email server settings to save.
+       * Saves email settings.
+       * @param {object} updatedSettings - The email settings to save.
        * @param {function} cb - The callback function.
        */
-      async onSaveEmailServerSettings({ updatedSettings, cb }) {
+      async onSaveSettings({ updatedSettings }) {
         this.$store.commit('SET_LOADER', true)
         try {
           // Save email server settings
-          const response = await this.$store.dispatch('config/setMailSender', updatedSettings.emailServerSettings)
+          await this.$store.dispatch('config/setMailSender', updatedSettings.emailServerSettings)
           // Save global safelist if provided
           if (updatedSettings.globalSafeList) {
             await this.$store.dispatch('apps/setGlobalSafeList', updatedSettings.globalSafeList)
           }
+          // Save smtpSettings settings if provided
+          if (updatedSettings.smtpSettings) {
+            await this.$store.dispatch('apps/setSmtpSettingsWOSafeList', updatedSettings.smtpSettings)
+          }
           // Reload SMTP app data
           await this.$store.dispatch('apps/loadAppData', 'smtp')
-          // Call the callback with the original response
-          cb(response)
         } catch (error) {
           // Optionally, handle error or pass it to the callback
         } finally {
@@ -117,6 +125,7 @@
         Promise.all([
           this.$store.dispatch('apps/loadAppData', 'smtp'),
           this.$store.dispatch('config/getMailSender', true),
+          this.$store.dispatch('config/getPublicUrl', false),
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })

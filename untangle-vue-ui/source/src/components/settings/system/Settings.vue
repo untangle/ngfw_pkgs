@@ -4,7 +4,7 @@
     :device-temperature-info="deviceTemperatureInfo"
     :http-settings="httpSettings"
     :ftp-settings="ftpSettings"
-    :smtp-settings="smtp"
+    :smtp-settings="smtpSettings"
     :is-expert-mode="isExpertMode"
     :company-name="companyName"
     :system-time-zones="systemTimeZones"
@@ -38,18 +38,15 @@
     computed: {
       systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
       deviceTemperatureInfo: ({ $store }) => $store.getters['config/deviceTemperatureInfo'],
-      httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http'),
-      ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp'),
-      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
+      httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http')?.settings || {},
+      ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp')?.settings || {},
+      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp')?.settings || {},
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
       systemTimeZones: ({ $store }) => $store.getters['config/systemTimeZones'],
       networkSetting: ({ $store }) => $store.getters['config/networkSetting'],
       enabledWanInterfaces: ({ $store }) => $store.getters['config/enabledWanInterfaces'],
       companyName() {
         return window?.rpc?.companyName || null
-      },
-      smtp() {
-        return this.smtpSettings?.smtpSettings || {}
       },
     },
 

@@ -27,6 +27,7 @@ import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
 import Logging from '@/components/settings/system/Logging.vue'
 import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
+import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 
 export default [
   {
@@ -97,6 +98,11 @@ export default [
         path: 'services/dynamic-blocklist',
         component: DynamicBlockLists,
         meta: { helpContext: 'dynamic_lists' },
+      },
+      {
+        path: 'services/policy-manager',
+        component: PolicyManager,
+        meta: { helpContext: 'policy_manager' },
       },
       {
         path: 'system/email',
