@@ -37,7 +37,7 @@
       smtpAppSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
 
       smtpSettings() {
-        return this.smtpAppSettings?.smtpSettings || {}
+        return this.smtpAppSettings?.settings || {}
       },
       userSafeList() {
         return this.smtpAppSettings?.userSafeList || []
