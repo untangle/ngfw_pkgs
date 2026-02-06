@@ -250,7 +250,7 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  * Retrieves all apps for the selected policy and traverses up the policy hierarchy
  * to include apps from parent policies. Inherited apps are marked with parent policy name.
  *
- * Installation State Handling (ExtJS Pattern):
+ * Installation State Handling:
  * This function merges two sources of state to handle the race condition during app installation:
  * 1. Backend instances (from view.instances) - Apps created by backend
  * 2. UI state (from installingApps) - Apps in 'progress' status
@@ -258,9 +258,6 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  * When user installs an app and navigates back quickly, the backend may not have created
  * the instance yet. By checking installingApps and creating placeholder objects, we ensure
  * installing apps always appear with loader, regardless of backend timing.
- *
- * This mirrors ExtJS AppsController.applyPolicy() pattern where component ViewModels
- * persist installation state independent of backend instance data.
  *
  * @param {Object} params - Function parameters
  * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
@@ -300,7 +297,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
     return acc.concat(view ? view.instances : [])
   }, [])
 
-  // Get unique app names (exclude null policyId which are uninstantiated apps)
+  // Get unique app names (exclude null policyId which are service apps)
   const uniqueAppNames = [...new Set(allApps.filter(app => app.policyId !== null).map(app => app.appName))]
 
   // Build enriched app objects
@@ -332,7 +329,6 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
   // Add apps that are currently being installed but not yet instantiated by backend
   // This ensures installing apps always show with loader, even if backend hasn't created instance yet
-  // Mirrors ExtJS pattern where component ViewModels persist installation state
   const currentPolicyView = appViewsByPolicy[selectedPolicy.policyId]
   if (currentPolicyView) {
     Object.keys(installingApps).forEach(appName => {
@@ -352,7 +348,6 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
         if (appProperties) {
           // Create placeholder app object for installing app
-          // This mimics ExtJS approach where component exists with installing flag
           const placeholderApp = {
             appName,
             policyId: selectedPolicy.policyId,

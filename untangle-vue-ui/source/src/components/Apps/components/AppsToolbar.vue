@@ -24,7 +24,12 @@
     </v-menu>
 
     <!-- Install Apps Button (shown when conditions are met) -->
-    <u-btn v-if="showInstallButton" color="primary" class="ml-2" @click="handleInstallAppsClick">
+    <u-btn
+      v-if="showInstallButton"
+      color="primary"
+      :class="{ 'ml-2': policyManagerInstalled }"
+      @click="handleInstallAppsClick"
+    >
       <v-icon small class="mr-2">mdi-plus</v-icon>
       {{ $vuntangle.$t('install_apps') }}
     </u-btn>
@@ -269,6 +274,57 @@
     &__policy-menu {
       background-color: #fff;
       z-index: 1;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+      border-radius: 4px;
+      max-height: 400px;
+      overflow-y: auto;
+
+      :deep(.v-treeview) {
+        padding: 0.125rem 0.125rem 0.125rem 0;
+
+        .v-treeview-node {
+          margin-right: 0.375rem;
+
+          &__root {
+            padding: 0.125rem 0.375rem 0.125rem 0.25rem;
+            min-height: 28px;
+            cursor: pointer;
+            border-radius: 4px;
+            transition: background-color 0.15s ease;
+          }
+
+          // Hover state
+          &:hover > .v-treeview-node__root {
+            background-color: #e3f2fd;
+          }
+
+          // Active/Selected state
+          &--active > .v-treeview-node__root {
+            background-color: #bbdefb;
+            color: $arista-blue;
+            font-weight: 600;
+          }
+
+          &__content {
+            padding-left: 0;
+          }
+
+          &__label {
+            font-size: 0.875rem;
+            line-height: 1.3;
+          }
+
+          &__toggle {
+            width: 18px;
+            height: 18px;
+            margin-right: 0.125rem;
+          }
+
+          &__children {
+            padding-left: 1.5rem;
+          }
+        }
+      }
     }
   }
 </style>

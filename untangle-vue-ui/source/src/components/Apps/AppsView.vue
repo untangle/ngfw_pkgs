@@ -45,7 +45,6 @@
   const INSTALL_STATUS_FINISHED = 'finish'
 
   // Session-scoped variables for one-time initialization
-  // Matches ExtJS onAfterRender behavior: runs once per session regardless of navigation
   let sessionInitialized = false // Tracks if license reload and auto install monitor have been started
   let autoInstallTimer = null // Polling timer reference persists across component instances
 
@@ -134,7 +133,7 @@
        * Get policy manager settings from store
        * @returns {Object|null}
        */
-      policyManagerSettings: ({ $store }) => $store.getters['apps/getSettings']('policy-manager'),
+      policyManagerSettings: ({ $store }) => $store.getters['apps/getSettings']('policy-manager')?.settings || {},
 
       /**
        * Get list of all policies
@@ -172,14 +171,21 @@
 
       /**
        * Get currently selected policy object
+       * If policy-manager not installed, creates a default policy object for policy ID 1
        * @returns {Object|null}
        */
-      selectedPolicy({ policies, policyId }) {
-        if (!policies || policies.length === 0) {
-          return null
+      selectedPolicy({ policies, policyId, policyManagerInstalled }) {
+        // If policy-manager is installed, use policies from settings
+        if (policyManagerInstalled && policies && policies.length > 0) {
+          // Find policy matching the route param, fallback to first policy
+          return policies.find(p => p.policyId.toString() === policyId.toString()) || policies[0]
         }
-        // Find policy matching the route param, fallback to first policy
-        return policies.find(p => p.policyId.toString() === policyId.toString()) || policies[0]
+
+        return {
+          policyId: DEFAULT_POLICY_ID,
+          name: 'Default',
+          parentId: null,
+        }
       },
 
       /**
@@ -268,7 +274,7 @@
     },
 
     created() {
-      // One-time session initialization - reload licenses (matches ExtJS onAfterRender behavior)
+      // One-time session initialization - reload licenses
       // Uses module-scoped flag to ensure it only runs on first load, not on policy switches
       if (!sessionInitialized) {
         window.rpc.UvmContext.licenseManager().reloadLicenses(true)
@@ -277,7 +283,7 @@
       // Load policy manager settings
       this.$store.dispatch('apps/loadAppData', 'policy-manager')
 
-      // Load app views for all policies
+      // Load app views for all policies (refetch false)
       this.$store.dispatch('apps/getAppViews', false)
 
       // Load app view for current policy
@@ -285,7 +291,7 @@
     },
 
     mounted() {
-      // One-time session initialization - start auto-install monitor (matches ExtJS onAfterRender behavior)
+      // One-time session initialization - start auto-install monitor
       // Runs after app views are loaded, uses module-scoped flag to prevent restart on navigation
       // Monitor persists across component lifecycle and stops when auto install completes
       if (!sessionInitialized) {
@@ -310,7 +316,7 @@
        * Navigate to policy management settings
        */
       managePolicies() {
-        this.$router.push('/settings/services/dynamic-blocklist')
+        this.$router.push('/settings/services/policy-manager')
       },
 
       /**
@@ -348,13 +354,9 @@
       /**
        * Start monitoring auto-install status
        * Polls backend flag and refreshes app views while auto-installing
-       * Follows ExtJS pattern: poll flag + refresh views
        * Runs once per session and persists across component instances
        */
       startAutoInstallMonitor() {
-        // Initial check of auto-install flag
-        this.$store.dispatch('apps/checkAutoInstallFlag')
-
         // Set up polling interval (persists across component lifecycle)
         autoInstallTimer = setInterval(() => {
           // Check if auto install is still running (updates store state)
@@ -363,7 +365,6 @@
           // Check the store state (not dispatch return value) to decide next action
           if (this.$store.getters['apps/autoInstallApps']) {
             // While auto-installing, refresh app views to show newly installed apps
-            // This mirrors ExtJS behavior: me.getApps() during polling
             this.$store.dispatch('apps/getAppView', this.$route.params.policyId || DEFAULT_POLICY_ID)
           } else if (autoInstallTimer) {
             // Auto install completed - stop monitoring

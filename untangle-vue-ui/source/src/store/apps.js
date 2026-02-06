@@ -2,7 +2,7 @@ import { set } from 'vue'
 import Util from '@/util/setupUtil'
 
 /**
-  * Constants for app installation status
+ * Constants for app installation status
  * @readonly
  * @enum {string}
  */
@@ -80,7 +80,11 @@ const getters = {
    * Usage: getters.getSettings('http')
    */
   getSettings: state => appName => state.store[appName] || null,
-  appViews: state => state.appViews || [], // list of per-policy app view states
+  /**
+   * Get all app views (list of per-policy app view states)
+   * Usage: getters['apps/appViews']
+   */
+  appViews: state => state.appViews || [],
   /**
    * Get all app views normalized by policyId (O(1) lookup)
    * Usage: getters['apps/appViewsByPolicy']
@@ -127,6 +131,10 @@ const mutations = {
     }
     set(state.store, appName, value)
   },
+  /**
+   * Set the list of app views for all policies
+   * Usage: commit('SET_APP_VIEWS', appViews)
+   */
   SET_APP_VIEWS: (state, appViews) => {
     set(state, 'appViews', appViews)
     // Normalize appViews by policyId for O(1) lookup
@@ -136,64 +144,10 @@ const mutations = {
     }, {})
     set(state, 'appViewsByPolicy', normalized)
   },
-  SET_APP_VIEW: (state, { policyId, appView }) => {
-    // Update array (backward compatibility)
-    if (!state.appViews) {
-      set(state, 'appViews', [])
-    }
-    const index = state.appViews.findIndex(av => String(av.policyId) === policyId)
-    if (index >= 0) {
-      state.appViews.splice(index, 1, appView)
-    } else {
-      state.appViews.push(appView)
-    }
-    // Update normalized object (O(1) lookup)
-    if (!state.appViewsByPolicy) {
-      set(state, 'appViewsByPolicy', {})
-    }
-    set(state.appViewsByPolicy, policyId, appView)
-  },
   /**
-   * Set app installation status
-   * Usage: commit('SET_APP_INSTALL_STATUS', { appName: 'web-filter', policyId: 1, status: 'progress' })
-   * Status can be: 'progress', 'finish', or null (to clear)
+   * Set the app view for a specific policy
+   * Usage: commit('SET_APP_VIEW', { policyId, appView })
    */
-  SET_APP_INSTALL_STATUS(state, { appName, policyId, status }) {
-    if (!state.installingApps) {
-      set(state, 'installingApps', {})
-    }
-    if (status === null) {
-      // Clear the installation status
-      const newInstallingApps = { ...state.installingApps }
-      delete newInstallingApps[appName]
-      set(state, 'installingApps', newInstallingApps)
-    } else {
-      set(state.installingApps, appName, { policyId, status })
-    }
-  },
-  /**
-   * Set selected policy ID
-   * Usage: commit('SET_SELECTED_POLICY_ID', policyId)
-   */
-  SET_SELECTED_POLICY_ID(state, policyId) {
-    set(state, 'selectedPolicyId', policyId)
-  },
-  /**
-   * Set auto install apps flag
-   * Usage: commit('SET_AUTO_INSTALL_APPS', true/false)
-   */
-  SET_AUTO_INSTALL_APPS(state, value) {
-    set(state, 'autoInstallApps', value)
-  },
-  SET_APP_VIEWS: (state, appViews) => {
-    set(state, 'appViews', appViews)
-    // Normalize appViews by policyId for O(1) lookup
-    const normalized = (appViews || []).reduce((acc, view) => {
-      acc[view.policyId] = view
-      return acc
-    }, {})
-    set(state, 'appViewsByPolicy', normalized)
-  },
   SET_APP_VIEW: (state, { policyId, appView }) => {
     // Update array (backward compatibility)
     if (!state.appViews) {
@@ -430,9 +384,7 @@ const actions = {
 
       // Refresh app views to get updated data
       await dispatch('getAppViews', true)
-
       // Set installing status to 'finish'
-      // Status will be cleared when user navigates to installed apps view
       commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'finish' })
 
       return { success: true, instance }

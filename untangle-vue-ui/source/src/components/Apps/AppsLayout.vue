@@ -1,7 +1,6 @@
 <template>
   <!-- Root layout container for all apps-related routes -->
   <v-container class="apps-layout" fluid>
-    <!-- Child routes (AppsView or AppSettingsLayout) will render here -->
     <router-view />
   </v-container>
 </template>
