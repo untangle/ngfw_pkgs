@@ -44,7 +44,6 @@
 
     methods: {
       handleUnload() {
-        // Reset loader when iframe is being unloaded/destroyed
         this.$store.commit('SET_LOADER', false)
       },
     },
