@@ -80,6 +80,16 @@ const getters = {}
 
 const vuexPersistence = new VuexPersistence({
   storage: window.localStorage,
+  reducer: state => {
+    // Destructure to exclude autoInstallApps from apps module
+    // eslint-disable-next-line no-unused-vars
+    const { autoInstallApps, ...appsStateWithoutAutoInstall } = state.apps || {}
+
+    return {
+      ...state,
+      apps: appsStateWithoutAutoInstall,
+    }
+  },
 })
 
 export default new Store({

@@ -1,6 +1,40 @@
 @import 'vuntangle/variables.scss';
 
+// ============================================
+// Vuetify Overrides
+// ============================================
 $list-dense-min-height: 36px !default;
 $list-dense-subheader-height: 36px !default;
 
+// ============================================
+// Brand Colors
+// ============================================
 $arista-blue: #16325B;
+
+// ============================================
+// App Power State Colors
+// ============================================
+$power-state-on: #69be4d; // Green - running
+$power-state-off: #858585; // Gray - stopped
+$power-state-powering: #ff9800; // Orange - transitioning
+$power-state-inconsistent: #ff6347; // Tomato Red - error state
+
+// ============================================
+// App UI Colors
+// ============================================
+$app-card-bg-hover: #f5f5f5; // Light gray for hover
+$app-license-color: #f44336; // Red for license warnings
+$app-success-bg: rgba(76, 175, 80, 0.1); // Light green for success states
+$app-loader-bg: rgba(0, 0, 0, 0.1); // Semi-transparent black for loader overlay
+
+// ============================================
+// App Component Sizes
+// ============================================
+$app-card-width: 150px;
+$app-card-height: 170px;
+$app-card-gap: 0.875rem; // 14px
+$app-icon-size: 90px;
+$app-icon-size-small: 80px;
+$app-loader-spinner-size: 30px;
+$app-power-button-size: 20px;
+$app-power-icon-size: 14px;

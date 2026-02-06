@@ -212,24 +212,16 @@
 </script>
 
 <style lang="scss" scoped>
-  // Color constants
-  $success-bg-color: rgba(76, 175, 80, 0.1);
-  $loader-bg-color: rgba(0, 0, 0, 0.1);
-  $border-color: $arista-blue;
+  @import '@/scss/common.scss';
 
-  // Size constants
+  // Component-specific sizes
   $card-height: 150px;
   $card-flex-basis: 24%;
   $icon-section-width: 120px;
-  $icon-size: 80px;
-  $loader-size: 30px;
-  $gap-size: 0.875rem; // 14px
 
   .installable-apps {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: $gap-size;
+    // Using common grid mixin from common.scss
+    @include app-grid-container($app-card-gap);
 
     // ============================================
     // Card Styles
@@ -249,7 +241,7 @@
 
       // Finished state - success background color
       &--finished {
-        background-color: $success-bg-color;
+        background-color: $app-success-bg;
       }
     }
 
@@ -284,11 +276,11 @@
     }
 
     &__icon {
-      width: $icon-size;
-      height: $icon-size;
+      width: $app-icon-size-small;
+      height: $app-icon-size-small;
       transition: filter 0.2s ease, opacity 0.2s ease;
 
-      // Hover states
+      // Hover states (using common pattern)
       &--blurred {
         filter: blur(2px);
       }
@@ -302,12 +294,9 @@
       }
     }
 
-    // Action icons (download, check)
+    // Action icons (download, check) - using common absolute-center pattern
     &__action-icon {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
+      @include absolute-center;
       pointer-events: none;
     }
 
@@ -316,33 +305,15 @@
     // ============================================
 
     &__loader {
-      position: absolute;
+      // Using common loader mixin from common.scss
+      @include app-loader($app-icon-size-small, $app-loader-spinner-size);
+      // Component-specific positioning
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      display: block;
-      width: $icon-size;
-      height: $icon-size;
       margin: 0 auto;
-      background-color: $loader-bg-color;
-      border-radius: 4px;
-
-      // Spinning loader animation
-      &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: $loader-size;
-        height: $loader-size;
-        margin-top: -($loader-size / 2);
-        margin-left: -($loader-size / 2);
-        border: 3px solid white;
-        border-top-color: $border-color;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
+      transform: none; // Remove centering transform
     }
 
     // ============================================

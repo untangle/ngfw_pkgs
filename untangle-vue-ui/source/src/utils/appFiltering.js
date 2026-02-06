@@ -250,6 +250,18 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  * Retrieves all apps for the selected policy and traverses up the policy hierarchy
  * to include apps from parent policies. Inherited apps are marked with parent policy name.
  *
+ * Installation State Handling (ExtJS Pattern):
+ * This function merges two sources of state to handle the race condition during app installation:
+ * 1. Backend instances (from view.instances) - Apps created by backend
+ * 2. UI state (from installingApps) - Apps in 'progress' status
+ *
+ * When user installs an app and navigates back quickly, the backend may not have created
+ * the instance yet. By checking installingApps and creating placeholder objects, we ensure
+ * installing apps always appear with loader, regardless of backend timing.
+ *
+ * This mirrors ExtJS AppsController.applyPolicy() pattern where component ViewModels
+ * persist installation state independent of backend instance data.
+ *
  * @param {Object} params - Function parameters
  * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
  * @param {Object} params.selectedPolicy - Currently selected policy object
@@ -317,6 +329,48 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
       return null
     })
     .filter(Boolean) // Remove null entries
+
+  // Add apps that are currently being installed but not yet instantiated by backend
+  // This ensures installing apps always show with loader, even if backend hasn't created instance yet
+  // Mirrors ExtJS pattern where component ViewModels persist installation state
+  const currentPolicyView = appViewsByPolicy[selectedPolicy.policyId]
+  if (currentPolicyView) {
+    Object.keys(installingApps).forEach(appName => {
+      const installing = installingApps[appName]
+
+      // Only add if:
+      // 1. App is in 'progress' status (currently installing)
+      // 2. App is being installed for the current policy
+      // 3. App is not already in the apps list (avoid duplicates)
+      if (
+        installing.status === INSTALL_STATUS.PROGRESS &&
+        installing.policyId === selectedPolicy.policyId &&
+        !apps.find(a => a.appName === appName)
+      ) {
+        // Get app properties to build placeholder app object
+        const appProperties = currentPolicyView.appProperties.find(prop => prop.name === appName)
+
+        if (appProperties) {
+          // Create placeholder app object for installing app
+          // This mimics ExtJS approach where component exists with installing flag
+          const placeholderApp = {
+            appName,
+            policyId: selectedPolicy.policyId,
+            displayName: appProperties.displayName || appName,
+            viewPosition: appProperties.viewPosition || DEFAULT_VIEW_POSITION,
+            hasPowerButton: false, // No power button while installing
+            powerCls: '', // No power state while installing
+            licenseMessage: '', // No license message needed during install
+            installing: true, // Mark as installing
+            parentPolicy: null, // Not inherited
+            props: appProperties,
+          }
+
+          apps.push(placeholderApp)
+        }
+      }
+    })
+  }
 
   // Sort apps by view position and policy hierarchy
   apps = apps.sort((a, b) => {

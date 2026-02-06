@@ -45,10 +45,10 @@
 </script>
 
 <style lang="scss" scoped>
+  @import '@/scss/common.scss';
+
   .installed-apps {
-    display: flex;
-    flex-direction: row;
-    flex-wrap: wrap;
-    gap: 0.875rem; // 14px
+    // Using common grid mixin from common.scss
+    @include app-grid-container($app-card-gap);
   }
 </style>

@@ -35,10 +35,11 @@
       {{ $vuntangle.$t('back_to_apps') }} [{{ selectedPolicy.name }}]
     </u-btn>
 
-    <!-- Auto Install Status Message -->
-    <p v-if="autoInstallApps" class="apps-toolbar__message">
-      {{ $vuntangle.$t('installing_recommended_apps') }}
-    </p>
+    <!-- Auto Install Status Message with Loading Indicator -->
+    <div v-if="autoInstallApps" class="apps-toolbar__auto-install">
+      <v-progress-circular indeterminate size="20" width="2" color="primary" class="mr-2" />
+      <span class="apps-toolbar__message">{{ $vuntangle.$t('installing_recommended_apps') }}</span>
+    </div>
 
     <!-- Install Mode Context Message -->
     <p v-if="showInstallModeMessage" class="apps-toolbar__message">
@@ -56,12 +57,6 @@
     <u-btn v-if="showManagePoliciesButton" color="primary" class="ml-2" @click="handleManagePoliciesClick">
       <v-icon small class="mr-2">mdi-cog</v-icon>
       {{ $vuntangle.$t('manage_policies') }}
-    </u-btn>
-
-    <!-- Refresh Button (always shown to refresh app views from backend) -->
-    <u-btn class="ml-2" @click="handleRefreshClick">
-      <v-icon small>mdi-refresh</v-icon>
-      {{ $vuntangle.$t('refresh') }}
     </u-btn>
   </div>
 </template>
@@ -169,12 +164,6 @@
        * Emitted when user clicks Back button in install mode
        */
       'back-to-policy',
-
-      /**
-       * Emitted when user clicks Refresh button
-       * Triggers refresh of app views from backend
-       */
-      'refresh',
     ],
 
     computed: {
@@ -241,14 +230,6 @@
       handleBackClick() {
         this.$emit('back-to-policy')
       },
-
-      /**
-       * Handle refresh button click
-       * Emits event to trigger refresh of app views from backend
-       */
-      handleRefreshClick() {
-        this.$emit('refresh')
-      },
     },
   }
 </script>
@@ -262,6 +243,12 @@
     // ============================================
     // Messages (status and context)
     // ============================================
+
+    &__auto-install {
+      display: flex;
+      align-items: center;
+      margin-left: 0.75rem;
+    }
 
     &__message {
       margin-bottom: 0;

@@ -4,7 +4,6 @@
     :outlined="hovered"
     class="app-card"
     :class="cardClasses"
-    :disabled="isDisabled"
     @mouseover="hovered = true"
     @mouseleave="hovered = false"
     @click="handleCardClick"
@@ -161,23 +160,15 @@
 </script>
 
 <style lang="scss" scoped>
-  // Color constants
-  $card-bg-hover: #f5f5f5;
-  $license-color: #f44336; // Red
-  $parent-badge-color: #000;
-  $loader-bg-color: rgba(0, 0, 0, 0.1);
-  $loader-border-color: $arista-blue;
+  @import '@/scss/common.scss';
 
-  // Size constants
-  $card-width: 150px;
-  $card-height: 170px;
-  $icon-size: 90px;
-  $loader-size: 30px;
+  // Component-specific color
+  $parent-badge-color: #000;
 
   .app-card {
     position: relative;
-    width: $card-width;
-    height: $card-height;
+    width: $app-card-width;
+    height: $app-card-height;
     flex-basis: 10%;
     transition: background-color 0.2s ease;
     display: flex;
@@ -185,7 +176,14 @@
 
     // Hover effect
     &:hover:not(.app-card--from-parent):not(.app-card--installing) {
-      background-color: $card-bg-hover;
+      background-color: $app-card-bg-hover;
+    }
+
+    // Disable pointer events for inherited and installing apps
+    &.app-card--from-parent,
+    &.app-card--installing {
+      pointer-events: none;
+      cursor: default;
     }
 
     // ============================================
@@ -214,7 +212,7 @@
       padding: 2px 5px;
       font-size: 0.6875rem; // 11px
       font-weight: 700;
-      color: $license-color;
+      color: $app-license-color;
       text-align: center;
     }
 
@@ -229,8 +227,8 @@
     }
 
     &__icon {
-      width: $icon-size;
-      height: $icon-size;
+      width: $app-icon-size;
+      height: $app-icon-size;
       transition: opacity 0.2s ease, filter 0.2s ease;
     }
 
@@ -239,33 +237,15 @@
     // ============================================
 
     &__loader {
-      position: absolute;
+      // Using common loader mixin from common.scss
+      @include app-loader($app-icon-size, $app-loader-spinner-size);
+      // Override position for this component (loader sits on top of icon)
       top: 0;
       left: 0;
       right: 0;
       bottom: 0;
-      display: block;
-      width: $icon-size;
-      height: $icon-size;
       margin: 0 auto;
-      background-color: $loader-bg-color;
-      border-radius: 4px;
-
-      // Spinning animation
-      &::after {
-        content: '';
-        position: absolute;
-        top: 50%;
-        left: 50%;
-        width: $loader-size;
-        height: $loader-size;
-        margin-top: -($loader-size / 2);
-        margin-left: -($loader-size / 2);
-        border: 3px solid white;
-        border-top-color: $loader-border-color;
-        border-radius: 50%;
-        animation: spin 1s linear infinite;
-      }
+      transform: none; // Remove centering transform
     }
 
     // ============================================
@@ -321,7 +301,7 @@
       }
     }
 
-    // Inherited from parent - grayscale and dimmed
+    // Inherited from parent - grayscale and dimmed icon/button, but text remains visible
     &--from-parent {
       :deep(.power-button-wrapper) {
         opacity: 0.8;
@@ -334,13 +314,5 @@
     }
   }
 
-  // ============================================
-  // Animations
-  // ============================================
-
-  @keyframes spin {
-    to {
-      transform: rotate(360deg);
-    }
-  }
+  // Animations are now in common.scss
 </style>

@@ -13,7 +13,6 @@
       @manage-policies="managePolicies"
       @install-apps="installApps"
       @back-to-policy="backToPolicy"
-      @refresh="refreshApps"
     />
 
     <!-- Main Content Area -->
@@ -42,8 +41,13 @@
 
   // Constants
   const DEFAULT_POLICY_ID = 1
-  const AUTO_INSTALL_POLL_INTERVAL = 250 // milliseconds
+  const AUTO_INSTALL_POLL_INTERVAL = 1000 // milliseconds (1 second - reasonable backend load)
   const INSTALL_STATUS_FINISHED = 'finish'
+
+  // Session-scoped variables for one-time initialization
+  // Matches ExtJS onAfterRender behavior: runs once per session regardless of navigation
+  let sessionInitialized = false // Tracks if license reload and auto install monitor have been started
+  let autoInstallTimer = null // Polling timer reference persists across component instances
 
   /**
    * AppsView Component
@@ -73,12 +77,6 @@
       return {
         // Toggle between installed apps view and install mode
         installMode: false,
-
-        // Flag indicating if auto-install is in progress
-        autoInstallApps: false,
-
-        // Polling timeout reference for auto-install monitoring
-        timeout: null,
       }
     },
 
@@ -155,6 +153,12 @@
        * @returns {Object<string, {policyId: number, status: string}>}
        */
       installingApps: ({ $store }) => $store.getters['apps/installingApps'],
+
+      /**
+       * Check if auto install is currently running
+       * @returns {boolean}
+       */
+      autoInstallApps: ({ $store }) => $store.getters['apps/autoInstallApps'],
 
       // ============================================
       // Route and Policy Computed Properties
@@ -264,6 +268,12 @@
     },
 
     created() {
+      // One-time session initialization - reload licenses (matches ExtJS onAfterRender behavior)
+      // Uses module-scoped flag to ensure it only runs on first load, not on policy switches
+      if (!sessionInitialized) {
+        window.rpc.UvmContext.licenseManager().reloadLicenses(true)
+      }
+
       // Load policy manager settings
       this.$store.dispatch('apps/loadAppData', 'policy-manager')
 
@@ -275,13 +285,13 @@
     },
 
     mounted() {
-      // Start polling for auto-install status
-      this.poll()
-    },
-
-    beforeDestroy() {
-      // Clean up polling timeout
-      clearTimeout(this.timeout)
+      // One-time session initialization - start auto-install monitor (matches ExtJS onAfterRender behavior)
+      // Runs after app views are loaded, uses module-scoped flag to prevent restart on navigation
+      // Monitor persists across component lifecycle and stops when auto install completes
+      if (!sessionInitialized) {
+        this.startAutoInstallMonitor()
+        sessionInitialized = true
+      }
     },
 
     methods: {
@@ -318,16 +328,6 @@
       },
 
       /**
-       * Refresh app views from backend
-       * Forces a fresh fetch of all app data for all policies
-       * Useful when apps have been installed/removed externally
-       */
-      refreshApps() {
-        // Refresh all app views from backend (force refetch)
-        this.$store.dispatch('apps/getAppViews', true)
-      },
-
-      /**
        * Clear installation statuses for apps that have finished installing
        * Only clears apps with 'finish' status, preserves 'progress' status
        */
@@ -346,24 +346,30 @@
       },
 
       /**
-       * Poll for auto-install flag from RPC
-       * Continues polling while auto-install is active
-       * Uses recursive setTimeout for controlled interval
+       * Start monitoring auto-install status
+       * Polls backend flag and refreshes app views while auto-installing
+       * Follows ExtJS pattern: poll flag + refresh views
+       * Runs once per session and persists across component instances
        */
-      poll() {
-        // Check auto-install flag from RPC
-        const flag = window.rpc.appManager.isAutoInstallAppsFlag()
-        this.autoInstallApps = flag
+      startAutoInstallMonitor() {
+        // Initial check of auto-install flag
+        this.$store.dispatch('apps/checkAutoInstallFlag')
 
-        // Stop polling if flag is false or component is destroyed
-        if (!flag || this._isDestroyed) return
+        // Set up polling interval (persists across component lifecycle)
+        autoInstallTimer = setInterval(() => {
+          // Check if auto install is still running (updates store state)
+          this.$store.dispatch('apps/checkAutoInstallFlag')
 
-        // Clear existing timeout before setting new one
-        clearTimeout(this.timeout)
-
-        // Schedule next poll
-        this.timeout = setTimeout(() => {
-          this.poll()
+          // Check the store state (not dispatch return value) to decide next action
+          if (this.$store.getters['apps/autoInstallApps']) {
+            // While auto-installing, refresh app views to show newly installed apps
+            // This mirrors ExtJS behavior: me.getApps() during polling
+            this.$store.dispatch('apps/getAppView', this.$route.params.policyId || DEFAULT_POLICY_ID)
+          } else if (autoInstallTimer) {
+            // Auto install completed - stop monitoring
+            clearInterval(autoInstallTimer)
+            autoInstallTimer = null
+          }
         }, AUTO_INSTALL_POLL_INTERVAL)
       },
     },

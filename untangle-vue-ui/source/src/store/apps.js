@@ -71,6 +71,7 @@ const getDefaultState = () => ({
   appViewsByPolicy: {}, // normalized app views by policyId for O(1) lookup
   installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
   selectedPolicyId: null, // currently selected policy ID
+  autoInstallApps: false, // tracks if recommended apps are being auto-installed on initial setup
 })
 
 /**
@@ -111,6 +112,11 @@ const getters = {
    * Usage: getters['apps/selectedPolicyId']
    */
   selectedPolicyId: state => state.selectedPolicyId,
+  /**
+   * Check if auto install is currently running
+   * Usage: getters['apps/autoInstallApps']
+   */
+  autoInstallApps: state => state.autoInstallApps,
 }
 
 const mutations = {
@@ -174,6 +180,13 @@ const mutations = {
    */
   SET_SELECTED_POLICY_ID(state, policyId) {
     set(state, 'selectedPolicyId', policyId)
+  },
+  /**
+   * Set auto install apps flag
+   * Usage: commit('SET_AUTO_INSTALL_APPS', true/false)
+   */
+  SET_AUTO_INSTALL_APPS(state, value) {
+    set(state, 'autoInstallApps', value)
   },
 }
 
@@ -321,7 +334,6 @@ const actions = {
 
       // Refresh app views to get updated data
       await dispatch('getAppViews', true)
-      await dispatch('getAppView', policyId)
 
       // Set installing status to 'finish'
       // Status will be cleared when user navigates to installed apps view
@@ -333,6 +345,24 @@ const actions = {
       commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: null })
       Util.handleException(error)
       return { success: false, error: error.message || 'Installation failed' }
+    }
+  },
+
+  /**
+   * Check if auto install is currently running
+   * Fetches the isAutoInstallAppsFlag from backend and updates state
+   * @param {Object} context - Vuex context
+   * @returns {boolean} - true if auto install is running, false otherwise
+   */
+  checkAutoInstallFlag({ commit }) {
+    try {
+      const isAutoInstalling = window.rpc.appManager.isAutoInstallAppsFlag()
+      commit('SET_AUTO_INSTALL_APPS', isAutoInstalling)
+      return isAutoInstalling
+    } catch (err) {
+      Util.handleException(err)
+      commit('SET_AUTO_INSTALL_APPS', false)
+      return false
     }
   },
 }
