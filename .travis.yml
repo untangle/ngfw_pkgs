@@ -28,8 +28,12 @@ before_install:
 - chmod 600 ${SSH_KEY}
 
 script:
+- set -x
 - docker-compose -f docker-compose.build.yml run pkgtools
-- docker-compose -f docker-compose.build.yml run build
+- docker-compose -f docker-compose.build.yml run build 2>&1 | tee full.log
+
+after_failure:
+  - tail -n 500 full.log
 
 notifications:
   email: false
