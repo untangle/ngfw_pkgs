@@ -54,7 +54,7 @@
       }
     },
     computed: {
-      dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists'),
+      dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists')?.settings,
     },
     created() {
       this.$store.dispatch('apps/loadAppData', this.licenseNodeName)

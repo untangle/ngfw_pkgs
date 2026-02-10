@@ -1,8 +1,18 @@
 #!/bin/sh
 
-DATABASE_TARBALL=GeoLite2-City.mmdb.tar.gz
+# Till 17.4 we were using city database downloaded every month. Need to remove those files in 17.4.1
+# Remove below cleanup code after 17.4.1 release
+# START: Remove old city DB file
+/bin/rm -f /var/cache/untangle-geoip/Geo*-City.*
+# Remove old monthly cron
+/bin/rm -f /etc/cron.monthly/geoip-update
+# End
+
+DATABASE_TARBALL=GeoCountry.tar.gz
 cd /var/cache/untangle-geoip
+MMDB_FILE=$(tar -tzf $DATABASE_TARBALL | grep mmdb | cut -d/ -f2)
 tar --strip-components=1 -xzf $DATABASE_TARBALL $(tar -tzf $DATABASE_TARBALL  | grep mmdb)
+mv $MMDB_FILE GeoCountry.mmdb
 rm -f $DATABASE_TARBALL
 cd -
 
