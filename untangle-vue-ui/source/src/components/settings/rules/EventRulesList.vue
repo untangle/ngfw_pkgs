@@ -6,9 +6,10 @@
     :type="ruleType"
     :hide-refresh-button="true"
     :hide-export-csv-button="true"
-    :hide-export-settings-button="false"
-    :hide-import-settings-button="false"
-    :style="{ height: ruleType === 'syslog' ? '423px' : '878px' }"
+    :hide-export-settings-button="isSyslogRule"
+    :hide-import-settings-button="isSyslogRule"
+    :style="{ height: ruleType === 'syslog' ? '445px' : '810px' }"
+    :disable-rules="disableRules"
     @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
   ></rules-list>
@@ -72,6 +73,7 @@
     props: {
       // the rule category type (e.g. `alert`, `trigger`)
       ruleType: { type: String, default: undefined },
+      disableRules: { type: Boolean, default: false },
     },
     data() {
       return {
@@ -132,8 +134,7 @@
       // the Class Fields for Event Rules Classes
       classFieldsData: ({ $store }) => $store.getters['config/classFieldsData'],
 
-      // flag to denote that ruletype requires all classes option
-      requireAllClasses: ({ ruleType }) => [].includes(ruleType),
+      isSyslogRule: ({ ruleType }) => ruleType === 'syslog',
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -173,6 +174,8 @@
     methods: {
       /** Rules change listner, updates the settings */
       onRulesChange(updatedRules) {
+        console.log('updatedRules:', updatedRules)
+        console.log('ruleConfigs:', this.ruleConfigs[0])
         const newRules = updatedRules[this.ruleConfigs[0]]
         if (!isEqual(get(this.settingsCopy, this.ruleConfigs[0].replace(/-/g, '_')), newRules)) {
           this.settingsCopy[this.ruleConfigs[0].replace(/-/g, '_')] = newRules
@@ -235,15 +238,16 @@
             conditions: conditionsMap,
             conditionsOrder,
           })
+          // flag to denote that ruletype requires all classes option
+          if (this.isSyslogRule)
+            this.classFields.push({
+              text: 'All',
+              value: '*All*',
+              description: 'Match all classes (NOT RECOMMENDED!)',
+              conditions: {},
+              conditionsOrder: [],
+            })
         }
-        if (this.requireAllClasses)
-          this.classFields.push({
-            text: 'All',
-            value: '*All*',
-            description: 'Match all classes (NOT RECOMMENDED!)',
-            conditions: {},
-            conditionsOrder: [],
-          })
       },
 
       /**

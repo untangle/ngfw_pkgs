@@ -47,12 +47,14 @@
               <SysLog
                 ref="syslog"
                 :settings="eventSettings"
+                :used-syslog-server-ids="usedSyslogServerIds"
                 @settings-change="onSettingsChange($event, 'syslog')"
                 v-on="$listeners"
               />
               <EventRulesList
                 rule-type="syslog"
                 :settings="eventSettings"
+                :disable-rules="disableSyslogRules"
                 @settings-change="onSettingsChange($event, 'syslog')"
               />
             </ValidationObserver>
@@ -119,6 +121,35 @@
     },
 
     computed: {
+      // array of syslog server ids used in syslog rules
+      usedSyslogServerIds() {
+        const rules = this.settingsCopy?.syslog_rules || []
+        const usedIds = new Set()
+
+        rules.forEach(rule => {
+          const ids = rule?.action?.syslogServers || []
+          ids.forEach(id => usedIds.add(id))
+        })
+        return Array.from(usedIds)
+      },
+
+      // disable syslog rules tab if no syslog servers are defined or modified
+      disableSyslogRules() {
+        const original = this.eventSettings?.syslogServers || []
+        const modified = this.settingsCopy?.syslogServers || []
+
+        // empty syslog servers
+        if (modified.length === 0) {
+          return true
+        }
+
+        // modified syslog servers
+        if (!isEqual(original, modified)) {
+          return true
+        }
+
+        return false
+      },
       // the event settings from the store
       eventSettings: ({ $store }) => $store.getters['config/eventSettings'],
       classFields: ({ $store }) => $store.getters['config/classFieldsData'],
