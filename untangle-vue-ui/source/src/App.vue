@@ -43,6 +43,7 @@
     },
 
     methods: {
+      // Handle iframe destruction by resetting the loader state
       handleUnload() {
         this.$store.commit('SET_LOADER', false)
       },
