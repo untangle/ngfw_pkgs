@@ -174,8 +174,6 @@
     methods: {
       /** Rules change listner, updates the settings */
       onRulesChange(updatedRules) {
-        console.log('updatedRules:', updatedRules)
-        console.log('ruleConfigs:', this.ruleConfigs[0])
         const newRules = updatedRules[this.ruleConfigs[0]]
         if (!isEqual(get(this.settingsCopy, this.ruleConfigs[0].replace(/-/g, '_')), newRules)) {
           this.settingsCopy[this.ruleConfigs[0].replace(/-/g, '_')] = newRules
