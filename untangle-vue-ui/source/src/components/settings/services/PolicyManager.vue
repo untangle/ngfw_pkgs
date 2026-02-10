@@ -130,7 +130,6 @@
             .map(app => {
               const instance = instancesMap.get(app.name)
 
-              // Skip if NOT installable and NOT installed
               if (!installableSet.has(app.name) && !instance) return null
 
               if (instance) {
@@ -164,9 +163,8 @@
                 parentPolicy: null,
               }
             })
-            .filter(Boolean) // Remove null entries from skipped apps
+            .filter(Boolean)
 
-          // Store locally
           this.$set(this.policyApps, policyId, appsList)
           this.appsData = appsList
           return appsList
