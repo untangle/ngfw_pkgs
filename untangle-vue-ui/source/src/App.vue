@@ -25,7 +25,7 @@
     },
 
     created() {
-      // Use browser-level events to catch iframe destruction
+      // Use browser-level events to catch iframe destruction 
       // These fire even when ExtJS destroys the iframe abruptly
       window.addEventListener('beforeunload', this.handleUnload)
       window.addEventListener('pagehide', this.handleUnload)
