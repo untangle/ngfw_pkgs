@@ -35,7 +35,18 @@ script:
 
       echo "[CI] Running $name..."
 
-      "$@" >"${name}.log" 2>&1
+      # Run command in background
+      "$@" >"${name}.log" 2>&1 &
+      pid=$!
+
+      # Heartbeat
+      while kill -0 $pid 2>/dev/null; do
+        echo "[CI] $name still running..."
+        sleep 300   # every 5 min
+      done
+
+      # Wait for command
+      wait $pid
       status=$?
 
       if [ $status -ne 0 ]; then
