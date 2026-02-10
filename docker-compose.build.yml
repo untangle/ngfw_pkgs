@@ -18,8 +18,8 @@ services:
 
     build:
       build:
-          context: .
-          dockerfile: Dockerfile.bullseye-current
+        context: .
+        dockerfile: Dockerfile.bullseye-current
       # image: untangleinc/ngfw:${REPOSITORY:-bullseye}-build-multiarch
       environment:
         REPOSITORY: ${REPOSITORY:-bullseye}
