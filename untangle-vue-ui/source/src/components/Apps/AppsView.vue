@@ -74,8 +74,10 @@
 
     data() {
       return {
-        // Toggle between installed apps view and install mode
-        installMode: false,
+        installMode: false, // Toggle between installed apps view and install mode
+        isRestricted: false, // Check if system is in restricted mode
+        isRegistered: true, // Check if system is registered with Untangle
+        licenseServerConnectivity: true, // Check if license server is reachable
       }
     },
 
@@ -90,30 +92,6 @@
        */
       policyManagerInstalled() {
         return !!util.isPolicyManagerInstalled()
-      },
-
-      /**
-       * Check if system is in restricted mode
-       * @returns {boolean}
-       */
-      isRestricted() {
-        return !!util.isRestricted()
-      },
-
-      /**
-       * Check if system is registered with Untangle
-       * @returns {boolean}
-       */
-      isRegistered() {
-        return !!util.isRegistered()
-      },
-
-      /**
-       * Check if license server is reachable
-       * @returns {boolean}
-       */
-      licenseServerConnectivity() {
-        return !!util.getLicenseServerConnectivity()
       },
 
       /**
@@ -265,6 +243,8 @@
           if (newPolicyId && this.policies.length > 0) {
             const policyExists = this.policies.find(p => p.policyId === newPolicyId)
             if (!policyExists) {
+              // Invalid policy ID in route, redirect to default policy
+              this.$store.dispatch('apps/getAppView', DEFAULT_POLICY_ID)
               // Policy doesn't exist, redirect to default policy
               this.$router.replace(`/apps/${DEFAULT_POLICY_ID}`)
             }
@@ -278,16 +258,10 @@
       // Uses module-scoped flag to ensure it only runs on first load, not on policy switches
       if (!sessionInitialized) {
         window.rpc.UvmContext.licenseManager().reloadLicenses(true)
+        this.isRestricted = !!util.isRestricted()
+        this.isRegistered = !!util.isRegistered()
+        this.licenseServerConnectivity = !!util.getLicenseServerConnectivity()
       }
-
-      // Load policy manager settings
-      this.$store.dispatch('apps/loadAppData', 'policy-manager')
-
-      // Load app views for all policies (refetch false)
-      this.$store.dispatch('apps/getAppViews', false)
-
-      // Load app view for current policy
-      this.$store.dispatch('apps/getAppView', this.policyId)
     },
 
     mounted() {
@@ -303,11 +277,13 @@
     methods: {
       /**
        * Handle policy change from toolbar dropdown
+       * Dispatches action to load new policy's app view and updates route
        * @param {number} policyId - Selected policy ID
        */
       onPolicyChange(policyId) {
         const changedPolicy = this.policies.find(p => p.policyId === policyId)
         if (changedPolicy) {
+          this.$store.dispatch('apps/getAppView', policyId)
           this.$router.push(`/apps/${changedPolicy.policyId}`)
         }
       },

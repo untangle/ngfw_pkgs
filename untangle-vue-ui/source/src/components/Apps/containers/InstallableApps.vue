@@ -230,8 +230,22 @@
     &__card {
       position: relative;
       flex-basis: $card-flex-basis;
-      height: $card-height;
+      min-width: 0; // Prevent overflow
+      min-height: $card-height; // Allow cards to grow dynamically
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+
+      // Responsive breakpoints for proper alignment
+      @media (max-width: 1400px) {
+        flex-basis: calc(33.333% - #{$app-card-gap}); // 3 cards per row
+      }
+
+      @media (max-width: 1024px) {
+        flex-basis: calc(50% - #{$app-card-gap}); // 2 cards per row
+      }
+
+      @media (max-width: 768px) {
+        flex-basis: 100%; // 1 card per row
+      }
 
       // Installing state - dimmed and non-interactive
       &--installing {
@@ -322,18 +336,21 @@
 
     &__text-section {
       flex: 1;
-      min-width: 0; // Allow text to truncate
+      min-width: 0; // Prevent flex overflow
+      display: flex;
+      flex-direction: column;
     }
 
     &__title {
       padding-top: 0;
       padding-bottom: 0;
       font-size: 0.875rem;
+      word-break: break-word;
     }
 
     &__description {
       line-height: 1.2 !important;
-      word-break: normal;
+      word-break: break-word;
     }
   }
 

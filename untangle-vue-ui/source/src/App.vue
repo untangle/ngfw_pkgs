@@ -24,6 +24,15 @@
       }
     },
 
+    created() {
+      // Application-level initialization
+      // Load app views for all policies (provides initial app views data)
+      this.$store.dispatch('apps/getAppViews', true)
+
+      // Load policy-manager settings if installed
+      this.$store.dispatch('apps/loadAppData', 'policy-manager')
+    },
+
     beforeMount() {
       this.embedded = window.location !== window.parent.location
       this._provided.embedded = this.embedded

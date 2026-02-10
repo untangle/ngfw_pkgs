@@ -42,7 +42,7 @@
 
     <!-- Auto Install Status Message with Loading Indicator -->
     <div v-if="autoInstallApps" class="apps-toolbar__auto-install">
-      <v-progress-circular indeterminate size="20" width="2" color="primary" class="mr-2" />
+      <v-progress-circular indeterminate size="20" width="2" color="primary" />
       <span class="apps-toolbar__message">{{ $vuntangle.$t('installing_recommended_apps') }}</span>
     </div>
 
