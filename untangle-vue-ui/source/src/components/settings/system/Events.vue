@@ -51,7 +51,7 @@
                 @settings-change="onSettingsChange($event, 'syslog')"
                 v-on="$listeners"
               />
-              <h3 class="font-weight-regular mt-2 mb-2 pa-2">{{ $vuntangle.$t('rules') }}</h3>
+              <h3 class="font-weight-regular pl-2 pt-1">{{ $vuntangle.$t('rules') }}</h3>
               <EventRulesList
                 rule-type="syslog"
                 :settings="eventSettings"
