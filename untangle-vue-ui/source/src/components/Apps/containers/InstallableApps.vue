@@ -70,7 +70,7 @@
           <!-- App Description -->
           <v-card-text class="installable-apps__description">
             <span class="caption text-left text-justify">
-              {{ app.description }}
+              {{ $vuntangle.$t(app.description) }}
             </span>
           </v-card-text>
         </div>
