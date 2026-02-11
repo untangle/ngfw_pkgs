@@ -12,7 +12,7 @@
     :disable-rules="disableRules"
     @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
-  ></rules-list>
+  />
 </template>
 <script>
   import { get, isEqual } from 'lodash'
