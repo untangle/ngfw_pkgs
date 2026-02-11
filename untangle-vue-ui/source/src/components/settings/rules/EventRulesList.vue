@@ -236,7 +236,7 @@
             conditions: conditionsMap,
             conditionsOrder,
           })
-          // flag to denote that ruletype requires all classes option
+          // syslog ruletype requires all classes option
           if (this.isSyslogRule)
             this.classFields.push({
               text: 'All',
