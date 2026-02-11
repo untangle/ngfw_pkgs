@@ -6,8 +6,8 @@
     :type="ruleType"
     :hide-refresh-button="true"
     :hide-export-csv-button="true"
-    :hide-export-settings-button="isSyslogRule"
-    :hide-import-settings-button="isSyslogRule"
+    :hide-export-settings-button="supportsImportExport"
+    :hide-import-settings-button="supportsImportExport"
     :style="{ height: ruleType === 'syslog' ? '445px' : '810px' }"
     :disable-rules="disableRules"
     @load-conditions="onLoadClassConditions"
@@ -134,7 +134,11 @@
       // the Class Fields for Event Rules Classes
       classFieldsData: ({ $store }) => $store.getters['config/classFieldsData'],
 
-      isSyslogRule: ({ ruleType }) => ruleType === 'syslog',
+      // hide import and export for syslog rule
+      supportsImportExport: ({ ruleType }) => ['syslog'].includes(ruleType),
+
+      // flag to denote that ruletype requires all classes option
+      requireAllClasses: ({ ruleType }) => ['syslog'].includes(ruleType),
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -186,6 +190,14 @@
        */
       fetchClassFields() {
         const me = this
+        if (this.requireAllClasses)
+          this.classFields.push({
+            text: 'All',
+            value: '*All*',
+            description: 'Match all classes (NOT RECOMMENDED!)',
+            conditions: {},
+            conditionsOrder: [],
+          })
         for (const className of Object.keys(this.classFieldsData).sort()) {
           const conditionsMap = {}
           const conditionsOrder = []
@@ -236,15 +248,6 @@
             conditions: conditionsMap,
             conditionsOrder,
           })
-          // syslog ruletype requires all classes option
-          if (this.isSyslogRule)
-            this.classFields.push({
-              text: 'All',
-              value: '*All*',
-              description: 'Match all classes (NOT RECOMMENDED!)',
-              conditions: {},
-              conditionsOrder: [],
-            })
         }
       },
 
