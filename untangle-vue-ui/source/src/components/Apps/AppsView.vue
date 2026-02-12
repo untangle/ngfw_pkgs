@@ -48,6 +48,11 @@
   let sessionInitialized = false // Tracks if license reload and auto install monitor have been started
   let autoInstallTimer = null // Polling timer reference persists across component instances
 
+  // Session-scoped system state values (initialized once per session)
+  let sessionIsRestricted = false
+  let sessionIsRegistered = true
+  let sessionLicenseServerConnectivity = true
+
   /**
    * AppsView Component
    *
@@ -75,9 +80,9 @@
     data() {
       return {
         installMode: false, // Toggle between installed apps view and install mode
-        isRestricted: false, // Check if system is in restricted mode
-        isRegistered: true, // Check if system is registered with Untangle
-        licenseServerConnectivity: true, // Check if license server is reachable
+        isRestricted: sessionIsRestricted, // Check if system is in restricted mode (session-scoped)
+        isRegistered: sessionIsRegistered, // Check if system is registered with Untangle (session-scoped)
+        licenseServerConnectivity: sessionLicenseServerConnectivity, // Check if license server is reachable (session-scoped)
       }
     },
 
@@ -254,13 +259,17 @@
     },
 
     created() {
-      // One-time session initialization - reload licenses
       // Uses module-scoped flag to ensure it only runs on first load, not on policy switches
       if (!sessionInitialized) {
         window.rpc.UvmContext.licenseManager().reloadLicenses(true)
-        this.isRestricted = !!util.isRestricted()
-        this.isRegistered = !!util.isRegistered()
-        this.licenseServerConnectivity = !!util.getLicenseServerConnectivity()
+        // Set session-scoped values (persist across component instances)
+        sessionIsRestricted = !!util.isRestricted()
+        sessionIsRegistered = !!util.isRegistered()
+        sessionLicenseServerConnectivity = !!util.getLicenseServerConnectivity()
+        // Update instance data to reflect session values
+        this.isRestricted = sessionIsRestricted
+        this.isRegistered = sessionIsRegistered
+        this.licenseServerConnectivity = sessionLicenseServerConnectivity
       }
     },
 
