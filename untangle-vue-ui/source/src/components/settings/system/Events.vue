@@ -55,7 +55,8 @@
               <EventRulesList
                 rule-type="syslog"
                 :settings="eventSettings"
-                :disable-rules="disableSyslogRules"
+                :syslog-servers-grid-empty="syslogServersGridEmpty"
+                :syslog-rule-grid-disabled="syslogRuleGridDisabled"
                 @settings-change="onSettingsChange($event, 'syslog')"
               />
             </ValidationObserver>
@@ -122,6 +123,15 @@
     },
 
     computed: {
+      // disable grid if no syslog servers are defined
+      syslogServersGridEmpty() {
+        const original = this.eventSettings?.syslogServers || []
+        if (original.length === 0) {
+          return true
+        }
+        return false
+      },
+
       // array of syslog server ids used in syslog rules
       usedSyslogServerIds() {
         const rules = this.settingsCopy?.syslog_rules || []
@@ -134,15 +144,10 @@
         return Array.from(usedIds)
       },
 
-      // disable syslog rules tab if no syslog servers are defined or modified
-      disableSyslogRules() {
+      // disable syslog rules tab if syslog servers modified
+      syslogRuleGridDisabled() {
         const original = this.eventSettings?.syslogServers || []
         const modified = this.settingsCopy?.syslogServers || []
-
-        // empty syslog servers
-        if (modified.length === 0) {
-          return true
-        }
 
         // modified syslog servers
         if (!isEqual(original, modified)) {

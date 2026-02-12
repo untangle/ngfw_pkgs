@@ -9,7 +9,8 @@
     :hide-export-settings-button="supportsImportExport"
     :hide-import-settings-button="supportsImportExport"
     :style="{ height: ruleType === 'syslog' ? '445px' : '810px' }"
-    :disable-rules="disableRules"
+    :syslog-servers-grid-empty="syslogServersGridEmpty"
+    :syslog-rule-grid-disabled="syslogRuleGridDisabled"
     @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
   />
@@ -73,7 +74,8 @@
     props: {
       // the rule category type (e.g. `alert`, `trigger`)
       ruleType: { type: String, default: undefined },
-      disableRules: { type: Boolean, default: false },
+      syslogServersGridEmpty: { type: Boolean, default: false },
+      syslogRuleGridDisabled: { type: Boolean, default: false },
     },
     data() {
       return {
