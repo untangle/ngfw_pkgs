@@ -81,6 +81,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import util from '@/util/util'
 
   // Constants
   const INSTALL_STATUS = {
@@ -156,6 +157,10 @@
        * @param {Object} app - App object to install
        */
       async handleAppClick(app) {
+        // Check if user is registered or if CC is hidden
+        if (!util.isRegistered() && !util.isCCHidden()) {
+          return
+        }
         // Don't allow installation if app is already being installed
         if (this.isAppInstalling(app.name)) {
           return

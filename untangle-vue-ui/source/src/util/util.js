@@ -648,6 +648,10 @@ const util = {
     return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
   },
 
+  isCCHidden() {
+    return window.rpc.isCCHidden
+  },
+
   getLicenseMessage(license, vuntangle) {
     let message = ''
     if (!license) {
