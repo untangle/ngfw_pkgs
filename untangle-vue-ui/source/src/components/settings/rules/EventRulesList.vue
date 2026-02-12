@@ -6,12 +6,14 @@
     :type="ruleType"
     :hide-refresh-button="true"
     :hide-export-csv-button="true"
-    :hide-export-settings-button="false"
-    :hide-import-settings-button="false"
-    style="height: 878px"
+    :hide-export-settings-button="supportsImportExport"
+    :hide-import-settings-button="supportsImportExport"
+    :style="{ height: ruleType === 'syslog' ? '445px' : '810px' }"
+    :syslog-servers-grid-empty="syslogServersGridEmpty"
+    :syslog-rule-grid-disabled="syslogRuleGridDisabled"
     @load-conditions="onLoadClassConditions"
     @rules-change="onRulesChange"
-  ></rules-list>
+  />
 </template>
 <script>
   import { get, isEqual } from 'lodash'
@@ -57,6 +59,7 @@
           classFields: this.classFields,
           targetFields: this.targetFields,
           conditions: this.conditions,
+          syslogServers: this.syslogServers,
         }),
         $features: {
           hasIpv6Support: true,
@@ -71,11 +74,13 @@
     props: {
       // the rule category type (e.g. `alert`, `trigger`)
       ruleType: { type: String, default: undefined },
+      syslogServersGridEmpty: { type: Boolean, default: false },
+      syslogRuleGridDisabled: { type: Boolean, default: false },
     },
     data() {
       return {
         // Event rules config names
-        eventRules: ['alert-rules', 'trigger-rules'],
+        eventRules: ['alert-rules', 'trigger-rules', 'syslog-rules'],
         /**
          * a map between rule type (alert rules, trigger rules), coming from route prop
          * and the rule configuration names mapped to the appliance settings
@@ -84,6 +89,7 @@
         rulesMap: {
           'alert': ['alert-rules'],
           'trigger': ['trigger-rules'],
+          'syslog': ['syslog-rules'],
         },
 
         /**
@@ -130,8 +136,11 @@
       // the Class Fields for Event Rules Classes
       classFieldsData: ({ $store }) => $store.getters['config/classFieldsData'],
 
+      // hide import and export for syslog rule
+      supportsImportExport: ({ ruleType }) => ['syslog'].includes(ruleType),
+
       // flag to denote that ruletype requires all classes option
-      requireAllClasses: ({ ruleType }) => [].includes(ruleType),
+      requireAllClasses: ({ ruleType }) => ['syslog'].includes(ruleType),
 
       // rule configuration names associated with a given rule type
       ruleConfigs: ({ rulesMap, ruleType }) => rulesMap[ruleType],
@@ -153,6 +162,10 @@
           }
         })
         return rules
+      },
+
+      syslogServers: ({ settingsCopy }) => {
+        return get(settingsCopy, 'syslogServers') || []
       },
     },
 
@@ -179,6 +192,14 @@
        */
       fetchClassFields() {
         const me = this
+        if (this.requireAllClasses)
+          this.classFields.push({
+            text: 'All',
+            value: '*All*',
+            description: 'Match all classes (NOT RECOMMENDED!)',
+            conditions: {},
+            conditionsOrder: [],
+          })
         for (const className of Object.keys(this.classFieldsData).sort()) {
           const conditionsMap = {}
           const conditionsOrder = []
@@ -230,14 +251,6 @@
             conditionsOrder,
           })
         }
-        if (this.requireAllClasses)
-          this.classFields.push({
-            text: 'All',
-            value: '*All*',
-            description: 'Match all classes (NOT RECOMMENDED!)',
-            conditions: {},
-            conditionsOrder: [],
-          })
       },
 
       /**
