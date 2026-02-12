@@ -61,22 +61,23 @@
       },
     },
 
-   async created() {
+    async created() {
       await this.$store.dispatch('withLoader', {
         needsRaf: true,
         asyncFn: async () => {
-      // update current system setting from store
-      await Promise.all([
-      this.$store.dispatch('config/getSystemSettings', false),
-      this.$store.dispatch('config/getDeviceTemperatureInfo'),
-      this.$store.dispatch('apps/loadAppData', 'http'),
-      this.$store.dispatch('apps/loadAppData', 'smtp'),
-      this.$store.dispatch('apps/loadAppData', 'ftp'),
-      // get list of all wan interfaces which is used to show in the hostname interface selection
-      this.$store.dispatch('config/getEnabledInterfaces'),
-      this.$store.dispatch('config/getSystemTimeZones'),])
-                                                               },
-                                                             })
+          // update current system setting from store
+          await Promise.all([
+            this.$store.dispatch('config/getSystemSettings', false),
+            this.$store.dispatch('config/getDeviceTemperatureInfo'),
+            this.$store.dispatch('apps/loadAppData', 'http'),
+            this.$store.dispatch('apps/loadAppData', 'smtp'),
+            this.$store.dispatch('apps/loadAppData', 'ftp'),
+            // get list of all wan interfaces which is used to show in the hostname interface selection
+            this.$store.dispatch('config/getEnabledInterfaces'),
+            this.$store.dispatch('config/getSystemTimeZones'),
+          ])
+        },
+      })
     },
 
     methods: {
