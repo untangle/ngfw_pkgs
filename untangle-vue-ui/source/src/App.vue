@@ -44,6 +44,7 @@
 
     methods: {
       handleUnload() {
+        // Set loader false when navigating away or when iframe is destroyed
         this.$store.commit('SET_LOADER', false)
       },
     },
