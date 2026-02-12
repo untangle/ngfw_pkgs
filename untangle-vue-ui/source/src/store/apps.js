@@ -82,7 +82,7 @@ const mutations = {
  * Actions
  */
 const actions = {
-  async setSmtpSettingsWOSafeList({ dispatch }, _, smtpSettings) {
+  async setSmtpSettingsWOSafeList({ dispatch }, smtpSettings) {
     const app = await dispatch('getApp', 'smtp')
     if (!app) return
     return new Promise(resolve => {
@@ -95,25 +95,22 @@ const actions = {
       }, smtpSettings)
     })
   },
-  async setGlobalSafeList({ dispatch }, _, safeList) {
+  async setGlobalSafeList({ dispatch }, safeList) {
     const app = await dispatch('getApp', 'smtp')
     if (!app) return
-    return new Promise(resolve => {
-      app.getSafelistAdminView().replaceSafelist(
-        (ex, res) => {
-          if (ex || res?.code) {
-            Util.handleException(ex || res.message)
-            return resolve({ success: false })
-          }
-          resolve({ success: true })
-        },
-        'GLOBAL',
-        safeList,
-      )
-    })
+    return app
+      .getSafelistAdminView()
+      .replaceSafelist('GLOBAL', safeList)
+      .then(res => {
+        return { success: true, data: res }
+      })
+      .catch(err => {
+        Util.handleException(err?.message || err?.cause || 'Unknown error occurred')
+        return { success: false, error: err }
+      })
   },
 
-  async deleteSafelists({ dispatch }, _, userSafeList) {
+  async deleteSafelists({ dispatch }, userSafeList) {
     const app = await dispatch('getApp', 'smtp')
     if (!app) return
     return new Promise(resolve => {
