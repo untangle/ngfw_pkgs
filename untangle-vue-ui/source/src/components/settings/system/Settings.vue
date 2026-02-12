@@ -61,16 +61,22 @@
       },
     },
 
-    created() {
-      // update current system setting from store store
-      this.$store.dispatch('config/getSystemSettings', false)
-      this.$store.dispatch('config/getDeviceTemperatureInfo')
-      this.$store.dispatch('apps/loadAppData', 'http')
-      this.$store.dispatch('apps/loadAppData', 'smtp')
-      this.$store.dispatch('apps/loadAppData', 'ftp')
+   async created() {
+      await this.$store.dispatch('withLoader', {
+        needsRaf: true,
+        asyncFn: async () => {
+      // update current system setting from store
+      await Promise.all([
+      this.$store.dispatch('config/getSystemSettings', false),
+      this.$store.dispatch('config/getDeviceTemperatureInfo'),
+      this.$store.dispatch('apps/loadAppData', 'http'),
+      this.$store.dispatch('apps/loadAppData', 'smtp'),
+      this.$store.dispatch('apps/loadAppData', 'ftp'),
       // get list of all wan interfaces which is used to show in the hostname interface selection
-      this.$store.dispatch('config/getEnabledInterfaces')
-      this.$store.dispatch('config/getSystemTimeZones')
+      this.$store.dispatch('config/getEnabledInterfaces'),
+      this.$store.dispatch('config/getSystemTimeZones'),])
+                                                               },
+                                                             })
     },
 
     methods: {
@@ -184,14 +190,15 @@
 
       /* Handler to refresh settings */
       async onRefreshSettings() {
-        this.$store.commit('SET_LOADER', true)
-
-        const [response] = await Promise.all([
-          this.$store.dispatch('config/getSystemSettings', true),
-          this.$store.dispatch('config/getEnabledInterfaces'),
-          this.$store.dispatch('config/getSystemTimeZones'),
-        ]).finally(() => {
-          this.$store.commit('SET_LOADER', false)
+        const [response] = await this.$store.dispatch('withLoader', {
+          needsRaf: true,
+          asyncFn: async () => {
+            return await Promise.all([
+              this.$store.dispatch('config/getSystemSettings', true),
+              this.$store.dispatch('config/getEnabledInterfaces'),
+              this.$store.dispatch('config/getSystemTimeZones'),
+            ])
+          },
         })
         if (!response.success) {
           this.$vuntangle.toast.add(this.$vuntangle.$t('error_refresh_settings'), 'error')
