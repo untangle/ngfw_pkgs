@@ -139,11 +139,10 @@
                     ? policiesMap.get(instance.policyId)?.name || null
                     : null
 
+                const runState = runStates[instance.id] || null
+
                 // Build state object for installed apps
-                const state = {
-                  instance,
-                  runState: runStates[instance.id] || null,
-                }
+                const state = this.buildAppState(instance, runState)
 
                 return {
                   ...app,
@@ -164,6 +163,9 @@
               }
             })
             .filter(Boolean)
+            .sort((a, b) => {
+              return (a.viewPosition || 0) - (b.viewPosition || 0)
+            })
 
           this.$set(this.policyApps, policyId, appsList)
           this.appsData = appsList
@@ -172,6 +174,43 @@
           this.$set(this.policyApps, policyId, [])
           this.appsData = []
           return []
+        }
+      },
+
+      /**
+       * Build app state object from instance and runState
+       * This creates a UI-ready state object with status, color, and on/off information
+       * - "Enabled" when targetState = RUNNING → Green
+       * - "Disabled" when targetState != RUNNING → Grey
+       * @param {Object} instance - The app instance
+       * @param {Object} runState - The run state from backend (can be null)
+       * @returns {Object} State object with status, colorCls, and on properties
+       */
+      buildAppState(instance, runState) {
+        if (!instance) return null
+
+        const targetState = instance.targetState
+        const runStateValue = runState?.state || null
+
+        // App is "on" if targetState is RUNNING
+        const isOn = targetState === 'RUNNING'
+
+        // Determine status and color based ONLY on targetState
+        const status = isOn ? 'Enabled' : 'Disabled'
+        const colorCls = isOn ? 'success' : 'grey'
+
+        // Check if state is inconsistent
+        const inconsistent = runStateValue ? targetState !== runStateValue : false
+
+        return {
+          instance,
+          runState,
+          on: isOn,
+          status,
+          colorCls,
+          power: false,
+          inconsistent,
+          expired: false,
         }
       },
     },
