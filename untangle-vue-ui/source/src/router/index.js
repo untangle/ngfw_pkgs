@@ -4,6 +4,7 @@ import { UPageNotFound } from 'vuntangle'
 import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
+import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
 
 /**
@@ -40,7 +41,7 @@ const baseRoutes = [
   },
 ]
 
-const routes = baseRoutes.concat(auth, setting, wizard, {
+const routes = baseRoutes.concat(auth, setting, wizard, appRouter, {
   path: '*',
   name: 'page-not-found',
   component: UPageNotFound,

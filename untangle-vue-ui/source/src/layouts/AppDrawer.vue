@@ -110,7 +110,6 @@
       return {
         reportsActive: false, // flag if reports is expanded
         minWidth: 255,
-        rootNavItems: [{ name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' }],
 
         settingsNavItems: [
           {
@@ -168,88 +167,12 @@
           },
           {
             name: 'services',
-            icon: 'mdi-apps',
+            icon: 'mdi-tools',
             active: false,
             match: '/settings/services',
             items: [
               { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
               { name: 'policy_manager', to: '/settings/services/policy-manager' },
-            ],
-          },
-        ],
-        reportsNavItems: [
-          {
-            name: 'bandwidth',
-            active: false,
-            match: '/reports/bandwidth',
-            items: [
-              { name: 'clients', to: '/reports/bandwidth/clients' },
-              { name: 'server_ports', to: '/reports/bandwidth/server-ports' },
-              { name: 'applications', to: '/reports/bandwidth/applications' },
-            ],
-          },
-          {
-            name: 'wan_performance',
-            active: false,
-            match: '/reports/wan-performance',
-            items: [
-              { name: 'usage', to: '/reports/wan-performance/usage' },
-              { name: 'packet_loss', to: '/reports/wan-performance/packet-loss' },
-              { name: 'latency', to: '/reports/wan-performance/latency' },
-              { name: 'jitter', to: '/reports/wan-performance/jitter' },
-            ],
-          },
-          {
-            name: 'sessions',
-            active: false,
-            match: '/reports/sessions',
-            items: [
-              { name: 'sessions', to: '/reports/sessions/sessions' },
-              { name: 'wan_routing', to: '/reports/sessions/wan-routing' },
-            ],
-          },
-          {
-            name: 'threat_prevention',
-            active: false,
-            match: '/reports/threat-prevention',
-            items: [
-              { name: 'blocked_summary', to: '/reports/threat-prevention/blocked-summary' },
-              { name: 'blocked_addresses', to: '/reports/threat-prevention/blocked-addresses' },
-            ],
-          },
-          {
-            name: 'web_filter',
-            active: false,
-            match: '/reports/web-filter',
-            items: [
-              { name: 'summary', to: '/reports/web-filter/summary' },
-              { name: 'visited_sites', to: '/reports/web-filter/visited-sites' },
-            ],
-          },
-          {
-            name: 'geoip_filtdnser',
-            active: false,
-            match: '/reports/geoip-filter',
-            items: [
-              { name: 'blocked_sessions', to: '/reports/geoip-filter/blocked-sessions' },
-              { name: 'blocked_countries_outbound', to: '/reports/geoip-filter/blocked-outbound' },
-              { name: 'blocked_countries_inbound', to: '/reports/geoip-filter/blocked-inbound' },
-              { name: 'distribution_map', to: '/reports/geoip-filter/distribution-map' },
-            ],
-          },
-          {
-            name: 'application_control',
-            active: false,
-            match: '/reports/application-control',
-            items: [{ name: 'applications', to: '/reports/application-control/applications' }],
-          },
-          {
-            name: 'captive_portal',
-            active: false,
-            match: '/reports/captive-portal',
-            items: [
-              { name: 'captive_portal_summary', to: '/reports/captive-portal/captive-portal-summary' },
-              { name: 'captive_portal_events', to: '/reports/captive-portal/captive-portal-events' },
             ],
           },
         ],
@@ -259,6 +182,15 @@
     computed: {
       mini() {
         return this.$store.state.miniDrawer
+      },
+      selectedPolicyId() {
+        return this.$store.getters['apps/selectedPolicyId'] || 1
+      },
+      rootNavItems() {
+        return [
+          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          { name: 'apps', to: `/apps/${this.selectedPolicyId}`, icon: 'mdi-apps' },
+        ]
       },
     },
     watch: {

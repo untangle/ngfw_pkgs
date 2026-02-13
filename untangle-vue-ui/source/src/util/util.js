@@ -627,6 +627,51 @@ const util = {
 
     return { allowed: true }
   },
+
+  /**
+   *
+   * @returns
+   */
+  isPolicyManagerInstalled() {
+    return Rpc.directData('rpc.appManager.app', 'policy-manager')
+  },
+
+  isRestricted() {
+    return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+  },
+
+  isRegistered() {
+    return window.rpc.isRegistered
+  },
+
+  getLicenseServerConnectivity() {
+    return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+  },
+
+  isCCHidden() {
+    return window.rpc.isCCHidden
+  },
+
+  getLicenseMessage(license, vuntangle) {
+    let message = ''
+    if (!license) {
+      return message
+    }
+    if (license.trial) {
+      if (license.expired) {
+        message = vuntangle.$t('free_trial_expired')
+      } else if (license.daysRemaining < 2) {
+        message = vuntangle.$t('free_trial_expires_today')
+      } else if (license.daysRemaining < 32) {
+        message = vuntangle.$t('free_trial_days_remaining', [license.daysRemaining])
+      } else {
+        message = vuntangle.$t('free_trial')
+      }
+    } else if (!license.valid) {
+      message = license.status
+    }
+    return message
+  },
 }
 
 export default util
