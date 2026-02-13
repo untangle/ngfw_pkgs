@@ -7,11 +7,15 @@
     :company-name="companyName"
     :global-safe-list="globalSafeList"
     :user-safe-list="userSafeList"
+    :inboxes-list="inboxesList"
+    :total-disk-space="totalDiskSpace"
     @email-test="sendTestEmail"
     @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
     @purge-user-safe-list="onPurgeUserSafeList"
     @quarantine-inbox-records-by-account="getQuarantineInboxRecordsByAccount"
+    @purge-user-qurantine-list="onPurgeUserQuarentineList"
+    @release-user-qurantine-list="onReleaseUserQuarentineList"
   />
 </template>
 <script>
@@ -55,6 +59,12 @@
       },
       globalSafeList() {
         return this.smtpAppSettings?.globalSafeList || []
+      },
+      inboxesList() {
+        return this.smtpAppSettings?.inboxesList || []
+      },
+      totalDiskSpace() {
+        return this.smtpAppSettings?.inboxesTotalSize || []
       },
 
       /**
@@ -166,6 +176,22 @@
         this.$store.commit('SET_LOADER', true)
         try {
           await this.$store.dispatch('apps/deleteSafelists', userEmails)
+          await this.$store.dispatch('apps/loadAppData', 'smtp')
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+      async onPurgeUserQuarentineList(userEmails) {
+        try {
+          await this.$store.dispatch('apps/deleteUserQuarentinelists', userEmails)
+          await this.$store.dispatch('apps/loadAppData', 'smtp')
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+      async onReleaseUserQuarentineList(userEmails) {
+        try {
+          await this.$store.dispatch('apps/releaseUserQuarentinelists', userEmails)
           await this.$store.dispatch('apps/loadAppData', 'smtp')
         } finally {
           this.$store.commit('SET_LOADER', false)

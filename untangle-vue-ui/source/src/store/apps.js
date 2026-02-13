@@ -50,7 +50,7 @@ const APP_BOOTSTRAP_REGISTRY = {
     },
     {
       key: 'inboxesList',
-      call: app => app.getQuarantineMaintenenceView().listInboxes(),
+      call: app => app.getQuarantineMaintenenceView().listInboxesV2(),
     },
     {
       key: 'inboxesTotalSize',
@@ -244,7 +244,32 @@ const actions = {
       }, userSafeList)
     })
   },
-
+  async deleteUserQuarentinelists({ dispatch }, userList) {
+    const app = await dispatch('getApp', 'smtp')
+    if (!app) return
+    return new Promise(resolve => {
+      app.getQuarantineMaintenenceView().deleteInboxes((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, userList)
+    })
+  },
+  async releaseUserQuarentinelists({ dispatch }, userList) {
+    const app = await dispatch('getApp', 'smtp')
+    if (!app) return
+    return new Promise(resolve => {
+      app.getQuarantineMaintenenceView().rescueInboxes((ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          return resolve({ success: false })
+        }
+        resolve({ success: true })
+      }, userList)
+    })
+  },
   async getApp(_, appName) {
     try {
       const app = await window.rpc.appManager.app(appName)
