@@ -1,6 +1,7 @@
 <template>
   <email
     :smtp-settings="smtpSettings"
+    :smtp-enabled="smtpEnabled"
     :public-url="publicUrl"
     :mail-sender-settings="mailSender"
     :company-name="companyName"
@@ -10,6 +11,7 @@
     @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
     @purge-user-safe-list="onPurgeUserSafeList"
+    @quarantine-inbox-records-by-account="getQuarantineInboxRecordsByAccount"
   />
 </template>
 <script>
@@ -23,6 +25,15 @@
    */
   export default {
     components: { Email },
+    data() {
+      return {
+        /**
+         * Whether SMTP app is enabled/available.
+         * @type {boolean}
+         */
+        smtpEnabled: false,
+      }
+    },
     computed: {
       publicUrl: ({ $store }) => $store.getters['config/publicUrl'],
       /**
@@ -37,7 +48,7 @@
       smtpAppSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
 
       smtpSettings() {
-        return this.smtpAppSettings?.settings || {}
+        return this.smtpAppSettings?.settings || null
       },
       userSafeList() {
         return this.smtpAppSettings?.userSafeList || []
@@ -62,13 +73,34 @@
     /**
      * Fetches mail sender settings when the component is created.
      */
-    created() {
+    async created() {
+      const app = await this.$store.dispatch('apps/getApp', 'smtp')
+      this.smtpEnabled = !!app
       this.$store.dispatch('apps/loadAppData', 'smtp')
       this.$store.dispatch('config/getMailSender', true)
       this.$store.dispatch('config/getPublicUrl', true)
     },
 
     methods: {
+      async getQuarantineInboxRecordsByAccount({ account, cb }) {
+        try {
+          const apiMethod = Rpc.asyncPromise(
+            'rpc.appManager.app("smtp").getQuarantineMaintenenceView().getInboxRecordsV2',
+            account,
+          )
+          const result = await apiMethod()
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            cb(result.message)
+          } else {
+            cb(result)
+          }
+        } catch (err) {
+          Util.handleException(err)
+          cb(err)
+        }
+      },
+
       /**
        * Send test email
        * @param {object} email - The email address to send test mail to.
