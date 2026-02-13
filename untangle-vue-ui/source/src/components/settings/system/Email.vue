@@ -13,6 +13,8 @@
     @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
     @purge-user-safe-list="onPurgeUserSafeList"
+    @purge-quarantined-user-email="purgeQuarantinedUserEmail"
+    @release-quarantined-user-email="releaseQuarantinedUserEmail"
     @quarantine-inbox-records-by-account="getQuarantineInboxRecordsByAccount"
     @purge-user-qurantine-list="onPurgeUserQuarentineList"
     @release-user-qurantine-list="onReleaseUserQuarentineList"
@@ -97,6 +99,44 @@
           const apiMethod = Rpc.asyncPromise(
             'rpc.appManager.app("smtp").getQuarantineMaintenenceView().getInboxRecordsV2',
             account,
+          )
+          const result = await apiMethod()
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            cb(result.message)
+          } else {
+            cb(result)
+          }
+        } catch (err) {
+          Util.handleException(err)
+          cb(err)
+        }
+      },
+      async purgeQuarantinedUserEmail({ account, emails, cb }) {
+        try {
+          const apiMethod = Rpc.asyncPromise(
+            'rpc.appManager.app("smtp").getQuarantineMaintenenceView().purge',
+            account,
+            emails,
+          )
+          const result = await apiMethod()
+          if (result?.code && result?.message) {
+            Util.handleException(result.message)
+            cb(result.message)
+          } else {
+            cb(result)
+          }
+        } catch (err) {
+          Util.handleException(err)
+          cb(err)
+        }
+      },
+      async releaseQuarantinedUserEmail({ account, emails, cb }) {
+        try {
+          const apiMethod = Rpc.asyncPromise(
+            'rpc.appManager.app("smtp").getQuarantineMaintenenceView().rescue',
+            account,
+            emails,
           )
           const result = await apiMethod()
           if (result?.code && result?.message) {
