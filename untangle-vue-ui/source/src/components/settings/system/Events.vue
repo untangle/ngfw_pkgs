@@ -47,8 +47,17 @@
               <SysLog
                 ref="syslog"
                 :settings="eventSettings"
+                :used-syslog-server-ids="usedSyslogServerIds"
                 @settings-change="onSettingsChange($event, 'syslog')"
                 v-on="$listeners"
+              />
+              <h3 class="font-weight-regular pl-2 pt-1">{{ $vuntangle.$t('rules') }}</h3>
+              <EventRulesList
+                rule-type="syslog"
+                :settings="eventSettings"
+                :syslog-servers-grid-empty="syslogServersGridEmpty"
+                :syslog-rule-grid-disabled="syslogRuleGridDisabled"
+                @settings-change="onSettingsChange($event, 'syslog')"
               />
             </ValidationObserver>
           </v-tab-item>
@@ -114,6 +123,39 @@
     },
 
     computed: {
+      // disable grid if no syslog servers are defined
+      syslogServersGridEmpty() {
+        const original = this.eventSettings?.syslogServers || []
+        if (original.length === 0) {
+          return true
+        }
+        return false
+      },
+
+      // array of syslog server ids used in syslog rules
+      usedSyslogServerIds() {
+        const rules = this.settingsCopy?.syslog_rules || []
+        const usedIds = new Set()
+
+        rules.forEach(rule => {
+          const ids = rule?.action?.syslogServers || []
+          ids.forEach(id => usedIds.add(id))
+        })
+        return Array.from(usedIds)
+      },
+
+      // disable syslog rules tab if syslog servers modified
+      syslogRuleGridDisabled() {
+        const original = this.eventSettings?.syslogServers || []
+        const modified = this.settingsCopy?.syslogServers || []
+
+        // modified syslog servers
+        if (!isEqual(original, modified)) {
+          return true
+        }
+
+        return false
+      },
       // the event settings from the store
       eventSettings: ({ $store }) => $store.getters['config/eventSettings'],
       classFields: ({ $store }) => $store.getters['config/classFieldsData'],
@@ -207,6 +249,8 @@
           this.settingsCopy.syslogServers = updatedSettings.syslogServers
             ? updatedSettings.syslogServers.map(s => ({ ...s }))
             : []
+
+          this.settingsCopy.syslog_rules = updatedSettings.syslog_rules ? updatedSettings.syslog_rules : []
           // Add other syslog related settings change here
         } else {
           this.settingsCopy.emailSubject = updatedSettings.emailSubject
