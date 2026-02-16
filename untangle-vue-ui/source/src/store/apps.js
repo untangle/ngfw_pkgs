@@ -49,12 +49,8 @@ const APP_BOOTSTRAP_REGISTRY = {
       call: app => app.getSafelistAdminView().getUserSafelistCountsV2(),
     },
     {
-      key: 'inboxesList',
+      key: 'inboxSummary',
       call: app => app.getQuarantineMaintenenceView().listInboxesV2(),
-    },
-    {
-      key: 'inboxesTotalSize',
-      call: app => app.getQuarantineMaintenenceView().getInboxesTotalSize(),
     },
   ],
 }
@@ -433,6 +429,56 @@ const actions = {
       Util.handleException(err)
       commit('SET_AUTO_INSTALL_APPS', false)
       return false
+    }
+  },
+
+  /**
+   * Make a registry API call for a specific bootstrap API by key.
+   * Looks up the registry for the given app and API key, then makes the corresponding API call.
+   * Patches the result into the store, preserving existing data for other keys.
+   *
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, apiKey }
+   * @param {string} payload.appName - The name of the app (e.g., 'smtp')
+   * @param {string} payload.apiKey - The key from APP_BOOTSTRAP_REGISTRY (e.g., 'globalSafeList')
+   * @returns {Promise<any>} - The result of the API call, or null if registry entry not found
+   *
+   * Usage:
+   * dispatch('makeRegistryCall', { appName: 'smtp', apiKey: 'globalSafeList' })
+   */
+  async makeRegistryCall({ state, commit, dispatch }, { appName, apiKey }) {
+    const registry = APP_BOOTSTRAP_REGISTRY[appName]
+    if (!registry) {
+      return null
+    }
+
+    const registryEntry = registry.find(item => item.key === apiKey)
+    if (!registryEntry) {
+      return null
+    }
+
+    const app = await dispatch('getApp', appName)
+    if (!app) return null
+
+    try {
+      const result = await registryEntry.call(app)
+
+      // Get existing settings for this app
+      const existingSettings = state.store[appName] || {}
+
+      // Merge the new result with existing settings
+      const updatedSettings = {
+        ...existingSettings,
+        [apiKey]: result,
+      }
+
+      // Commit the merged settings to the store
+      commit('SET_SETTINGS', { appName, value: updatedSettings })
+
+      return result
+    } catch (err) {
+      Util.handleException(err)
+      return null
     }
   },
 }

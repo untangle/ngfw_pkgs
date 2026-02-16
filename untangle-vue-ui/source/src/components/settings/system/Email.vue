@@ -12,6 +12,7 @@
     @email-test="sendTestEmail"
     @save-settings="onSaveSettings"
     @refresh-settings="onRefreshSettings"
+    @refresh-user-quarantines="onRefreshUserQuarantines"
     @purge-user-safe-list="onPurgeUserSafeList"
     @purge-quarantined-user-email="purgeQuarantinedUserEmail"
     @release-quarantined-user-email="releaseQuarantinedUserEmail"
@@ -63,10 +64,10 @@
         return this.smtpAppSettings?.globalSafeList || []
       },
       inboxesList() {
-        return this.smtpAppSettings?.inboxesList || []
+        return this.smtpAppSettings?.inboxSummary?.inboxesList
       },
       totalDiskSpace() {
-        return this.smtpAppSettings?.inboxesTotalSize || []
+        return this.smtpAppSettings?.inboxSummary?.totalDiskSpace
       },
 
       /**
@@ -211,6 +212,20 @@
         ]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
+      },
+      /**
+       * Refreshes user quarantine inbox summary.
+       */
+      async onRefreshUserQuarantines() {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/makeRegistryCall', {
+            appName: 'smtp',
+            apiKey: 'inboxSummary',
+          })
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
       async onPurgeUserSafeList(userEmails) {
         this.$store.commit('SET_LOADER', true)
