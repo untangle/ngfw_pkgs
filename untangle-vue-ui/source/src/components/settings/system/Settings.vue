@@ -36,15 +36,15 @@
     inject: ['embedded'],
 
     computed: {
-      systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
-      deviceTemperatureInfo: ({ $store }) => $store.getters['settings/deviceTemperatureInfo'],
-      httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http'),
-      ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp'),
-      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp'),
-      isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
-      systemTimeZones: ({ $store }) => $store.getters['settings/systemTimeZones'],
-      networkSetting: ({ $store }) => $store.getters['settings/networkSetting'],
-      enabledWanInterfaces: ({ $store }) => $store.getters['settings/enabledWanInterfaces'],
+      systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
+      deviceTemperatureInfo: ({ $store }) => $store.getters['config/deviceTemperatureInfo'],
+      httpSettings: ({ $store }) => $store.getters['apps/getSettings']('http')?.settings || {},
+      ftpSettings: ({ $store }) => $store.getters['apps/getSettings']('ftp')?.settings || {},
+      smtpSettings: ({ $store }) => $store.getters['apps/getSettings']('smtp')?.settings || {},
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
+      systemTimeZones: ({ $store }) => $store.getters['config/systemTimeZones'],
+      networkSetting: ({ $store }) => $store.getters['config/networkSetting'],
+      enabledWanInterfaces: ({ $store }) => $store.getters['config/enabledWanInterfaces'],
       companyName() {
         return window?.rpc?.companyName || null
       },
@@ -67,14 +67,14 @@
         asyncFn: async () => {
           // update current system setting from store
           await Promise.all([
-            this.$store.dispatch('settings/getSystemSettings', false),
-            this.$store.dispatch('settings/getDeviceTemperatureInfo'),
-            this.$store.dispatch('apps/getAndCommitAppSettings', 'http'),
-            this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp'),
-            this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp'),
+            this.$store.dispatch('config/getSystemSettings', false),
+            this.$store.dispatch('config/getDeviceTemperatureInfo'),
+            this.$store.dispatch('apps/loadAppData', 'http'),
+            this.$store.dispatch('apps/loadAppData', 'smtp'),
+            this.$store.dispatch('apps/loadAppData', 'ftp'),
             // get list of all wan interfaces which is used to show in the hostname interface selection
-            this.$store.dispatch('settings/getEnabledInterfaces'),
-            this.$store.dispatch('settings/getSystemTimeZones'),
+            this.$store.dispatch('config/getEnabledInterfaces'),
+            this.$store.dispatch('config/getSystemTimeZones'),
           ])
         },
       })
@@ -87,7 +87,7 @@
        */
       async onSaveSettings({ system, cb }) {
         this.$store.commit('SET_LOADER', true)
-        const response = await this.$store.dispatch('settings/setSystemSettings', system)
+        const response = await this.$store.dispatch('config/setSystemSettings', system)
         await this.$store.dispatch('apps/setAppSettings', {
           appName: 'http',
           settings: system.httpSettings,
@@ -109,7 +109,7 @@
       async onForceTimeSync() {
         this.$store.commit('SET_LOADER', true)
         const response = await this.$store
-          .dispatch('settings/doForceTimeSync')
+          .dispatch('config/doForceTimeSync')
           .finally(() => this.$store.commit('SET_LOADER', false))
         if (!response.success) {
           this.$vuntangle.toast.add(this.$vuntangle.$t('force_time_sync_failed'), 'error')
@@ -136,28 +136,28 @@
         await new Promise(resolve => setTimeout(resolve, 1000))
         this.$store.commit('SET_LOADER', false)
         document.location.href = '/error/factoryDefaults'
-        await this.$store.dispatch('settings/factoryReset')
+        await this.$store.dispatch('config/factoryReset')
       },
 
       /*
        * System reboot handler
        */
       async onReboot() {
-        await this.$store.dispatch('settings/reboot')
+        await this.$store.dispatch('config/reboot')
       },
 
       /*
        * Device temperature refresh handler
        */
       async onRefreshDeviceTemperatureInfo() {
-        await this.$store.dispatch('settings/getDeviceTemperatureInfo')
+        await this.$store.dispatch('config/getDeviceTemperatureInfo')
       },
 
       /*
        * System reboot handler
        */
       async onShutdown() {
-        await this.$store.dispatch('settings/shutdown')
+        await this.$store.dispatch('config/shutdown')
       },
 
       /*
@@ -195,9 +195,9 @@
           needsRaf: true,
           asyncFn: async () => {
             return await Promise.all([
-              this.$store.dispatch('settings/getSystemSettings', true),
-              this.$store.dispatch('settings/getEnabledInterfaces'),
-              this.$store.dispatch('settings/getSystemTimeZones'),
+              this.$store.dispatch('config/getSystemSettings', true),
+              this.$store.dispatch('config/getEnabledInterfaces'),
+              this.$store.dispatch('config/getSystemTimeZones'),
             ])
           },
         })
@@ -211,7 +211,7 @@
        * Fetches updated system settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getSystemSettings', true)
+        this.$store.dispatch('config/getSystemSettings', true)
       },
     },
   }

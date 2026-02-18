@@ -16,16 +16,19 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 // services
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
+import Email from '@/components/settings/system/Email'
 import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
 import Upgrade from '@/components/settings/system/Upgrade'
+import LocalDirectory from '@/components/settings/system/LocalDirectory.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
-
-// Administration
-import Admin from '@/components/settings/administration/Admin.vue'
 import Logging from '@/components/settings/system/Logging.vue'
+import Administration from '@/components/settings/system/Administration.vue'
+import Events from '@/components/settings/system/Events.vue'
+import PolicyManager from '@/components/settings/services/PolicyManager.vue'
+
 export default [
   {
     name: 'settings',
@@ -97,6 +100,16 @@ export default [
         meta: { helpContext: 'dynamic_lists' },
       },
       {
+        path: 'services/policy-manager',
+        component: PolicyManager,
+        meta: { helpContext: 'policy_manager' },
+      },
+      {
+        path: 'system/email',
+        component: Email,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
         path: 'system/about',
         component: About,
         meta: { helpContext: 'system_settings' },
@@ -107,14 +120,24 @@ export default [
         meta: { helpContext: 'system_settings' },
       },
       {
+        path: 'system/local-directory',
+        component: LocalDirectory,
+      },
+      {
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
       },
+
       {
-        path: 'administration/admin',
-        component: Admin,
-        meta: { helpContext: 'administration' },
+        path: 'system/administration',
+        component: Administration,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/events',
+        component: Events,
+        meta: { helpContext: 'system_settings' },
       },
       {
         path: 'system/upgrade',

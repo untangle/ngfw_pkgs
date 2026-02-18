@@ -15,6 +15,7 @@ import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
 import Rpc from '@/util/Rpc'
+import { VTypes } from '@/util/VTypes'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
@@ -75,7 +76,7 @@ const util = {
         value = i18n.t(addressTypeOptions.find(o => o.value === value)?.text)
       }
       if (c.type.includes('_INTERFACE_ZONE') && c.value !== null) {
-        value = store.getters['settings/interfaceById'](parseInt(value))?.name
+        value = store.getters['config/interfaceById'](parseInt(value))?.name
       }
       if (c.type === 'IP_PROTOCOL' && c.value !== null) {
         const strVal = c.value + '' // make sure it's a string
@@ -165,7 +166,7 @@ const util = {
         break
       }
       case 'WAN_POLICY': {
-        const policy = store.getters['settings/policyById'](rule.action?.policy)
+        const policy = store.getters['config/policyById'](rule.action?.policy)
         actionStr = `<span class="primary--text font-weight-bold">
           ${i18n.t('action_wan_policy_is')} ${policy?.description || '?'}</span>`
         break
@@ -549,6 +550,127 @@ const util = {
       script.onerror = reject
       document.body.appendChild(script)
     })
+  },
+
+  /**
+   * Constructs the certificate subject string from certificate details.
+   * @param {Object} details - Object containing certificate details like commonName, country, etc.
+   * @returns {string} The formatted certificate subject string.
+   */
+  createCertSubject(details) {
+    const certSubject = [
+      '/CN=' + details.commonName,
+      '/C=' + details.country,
+      '/ST=' + details.state,
+      '/L=' + details.locality,
+      '/O=' + details.organization,
+    ]
+
+    if (details.organizationalUnit && details.organizationalUnit.length > 0) {
+      certSubject.push('/OU=' + details.organizationalUnit)
+    }
+
+    return certSubject.join('')
+  },
+
+  /**
+   * Creates a comma-separated string of Subject Alternative Names (SANs).
+   * @param {string} altNames - A string of comma-separated alternative names.
+   * @returns {string} A formatted string of SANs for use in certificate generation.
+   */
+  createAltNames(altNames) {
+    if (!altNames || altNames.length === 0) {
+      return ''
+    }
+
+    const hostnameRegex =
+      /^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9-]*[a-zA-Z0-9])\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9-]*[A-Za-z0-9])$/
+    const altNameTokens = altNames.split(',')
+    const altNamesArray = []
+
+    for (let i = 0; i < altNameTokens.length; i++) {
+      const altName = altNameTokens[i].trim()
+      if (VTypes.ipAddress.validate(altName)) {
+        altNamesArray.push('IP:' + altName + ',DNS:' + altName)
+      } else if (hostnameRegex.test(altName)) {
+        altNamesArray.push('DNS:' + altName)
+      } else {
+        altNamesArray.push(altName)
+      }
+    }
+    return altNamesArray.join(',')
+  },
+
+  /**
+   * Determines if a certificate can be deleted based on certain conditions.
+   * A certificate cannot be deleted if it's the system's Apache certificate ('apache.pem')
+   * or if it is assigned to one or more services (HTTPS, SMTPS, IPsec, RADIUS).
+   *
+   * @param {object} data - The certificate data object.
+   * @param {string} data.fileName - The file name of the certificate.
+   * @returns {{allowed: boolean, message?: string}} An object indicating if deletion is allowed and an optional error message.
+   */
+  canDeleteCertificate(data) {
+    if (data.fileName === 'apache.pem') {
+      return {
+        allowed: false,
+        message: 'system_certificate_cannot_removed_error_message',
+      }
+    }
+
+    if (data.httpsServer || data.smtpsServer || data.ipsecServer || data.radiusServer) {
+      return {
+        allowed: false,
+        message: 'certificate_assigned_to_one_or_more_services_error_message',
+      }
+    }
+
+    return { allowed: true }
+  },
+
+  /**
+   *
+   * @returns
+   */
+  isPolicyManagerInstalled() {
+    return Rpc.directData('rpc.appManager.app', 'policy-manager')
+  },
+
+  isRestricted() {
+    return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+  },
+
+  isRegistered() {
+    return window.rpc.isRegistered
+  },
+
+  getLicenseServerConnectivity() {
+    return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+  },
+
+  isCCHidden() {
+    return window.rpc.isCCHidden
+  },
+
+  getLicenseMessage(license, vuntangle) {
+    let message = ''
+    if (!license) {
+      return message
+    }
+    if (license.trial) {
+      if (license.expired) {
+        message = vuntangle.$t('free_trial_expired')
+      } else if (license.daysRemaining < 2) {
+        message = vuntangle.$t('free_trial_expires_today')
+      } else if (license.daysRemaining < 32) {
+        message = vuntangle.$t('free_trial_days_remaining', [license.daysRemaining])
+      } else {
+        message = vuntangle.$t('free_trial')
+      }
+    } else if (!license.valid) {
+      message = license.status
+    }
+    return message
   },
 }
 

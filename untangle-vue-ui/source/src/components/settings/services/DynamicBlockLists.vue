@@ -54,10 +54,10 @@
       }
     },
     computed: {
-      dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists'),
+      dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists')?.settings,
     },
     created() {
-      this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
+      this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
     },
     mounted() {
       this.fetchStatus()
@@ -89,7 +89,7 @@
               const response = await window.rpc.appManager.app('dynamic-blocklists').onResetDefaultsV2()
 
               if (response?.success !== false) {
-                await this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
+                await this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
                 sendEvent({
                   type: EVENT_ACTIONS.REFRESH_APP_STATUS,
                   appName: 'dynamic-blocklists',
@@ -172,7 +172,7 @@
           await this.fetchStatus()
 
           if (response?.success !== false) {
-            await this.$store.dispatch('apps/getAndCommitAppSettings', this.licenseNodeName)
+            await this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
           } else {
             this.$vuntangle.toast.add(this.$vuntangle.$t('download_blocklist_to_appliance_failure'), 'error')
           }

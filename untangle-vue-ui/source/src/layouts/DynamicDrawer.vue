@@ -135,16 +135,24 @@
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'administration', to: '/settings/system/administration' },
+              { name: 'events', to: '/settings/system/events' },
+              { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
-              { name: 'about', to: '/settings/system/about' },
+              { name: 'Local Directory', to: '/settings/system/local-directory' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
+              { name: 'about', to: '/settings/system/about' },
             ],
           },
           {
             name: 'services',
             icon: 'mdi-apps',
             active: false,
-            items: [{ name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }],
+            match: '/settings/services',
+            items: [
+              { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
+              { name: 'policy_manager', to: '/settings/services/policy-manager' },
+            ],
           },
         ],
       }

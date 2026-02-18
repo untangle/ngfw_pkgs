@@ -3,7 +3,7 @@ import Vuex, { Store } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import setup from './setup'
 import auth from './auth'
-import settings from './settings'
+import config from './config'
 import apps from './apps'
 
 Vue.use(Vuex)
@@ -103,13 +103,23 @@ const getters = {}
 
 const vuexPersistence = new VuexPersistence({
   storage: window.localStorage,
+  reducer: state => {
+    // Destructure to exclude autoInstallApps from apps module
+    // eslint-disable-next-line no-unused-vars
+    const { autoInstallApps, ...appsStateWithoutAutoInstall } = state.apps || {}
+
+    return {
+      ...state,
+      apps: appsStateWithoutAutoInstall,
+    }
+  },
 })
 
 export default new Store({
   modules: {
     auth,
     setup,
-    settings,
+    config,
     apps,
   },
   state: getDefaultState,

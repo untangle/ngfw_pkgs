@@ -66,10 +66,66 @@ const Util = {
 
     return rpcResponse
   },
+
   getDecryptedPassword(encryptedPassword) {
-    const rpc = this.setRpcJsonrpc('admin')
-    return rpc.systemManager.getDecryptedPassword(encryptedPassword)
+    return window.rpc.systemManager.getDecryptedPassword(encryptedPassword)
   },
+
+  keyStr: 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=',
+
+  utf8Encode(string) {
+    string = string.replace(/\r\n/g, '\n')
+    let utftext = ''
+
+    for (let n = 0; n < string.length; n++) {
+      const c = string.charCodeAt(n)
+
+      if (c < 128) {
+        utftext += String.fromCharCode(c)
+      } else if (c < 2048) {
+        utftext += String.fromCharCode((c >> 6) | 192)
+        utftext += String.fromCharCode((c & 63) | 128)
+      } else {
+        utftext += String.fromCharCode((c >> 12) | 224)
+        utftext += String.fromCharCode(((c >> 6) & 63) | 128)
+        utftext += String.fromCharCode((c & 63) | 128)
+      }
+    }
+
+    return utftext
+  },
+
+  base64encode(input) {
+    let output = ''
+    let chr1, chr2, chr3
+    let enc1, enc2, enc3, enc4
+    let i = 0
+
+    input = this.utf8Encode(input)
+
+    while (i < input.length) {
+      chr1 = input.charCodeAt(i++)
+      chr2 = input.charCodeAt(i++)
+      chr3 = input.charCodeAt(i++)
+
+      enc1 = chr1 >> 2
+      enc2 = ((chr1 & 3) << 4) | (chr2 >> 4)
+      enc3 = ((chr2 & 15) << 2) | (chr3 >> 6)
+      enc4 = chr3 & 63
+
+      if (isNaN(chr2)) {
+        enc3 = enc4 = 64
+      } else if (isNaN(chr3)) {
+        enc4 = 64
+      }
+
+      output +=
+        this.keyStr.charAt(enc1) + this.keyStr.charAt(enc2) + this.keyStr.charAt(enc3) + this.keyStr.charAt(enc4)
+    }
+
+    return output
+  },
+
   authenticate(password, cb) {
     const url = '/auth/login?url=/admin&realm=Administrator'
 
@@ -132,6 +188,43 @@ const Util = {
         await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
       }
     }
+  },
+
+  /** Validates multiple tabs within a component using ValidationObserver. */
+  /**
+   * Asynchronously validates multiple tabs within a component.
+   * It iterates through each tab, validates it using its ref, and tracks the first invalid tab.
+   * If an invalid tab is found and a setSelectedTab function is provided, it sets the active tab to the invalid one.
+   *
+   * @param {Array<Object>} params.tabs - An array of tab objects, each expected to have a 'key' and 'valid' property.
+   * @param {Object} params.refs - An object containing references to the validation components for each tab, keyed by tab.key.
+   * @param {Function} [params.setSelectedTab] - An optional function to set the currently selected tab.
+   * @returns {Promise<boolean>} A promise that resolves to true if all tabs are valid, false otherwise.
+   */
+  async validateTabs({ tabs, refs, setSelectedTab }) {
+    let invalidTab = null
+
+    const promises = tabs.map(async tab => {
+      if (!refs[tab.key]) {
+        tab.valid = true
+        return true
+      }
+      const valid = await refs[tab.key].validate()
+      tab.valid = valid
+
+      if (!valid && !invalidTab) {
+        invalidTab = tab.key
+      }
+      return valid
+    })
+
+    const results = await Promise.all(promises)
+
+    if (invalidTab && setSelectedTab) {
+      setSelectedTab(invalidTab)
+    }
+
+    return !results.includes(false)
   },
 
   isDestroyed(...args) {
