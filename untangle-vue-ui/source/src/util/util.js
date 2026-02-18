@@ -629,6 +629,14 @@ const util = {
   },
 
   /**
+   * Returns the Quarantine RPC client instance
+   * @returns {Object} Quarantine RPC client
+   */
+  getQuarantineRpc() {
+    return new window.JSONRpcClient('/quarantine/JSON-RPC').Quarantine
+  },
+
+  /**
    *
    * @returns
    */

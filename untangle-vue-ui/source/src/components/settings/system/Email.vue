@@ -80,6 +80,7 @@
        * @returns {string|null}
        */
       companyName() {
+        // TODO cache company name (can only be done once we migrate Branding Manager to Vue)
         return window?.rpc?.companyName || null
       },
     },

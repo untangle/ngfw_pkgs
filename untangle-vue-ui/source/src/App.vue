@@ -9,14 +9,18 @@
         $route.name === 'setup'
       "
     />
+    <quarantine-layout
+      v-else-if="$route.meta.layout && $route.meta.layout.name === 'QuarantineLayout'"
+      :title="$route.meta.layoutProps?.title"
+    />
     <default-layout v-else />
   </div>
 </template>
 <script>
-  import { DynamicLayout, DefaultLayout } from '@/layouts'
+  import { DynamicLayout, DefaultLayout, QuarantineLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, DynamicLayout },
+    components: { DefaultLayout, DynamicLayout, QuarantineLayout },
 
     data() {
       return {
