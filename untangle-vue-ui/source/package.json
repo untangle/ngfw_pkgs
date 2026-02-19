@@ -17,7 +17,7 @@
     "eslint-plugin-sort-keys-fix": "^1.1.2",
     "extglob": "^3.0.0",
     "highcharts": "^9.1.2",
-    "lodash": "^4.17.21",
+    "lodash": "^4.17.23",
     "nanomatch": "^1.2.13",
     "vee-validate": "^3.4.10",
     "vue": "2.7.16",
