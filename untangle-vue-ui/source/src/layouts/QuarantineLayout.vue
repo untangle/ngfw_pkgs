@@ -47,52 +47,23 @@
         setQuarantineHeader: this.setHeader,
       }
     },
-    props: {
-      /**
-       * Page title to set in document.title (browser tab)
-       */
-      title: {
-        type: String,
-        default: '',
-      },
-      /**
-       * Header text to display in the toolbar
-       */
-      header: {
-        type: String,
-        default: '',
-      },
-    },
     data() {
       return {
         dynamicHeader: '',
+        headerSetByChild: false, // Track if child component has set the header
       }
     },
     computed: {
       /**
-       * Computed header - uses dynamic header if set, otherwise prop, otherwise default
+       * Computed header - uses dynamic header if set by child, otherwise default
        */
       computedHeader() {
-        // First check dynamic header (set by child components)
-        if (this.dynamicHeader) {
+        // Check if child component has explicitly set the header
+        if (this.headerSetByChild) {
           return this.dynamicHeader
         }
-        // Then check prop (passed from App.vue)
-        if (this.header) {
-          return this.header
-        }
-        // Default fallback
+        // Default fallback - only show if no child component has set the header yet
         return this.$t('quarantine')
-      },
-    },
-    watch: {
-      title: {
-        immediate: true,
-        handler(newTitle) {
-          if (newTitle) {
-            document.title = newTitle
-          }
-        },
       },
     },
     methods: {
@@ -103,8 +74,9 @@
         }
       },
       setHeader(header) {
-        // Set toolbar header
+        // Set toolbar header and mark that it's been set by a child component
         this.dynamicHeader = header
+        this.headerSetByChild = true
       },
     },
   }

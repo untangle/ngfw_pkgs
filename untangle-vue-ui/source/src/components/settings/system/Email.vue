@@ -69,16 +69,6 @@
       totalDiskSpace() {
         return this.smtpAppSettings?.inboxSummary?.totalDiskSpace
       },
-
-      /**
-       * Expert mode status from Vuex store.
-       * @returns {boolean}
-       */
-      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
-      /**
-       * Company name from global rpc object.
-       * @returns {string|null}
-       */
       companyName() {
         // TODO cache company name (can only be done once we migrate Branding Manager to Vue)
         return window?.rpc?.companyName || null
