@@ -629,11 +629,19 @@ const util = {
   },
 
   /**
-   *
+   * Checks if the Policy Manager app is installed by making a direct RPC call.
    * @returns
    */
   isPolicyManagerInstalled() {
     return Rpc.directData('rpc.appManager.app', 'policy-manager')
+  },
+
+  /**
+   * Checks if the Reports app is installed by making a direct RPC call.
+   * @returns
+   */
+  isReportsInstalled() {
+    return Rpc.directData('rpc.appManager.app', 'reports')
   },
 
   isRestricted() {

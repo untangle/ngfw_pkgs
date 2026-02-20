@@ -118,6 +118,45 @@ const getters = {
    * Usage: getters['apps/autoInstallApps']
    */
   autoInstallApps: state => state.autoInstallApps,
+  /**
+   * Get app data for a specific policy and app combination
+   * Returns an object containing: policyId, appName, license, instance, and appProperties
+   * Usage: getters['apps/getAppData']({ policyId: 1, appName: 'web-filter' })
+   */
+  getAppData:
+    state =>
+    ({ policyId, appName }) => {
+      if (!policyId || !appName) {
+        return null
+      }
+
+      // Get the app view for this policy
+      const appView = state.appViewsByPolicy[policyId]
+      if (!appView) {
+        return null
+      }
+
+      // Extract license for this app
+      const license = appView.licenseMap?.[appName] || null
+
+      // Find instance for this app (matching policyId and appName)
+      const instance = appView.instances?.find(inst => inst.appName === appName && inst.policyId === policyId) || null
+
+      // Find appProperties for this app
+      const appProperties = appView.appProperties?.find(prop => prop.name === appName) || null
+
+      // Get appMetrics if instance exists
+      const appMetrics = instance?.id ? appView.appMetrics?.[instance.id] || [] : []
+
+      return {
+        policyId,
+        appName,
+        license,
+        instance,
+        appProperties,
+        appMetrics,
+      }
+    },
 }
 
 const mutations = {
