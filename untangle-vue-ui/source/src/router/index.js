@@ -61,9 +61,20 @@ const router = new VueRouter({
  * This ensures the `window.rpc` is only initialized once per session,
  * even when Vue is loaded inside an iframe that reloads on tab changes.
  * The client is reused across iframe loads to prevent redundant `getNonce` or `listMethods` calls.
+ *
+ * Note: Quarantine routes are public and should NOT initialize admin RPC
+ * to avoid authentication calls. They use /quarantine/JSON-RPC instead.
  */
 router.beforeEach((to, from, next) => {
   try {
+    // Skip admin RPC initialization for public quarantine routes
+    // These routes use /quarantine/JSON-RPC endpoint without authentication
+    const isQuarantineRoute = to.path?.startsWith('/quarantine')
+
+    if (isQuarantineRoute) {
+      return next()
+    }
+
     const rpcOwner = window.top || window.parent
 
     // Reuse shared RPC client if available from parent

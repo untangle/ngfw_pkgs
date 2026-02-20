@@ -15,17 +15,39 @@
   export default {
     name: 'QuarantineDigestRequest',
     components: { RequestQuarantineDigest },
-    computed: {
-      companyName() {
-        // Get company name from query parameter if provided (even if empty string)
-        const queryParam = this.$route.query.companyName
-        if (queryParam !== undefined) {
-          return queryParam || ''
-        }
-        return ''
-      },
+    data() {
+      return {
+        /**
+         * Company name fetched from RPC
+         */
+        companyName: '',
+      }
+    },
+    mounted() {
+      // Fetch company name from RPC on mount
+      this.fetchCompanyName()
     },
     methods: {
+      /**
+       * Fetch company name from RPC V2 API
+       */
+      fetchCompanyName() {
+        try {
+          const quarantineRpc = Util.getQuarantineRpc()
+
+          // Call getQuarantineRequestConfigV2 to get company name
+          quarantineRpc.getCompanyName((companyName, ex) => {
+            if (ex) {
+              this.companyName = ''
+              return
+            }
+            console.log(companyName)
+            this.companyName = companyName || ''
+          })
+        } catch (err) {
+          this.companyName = ''
+        }
+      },
       /**
        * Handle quarantine digest request
        * @param {object} payload - Contains email and callback

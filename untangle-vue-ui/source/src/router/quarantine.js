@@ -5,7 +5,7 @@ import QuarantineDigestInbox from '@/components/settings/system/QuarantineDigest
 export default [
   {
     name: 'quarantine',
-    path: '/email-quarantine-digest',
+    path: '/quarantine',
     component: QuarantineDigestRequest,
     meta: {
       layout: QuarantineLayout,
@@ -14,7 +14,7 @@ export default [
   },
   {
     name: 'quarantine-manageuser',
-    path: '/email-quarantine-digest/manageuser',
+    path: '/quarantine/manageuser',
     component: QuarantineDigestInbox,
     meta: {
       layout: QuarantineLayout,
