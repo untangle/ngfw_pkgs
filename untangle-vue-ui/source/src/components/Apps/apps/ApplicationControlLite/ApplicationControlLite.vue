@@ -4,7 +4,7 @@
     :loading="loading"
     :sessions-data="sessionsData"
     :metrics-data="formattedMetrics"
-    :reports="reports"
+    :reports="appReports"
     :settings="settings"
     @toggle-state="toggleAppState"
     @remove-app="removeApp"
@@ -23,8 +23,8 @@
 
 <script>
   import { ApplicationControlLite } from 'vuntangle'
+  import appStatusMixin from '../appStatusMixin'
   import Rpc from '@/util/Rpc'
-  import { getReportIcon, getReportUrl } from '@/util/reports'
 
   export default {
     name: 'ApplicationControlLiteApp',
@@ -32,6 +32,8 @@
     components: {
       ApplicationControlLite,
     },
+
+    mixins: [appStatusMixin],
 
     props: {
       appData: {
@@ -48,11 +50,18 @@
         metrics: {},
         metricsPollingInterval: null,
         learnMoreUrl: null,
-        reports: [],
       }
     },
 
     computed: {
+      /**
+       * App display name for reports filtering
+       * Required by appStatusMixin
+       */
+      appDisplayName() {
+        return this.appData?.appProperties?.displayName || 'Application Control Lite'
+      },
+
       /**
        * Consolidated app data including original appData and fetched/computed app-related data
        * Does NOT include transient UI state like 'loading'
@@ -93,8 +102,6 @@
       await this.loadAppData()
       // Fetch learn more URL from backend
       await this.fetchLearnMoreUrl()
-      // Fetch reports from backend
-      await this.fetchReports()
       // Start metrics polling (fetches real data from backend every 10 seconds)
       this.startMetricsPolling()
     },
@@ -112,7 +119,6 @@
         try {
           await this.$store.dispatch('apps/loadAppData', this.appName)
         } catch (err) {
-          console.error('Failed to load app data:', err)
           this.$vuntangle.toast.add(this.$t('failed_to_load_app_data'), 'error')
         } finally {
           this.loading = false
@@ -196,59 +202,6 @@
           this.learnMoreUrl = await Rpc.asyncData('rpc.uriManager.getUriWithPath', url)
         } catch (err) {
           this.learnMoreUrl = 'https://edge.arista.com/shop/Application-Control'
-        }
-      },
-
-      /**
-       * Fetch reports from backend (matching ExtJS pattern)
-       */
-      async fetchReports() {
-        console.log('Fetching reports from backend...')
-        try {
-          // Get the Reports app instance through appManager (matching ExtJS pattern)
-          // In ExtJS: rpc.reportsManager = Rpc.directData('rpc.appManager.app("reports").getReportsManager')
-          const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
-
-          if (!reportsApp) {
-            console.warn('Reports app is not available')
-            this.reports = []
-            return
-          }
-
-          // Get the reports manager from the app
-          const reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
-
-          if (!reportsManager) {
-            console.warn('Reports manager is not available')
-            this.reports = []
-            return
-          }
-
-          // Get all report entries
-          const result = await Rpc.asyncData(reportsManager, 'getReportEntries')
-
-          if (result && result.list) {
-            // Filter reports by category (matching ExtJS AppReports.js)
-            const appReports = result.list.filter(report => report.category === this.appDisplayName)
-
-            // Format reports for Vue component
-            // Map report type to icon based on report.type (TEXT, PIE_GRAPH, TIME_GRAPH, etc.)
-            // Construct URL matching ExtJS EntryController.js format:
-            // Ung.app.redirectTo('#reports?cat=' + Util.urlEncode(entry.get('category')) + '&rep=' + Util.urlEncode(entry.get('title')))
-            this.reports = appReports.map(report => ({
-              key: report.uniqueId,
-              label: report.title || report.uniqueId,
-              // Navigate to ExtJS Reports page with URL-encoded cat (category) and rep (title) parameters
-              url: getReportUrl(report.category, report.title),
-              icon: getReportIcon(report.type),
-            }))
-          } else {
-            this.reports = []
-          }
-        } catch (err) {
-          // This is expected if Reports app is not installed or not running
-          console.log('Reports not available (Reports app may not be installed):', err.message)
-          this.reports = []
         }
       },
 

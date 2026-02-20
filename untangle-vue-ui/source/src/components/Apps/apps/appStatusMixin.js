@@ -1,3 +1,5 @@
+import { getReportUrl, getReportIcon } from '@/util/reports'
+
 export default {
   data() {
     return {
@@ -12,8 +14,12 @@ export default {
   },
 
   computed: {
-    appName() {
-      throw new Error('appName must be defined in component')
+    /**
+     * App display name for reports filtering
+     * Must be overridden in component
+     */
+    appDisplayName() {
+      throw new Error('appDisplayName must be defined in component for reports filtering')
     },
 
     isAppRunning() {
@@ -28,6 +34,34 @@ export default {
         value,
         formatter: this.getMetricFormatter(key),
       }))
+    },
+
+    /**
+     * Get reports for this app from global store
+     * Filters by appDisplayName and transforms to UI format
+     * @returns {Array} - Formatted reports array
+     */
+    appReports() {
+      if (!this.appDisplayName) {
+        return []
+      }
+
+      const rawReports = this.$store.getters['reports/getReportsByCategory'](this.appDisplayName)
+
+      return rawReports.map(report => ({
+        key: report.uniqueId,
+        label: report.title || report.uniqueId,
+        url: getReportUrl(report.category, report.title),
+        icon: getReportIcon(report.type),
+      }))
+    },
+
+    /**
+     * Check if Reports app is installed
+     * @returns {Boolean}
+     */
+    isReportsInstalled() {
+      return this.$store.getters['reports/isReportsInstalled']
     },
   },
 
@@ -56,7 +90,6 @@ export default {
           enabled: false,
         }
       } catch (err) {
-        console.error('Failed to load app data:', err)
         this.$vuntangle.toast.add(this.$t('failed_to_load_app_data'), 'error')
       } finally {
         this.loadingState = false
@@ -81,8 +114,6 @@ export default {
         if (metricsData.liveSessions !== undefined) {
           this.updateSessionsData(metricsData.liveSessions)
         }
-      } catch (err) {
-        console.error('Failed to fetch metrics:', err)
       } finally {
         this.loadingMetrics = false
       }
@@ -133,7 +164,6 @@ export default {
 
         this.$vuntangle.toast.add(this.$t(newSettings.enabled ? 'app_started' : 'app_stopped'), 'success')
       } catch (err) {
-        console.error('Failed to toggle app state:', err)
         this.$vuntangle.toast.add(this.$t('failed_to_toggle_app'), 'error')
       } finally {
         this.loadingState = false
@@ -152,7 +182,6 @@ export default {
           this.loadingState = false
         }, 1000)
       } catch (err) {
-        console.error('Failed to remove app:', err)
         this.$vuntangle.toast.add(this.$t('failed_to_remove_app'), 'error')
         this.loadingState = false
       }
@@ -160,13 +189,17 @@ export default {
 
     getMetricFormatter(_key) {
       // Override in component for custom formatting
-      console.log('No formatter defined for metric key:', _key)
+      console.log(`No custom formatter for metric key: ${_key}`)
       return null
     },
 
+    /**
+     * Get reports list
+     * @deprecated Use computed property 'appReports' instead
+     * @returns {Array}
+     */
     getReportsList() {
-      // Override in component
-      return []
+      return this.appReports
     },
   },
 }

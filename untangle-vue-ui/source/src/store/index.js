@@ -5,6 +5,7 @@ import setup from './setup'
 import auth from './auth'
 import config from './config'
 import apps from './apps'
+import reports from './reports'
 
 Vue.use(Vuex)
 
@@ -121,6 +122,7 @@ export default new Store({
     setup,
     config,
     apps,
+    reports,
   },
   state: getDefaultState,
   getters,

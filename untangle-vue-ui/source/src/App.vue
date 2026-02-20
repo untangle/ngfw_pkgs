@@ -25,12 +25,22 @@
     },
 
     created() {
+      // TODO - Consider different app flows setup, login, admin, reports
+      // Below API calls are needed only for admin flow, so we can optimize by only calling them when needed
+
       // Application-level initialization
       // Load app views for all policies (provides initial app views data)
       this.$store.dispatch('apps/getAppViews', true)
 
       // Load policy-manager settings if installed
       this.$store.dispatch('apps/loadAppData', 'policy-manager')
+
+      // Load reports on first navigation (after RPC is initialized)
+      // This matches ExtJS Application.reportscheck() pattern
+      // Fire and forget - don't block navigation
+      if (!this.$store.getters['reports/isLoaded'] && !this.$store.getters['reports/loading']) {
+        this.$store.dispatch('reports/loadReports')
+      }
 
       // Use browser-level events to catch iframe destruction
       // These fire even when ExtJS destroys the iframe abruptly

@@ -51,5 +51,40 @@ export function getReportIcon(type) {
  * @returns {String} - Full report URL with URL-encoded parameters
  */
 export function getReportUrl(category, title) {
-  return `/admin/index.do#reports?cat=${urlEncode(category)}&rep=${urlEncode(title)}`
+  return `https://192.168.56.186/admin/index.do#reports?cat=${urlEncode(category)}&rep=${urlEncode(title)}`
+}
+
+/**
+ * Transform backend report to UI format
+ * Converts raw report object from backend to the format expected by UAppStatusReports component
+ * @param {Object} report - Raw report from backend
+ * @param {String} report.uniqueId - Unique report identifier
+ * @param {String} report.category - Report category (app display name)
+ * @param {String} report.title - Report title
+ * @param {String} report.type - Report type (TEXT, PIE_GRAPH, TIME_GRAPH, etc.)
+ * @returns {Object} - Formatted report for UI
+ * @returns {String} return.key - Unique identifier
+ * @returns {String} return.label - Display label
+ * @returns {String} return.url - Navigation URL
+ * @returns {String} return.icon - MDI icon name
+ */
+export function formatReportForUI(report) {
+  return {
+    key: report.uniqueId,
+    label: report.title || report.uniqueId,
+    url: getReportUrl(report.category, report.title),
+    icon: getReportIcon(report.type),
+  }
+}
+
+/**
+ * Transform reports list for UI consumption
+ * @param {Array} reports - Array of backend reports
+ * @returns {Array} - Array of formatted reports
+ */
+export function formatReportsForUI(reports) {
+  if (!Array.isArray(reports)) {
+    return []
+  }
+  return reports.map(formatReportForUI)
 }
