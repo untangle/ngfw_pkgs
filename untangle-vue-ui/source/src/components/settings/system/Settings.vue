@@ -46,6 +46,7 @@
       networkSetting: ({ $store }) => $store.getters['config/networkSetting'],
       enabledWanInterfaces: ({ $store }) => $store.getters['config/enabledWanInterfaces'],
       companyName() {
+        // TODO cache company name (can only be done once we migrate Branding Manager to Vue)
         return window?.rpc?.companyName || null
       },
     },
