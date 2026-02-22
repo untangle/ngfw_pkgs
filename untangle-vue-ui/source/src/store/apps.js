@@ -414,6 +414,178 @@ const actions = {
       return null
     }
   },
+
+  /**
+   * Instantiate an app for a specific policy (alternative to installApp)
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, policyId }
+   * @returns {Promise<Object>} - The app instance
+   */
+  async instantiateApp({ dispatch }, { appName, policyId }) {
+    try {
+      const instance = await new Promise(resolve => {
+        window.rpc.appManager.instantiate(
+          res => {
+            resolve(res)
+          },
+          appName,
+          policyId,
+        )
+      })
+
+      await dispatch('getAppView', policyId)
+      return instance
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Destroy/remove an app instance
+   * @param {Object} context - Vuex context
+   * @param {number} instanceId - The app instance ID
+   * @returns {Promise<void>}
+   */
+  async destroyApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      await new Promise((resolve, reject) => {
+        window.rpc.appManager.destroy((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        }, instanceId)
+      })
+
+      // Refresh the app view after destroying, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Start an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async startApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.start((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after starting, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Stop an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async stopApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.stop((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after stopping, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Check if a specific app's license is valid
+   * @param {Object} context - Vuex context
+   * @param {String} appName - The app name to check
+   * @returns {Boolean} true if license is valid, false otherwise
+   */
+  checkAppLicense(_, appName) {
+    try {
+      const isValid = window.rpc.UvmContext.licenseManager().isLicenseValid(appName)
+      return isValid
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Check if a daemon is running
+   * @param {Object} context - Vuex context
+   * @param {String} daemonName - The daemon name to check
+   * @returns {Boolean} true if daemon is running, false otherwise
+   */
+  checkDaemonStatus(_, daemonName) {
+    try {
+      const isRunning = window.rpc.UvmContext.daemonManager().isRunning(daemonName)
+      return isRunning
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Check license status for a specific license node
+   * @param {Object} context - Vuex context
+   * @param {String} licenseNodeName - The license node name to check
+   * @returns {Promise<Boolean>} true if license is valid, false otherwise
+   */
+  async checkLicenseStatus(_, licenseNodeName) {
+    try {
+      const response = await window.rpc.UvmContext.licenseManager().getLicense(licenseNodeName).valid
+      return response || false
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Fetch the URI for license management
+   * @param {Object} context - Vuex context
+   * @param {String} uriPath - The URI path to fetch (e.g., 'subscriptions')
+   * @returns {Promise<String|null>} The manage license URI or null on error
+   */
+  async fetchManageLicenseUri(_, uriPath) {
+    try {
+      const uri = await window.rpc.uriManager.getUriWithPath(uriPath)
+      return uri
+    } catch (error) {
+      Util.handleException(error)
+      return null
+    }
+  },
 }
 
 export default {
