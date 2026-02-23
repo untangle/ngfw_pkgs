@@ -6,6 +6,7 @@ import setting from './setting'
 import wizard from './wizard'
 import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
+import store from '@/store'
 
 /**
  * Override .push() to catch navigation failures.
@@ -80,6 +81,19 @@ router.beforeEach((to, from, next) => {
       }
 
       window.rpc = rpcClient
+    }
+
+    // Initialize admin context on first admin route navigation
+    // Session module is NOT persisted, so it resets on every page load/hard refresh
+    // This ensures RPC calls run on every session start
+    // But skips re-initialization during route navigation within same session
+    const isAdminRoute =
+      to.name && !to.name.includes('setup') && !to.name.includes('login') && !to.name.includes('wizard')
+
+    if (isAdminRoute) {
+      // Initialize admin context (loads apps, policy-manager, reports)
+      // Fire and forget - don't block navigation
+      store.dispatch('session/initializeAdminContext')
     }
 
     // Redirect logic

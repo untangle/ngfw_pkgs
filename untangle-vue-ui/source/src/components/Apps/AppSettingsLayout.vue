@@ -7,7 +7,6 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import util from '@/util/util'
 
   /**
    * AppSettingsLayout Component
@@ -24,12 +23,6 @@
    */
   export default {
     name: 'AppSettingsLayout',
-
-    provide() {
-      return {
-        isReportsInstalled: !!util.isReportsInstalled(),
-      }
-    },
 
     computed: {
       ...mapGetters('apps', ['getAppData']),

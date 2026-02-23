@@ -102,7 +102,6 @@
 </template>
 <script>
   import store from '@/store'
-  import api from '@/plugins/api'
 
   export default {
     data: () => ({
@@ -147,7 +146,7 @@
         store.commit('SET_MINI_DRAWER', !store.state.miniDrawer)
       },
       async logout() {
-        await api.get('/auth/logout?url=/admin&realm=Administrator')
+        await this.$store.dispatch('auth/logout')
         window.rpc = undefined
         this.$router.push({ name: 'login' })
       },

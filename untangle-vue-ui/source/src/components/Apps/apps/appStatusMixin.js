@@ -1,4 +1,5 @@
 import { getReportUrl, getReportIcon } from '@/util/reports'
+import util from '@/util/util'
 
 export default {
   data() {
@@ -10,6 +11,12 @@ export default {
       metricsPollingInterval: null,
       loadingState: false,
       loadingMetrics: false,
+    }
+  },
+
+  provide() {
+    return {
+      isReportsInstalled: this.isReportsInstalled,
     }
   },
 
@@ -61,7 +68,8 @@ export default {
      * @returns {Boolean}
      */
     isReportsInstalled() {
-      return this.$store.getters['reports/isReportsInstalled']
+      // TODO Remove Util Method Call Once Reports App and its flows are Fully Migrated
+      return this.$store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled()
     },
   },
 
@@ -191,15 +199,6 @@ export default {
       // Override in component for custom formatting
       console.log(`No custom formatter for metric key: ${_key}`)
       return null
-    },
-
-    /**
-     * Get reports list
-     * @deprecated Use computed property 'appReports' instead
-     * @returns {Array}
-     */
-    getReportsList() {
-      return this.appReports
     },
   },
 }
