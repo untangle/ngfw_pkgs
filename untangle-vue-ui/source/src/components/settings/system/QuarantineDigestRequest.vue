@@ -41,7 +41,6 @@
               this.companyName = ''
               return
             }
-            console.log(companyName)
             this.companyName = companyName || ''
           })
         } catch (err) {
