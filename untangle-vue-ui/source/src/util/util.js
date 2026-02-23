@@ -629,6 +629,18 @@ const util = {
   },
 
   /**
+   * Returns the Quarantine RPC client instance (singleton)
+   * Creates and caches the client in window.quarantineRpc
+   * @returns {Object} Quarantine RPC client
+   */
+  getQuarantineRpc() {
+    if (!window.quarantineRpc) {
+      window.quarantineRpc = new window.JSONRpcClient('/quarantine/JSON-RPC').Quarantine
+    }
+    return window.quarantineRpc
+  },
+
+  /**
    *
    * @returns
    */

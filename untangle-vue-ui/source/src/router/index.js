@@ -4,6 +4,7 @@ import { UPageNotFound } from 'vuntangle'
 import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
+import quarantine from './quarantine'
 import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
 
@@ -41,7 +42,7 @@ const baseRoutes = [
   },
 ]
 
-const routes = baseRoutes.concat(auth, setting, wizard, appRouter, {
+const routes = baseRoutes.concat(auth, setting, wizard, quarantine, appRouter, {
   path: '*',
   name: 'page-not-found',
   component: UPageNotFound,
@@ -60,9 +61,20 @@ const router = new VueRouter({
  * This ensures the `window.rpc` is only initialized once per session,
  * even when Vue is loaded inside an iframe that reloads on tab changes.
  * The client is reused across iframe loads to prevent redundant `getNonce` or `listMethods` calls.
+ *
+ * Note: Quarantine routes are public and should NOT initialize admin RPC
+ * to avoid authentication calls. They use /quarantine/JSON-RPC instead.
  */
 router.beforeEach((to, from, next) => {
   try {
+    // Skip admin RPC initialization for public quarantine routes
+    // These routes use /quarantine/JSON-RPC endpoint without authentication
+    const isQuarantineRoute = to.path?.startsWith('/quarantine')
+
+    if (isQuarantineRoute) {
+      return next()
+    }
+
     const rpcOwner = window.top || window.parent
 
     // Reuse shared RPC client if available from parent

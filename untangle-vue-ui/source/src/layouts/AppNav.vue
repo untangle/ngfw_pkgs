@@ -149,6 +149,7 @@
       async logout() {
         await api.get('/auth/logout?url=/admin&realm=Administrator')
         window.rpc = undefined
+        window.quarantineRpc = undefined
         this.$router.push({ name: 'login' })
       },
       setLanguage() {

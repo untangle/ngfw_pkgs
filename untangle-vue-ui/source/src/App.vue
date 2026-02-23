@@ -9,14 +9,15 @@
         $route.name === 'setup'
       "
     />
+    <quarantine-layout v-else-if="$route.meta.layout && $route.meta.layout.name === 'QuarantineLayout'" />
     <default-layout v-else />
   </div>
 </template>
 <script>
-  import { DynamicLayout, DefaultLayout } from '@/layouts'
+  import { DynamicLayout, DefaultLayout, QuarantineLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, DynamicLayout },
+    components: { DefaultLayout, DynamicLayout, QuarantineLayout },
 
     data() {
       return {
@@ -25,12 +26,14 @@
     },
 
     created() {
-      // Application-level initialization
-      // Load app views for all policies (provides initial app views data)
-      this.$store.dispatch('apps/getAppViews', true)
+      if (window.rpc) {
+        // Application-level initialization
+        // Load app views for all policies (provides initial app views data)
+        this.$store.dispatch('apps/getAppViews', true)
 
-      // Load policy-manager settings if installed
-      this.$store.dispatch('apps/loadAppData', 'policy-manager')
+        // Load policy-manager settings if installed
+        this.$store.dispatch('apps/loadAppData', 'policy-manager')
+      }
 
       // Use browser-level events to catch iframe destruction
       // These fire even when ExtJS destroys the iframe abruptly

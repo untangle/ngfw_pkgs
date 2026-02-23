@@ -1,7 +1,10 @@
 <template>
   <v-container>
     <!-- Upgrades settings section -->
-    <u-alert class="my-4">
+    <!-- Loading state -->
+    <v-skeleton-loader v-if="isCheckingUpgrade" class="mx-auto my-4" max-width="auto" type="list-item" />
+    <!-- Upgrade status alert -->
+    <u-alert v-else class="my-4">
       <template v-if="upgradeText">
         {{ $t('system_running_latest_version') }}
       </template>
@@ -64,12 +67,13 @@
   </v-container>
 </template>
 <script>
+  import { VSkeletonLoader } from 'vuetify/lib'
   import { ApplianceUpgrade } from 'vuntangle'
   import store from '@/store'
   import Util from '@/util/setupUtil'
 
   export default {
-    components: { ApplianceUpgrade },
+    components: { ApplianceUpgrade, VSkeletonLoader },
     data: () => ({
       showUpgradeButton: false,
       isUpgradeAvailable: null,
@@ -92,6 +96,9 @@
 
     computed: {
       settings: ({ $store }) => $store.getters['config/systemSetting'],
+      isCheckingUpgrade() {
+        return !this.upgradeText && !this.showUpgradeIssues && !this.showUpgradeButton
+      },
     },
 
     created() {
@@ -105,18 +112,15 @@
       },
 
       async checkUpgrades() {
-        this.$store.commit('SET_LOADER', true)
-
         this.isUpgradeAvailable = await new Promise((resolve, reject) =>
           window.rpc.systemManager.upgradesAvailable((res, err) => (err ? reject(err) : resolve(res))),
-        ).finally(() => this.$store.commit('SET_LOADER', false))
+        )
 
         if (this.isUpgradeAvailable) {
           this.canUpgrade()
         } else {
           this.upgradeText = true
         }
-        this.$store.commit('SET_LOADER', false)
       },
 
       async canUpgrade() {
