@@ -168,8 +168,8 @@
                 const runState = runStates[instance.id] || null
 
                 // Build state object for installed apps
-                // checkLicense = false matches ExtJS Policy Manager behavior (no vm provided)
-                const state = await this.buildAppState(instance, runState, app, false)
+                // Checks licenses to show "Disabled, license is invalid or expired" status
+                const state = await this.buildAppState(instance, runState, app, true)
 
                 return {
                   ...app,
@@ -245,32 +245,36 @@
         // Power flag indicates transition state (starting/stopping)
         const power = false
 
-        let status = ''
+        // Calculate color class (inconsistent/expired → power → on → else)
         let colorCls = ''
+        if (inconsistent || expired) {
+          colorCls = 'error'
+        } else if (power) {
+          colorCls = 'warning'
+        } else if (isOn) {
+          colorCls = 'success'
+        } else {
+          colorCls = 'grey'
+        }
 
+        // Calculate status text (power → inconsistent/expired → else)
+        let status = ''
         if (isOn) {
           if (power) {
             status = this.$vuntangle.$t('powering_on')
-            colorCls = 'warning'
           } else if (inconsistent) {
             status = this.$vuntangle.$t('enabled_but_not_active')
-            colorCls = 'error'
           } else {
             status = this.$vuntangle.$t('enabled')
-            colorCls = 'success'
           }
         } else if (power) {
           status = this.$vuntangle.$t('powering_off')
-          colorCls = 'warning'
         } else if (expired) {
-          status = this.$vuntangle.$t('Disabled, license is invalid or expired')
-          colorCls = 'error'
+          status = this.$vuntangle.$t('disabled_license_is_valid_or_expired')
         } else if (inconsistent) {
           status = this.$vuntangle.$t('disabled_but_active')
-          colorCls = 'error'
         } else {
           status = this.$vuntangle.$t('disabled')
-          colorCls = 'grey'
         }
 
         return {
@@ -292,8 +296,10 @@
       async onInstallApp({ appName, policyId }) {
         this.$store.commit('SET_LOADER', true)
         try {
-          await this.$store.dispatch('apps/instantiateApp', { appName, policyId })
-          this.buildApps(policyId)
+          const result = await this.$store.dispatch('apps/installApp', { appName, policyId })
+          if (result.success) {
+            this.buildApps(policyId)
+          }
         } finally {
           this.$store.commit('SET_LOADER', false)
         }

@@ -416,32 +416,6 @@ const actions = {
   },
 
   /**
-   * Instantiate an app for a specific policy (alternative to installApp)
-   * @param {Object} context - Vuex context
-   * @param {Object} payload - { appName, policyId }
-   * @returns {Promise<Object>} - The app instance
-   */
-  async instantiateApp({ dispatch }, { appName, policyId }) {
-    try {
-      const instance = await new Promise(resolve => {
-        window.rpc.appManager.instantiate(
-          res => {
-            resolve(res)
-          },
-          appName,
-          policyId,
-        )
-      })
-
-      await dispatch('getAppView', policyId)
-      return instance
-    } catch (error) {
-      Util.handleException(error)
-      throw error
-    }
-  },
-
-  /**
    * Destroy/remove an app instance
    * @param {Object} context - Vuex context
    * @param {number} instanceId - The app instance ID
