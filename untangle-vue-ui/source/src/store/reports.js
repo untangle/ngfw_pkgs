@@ -34,7 +34,7 @@ const getDefaultState = () => ({
 const getters = {
   allReports: state => state.allReports,
 
-  // O(1) lookup by category (app display name)
+  // O(1) lookup by category
   getReportsByCategory: state => category => {
     return state.reportsByCategory[category] || []
   },

@@ -16,6 +16,7 @@ import http from '@/plugins/http'
 import store from '@/store'
 import Rpc from '@/util/Rpc'
 import { VTypes } from '@/util/VTypes'
+import Util from '@/util/setupUtil'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
@@ -525,7 +526,11 @@ const util = {
    * @returns {Promise<void>}
    */
   async reloadLicenses() {
-    await Rpc.directData('rpc.UvmContext.licenseManager.reloadLicenses', true)
+    try {
+      await Rpc.directData('rpc.UvmContext.licenseManager.reloadLicenses', true)
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   /**
@@ -633,7 +638,11 @@ const util = {
    * @returns
    */
   isPolicyManagerInstalled() {
-    return Rpc.directData('rpc.appManager.app', 'policy-manager')
+    try {
+      return Rpc.directData('rpc.appManager.app', 'policy-manager')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   /**
@@ -641,11 +650,19 @@ const util = {
    * @returns
    */
   isReportsInstalled() {
-    return Rpc.directData('rpc.appManager.app', 'reports')
+    try {
+      return Rpc.directData('rpc.appManager.app', 'reports')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isRestricted() {
-    return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+    try {
+      return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isRegistered() {
@@ -653,7 +670,11 @@ const util = {
   },
 
   getLicenseServerConnectivity() {
-    return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+    try {
+      return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isCCHidden() {

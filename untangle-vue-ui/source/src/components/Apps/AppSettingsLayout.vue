@@ -86,7 +86,6 @@
        */
       appComponent() {
         if (!this.appName) {
-          console.error('[AppSettingsLayout] No appName found in route params')
           return null
         }
 
@@ -100,8 +99,7 @@
           import(
             /* webpackChunkName: "app-[request]" */
             `./apps/${componentName}/${componentName}.vue`
-          ).catch(error => {
-            console.error(`[AppSettingsLayout] Failed to load component for app: ${this.appName}`, error)
+          ).catch(() => {
             // Return null component on error
             return { render: h => h('div', 'App component not found') }
           })

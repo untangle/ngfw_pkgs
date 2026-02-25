@@ -7,11 +7,16 @@
  * Route Structure:
  * - /apps/:policyId - Main apps view for a specific policy
  * - /apps/:policyId/:appName - Individual app settings view
+ *
+ * Lifecycle Hooks:
+ * - beforeEnter: Starts metrics polling when entering /apps section
+ * - Polling stops automatically via global router guard when leaving /apps
  */
 
 import AppsLayout from '@/components/Apps/AppsLayout.vue'
 import AppSettingsLayout from '@/components/Apps/AppSettingsLayout.vue'
 import AppsView from '@/components/Apps/AppsView.vue'
+import MetricsPollingService from '@/services/MetricsPollingService'
 
 export default [
   {
@@ -23,6 +28,12 @@ export default [
       requiresAuth: true,
       module: 'apps',
     },
+
+    beforeEnter: (_to, _from, next) => {
+      MetricsPollingService.start()
+      next()
+    },
+
     children: [
       {
         // Main apps view - displays installed and installable apps for a policy

@@ -7,6 +7,7 @@ import wizard from './wizard'
 import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
 import store from '@/store'
+import MetricsPollingService from '@/services/MetricsPollingService'
 
 /**
  * Override .push() to catch navigation failures.
@@ -94,6 +95,13 @@ router.beforeEach((to, from, next) => {
       // Initialize admin context (loads apps, policy-manager, reports)
       // Fire and forget - don't block navigation
       store.dispatch('session/initializeAdminContext')
+    }
+
+    // Stop metrics polling when leaving /apps section
+    // Polling is started via beforeEnter guard in /apps route
+    const leavingAppsSection = from?.path?.startsWith('/apps') && !to?.path?.startsWith('/apps')
+    if (leavingAppsSection) {
+      MetricsPollingService.stop()
     }
 
     // Redirect logic

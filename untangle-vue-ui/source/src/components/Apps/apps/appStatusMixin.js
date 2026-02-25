@@ -1,3 +1,4 @@
+import { mapGetters } from 'vuex'
 import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/util'
 
@@ -6,11 +7,7 @@ export default {
     return {
       appInstance: null,
       appSettings: null,
-      metrics: null,
-      sessionsData: [],
-      metricsPollingInterval: null,
       loadingState: false,
-      loadingMetrics: false,
     }
   },
 
@@ -21,6 +18,8 @@ export default {
   },
 
   computed: {
+    ...mapGetters('metrics', ['getFormattedMetrics', 'getLiveSessions']),
+
     /**
      * App display name for reports filtering
      * Must be overridden in component
@@ -29,18 +28,44 @@ export default {
       throw new Error('appDisplayName must be defined in component for reports filtering')
     },
 
-    isAppRunning() {
-      return this.appSettings?.enabled || false
+    /**
+     * Instance ID for metrics lookup
+     * Override in component to provide actual instanceId from appData
+     */
+    instanceId() {
+      return this.appData?.instance?.id || null
     },
 
+    /**
+     * Formatted metrics from Vuex store
+     * Returns empty array if instanceId not available (apps without metrics)
+     */
     formattedMetrics() {
-      if (!this.metrics) return []
+      if (!this.instanceId) return []
+      return this.getFormattedMetrics(this.instanceId) || []
+    },
 
-      return Object.entries(this.metrics).map(([key, value]) => ({
-        key,
-        value,
-        formatter: this.getMetricFormatter(key),
-      }))
+    /**
+     * Sessions chart data from Vuex store
+     * Returns initial empty data if instanceId not available
+     */
+    sessionsData() {
+      const liveSessions = this.getLiveSessions(this.instanceId)
+      if (!this.instanceId || liveSessions === null) {
+        return this.initializeSessionsData()
+      }
+      // Build rolling window with current value
+      const now = Date.now()
+      const data = []
+
+      for (let i = -6; i <= 0; i++) {
+        data.push({
+          timestamp: now + i * 10000,
+          sessions: i === 0 ? liveSessions : 0,
+        })
+      }
+
+      return data
     },
 
     /**
@@ -73,132 +98,24 @@ export default {
     },
   },
 
-  created() {
-    this.loadAppData()
-    this.startMetricsPolling()
-  },
-
-  beforeDestroy() {
-    this.stopMetricsPolling()
-  },
-
   methods: {
-    loadAppData() {
-      this.loadingState = true
-      try {
-        // For now, mock the app instance and settings
-        // TODO: Replace with actual store dispatches when available
-        this.appInstance = {
-          appId: this.appName,
-          displayName: this.$t(this.appName),
-        }
-
-        // Mock settings
-        this.appSettings = {
-          enabled: false,
-        }
-      } catch (err) {
-        this.$vuntangle.toast.add(this.$t('failed_to_load_app_data'), 'error')
-      } finally {
-        this.loadingState = false
-      }
-    },
-
-    fetchMetrics() {
-      if (!this.appInstance) return
-
-      this.loadingMetrics = true
-      try {
-        // Mock metrics data for now
-        // TODO: Replace with actual RPC call
-        const metricsData = {
-          liveSessions: Math.floor(Math.random() * 100),
-          totalSessions: Math.floor(Math.random() * 1000),
-          blockedSessions: Math.floor(Math.random() * 50),
-        }
-
-        this.metrics = metricsData
-
-        if (metricsData.liveSessions !== undefined) {
-          this.updateSessionsData(metricsData.liveSessions)
-        }
-      } finally {
-        this.loadingMetrics = false
-      }
-    },
-
-    updateSessionsData(currentSessions) {
+    /**
+     * Initialize sessions chart with 7 zero points
+     * Creates baseline data for chart display when no metrics available yet
+     */
+    initializeSessionsData() {
+      const data = []
       const now = Date.now()
-      const tenMinutesAgo = now - 10 * 60 * 1000
+      const roundedNow = Math.round(now / 1000) * 1000
 
-      this.sessionsData.push({
-        timestamp: now,
-        sessions: currentSessions,
-      })
-
-      // Remove data older than 10 minutes
-      this.sessionsData = this.sessionsData.filter(d => d.timestamp > tenMinutesAgo)
-
-      // Limit to max 60 data points (10 minutes at 10-second intervals)
-      if (this.sessionsData.length > 60) {
-        this.sessionsData = this.sessionsData.slice(-60)
+      for (let i = -6; i <= 0; i++) {
+        data.push({
+          timestamp: roundedNow + i * 10000,
+          sessions: 0,
+        })
       }
-    },
 
-    startMetricsPolling() {
-      this.fetchMetrics() // Immediate fetch
-      this.metricsPollingInterval = setInterval(() => {
-        this.fetchMetrics()
-      }, 10000) // 10 seconds
-    },
-
-    stopMetricsPolling() {
-      if (this.metricsPollingInterval) {
-        clearInterval(this.metricsPollingInterval)
-        this.metricsPollingInterval = null
-      }
-    },
-
-    toggleAppState() {
-      this.loadingState = true
-      try {
-        const newSettings = {
-          ...this.appSettings,
-          enabled: !this.appSettings.enabled,
-        }
-
-        // TODO: Replace with actual store dispatch
-        this.appSettings = newSettings
-
-        this.$vuntangle.toast.add(this.$t(newSettings.enabled ? 'app_started' : 'app_stopped'), 'success')
-      } catch (err) {
-        this.$vuntangle.toast.add(this.$t('failed_to_toggle_app'), 'error')
-      } finally {
-        this.loadingState = false
-      }
-    },
-
-    removeApp() {
-      this.loadingState = true
-      try {
-        // TODO: Replace with actual RPC call
-        setTimeout(() => {
-          this.$vuntangle.toast.add(this.$t('app_removed'), 'success')
-
-          // Redirect to apps page
-          this.$router.push({ name: 'apps' })
-          this.loadingState = false
-        }, 1000)
-      } catch (err) {
-        this.$vuntangle.toast.add(this.$t('failed_to_remove_app'), 'error')
-        this.loadingState = false
-      }
-    },
-
-    getMetricFormatter(_key) {
-      // Override in component for custom formatting
-      console.log(`No custom formatter for metric key: ${_key}`)
-      return null
+      return data
     },
   },
 }

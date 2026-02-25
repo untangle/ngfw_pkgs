@@ -7,6 +7,7 @@ import config from './config'
 import apps from './apps'
 import reports from './reports'
 import session from './session'
+import metrics from './metrics'
 
 Vue.use(Vuex)
 
@@ -110,14 +111,14 @@ const vuexPersistence = new VuexPersistence({
     // eslint-disable-next-line no-unused-vars
     const { autoInstallApps, ...appsStateWithoutAutoInstall } = state.apps || {}
 
-    // CRITICAL: Exclude session module from persistence
-    // Session state must reset on every page load/hard refresh
-    // to ensure admin context initialization runs on every session start
+    // CRITICAL: Exclude session and metrics modules from persistence
+    // - session: Must reset on every page load/hard refresh
+    // - metrics: Transient polling data, should not be persisted
     // eslint-disable-next-line no-unused-vars
-    const { session, ...stateWithoutSession } = state
+    const { session, metrics, ...stateWithoutSessionAndMetrics } = state
 
     return {
-      ...stateWithoutSession,
+      ...stateWithoutSessionAndMetrics,
       apps: appsStateWithoutAutoInstall,
     }
   },
@@ -131,6 +132,7 @@ export default new Store({
     apps,
     reports,
     session,
+    metrics,
   },
   state: getDefaultState,
   getters,
