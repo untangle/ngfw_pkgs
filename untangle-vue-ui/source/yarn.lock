@@ -8075,7 +8075,7 @@ vuex@^3.6.2:
 
 "vuntangle@git+ssh://git@github.com/untangle/vuntangle.git#ngfw-17.5-release":
   version "1.60.10"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#cdce805f21597ec6f51d62c3e7214594d23db8c2"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#20a10173eb8b26f7834146c7f8aaf64122bf110d"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"
