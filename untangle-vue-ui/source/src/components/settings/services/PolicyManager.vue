@@ -89,10 +89,16 @@
     },
 
     created() {
+      this.fetchNetworkSettings(false)
       this.loadAppData()
     },
 
     methods: {
+      /* Fetch network settings from store */
+      async fetchNetworkSettings(refetch) {
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
+      },
+
       /* Load application data */
       loadAppData() {
         this.$store.dispatch('apps/loadAppData', this.appName)
@@ -370,6 +376,13 @@
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
+      },
+
+      /**
+       * Optional hook triggered on browser refresh. refetches the settings.
+       */
+      onBrowserRefresh() {
+        this.fetchNetworkSettings(true)
       },
     },
   }
