@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="isLicensed === false" class="mt-2">
       {{ $t('not_licensed_service', [$t('policy_manager')]) }}
       <template #actions>
@@ -33,6 +33,7 @@
 
 <script>
   import { PolicyManager, NoLicense } from 'vuntangle'
+  import util from '../../../util/util'
   import serviceMixin from './serviceMixin'
 
   export default {
@@ -41,6 +42,19 @@
       NoLicense,
     },
     mixins: [serviceMixin],
+
+    provide() {
+      return {
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          policies: this.settings?.policies,
+        }),
+        $features: {
+          hasIpv6Support: true,
+        },
+        $readOnly: false,
+      }
+    },
 
     data() {
       return {
@@ -61,13 +75,30 @@
       settings() {
         return this.$store.getters['apps/getSettings'](this.appName)?.settings
       },
+
+      /* network settings from the store */
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      /**
+       * returns the interfaces for condition value from network settings
+       * @param {Object} vm.networkSettings
+       */
+      interfaces: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
     },
 
     created() {
+      this.fetchNetworkSettings(false)
       this.loadAppData()
     },
 
     methods: {
+      /* Fetch network settings from store */
+      async fetchNetworkSettings(refetch) {
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
+      },
+
       /* Load application data */
       loadAppData() {
         this.$store.dispatch('apps/loadAppData', this.appName)
@@ -345,6 +376,13 @@
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
+      },
+
+      /**
+       * Optional hook triggered on browser refresh. refetches the settings.
+       */
+      onBrowserRefresh() {
+        this.fetchNetworkSettings(true)
       },
     },
   }
