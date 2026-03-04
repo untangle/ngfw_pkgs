@@ -48,10 +48,8 @@ class MetricsPollingService {
    * 5. Updates Vuex polling state
    */
   start() {
-    // Stop any existing polling
     this.stop()
 
-    // Clear existing data in store
     store.dispatch('metrics/clearMetrics')
 
     this.run()
@@ -78,13 +76,11 @@ class MetricsPollingService {
       this.intervalId = null
     }
 
-    // Cancel any in-flight request
     if (this.abortController) {
       this.abortController.abort()
       this.abortController = null
     }
 
-    // Update state
     this.isRunning = false
     store.dispatch('metrics/setPollingState', false)
   }

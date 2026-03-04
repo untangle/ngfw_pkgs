@@ -1,5 +1,5 @@
 <template>
-  <div class="app-settings-layout">
+  <div style="width: 100%; height: 100%">
     <!-- Dynamically loaded app-specific component -->
     <component :is="appComponent" v-if="appComponent" :app-data="appData" />
   </div>
@@ -7,6 +7,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
+  import util from '@/util/util'
 
   /**
    * AppSettingsLayout Component
@@ -90,42 +91,15 @@
         }
 
         // Convert kebab-case to PascalCase
-        // Example: 'web-filter' -> 'WebFilter'
-        const componentName = this.kebabToPascal(this.appName)
+        const componentName = util.kebabToPascal(this.appName)
 
         // Return dynamic import function
         // Vue Router will handle lazy loading and code splitting
         return () =>
-          import(
-            /* webpackChunkName: "app-[request]" */
-            `./apps/${componentName}/${componentName}.vue`
-          ).catch(() => {
-            // Return null component on error
+          import(`./apps/${componentName}/${componentName}.vue`).catch(() => {
             return { render: h => h('div', 'App component not found') }
           })
       },
     },
-
-    methods: {
-      /**
-       * Converts kebab-case string to PascalCase
-       * @param {string} str - kebab-case string
-       * @returns {string} PascalCase string
-       * @example kebabToPascal('web-filter') // returns 'WebFilter'
-       */
-      kebabToPascal(str) {
-        return str
-          .split('-')
-          .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-          .join('')
-      },
-    },
   }
 </script>
-
-<style lang="scss" scoped>
-  .app-settings-layout {
-    width: 100%;
-    height: 100%;
-  }
-</style>

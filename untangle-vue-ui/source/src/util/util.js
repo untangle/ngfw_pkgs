@@ -701,6 +701,19 @@ const util = {
     }
     return message
   },
+
+  /**
+   * Converts kebab-case string to PascalCase
+   * @param {string} str - kebab-case string
+   * @returns {string} PascalCase string
+   * @example kebabToPascal('web-filter') // returns 'WebFilter'
+   */
+  kebabToPascal(str) {
+    return str
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join('')
+  },
 }
 
 export default util

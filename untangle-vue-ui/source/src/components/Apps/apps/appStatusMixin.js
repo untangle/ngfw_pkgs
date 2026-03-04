@@ -5,6 +5,7 @@ import util from '@/util/util'
 export default {
   data() {
     return {
+      // TODO while migrating Application Control Lite Signatures, consider how to handle appInstance and appSettings
       appInstance: null,
       appSettings: null,
       loadingState: false,

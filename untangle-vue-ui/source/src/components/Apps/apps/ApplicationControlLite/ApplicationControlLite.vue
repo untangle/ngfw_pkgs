@@ -41,8 +41,8 @@
 
     data() {
       return {
-        appName: 'application-control-lite',
-        loading: false,
+        appName: this.appData?.appName || 'application-control-lite',
+        loading: false, // TODO Check uasage and remove if not needed
         learnMoreUrl: null,
       }
     },
@@ -75,21 +75,20 @@
 
     created() {
       this.fetchLearnMoreUrl()
+      this.loadAppSettings()
     },
 
     methods: {
       /**
        * Load app data from Vuex store
        */
-      async loadAppData() {
+      async loadAppSettings() {
         this.loading = true
-        try {
-          await this.$store.dispatch('apps/loadAppData', this.appName)
-        } catch (err) {
-          this.$vuntangle.toast.add(this.$t('failed_to_load_app_data'), 'error')
-        } finally {
+        this.$store.commit('SET_LOADER', true)
+        await this.$store.dispatch('apps/loadAppData', this.appName).finally(() => {
           this.loading = false
-        }
+          this.$store.commit('SET_LOADER', false)
+        })
       },
 
       /**
