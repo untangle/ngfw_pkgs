@@ -28,6 +28,7 @@ import Logging from '@/components/settings/system/Logging.vue'
 import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
 import PolicyManager from '@/components/settings/services/PolicyManager.vue'
+import BrandingManager from '@/components/settings/services/BrandingManager.vue'
 
 export default [
   {
@@ -93,6 +94,11 @@ export default [
       {
         path: 'firewall/denial-of-service',
         component: DenialOfService,
+      },
+      {
+        path: 'services/branding-manager',
+        component: BrandingManager,
+        meta: { helpContext: 'branding_manager' },
       },
       {
         path: 'services/dynamic-blocklist',
