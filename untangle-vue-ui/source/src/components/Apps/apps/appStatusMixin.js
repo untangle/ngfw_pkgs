@@ -5,11 +5,10 @@ import util from '@/util/util'
 export default {
   data() {
     return {
-      appInstance: null,
+      appManager: null,
       appSettings: null,
       loadingState: false,
-      cachedRunState: null,
-      cachedTargetState: null,
+      toggling: false,
     }
   },
 
@@ -53,6 +52,7 @@ export default {
      * Returns initial empty data if instanceId not available
      */
     sessionsData() {
+      if (!this.powerState?.on) return []
       const liveSessions = this.getLiveSessions(this.instanceId)
       if (!this.instanceId || liveSessions === null) {
         return this.initializeSessionsData()
@@ -102,37 +102,33 @@ export default {
 
     /**
      * Get computed power state from Vuex
+     * Merges Vuex state with local toggling state
      */
     powerState() {
-      return this.getAppPowerState({
+      const vuexPowerState = this.getAppPowerState({
         policyId: this.appData?.policyId,
         appName: this.appName,
-        appRunState: this.cachedRunState,
-        appTargetState: this.cachedTargetState,
+        appManager: this.appManager,
       })
+
+      return {
+        ...vuexPowerState,
+        power: this.toggling, // Override with local toggling state
+      }
     },
   },
 
   /**
    * Created lifecycle hook
-   * Caches app instance and refreshes runtime state
-   * Matches ExtJS pattern: this.app = appInstance (AppState.js constructor)
+   * Caches app manager and refreshes runtime state
    */
   async created() {
-    if (!this.appData?.policyId || !this.appName) return
+    if (!this.appData?.instance?.id) return
 
     try {
-      this.appInstance = await this.$store.dispatch('apps/getAppForPolicy', {
-        appName: this.appName,
-        policyId: this.appData.policyId,
+      this.appManager = await this.$store.dispatch('apps/getAppById', {
+        appId: this.appData.instance.id,
       })
-      // Get real-time runState
-      if (this.appInstance) {
-        this.cachedRunState = this.appInstance.getRunState()
-      }
-      if (this.appData?.instance) {
-        this.cachedTargetState = this.appData.instance.targetState
-      }
     } catch (err) {
       // Fallback to heavy getAppView call if needed
       this.$store.dispatch('apps/getAppView', this.appData.policyId)
@@ -160,18 +156,28 @@ export default {
     },
 
     /**
-     * Refresh runState from cached app instance
-     * @returns {string|null} - Current runState or null if app instance not available
+     * Toggle app state (start/stop)
+     * @param {boolean} enabled - Target state (true = starting, false = stopping)
      */
-    refreshRunState() {
-      if (!this.appInstance) {
-        return null
-      }
+    async toggleAppState(enabled) {
+      if (!this.appManager) return
+      this.toggling = true
+
       try {
-        this.cachedRunState = this.appInstance.getRunState()
-        return this.cachedRunState
-      } catch (err) {
-        return null
+        const rpcMethod = enabled ? 'start' : 'stop'
+
+        await new Promise((resolve, reject) => {
+          this.appManager[rpcMethod]((ex, res) => {
+            if (ex || res?.code) {
+              reject(ex || new Error(res?.message || `Failed to ${rpcMethod} app`))
+            } else {
+              resolve(res)
+            }
+          })
+        })
+        this.$store.dispatch('apps/getAppViews', true)
+      } finally {
+        this.toggling = false
       }
     },
   },

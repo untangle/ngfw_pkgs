@@ -1,13 +1,30 @@
 <template>
-  <div style="width: 100%; height: 100%">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+    <no-license v-if="isLicensed === false" class="mt-2">
+      {{ $t('not_licensed_app', [$t(appData?.appProperties?.displayName)]) }}
+      <template #actions>
+        <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
+        <u-btn class="ml-4" :href="manageLicenseUri" target="_blank">
+          {{ $t('manage_licenses') }}
+          <v-icon right> mdi-open-in-new </v-icon>
+        </u-btn>
+      </template>
+    </no-license>
     <!-- Dynamically loaded app-specific component -->
-    <component :is="appComponent" v-if="appComponent" :app-data="appData" />
-  </div>
+    <component
+      :is="appComponent"
+      v-if="appComponent"
+      :app-data="appData"
+      :class="`shared-cmp d-flex flex-column flex-grow-1 ${!isLicensed && 'disabled'}`"
+    />
+  </v-container>
 </template>
 
 <script>
+  import { NoLicense } from 'vuntangle'
   import { mapGetters } from 'vuex'
   import util from '@/util/util'
+  import uris from '@/util/uris'
 
   /**
    * AppSettingsLayout Component
@@ -24,6 +41,16 @@
    */
   export default {
     name: 'AppSettingsLayout',
+    components: {
+      NoLicense,
+    },
+
+    data() {
+      return {
+        isLicensed: undefined,
+        manageLicenseUri: undefined,
+      }
+    },
 
     computed: {
       ...mapGetters('apps', ['getAppData']),
@@ -99,6 +126,31 @@
           import(`./apps/${componentName}/${componentName}.vue`).catch(() => {
             return { render: h => h('div', 'App component not found') }
           })
+      },
+    },
+
+    created() {
+      this.checkLicense()
+      this.getManageLicenseUri()
+    },
+
+    methods: {
+      /**
+       * PROP: is-licensed
+       * Checks for TP license status
+       */
+      async checkLicense() {
+        if (!this.appName) return
+        const response = await window.rpc.UvmContext.licenseManager().isLicenseValid(this.appName)
+        this.isLicensed = response
+      },
+
+      /**
+       * PROP: manage-license-uri
+       * Fetches the URI for license management
+       */
+      async getManageLicenseUri() {
+        this.manageLicenseUri = await window.rpc.uriManager.getUriWithPath(uris.list.subscriptions)
       },
     },
   }

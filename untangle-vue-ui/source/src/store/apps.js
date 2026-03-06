@@ -165,38 +165,32 @@ const getters = {
    */
   getAppPowerState:
     (state, getters) =>
-    ({ policyId, appName, appRunState, appTargetState }) => {
+    ({ policyId, appName, appManager }) => {
       const appData = getters.getAppData({ policyId, appName })
 
       if (!appData || !appData.instance) {
         return {
-          expired: false,
           on: false,
           inconsistent: false,
-          power: false,
         }
       }
 
       const { appProperties, instance } = appData
       const appView = state.appViewsByPolicy[policyId]
 
+      const appRunState = appManager ? appManager.getRunState() : null
       const runState = appRunState || appView?.runStates?.[instance.id]
-      const targetState = appTargetState ?? instance.targetState
-
       const on = runState === 'RUNNING'
+
       const daemonRunning =
         on && appProperties?.daemon
           ? Rpc.directData('rpc.UvmContext.daemonManager.isRunning', appProperties.daemon)
           : true
-
-      const inconsistent = targetState !== runState || (on && !daemonRunning)
-      const expired = !Rpc.directData('rpc.UvmContext.licenseManager.isLicenseValid', appName)
+      const inconsistent = on && !daemonRunning
 
       return {
-        expired,
         on,
         inconsistent,
-        power: false,
       }
     },
 }
@@ -360,6 +354,23 @@ const actions = {
       return null
     }
   },
+
+  /**
+   * Get app instance by instance ID
+   * @param {*} _
+   * @param {Object} payload - { appId }
+   * @returns {Promise<Object|null>} App instance or null
+   */
+  async getAppById(_, { appId }) {
+    try {
+      const app = await window.rpc.appManager.app(appId)
+      return app
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
+  },
+
   /**
    * Get settings for a given app using getSettingsV2().
    * @param {string} appName - The name of the app (e.g., 'smtp', 'http')
@@ -424,6 +435,7 @@ const actions = {
           Util.handleException(ex || res.message)
           return resolve({ success: false })
         }
+
         await dispatch('loadAppData', appName)
         resolve({ success: true })
       }, settings)
