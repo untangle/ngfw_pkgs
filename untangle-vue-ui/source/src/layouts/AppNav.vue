@@ -148,6 +148,7 @@
       async logout() {
         await this.$store.dispatch('auth/logout')
         window.rpc = undefined
+        window.quarantineRpc = undefined
         this.$router.push({ name: 'login' })
       },
       setLanguage() {

@@ -1,28 +1,66 @@
 <template>
-  <policy-manager :settings="settings" :apps-data="appsData" @build-apps="buildApps" @on-save="onSave">
-    <template #actions="{ newSettings, isDirty, validate }">
-      <u-btn class="mr-2" @click="loadAppData">
-        {{ $vuntangle.$t('refresh') }}
-      </u-btn>
-      <u-btn :disabled="!isDirty" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
-    </template>
-  </policy-manager>
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
+    <no-license v-if="isLicensed === false" class="mt-2">
+      {{ $t('not_licensed_service', [$t('policy_manager')]) }}
+      <template #actions>
+        <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
+        <u-btn class="ml-4" :href="manageLicenseUri" target="_blank">
+          {{ $t('manage_licenses') }}
+          <v-icon right> mdi-open-in-new </v-icon>
+        </u-btn>
+      </template>
+    </no-license>
+    <policy-manager
+      :settings="settings"
+      :apps-data="appsData"
+      :disabled="!isLicensed"
+      :build-apps="buildApps"
+      @on-save="onSave"
+      @install-app="onInstallApp"
+      @remove-app="onRemoveApp"
+      @start-app="onStartApp"
+      @stop-app="onStopApp"
+    >
+      <template #actions="{ newSettings, isDirty, validate }">
+        <u-btn class="mr-2" @click="loadAppData">
+          {{ $vuntangle.$t('refresh') }}
+        </u-btn>
+        <u-btn :disabled="!isDirty" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
+      </template>
+    </policy-manager>
+  </v-container>
 </template>
 
 <script>
-  import { PolicyManager } from 'vuntangle'
+  import { PolicyManager, NoLicense } from 'vuntangle'
+  import util from '../../../util/util'
   import serviceMixin from './serviceMixin'
 
   export default {
     components: {
       PolicyManager,
+      NoLicense,
     },
     mixins: [serviceMixin],
+
+    provide() {
+      return {
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          policies: this.settings?.policies,
+        }),
+        $features: {
+          hasIpv6Support: true,
+        },
+        $readOnly: false,
+      }
+    },
 
     data() {
       return {
         /* This is used to fetch the application's settings from the Vuex store. */
         appName: 'policy-manager',
+        licenseNodeName: 'policy-manager',
         policiesData: [], // all policies data from getAppsViews
         policyApps: {}, // apps data for each policy, keyed by policyId
         appsData: [], // apps data for the currently selected policy
@@ -37,13 +75,30 @@
       settings() {
         return this.$store.getters['apps/getSettings'](this.appName)?.settings
       },
+
+      /* network settings from the store */
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      /**
+       * returns the interfaces for condition value from network settings
+       * @param {Object} vm.networkSettings
+       */
+      interfaces: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
     },
 
     created() {
+      this.fetchNetworkSettings(false)
       this.loadAppData()
     },
 
     methods: {
+      /* Fetch network settings from store */
+      async fetchNetworkSettings(refetch) {
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
+      },
+
       /* Load application data */
       loadAppData() {
         this.$store.dispatch('apps/loadAppData', this.appName)
@@ -78,19 +133,19 @@
        * Get apps views for all policies.
        * This fetches app-related data for all policies in the system.
        * Typically called after installing/removing apps or when refreshing policy data.
-       * @returns {Array} Array of policy objects
+       * @returns {Promise<Array>} Array of policy objects
        */
       getAppsViews() {
-        this.$store.dispatch('apps/getAppViews')
+        this.$store.dispatch('apps/getAppViews', true)
         return this.$store.getters['apps/appViews']
       },
       /**
        * Build apps list for a given policy.
        * This refreshes all policies data and builds the apps list for display.
        * @param {number} policyId - The policy ID to build apps for
-       * @returns {Array} The list of apps for this policy
+       * @returns {Promise<Array>} The list of apps for this policy
        */
-      buildApps(policyId) {
+      async buildApps(policyId) {
         try {
           // Refresh all policies apps views
           const allPoliciesData = this.getAppsViews()
@@ -110,7 +165,8 @@
           const appProperties = policy.appProperties || []
           const instances = policy.instances || []
           const installable = policy.installable || []
-          const runStates = policy.runStates?.map || {}
+          const runStates = policy.runStates || {}
+          const licenseMap = policy.licenseMap || {}
           const allPolicies = this.settings?.policies || []
 
           // Early return if no apps to process
@@ -125,10 +181,11 @@
           const installableSet = new Set(installable)
           const policiesMap = new Map(allPolicies.map(p => [p.policyId, p]))
 
-          const appsList = appProperties
+          const appsListPromises = appProperties
             .filter(app => app.type === 'FILTER') // Only FILTER apps
-            .map(app => {
+            .map(async app => {
               const instance = instancesMap.get(app.name)
+              const license = licenseMap[app.name] || null // Get license for this app
 
               if (!installableSet.has(app.name) && !instance) return null
 
@@ -142,7 +199,8 @@
                 const runState = runStates[instance.id] || null
 
                 // Build state object for installed apps
-                const state = this.buildAppState(instance, runState)
+                // Checks licenses to show "Disabled, license is invalid or expired" status
+                const state = await this.buildAppState(instance, runState, app, true)
 
                 return {
                   ...app,
@@ -150,6 +208,7 @@
                   instance,
                   state,
                   parentPolicy,
+                  license, // Include license in app object
                 }
               }
 
@@ -160,12 +219,13 @@
                 instance: null,
                 state: null,
                 parentPolicy: null,
+                license, // Include license even for non-installed apps
               }
             })
-            .filter(Boolean)
-            .sort((a, b) => {
-              return (a.viewPosition || 0) - (b.viewPosition || 0)
-            })
+
+          const appsList = (await Promise.all(appsListPromises)).filter(Boolean).sort((a, b) => {
+            return (a.viewPosition || 0) - (b.viewPosition || 0)
+          })
 
           this.$set(this.policyApps, policyId, appsList)
           this.appsData = appsList
@@ -182,25 +242,71 @@
        * This creates a UI-ready state object with status, color, and on/off information
        * - "Enabled" when targetState = RUNNING → Green
        * - "Disabled" when targetState != RUNNING → Grey
+       * - "Disabled, license is invalid or expired" when license is invalid (only if checkLicense = true) → Red
        * @param {Object} instance - The app instance
        * @param {Object} runState - The run state from backend (can be null)
-       * @returns {Object} State object with status, colorCls, and on properties
+       * @param {Object} appProperties - App properties object (contains daemon property if applicable)
+       * @param {Boolean} checkLicense - Whether to check license validity
+       * @returns {Promise<Object>} State object with status, colorCls, on, and inconsistent properties
        */
-      buildAppState(instance, runState) {
+      async buildAppState(instance, runState, appProperties = null, checkLicense = false) {
         if (!instance) return null
 
         const targetState = instance.targetState
-        const runStateValue = runState?.state || null
+        const runStateValue = runState || 'INITIALIZED'
 
-        // App is "on" if targetState is RUNNING
-        const isOn = targetState === 'RUNNING'
+        // Determine if app is running
+        const isOn = runStateValue === 'RUNNING'
 
-        // Determine status and color based ONLY on targetState
-        const status = isOn ? 'Enabled' : 'Disabled'
-        const colorCls = isOn ? 'success' : 'grey'
+        let daemonRunning = true
+        if (isOn && appProperties && appProperties.daemon != null) {
+          daemonRunning = await this.isDaemonRunning(appProperties.daemon)
+        }
 
         // Check if state is inconsistent
-        const inconsistent = runStateValue ? targetState !== runStateValue : false
+        const inconsistent = targetState !== runStateValue || (runStateValue === 'RUNNING' && !daemonRunning)
+
+        // Check license validity
+        let expired = false
+        if (checkLicense && appProperties && appProperties.name) {
+          const isValid = await this.isAppLicenseValid(appProperties.name)
+          expired = !isValid
+        }
+
+        // Power flag indicates transition state (starting/stopping)
+        const power = false
+
+        // Calculate color class (inconsistent/expired → power → on → else)
+        let colorCls = ''
+        if (inconsistent || expired) {
+          colorCls = 'error'
+        } else if (power) {
+          colorCls = 'warning'
+        } else if (isOn) {
+          colorCls = 'success'
+        } else {
+          colorCls = 'grey'
+        }
+
+        // Calculate status text (power → inconsistent/expired → else)
+        let status = ''
+        if (isOn) {
+          if (power) {
+            status = this.$vuntangle.$t('powering_on')
+          } else if (inconsistent) {
+            status = this.$vuntangle.$t('enabled_but_not_active')
+          } else {
+            status = this.$vuntangle.$t('enabled')
+          }
+        } else if (power) {
+          status = this.$vuntangle.$t('powering_off')
+        } else if (expired) {
+          status = this.$vuntangle.$t('disabled_license_is_valid_or_expired')
+        } else if (inconsistent) {
+          status = this.$vuntangle.$t('disabled_but_active')
+        } else {
+          status = this.$vuntangle.$t('disabled')
+        }
 
         return {
           instance,
@@ -208,10 +314,75 @@
           on: isOn,
           status,
           colorCls,
-          power: false,
+          power,
           inconsistent,
-          expired: false,
+          expired,
         }
+      },
+
+      /**
+       * Install an app for a specific policy
+       * @param {Object} payload - Contains appName and policyId
+       */
+      async onInstallApp({ appName, policyId }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const result = await this.$store.dispatch('apps/installApp', { appName, policyId })
+          if (result.success) {
+            this.buildApps(policyId)
+          }
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Remove an installed app
+       * @param {Object} payload - Contains instanceId and policyId
+       */
+      async onRemoveApp({ instanceId, policyId }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/destroyApp', { instanceId, policyId })
+          this.buildApps(policyId)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Start an installed app
+       * @param {Object} payload - Contains instanceId and policyId
+       */
+      async onStartApp({ instanceId, policyId }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/startApp', { instanceId, policyId })
+          this.buildApps(policyId)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Stop a running app
+       * @param {Object} payload - Contains instanceId and policyId
+       */
+      async onStopApp({ instanceId, policyId }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/stopApp', { instanceId, policyId })
+          this.buildApps(policyId)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Optional hook triggered on browser refresh. refetches the settings.
+       */
+      onBrowserRefresh() {
+        this.fetchNetworkSettings(true)
       },
     },
   }

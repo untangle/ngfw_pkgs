@@ -50,12 +50,8 @@ const APP_BOOTSTRAP_REGISTRY = {
       call: app => app.getSafelistAdminView().getUserSafelistCountsV2(),
     },
     {
-      key: 'inboxesList',
-      call: app => app.getQuarantineMaintenenceView().listInboxes(),
-    },
-    {
-      key: 'inboxesTotalSize',
-      call: app => app.getQuarantineMaintenenceView().getInboxesTotalSize(),
+      key: 'inboxSummary',
+      call: app => app.getQuarantineMaintenenceView().listInboxesV2(),
     },
   ],
 }
@@ -278,48 +274,6 @@ const mutations = {
  * Actions
  */
 const actions = {
-  async setSmtpSettingsWOSafeList({ dispatch }, smtpSettings) {
-    const app = await dispatch('getApp', 'smtp')
-    if (!app) return
-    return new Promise(resolve => {
-      app.setSmtpSettingsWithoutSafelistsV2((ex, res) => {
-        if (ex || res?.code) {
-          Util.handleException(ex || res.message)
-          return resolve({ success: false })
-        }
-        resolve({ success: true })
-      }, smtpSettings)
-    })
-  },
-  async setGlobalSafeList({ dispatch }, safeList) {
-    const app = await dispatch('getApp', 'smtp')
-    if (!app) return
-    return app
-      .getSafelistAdminView()
-      .replaceSafelist('GLOBAL', safeList)
-      .then(res => {
-        return { success: true, data: res }
-      })
-      .catch(err => {
-        Util.handleException(err?.message || err?.cause || 'Unknown error occurred')
-        return { success: false, error: err }
-      })
-  },
-
-  async deleteSafelists({ dispatch }, userSafeList) {
-    const app = await dispatch('getApp', 'smtp')
-    if (!app) return
-    return new Promise(resolve => {
-      app.getSafelistAdminView().deleteSafelists((ex, res) => {
-        if (ex || res?.code) {
-          Util.handleException(ex || res.message)
-          return resolve({ success: false })
-        }
-        resolve({ success: true })
-      }, userSafeList)
-    })
-  },
-
   async getApp(_, appName) {
     try {
       const app = await window.rpc.appManager.app(appName)
@@ -525,6 +479,202 @@ const actions = {
       Util.handleException(err)
       commit('SET_AUTO_INSTALL_APPS', false)
       return false
+    }
+  },
+
+  /**
+   * Make a registry API call for a specific bootstrap API by key.
+   * Looks up the registry for the given app and API key, then makes the corresponding API call.
+   * Patches the result into the store, preserving existing data for other keys.
+   *
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, apiKey }
+   * @param {string} payload.appName - The name of the app (e.g., 'smtp')
+   * @param {string} payload.apiKey - The key from APP_BOOTSTRAP_REGISTRY (e.g., 'globalSafeList')
+   * @returns {Promise<any>} - The result of the API call, or null if registry entry not found
+   *
+   * Usage:
+   * dispatch('makeRegistryCall', { appName: 'smtp', apiKey: 'globalSafeList' })
+   */
+  async makeRegistryCall({ state, commit, dispatch }, { appName, apiKey }) {
+    const registry = APP_BOOTSTRAP_REGISTRY[appName]
+    if (!registry) {
+      return null
+    }
+
+    const registryEntry = registry.find(item => item.key === apiKey)
+    if (!registryEntry) {
+      return null
+    }
+
+    const app = await dispatch('getApp', appName)
+    if (!app) return null
+
+    try {
+      const result = await registryEntry.call(app)
+
+      // Get existing settings for this app
+      const existingSettings = state.store[appName] || {}
+
+      // Merge the new result with existing settings
+      const updatedSettings = {
+        ...existingSettings,
+        [apiKey]: result,
+      }
+
+      // Commit the merged settings to the store
+      commit('SET_SETTINGS', { appName, value: updatedSettings })
+
+      return result
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
+  },
+
+  /**
+   * Destroy/remove an app instance
+   * @param {Object} context - Vuex context
+   * @param {number} instanceId - The app instance ID
+   * @returns {Promise<void>}
+   */
+  async destroyApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      await new Promise((resolve, reject) => {
+        window.rpc.appManager.destroy((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        }, instanceId)
+      })
+
+      // Refresh the app view after destroying, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Start an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async startApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.start((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after starting, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Stop an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async stopApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.stop((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after stopping, same as ExtJS getAppsView
+      await dispatch('getAppView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Check if a specific app's license is valid
+   * @param {Object} context - Vuex context
+   * @param {String} appName - The app name to check
+   * @returns {Boolean} true if license is valid, false otherwise
+   */
+  checkAppLicense(_, appName) {
+    try {
+      const isValid = window.rpc.UvmContext.licenseManager().isLicenseValid(appName)
+      return isValid
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Check if a daemon is running
+   * @param {Object} context - Vuex context
+   * @param {String} daemonName - The daemon name to check
+   * @returns {Boolean} true if daemon is running, false otherwise
+   */
+  checkDaemonStatus(_, daemonName) {
+    try {
+      const isRunning = window.rpc.UvmContext.daemonManager().isRunning(daemonName)
+      return isRunning
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Check license status for a specific license node
+   * @param {Object} context - Vuex context
+   * @param {String} licenseNodeName - The license node name to check
+   * @returns {Promise<Boolean>} true if license is valid, false otherwise
+   */
+  async checkLicenseStatus(_, licenseNodeName) {
+    try {
+      const response = await window.rpc.UvmContext.licenseManager().getLicense(licenseNodeName).valid
+      return response || false
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Fetch the URI for license management
+   * @param {Object} context - Vuex context
+   * @param {String} uriPath - The URI path to fetch (e.g., 'subscriptions')
+   * @returns {Promise<String|null>} The manage license URI or null on error
+   */
+  async fetchManageLicenseUri(_, uriPath) {
+    try {
+      const uri = await window.rpc.uriManager.getUriWithPath(uriPath)
+      return uri
+    } catch (error) {
+      Util.handleException(error)
+      return null
     }
   },
 }

@@ -18,6 +18,9 @@ module.exports = {
       '/setup': {
         target: `http://ngfw.untangle.com/`,
       },
+      '/quarantine': {
+        target: `http://ngfw.untangle.com/`,
+      },
     },
   },
   configureWebpack: {
