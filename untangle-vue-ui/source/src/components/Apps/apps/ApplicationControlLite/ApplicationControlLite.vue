@@ -44,6 +44,7 @@
         appName: this.appData?.appName || 'application-control-lite',
         loading: false, // TODO Check uasage and remove if not needed
         learnMoreUrl: null,
+        powerLoading: false, // Track power state loading separately
       }
     },
 
@@ -59,9 +60,14 @@
        * Consolidated app data including original appData and fetched/computed app-related data
        */
       consolidatedAppData() {
+        const powerState = {
+          ...(this.powerState || {}),
+          power: this.powerLoading, // Merge loading state
+        }
         return {
           ...this.appData,
           learnMoreUrl: this.learnMoreUrl,
+          powerState,
         }
       },
 
@@ -113,26 +119,34 @@
 
       /**
        * Toggle app state (start/stop)
+       * @param {boolean} enabled - Target state (true = starting, false = stopping)
        */
       async toggleAppState(enabled) {
-        this.loading = true
-        try {
-          const newSettings = {
-            ...this.settings,
-            enabled,
-          }
+        if (!this.appInstance) {
+          console.error('Cannot toggle - app instance not cached')
+          return
+        }
 
-          await this.$store.dispatch('apps/setAppSettings', {
-            appName: this.appName,
-            settings: newSettings,
+        this.cachedTargetState = enabled ? 'RUNNING' : 'INITIALIZED'
+        this.powerLoading = true
+        console.log(`Toggling app state to ${enabled ? 'ON' : 'OFF'}...`)
+        try {
+          const rpcMethod = enabled ? 'start' : 'stop'
+
+          await new Promise((resolve, reject) => {
+            this.appInstance[rpcMethod]((ex, res) => {
+              if (ex || res?.code) {
+                reject(ex || new Error(res?.message || `Failed to ${rpcMethod} app`))
+              } else {
+                resolve(res)
+              }
+            })
           })
 
-          this.$vuntangle.toast.add(this.$t(enabled ? 'app_started' : 'app_stopped'), 'success')
-        } catch (err) {
-          console.error('Failed to toggle app state:', err)
-          this.$vuntangle.toast.add(this.$t('failed_to_toggle_app'), 'error')
+          // Refresh runState from cached instance
+          this.refreshRunState()
         } finally {
-          this.loading = false
+          this.powerLoading = false
         }
       },
 

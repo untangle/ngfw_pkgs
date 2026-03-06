@@ -1,5 +1,6 @@
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
+import Rpc from '@/util/Rpc'
 
 /**
  * Constants for app installation status
@@ -157,6 +158,47 @@ const getters = {
         appMetrics,
       }
     },
+  /**
+   * Get computed power state for an app
+   * Computes: enabled, running, inconsistent, expired, statusText, colorState
+   * Usage: getters['apps/getAppPowerState']({ policyId: 1, appName: 'web-filter', appRunState, appTargetState })
+   */
+  getAppPowerState:
+    (state, getters) =>
+    ({ policyId, appName, appRunState, appTargetState }) => {
+      const appData = getters.getAppData({ policyId, appName })
+
+      if (!appData || !appData.instance) {
+        return {
+          expired: false,
+          on: false,
+          inconsistent: false,
+          power: false,
+        }
+      }
+
+      const { appProperties, instance } = appData
+      const appView = state.appViewsByPolicy[policyId]
+
+      const runState = appRunState || appView?.runStates?.[instance.id]
+      const targetState = appTargetState ?? instance.targetState
+
+      const on = runState === 'RUNNING'
+      const daemonRunning =
+        on && appProperties?.daemon
+          ? Rpc.directData('rpc.UvmContext.daemonManager.isRunning', appProperties.daemon)
+          : true
+
+      const inconsistent = targetState !== runState || (on && !daemonRunning)
+      const expired = !Rpc.directData('rpc.UvmContext.licenseManager.isLicenseValid', appName)
+
+      return {
+        expired,
+        on,
+        inconsistent,
+        power: false,
+      }
+    },
 }
 
 const mutations = {
@@ -293,6 +335,31 @@ const actions = {
       return null
     }
   },
+
+  /**
+   * Get app instance for a specific policy
+   * This is critical for start/stop operations - we need the policy-specific instance
+   * @param {*} _
+   * @param {Object} payload - { appName, policyId }
+   * @returns {Promise<Object|null>} App instance or null
+   */
+  async getAppForPolicy(_, { appName, policyId }) {
+    try {
+      const apps = await window.rpc.appManager.appInstances(appName, policyId, false)
+
+      // Handle both array response and { list: [...] } response
+      if (Array.isArray(apps)) {
+        return apps.length > 0 ? apps[0] : null
+      } else if (apps && apps.list && Array.isArray(apps.list)) {
+        return apps.list.length > 0 ? apps.list[0] : null
+      }
+
+      return null
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
+  },
   /**
    * Get settings for a given app using getSettingsV2().
    * @param {string} appName - The name of the app (e.g., 'smtp', 'http')
@@ -357,7 +424,6 @@ const actions = {
           Util.handleException(ex || res.message)
           return resolve({ success: false })
         }
-
         await dispatch('loadAppData', appName)
         resolve({ success: true })
       }, settings)

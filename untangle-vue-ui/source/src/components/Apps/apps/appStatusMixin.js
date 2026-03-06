@@ -5,10 +5,11 @@ import util from '@/util/util'
 export default {
   data() {
     return {
-      // TODO while migrating Application Control Lite Signatures, consider how to handle appInstance and appSettings
       appInstance: null,
       appSettings: null,
       loadingState: false,
+      cachedRunState: null,
+      cachedTargetState: null,
     }
   },
 
@@ -20,6 +21,7 @@ export default {
 
   computed: {
     ...mapGetters('metrics', ['getFormattedMetrics', 'getLiveSessions']),
+    ...mapGetters('apps', ['getAppPowerState']),
 
     /**
      * App display name for reports filtering
@@ -97,6 +99,44 @@ export default {
       // TODO Remove Util Method Call Once Reports App and its flows are Fully Migrated
       return this.$store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled()
     },
+
+    /**
+     * Get computed power state from Vuex
+     */
+    powerState() {
+      return this.getAppPowerState({
+        policyId: this.appData?.policyId,
+        appName: this.appName,
+        appRunState: this.cachedRunState,
+        appTargetState: this.cachedTargetState,
+      })
+    },
+  },
+
+  /**
+   * Created lifecycle hook
+   * Caches app instance and refreshes runtime state
+   * Matches ExtJS pattern: this.app = appInstance (AppState.js constructor)
+   */
+  async created() {
+    if (!this.appData?.policyId || !this.appName) return
+
+    try {
+      this.appInstance = await this.$store.dispatch('apps/getAppForPolicy', {
+        appName: this.appName,
+        policyId: this.appData.policyId,
+      })
+      // Get real-time runState
+      if (this.appInstance) {
+        this.cachedRunState = this.appInstance.getRunState()
+      }
+      if (this.appData?.instance) {
+        this.cachedTargetState = this.appData.instance.targetState
+      }
+    } catch (err) {
+      // Fallback to heavy getAppView call if needed
+      this.$store.dispatch('apps/getAppView', this.appData.policyId)
+    }
   },
 
   methods: {
@@ -117,6 +157,22 @@ export default {
       }
 
       return data
+    },
+
+    /**
+     * Refresh runState from cached app instance
+     * @returns {string|null} - Current runState or null if app instance not available
+     */
+    refreshRunState() {
+      if (!this.appInstance) {
+        return null
+      }
+      try {
+        this.cachedRunState = this.appInstance.getRunState()
+        return this.cachedRunState
+      } catch (err) {
+        return null
+      }
     },
   },
 }
