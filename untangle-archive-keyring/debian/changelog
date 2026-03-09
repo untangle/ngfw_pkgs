@@ -4,6 +4,18 @@ untangle-archive-keyring (17.5.0..-1bookworm) current; urgency=medium
 
  -- Untangle Buildbot <buildbot@untangle.com>  
 
+untangle-archive-keyring (17.5.0..-1bookworm) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
+untangle-archive-keyring (17.5.0..-1bookworm) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
 untangle-archive-keyring (5.0.2-1bookworm) current; urgency=medium
 
   * Add bookworm signing key (0x0B9D6AE3627BF103)
