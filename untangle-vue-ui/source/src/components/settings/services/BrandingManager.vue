@@ -1,34 +1,30 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
-    <no-license v-if="isLicensed === false" class="mt-2">
-      {{ $t('not_licensed_service', [$t('branding_manager')]) }}
-      <template #actions>
-        <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
-        <u-btn class="ml-4" :href="manageLicenseUri" target="_blank">
-          {{ $t('manage_licenses') }}
-          <v-icon right> mdi-open-in-new </v-icon>
-        </u-btn>
-      </template>
-    </no-license>
-
-    <branding-manager :settings="settings" :disabled="!isLicensed" />
+    <branding-manager
+      :settings="settings"
+      :is-licensed.sync="isLicensed"
+      :manage-license-uri="manageLicenseUri"
+      @check-license="checkLicense"
+      @get-manage-license-uri="getManageLicenseUri"
+    />
   </v-container>
 </template>
 
 <script>
-  import { BrandingManager, NoLicense } from 'vuntangle'
-  import serviceMixin from './serviceMixin'
+  import { BrandingManager } from 'vuntangle'
+  import Util from '../../../util/setupUtil'
+  import uris from '@/util/uris'
 
   export default {
     components: {
       BrandingManager,
-      NoLicense,
     },
-    mixins: [serviceMixin],
 
     data() {
       return {
         licenseNodeName: 'branding-manager',
+        isLicensed: false,
+        manageLicenseUri: null,
       }
     },
 
@@ -38,6 +34,25 @@
 
     created() {
       this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
+    },
+
+    methods: {
+      async checkLicense() {
+        try {
+          if (!this.licenseNodeName) return
+          this.isLicensed = await this.$store.dispatch('apps/checkLicenseStatus', this.licenseNodeName)
+        } catch (error) {
+          Util.handleException(error)
+        }
+      },
+
+      async getManageLicenseUri() {
+        try {
+          this.manageLicenseUri = await this.$store.dispatch('apps/fetchManageLicenseUri', uris.list.subscriptions)
+        } catch (error) {
+          Util.handleException(error)
+        }
+      },
     },
   }
 </script>
