@@ -1,3 +1,17 @@
+untangle-archive-keyring (17.5.0..-1bookworm) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
+untangle-archive-keyring (5.0.2-1bookworm) current; urgency=medium
+
+  * Add bookworm signing key (0x0B9D6AE3627BF103)
+  * Merge stretch/bookworm RSA key into main keyring
+  * Add untangle-archive-bookworm-automatic.gpg to trusted.gpg.d
+
+ -- Untangle Buildbot <buildbot@untangle.com>  Sun, 09 Mar 2026 00:00:00 +0000
+
 untangle-archive-keyring (5.0.1-1) stable; urgency=low
 
   * Initial release.
