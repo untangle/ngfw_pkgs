@@ -55,7 +55,7 @@ untangle-kernel-modules-bullseye-arm64	bullseye
 untangle-kernel-modules-bookworm-amd64	bookworm
 untangle-debconf-manager                bullseye
 untangle-clamav-config                  bullseye
-untangle-client-local                   bullseye
+untangle-client-local                   bookworm
 untangle-ddclient-config                bullseye
 untangle-development-build              bullseye
 untangle-development-runtime            bullseye
@@ -67,7 +67,7 @@ untangle-archive-keyring                bookworm
 untangle-nsis-addons                    bullseye
 untangle-postgresql-config              bullseye
 untangle-hardware-config                bullseye
-untangle-kiosk                          bullseye
+untangle-kiosk                          bookworm
 untangle-linux-config                   bookworm
 untangle-exim4-config                   bullseye
 untangle-softflowd-config               bullseye
@@ -81,5 +81,5 @@ untangle-geoip-database                 bullseye
 untangle-squid-config                   bullseye
 untangle-freeradius-config		bullseye
 untangle-region-eu                      bullseye
-untangle-serial-config			bullseye
+untangle-serial-config			bookworm
 untangle-vue-ui			                    bullseye
