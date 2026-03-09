@@ -7,16 +7,16 @@ Build-Depends: debhelper (>= 10)
 Standards-Version: 3.9.8
 
 Package: untangle-linux-config
-Architecture: i386 amd64 arm64
+Architecture: amd64
 Depends: ${misc:Depends}, bash (>= 3.1),
          firmware-linux-free,
          firmware-linux-nonfree,
-         grub-pc | grub-efi-amd64 | grub-cloud-amd64 | grub-efi-arm64,
+         grub-pc | grub-efi-amd64 | grub-cloud-amd64,
          initramfs-tools,
-	 linux-image-5.10.0-27-untangle-amd64 (>= 5.10.205-2+untangle3bullseye) | linux-image-5.10.0-27-untangle-arm64 (>= 5.10.205-2+untangle3bullseye),
-	 linux-headers-5.10.0-27-untangle-amd64 (>= 5.10.205-2+untangle3bullseye) | linux-headers-5.10.0-27-untangle-arm64 (>= 5.10.205-2+untangle3bullseye),
+	 linux-image-6.1.0-43-untangle-amd64 (>= 6.1.159-1+untangle1bookworm),
+	 linux-headers-6.1.0-43-untangle-amd64 (>= 6.1.159-1+untangle1bookworm),
          untangle-bootsplash,
-         untangle-kernel-modules-bullseye,
+         untangle-kernel-modules-bookworm,
          uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base, linux-image-4.19.0-8-untangle-amd64-unsigned, linux-image-4.19.0-8-untangle-686-pae-unsigned, linux-headers-4.19.0-8-untangle-amd64, linux-headers-4.19.0-8-untangle-686-pae, linux-headers-4.19.0-8-untangle-arm64
 Description: The Untangle kernel config
