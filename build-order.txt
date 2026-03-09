@@ -52,6 +52,7 @@ untangle-button-led-monitor             bullseye
 untangle-bootsplash                     bullseye
 untangle-kernel-modules-bullseye-amd64	bullseye
 untangle-kernel-modules-bullseye-arm64	bullseye
+untangle-kernel-modules-bookworm-amd64	bookworm
 untangle-debconf-manager                bullseye
 untangle-clamav-config                  bullseye
 untangle-client-local                   bullseye
@@ -67,7 +68,7 @@ untangle-nsis-addons                    bullseye
 untangle-postgresql-config              bullseye
 untangle-hardware-config                bullseye
 untangle-kiosk                          bullseye
-untangle-linux-config                   bullseye
+untangle-linux-config                   bookworm
 untangle-exim4-config                   bullseye
 untangle-softflowd-config               bullseye
 untangle-snmpd-config                   bullseye
