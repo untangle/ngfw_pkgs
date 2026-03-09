@@ -62,7 +62,7 @@ untangle-support-diagnostics           bullseye
 untangle-gateway                        bullseye
 untangle-extra-utils                    bullseye
 untangle-update-manager                 bullseye
-untangle-archive-keyring                bullseye
+untangle-archive-keyring                bookworm
 untangle-nsis-addons                    bullseye
 untangle-postgresql-config              bullseye
 untangle-hardware-config                bullseye
