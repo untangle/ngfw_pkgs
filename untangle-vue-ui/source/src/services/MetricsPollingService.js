@@ -5,7 +5,7 @@
  *
  * Lifecycle:
  * - Start: Called on router beforeEnter to /apps
- * - Stop: Called on router beforeLeave from /apps
+ * - Stop: Called on router before leave from /apps
  * - Cleanup: Automatic via router guards
  *
  * Behavior:

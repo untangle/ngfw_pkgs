@@ -1,9 +1,7 @@
 /**
  * Reports Service
  *
- * Provides abstraction layer for accessing reports data from components
- * that don't use appStatusMixin. Components using the mixin should access
- * reports via the mixin's computed properties instead.
+ * Provides abstraction layer for accessing reports data from components.
  *
  * This service wraps Vuex store access and provides formatted data
  * ready for UI consumption.

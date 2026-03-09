@@ -30,7 +30,7 @@
    * AppSettingsLayout Component
    *
    * Dynamically loads app-specific components based on the route parameter.
-   * Converts kebab-case app names to PascalCase component names.
+   * Handles license checking and displays appropriate messages if the app is not licensed.
    * Fetches and passes app data (license, instance, properties, metrics) to the component.
    *
    * Example:
@@ -59,68 +59,45 @@
        * Get policyId from route params
        * @returns {number|null} Policy ID
        */
-      policyId() {
-        const id = this.$route.params.policyId
-        return id ? parseInt(id, 10) : null
-      },
+      policyId: ({ $route }) => ($route.params.policyId ? parseInt($route.params.policyId, 10) : null),
 
       /**
        * Get appName from route params
        * @returns {string|null} App name
        */
-      appName() {
-        return this.$route.params.appName || null
-      },
+      appName: ({ $route }) => $route.params.appName || null,
+
+      /**
+       * Icon path for the app using webpack require
+       * @returns {string|null} Icon path or null if appName is not available
+       */
+      iconPath: ({ appName }) => (appName ? require(`@/assets/icons/apps/${appName}.svg`) : null),
 
       /**
        * Get complete app data including license, instance, properties, and metrics
        * Also adds computed properties like iconPath
        * @returns {Object|null} App data object
        */
-      appData() {
-        if (!this.policyId || !this.appName) {
-          return null
-        }
+      appData: ({ getAppData, policyId, appName, iconPath }) => {
+        if (!policyId || !appName) return null
 
-        const baseAppData = this.getAppData({
-          policyId: this.policyId,
-          appName: this.appName,
-        })
+        // Fetch base app data from Vuex store using the getter
+        const baseAppData = getAppData({ policyId, appName })
 
-        // Add icon path (common for all apps)
-        return {
-          ...baseAppData,
-          iconPath: this.iconPath,
-        }
-      },
-
-      /**
-       * Icon path for the app using webpack require
-       * @returns {string|null} Icon path or null if not found
-       */
-      iconPath() {
-        if (!this.appName) return null
-
-        try {
-          return require(`@/assets/icons/apps/${this.appName}.svg`)
-        } catch (e) {
-          return null
-        }
+        // Add icon path
+        return { ...baseAppData, iconPath }
       },
 
       /**
        * Dynamically imports the app-specific component based on route params
        * @returns {Function} Dynamic import function
        */
-      appComponent() {
-        if (!this.appName) {
-          return null
-        }
+      appComponent: ({ appName }) => {
+        if (!appName) return null
 
         // Convert kebab-case to PascalCase
-        const componentName = util.kebabToPascal(this.appName)
+        const componentName = util.kebabToPascal(appName)
 
-        // Return dynamic import function
         // Vue Router will handle lazy loading and code splitting
         return () =>
           import(`./apps/${componentName}/${componentName}.vue`).catch(() => {
@@ -136,8 +113,8 @@
 
     methods: {
       /**
-       * PROP: is-licensed
-       * Checks for TP license status
+       * Checks if the app is licensed by calling the license manager via RPC
+       * Sets the isLicensed data property based on the response
        */
       async checkLicense() {
         if (!this.appName) return
@@ -146,8 +123,7 @@
       },
 
       /**
-       * PROP: manage-license-uri
-       * Fetches the URI for license management
+       * Fetches the URI for managing licenses and sets the manageLicenseUri data property
        */
       async getManageLicenseUri() {
         this.manageLicenseUri = await window.rpc.uriManager.getUriWithPath(uris.list.subscriptions)

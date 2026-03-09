@@ -61,8 +61,8 @@ const APP_BOOTSTRAP_REGISTRY = {
  */
 const getDefaultState = () => ({
   store: {}, // all app settings stored by appName
-  appViews: null, // list of per-policy app view states (kept for backward compatibility)
-  appViewsByPolicy: {}, // normalized app views by policyId for O(1) lookup
+  appsViews: null, // list of per-policy apps view states (kept for backward compatibility)
+  appsViewByPolicy: {}, // normalized apps view by policyId for O(1) lookup
   installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
   selectedPolicyId: null, // currently selected policy ID
   autoInstallApps: false, // tracks if recommended apps are being auto-installed on initial setup
@@ -79,19 +79,19 @@ const getters = {
   getSettings: state => appName => state.store[appName] || null,
   /**
    * Get all app views (list of per-policy app view states)
-   * Usage: getters['apps/appViews']
+   * Usage: getters['apps/appsViews']
    */
-  appViews: state => state.appViews || [],
+  appsViews: state => state.appsViews || [],
   /**
    * Get all app views normalized by policyId (O(1) lookup)
-   * Usage: getters['apps/appViewsByPolicy']
+   * Usage: getters['apps/appsViewByPolicy']
    */
-  appViewsByPolicy: state => state.appViewsByPolicy || {},
+  appsViewByPolicy: state => state.appsViewByPolicy || {},
   /**
    * Get app view for a specific policy (O(1) lookup)
-   * Usage: getters['apps/getAppViewByPolicy'](policyId)
+   * Usage: getters['apps/getAppsViewByPolicy'](policyId)
    */
-  getAppViewByPolicy: state => policyId => state.appViewsByPolicy[policyId] || null,
+  getAppsViewByPolicy: state => policyId => state.appsViewByPolicy[policyId] || null,
   /**
    * Get installing apps
    * Usage: getters['apps/installingApps']
@@ -123,27 +123,23 @@ const getters = {
   getAppData:
     state =>
     ({ policyId, appName }) => {
-      if (!policyId || !appName) {
-        return null
-      }
+      if (!policyId || !appName) return null
 
       // Get the app view for this policy
-      const appView = state.appViewsByPolicy[policyId]
-      if (!appView) {
-        return null
-      }
+      const appsView = state.appsViewByPolicy[policyId]
+      if (!appsView) return null
 
       // Extract license for this app
-      const license = appView.licenseMap?.[appName] || null
+      const license = appsView.licenseMap?.[appName] || null
 
       // Find instance for this app (matching policyId and appName)
-      const instance = appView.instances?.find(inst => inst.appName === appName && inst.policyId === policyId) || null
+      const instance = appsView.instances?.find(inst => inst.appName === appName && inst.policyId === policyId) || null
 
       // Find appProperties for this app
-      const appProperties = appView.appProperties?.find(prop => prop.name === appName) || null
+      const appProperties = appsView.appProperties?.find(prop => prop.name === appName) || null
 
       // Get appMetrics if instance exists
-      const appMetrics = instance?.id ? appView.appMetrics?.[instance.id] || [] : []
+      const appMetrics = instance?.id ? appsView.appMetrics?.[instance.id] || [] : []
 
       return {
         policyId,
@@ -172,10 +168,10 @@ const getters = {
       }
 
       const { appProperties, instance } = appData
-      const appView = state.appViewsByPolicy[policyId]
+      const appsView = state.appsViewByPolicy[policyId]
 
       const appRunState = appManager ? appManager.getRunState() : null
-      const runState = appRunState || appView?.runStates?.[instance.id]
+      const runState = appRunState || appsView?.runStates?.[instance.id]
       const on = runState === 'RUNNING'
 
       const daemonRunning =
@@ -204,37 +200,37 @@ const mutations = {
   },
   /**
    * Set the list of app views for all policies
-   * Usage: commit('SET_APP_VIEWS', appViews)
+   * Usage: commit('SET_APPS_VIEWS', appsViews)
    */
-  SET_APP_VIEWS: (state, appViews) => {
-    set(state, 'appViews', appViews)
-    // Normalize appViews by policyId for O(1) lookup
-    const normalized = (appViews || []).reduce((acc, view) => {
+  SET_APPS_VIEWS: (state, appsViews) => {
+    set(state, 'appsViews', appsViews)
+    // Normalize appsViews by policyId for O(1) lookup
+    const normalized = (appsViews || []).reduce((acc, view) => {
       acc[view.policyId] = view
       return acc
     }, {})
-    set(state, 'appViewsByPolicy', normalized)
+    set(state, 'appsViewByPolicy', normalized)
   },
   /**
    * Set the app view for a specific policy
-   * Usage: commit('SET_APP_VIEW', { policyId, appView })
+   * Usage: commit('SET_APPS_VIEW', { policyId, appsView })
    */
-  SET_APP_VIEW: (state, { policyId, appView }) => {
+  SET_APPS_VIEW: (state, { policyId, appsView }) => {
     // Update array (backward compatibility)
-    if (!state.appViews) {
-      set(state, 'appViews', [])
+    if (!state.appsViews) {
+      set(state, 'appsViews', [])
     }
-    const index = state.appViews.findIndex(av => String(av.policyId) === policyId)
+    const index = state.appsViews.findIndex(av => String(av.policyId) === policyId)
     if (index >= 0) {
-      state.appViews.splice(index, 1, appView)
+      state.appsViews.splice(index, 1, appsView)
     } else {
-      state.appViews.push(appView)
+      state.appsViews.push(appsView)
     }
     // Update normalized object (O(1) lookup)
-    if (!state.appViewsByPolicy) {
-      set(state, 'appViewsByPolicy', {})
+    if (!state.appsViewByPolicy) {
+      set(state, 'appsViewByPolicy', {})
     }
-    set(state.appViewsByPolicy, policyId, appView)
+    set(state.appsViewByPolicy, policyId, appsView)
   },
   /**
    * Set app installation status
@@ -401,13 +397,13 @@ const actions = {
    * @param {*} param0  commit
    * @returns Promise that resolves to the list of app views
    */
-  getAppViews({ state, commit }, refetch) {
+  getAppsViews({ state, commit }, refetch) {
     try {
-      if (state.appViews && !refetch) {
+      if (state.appsViews && !refetch) {
         return
       }
       const data = window.rpc.appManager.getAppsViewsV2()
-      commit('SET_APP_VIEWS', data || [])
+      commit('SET_APPS_VIEWS', data || [])
     } catch (err) {
       Util.handleException(err)
     }
@@ -415,14 +411,14 @@ const actions = {
 
   /**
    * Gets the app views for policy with given Id.
-   * Updates the appViews state with the fetched data.
+   * Updates the appsViews state with the fetched data.
    * @param {*} param0 commit
    * @param {*} policyId
    */
-  getAppView({ commit }, policyId) {
+  getAppsView({ commit }, policyId) {
     try {
       const data = window.rpc.appManager.getAppsViewV2(policyId)
-      commit('SET_APP_VIEW', { policyId, appView: data || [] })
+      commit('SET_APPS_VIEW', { policyId, appsView: data || [] })
     } catch (err) {
       Util.handleException(err)
     }
@@ -451,7 +447,7 @@ const actions = {
       })
 
       // Refresh app views to get updated data
-      await dispatch('getAppViews', true)
+      await dispatch('getAppsViews', true)
       // Set installing status to 'finish'
       commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'finish' })
 
@@ -551,7 +547,7 @@ const actions = {
       })
 
       // Refresh the app view after destroying, same as ExtJS getAppsView
-      await dispatch('getAppView', policyId)
+      await dispatch('getAppsView', policyId)
     } catch (error) {
       Util.handleException(error)
       throw error
@@ -579,7 +575,7 @@ const actions = {
       })
 
       // Refresh the app view after starting, same as ExtJS getAppsView
-      await dispatch('getAppView', policyId)
+      await dispatch('getAppsView', policyId)
     } catch (error) {
       Util.handleException(error)
       throw error
@@ -607,7 +603,7 @@ const actions = {
       })
 
       // Refresh the app view after stopping, same as ExtJS getAppsView
-      await dispatch('getAppView', policyId)
+      await dispatch('getAppsView', policyId)
     } catch (error) {
       Util.handleException(error)
       throw error

@@ -260,7 +260,7 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  * installing apps always appear with loader, regardless of backend timing.
  *
  * @param {Object} params - Function parameters
- * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
+ * @param {Object<number, Object>} params.appsViewByPolicy - Normalized app views keyed by policyId
  * @param {Object} params.selectedPolicy - Currently selected policy object
  * @param {Array<Object>} params.policies - Complete list of all policies
  * @param {Object} params.$vuntangle - Vue i18n instance for translations
@@ -269,16 +269,16 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  *
  * @example
  * const apps = getInstalledApps({
- *   appViewsByPolicy: { 1: {...}, 2: {...} },
+ *   appsViewByPolicy: { 1: {...}, 2: {...} },
  *   selectedPolicy: { policyId: 2, parentId: 1 },
  *   policies: [...],
  *   $vuntangle,
  *   installingApps: {}
  * })
  */
-export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $vuntangle, installingApps = {} }) {
+export function getInstalledApps({ appsViewByPolicy, selectedPolicy, policies, $vuntangle, installingApps = {} }) {
   // Guard clauses
-  if (!appViewsByPolicy || !selectedPolicy) {
+  if (!appsViewByPolicy || !selectedPolicy) {
     return []
   }
 
@@ -293,7 +293,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
   // Collect all app instances from the policy hierarchy
   const allApps = policyHierarchy.reduce((acc, policyId) => {
-    const view = appViewsByPolicy[policyId] // O(1) lookup
+    const view = appsViewByPolicy[policyId] // O(1) lookup
     return acc.concat(view ? view.instances : [])
   }, [])
 
@@ -305,7 +305,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
     .map(appName => {
       // Find the app in the policy hierarchy (check selected policy first, then parents)
       for (const policyId of policyHierarchy) {
-        const view = appViewsByPolicy[policyId] // O(1) lookup
+        const view = appsViewByPolicy[policyId] // O(1) lookup
 
         if (!view) continue
 
@@ -329,7 +329,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
   // Add apps that are currently being installed but not yet instantiated by backend
   // This ensures installing apps always show with loader, even if backend hasn't created instance yet
-  const currentPolicyView = appViewsByPolicy[selectedPolicy.policyId]
+  const currentPolicyView = appsViewByPolicy[selectedPolicy.policyId]
   if (currentPolicyView) {
     Object.keys(installingApps).forEach(appName => {
       const installing = installingApps[appName]
@@ -390,25 +390,25 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
  * Apps with 'finish' installation status are included to show success state.
  *
  * @param {Object} params - Function parameters
- * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
+ * @param {Object<number, Object>} params.appsViewByPolicy - Normalized app views keyed by policyId
  * @param {Object} params.selectedPolicy - Currently selected policy object
  * @param {Object} [params.installingApps={}] - Map of apps currently being installed
  * @returns {Array<Object>} Sorted array of installable app objects
  *
  * @example
  * const apps = getInstallableApps({
- *   appViewsByPolicy: { 1: {...} },
+ *   appsViewByPolicy: { 1: {...} },
  *   selectedPolicy: { policyId: 1 },
  *   installingApps: { 'web-filter': { status: 'progress', policyId: 1 } }
  * })
  */
-export function getInstallableApps({ appViewsByPolicy, selectedPolicy, installingApps = {} }) {
+export function getInstallableApps({ appsViewByPolicy, selectedPolicy, installingApps = {} }) {
   // Guard clauses
-  if (!appViewsByPolicy || !selectedPolicy) {
+  if (!appsViewByPolicy || !selectedPolicy) {
     return []
   }
 
-  const policyView = appViewsByPolicy[selectedPolicy.policyId] // O(1) lookup
+  const policyView = appsViewByPolicy[selectedPolicy.policyId] // O(1) lookup
 
   if (!policyView) {
     return []

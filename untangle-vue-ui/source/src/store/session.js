@@ -37,7 +37,7 @@ const actions = {
 
     try {
       await Promise.all([
-        dispatch('apps/getAppViews', true, { root: true }),
+        dispatch('apps/getAppsViews', true, { root: true }),
         dispatch('apps/loadAppData', 'policy-manager', { root: true }),
         dispatch('reports/loadReports', null, { root: true }),
       ])

@@ -126,8 +126,8 @@
        * This fetches all app-related data (properties, instances, installable apps, run states) for a given policy.
        */
       getAppsView(policyId) {
-        this.$store.dispatch('apps/getAppView', policyId)
-        return this.$store.getters['apps/getAppViewByPolicy'](policyId)
+        this.$store.dispatch('apps/getAppsView', policyId)
+        return this.$store.getters['apps/getAppsViewByPolicy'](policyId)
       },
       /**
        * Get apps views for all policies.
@@ -136,8 +136,8 @@
        * @returns {Promise<Array>} Array of policy objects
        */
       getAppsViews() {
-        this.$store.dispatch('apps/getAppViews', true)
-        return this.$store.getters['apps/appViews']
+        this.$store.dispatch('apps/getAppsViews', true)
+        return this.$store.getters['apps/appsViews']
       },
       /**
        * Build apps list for a given policy.
