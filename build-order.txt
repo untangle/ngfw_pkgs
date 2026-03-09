@@ -49,11 +49,11 @@ untangle-hardware-qotom-u50xw           bullseye
 untangle-hardware-qotom-z4              bullseye
 untangle-hardware-qotom-z4w             bullseye
 untangle-button-led-monitor             bullseye
-untangle-bootsplash                     bullseye
+untangle-bootsplash                     bookworm
 untangle-kernel-modules-bullseye-amd64	bullseye
 untangle-kernel-modules-bullseye-arm64	bullseye
 untangle-kernel-modules-bookworm-amd64	bookworm
-untangle-debconf-manager                bullseye
+untangle-debconf-manager                bookworm
 untangle-clamav-config                  bullseye
 untangle-client-local                   bookworm
 untangle-ddclient-config                bullseye
@@ -66,7 +66,7 @@ untangle-update-manager                 bullseye
 untangle-archive-keyring                bookworm
 untangle-nsis-addons                    bullseye
 untangle-postgresql-config              bullseye
-untangle-hardware-config                bullseye
+untangle-hardware-config                bookworm
 untangle-kiosk                          bookworm
 untangle-linux-config                   bookworm
 untangle-exim4-config                   bullseye
