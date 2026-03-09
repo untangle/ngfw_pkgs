@@ -1,9 +1,3 @@
-untangle-kernel-modules-bookworm-amd64 (17.5.0..-1bookworm) current; urgency=medium
-
-  * auto build
-
- -- Untangle Buildbot <buildbot@untangle.com>  
-
 untangle-kernel-modules-bookworm-amd64 (0-0) current; urgency=medium
 
   * NGFW-15626: Initial bookworm kernel modules metapackage
