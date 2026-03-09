@@ -1,7 +1,7 @@
 #! /bin/bash
 
 KIOSK_HOME=/home/kiosk
-XORG_SAFE_CONF_BASE=${KIOSK_HOME}/xorg-confs/safe
+XORG_SAFE_CONF_BASE=/etc/X11/xorg-kiosk-safe.conf
 
 ## kiosk user
 
