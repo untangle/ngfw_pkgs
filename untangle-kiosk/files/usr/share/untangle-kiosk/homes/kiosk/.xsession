@@ -29,9 +29,9 @@ fi
 currentDPI=$(xdpyinfo | awk '/resolution/ { gsub(/x.+/, "", $2) ; print $2}')
 [ "$currentDPI" -gt 400 ] && xrand --dpi 96
 
-# start fbpanel
-pkill fbpanel
-fbpanel &
+# start xfce4-panel
+pkill xfce4-panel
+xfce4-panel &
 
 # set the background if present
 bgFile="/usr/share/untangle-kiosk/desktop_background.png"
