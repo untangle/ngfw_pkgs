@@ -1,3 +1,10 @@
+untangle-linux-config (6.1.0-1bookworm) current; urgency=medium
+
+  * NGFW-15626: Update kernel dependencies for bookworm (6.1.0-43-untangle)
+  * Update untangle-kernel-modules-bullseye to bookworm
+
+ -- Untangle Buildbot <buildbot@untangle.com>  Sun, 09 Mar 2026 00:00:00 +0000
+
 untangle-linux-config (6.1.0~svn20090123r21556trunk-1lenny) chaos; urgency=low
 
   * auto build
