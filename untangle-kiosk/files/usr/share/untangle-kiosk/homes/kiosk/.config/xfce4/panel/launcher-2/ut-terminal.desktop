@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Launch Terminal
+Comment=Launch Terminal
+Icon=/usr/share/untangle-kiosk/panel/terminal.png
+Exec=/home/kiosk/utils/ut-shell.sh
+StartupNotify=false
+Terminal=false
