@@ -448,6 +448,8 @@ const actions = {
 
       // Refresh app views to get updated data
       await dispatch('getAppsViews', true)
+      // Refresh reports to load any new reports related to the installed app
+      dispatch('reports/loadReports', null, { root: true })
       // Set installing status to 'finish'
       commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'finish' })
 
@@ -548,6 +550,8 @@ const actions = {
 
       // Refresh the app view after destroying, same as ExtJS getAppsView
       await dispatch('getAppsView', policyId)
+      // Refresh reports to clear out any app-specific reports after removal
+      dispatch('reports/loadReports', null, { root: true })
     } catch (error) {
       Util.handleException(error)
       throw error

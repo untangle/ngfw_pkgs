@@ -1,12 +1,16 @@
 import { mapGetters } from 'vuex'
 import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/util'
+import Util from '@/util/setupUtil'
+import Rpc from '@/util/Rpc'
 
 export default {
   data() {
     return {
       appManager: null, // Cached app manager instance for RPC calls
       toggling: false, // Local state to track if app is currently toggling (starting/stopping)
+      settings: undefined, // App settings loaded from backend
+      saveDisabled: false, // Flag to disable save button on settings error
     }
   },
 
@@ -16,6 +20,11 @@ export default {
     }
   },
 
+  /**
+   * Common computed properties and methods related to app management, metrics, and reports integration.
+   * Can be overridden in individual app components as needed, but provides a shared baseline implementation for all apps
+   * to reduce code duplication and ensure consistent behavior across app components.
+   */
   computed: {
     ...mapGetters('metrics', ['getFormattedMetrics', 'getLiveSessions']),
     ...mapGetters('apps', ['getAppPowerState']),
@@ -42,11 +51,11 @@ export default {
      * Power state of the app, derived from Vuex store with local toggling state overlay
      * @returns {Object} Power state object with 'on' boolean and 'toggling' boolean
      */
-    powerState: ({ appData, getAppPowerState, toggling }) => {
+    powerState: ({ appData, appManager, getAppPowerState, toggling }) => {
       const vuexPowerState = getAppPowerState({
         policyId: appData?.policyId,
         appName: appData?.appName,
-        appManager: appData?.appManager,
+        appManager,
       })
 
       return {
@@ -60,7 +69,7 @@ export default {
      * Filters by appDisplayName and transforms to UI format
      * @returns {Array} - Formatted reports array
      */
-    appReports: ({ appDisplayName, $store }) => {
+    appReports: ({ $store, appDisplayName }) => {
       if (!appDisplayName) return []
 
       const rawReports = $store.getters['reports/getReportsByCategory'](appDisplayName)
@@ -111,8 +120,14 @@ export default {
     this.appManager = await this.$store.dispatch('apps/getAppById', {
       appId: this.appData.instance.id,
     })
+    this.loadAppSettings()
   },
 
+  /**
+   * Common methods for app components - toggleAppState, removeApp, initializeSessionsData, loadAppSettings, saveSettings
+   * These methods can be overridden or extended in individual app components as needed, but provide a shared baseline implementation
+   * for all apps to reduce code duplication and ensure consistent behavior across app components.
+   */
   methods: {
     /**
      * Toggle app state. Starts or stops the app based on the 'enabled' parameter.
@@ -135,6 +150,7 @@ export default {
           })
         })
         this.$store.dispatch('apps/getAppsViews', true)
+        this.refreshLicenseStatus()
       } finally {
         this.toggling = false
       }
@@ -174,6 +190,62 @@ export default {
       }
 
       return data
+    },
+
+    /**
+     * Load app settings from backend via RPC call to app manager
+     * @returns {Promise} Resolves when settings are loaded and stored in component state
+     */
+    loadAppSettings() {
+      this.$store.commit('SET_LOADER', true)
+      Rpc.asyncData(this.appManager, 'getSettingsV2')
+        .then(settings => {
+          this.settings = settings
+        })
+        .catch(error => {
+          Util.handleException(error, 'Failed to load app settings')
+        })
+        .finally(() => {
+          this.$store.commit('SET_LOADER', false)
+        })
+    },
+
+    /**
+     * Save app settings to backend via RPC call to app manager
+     * @param {Object} newSettings - Settings object to save
+     * @returns {Promise} Resolves when settings are saved and reloaded, or rejects on error
+     */
+    saveSettings(newSettings) {
+      this.$store.commit('SET_LOADER', true)
+      Rpc.asyncData(this.appManager, 'setSettingsV2', newSettings)
+        .then(() => {
+          this.loadAppSettings()
+        })
+        .catch(error => {
+          this.saveDisabled = true
+          Util.handleException(error, 'Failed to save app settings')
+        })
+        .finally(() => {
+          this.$store.commit('SET_LOADER', false)
+        })
+    },
+
+    /**
+     * Refresh app data - reload settings and app view data.
+     * Triggers computed properties (powerState and appReports) to update with latest data.
+     * Also refreshes license status in case app state change affects licensing.
+     */
+    refreshData() {
+      this.refreshLicenseStatus()
+      this.loadAppSettings()
+      this.$store.dispatch('apps/getAppsView', this.appData?.policyId)
+    },
+
+    /**
+     * Emit event to refresh license status in parent component
+     */
+    refreshLicenseStatus() {
+      this.$emit('refreshLicenseStatus')
     },
   },
 }

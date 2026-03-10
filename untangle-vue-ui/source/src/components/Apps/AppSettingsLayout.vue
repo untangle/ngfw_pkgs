@@ -16,6 +16,7 @@
       v-if="appComponent"
       :app-data="appData"
       :class="`shared-cmp d-flex flex-column flex-grow-1 ${!isLicensed && 'disabled'}`"
+      @refreshLicenseStatus="checkLicense"
     />
   </v-container>
 </template>

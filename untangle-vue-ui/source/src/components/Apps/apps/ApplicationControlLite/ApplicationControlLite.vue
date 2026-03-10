@@ -13,7 +13,7 @@
       <u-btn class="mr-2" @click="refreshData">
         {{ $t('refresh') }}
       </u-btn>
-      <u-btn :disabled="!isDirty" @click="saveSettings(newSettings)">
+      <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">
         {{ $t('save') }}
       </u-btn>
     </template>
@@ -65,18 +65,10 @@
           powerState: powerState || {},
         }
       },
-
-      /**
-       * Gets the app settings from the Vuex store using the appName as a key
-       * @param param0 - appName from the component's data and $store for accessing Vuex getters
-       * @returns {Object} Sessions data object
-       */
-      settings: ({ $store, appName }) => $store.getters['apps/getSettings'](appName)?.settings || {},
     },
 
     created() {
       this.fetchLearnMoreUrl()
-      this.loadAppSettings()
     },
 
     methods: {
@@ -87,41 +79,6 @@
       async fetchLearnMoreUrl() {
         const defaultUrl = 'https://edge.arista.com/shop/Application-Control'
         this.learnMoreUrl = await Rpc.asyncData('rpc.uriManager.getUriWithPath', defaultUrl).catch(() => defaultUrl)
-      },
-
-      /**
-       * Loads the app settings by dispatching a Vuex action to fetch data from the backend.
-       */
-      async loadAppSettings() {
-        this.$store.commit('SET_LOADER', true)
-        await this.$store.dispatch('apps/loadAppData', this.appName).finally(() => {
-          this.$store.commit('SET_LOADER', false)
-        })
-      },
-
-      /**
-       * Save settings to backend
-       */
-      async saveSettings(newSettings) {
-        try {
-          await this.$store.dispatch('apps/setAppSettings', {
-            appName: this.appName,
-            settings: newSettings,
-          })
-          this.$vuntangle.toast.add(this.$t('settings_saved'), 'success')
-          await this.loadAppData()
-        } catch (err) {
-          console.error('Failed to save settings:', err)
-          this.$vuntangle.toast.add(this.$t('failed_to_save_settings'), 'error')
-        }
-      },
-
-      /**
-       * Refresh data (reload settings)
-       * Metrics are automatically updated via MetricsPollingService
-       */
-      refreshData() {
-        this.loadAppData()
       },
     },
   }
