@@ -150,6 +150,7 @@
             active: false,
             match: '/settings/services',
             items: [
+              { name: 'branding_manager', to: '/settings/services/branding-manager' },
               { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
               { name: 'policy_manager', to: '/settings/services/policy-manager' },
             ],
