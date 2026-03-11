@@ -1,11 +1,12 @@
 <template>
   <v-container>
     <!-- Upgrades settings section -->
-    <!-- Loading state -->
-    <v-skeleton-loader v-if="isCheckingUpgrade" class="mx-auto my-4" max-width="auto" type="list-item" />
     <!-- Upgrade status alert -->
-    <u-alert v-else class="my-4">
-      <template v-if="upgradeText">
+    <u-alert class="my-4">
+      <div v-if="isCheckingUpgrade">
+        <v-progress-circular indeterminate size="26" color="aristaMediumBlue" />
+      </div>
+      <template v-else-if="upgradeText">
         {{ $t('system_running_latest_version') }}
       </template>
       <template v-else-if="showUpgradeIssues">
@@ -67,13 +68,13 @@
   </v-container>
 </template>
 <script>
-  import { VSkeletonLoader } from 'vuetify/lib'
+  import { VProgressCircular } from 'vuetify/lib'
   import { ApplianceUpgrade } from 'vuntangle'
   import store from '@/store'
   import Util from '@/util/setupUtil'
 
   export default {
-    components: { ApplianceUpgrade, VSkeletonLoader },
+    components: { ApplianceUpgrade, VProgressCircular },
     data: () => ({
       showUpgradeButton: false,
       isUpgradeAvailable: null,
