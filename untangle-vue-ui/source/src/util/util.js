@@ -709,7 +709,7 @@ const util = {
         message = vuntangle.$t('free_trial')
       }
     } else if (!license.valid) {
-      message = license.status
+      message = vuntangle.$t(license.status?.toLowerCase().replace(/\s+/g, '_'))
     }
     return message
   },

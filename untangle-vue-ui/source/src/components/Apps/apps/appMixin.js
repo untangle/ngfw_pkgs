@@ -3,6 +3,8 @@ import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/util'
 import Util from '@/util/setupUtil'
 import Rpc from '@/util/Rpc'
+import { EVENT_ACTIONS } from '@/constants/actions'
+import { sendEvent } from '@/utils/event'
 
 export default {
   data() {
@@ -17,8 +19,11 @@ export default {
   provide() {
     return {
       isReportsInstalled: this.isReportsInstalled,
+      isRestricted: this.isRestricted,
     }
   },
+
+  inject: ['embedded'],
 
   /**
    * Common computed properties and methods related to app management, metrics, and reports integration.
@@ -46,6 +51,12 @@ export default {
      * TODO Remove Util Method Call Once Reports App and its flows are Fully Migrated
      */
     isReportsInstalled: ({ $store }) => $store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled(),
+
+    /**
+     * Check if the license instance is restricted
+     * @returns {Boolean} True if restricted, else false
+     */
+    isRestricted: () => !!util.isRestricted(),
 
     /**
      * Power state of the app, derived from Vuex store with local toggling state overlay
@@ -151,6 +162,11 @@ export default {
         })
         this.$store.dispatch('apps/getAppsViews', true)
         this.refreshLicenseStatus()
+        if (this.embedded) {
+          // Send event to parent window to refresh app status.
+          // TODO Remove this once all apps are migrated to Vue UI and Parent Layout is changed
+          this.sendEventToParentWindow(EVENT_ACTIONS.REFRESH_APP_STATUS)
+        }
       } finally {
         this.toggling = false
       }
@@ -166,10 +182,33 @@ export default {
           instanceId: this.appData?.instance?.id,
           policyId: this.appData?.policyId,
         })
-        this.$router.push({ name: 'apps', params: { policyId: this.appData?.policyId } })
+        if (this.embedded) {
+          // If embedded, just send event to parent
+          // TODO Remove this once all apps are migrated to Vue UI and Parent Layout is changed
+          this.sendEventToParentWindow(EVENT_ACTIONS.REMOVE_APP)
+        } else {
+          this.$router.push({ name: 'apps', params: { policyId: this.appData?.policyId } })
+        }
       } finally {
         this.$store.commit('SET_LOADER', false)
       }
+    },
+
+    /**
+     * Send event to parent window
+     * @param {String} type - Event type from EVENT_ACTIONS
+     */
+    sendEventToParentWindow(type) {
+      const eventData = {
+        appName: this.appData?.appName,
+        type,
+      }
+
+      if (type === EVENT_ACTIONS.REFRESH_APP_STATUS) {
+        eventData.targetState = this.powerState.on ? 'RUNNING' : 'INITIALIZED'
+      }
+
+      sendEvent(eventData)
     },
 
     /**
