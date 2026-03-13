@@ -16,6 +16,7 @@ import http from '@/plugins/http'
 import store from '@/store'
 import Rpc from '@/util/Rpc'
 import { VTypes } from '@/util/VTypes'
+import Util from '@/util/setupUtil'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
@@ -525,7 +526,11 @@ const util = {
    * @returns {Promise<void>}
    */
   async reloadLicenses() {
-    await Rpc.directData('rpc.UvmContext.licenseManager.reloadLicenses', true)
+    try {
+      await Rpc.directData('rpc.UvmContext.licenseManager.reloadLicenses', true)
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   /**
@@ -641,15 +646,35 @@ const util = {
   },
 
   /**
-   *
+   * Checks if the Policy Manager app is installed by making a direct RPC call.
    * @returns
    */
   isPolicyManagerInstalled() {
-    return Rpc.directData('rpc.appManager.app', 'policy-manager')
+    try {
+      return Rpc.directData('rpc.appManager.app', 'policy-manager')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
+  },
+
+  /**
+   * Checks if the Reports app is installed by making a direct RPC call.
+   * @returns
+   */
+  isReportsInstalled() {
+    try {
+      return Rpc.directData('rpc.appManager.app', 'reports')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isRestricted() {
-    return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+    try {
+      return Rpc.directData('rpc.UvmContext.licenseManager.isRestricted')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isRegistered() {
@@ -657,7 +682,11 @@ const util = {
   },
 
   getLicenseServerConnectivity() {
-    return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+    try {
+      return Rpc.directData('rpc.UvmContext.licenseManager.getLicenseServerConnectivity')
+    } catch (ex) {
+      Util.handleException(ex)
+    }
   },
 
   isCCHidden() {
@@ -680,9 +709,22 @@ const util = {
         message = vuntangle.$t('free_trial')
       }
     } else if (!license.valid) {
-      message = license.status
+      message = vuntangle.$t(license.status?.toLowerCase().replace(/\s+/g, '_'))
     }
     return message
+  },
+
+  /**
+   * Converts kebab-case string to PascalCase
+   * @param {string} str - kebab-case string
+   * @returns {string} PascalCase string
+   * @example kebabToPascal('web-filter') // returns 'WebFilter'
+   */
+  kebabToPascal(str) {
+    return str
+      .split('-')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join('')
   },
 }
 

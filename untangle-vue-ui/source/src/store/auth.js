@@ -61,10 +61,14 @@ const actions = {
    * Logout the user.
    *
    * @param {Function} commit
+   * @param {Function} dispatch
    */
-  async logout({ commit }) {
-    await api.get('/account/logout')
+  async logout({ commit, dispatch }) {
+    await api.get('/auth/logout?url=/admin&realm=Administrator')
     commit('SET_IS_AUTH', false)
+
+    // Reset session state so admin context re-initializes on next login
+    await dispatch('session/reset', null, { root: true })
   },
 }
 

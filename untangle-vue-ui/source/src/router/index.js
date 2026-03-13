@@ -7,6 +7,8 @@ import wizard from './wizard'
 import quarantine from './quarantine'
 import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
+import store from '@/store'
+import MetricsPollingService from '@/services/MetricsPollingService'
 
 /**
  * Override .push() to catch navigation failures.
@@ -92,6 +94,26 @@ router.beforeEach((to, from, next) => {
       }
 
       window.rpc = rpcClient
+    }
+
+    // Initialize admin context on first admin route navigation
+    // Session module is NOT persisted, so it resets on every page load/hard refresh
+    // This ensures RPC calls run on every session start
+    // But skips re-initialization during route navigation within same session
+    const isAdminRoute =
+      to.name && !to.name.includes('setup') && !to.name.includes('login') && !to.name.includes('wizard')
+
+    if (isAdminRoute) {
+      // Initialize admin context (loads apps, policy-manager, reports)
+      // Fire and forget - don't block navigation
+      store.dispatch('session/initializeAdminContext')
+    }
+
+    // Stop metrics polling when leaving /apps section
+    // Polling is started via beforeEnter guard in /apps route
+    const leavingAppsSection = from?.path?.startsWith('/apps') && !to?.path?.startsWith('/apps')
+    if (leavingAppsSection) {
+      MetricsPollingService.stop()
     }
 
     // Redirect logic

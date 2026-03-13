@@ -79,9 +79,9 @@
      * initial email configuration data including SMTP settings, mail sender config, and public URL.
      */
     async created() {
-      const app = await this.$store.dispatch('apps/getApp', 'smtp')
+      const app = await this.$store.dispatch('apps/getApp', { appName: 'smtp' })
       this.smtpEnabled = !!app
-      this.$store.dispatch('apps/loadAppData', 'smtp')
+      this.$store.dispatch('apps/loadAppData', { appName: 'smtp' })
       this.$store.dispatch('config/getMailSender', true)
       this.$store.dispatch('config/getPublicUrl', true)
     },
@@ -92,7 +92,7 @@
        * @returns {Promise<Object|null>} The SMTP app instance or null
        */
       async getSmtpApp() {
-        return await this.$store.dispatch('apps/getApp', 'smtp')
+        return await this.$store.dispatch('apps/getApp', { appName: 'smtp' })
       },
 
       /**
@@ -246,7 +246,7 @@
             await this.promisifyAppCall(cb => app.setSmtpSettingsWithoutSafelistsV2(cb, updatedSettings.smtpSettings))
           }
           // Reload SMTP app data
-          await this.$store.dispatch('apps/loadAppData', 'smtp')
+          await this.$store.dispatch('apps/loadAppData', { appName: 'smtp' })
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
@@ -259,7 +259,7 @@
         this.$store.commit('SET_LOADER', true)
 
         Promise.all([
-          this.$store.dispatch('apps/loadAppData', 'smtp'),
+          this.$store.dispatch('apps/loadAppData', { appName: 'smtp' }),
           this.$store.dispatch('config/getMailSender', true),
           this.$store.dispatch('config/getPublicUrl', false),
         ]).finally(() => {
@@ -296,7 +296,7 @@
 
           await this.promisifyAppCall(cb => app.getSafelistAdminView().deleteSafelists(cb, userEmails))
 
-          await this.$store.dispatch('apps/loadAppData', 'smtp')
+          await this.$store.dispatch('apps/loadAppData', { appName: 'smtp' })
         } finally {
           this.$store.commit('SET_LOADER', false)
         }

@@ -164,24 +164,20 @@ function buildPolicyChain(selectedPolicy, policyMap) {
  * - '': App is stopped (empty string for 'off' state)
  *
  * @param {Object} app - App instance object
- * @param {string} app.targetState - Desired state (RUNNING/STOPPED)
  * @param {string} runState - Current run state (RUNNING/STOPPED)
  * @param {string} [daemon] - Daemon name to check if running (optional)
  * @returns {string} Power state CSS class
  */
-export function getPowerClass(app, runState, daemon) {
+export function getPowerClass(runState, daemon) {
   // Determine if app should be running
   const isRunning = runState === RUN_STATE.RUNNING
-  const targetState = app.targetState
 
   // Check daemon status if daemon name is provided and app is running
   const daemonRunning =
     isRunning && daemon != null ? window.rpc.directData('rpc.UvmContext.daemonManager.isRunning', daemon) : true
 
-  // App is inconsistent if:
-  // 1. Target state doesn't match current state (transitioning)
-  // 2. App is running but daemon is not running
-  const isInconsistent = targetState !== runState || (runState === RUN_STATE.RUNNING && !daemonRunning)
+  // App is inconsistent if  App is running but daemon is not running
+  const isInconsistent = isRunning && !daemonRunning
 
   if (isInconsistent) {
     return POWER_CLASS.INCONSISTENT
@@ -228,7 +224,7 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
   enrichedApp.licenseMessage = util.getLicenseMessage(license, $vuntangle)
 
   // Calculate power state
-  enrichedApp.powerCls = getPowerClass(enrichedApp, view.runStates[enrichedApp.id], appProperties?.daemon)
+  enrichedApp.powerCls = getPowerClass(view.runStates[enrichedApp.id], appProperties?.daemon)
 
   // Check if currently being installed
   const installing = installingApps[app.appName]
@@ -260,7 +256,7 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  * installing apps always appear with loader, regardless of backend timing.
  *
  * @param {Object} params - Function parameters
- * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
+ * @param {Object<number, Object>} params.appsViewByPolicy - Normalized app views keyed by policyId
  * @param {Object} params.selectedPolicy - Currently selected policy object
  * @param {Array<Object>} params.policies - Complete list of all policies
  * @param {Object} params.$vuntangle - Vue i18n instance for translations
@@ -269,16 +265,16 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
  *
  * @example
  * const apps = getInstalledApps({
- *   appViewsByPolicy: { 1: {...}, 2: {...} },
+ *   appsViewByPolicy: { 1: {...}, 2: {...} },
  *   selectedPolicy: { policyId: 2, parentId: 1 },
  *   policies: [...],
  *   $vuntangle,
  *   installingApps: {}
  * })
  */
-export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $vuntangle, installingApps = {} }) {
+export function getInstalledApps({ appsViewByPolicy, selectedPolicy, policies, $vuntangle, installingApps = {} }) {
   // Guard clauses
-  if (!appViewsByPolicy || !selectedPolicy) {
+  if (!appsViewByPolicy || !selectedPolicy) {
     return []
   }
 
@@ -293,7 +289,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
   // Collect all app instances from the policy hierarchy
   const allApps = policyHierarchy.reduce((acc, policyId) => {
-    const view = appViewsByPolicy[policyId] // O(1) lookup
+    const view = appsViewByPolicy[policyId] // O(1) lookup
     return acc.concat(view ? view.instances : [])
   }, [])
 
@@ -305,7 +301,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
     .map(appName => {
       // Find the app in the policy hierarchy (check selected policy first, then parents)
       for (const policyId of policyHierarchy) {
-        const view = appViewsByPolicy[policyId] // O(1) lookup
+        const view = appsViewByPolicy[policyId] // O(1) lookup
 
         if (!view) continue
 
@@ -329,7 +325,7 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
 
   // Add apps that are currently being installed but not yet instantiated by backend
   // This ensures installing apps always show with loader, even if backend hasn't created instance yet
-  const currentPolicyView = appViewsByPolicy[selectedPolicy.policyId]
+  const currentPolicyView = appsViewByPolicy[selectedPolicy.policyId]
   if (currentPolicyView) {
     Object.keys(installingApps).forEach(appName => {
       const installing = installingApps[appName]
@@ -390,25 +386,25 @@ export function getInstalledApps({ appViewsByPolicy, selectedPolicy, policies, $
  * Apps with 'finish' installation status are included to show success state.
  *
  * @param {Object} params - Function parameters
- * @param {Object<number, Object>} params.appViewsByPolicy - Normalized app views keyed by policyId
+ * @param {Object<number, Object>} params.appsViewByPolicy - Normalized app views keyed by policyId
  * @param {Object} params.selectedPolicy - Currently selected policy object
  * @param {Object} [params.installingApps={}] - Map of apps currently being installed
  * @returns {Array<Object>} Sorted array of installable app objects
  *
  * @example
  * const apps = getInstallableApps({
- *   appViewsByPolicy: { 1: {...} },
+ *   appsViewByPolicy: { 1: {...} },
  *   selectedPolicy: { policyId: 1 },
  *   installingApps: { 'web-filter': { status: 'progress', policyId: 1 } }
  * })
  */
-export function getInstallableApps({ appViewsByPolicy, selectedPolicy, installingApps = {} }) {
+export function getInstallableApps({ appsViewByPolicy, selectedPolicy, installingApps = {} }) {
   // Guard clauses
-  if (!appViewsByPolicy || !selectedPolicy) {
+  if (!appsViewByPolicy || !selectedPolicy) {
     return []
   }
 
-  const policyView = appViewsByPolicy[selectedPolicy.policyId] // O(1) lookup
+  const policyView = appsViewByPolicy[selectedPolicy.policyId] // O(1) lookup
 
   if (!policyView) {
     return []
