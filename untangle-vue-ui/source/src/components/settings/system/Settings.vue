@@ -70,9 +70,9 @@
           await Promise.all([
             this.$store.dispatch('config/getSystemSettings', false),
             this.$store.dispatch('config/getDeviceTemperatureInfo'),
-            this.$store.dispatch('apps/loadAppData', 'http'),
-            this.$store.dispatch('apps/loadAppData', 'smtp'),
-            this.$store.dispatch('apps/loadAppData', 'ftp'),
+            this.$store.dispatch('apps/loadAppData', { appName: 'http' }),
+            this.$store.dispatch('apps/loadAppData', { appName: 'smtp' }),
+            this.$store.dispatch('apps/loadAppData', { appName: 'ftp' }),
             // get list of all wan interfaces which is used to show in the hostname interface selection
             this.$store.dispatch('config/getEnabledInterfaces'),
             this.$store.dispatch('config/getSystemTimeZones'),

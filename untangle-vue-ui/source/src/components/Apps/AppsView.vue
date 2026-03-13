@@ -128,7 +128,7 @@
        * Get normalized app views by policy ID (O(1) lookup)
        * @returns {Object<number, Object>}
        */
-      appViewsByPolicy: ({ $store }) => $store.getters['apps/appViewsByPolicy'],
+      appsViewByPolicy: ({ $store }) => $store.getters['apps/appsViewByPolicy'],
 
       /**
        * Get apps currently being installed
@@ -190,7 +190,7 @@
        */
       installedApps() {
         return getInstalledApps({
-          appViewsByPolicy: this.appViewsByPolicy,
+          appsViewByPolicy: this.appsViewByPolicy,
           selectedPolicy: this.selectedPolicy,
           policies: this.policies,
           $vuntangle: this.$vuntangle,
@@ -205,7 +205,7 @@
        */
       installableApps() {
         return getInstallableApps({
-          appViewsByPolicy: this.appViewsByPolicy,
+          appsViewByPolicy: this.appsViewByPolicy,
           selectedPolicy: this.selectedPolicy,
           installingApps: this.installingApps,
         })
@@ -249,7 +249,7 @@
             const policyExists = this.policies.find(p => p.policyId === newPolicyId)
             if (!policyExists) {
               // Invalid policy ID in route, redirect to default policy
-              this.$store.dispatch('apps/getAppView', DEFAULT_POLICY_ID)
+              this.$store.dispatch('apps/getAppsView', DEFAULT_POLICY_ID)
               // Policy doesn't exist, redirect to default policy
               this.$router.replace(`/apps/${DEFAULT_POLICY_ID}`)
             }
@@ -292,7 +292,7 @@
       onPolicyChange(policyId) {
         const changedPolicy = this.policies.find(p => p.policyId === policyId)
         if (changedPolicy) {
-          this.$store.dispatch('apps/getAppView', policyId)
+          this.$store.dispatch('apps/getAppsView', policyId)
           this.$router.push(`/apps/${changedPolicy.policyId}`)
         }
       },
@@ -350,7 +350,7 @@
           // Check the store state (not dispatch return value) to decide next action
           if (this.$store.getters['apps/autoInstallApps']) {
             // While auto-installing, refresh app views to show newly installed apps
-            this.$store.dispatch('apps/getAppView', this.$route.params.policyId || DEFAULT_POLICY_ID)
+            this.$store.dispatch('apps/getAppsView', this.$route.params.policyId || DEFAULT_POLICY_ID)
           } else if (autoInstallTimer) {
             // Auto install completed - stop monitoring
             clearInterval(autoInstallTimer)

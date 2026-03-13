@@ -26,17 +26,8 @@
     },
 
     created() {
-      if (window.rpc) {
-        // Application-level initialization
-        // Load app views for all policies (provides initial app views data)
-        this.$store.dispatch('apps/getAppViews', true)
-
-        // Load policy-manager settings if installed
-        this.$store.dispatch('apps/loadAppData', 'policy-manager')
-      }
-
       // Use browser-level events to catch iframe destruction
-      // These fire even when ExtJS destroys the iframe abruptly
+      // These fire even when parent app destroys the iframe abruptly
       window.addEventListener('beforeunload', this.handleUnload)
       window.addEventListener('pagehide', this.handleUnload)
     },
