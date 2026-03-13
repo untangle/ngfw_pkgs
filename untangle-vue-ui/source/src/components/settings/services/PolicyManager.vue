@@ -50,8 +50,10 @@
           policies: this.settings?.policies,
         }),
         $features: {
-          hasIpv6Support: true,
+          hasIpv6Support: false,
+          isExpertMode: this.isExpertMode,
         },
+        $applications: {},
         $readOnly: false,
       }
     },
@@ -86,6 +88,9 @@
       interfaces: ({ networkSettings }) => {
         return util.getInterfaceList(networkSettings, true, true)
       },
+
+      /* Gets the expert mode status from the settings */
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
     },
 
     created() {
