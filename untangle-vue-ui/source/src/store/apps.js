@@ -190,13 +190,13 @@ const getters = {
 const mutations = {
   /**
    * Dynamically set settings for an app
-   * Usage: commit('SET_SETTINGS', { appName: 'http', value: data })
+   * Usage: commit('SET_SETTINGS', { appKey: 'http', value: data })
    */
-  SET_SETTINGS(state, { appName, value }) {
+  SET_SETTINGS(state, { appKey, value }) {
     if (!state.store) {
       set(state, 'store', {})
     }
-    set(state.store, appName, value)
+    set(state.store, appKey, value)
   },
   /**
    * Set the list of app views for all policies
@@ -270,9 +270,14 @@ const mutations = {
  * Actions
  */
 const actions = {
-  async getApp(_, appName) {
+  async getApp(_, { appId, appName }) {
     try {
-      const app = await window.rpc.appManager.app(appName)
+      let app = null
+      if (appId) {
+        app = await window.rpc.appManager.app(appId)
+      } else if (appName) {
+        app = await window.rpc.appManager.app(appName)
+      }
       return app
     } catch (err) {
       Util.handleException(err)
@@ -324,16 +329,17 @@ const actions = {
   /**
    * Get settings for a given app using getSettingsV2().
    * @param {string} appName - The name of the app (e.g., 'smtp', 'http')
+   * @param {number} appId - Optional app instance ID (used for policy-specific apps)
    * @param {Object|null} app - Optional app object. If not provided, it will be fetched via getApp
    * @returns {Promise<Object|null>} The app settings object or null if app is unavailable
    *
    * Usage:
-   * - With app object: dispatch('getAppSettings', { appName: 'smtp', app: appObject })
-   * - Without app object: dispatch('getAppSettings', { appName: 'smtp' })
+   * - With app object: dispatch('getAppSettings', { appName: 'smtp', appId: 1, app: appObject })
+   * - Without app object: dispatch('getAppSettings', { appName: 'smtp', appId: 1 })
    */
-  async getAppSettings({ dispatch }, { appName, app = null }) {
+  async getAppSettings({ dispatch }, { appName, appId, app }) {
     if (!app) {
-      app = await dispatch('getApp', appName)
+      app = await dispatch('getApp', { appName, appId })
     }
     if (app) {
       return await app.getSettingsV2()
@@ -345,16 +351,21 @@ const actions = {
    * This includes the app's canonical settings plus any bootstrap APIs defined in APP_BOOTSTRAP_REGISTRY.
    * Typically called when a screen loads or when refresh is triggered.
    *
-   * @param {string} appName - The name of the app (e.g., 'smtp')
+   * @param {Object} payload - { appName, appId, app }
+   * @param {string} payload.appName - The name of the app (e.g., 'smtp')
+   * @param {number} payload.appId - Optional app instance ID
+   * @param {Object} payload.app - Optional app manager instance
    * @returns {Promise<Object>} Object containing settings and all bootstrap data
    */
-  async loadAppData({ commit, dispatch }, appName) {
+  async loadAppData({ commit, dispatch }, { appName, appId, app }) {
     const registry = APP_BOOTSTRAP_REGISTRY[appName]
-    const app = await dispatch('getApp', appName)
+    if (!app) {
+      app = await dispatch('getApp', { appName, appId })
+    }
     if (!app) return
 
     // ALWAYS load canonical backend settings
-    const baseSettings = (await dispatch('getAppSettings', { appName, app })) || {}
+    const baseSettings = (await dispatch('getAppSettings', { appName, appId, app })) || {}
 
     const result = { settings: baseSettings }
 
@@ -370,23 +381,28 @@ const actions = {
       }
     }
 
-    commit('SET_SETTINGS', { appName, value: result })
+    const key = appId ? `${appName}-${appId}` : appName
+    commit('SET_SETTINGS', { appKey: key, value: result })
     return result
   },
 
-  async setAppSettings({ dispatch }, { appName, settings }) {
+  async setAppSettings({ dispatch }, { appName, settings, appId, app }) {
     if (!settings) return
-    const app = await dispatch('getApp', appName)
+    if (!app) {
+      app = await dispatch('getApp', { appName, appId })
+    }
     if (!app) return
 
-    return new Promise(resolve => {
+    return new Promise((resolve, reject) => {
       app.setSettingsV2(async (ex, res) => {
         if (ex || res?.code) {
           Util.handleException(ex || res.message)
-          return resolve({ success: false })
+          const error = new Error(ex?.message || res?.message || 'Failed to set app settings')
+          error.details = { success: false }
+          return reject(error)
         }
 
-        await dispatch('loadAppData', appName)
+        await dispatch('loadAppData', { appName, appId, app })
         resolve({ success: true })
       }, settings)
     })
@@ -505,7 +521,7 @@ const actions = {
       return null
     }
 
-    const app = await dispatch('getApp', appName)
+    const app = await dispatch('getApp', { appName })
     if (!app) return null
 
     try {
@@ -521,7 +537,7 @@ const actions = {
       }
 
       // Commit the merged settings to the store
-      commit('SET_SETTINGS', { appName, value: updatedSettings })
+      commit('SET_SETTINGS', { appKey: appName, value: updatedSettings })
 
       return result
     } catch (err) {

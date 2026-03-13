@@ -101,7 +101,7 @@
 
       /* Load application data */
       loadAppData() {
-        this.$store.dispatch('apps/loadAppData', this.appName)
+        this.$store.dispatch('apps/loadAppData', { appName: this.appName })
       },
       /**
        * Handles saving the new settings after validation.

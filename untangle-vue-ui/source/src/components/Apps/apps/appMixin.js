@@ -1,8 +1,6 @@
 import { mapGetters } from 'vuex'
 import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/util'
-import Util from '@/util/setupUtil'
-import Rpc from '@/util/Rpc'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
 
@@ -11,7 +9,6 @@ export default {
     return {
       appManager: null, // Cached app manager instance for RPC calls
       toggling: false, // Local state to track if app is currently toggling (starting/stopping)
-      settings: undefined, // App settings loaded from backend
       saveDisabled: false, // Flag to disable save button on settings error
     }
   },
@@ -124,6 +121,9 @@ export default {
 
       return data
     },
+
+    settings: ({ $store, appData }) =>
+      $store.getters['apps/getSettings'](`${appData?.appName}-${appData?.instance?.id}`)?.settings || {},
   },
 
   async created() {
@@ -232,17 +232,15 @@ export default {
     },
 
     /**
-     * Load app settings from backend via RPC call to app manager
-     * @returns {Promise} Resolves when settings are loaded and stored in component state
+     * Load app settings from backend via RPC call to app manager and store in Vuex
      */
     loadAppSettings() {
       this.$store.commit('SET_LOADER', true)
-      Rpc.asyncData(this.appManager, 'getSettingsV2')
-        .then(settings => {
-          this.settings = settings
-        })
-        .catch(error => {
-          Util.handleException(error, 'Failed to load app settings')
+      this.$store
+        .dispatch('apps/loadAppData', {
+          appName: this.appData?.appName,
+          appId: this.appData?.instance?.id,
+          app: this.appManager,
         })
         .finally(() => {
           this.$store.commit('SET_LOADER', false)
@@ -250,19 +248,21 @@ export default {
     },
 
     /**
-     * Save app settings to backend via RPC call to app manager
+     * Save app settings by sending updated settings to backend via RPC call to app manager, then refresh app data and license status
      * @param {Object} newSettings - Settings object to save
-     * @returns {Promise} Resolves when settings are saved and reloaded, or rejects on error
      */
     saveSettings(newSettings) {
       this.$store.commit('SET_LOADER', true)
-      Rpc.asyncData(this.appManager, 'setSettingsV2', newSettings)
-        .then(() => {
-          this.loadAppSettings()
+      this.$store
+        .dispatch('apps/setAppSettings', {
+          appName: this.appData?.appName,
+          settings: newSettings,
+          appId: this.appData?.instance?.id,
+          app: this.appManager,
         })
         .catch(error => {
           this.saveDisabled = true
-          Util.handleException(error, 'Failed to save app settings')
+          util.handleException(error, 'Failed to save app settings')
         })
         .finally(() => {
           this.$store.commit('SET_LOADER', false)
