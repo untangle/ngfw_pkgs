@@ -164,24 +164,20 @@ function buildPolicyChain(selectedPolicy, policyMap) {
  * - '': App is stopped (empty string for 'off' state)
  *
  * @param {Object} app - App instance object
- * @param {string} app.targetState - Desired state (RUNNING/STOPPED)
  * @param {string} runState - Current run state (RUNNING/STOPPED)
  * @param {string} [daemon] - Daemon name to check if running (optional)
  * @returns {string} Power state CSS class
  */
-export function getPowerClass(app, runState, daemon) {
+export function getPowerClass(runState, daemon) {
   // Determine if app should be running
   const isRunning = runState === RUN_STATE.RUNNING
-  const targetState = app.targetState
 
   // Check daemon status if daemon name is provided and app is running
   const daemonRunning =
     isRunning && daemon != null ? window.rpc.directData('rpc.UvmContext.daemonManager.isRunning', daemon) : true
 
-  // App is inconsistent if:
-  // 1. Target state doesn't match current state (transitioning)
-  // 2. App is running but daemon is not running
-  const isInconsistent = targetState !== runState || (runState === RUN_STATE.RUNNING && !daemonRunning)
+  // App is inconsistent if  App is running but daemon is not running
+  const isInconsistent = isRunning && !daemonRunning
 
   if (isInconsistent) {
     return POWER_CLASS.INCONSISTENT
@@ -228,7 +224,7 @@ function enrichAppInstance(app, view, appProperties, parentPolicyName, installin
   enrichedApp.licenseMessage = util.getLicenseMessage(license, $vuntangle)
 
   // Calculate power state
-  enrichedApp.powerCls = getPowerClass(enrichedApp, view.runStates[enrichedApp.id], appProperties?.daemon)
+  enrichedApp.powerCls = getPowerClass(view.runStates[enrichedApp.id], appProperties?.daemon)
 
   // Check if currently being installed
   const installing = installingApps[app.appName]
