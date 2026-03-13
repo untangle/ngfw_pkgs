@@ -44,7 +44,7 @@
     },
 
     created() {
-      this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
+      this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
       this.originalDefaultLogo = this.settings.defaultLogo
     },
 
@@ -65,7 +65,7 @@
        * Resets the branding manager to its default configuration
        */
       onResetDefaults() {
-        this.$store.dispatch('apps/loadAppData', 'branding-manager')
+        this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
       },
 
       /**
