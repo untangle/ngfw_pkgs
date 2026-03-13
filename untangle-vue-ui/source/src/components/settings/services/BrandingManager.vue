@@ -74,17 +74,20 @@
        */
       async onSaveSettings({ newSettings, needRackReload }) {
         this.$store.commit('SET_LOADER', true)
-        await this.$store.dispatch('apps/setAppSettings', {
-          appName: 'branding-manager',
-          settings: newSettings,
-        })
-        if (this.originalDefaultLogo !== this.settings.defaultLogo) {
-          needRackReload = true
+        try {
+          await this.$store.dispatch('apps/setAppSettings', {
+            appName: 'branding-manager',
+            settings: newSettings,
+          })
+          if (this.originalDefaultLogo !== this.settings.defaultLogo) {
+            needRackReload = true
+          }
+          if (needRackReload) {
+            window.location.reload()
+          }
+        } finally {
+          this.$store.commit('SET_LOADER', false)
         }
-        if (needRackReload) {
-          window.location.reload()
-        }
-        this.$store.commit('SET_LOADER', false)
       },
     },
   }
