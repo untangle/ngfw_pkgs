@@ -205,7 +205,7 @@
 
                 // Build state object for installed apps
                 // Checks licenses to show "Disabled, license is invalid or expired" status
-                const state = await this.buildAppState(instance, runState, app, true)
+                const state = await this.buildAppState(instance, runState, app, false)
 
                 return {
                   ...app,
@@ -306,7 +306,7 @@
         } else if (power) {
           status = this.$vuntangle.$t('powering_off')
         } else if (expired) {
-          status = this.$vuntangle.$t('disabled_license_is_valid_or_expired')
+          status = this.$vuntangle.$t('disabled_license_is_invalid_or_expired')
         } else if (inconsistent) {
           status = this.$vuntangle.$t('disabled_but_active')
         } else {
