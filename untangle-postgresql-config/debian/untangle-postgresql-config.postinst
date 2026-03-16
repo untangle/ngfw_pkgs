@@ -3,7 +3,9 @@
 set -xu
 
 PG_VERSION=$(psql --version | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
-if [ $PG_VERSION == "13" ]; then
+if [ $PG_VERSION == "15" ]; then
+  PG_VERSION_OLD="13"
+elif [ $PG_VERSION == "13" ]; then
   PG_VERSION_OLD="11"
 else
   PG_VERSION_OLD="9.6"
@@ -58,8 +60,8 @@ sed -i -e "s/\#\(local.*all.*all.*trust\)/\1/" $PG_HBA
 sed -i -e "s/\#\(host.*all.*all.*127.0.0.1.*255.255.255.255.*trust\)/\1/" $PG_HBA
 sed -i -e 's/\(local.*all.*postgres.*\)\(ident.*\)/\1trust/'  $PG_HBA
 sed -i -e 's/\(local.*all.*all.*\)\(ident.*\)/\1trust/'  $PG_HBA
-sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\)/\1trust/'  $PG_HBA
-sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\)/\1trust/'  $PG_HBA
+sed -i -e 's/\(host.*all.*all.*127.0.0.1\(\/32\|[ \t]\).*\)\(md5\|scram-sha-256\)/\1trust/'  $PG_HBA
+sed -i -e 's/\(host.*all.*all.*::1\(\/128\|[ \t]\).*\)\(md5\|scram-sha-256\)/\1trust/'  $PG_HBA
 
 # configure postgresql.conf
 # ... enable TCP from local host

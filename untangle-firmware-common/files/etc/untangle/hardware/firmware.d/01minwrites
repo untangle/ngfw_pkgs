@@ -83,10 +83,13 @@ fi
 
 # mv NTP drift file to tmp
 # Because the clock is reset on each reboot, there is no point to saving drift on disk
-if ! egrep -q 'driftfile /tmp/ntp.drift' /etc/ntp.conf ; then
-    echo "Moving ntp drift file to /tmp..."
-    sed -e 's|^driftfile\s*.*|driftfile /tmp/ntp.drift|' -i /etc/ntp.conf
-fi
+# Bookworm uses ntpsec with config at /etc/ntpsec/ntp.conf
+for NTP_CONF in /etc/ntpsec/ntp.conf /etc/ntp.conf ; do
+    if [ -f "$NTP_CONF" ] && ! egrep -q 'driftfile /tmp/ntp.drift' "$NTP_CONF" ; then
+        echo "Moving ntp drift file to /tmp in $NTP_CONF..."
+        sed -e 's|^driftfile\s*.*|driftfile /tmp/ntp.drift|' -i "$NTP_CONF"
+    fi
+done
 
 # disable moving of lease file
 if [ -f /etc/dnsmasq.d/dhcp-leasefile ] ; then
