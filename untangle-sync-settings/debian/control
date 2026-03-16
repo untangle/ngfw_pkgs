@@ -12,7 +12,6 @@ Conflicts: untangle-netd, quagga-core
 Replaces: untangle-netd
 Provides: untangle-netd
 Depends: ${misc:Depends}, bridge-utils,
-         crda,
          dash,
          isc-dhcp-client,
          ifupdown,
@@ -22,7 +21,6 @@ Depends: ${misc:Depends}, bridge-utils,
          iptables,
          iputils-arping,
          iw,
-         miniupnpd-iptables,
          miniupnpd,
          keepalived,
          libnetfilter-queue1 (>> 1.0.2),

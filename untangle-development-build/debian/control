@@ -10,7 +10,7 @@ Package: untangle-development-build
 Architecture: all
 Pre-Depends: untangle-debconf-manager
 Depends: ${misc:Depends}, autoconf,
-         automake1.11,
+         automake,
          bzip2,
          cdbs (>= 0.4),
          cowdancer (>= 0.25),
@@ -37,7 +37,6 @@ Depends: ${misc:Depends}, autoconf,
          libtool,
          libxext6,
          libxml2-dev,
-         lintian,
          linux-libc-dev,
          linuxdoc-tools,
          make,

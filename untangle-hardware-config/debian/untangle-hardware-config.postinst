@@ -60,4 +60,8 @@ fi
 # Update initram fs
 dpkg-trigger --no-await update-initramfs
 
+# Create /var/log/ntpsec/ for ntpsec statsdir (Bookworm)
+mkdir -p /var/log/ntpsec
+chown ntpsec:ntpsec /var/log/ntpsec 2>/dev/null || true
+
 exit 0
