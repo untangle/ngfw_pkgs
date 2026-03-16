@@ -10,13 +10,21 @@
         </u-btn>
       </template>
     </no-license>
-    <branding-manager :settings="settings" :disabled="!isLicensed" />
+    <branding-manager
+      :settings="settings"
+      :disabled="!isLicensed"
+      @upload-logo="uploadLogo"
+      @save-settings="onSaveSettings"
+      @reset-to-defaults="onResetDefaults"
+    />
   </v-container>
 </template>
 
 <script>
   import { BrandingManager, NoLicense } from 'vuntangle'
+  import Util from '../../../util/setupUtil'
   import serviceMixin from './serviceMixin'
+  import util from '@/util/util'
 
   export default {
     components: {
@@ -27,6 +35,7 @@
     data() {
       return {
         licenseNodeName: 'branding-manager',
+        originalDefaultLogo: true,
       }
     },
 
@@ -35,7 +44,51 @@
     },
 
     created() {
-      this.$store.dispatch('apps/loadAppData', this.licenseNodeName)
+      this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
+      this.originalDefaultLogo = this.settings.defaultLogo
+    },
+
+    methods: {
+      async uploadLogo({ formData, cb }) {
+        try {
+          const response = await util.uploadFile('/admin/upload', {
+            logo: formData.get('logo'),
+            type: 'logo',
+          })
+          cb(response)
+        } catch (error) {
+          Util.handleException(error)
+        }
+      },
+
+      /**
+       * Resets the branding manager to its default configuration
+       */
+      onResetDefaults() {
+        this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
+      },
+
+      /**
+       * Saves the settings
+       * @param param
+       */
+      async onSaveSettings({ newSettings, needRackReload }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await this.$store.dispatch('apps/setAppSettings', {
+            appName: 'branding-manager',
+            settings: newSettings,
+          })
+          if (this.originalDefaultLogo !== this.settings.defaultLogo) {
+            needRackReload = true
+          }
+          if (needRackReload) {
+            window.location.reload()
+          }
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
     },
   }
 </script>
