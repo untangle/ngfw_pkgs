@@ -38,12 +38,14 @@
     data: () => ({
       remoteEulaSrc: null,
     }),
-    mounted() {
-      this.setEulaSrc()
-    },
     computed: {
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']),
     },
+
+    mounted() {
+      this.setEulaSrc()
+    },
+
     created() {
       const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
       if (rpcResponseForSetup) {
@@ -55,7 +57,7 @@
       ...mapActions('setup', ['setShowPreviousStep']),
 
       async setEulaSrc() {
-        this.remoteEulaSrc = await uris.translate(uris.list.legal)
+        this.remoteEulaSrc = await uris.list.legal
       },
 
       async onContinue() {
