@@ -29,8 +29,13 @@ fi
 currentDPI=$(xdpyinfo | awk '/resolution/ { gsub(/x.+/, "", $2) ; print $2}')
 [ "$currentDPI" -gt 400 ] && xrand --dpi 96
 
+# start the window manager first so xfce4-panel can position correctly
+xfwm4 &
+WM_PID=$!
+sleep 1
+
 # start xfce4-panel
-pkill xfce4-panel
+pkill xfce4-panel 2>/dev/null
 xfce4-panel &
 
 # set the background if present
@@ -50,6 +55,6 @@ if [ ! -f $wizardFile ] || grep -qE 'wizardComplete.*false' $wizardFile ; then
     /usr/bin/untangle-client &
 fi
 
-# the window manager; when this exits, X stops, but it will restart
-# automatically anyway, so it does not matter.
-xfwm4
+# wait for the window manager; when it exits, X stops, but it will
+# restart automatically anyway, so it does not matter.
+wait $WM_PID
