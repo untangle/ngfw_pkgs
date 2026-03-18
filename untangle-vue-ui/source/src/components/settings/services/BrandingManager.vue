@@ -11,6 +11,7 @@
       </template>
     </no-license>
     <branding-manager
+      v-if="settings"
       :settings="settings"
       :disabled="!isLicensed"
       @upload-logo="uploadLogo"
@@ -45,7 +46,7 @@
 
     created() {
       this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
-      this.originalDefaultLogo = this.settings.defaultLogo
+      this.originalDefaultLogo = this.settings?.defaultLogo
     },
 
     methods: {
@@ -75,13 +76,14 @@
       async onSaveSettings({ newSettings, needRackReload }) {
         this.$store.commit('SET_LOADER', true)
         try {
+          this.originalDefaultLogo = this.settings.defaultLogo
+          if (this.originalDefaultLogo !== this.newSettings.defaultLogo) {
+            needRackReload = true
+          }
           await this.$store.dispatch('apps/setAppSettings', {
             appName: 'branding-manager',
             settings: newSettings,
           })
-          if (this.originalDefaultLogo !== this.settings.defaultLogo) {
-            needRackReload = true
-          }
           if (needRackReload) {
             window.location.reload()
           }
