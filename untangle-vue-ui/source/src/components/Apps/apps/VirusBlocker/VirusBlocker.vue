@@ -27,9 +27,7 @@
   export default {
     name: 'VirusBlockerApp',
 
-    components: {
-      VirusBlocker,
-    },
+    components: { VirusBlocker },
 
     mixins: [appMixin],
 
@@ -46,14 +44,11 @@
     },
 
     computed: {
-      /**
-       * Application display name
-       */
+      // Display name for the app, falling back to a default if not provided in appData.
       appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Virus Blocker',
 
-      /**
-       * Consolidates app data with powerState and virus-blocker specific extra data
-       */
+      // Consolidated app data to pass to the VirusBlocker component,
+      // including additional properties for file scanner availability and last signature update.
       consolidatedAppData: ({ appData, powerState, lastSignatureUpdate, isFileScannerAvailable }) => {
         return {
           ...appData,
@@ -65,9 +60,7 @@
     },
 
     watch: {
-      /**
-       * Once appManager is available (set by appMixin.created), fetch virus-blocker specific data.
-       */
+      // Watcher for appManager from appMixin to trigger fetching of virus-blocker specific data when the manager becomes available.
       appManager: {
         async handler(manager) {
           if (!manager) return
@@ -78,8 +71,8 @@
 
     methods: {
       /**
-       * Fetches virus-blocker specific data: file scanner availability and last signature update.
-       * Uses appManager from appMixin.
+       * Fetches virus-blocker specific data such as file scanner availability and last signature update time from the app manager.
+       * This method is called when the appManager becomes available, and updates the component's data properties accordingly.
        */
       async fetchVirusBlockerData() {
         if (!this.appManager) return
@@ -95,6 +88,15 @@
 
         this.isFileScannerAvailable = isAvailable
         this.lastSignatureUpdate = lastUpdate
+      },
+
+      /**
+       * Refreshes the app data by calling the refreshData method from appMixin and then fetching the latest virus-blocker specific data.
+       * This method is triggered when the user clicks the "Refresh" button in the UI, ensuring that all displayed information is up to date.
+       */
+      refreshData() {
+        appMixin.methods.refreshData.call(this)
+        this.fetchVirusBlockerData()
       },
     },
   }
