@@ -76,8 +76,7 @@
       async onSaveSettings({ newSettings, needRackReload }) {
         this.$store.commit('SET_LOADER', true)
         try {
-          this.originalDefaultLogo = this.settings.defaultLogo
-          if (this.originalDefaultLogo !== this.newSettings.defaultLogo) {
+          if (this.originalDefaultLogo !== newSettings.defaultLogo) {
             needRackReload = true
           }
           await this.$store.dispatch('apps/setAppSettings', {
