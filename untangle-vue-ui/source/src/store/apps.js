@@ -72,6 +72,7 @@ const getDefaultState = () => ({
  * Getters
  */
 const getters = {
+  companyName: state => state.store['branding-manager']?.settings?.companyName || '',
   /**
    * Get settings for a given app name.
    * Usage: getters.getSettings('http')

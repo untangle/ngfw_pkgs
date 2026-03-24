@@ -69,10 +69,7 @@
       totalDiskSpace() {
         return this.smtpAppSettings?.inboxSummary?.totalDiskSpace
       },
-      companyName() {
-        // TODO cache company name (can only be done once we migrate Branding Manager to Vue)
-        return window?.rpc?.companyName || null
-      },
+      companyName: ({ $store }) => $store.getters['apps/companyName'],
     },
     /**
      * Initializes component by loading SMTP app availability status and fetching
