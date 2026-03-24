@@ -29,6 +29,7 @@ import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
 import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 import BrandingManager from '@/components/settings/services/BrandingManager.vue'
+import Reports from '@/components/settings/services/Reports.vue'
 import LiveSupport from '@/components/settings/services/LiveSupport.vue'
 
 export default [
@@ -115,6 +116,11 @@ export default [
         path: 'services/policy-manager',
         component: PolicyManager,
         meta: { helpContext: 'policy_manager' },
+      },
+      {
+        path: 'services/reports',
+        component: Reports,
+        meta: { helpContext: 'reports' },
       },
       {
         path: 'system/email',

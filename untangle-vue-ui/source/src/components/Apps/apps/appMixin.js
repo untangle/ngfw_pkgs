@@ -10,6 +10,7 @@ export default {
       appManager: null, // Cached app manager instance for RPC calls
       toggling: false, // Local state to track if app is currently toggling (starting/stopping)
       saveDisabled: false, // Flag to disable save button on settings error
+      sessionHistory: this.initializeSessionsData(), // Rolling 7-point history for the sessions chart
     }
   },
 
@@ -28,7 +29,7 @@ export default {
    * to reduce code duplication and ensure consistent behavior across app components.
    */
   computed: {
-    ...mapGetters('metrics', ['getFormattedMetrics', 'getLiveSessions']),
+    ...mapGetters('metrics', ['getFormattedMetrics', 'getLiveSessions', 'lastUpdateTime']),
     ...mapGetters('apps', ['getAppPowerState']),
 
     /**
@@ -98,32 +99,45 @@ export default {
     formattedMetrics: ({ instanceId, getFormattedMetrics }) => (instanceId ? getFormattedMetrics(instanceId) : []),
 
     /**
-     * Sessions chart data from Vuex store
-     * Returns initial empty data if instanceId not available
+     * Sessions chart data — returns the rolling 7-point history maintained by the watcher.
+     * Falls back to the zero-initialized baseline when the app is off or instanceId is unavailable.
      */
     sessionsData() {
       if (!this.powerState?.on) return []
-      // If instanceId not available yet, return initialized sessions data with zeros to populate chart baseline
-      if (!this.instanceId) {
-        return this.initializeSessionsData()
-      }
-      const liveSessions = this.getLiveSessions(this.instanceId)
-      // Build rolling window with current value
-      const now = Date.now()
-      const data = []
-
-      for (let i = -6; i <= 0; i++) {
-        data.push({
-          timestamp: now + i * 10000,
-          sessions: i === 0 ? liveSessions : 0,
-        })
-      }
-
-      return data
+      if (!this.instanceId) return this.initializeSessionsData()
+      return this.sessionHistory
     },
 
     settings: ({ $store, appData }) =>
       $store.getters['apps/getSettings'](`${appData?.appName}-${appData?.instance?.id}`)?.settings || {},
+  },
+
+  watch: {
+    /**
+     * Fires on every poll tick (lastUpdateTime advances even when sessions value is unchanged),
+     * ensuring the x-axis timestamp always moves forward.
+     */
+    lastUpdateTime(timestamp) {
+      if (!this.powerState?.on || !this.instanceId) return
+
+      const sessions = this.getLiveSessions(this.instanceId)
+
+      if (this.sessionHistory.length === 0) {
+        const init = this.initializeSessionsData()
+        init[init.length - 1].sessions = sessions
+        this.sessionHistory = init
+        return
+      }
+
+      this.sessionHistory = [...this.sessionHistory.slice(1), { timestamp, sessions }]
+    },
+
+    /**
+     * Clear history when the app is turned off so the chart resets on next start.
+     */
+    'powerState.on'(isOn) {
+      if (!isOn) this.sessionHistory = this.initializeSessionsData()
+    },
   },
 
   async created() {
