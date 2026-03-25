@@ -41,11 +41,11 @@
         licenseNodeName: 'live-support',
         supportData: [],
         companyUrl: '',
+        companyName: '',
       }
     },
 
     computed: {
-      companyName: ({ $store }) => $store.getters['apps/companyName'],
       systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
     },
 
@@ -101,12 +101,14 @@
       async getSupportData() {
         try {
           this.$store.commit('SET_LOADER', true)
-          const [companyURL, serverUID, fullVersionAndRevision] = await Promise.all([
+          const [companyName, companyURL, serverUID, fullVersionAndRevision] = await Promise.all([
+            window.rpc.companyName,
             window.rpc.companyURL,
             window.rpc.serverUID,
             window.rpc.fullVersionAndRevision,
           ])
           const data = []
+          this.companyName = companyName
           this.companyUrl = companyURL
           data.push({ name: 'server_uid', value: serverUID }, { name: 'build', value: fullVersionAndRevision })
           this.supportData = data
