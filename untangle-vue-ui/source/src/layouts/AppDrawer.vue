@@ -173,6 +173,7 @@
             items: [
               { name: 'branding_manager', to: '/settings/services/branding-manager' },
               { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
+              { name: 'live_support', to: '/settings/services/live-support' },
               { name: 'policy_manager', to: '/settings/services/policy-manager' },
               { name: 'reports', to: '/settings/services/reports' },
             ],
