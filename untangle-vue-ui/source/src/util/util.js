@@ -521,6 +521,21 @@ const util = {
     return url
   },
 
+  getAbout() {
+    let about = null
+    if (about === null) {
+      about = [
+        'uid=' + window.rpc.serverUID,
+        'version=' + window.rpc.fullVersion,
+        'webui=true',
+        'lang=' + window.rpc.languageSettings.language,
+        'applianceModel=' + window.rpc.applianceModel,
+        'installType=' + window.rpc.installType,
+      ].join('&')
+      return about
+    }
+  },
+
   /**
    * Reloads licenses by making a direct RPC call.
    * @returns {Promise<void>}

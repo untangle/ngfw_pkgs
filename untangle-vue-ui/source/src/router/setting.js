@@ -30,6 +30,7 @@ import Events from '@/components/settings/system/Events.vue'
 import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 import BrandingManager from '@/components/settings/services/BrandingManager.vue'
 import Reports from '@/components/settings/services/Reports.vue'
+import LiveSupport from '@/components/settings/services/LiveSupport.vue'
 
 export default [
   {
@@ -105,6 +106,11 @@ export default [
         path: 'services/dynamic-blocklist',
         component: DynamicBlockLists,
         meta: { helpContext: 'dynamic_lists' },
+      },
+      {
+        path: 'services/live-support',
+        component: LiveSupport,
+        meta: { helpContext: 'live-support' },
       },
       {
         path: 'services/policy-manager',

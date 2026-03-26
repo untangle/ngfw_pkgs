@@ -386,6 +386,42 @@ const actions = {
     return result
   },
 
+  /**
+   * Fetch the company URL.
+   * If branding-manager settings are already available in the Vuex store,
+   *  return the companyUrl from those settings.
+   * Otherwise, fall back to fetching the value from the backend via RPC.
+   */
+  async getCompanyUrl({ state }) {
+    try {
+      const brandingData = state.store['branding-manager']
+      if (brandingData) {
+        return brandingData.settings?.companyUrl
+      }
+      return await window.rpc.companyUrl
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /**
+   * Fetch the company name.
+   * If branding-manager settings are already available in the Vuex store,
+   * return the companyName from those settings.
+   * Otherwise, fall back to fetching the value from the backend via RPC.
+   */
+  async getCompanyName({ state }) {
+    try {
+      const brandingData = state.store['branding-manager']
+      if (brandingData) {
+        return brandingData.settings?.companyName
+      }
+      return await window.rpc.companyName
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   async setAppSettings({ dispatch }, { appName, settings, appId, app }) {
     if (!settings) return
     if (!app) {

@@ -39,6 +39,7 @@
          * @type {boolean}
          */
         smtpEnabled: false,
+        companyName: '',
       }
     },
     computed: {
@@ -69,16 +70,13 @@
       totalDiskSpace() {
         return this.smtpAppSettings?.inboxSummary?.totalDiskSpace
       },
-      companyName() {
-        // TODO cache company name (can only be done once we migrate Branding Manager to Vue)
-        return window?.rpc?.companyName || null
-      },
     },
     /**
      * Initializes component by loading SMTP app availability status and fetching
      * initial email configuration data including SMTP settings, mail sender config, and public URL.
      */
     async created() {
+      this.companyName = this.$store.dispatch('apps/getCompanyName')
       const app = await this.$store.dispatch('apps/getApp', { appName: 'smtp' })
       this.smtpEnabled = !!app
       this.$store.dispatch('apps/loadAppData', { appName: 'smtp' })
