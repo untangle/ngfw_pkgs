@@ -51,6 +51,8 @@
 
     created() {
       this.$store.dispatch('config/getSystemSettings', false)
+      this.companyUrl = this.$store.dispatch('apps/getCompanyUrl')
+      this.companyName = this.$store.dispatch('apps/getCompanyName')
       this.getSupportData()
     },
 
@@ -101,15 +103,11 @@
       async getSupportData() {
         try {
           this.$store.commit('SET_LOADER', true)
-          const [companyName, companyURL, serverUID, fullVersionAndRevision] = await Promise.all([
-            window.rpc.companyName,
-            window.rpc.companyURL,
+          const [serverUID, fullVersionAndRevision] = await Promise.all([
             window.rpc.serverUID,
             window.rpc.fullVersionAndRevision,
           ])
           const data = []
-          this.companyName = companyName
-          this.companyUrl = companyURL
           data.push({ name: 'server_uid', value: serverUID }, { name: 'build', value: fullVersionAndRevision })
           this.supportData = data
         } catch (ex) {

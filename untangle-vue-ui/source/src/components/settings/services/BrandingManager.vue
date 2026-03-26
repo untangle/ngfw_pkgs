@@ -46,7 +46,6 @@
 
     created() {
       this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
-      this.originalDefaultLogo = this.settings?.defaultLogo
     },
 
     methods: {
@@ -76,6 +75,7 @@
       async onSaveSettings({ newSettings, needRackReload }) {
         this.$store.commit('SET_LOADER', true)
         try {
+          this.originalDefaultLogo = this.settings?.defaultLogo
           if (this.originalDefaultLogo !== newSettings.defaultLogo) {
             needRackReload = true
           }
