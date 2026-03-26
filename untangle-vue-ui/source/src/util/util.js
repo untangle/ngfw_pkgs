@@ -37,6 +37,17 @@ const util = {
     }
   },
 
+  // returns milliseconds depending of the servlet ADMIN or REPORTS
+  getMilliseconds() {
+    if (window.rpc?.systemManager) {
+      return Rpc.directData('rpc.systemManager.getMilliseconds')
+    }
+    if (window.rpc?.ReportsContext) {
+      return Rpc.directData('rpc.ReportsContext.getMilliseconds')
+    }
+    return Date.now()
+  },
+
   /**
    * checks if box is reachable while rebooting or upgrading
    * using a 3s interval to avoid flooding with calls
