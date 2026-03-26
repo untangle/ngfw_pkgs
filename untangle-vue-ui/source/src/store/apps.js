@@ -422,16 +422,13 @@ const actions = {
     }
   },
 
-  async setAppSettings({ dispatch, commit }, { appName, settings, appId, app }) {
+  async setAppSettings({ dispatch }, { appName, settings, appId, app }) {
     if (!settings) return
     if (!app) {
       app = await dispatch('getApp', { appName, appId })
     }
     if (!app) return
 
-    if (appName === 'branding-manager' && settings.companyName) {
-      commit('SET_COMPANY_NAME', settings.companyName)
-    }
     return new Promise((resolve, reject) => {
       app.setSettingsV2(async (ex, res) => {
         if (ex || res?.code) {
