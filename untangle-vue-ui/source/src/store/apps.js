@@ -699,6 +699,22 @@ const actions = {
   },
 
   /**
+   * Run a fixed report for the given template and date range.
+   * @param {Object} payload - { templateId, startDate, stopDate }
+   * @returns {Promise<{ success: boolean }>}
+   */
+  async runFixedReport(_, { templateId, startDate, stopDate }) {
+    try {
+      const appManager = await Rpc.asyncData('rpc.appManager.app', 'reports')
+      await Rpc.asyncData(appManager, 'runFixedReport', templateId, startDate, stopDate)
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false }
+    }
+  },
+
+  /**
    * Check license status for a specific license node
    * @param {Object} context - Vuex context
    * @param {String} licenseNodeName - The license node name to check
