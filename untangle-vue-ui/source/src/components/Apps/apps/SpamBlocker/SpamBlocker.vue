@@ -9,11 +9,11 @@
     @remove-app="removeApp"
   >
     <!-- Custom action buttons slot -->
-    <template #actions="{ newSettings, isDirty }">
+    <template #actions="{ newSettings, isDirty, validate }">
       <u-btn class="mr-2" @click="refreshData">
         {{ $t('refresh') }}
       </u-btn>
-      <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">
+      <u-btn :disabled="!isDirty || saveDisabled" @click="onSave(newSettings, validate)">
         {{ $t('save') }}
       </u-btn>
     </template>
@@ -88,6 +88,17 @@
 
         this.lastUpdate = lastUpdate
         this.lastUpdateCheck = lastUpdateCheck
+      },
+
+      /**
+       * Validates all tabs and saves only if all fields are valid.
+       * @param {Object} newSettings - Settings object to save
+       * @param {Function} validate - validateTabs function from shared component
+       */
+      async onSave(newSettings, validate) {
+        const isValid = await validate()
+        if (!isValid) return
+        this.saveSettings(newSettings)
       },
 
       /**
