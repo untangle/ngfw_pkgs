@@ -5,6 +5,9 @@
       :report-queue-size="reportQueueSize"
       :get-server-time="fetchServerTime"
       :server-tz-offset="serverTzOffset"
+      :get-recommended-report-ids="fetchRecommendedReportIds"
+      :get-current-applications="fetchCurrentApplications"
+      :get-fixed-reports-allow-graphs="fetchFixedReportsAllowGraphs"
       @save-settings="onSaveSettings"
       @refresh-settings="loadAppData"
       @run-fixed-report="onRunFixedReport"
@@ -66,6 +69,32 @@
     methods: {
       /* returns current server time in ms */
       fetchServerTime: () => util.getMilliseconds(),
+
+      /* fetches the reports manager instance via the reports app */
+      async fetchReportsManager() {
+        const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+        return Rpc.asyncData(reportsApp, 'getReportsManager')
+      },
+
+      /* returns list of recommended report IDs from the reports manager */
+      async fetchRecommendedReportIds() {
+        const reportsManager = await this.fetchReportsManager()
+        const result = await Rpc.asyncData(reportsManager, 'getRecommendedReportIds')
+        return result?.list || []
+      },
+
+      /* returns list of currently active applications from the reports manager */
+      async fetchCurrentApplications() {
+        const reportsManager = await this.fetchReportsManager()
+        const result = await Rpc.asyncData(reportsManager, 'getCurrentApplications')
+        return result?.list || []
+      },
+
+      /* returns whether fixed reports are allowed to display graphs */
+      async fetchFixedReportsAllowGraphs() {
+        const reportsManager = await this.fetchReportsManager()
+        return Rpc.asyncData(reportsManager, 'fixedReportsAllowGraphs')
+      },
       /* Load application data */
       loadAppData() {
         this.$store.dispatch('apps/loadAppData', { appName: this.appName })
