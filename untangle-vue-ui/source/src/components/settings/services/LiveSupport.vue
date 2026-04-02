@@ -49,10 +49,10 @@
       systemSettings: ({ $store }) => $store.getters['config/systemSetting'],
     },
 
-    created() {
+    async created() {
       this.$store.dispatch('config/getSystemSettings', false)
-      this.companyUrl = this.$store.dispatch('apps/getCompanyUrl')
-      this.companyName = this.$store.dispatch('apps/getCompanyName')
+      this.companyUrl = await this.$store.dispatch('apps/getCompanyUrl')
+      this.companyName = await this.$store.dispatch('apps/getCompanyName')
       this.getSupportData()
     },
 
