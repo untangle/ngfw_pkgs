@@ -126,6 +126,23 @@ const mutations = {
 }
 
 const actions = {
+  /**
+   *  Fetches the Google Drive root directory from the stored Google settings.
+   *  If the Google settings are not already available in the Vuex state,
+   *  it dispatches `getGoogleSettings` to retrieve them from the backend.
+   */
+  async getRootDirectory({ dispatch, state }) {
+    try {
+      if (!state.googleSettings) {
+        await dispatch('getGoogleSettings', true)
+      }
+      const rootDirectory = state.googleSettings?.googleDriveRootDirectory
+      return rootDirectory
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
   async getPublicUrl({ commit }, refetch) {
     try {
       if (!refetch) {

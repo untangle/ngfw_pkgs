@@ -65,7 +65,7 @@
     },
 
     async created() {
-      this.companyName = this.$store.dispatch('apps/getCompanyName')
+      this.companyName = await this.$store.dispatch('apps/getCompanyName')
       await this.$store.dispatch('withLoader', {
         needsRaf: true,
         asyncFn: async () => {

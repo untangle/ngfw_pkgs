@@ -29,6 +29,7 @@ import Administration from '@/components/settings/system/Administration.vue'
 import Events from '@/components/settings/system/Events.vue'
 import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 import BrandingManager from '@/components/settings/services/BrandingManager.vue'
+import ConfigurationBackup from '@/components/settings/services/ConfigurationBackup.vue'
 import Reports from '@/components/settings/services/Reports.vue'
 import LiveSupport from '@/components/settings/services/LiveSupport.vue'
 
@@ -101,6 +102,11 @@ export default [
         path: 'services/branding-manager',
         component: BrandingManager,
         meta: { helpContext: 'branding_manager' },
+      },
+      {
+        path: 'services/configuration-backup',
+        component: ConfigurationBackup,
+        meta: { helpContext: 'configuration_backup' },
       },
       {
         path: 'services/dynamic-blocklist',
