@@ -179,26 +179,21 @@
 
       /**
        * Handle delete-reports event from the Data tab.
-       * Shows a confirmation dialog, then calls reinitializeDatabase via RPC.
+       * Calls reinitializeDatabase via RPC and reports success via cb.
        */
-      onDeleteReports() {
-        this.$vuntangle.confirm.show({
-          title: this.$vuntangle.$t('delete_all_reports_data'),
-          message: this.$vuntangle.$t('confirm_delete_all_reports_data'),
-          action: async resolve => {
-            this.$store.commit('SET_LOADER', true)
-            try {
-              const reportsManager = await this.fetchReportsManager()
-              await Rpc.asyncData(reportsManager, 'reinitializeDatabase')
-              resolve(true)
-            } catch (ex) {
-              util.handleException(ex)
-              resolve(false)
-            } finally {
-              this.$store.commit('SET_LOADER', false)
-            }
-          },
-        })
+      async onDeleteReports({ cb }) {
+        this.$store.commit('SET_LOADER', true)
+        let succeeded = false
+        try {
+          const reportsManager = await this.fetchReportsManager()
+          await Rpc.asyncData(reportsManager, 'reinitializeDatabase')
+          succeeded = true
+        } catch (ex) {
+          util.handleException(ex)
+        } finally {
+          cb(succeeded)
+          this.$store.commit('SET_LOADER', false)
+        }
       },
 
       /**
@@ -211,21 +206,19 @@
 
       /**
        * Handle upload-file event from the Data tab.
-       * Uploads the reports data backup file to the server.
-       * @param {Object} payload - { file: File, type: string }
+       * Uploads the reports data backup file to the server and reports success via cb.
+       * @param {Object} payload - { file: File, type: string, cb: Function }
        */
-      async onUploadFile({ file, type }) {
+      async onUploadFile({ file, type, cb }) {
         this.$store.commit('SET_LOADER', true)
+        let succeeded = false
         try {
           const response = await util.uploadFile('/admin/v2/upload', { filename: file, type })
-          if (response?.success) {
-            this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_succeeded'))
-          } else {
-            this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_failed'), 'error')
-          }
+          succeeded = !!response?.success
         } catch {
-          this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_failed'), 'error')
+          // succeeded stays false
         } finally {
+          cb(succeeded)
           this.$store.commit('SET_LOADER', false)
         }
       },
