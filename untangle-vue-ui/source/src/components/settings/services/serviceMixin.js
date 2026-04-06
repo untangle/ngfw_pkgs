@@ -53,6 +53,9 @@ export default {
             }
           })
         })
+        // Re-fetch so getRunState() reflects the updated state
+        const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
+        this.appManager = app || this.appManager
       } finally {
         this.toggling = false
       }

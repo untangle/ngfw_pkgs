@@ -95,7 +95,7 @@
 
       /**
        * Validates and Saves the settings
-       * @param param
+       * @param param{Object} newSettings
        */
       async onSave(newSettings) {
         const isValid = await this.$refs.component.validate()
