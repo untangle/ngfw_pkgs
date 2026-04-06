@@ -13,7 +13,8 @@
     <configuration-backup
       v-if="settings"
       ref="component"
-      :settings="consolidatedAppData"
+      :settings="settings"
+      :app-data="consolidatedAppData"
       :disabled="!isLicensed"
       :root-directory="rootDirectory"
       :google-drive-is-configured="isGoogleDriveConnected"
@@ -55,8 +56,7 @@
     computed: {
       settings: ({ $store }) => $store.getters['apps/getSettings']('configuration-backup')?.settings,
       isGoogleDriveConnected: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
-      consolidatedAppData: ({ powerState, settings, licenseNodeName }) => ({
-        ...settings,
+      consolidatedAppData: ({ powerState, licenseNodeName }) => ({
         powerState: powerState || {},
         appDisplayName: licenseNodeName,
       }),
@@ -102,12 +102,9 @@
         if (!isValid) return
         this.$store.commit('SET_LOADER', true)
         try {
-          const settings = { ...newSettings }
-          delete settings.powerState
-          delete settings.appDisplayName
           await this.$store.dispatch('apps/setAppSettings', {
             appName: 'configuration-backup',
-            settings,
+            settings: newSettings,
           })
         } catch (error) {
           Util.handleException(error)
