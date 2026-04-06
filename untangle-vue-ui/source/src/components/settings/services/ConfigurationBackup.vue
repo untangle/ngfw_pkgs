@@ -12,18 +12,19 @@
     </no-license>
     <configuration-backup
       v-if="settings"
-      :settings="settings"
+      ref="component"
+      :settings="consolidatedAppData"
       :disabled="!isLicensed"
       :root-directory="rootDirectory"
       :google-drive-is-configured="isGoogleDriveConnected"
       @send-backup="sendBackup"
+      @toggle-state="toggleAppState"
     >
-      <!-- Custom action buttons slot -->
-      <template #actions="{ newSettings, disabled, isDirty }">
-        <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
-          {{ $vuntangle.$t('reset_to_defaults') }}
+      <template #actions="{ newSettings, isDirty }">
+        <u-btn class="mr-2" @click="refreshData">
+          {{ $vuntangle.$t('refresh') }}
         </u-btn>
-        <u-btn :disabled="disabled || !isDirty" @click="onSave(newSettings)">
+        <u-btn :disabled="!isDirty" @click="onSave(newSettings)">
           {{ $vuntangle.$t('save') }}
         </u-btn>
       </template>
@@ -54,6 +55,11 @@
     computed: {
       settings: ({ $store }) => $store.getters['apps/getSettings']('configuration-backup')?.settings,
       isGoogleDriveConnected: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
+      consolidatedAppData: ({ powerState, settings, licenseNodeName }) => ({
+        ...settings,
+        powerState: powerState || {},
+        appDisplayName: licenseNodeName,
+      }),
     },
 
     async created() {
@@ -63,10 +69,18 @@
     },
 
     methods: {
-      onResetDefaults() {
+      /**
+       * Reloads app settings from the backend, discarding any unsaved changes.
+       */
+      refreshData() {
         this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
       },
 
+      /**
+       * Triggers an immediate backup via RPC.
+       * Calls the callback with the response or null on failure.
+       * @param {Function} cb - callback provided by the vuntangle component
+       */
       async sendBackup({ cb }) {
         try {
           this.$store.commit('SET_LOADER', true)
@@ -80,15 +94,20 @@
       },
 
       /**
-       * Saves the settings
+       * Validates and Saves the settings
        * @param param
        */
       async onSave(newSettings) {
+        const isValid = await this.$refs.component.validate()
+        if (!isValid) return
         this.$store.commit('SET_LOADER', true)
         try {
+          const settings = { ...newSettings }
+          delete settings.powerState
+          delete settings.appDisplayName
           await this.$store.dispatch('apps/setAppSettings', {
             appName: 'configuration-backup',
-            settings: newSettings,
+            settings,
           })
         } catch (error) {
           Util.handleException(error)

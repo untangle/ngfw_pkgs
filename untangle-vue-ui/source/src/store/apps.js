@@ -185,6 +185,45 @@ const getters = {
         inconsistent,
       }
     },
+
+  /**
+   * Get service app status - detects on/off state, inconsistency
+   * @param {Object} appManager - The app manager object (has getRunState, getAppProperties methods)
+   * @returns {Object} { on: boolean, inconsistent: boolean }
+   */
+  getServiceAppStatus:
+    () =>
+    ({ appManager }) => {
+      let on = false
+      let inconsistent = false
+
+      if (appManager) {
+        const runState = appManager.getRunState()
+
+        // Determine if app is running
+        on = runState === 'RUNNING'
+
+        // Get app properties to check for daemon
+        let daemon = null
+        try {
+          const appProperties = appManager.getAppProperties ? appManager.getAppProperties() : null
+          daemon = appProperties?.daemon
+        } catch (error) {
+          Util.handleException(error)
+        }
+
+        // Check daemon status if app is running and has a daemon
+        const daemonRunning =
+          on && daemon != null ? Rpc.directData('rpc.UvmContext.daemonManager.isRunning', daemon) : true
+
+        inconsistent = on && !daemonRunning
+      }
+
+      return {
+        on,
+        inconsistent,
+      }
+    },
 }
 
 const mutations = {

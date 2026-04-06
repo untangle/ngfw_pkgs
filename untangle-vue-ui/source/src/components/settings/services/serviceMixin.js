@@ -1,16 +1,62 @@
+import { mapGetters } from 'vuex'
 import uris from '@/util/uris'
 export default {
   data() {
     return {
       isLicensed: undefined,
       manageLicenseUri: undefined,
+      appManager: null,
+      toggling: false,
     }
   },
-  created() {
+
+  computed: {
+    ...mapGetters('apps', ['getServiceAppStatus']),
+
+    powerState: ({ appManager, getServiceAppStatus, toggling }) => {
+      const vuexPowerState = getServiceAppStatus({
+        appManager,
+      })
+
+      return {
+        ...vuexPowerState,
+        power: toggling,
+      }
+    },
+  },
+
+  async created() {
     this.checkLicense()
     this.getManageLicenseUri()
+    const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
+    this.appManager = app || null
   },
+
   methods: {
+    /**
+     * Toggle app state. Starts or stops the app based on the 'enabled' parameter.
+     * @param {boolean} enabled - Target state (true = starting, false = stopping)
+     */
+    async toggleAppState(enabled) {
+      if (!this.appManager) return
+
+      this.toggling = true
+      try {
+        const rpcMethod = enabled ? 'start' : 'stop'
+
+        await new Promise((resolve, reject) => {
+          this.appManager[rpcMethod]((ex, res) => {
+            if (ex || res?.code) {
+              reject(ex || new Error(res?.message || `Failed to ${rpcMethod} app`))
+            } else {
+              resolve(res)
+            }
+          })
+        })
+      } finally {
+        this.toggling = false
+      }
+    },
     /**
      * PROP: is-licensed
      * Checks for TP license status
