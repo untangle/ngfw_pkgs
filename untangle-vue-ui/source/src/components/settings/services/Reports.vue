@@ -8,9 +8,15 @@
       :get-recommended-report-ids="fetchRecommendedReportIds"
       :get-current-applications="fetchCurrentApplications"
       :get-fixed-reports-allow-graphs="fetchFixedReportsAllowGraphs"
+      :is-expert-mode="isExpertMode"
+      :google-drive-configured="googleDriveConfigured"
+      :google-drive-root-path="googleDriveRootPath"
       @save-settings="onSaveSettings"
       @refresh-settings="loadAppData"
       @run-fixed-report="onRunFixedReport"
+      @delete-reports="onDeleteReports"
+      @configure-google-drive="onConfigureGoogleDrive"
+      @upload-file="onUploadFile"
     />
   </v-container>
 </template>
@@ -48,6 +54,12 @@
       /* Gets the expert mode status from the settings */
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
 
+      /* Whether Google Drive is currently configured */
+      googleDriveConfigured: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
+
+      /* App-specific Google Drive root path — matches ExtJS getAppSpecificGoogleDrivePath */
+      googleDriveRootPath: ({ $store }) => $store.getters['config/googleDriveRootPath'],
+
       /* Server timezone offset in ms for date picker initialization */
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
     },
@@ -56,6 +68,8 @@
       this.loadAppData()
       this.pollQueueSize()
       this.$store.dispatch('config/getTimeZoneOffSet')
+      this.$store.dispatch('config/getIsGoogleDriveConnected')
+      this.$store.dispatch('config/getGoogleDriveRootPath')
     },
 
     /* clear poll timer on component destroy to prevent memory leaks */
@@ -160,6 +174,59 @@
           }
         } catch {
           this.reportQueueSize = 0
+        }
+      },
+
+      /**
+       * Handle delete-reports event from the Data tab.
+       * Shows a confirmation dialog, then calls reinitializeDatabase via RPC.
+       */
+      onDeleteReports() {
+        this.$vuntangle.confirm.show({
+          title: this.$vuntangle.$t('delete_all_reports_data'),
+          message: this.$vuntangle.$t('confirm_delete_all_reports_data'),
+          action: async resolve => {
+            this.$store.commit('SET_LOADER', true)
+            try {
+              const reportsManager = await this.fetchReportsManager()
+              await Rpc.asyncData(reportsManager, 'reinitializeDatabase')
+              resolve(true)
+            } catch (ex) {
+              util.handleException(ex)
+              resolve(false)
+            } finally {
+              this.$store.commit('SET_LOADER', false)
+            }
+          },
+        })
+      },
+
+      /**
+       * Handle configure-google-drive event from the Data tab.
+       * Navigates to the Administration page where Google Drive is configured.
+       */
+      onConfigureGoogleDrive() {
+        this.$router.push('/settings/system/administration?tab=google')
+      },
+
+      /**
+       * Handle upload-file event from the Data tab.
+       * Uploads the reports data backup file to the server.
+       * @param {Object} payload - { file: File, type: string }
+       */
+      async onUploadFile({ file, type }) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          const response = await util.uploadFile('/admin/v2/upload', { filename: file, type })
+          if (response?.success) {
+            this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_succeeded'))
+          } else {
+            this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_failed'), 'error')
+          }
+        } catch {
+          this.$vuntangle.toast.add(this.$vuntangle.$t('upload_data_failed'), 'error')
+        } finally {
+          this.$store.commit('SET_LOADER', false)
         }
       },
     },
