@@ -490,7 +490,7 @@
         }
 
         try {
-          const response = await Util.uploadFile('/admin/upload', {
+          const response = await Util.uploadFile('/admin/v2/upload', {
             filename: file,
             argument,
             formName: 'upload_form',

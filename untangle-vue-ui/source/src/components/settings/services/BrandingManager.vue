@@ -51,7 +51,7 @@
     methods: {
       async uploadLogo({ formData, cb }) {
         try {
-          const response = await util.uploadFile('/admin/upload', {
+          const response = await util.uploadFile('/admin/v2/upload', {
             logo: formData.get('logo'),
             type: 'logo',
           })
