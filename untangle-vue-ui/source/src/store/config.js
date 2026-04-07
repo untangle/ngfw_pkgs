@@ -24,6 +24,7 @@ const getDefaultState = () => ({
   adminSetting: null,
   googleSettings: null,
   isGoogleDriveConnected: false,
+  googleDriveRootPath: '',
   systemLogs: {}, // system logs stored by logName
   certificatesInformation: null,
   rootCertificates: null,
@@ -66,6 +67,7 @@ const getters = {
   adminSetting: state => state.adminSetting || {},
   googleSettings: state => state.googleSettings || {},
   isGoogleDriveConnected: state => state.isGoogleDriveConnected || false,
+  googleDriveRootPath: state => state.googleDriveRootPath || '',
   /**
    * Get logs for a given log.
    * Usage: getters.getLogs('uvm')
@@ -108,6 +110,7 @@ const mutations = {
   SET_ADMIN_SETTINGS: (state, value) => set(state, 'adminSetting', value),
   SET_GOOGLE_SETTINGS: (state, value) => set(state, 'googleSettings', value),
   SET_IS_GOOGLE_DRIVE_CONNECTED: (state, value) => set(state, 'isGoogleDriveConnected', value),
+  SET_GOOGLE_DRIVE_ROOT_PATH: (state, value) => set(state, 'googleDriveRootPath', value),
   /**
    * Dynamically set logs for an app
    * Usage: commit('SET_LOGS', { logName: 'uvm', value: data })
@@ -412,6 +415,17 @@ const actions = {
   },
 
   /* check google drive connection status */
+  /* fetch the app-specific Google Drive root path — matches ExtJS getAppSpecificGoogleDrivePath */
+  async getGoogleDriveRootPath({ commit }) {
+    try {
+      const result = Rpc.asyncPromise('rpc.UvmContext.googleManager.getAppSpecificGoogleDrivePath', null)
+      const rootPath = await result()
+      commit('SET_GOOGLE_DRIVE_ROOT_PATH', rootPath || '')
+    } catch {
+      commit('SET_GOOGLE_DRIVE_ROOT_PATH', '')
+    }
+  },
+
   async getIsGoogleDriveConnected({ commit }) {
     try {
       const result = Rpc.asyncPromise('rpc.UvmContext.googleManager.isGoogleDriveConnected')

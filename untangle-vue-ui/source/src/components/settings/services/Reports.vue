@@ -8,9 +8,15 @@
       :get-recommended-report-ids="fetchRecommendedReportIds"
       :get-current-applications="fetchCurrentApplications"
       :get-fixed-reports-allow-graphs="fetchFixedReportsAllowGraphs"
+      :is-expert-mode="isExpertMode"
+      :google-drive-configured="googleDriveConfigured"
+      :google-drive-root-path="googleDriveRootPath"
       @save-settings="onSaveSettings"
       @refresh-settings="loadAppData"
       @run-fixed-report="onRunFixedReport"
+      @delete-reports="onDeleteReports"
+      @configure-google-drive="onConfigureGoogleDrive"
+      @upload-file="onUploadFile"
     />
   </v-container>
 </template>
@@ -20,6 +26,7 @@
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
   import util from '@/util/util'
+  import Util from '@/util/setupUtil'
 
   export default {
     components: {
@@ -48,6 +55,12 @@
       /* Gets the expert mode status from the settings */
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
 
+      /* Whether Google Drive is currently configured */
+      googleDriveConfigured: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
+
+      /* App-specific Google Drive root path — matches ExtJS getAppSpecificGoogleDrivePath */
+      googleDriveRootPath: ({ $store }) => $store.getters['config/googleDriveRootPath'],
+
       /* Server timezone offset in ms for date picker initialization */
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
     },
@@ -56,6 +69,8 @@
       this.loadAppData()
       this.pollQueueSize()
       this.$store.dispatch('config/getTimeZoneOffSet')
+      this.$store.dispatch('config/getIsGoogleDriveConnected')
+      this.$store.dispatch('config/getGoogleDriveRootPath')
     },
 
     /* clear poll timer on component destroy to prevent memory leaks */
@@ -160,6 +175,52 @@
           }
         } catch {
           this.reportQueueSize = 0
+        }
+      },
+
+      /**
+       * Handle delete-reports event from the Data tab.
+       * Calls reinitializeDatabase via RPC and reports success via cb.
+       */
+      async onDeleteReports({ cb }) {
+        this.$store.commit('SET_LOADER', true)
+        let succeeded = false
+        try {
+          const reportsManager = await this.fetchReportsManager()
+          await Rpc.asyncData(reportsManager, 'reinitializeDatabase')
+          succeeded = true
+        } catch (ex) {
+          util.handleException(ex)
+        } finally {
+          cb(succeeded)
+          this.$store.commit('SET_LOADER', false)
+        }
+      },
+
+      /**
+       * Handle configure-google-drive event from the Data tab.
+       * Navigates to the Administration page where Google Drive is configured.
+       */
+      onConfigureGoogleDrive() {
+        this.$router.push('/settings/system/administration?tab=google')
+      },
+
+      /**
+       * Handle upload-file event from the Data tab.
+       * Uploads the reports data backup file to the server and reports success via cb.
+       * @param {Object} payload - { file: File, type: string, cb: Function }
+       */
+      async onUploadFile({ file, type, cb }) {
+        this.$store.commit('SET_LOADER', true)
+        let succeeded = false
+        try {
+          const response = await util.uploadFile('/admin/upload', { filename: file, type })
+          succeeded = !!response?.success
+        } catch (error) {
+          Util.handleException(error)
+        } finally {
+          cb(succeeded)
+          this.$store.commit('SET_LOADER', false)
         }
       },
     },
