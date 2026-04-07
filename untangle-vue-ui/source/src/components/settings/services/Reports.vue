@@ -26,6 +26,7 @@
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
   import util from '@/util/util'
+  import Util from '@/util/setupUtil'
 
   export default {
     components: {
@@ -213,10 +214,10 @@
         this.$store.commit('SET_LOADER', true)
         let succeeded = false
         try {
-          const response = await util.uploadFile('/admin/v2/upload', { filename: file, type })
+          const response = await util.uploadFile('/admin/upload', { filename: file, type })
           succeeded = !!response?.success
-        } catch {
-          // succeeded stays false
+        } catch (error) {
+          Util.handleException(error)
         } finally {
           cb(succeeded)
           this.$store.commit('SET_LOADER', false)
