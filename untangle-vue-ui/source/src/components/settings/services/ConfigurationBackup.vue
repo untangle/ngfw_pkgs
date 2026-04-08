@@ -16,6 +16,7 @@
       :settings="settings"
       :app-data="consolidatedAppData"
       :disabled="!isLicensed"
+      :reports="appReports"
       :root-directory="rootDirectory"
       :google-drive-is-configured="isGoogleDriveConnected"
       @send-backup="sendBackup"
@@ -54,28 +55,20 @@
     },
 
     computed: {
-      settings: ({ $store }) => $store.getters['apps/getSettings']('configuration-backup')?.settings,
       isGoogleDriveConnected: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
-      consolidatedAppData: ({ powerState, licenseNodeName }) => ({
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Configuration Backup',
+      consolidatedAppData: ({ powerState, appDisplayName }) => ({
         powerState: powerState || {},
-        appDisplayName: licenseNodeName,
+        appDisplayName,
       }),
     },
 
     async created() {
-      this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
       this.$store.dispatch('config/getIsGoogleDriveConnected')
       this.rootDirectory = await this.$store.dispatch('config/getRootDirectory')
     },
 
     methods: {
-      /**
-       * Reloads app settings from the backend, discarding any unsaved changes.
-       */
-      refreshData() {
-        this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
-      },
-
       /**
        * Triggers an immediate backup via RPC.
        * Calls the callback with the response or null on failure.
@@ -94,23 +87,13 @@
       },
 
       /**
-       * Validates and Saves the settings
-       * @param param{Object} newSettings
+       * Validates then delegates to mixin's saveSettings
+       * @param {Object} newSettings
        */
       async onSave(newSettings) {
         const isValid = await this.$refs.component.validate()
         if (!isValid) return
-        this.$store.commit('SET_LOADER', true)
-        try {
-          await this.$store.dispatch('apps/setAppSettings', {
-            appName: 'configuration-backup',
-            settings: newSettings,
-          })
-        } catch (error) {
-          Util.handleException(error)
-        } finally {
-          this.$store.commit('SET_LOADER', false)
-        }
+        await this.saveSettings(newSettings)
       },
     },
   }
