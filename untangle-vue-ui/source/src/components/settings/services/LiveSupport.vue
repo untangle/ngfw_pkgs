@@ -39,6 +39,7 @@
     data() {
       return {
         licenseNodeName: 'live-support',
+        hasAppSettings: false,
         supportData: [],
         companyUrl: '',
         companyName: '',
