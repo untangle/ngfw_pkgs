@@ -1,6 +1,6 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
-    <no-license v-if="isLicensed === false" class="mt-2">
+    <no-license v-if="isLicensed === false && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('dynamic_blocklist')]) }}
       <template #actions>
         <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
@@ -12,10 +12,10 @@
     </no-license>
 
     <settings-dynamic-block-lists
-      v-if="dynamicListsSettings"
       :settings="dynamicListsSettings"
       :status="status"
-      :disabled="!isLicensed"
+      :disabled="!isLicensed && isInstalled"
+      :is-installed="isInstalled"
       @update-settings="onSave"
       @delete-configuration="onDeleteConfiguration"
       @download="onDownload"
@@ -23,19 +23,28 @@
       @download-csv="initiateDownload"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
-        <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
-          {{ $vuntangle.$t('reset_to_defaults') }}
-        </u-btn>
-        <u-btn :disabled="disabled || !isDirty" @click="onSave(newSettings)">
-          {{ $vuntangle.$t('save') }}
-        </u-btn>
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 180px">
+            <u-app-status-remove class="mt-0" service-app app-name="Dynamic Block Lists" @remove="onRemoveService" />
+          </div>
+          <v-divider vertical class="mx-4" />
+          <u-btn :disabled="disabled" @click="onResetDefaults">
+            {{ $vuntangle.$t('reset_to_defaults') }}
+          </u-btn>
+          <u-btn :disabled="disabled || !isDirty" @click="onSave(newSettings)">
+            {{ $vuntangle.$t('save') }}
+          </u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
       </template>
     </settings-dynamic-block-lists>
   </v-container>
 </template>
 
 <script>
-  import { SettingsDynamicBlockLists, NoLicense } from 'vuntangle'
+  import { SettingsDynamicBlockLists, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
   import vuntangle from '@/plugins/vuntangle'
   import { EVENT_ACTIONS } from '@/constants/actions'
@@ -45,10 +54,13 @@
     components: {
       SettingsDynamicBlockLists,
       NoLicense,
+      UAppStatusRemove,
+      UAppInstall,
     },
     mixins: [serviceMixin],
     data() {
       return {
+        serviceName: 'dynamic-blocklists',
         licenseNodeName: 'dynamic-blocklists',
         status: [],
       }
@@ -69,6 +81,7 @@
        * formats the timestamp of each configuration to human readabale values
        */
       async fetchStatus() {
+        if (!this.isInstalled) return
         this.$store.commit('SET_LOADER', true)
         try {
           const response = await window.rpc.appManager.app('dynamic-blocklists').status()

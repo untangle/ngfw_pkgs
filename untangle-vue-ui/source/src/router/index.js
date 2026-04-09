@@ -100,8 +100,10 @@ router.beforeEach((to, from, next) => {
     // Session module is NOT persisted, so it resets on every page load/hard refresh
     // This ensures RPC calls run on every session start
     // But skips re-initialization during route navigation within same session
-    const isAdminRoute =
-      to.name && !to.name.includes('setup') && !to.name.includes('login') && !to.name.includes('wizard')
+    const nonAdminSegments = ['setup', 'login', 'wizard']
+    const isAdminRoute = !nonAdminSegments.some(
+      segment => to.name?.includes(segment) || to.path?.startsWith(`/${segment}`),
+    )
 
     if (isAdminRoute) {
       // Initialize admin context (loads apps, policy-manager, reports)
