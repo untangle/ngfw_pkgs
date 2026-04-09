@@ -14,6 +14,8 @@
     <settings-dynamic-block-lists
       v-if="dynamicListsSettings"
       :settings="dynamicListsSettings"
+      :app-data="consolidatedAppData"
+      :reports="appReports"
       :status="status"
       :disabled="!isLicensed"
       @update-settings="onSave"
@@ -21,6 +23,7 @@
       @download="onDownload"
       @refresh="fetchStatus"
       @download-csv="initiateDownload"
+      @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
         <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
@@ -55,6 +58,13 @@
     },
     computed: {
       dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists')?.settings,
+
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Block Lists',
+
+      consolidatedAppData: ({ powerState, appDisplayName }) => ({
+        powerState: powerState || {},
+        appDisplayName,
+      }),
     },
     created() {
       this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })

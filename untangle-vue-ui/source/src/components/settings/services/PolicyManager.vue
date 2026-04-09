@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
     <no-license v-if="isLicensed === false" class="mt-2">
       {{ $t('not_licensed_service', [$t('policy_manager')]) }}
       <template #actions>
@@ -13,6 +13,8 @@
     <policy-manager
       :settings="settings"
       :apps-data="appsData"
+      :reports="appReports"
+      :app-data="consolidatedAppData"
       :disabled="!isLicensed"
       :build-apps="buildApps"
       @on-save="onSave"
@@ -61,7 +63,6 @@
     data() {
       return {
         /* This is used to fetch the application's settings from the Vuex store. */
-        appName: 'policy-manager',
         licenseNodeName: 'policy-manager',
         policiesData: [], // all policies data from getAppsViews
         policyApps: {}, // apps data for each policy, keyed by policyId
@@ -70,12 +71,19 @@
     },
 
     computed: {
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Policy Manager',
+
+      consolidatedAppData: ({ powerState, appDisplayName }) => ({
+        powerState: powerState || {},
+        appDisplayName,
+      }),
+
       /**
        * Computed property that retrieves the settings for the application.
        * @returns {Object} The settings object for the current application.
        */
       settings() {
-        return this.$store.getters['apps/getSettings'](this.appName)?.settings
+        return this.$store.getters['apps/getSettings'](this.licenseNodeName)?.settings
       },
 
       /* network settings from the store */
@@ -106,7 +114,7 @@
 
       /* Load application data */
       loadAppData() {
-        this.$store.dispatch('apps/loadAppData', { appName: this.appName })
+        this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
       },
       /**
        * Handles saving the new settings after validation.
@@ -119,7 +127,7 @@
 
         try {
           await this.$store.dispatch('apps/setAppSettings', {
-            appName: this.appName,
+            appName: this.licenseNodeName,
             settings: newSettings,
           })
         } finally {
