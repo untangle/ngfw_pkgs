@@ -60,9 +60,8 @@
 
       appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Block Lists',
 
-      consolidatedAppData: ({ dynamicListsSettings, appDisplayName }) => ({
+      consolidatedAppData: ({ appDisplayName }) => ({
         powerState: {
-          on: dynamicListsSettings?.enabled || false,
           inconsistent: false,
         },
         appDisplayName,
