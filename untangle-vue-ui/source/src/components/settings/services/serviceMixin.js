@@ -78,8 +78,7 @@ export default {
   async created() {
     this.checkLicense()
     this.getManageLicenseUri()
-    const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
-    this.appManager = app || null
+    await this.setAppManager()
     if (this.hasAppSettings) {
       this.loadAppSettings()
     }
@@ -94,6 +93,15 @@ export default {
      */
     refreshData() {
       this.loadAppSettings()
+    },
+
+    /**
+     * Fetches the app manager instance for the licensed app and stores it in the component's state.
+     * This allows the component to interact with the app manager for operations like starting/stopping the app and fetching settings.
+     */
+    async setAppManager() {
+      const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
+      this.appManager = app || null
     },
 
     /**
@@ -218,8 +226,10 @@ export default {
       this.$store.commit('SET_LOADER', true)
       try {
         await this.$store.dispatch('apps/installApp', { appName: this.serviceName })
-        await this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
+        await this.setAppManager()
         await this.checkLicense()
+        await this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
+        await this.$store.dispatch('reports/loadReports')
       } finally {
         this.$store.commit('SET_LOADER', false)
       }

@@ -71,7 +71,7 @@
     computed: {
       dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists')?.settings,
 
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Block Lists',
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Blocklists',
 
       consolidatedAppData: ({ powerState, appDisplayName }) => ({
         powerState: powerState || {},
