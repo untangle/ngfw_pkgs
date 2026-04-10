@@ -23,7 +23,6 @@
       @download="onDownload"
       @refresh="fetchStatus"
       @download-csv="initiateDownload"
-      @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
         <u-btn :disabled="disabled" class="mr-2" @click="onResetDefaults">
@@ -61,8 +60,11 @@
 
       appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Block Lists',
 
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
+      consolidatedAppData: ({ dynamicListsSettings, appDisplayName }) => ({
+        powerState: {
+          on: dynamicListsSettings?.enabled || false,
+          inconsistent: false,
+        },
         appDisplayName,
       }),
     },
