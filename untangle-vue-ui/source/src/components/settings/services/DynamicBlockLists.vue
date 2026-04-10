@@ -23,7 +23,6 @@
       @download="onDownload"
       @refresh="fetchStatus"
       @download-csv="initiateDownload"
-      @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, disabled, isDirty }">
         <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
@@ -73,8 +72,10 @@
 
       appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Blocklists',
 
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
+      consolidatedAppData: ({ appDisplayName }) => ({
+        powerState: {
+          inconsistent: false,
+        },
         appDisplayName,
       }),
     },
