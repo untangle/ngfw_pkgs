@@ -2,6 +2,7 @@
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <reports-app
       :settings="settings"
+      :app-data="consolidatedAppData"
       :report-queue-size="reportQueueSize"
       :get-server-time="fetchServerTime"
       :server-tz-offset="serverTzOffset"
@@ -12,7 +13,8 @@
       :google-drive-configured="googleDriveConfigured"
       :google-drive-root-path="googleDriveRootPath"
       @save-settings="onSaveSettings"
-      @refresh-settings="loadAppData"
+      @refresh-settings="refreshData"
+      @toggle-state="toggleAppState"
       @run-fixed-report="onRunFixedReport"
       @delete-reports="onDeleteReports"
       @configure-google-drive="onConfigureGoogleDrive"
@@ -36,22 +38,12 @@
 
     data() {
       return {
-        /* This is used to fetch the application's settings from the Vuex store. */
-        appName: 'reports',
         licenseNodeName: 'reports',
         reportQueueSize: 0,
       }
     },
 
     computed: {
-      /**
-       * Computed property that retrieves the settings for the application.
-       * @returns {Object} The settings object for the current application.
-       */
-      settings() {
-        return this.$store.getters['apps/getSettings'](this.appName)?.settings
-      },
-
       /* Gets the expert mode status from the settings */
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
 
@@ -63,10 +55,18 @@
 
       /* Server timezone offset in ms for date picker initialization */
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
+
+      /* Display name sourced from the app manager, fallback to 'Reports' */
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Reports',
+
+      /* Bundles powerState and appDisplayName into the shape expected by u-app-status-state */
+      consolidatedAppData: ({ powerState, appDisplayName }) => ({
+        powerState: powerState || {},
+        appDisplayName,
+      }),
     },
 
     created() {
-      this.loadAppData()
       this.pollQueueSize()
       this.$store.dispatch('config/getTimeZoneOffSet')
       this.$store.dispatch('config/getIsGoogleDriveConnected')
@@ -82,12 +82,24 @@
     },
 
     methods: {
+      /**
+       * Refresh app settings and re-check Google Drive status.
+       * Overrides serviceMixin.refreshData to ensure the Data tab reflects the latest
+       * Drive connection state after the user configures Google Drive in Administration
+       * and returns to this panel.
+       */
+      refreshData() {
+        this.loadAppSettings()
+        this.$store.dispatch('config/getIsGoogleDriveConnected')
+        this.$store.dispatch('config/getGoogleDriveRootPath')
+      },
+
       /* returns current server time in ms */
       fetchServerTime: () => util.getMilliseconds(),
 
       /* fetches the reports manager instance via the reports app */
       async fetchReportsManager() {
-        const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+        const reportsApp = this.appManager || (await Rpc.asyncData('rpc.appManager.app', 'reports'))
         return Rpc.asyncData(reportsApp, 'getReportsManager')
       },
 
@@ -110,30 +122,13 @@
         const reportsManager = await this.fetchReportsManager()
         return Rpc.asyncData(reportsManager, 'fixedReportsAllowGraphs')
       },
-      /* Load application data */
-      loadAppData() {
-        this.$store.dispatch('apps/loadAppData', { appName: this.appName })
-      },
-
       /**
        * Handle save settings event from the Reports component
        * @param {Object} payload - The payload object containing new settings
        * @param {Object} payload.newSettings - The updated settings object to save
        */
       async onSaveSettings({ newSettings }) {
-        this.$store.commit('SET_LOADER', true)
-        try {
-          await this.$store.dispatch('apps/setAppSettings', {
-            appName: this.appName,
-            settings: newSettings,
-          })
-        } catch {
-          // When online access is enabled without a password, the backend rejects the save and
-          // the error dialog is shown via Util.handleException in the store action. Without this
-          // catch, the rejected promise breaks the UI via DefaultLayout.errorCaptured.
-        } finally {
-          this.$store.commit('SET_LOADER', false)
-        }
+        await this.saveSettings(newSettings)
       },
 
       /**
@@ -161,7 +156,7 @@
 
       /** Fetch the current fixed report queue size from the app manager. */
       async fetchQueueSize() {
-        const appManager = await Rpc.asyncData('rpc.appManager.app', 'reports')
+        const appManager = this.appManager || (await Rpc.asyncData('rpc.appManager.app', 'reports'))
         return Rpc.asyncData(appManager, 'getFixedReportQueueSize')
       },
 
@@ -190,7 +185,7 @@
           await Rpc.asyncData(reportsManager, 'reinitializeDatabase')
           succeeded = true
         } catch (ex) {
-          util.handleException(ex)
+          Util.handleException(ex)
         } finally {
           cb(succeeded)
           this.$store.commit('SET_LOADER', false)
