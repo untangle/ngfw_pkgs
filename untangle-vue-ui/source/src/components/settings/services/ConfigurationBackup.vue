@@ -1,6 +1,6 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
-    <no-license v-if="!isLicensed" class="mt-2">
+    <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('configuration_backup')]) }}
       <template #actions>
         <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
@@ -11,31 +11,46 @@
       </template>
     </no-license>
     <configuration-backup
-      v-if="settings"
       ref="component"
       :settings="settings"
       :app-data="consolidatedAppData"
-      :disabled="!isLicensed"
+      :disabled="!isLicensed && isInstalled"
       :reports="appReports"
       :root-directory="rootDirectory"
       :google-drive-is-configured="isGoogleDriveConnected"
+      :is-installed="isInstalled"
       @send-backup="sendBackup"
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
-        <u-btn class="mr-2" @click="refreshData">
-          {{ $vuntangle.$t('refresh') }}
-        </u-btn>
-        <u-btn :disabled="!isDirty" @click="onSave(newSettings)">
-          {{ $vuntangle.$t('save') }}
-        </u-btn>
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 180px">
+            <u-app-status-remove
+              class="mt-0"
+              service-app
+              :app-name="$t('configuration_backup')"
+              @remove="onRemoveService"
+            />
+          </div>
+          <v-divider vertical class="mx-4" />
+          <u-btn class="mr-2" @click="refreshData">
+            {{ $vuntangle.$t('refresh') }}
+          </u-btn>
+          <u-btn :disabled="!isDirty" @click="onSave(newSettings)">
+            {{ $vuntangle.$t('save') }}
+          </u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
       </template>
     </configuration-backup>
   </v-container>
 </template>
 
 <script>
-  import { ConfigurationBackup, NoLicense } from 'vuntangle'
+  import { ConfigurationBackup, NoLicense, UAppStatusRemove, UAppInstall, UBtn } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import Util from '../../../util/setupUtil'
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
@@ -44,11 +59,16 @@
     components: {
       ConfigurationBackup,
       NoLicense,
+      UAppStatusRemove,
+      UAppInstall,
+      UBtn,
+      VDivider,
     },
     mixins: [serviceMixin],
 
     data() {
       return {
+        serviceName: 'configuration-backup',
         licenseNodeName: 'configuration-backup',
         rootDirectory: '',
       }

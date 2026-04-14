@@ -79,9 +79,7 @@ export default {
     this.checkLicense()
     this.getManageLicenseUri()
     await this.setAppManager()
-    if (this.hasAppSettings) {
-      this.loadAppSettings()
-    }
+    this.loadAppSettings()
     if (!this.$store.getters['reports/isLoaded'] && !this.$store.getters['reports/loading']) {
       this.$store.dispatch('reports/loadReports')
     }
@@ -126,6 +124,7 @@ export default {
      * Load app settings from backend via RPC call to app manager and store in Vuex
      */
     loadAppSettings() {
+      if (!this.hasAppSettings) return
       this.$store.commit('SET_LOADER', true)
       this.$store
         .dispatch('apps/loadAppData', {
@@ -228,8 +227,9 @@ export default {
         await this.$store.dispatch('apps/installApp', { appName: this.serviceName })
         await this.setAppManager()
         await this.checkLicense()
-        await this.$store.dispatch('apps/loadAppData', { appName: this.licenseNodeName })
+        await this.loadAppSettings()
         await this.$store.dispatch('reports/loadReports')
+      } catch (error) {
       } finally {
         this.$store.commit('SET_LOADER', false)
       }
@@ -253,6 +253,7 @@ export default {
           // TODO Remove this once all apps are migrated to Vue UI and Parent Layout is changed
           sendEvent({ type: EVENT_ACTIONS.REMOVE_APP, appName: this.serviceName })
         }
+      } catch (error) {
       } finally {
         this.$store.commit('SET_LOADER', false)
       }

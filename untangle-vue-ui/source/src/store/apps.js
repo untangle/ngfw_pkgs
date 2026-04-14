@@ -527,15 +527,7 @@ const actions = {
       commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'progress' })
 
       // Call RPC to instantiate app
-      const instance = await new Promise(resolve => {
-        window.rpc.appManager.instantiate(
-          res => {
-            resolve(res)
-          },
-          appName,
-          policyId,
-        )
-      })
+      const instance = await Rpc.asyncData('rpc.appManager.instantiate', appName, policyId)
 
       // Refresh app views to get updated data
       await dispatch('getAppsViews', true)
@@ -629,15 +621,7 @@ const actions = {
    */
   async destroyApp({ dispatch }, { instanceId, policyId }) {
     try {
-      await new Promise((resolve, reject) => {
-        window.rpc.appManager.destroy((err, res) => {
-          if (err) {
-            reject(err)
-          } else {
-            resolve(res)
-          }
-        }, instanceId)
-      })
+      await Rpc.asyncData('rpc.appManager.destroy', instanceId)
 
       // Refresh the app view after destroying, same as ExtJS getAppsView
       await dispatch('getAppsView', policyId)

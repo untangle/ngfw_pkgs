@@ -203,6 +203,7 @@ export default {
         } else {
           this.$router.push({ name: 'apps', params: { policyId: this.appData?.policyId } })
         }
+      } catch (error) {
       } finally {
         this.$store.commit('SET_LOADER', false)
       }
