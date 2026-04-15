@@ -13,13 +13,17 @@
       :google-drive-configured="googleDriveConfigured"
       :google-drive-root-path="googleDriveRootPath"
       @save-settings="onSaveSettings"
-      @refresh-settings="refreshData"
       @toggle-state="toggleAppState"
       @run-fixed-report="onRunFixedReport"
       @delete-reports="onDeleteReports"
       @configure-google-drive="onConfigureGoogleDrive"
       @upload-file="onUploadFile"
-    />
+    >
+      <template #actions="{ isDirty, onSave }">
+        <u-btn @click="refreshData">{{ $t('refresh') }}</u-btn>
+        <u-btn class="ml-2" :disabled="!isDirty" @click="onSave">{{ $t('save') }}</u-btn>
+      </template>
+    </reports-app>
   </v-container>
 </template>
 
