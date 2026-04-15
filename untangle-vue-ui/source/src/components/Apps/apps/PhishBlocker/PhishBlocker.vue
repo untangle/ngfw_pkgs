@@ -6,28 +6,30 @@
     :metrics-data="formattedMetrics"
     :reports="appReports"
     @toggle-state="toggleAppState"
-    @remove-app="removeApp"
   >
     <!-- Custom action buttons slot -->
     <template #actions="{ newSettings, isDirty }">
-      <u-btn class="mr-2" @click="refreshData">
-        {{ $t('refresh') }}
-      </u-btn>
-      <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">
-        {{ $t('save') }}
-      </u-btn>
+      <div class="d-flex flex-wrap align-center" style="gap: 8px">
+        <div style="min-width: 180px">
+          <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
+        </div>
+        <v-divider vertical class="mx-4" />
+        <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
+      </div>
     </template>
   </phish-blocker>
 </template>
 
 <script>
-  import { PhishBlocker } from 'vuntangle'
+  import { PhishBlocker, UAppStatusRemove } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
 
   export default {
     name: 'PhishBlockerApp',
 
-    components: { PhishBlocker },
+    components: { PhishBlocker, UAppStatusRemove, VDivider },
 
     mixins: [appMixin],
 

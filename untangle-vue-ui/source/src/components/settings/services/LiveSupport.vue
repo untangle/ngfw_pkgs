@@ -1,6 +1,6 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
-    <no-license v-if="!isLicensed" class="mt-2">
+    <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('live_support')]) }}
       <template #actions>
         <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
@@ -14,17 +14,27 @@
       :system-settings="systemSettings"
       :company-name="companyName"
       :company-url="companyUrl"
-      :disabled="!isLicensed"
+      :disabled="!isLicensed && isInstalled"
       :support-data="supportData"
+      :is-installed="isInstalled"
       @support-launch="supportLaunch"
       @get-uri-with-path="getUriWithPath"
       @get-system-settings="getSettings"
-    />
+    >
+      <template #actions>
+        <div v-if="isInstalled" style="min-width: 180px">
+          <u-app-status-remove class="mt-0" service-app :app-name="$t('live_support')" @remove="onRemoveService" />
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
+      </template>
+    </live-support>
   </v-container>
 </template>
 
 <script>
-  import { LiveSupport, NoLicense } from 'vuntangle'
+  import { LiveSupport, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import Util from '../../../util/setupUtil'
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
@@ -34,10 +44,13 @@
     components: {
       LiveSupport,
       NoLicense,
+      UAppStatusRemove,
+      UAppInstall,
     },
     mixins: [serviceMixin],
     data() {
       return {
+        serviceName: 'live-support',
         licenseNodeName: 'live-support',
         hasAppSettings: false,
         supportData: [],
