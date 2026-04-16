@@ -10,6 +10,7 @@
       <property name="size" type="uint" value="100"/>
       <property name="mode" type="uint" value="0"/>
       <property name="autohide-behavior" type="uint" value="0"/>
+      <property name="disable-struts" type="bool" value="true"/>
       <property name="length" type="double" value="1"/>
       <property name="length-adjust" type="bool" value="true"/>
       <property name="plugin-ids" type="array">
