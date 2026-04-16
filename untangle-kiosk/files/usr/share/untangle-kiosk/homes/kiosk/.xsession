@@ -38,6 +38,18 @@ sleep 1
 pkill xfce4-panel 2>/dev/null
 xfce4-panel &
 
+# replicate old fbpanel SetDockType=false + layer=below behavior:
+# change panel window type from dock to normal so the window manager
+# does not force it above other windows; Chrome then opens on top
+(sleep 2 && {
+    for wid in $(xprop -root _NET_CLIENT_LIST 2>/dev/null | grep -oP '0x[\da-f]+'); do
+        if xprop -id "$wid" WM_CLASS 2>/dev/null | grep -qi "xfce4-panel"; then
+            xprop -id "$wid" -f _NET_WM_WINDOW_TYPE 32a \
+                -set _NET_WM_WINDOW_TYPE _NET_WM_WINDOW_TYPE_NORMAL 2>/dev/null
+        fi
+    done
+}) &
+
 # set the background if present
 bgFile="/usr/share/untangle-kiosk/desktop_background.png"
 [ -f $bgFile ] && feh --bg-scale $bgFile
