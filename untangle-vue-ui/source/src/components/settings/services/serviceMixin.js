@@ -13,6 +13,7 @@ export default {
       isLicensed: undefined,
       manageLicenseUri: undefined,
       appManager: null,
+      instanceId: null,
       toggling: false,
       // Controls whether app settings are loaded via getSettingsV2 RPC on mount.
       // Set to false in components whose appManager does not support getSettingsV2 (e.g. LiveSupport).
@@ -28,6 +29,9 @@ export default {
 
   computed: {
     ...mapGetters('apps', ['getServiceAppStatus']),
+    ...mapGetters('metrics', ['getFormattedMetrics']),
+
+    formattedMetrics: ({ instanceId, getFormattedMetrics }) => (instanceId ? getFormattedMetrics(instanceId) : []),
 
     // Get the apps view for the selected policy from the store
     appsViewByPolicy: ({ $store }) => $store.getters['apps/getAppsViewByPolicy'](1),
@@ -79,6 +83,16 @@ export default {
     this.checkLicense()
     this.getManageLicenseUri()
     await this.setAppManager()
+    const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
+    this.appManager = app || null
+    if (this.appManager) {
+      try {
+        const appSettings = await this.appManager.getAppSettings()
+        this.instanceId = appSettings?.id || null
+      } catch (err) {
+        util.handleException(err)
+      }
+    }
     if (this.hasAppSettings) {
       this.loadAppSettings()
     }
