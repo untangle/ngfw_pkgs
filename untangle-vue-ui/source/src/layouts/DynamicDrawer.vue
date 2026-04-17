@@ -156,7 +156,7 @@
               { name: 'live_support', to: '/settings/services/live-support' },
               { name: 'policy_manager', to: '/settings/services/policy-manager' },
               { name: 'reports', to: '/settings/services/reports' },
-              { name: 'wan-failover', to: '/settings/services/wan-failover' },
+              { name: 'wan_failover', to: '/settings/services/wan-failover' },
             ],
           },
         ],
