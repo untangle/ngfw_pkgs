@@ -1,6 +1,6 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
-    <no-license v-if="isLicensed === false" class="mt-2">
+    <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('policy_manager')]) }}
       <template #actions>
         <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
@@ -15,7 +15,8 @@
       :apps-data="appsData"
       :reports="appReports"
       :app-data="consolidatedAppData"
-      :disabled="!isLicensed"
+      :disabled="!isLicensed && isInstalled"
+      :is-installed="isInstalled"
       :build-apps="buildApps"
       @on-save="onSave"
       @install-app="onInstallApp"
@@ -23,18 +24,28 @@
       @start-app="onStartApp"
       @stop-app="onStopApp"
     >
-      <template #actions="{ newSettings, isDirty, validate }">
-        <u-btn class="mr-2" @click="loadAppData">
-          {{ $vuntangle.$t('refresh') }}
-        </u-btn>
-        <u-btn :disabled="!isDirty" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
+      <template #actions="{ newSettings, isDirty }">
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 180px">
+            <u-app-status-remove class="mt-0" service-app :app-name="$t('policy_manager')" @remove="onRemoveService" />
+          </div>
+          <v-divider vertical class="mx-4" />
+          <u-btn class="mr-2" @click="loadAppData">
+            {{ $vuntangle.$t('refresh') }}
+          </u-btn>
+          <u-btn :disabled="!isDirty" @click="onSave(newSettings)">{{ $t('save') }}</u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
       </template>
     </policy-manager>
   </v-container>
 </template>
 
 <script>
-  import { PolicyManager, NoLicense } from 'vuntangle'
+  import { PolicyManager, NoLicense, UAppStatusRemove, UAppInstall, UBtn } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import util from '../../../util/util'
   import serviceMixin from './serviceMixin'
 
@@ -42,6 +53,10 @@
     components: {
       PolicyManager,
       NoLicense,
+      UAppStatusRemove,
+      UAppInstall,
+      UBtn,
+      VDivider,
     },
     mixins: [serviceMixin],
 
@@ -62,7 +77,7 @@
 
     data() {
       return {
-        /* This is used to fetch the application's settings from the Vuex store. */
+        serviceName: 'policy-manager',
         licenseNodeName: 'policy-manager',
         policiesData: [], // all policies data from getAppsViews
         policyApps: {}, // apps data for each policy, keyed by policyId
@@ -344,6 +359,7 @@
           if (result.success) {
             this.buildApps(policyId)
           }
+        } catch (error) {
         } finally {
           this.$store.commit('SET_LOADER', false)
         }

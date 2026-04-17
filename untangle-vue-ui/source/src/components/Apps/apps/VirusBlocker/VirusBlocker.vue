@@ -6,28 +6,30 @@
     :metrics-data="formattedMetrics"
     :reports="appReports"
     @toggle-state="toggleAppState"
-    @remove-app="removeApp"
   >
     <!-- Custom action buttons slot -->
     <template #actions="{ newSettings, isDirty }">
-      <u-btn class="mr-2" @click="refreshData">
-        {{ $t('refresh') }}
-      </u-btn>
-      <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">
-        {{ $t('save') }}
-      </u-btn>
+      <div class="d-flex flex-wrap align-center" style="gap: 8px">
+        <div style="min-width: 180px">
+          <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
+        </div>
+        <v-divider vertical class="mx-4" />
+        <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
+      </div>
     </template>
   </virus-blocker>
 </template>
 
 <script>
-  import { VirusBlocker } from 'vuntangle'
+  import { VirusBlocker, UAppStatusRemove } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
 
   export default {
     name: 'VirusBlockerApp',
 
-    components: { VirusBlocker },
+    components: { VirusBlocker, UAppStatusRemove, VDivider },
 
     mixins: [appMixin],
 

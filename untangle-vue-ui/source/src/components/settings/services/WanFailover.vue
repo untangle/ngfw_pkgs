@@ -59,8 +59,7 @@
     },
 
     computed: {
-      appDisplayName: ({ appManager }) =>
-        appManager?.getAppProperties?.()?.displayName || this.$vuntangle.$t('wan_failover'),
+      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'WAN Failover',
       consolidatedAppData: ({ powerState, appDisplayName }) => ({
         powerState: powerState || {},
         appDisplayName,

@@ -1,6 +1,6 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
-    <no-license v-if="!isLicensed" class="mt-2">
+    <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('branding_manager')]) }}
       <template #actions>
         <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
@@ -11,18 +11,38 @@
       </template>
     </no-license>
     <branding-manager
-      v-if="settings"
       :settings="settings"
-      :disabled="!isLicensed"
+      :disabled="!isLicensed && isInstalled"
+      :is-installed="isInstalled"
       @upload-logo="uploadLogo"
       @save-settings="onSaveSettings"
       @reset-to-defaults="onResetDefaults"
-    />
+    >
+      <template #actions="{ isDirty, onSave, onReset }">
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 180px">
+            <u-app-status-remove
+              class="mt-0"
+              service-app
+              :app-name="$t('branding_manager')"
+              @remove="onRemoveService"
+            />
+          </div>
+          <v-divider vertical class="mx-4" />
+          <u-btn @click="onReset">{{ $vuntangle.$t('refresh') }}</u-btn>
+          <u-btn :disabled="!isDirty" @click="onSave">{{ $vuntangle.$t('save') }}</u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
+      </template>
+    </branding-manager>
   </v-container>
 </template>
 
 <script>
-  import { BrandingManager, NoLicense } from 'vuntangle'
+  import { BrandingManager, NoLicense, UAppStatusRemove, UAppInstall, UBtn } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import Util from '../../../util/setupUtil'
   import serviceMixin from './serviceMixin'
   import util from '@/util/util'
@@ -31,10 +51,15 @@
     components: {
       BrandingManager,
       NoLicense,
+      UAppStatusRemove,
+      UAppInstall,
+      UBtn,
+      VDivider,
     },
     mixins: [serviceMixin],
     data() {
       return {
+        serviceName: 'branding-manager',
         licenseNodeName: 'branding-manager',
         originalDefaultLogo: true,
       }
@@ -70,7 +95,8 @@
 
       /**
        * Saves the settings
-       * @param param
+       * @param {Object} newSettings
+       * @param {Boolean} needRackReload
        */
       async onSaveSettings({ newSettings, needRackReload }) {
         this.$store.commit('SET_LOADER', true)

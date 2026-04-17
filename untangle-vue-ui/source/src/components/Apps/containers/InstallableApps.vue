@@ -157,20 +157,22 @@
        * @param {Object} app - App object to install
        */
       async handleAppClick(app) {
-        // Check if user is registered or if CC is hidden
-        if (!util.isRegistered() && !util.isCCHidden()) {
-          return
-        }
-        // Don't allow installation if app is already being installed
-        if (this.isAppInstalling(app.name)) {
-          return
-        }
+        try {
+          // Check if user is registered or if CC is hidden
+          if (!util.isRegistered() && !util.isCCHidden()) {
+            return
+          }
+          // Don't allow installation if app is already being installed
+          if (this.isAppInstalling(app.name)) {
+            return
+          }
 
-        // Dispatch install action
-        await this.$store.dispatch('apps/installApp', {
-          appName: app.name,
-          policyId: this.policyId,
-        })
+          // Dispatch install action
+          await this.$store.dispatch('apps/installApp', {
+            appName: app.name,
+            policyId: this.policyId,
+          })
+        } catch (error) {}
       },
 
       /**
