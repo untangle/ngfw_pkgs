@@ -28,6 +28,7 @@
   import { CaptivePortal, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import util from '@/util/util'
 
   export default {
     name: 'CaptivePortalApp',
@@ -38,6 +39,17 @@
 
     props: {
       appData: { type: Object, default: null },
+    },
+
+    provide() {
+      return {
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+        }),
+        $features: {},
+        $readOnly: false,
+        $applications: {},
+      }
     },
 
     data() {
@@ -56,6 +68,22 @@
           powerState: powerState || {},
         }
       },
+
+      // the network settings from the store
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      /**
+       * returns the interfaces for condition value from network settings
+       * @param {Object} vm.networkSettings
+       */
+      interfaces: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
+    },
+
+    // Fetch the required settings when the component is created
+    created() {
+      this.fetchRequiredSettings(false)
     },
 
     watch: {
@@ -104,12 +132,22 @@
       },
 
       /**
+       * Fetches the required settings for the app, e.g. the network settings.
+       * This method can be called with a parameter to indicate whether to refetch the network settings from the store.
+       * @param {boolean} networkRefetch - Indicates whether to refetch the network settings from the store.
+       */
+      fetchRequiredSettings(networkRefetch) {
+        this.$store.dispatch('config/getNetworkSettings', networkRefetch)
+      },
+
+      /**
        * Overrides the refreshData method from appMixin to also refresh the active users list when the main app data is refreshed.
        * This ensures that the UI reflects the most up-to-date information about active users whenever a refresh is triggered.
        */
       refreshData() {
         appMixin.methods.refreshData.call(this)
         this.fetchActiveUsers()
+        this.fetchRequiredSettings(true)
       },
     },
   }

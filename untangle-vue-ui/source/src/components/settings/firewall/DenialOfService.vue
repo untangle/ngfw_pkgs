@@ -45,7 +45,7 @@
       networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
 
       /**
-       * eturns the interfaces for condition value from network settings
+       * returns the interfaces for condition value from network settings
        * @param {Object} vm.networkSettings
        */
       interfaces: ({ networkSettings }) => {
