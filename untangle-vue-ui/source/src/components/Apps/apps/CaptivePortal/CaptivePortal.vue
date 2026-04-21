@@ -28,6 +28,7 @@
   import { CaptivePortal, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import conditionDataMixin from '../conditionDataMixin'
   import util from '@/util/util'
 
   export default {
@@ -35,7 +36,7 @@
 
     components: { CaptivePortal, UAppStatusRemove, VDivider },
 
-    mixins: [appMixin],
+    mixins: [appMixin, conditionDataMixin(['directory-connector'])],
 
     props: {
       appData: { type: Object, default: null },
@@ -45,8 +46,10 @@
       return {
         $remoteData: () => ({
           interfaces: this.interfaces,
+          directoryGroups: this.directoryGroups,
+          directoryDomains: this.directoryDomains,
         }),
-        $features: {},
+        $features: { isExpertMode: this.isExpertMode },
         $readOnly: false,
         $applications: {},
       }
@@ -79,6 +82,13 @@
       interfaces: ({ networkSettings }) => {
         return util.getInterfaceList(networkSettings, true, true)
       },
+
+      /**
+       * Checks if the current user has expert mode enabled
+       * @param param0 vuex store to access the config module and check if expert mode is enabled
+       * @returns {boolean} true if expert mode is enabled, false otherwise
+       */
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
     },
 
     // Fetch the required settings when the component is created
