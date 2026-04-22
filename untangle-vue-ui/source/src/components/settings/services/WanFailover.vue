@@ -18,7 +18,6 @@
       :is-installed="isInstalled"
       :metrics-data="formattedMetrics"
       :wan-status-data="wanStatusData"
-      :ping-list-data="pingListData"
       :reports="appReports"
       @get-wan-status="getWanStatus"
       @get-ping-suggestions="getPingSuggestions"
@@ -66,7 +65,6 @@
         serviceName: 'wan-failover',
         licenseNodeName: 'wan-failover',
         wanStatusData: [],
-        pingListData: [],
       }
     },
 
@@ -138,14 +136,18 @@
         }
       },
 
-      async getPingSuggestions(interfaceId) {
-        if (!this.appManager) return
+      async getPingSuggestions(interfaceId, resolve) {
+        if (!this.appManager) {
+          resolve([])
+          return
+        }
         this.$store.commit('SET_LOADER', true)
         try {
-          const result = await Rpc.asyncData(this.appManager, 'getPingableHosts', interfaceId)
-          this.pingListData = (result || []).map(host => [host, host])
+          const result = await Rpc.asyncData(this.appManager, 'getPingableHostsV2', interfaceId)
+          resolve(Array.isArray(result) ? result : [])
         } catch (err) {
           util.handleException(err)
+          resolve([])
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
