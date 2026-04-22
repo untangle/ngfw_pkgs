@@ -236,12 +236,20 @@ export default {
       return this.$store.dispatch('apps/checkDaemonStatus', daemonName)
     },
 
-    /** Installs the dynamic-blocklists app */
+    /** Installs the apps */
     async onInstallService() {
       this.$store.commit('SET_LOADER', true)
       try {
         await this.$store.dispatch('apps/installApp', { appName: this.serviceName })
         await this.setAppManager()
+        if (this.appManager) {
+          try {
+            const appSettings = await this.appManager.getAppSettings()
+            this.instanceId = appSettings?.id || null
+          } catch (err) {
+            util.handleException(err)
+          }
+        }
         await this.checkLicense()
         await this.loadAppSettings()
         await this.$store.dispatch('reports/loadReports')
