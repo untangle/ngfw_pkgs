@@ -64,7 +64,11 @@ const APP_BOOTSTRAP_REGISTRY = {
 const CONDITION_DATA_FETCHERS = {
   'directory-connector': async ({ commit, dispatch }) => {
     const app = await dispatch('getApp', { appName: 'directory-connector' })
-    if (!app) return
+    if (!app) {
+      // Clear any stale data left from a previous installation so static fallback options are shown
+      commit('SET_CONDITION_DATA', { directoryGroups: [], directoryDomains: [] })
+      return
+    }
 
     const [groupResult, domainResult] = await Promise.all([
       new Promise(resolve => app.getRuleConditionalGroupEntriesV2((r, ex) => resolve(ex ? null : r))),
