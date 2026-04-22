@@ -57,6 +57,35 @@ const APP_BOOTSTRAP_REGISTRY = {
 }
 
 /**
+ * Registry of per-service fetchers for condition runtime data.
+ * Each entry receives the Vuex action context and commits its results via SET_CONDITION_DATA.
+ * Add a new entry here when another service needs to supply condition dropdown values.
+ */
+const CONDITION_DATA_FETCHERS = {
+  'directory-connector': async ({ commit, dispatch }) => {
+    const app = await dispatch('getApp', { appName: 'directory-connector' })
+    if (!app) {
+      // Clear any stale data left from a previous installation so static fallback options are shown
+      commit('SET_CONDITION_DATA', { directoryGroups: [], directoryDomains: [] })
+      return
+    }
+
+    const [groupResult, domainResult] = await Promise.all([
+      new Promise(resolve => app.getRuleConditionalGroupEntriesV2((r, ex) => resolve(ex ? null : r))),
+      new Promise(resolve => app.getRuleConditionalDomainEntriesV2((r, ex) => resolve(ex ? null : r))),
+    ])
+
+    commit('SET_CONDITION_DATA', {
+      directoryGroups: (groupResult || []).map(g => ({
+        text: `${g.CN} [${g.SAMAccountName}]`,
+        value: g.SAMAccountName,
+      })),
+      directoryDomains: (domainResult || []).map(d => ({ text: d, value: d })),
+    })
+  },
+}
+
+/**
  * Apps store
  */
 const getDefaultState = () => ({
@@ -66,6 +95,7 @@ const getDefaultState = () => ({
   installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
   selectedPolicyId: null, // currently selected policy ID
   autoInstallApps: false, // tracks if recommended apps are being auto-installed on initial setup
+  conditionData: {}, // cross-app runtime data for condition dropdowns (groups, domains, etc.)
 })
 
 /**
@@ -115,6 +145,11 @@ const getters = {
    * Usage: getters['apps/autoInstallApps']
    */
   autoInstallApps: state => state.autoInstallApps,
+  /**
+   * Get runtime condition data fetched from external services (directory-connector, etc.)
+   * Usage: getters['apps/conditionData']
+   */
+  conditionData: state => state.conditionData,
   /**
    * Get app data for a specific policy and app combination
    * Returns an object containing: policyId, appName, license, instance, and appProperties
@@ -302,6 +337,13 @@ const mutations = {
    */
   SET_AUTO_INSTALL_APPS(state, value) {
     set(state, 'autoInstallApps', value)
+  },
+  /**
+   * Merge new condition data into the conditionData state slot.
+   * Usage: commit('SET_CONDITION_DATA', { directoryGroups: [...], directoryDomains: [...] })
+   */
+  SET_CONDITION_DATA(state, data) {
+    set(state, 'conditionData', { ...state.conditionData, ...data })
   },
 }
 
@@ -767,6 +809,27 @@ const actions = {
       Util.handleException(error)
       return null
     }
+  },
+
+  /**
+   * Fetch runtime condition data from one or more services and store in conditionData.
+   * Callers pass the service name(s) they need; only the matching registry entries are invoked.
+   * @param {Object} context - Vuex context
+   * @param {string|string[]} appNames - Service name(s) to fetch data from (e.g. 'directory-connector')
+   */
+  async fetchConditionData(context, appNames) {
+    const names = Array.isArray(appNames) ? appNames : [appNames]
+    await Promise.all(
+      names.map(async name => {
+        const fetcher = CONDITION_DATA_FETCHERS[name]
+        if (!fetcher) return
+        try {
+          await fetcher(context)
+        } catch (e) {
+          // Silently degrade — static fallback options remain in the UI
+        }
+      }),
+    )
   },
 }
 
