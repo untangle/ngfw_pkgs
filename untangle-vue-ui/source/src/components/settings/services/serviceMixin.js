@@ -85,14 +85,7 @@ export default {
     await this.setAppManager()
     const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
     this.appManager = app || null
-    if (this.appManager) {
-      try {
-        const appSettings = await this.appManager.getAppSettings()
-        this.instanceId = appSettings?.id || null
-      } catch (err) {
-        util.handleException(err)
-      }
-    }
+    await this.loadInstanceId()
     if (this.hasAppSettings) {
       this.loadAppSettings()
     }
@@ -107,6 +100,21 @@ export default {
      */
     refreshData() {
       this.loadAppSettings()
+    },
+
+    /**
+     * Fetches the app instance ID from the app manager and stores it in the component's state.
+     * Used to link metrics polling to the correct app instance via formattedMetrics.
+     * Called on initial load and after reinstall to ensure instanceId stays current.
+     */
+    async loadInstanceId() {
+      if (!this.appManager) return
+      try {
+        const appSettings = await this.appManager.getAppSettings()
+        this.instanceId = appSettings?.id || null
+      } catch (err) {
+        util.handleException(err)
+      }
     },
 
     /**
@@ -242,14 +250,7 @@ export default {
       try {
         await this.$store.dispatch('apps/installApp', { appName: this.serviceName })
         await this.setAppManager()
-        if (this.appManager) {
-          try {
-            const appSettings = await this.appManager.getAppSettings()
-            this.instanceId = appSettings?.id || null
-          } catch (err) {
-            util.handleException(err)
-          }
-        }
+        await this.loadInstanceId()
         await this.checkLicense()
         await this.loadAppSettings()
         await this.$store.dispatch('reports/loadReports')
