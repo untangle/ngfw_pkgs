@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('configuration_backup')]) }}
       <template #actions>
@@ -71,16 +71,12 @@
         serviceName: 'configuration-backup',
         licenseNodeName: 'configuration-backup',
         rootDirectory: '',
+        displayNameFallback: 'Configuration Backup',
       }
     },
 
     computed: {
       isGoogleDriveConnected: ({ $store }) => $store.getters['config/isGoogleDriveConnected'],
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Configuration Backup',
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
-        appDisplayName,
-      }),
     },
 
     async created() {

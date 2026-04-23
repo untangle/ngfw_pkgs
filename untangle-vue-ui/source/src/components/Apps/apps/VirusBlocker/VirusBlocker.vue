@@ -40,25 +40,20 @@
     data() {
       return {
         appName: this.appData?.appName || 'virus-blocker',
+        defaultDisplayName: 'Virus Blocker',
         isFileScannerAvailable: false,
         lastSignatureUpdate: null,
       }
     },
 
     computed: {
-      // Display name for the app, falling back to a default if not provided in appData.
-      appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Virus Blocker',
-
       // Consolidated app data to pass to the VirusBlocker component,
       // including additional properties for file scanner availability and last signature update.
-      consolidatedAppData: ({ appData, powerState, lastSignatureUpdate, isFileScannerAvailable }) => {
-        return {
-          ...appData,
-          isFileScannerAvailable,
-          lastSignatureUpdate,
-          powerState: powerState || {},
-        }
-      },
+      consolidatedAppData: appInstance =>
+        appInstance.buildConsolidatedAppData({
+          isFileScannerAvailable: appInstance.isFileScannerAvailable,
+          lastSignatureUpdate: appInstance.lastSignatureUpdate,
+        }),
     },
 
     watch: {

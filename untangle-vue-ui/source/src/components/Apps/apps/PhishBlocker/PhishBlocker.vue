@@ -40,23 +40,15 @@
     data() {
       return {
         appName: this.appData?.appName || 'phish-blocker',
+        defaultDisplayName: 'Phish Blocker',
         lastUpdate: null,
       }
     },
 
     computed: {
-      // Display name for the app, falling back to a default if not provided in appData.
-      appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Phish Blocker',
-
       // Consolidated app data to pass to the PhishBlocker component,
       // including the lastUpdate timestamp.
-      consolidatedAppData: ({ appData, powerState, lastUpdate }) => {
-        return {
-          ...appData,
-          lastUpdate,
-          powerState: powerState || {},
-        }
-      },
+      consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData({ lastUpdate: appInstance.lastUpdate }),
     },
 
     watch: {

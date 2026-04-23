@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="isLicensed === false && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('dynamic_blocklist')]) }}
       <template #actions>
@@ -65,12 +65,11 @@
         serviceName: 'dynamic-blocklists',
         licenseNodeName: 'dynamic-blocklists',
         status: [],
+        displayNameFallback: 'Dynamic Blocklists',
       }
     },
     computed: {
       dynamicListsSettings: ({ $store }) => $store.getters['apps/getSettings']('dynamic-blocklists')?.settings,
-
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Dynamic Blocklists',
 
       consolidatedAppData: ({ appDisplayName }) => ({
         powerState: {

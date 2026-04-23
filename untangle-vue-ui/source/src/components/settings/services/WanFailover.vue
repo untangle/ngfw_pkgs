@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('wan_failover')]) }}
       <template #actions>
@@ -18,6 +18,7 @@
       :is-installed="isInstalled"
       :metrics-data="formattedMetrics"
       :wan-status-data="wanStatusData"
+      :ping-list-data="pingListData"
       :reports="appReports"
       @get-wan-status="getWanStatus"
       @get-ping-suggestions="getPingSuggestions"
@@ -44,13 +45,11 @@
     </wan-failover>
   </v-container>
 </template>
-
 <script>
   import { WanFailover, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
   import util from '@/util/util'
-
   export default {
     components: {
       WanFailover,
@@ -59,22 +58,16 @@
       UAppInstall,
     },
     mixins: [serviceMixin],
-
     data() {
       return {
         serviceName: 'wan-failover',
         licenseNodeName: 'wan-failover',
         wanStatusData: [],
+        pingListData: [],
+        displayNameFallback: 'WAN Failover',
       }
     },
-
     computed: {
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'WAN Failover',
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
-        appDisplayName,
-      }),
-
       displaySettings({ settings }) {
         // convert all milliseconds to seconds after load
         if (!settings?.tests?.length) return settings
@@ -88,7 +81,6 @@
         }
       },
     },
-
     watch: {
       // Watcher for appManager from serviceMixin to trigger fetching of wan-failover specific data when the manager becomes available.
       appManager: {
@@ -98,7 +90,6 @@
         },
       },
     },
-
     methods: {
       async onSave(newSettings) {
         // convert all seconds to milliseconds before save
@@ -114,11 +105,9 @@
           : newSettings
         await this.saveSettings(settingsToSave)
       },
-
       getWanStatus() {
         this.wanStatusData = (this.appManager?.getWanStatusV2() || []).filter(item => item.systemName !== null)
       },
-
       async runWanTest(test, resolve) {
         if (!this.appManager) {
           resolve(null)

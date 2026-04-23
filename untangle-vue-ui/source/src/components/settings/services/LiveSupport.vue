@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('live_support')]) }}
       <template #actions>
@@ -12,6 +12,7 @@
     </no-license>
     <live-support
       :system-settings="systemSettings"
+      :app-data="consolidatedAppData"
       :company-name="companyName"
       :company-url="companyUrl"
       :disabled="!isLicensed && isInstalled"
@@ -56,6 +57,7 @@
         supportData: [],
         companyUrl: '',
         companyName: '',
+        displayNameFallback: 'Live Support',
       }
     },
 

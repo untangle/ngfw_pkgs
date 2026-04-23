@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('branding_manager')]) }}
       <template #actions>
@@ -12,6 +12,7 @@
     </no-license>
     <branding-manager
       :settings="settings"
+      :app-data="consolidatedAppData"
       :disabled="!isLicensed && isInstalled"
       :is-installed="isInstalled"
       @upload-logo="uploadLogo"
@@ -62,6 +63,7 @@
         serviceName: 'branding-manager',
         licenseNodeName: 'branding-manager',
         originalDefaultLogo: true,
+        displayNameFallback: 'Branding Manager',
       }
     },
 

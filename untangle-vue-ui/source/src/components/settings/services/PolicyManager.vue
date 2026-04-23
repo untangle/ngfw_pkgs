@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('policy_manager')]) }}
       <template #actions>
@@ -12,7 +12,6 @@
     </no-license>
     <policy-manager
       :settings="settings"
-      :apps-data="appsData"
       :reports="appReports"
       :app-data="consolidatedAppData"
       :disabled="!isLicensed && isInstalled"
@@ -82,17 +81,11 @@
         policiesData: [], // all policies data from getAppsViews
         policyApps: {}, // apps data for each policy, keyed by policyId
         appsData: [], // apps data for the currently selected policy
+        displayNameFallback: 'Policy Manager',
       }
     },
 
     computed: {
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Policy Manager',
-
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
-        appDisplayName,
-      }),
-
       /**
        * Computed property that retrieves the settings for the application.
        * @returns {Object} The settings object for the current application.
