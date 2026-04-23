@@ -18,7 +18,6 @@
       :is-installed="isInstalled"
       :metrics-data="formattedMetrics"
       :wan-status-data="wanStatusData"
-      :ping-list-data="pingListData"
       :reports="appReports"
       @get-wan-status="getWanStatus"
       @get-ping-suggestions="getPingSuggestions"
@@ -63,7 +62,6 @@
         serviceName: 'wan-failover',
         licenseNodeName: 'wan-failover',
         wanStatusData: [],
-        pingListData: [],
         displayNameFallback: 'WAN Failover',
       }
     },
