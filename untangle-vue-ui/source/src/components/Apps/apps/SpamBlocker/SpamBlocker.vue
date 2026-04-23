@@ -40,25 +40,20 @@
     data() {
       return {
         appName: this.appData?.appName || 'spam-blocker',
+        defaultDisplayName: 'Spam Blocker',
         lastUpdate: null,
         lastUpdateCheck: null,
       }
     },
 
     computed: {
-      // Display name for the app, falling back to a default if not provided in appData.
-      appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Spam Blocker',
-
       // Consolidated app data to pass to the SpamBlocker component,
       // including additional properties for last update timestamps.
-      consolidatedAppData: ({ appData, powerState, lastUpdate, lastUpdateCheck }) => {
-        return {
-          ...appData,
-          lastUpdate,
-          lastUpdateCheck,
-          powerState: powerState || {},
-        }
-      },
+      consolidatedAppData: appInstance =>
+        appInstance.buildConsolidatedAppData({
+          lastUpdate: appInstance.lastUpdate,
+          lastUpdateCheck: appInstance.lastUpdateCheck,
+        }),
     },
 
     watch: {

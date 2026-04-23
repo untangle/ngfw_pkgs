@@ -1,5 +1,5 @@
 <template>
-  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-2`">
+  <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
     <reports-app
       :settings="settings"
       :app-data="consolidatedAppData"
@@ -60,6 +60,7 @@
         serviceName: 'reports',
         licenseNodeName: 'reports',
         reportQueueSize: 0,
+        displayNameFallback: 'Reports',
       }
     },
 
@@ -75,15 +76,6 @@
 
       /* Server timezone offset in ms for date picker initialization */
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
-
-      /* Display name sourced from the app manager, fallback to 'Reports' */
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Reports',
-
-      /* Bundles powerState and appDisplayName into the shape expected by u-app-status-state */
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
-        appDisplayName,
-      }),
     },
 
     created() {

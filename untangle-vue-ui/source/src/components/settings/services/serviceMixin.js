@@ -18,6 +18,7 @@ export default {
       // Controls whether app settings are loaded via getSettingsV2 RPC on mount.
       // Set to false in components whose appManager does not support getSettingsV2 (e.g. LiveSupport).
       hasAppSettings: true,
+      displayNameFallback: '',
     }
   },
 
@@ -50,6 +51,23 @@ export default {
      */
     isReportsInstalled: ({ $store }) => $store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled(),
 
+    /**
+     * Display name sourced from the app manager; falls back to displayNameFallback set by each component.
+     * @returns {string}
+     */
+    appDisplayName: ({ appManager, displayNameFallback }) =>
+      appManager?.getAppProperties?.()?.displayName || displayNameFallback,
+
+    /**
+     * Bundles powerState, appDisplayName, and iconPath into the shape expected by u-app-status-state.
+     * @returns {{ powerState: Object, appDisplayName: string, iconPath: string|null }}
+     */
+    consolidatedAppData: ({ powerState, appDisplayName, iconPath }) => ({
+      powerState: powerState || {},
+      appDisplayName,
+      iconPath,
+    }),
+
     powerState: ({ appManager, getServiceAppStatus, toggling }) => {
       const vuexPowerState = getServiceAppStatus({
         appManager,
@@ -60,6 +78,12 @@ export default {
         power: toggling,
       }
     },
+
+    /**
+     * Icon path for the app using webpack require
+     * @returns {string|null} Icon path or null if appName is not available
+     */
+    iconPath: ({ serviceName }) => (serviceName ? require(`@/assets/icons/apps/${serviceName}.svg`) : null),
 
     /**
      * Get reports for this app from global store

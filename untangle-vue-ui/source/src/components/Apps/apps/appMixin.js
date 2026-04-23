@@ -33,12 +33,11 @@ export default {
     ...mapGetters('apps', ['getAppPowerState']),
 
     /**
-     * App display name for reports filtering. Must be overridden in component.
-     * @throws Error if not defined in component
+     * App display name for reports filtering and UI labels.
+     * Falls back to defaultDisplayName data property defined in each component.
      */
-    appDisplayName: () => {
-      throw new Error('appDisplayName must be defined in component for reports filtering')
-    },
+    appDisplayName: ({ appData, defaultDisplayName }) =>
+      appData?.appProperties?.displayName || defaultDisplayName || '',
 
     // App Instance ID.
     instanceId: ({ appData }) => appData?.instance?.id || null,
@@ -224,6 +223,20 @@ export default {
       }
 
       sendEvent(eventData)
+    },
+
+    /**
+     * Builds the base consolidated app data passed to each app component.
+     * Merges appData and powerState with any app-specific extras.
+     * @param {Object} extras - Additional app-specific properties to merge
+     * @returns {Object} Consolidated app data
+     */
+    buildConsolidatedAppData(extras = {}) {
+      return {
+        ...this.appData,
+        powerState: this.powerState || {},
+        ...extras,
+      }
     },
 
     /**
