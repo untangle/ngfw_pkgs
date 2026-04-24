@@ -38,10 +38,6 @@
 
     mixins: [appMixin, conditionDataMixin(['directory-connector'])],
 
-    props: {
-      appData: { type: Object, default: null },
-    },
-
     provide() {
       return {
         $remoteData: () => ({
@@ -55,22 +51,21 @@
       }
     },
 
+    props: {
+      appData: { type: Object, default: null },
+    },
+
     data() {
       return {
         appName: this.appData?.appName || 'captive-portal',
+        defaultDisplayName: 'Captive Portal',
         activeUsers: [],
       }
     },
 
     computed: {
-      appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Captive Portal',
-
-      consolidatedAppData: ({ appData, powerState }) => {
-        return {
-          ...appData,
-          powerState: powerState || {},
-        }
-      },
+      // Consolidated app data to pass to the CaptivePortal component.
+      consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData(),
 
       // the network settings from the store
       networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
@@ -91,11 +86,6 @@
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
     },
 
-    // Fetch the required settings when the component is created
-    created() {
-      this.fetchRequiredSettings(false)
-    },
-
     watch: {
       appManager: {
         async handler(manager) {
@@ -103,6 +93,11 @@
           await this.fetchActiveUsers()
         },
       },
+    },
+
+    // Fetch the required settings when the component is created
+    created() {
+      this.fetchRequiredSettings(false)
     },
 
     methods: {

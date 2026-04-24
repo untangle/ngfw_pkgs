@@ -10,6 +10,7 @@
       :get-current-applications="fetchCurrentApplications"
       :get-fixed-reports-allow-graphs="fetchFixedReportsAllowGraphs"
       :is-expert-mode="isExpertMode"
+      :is-installed="isInstalled"
       :google-drive-configured="googleDriveConfigured"
       :google-drive-root-path="googleDriveRootPath"
       @save-settings="onSaveSettings"
@@ -20,15 +21,25 @@
       @upload-file="onUploadFile"
     >
       <template #actions="{ isDirty, onSave }">
-        <u-btn @click="refreshData">{{ $t('refresh') }}</u-btn>
-        <u-btn class="ml-2" :disabled="!isDirty" @click="onSave">{{ $t('save') }}</u-btn>
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 180px">
+            <u-app-status-remove class="mt-0" service-app :app-name="$t('reports')" @remove="onRemoveService" />
+          </div>
+          <v-divider vertical class="mx-4" />
+          <u-btn @click="refreshData">{{ $t('refresh') }}</u-btn>
+          <u-btn class="ml-2" :disabled="!isDirty" @click="onSave">{{ $t('save') }}</u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
+        </div>
       </template>
     </reports-app>
   </v-container>
 </template>
 
 <script>
-  import { ReportsApp } from 'vuntangle'
+  import { ReportsApp, UAppStatusRemove, UAppInstall, UBtn } from 'vuntangle'
+  import { VDivider } from 'vuetify/lib'
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
   import util from '@/util/util'
@@ -37,13 +48,19 @@
   export default {
     components: {
       ReportsApp,
+      UAppStatusRemove,
+      UAppInstall,
+      UBtn,
+      VDivider,
     },
     mixins: [serviceMixin],
 
     data() {
       return {
+        serviceName: 'reports',
         licenseNodeName: 'reports',
         reportQueueSize: 0,
+        displayNameFallback: 'Reports',
       }
     },
 
@@ -59,15 +76,6 @@
 
       /* Server timezone offset in ms for date picker initialization */
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
-
-      /* Display name sourced from the app manager, fallback to 'Reports' */
-      appDisplayName: ({ appManager }) => appManager?.getAppProperties?.()?.displayName || 'Reports',
-
-      /* Bundles powerState and appDisplayName into the shape expected by u-app-status-state */
-      consolidatedAppData: ({ powerState, appDisplayName }) => ({
-        powerState: powerState || {},
-        appDisplayName,
-      }),
     },
 
     created() {

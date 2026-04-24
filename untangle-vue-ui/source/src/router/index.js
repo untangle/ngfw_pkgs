@@ -111,10 +111,13 @@ router.beforeEach((to, from, next) => {
       store.dispatch('session/initializeAdminContext')
     }
 
-    // Stop metrics polling when leaving /apps section
-    // Polling is started via beforeEnter guard in /apps route
-    const leavingAppsSection = from?.path?.startsWith('/apps') && !to?.path?.startsWith('/apps')
-    if (leavingAppsSection) {
+    // Start/stop metrics polling based on whether the route requires it
+    // /apps routes always require metrics; other routes opt-in via meta.requiresMetrics
+    const fromRequiresMetrics = from?.path?.startsWith('/apps') || from?.meta?.requiresMetrics
+    const toRequiresMetrics = to?.path?.startsWith('/apps') || to?.meta?.requiresMetrics
+    if (toRequiresMetrics && !fromRequiresMetrics) {
+      MetricsPollingService.start()
+    } else if (fromRequiresMetrics && !toRequiresMetrics) {
       MetricsPollingService.stop()
     }
 

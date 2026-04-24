@@ -13,10 +13,12 @@ export default {
       isLicensed: undefined,
       manageLicenseUri: undefined,
       appManager: null,
+      instanceId: null,
       toggling: false,
       // Controls whether app settings are loaded via getSettingsV2 RPC on mount.
       // Set to false in components whose appManager does not support getSettingsV2 (e.g. LiveSupport).
       hasAppSettings: true,
+      displayNameFallback: '',
     }
   },
 
@@ -28,6 +30,9 @@ export default {
 
   computed: {
     ...mapGetters('apps', ['getServiceAppStatus']),
+    ...mapGetters('metrics', ['getFormattedMetrics']),
+
+    formattedMetrics: ({ instanceId, getFormattedMetrics }) => (instanceId ? getFormattedMetrics(instanceId) : []),
 
     // Get the apps view for the selected policy from the store
     appsViewByPolicy: ({ $store }) => $store.getters['apps/getAppsViewByPolicy'](1),
@@ -46,6 +51,23 @@ export default {
      */
     isReportsInstalled: ({ $store }) => $store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled(),
 
+    /**
+     * Display name sourced from the app manager; falls back to displayNameFallback set by each component.
+     * @returns {string}
+     */
+    appDisplayName: ({ appManager, displayNameFallback }) =>
+      appManager?.getAppProperties?.()?.displayName || displayNameFallback,
+
+    /**
+     * Bundles powerState, appDisplayName, and iconPath into the shape expected by u-app-status-state.
+     * @returns {{ powerState: Object, appDisplayName: string, iconPath: string|null }}
+     */
+    consolidatedAppData: ({ powerState, appDisplayName, iconPath }) => ({
+      powerState: powerState || {},
+      appDisplayName,
+      iconPath,
+    }),
+
     powerState: ({ appManager, getServiceAppStatus, toggling }) => {
       const vuexPowerState = getServiceAppStatus({
         appManager,
@@ -56,6 +78,12 @@ export default {
         power: toggling,
       }
     },
+
+    /**
+     * Icon path for the app using webpack require
+     * @returns {string|null} Icon path or null if appName is not available
+     */
+    iconPath: ({ serviceName }) => (serviceName ? require(`@/assets/icons/apps/${serviceName}.svg`) : null),
 
     /**
      * Get reports for this app from global store
@@ -79,7 +107,12 @@ export default {
     this.checkLicense()
     this.getManageLicenseUri()
     await this.setAppManager()
-    this.loadAppSettings()
+    const app = await this.$store.dispatch('apps/getApp', { appName: this.licenseNodeName })
+    this.appManager = app || null
+    await this.loadInstanceId()
+    if (this.hasAppSettings) {
+      this.loadAppSettings()
+    }
     if (!this.$store.getters['reports/isLoaded'] && !this.$store.getters['reports/loading']) {
       this.$store.dispatch('reports/loadReports')
     }
@@ -91,6 +124,21 @@ export default {
      */
     refreshData() {
       this.loadAppSettings()
+    },
+
+    /**
+     * Fetches the app instance ID from the app manager and stores it in the component's state.
+     * Used to link metrics polling to the correct app instance via formattedMetrics.
+     * Called on initial load and after reinstall to ensure instanceId stays current.
+     */
+    async loadInstanceId() {
+      if (!this.appManager) return
+      try {
+        const appSettings = await this.appManager.getAppSettings()
+        this.instanceId = appSettings?.id || null
+      } catch (err) {
+        util.handleException(err)
+      }
     },
 
     /**
@@ -220,12 +268,13 @@ export default {
       return this.$store.dispatch('apps/checkDaemonStatus', daemonName)
     },
 
-    /** Installs the dynamic-blocklists app */
+    /** Installs the apps */
     async onInstallService() {
       this.$store.commit('SET_LOADER', true)
       try {
         await this.$store.dispatch('apps/installApp', { appName: this.serviceName })
         await this.setAppManager()
+        await this.loadInstanceId()
         await this.checkLicense()
         await this.loadAppSettings()
         await this.$store.dispatch('reports/loadReports')

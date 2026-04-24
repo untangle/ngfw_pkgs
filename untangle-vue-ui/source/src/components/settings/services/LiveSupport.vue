@@ -12,6 +12,7 @@
     </no-license>
     <live-support
       :system-settings="systemSettings"
+      :app-data="consolidatedAppData"
       :company-name="companyName"
       :company-url="companyUrl"
       :disabled="!isLicensed && isInstalled"
@@ -56,6 +57,7 @@
         supportData: [],
         companyUrl: '',
         companyName: '',
+        displayNameFallback: 'Live Support',
       }
     },
 

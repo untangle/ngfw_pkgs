@@ -45,30 +45,16 @@
     data() {
       return {
         appName: this.appData?.appName || 'application-control-lite',
+        defaultDisplayName: 'Application Control Lite',
         learnMoreUrl: undefined,
       }
     },
 
     computed: {
-      /**
-       * Application display name, derived from appData properties or defaults to a static string
-       * @param param0 - Destructured appData from component's props
-       * @returns {string} Display name for the application
-       */
-      appDisplayName: ({ appData }) => appData?.appProperties?.displayName || 'Application Control Lite',
-
-      /**
-       * Consolidates app data with additional properties like learnMoreUrl and powerState
-       * @param param0 - Destructured properties including appData, learnMoreUrl, and powerState
-       * @returns {Object} Consolidated app data object to be passed to the component
-       */
-      consolidatedAppData: ({ appData, learnMoreUrl, powerState }) => {
-        return {
-          ...appData,
-          learnMoreUrl,
-          powerState: powerState || {},
-        }
-      },
+      // Consolidated app data to pass to the ApplicationControlLite component,
+      // including the learnMoreUrl for the shop link.
+      consolidatedAppData: appInstance =>
+        appInstance.buildConsolidatedAppData({ learnMoreUrl: appInstance.learnMoreUrl }),
     },
 
     created() {
