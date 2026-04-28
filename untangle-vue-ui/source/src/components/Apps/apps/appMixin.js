@@ -3,6 +3,7 @@ import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/util'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
+import Util from '@/util/setupUtil'
 
 export default {
   data() {
@@ -290,7 +291,7 @@ export default {
         })
         .catch(error => {
           this.saveDisabled = true
-          util.handleException(error, 'Failed to save app settings')
+          Util.handleException(error)
         })
         .finally(() => {
           this.$store.commit('SET_LOADER', false)

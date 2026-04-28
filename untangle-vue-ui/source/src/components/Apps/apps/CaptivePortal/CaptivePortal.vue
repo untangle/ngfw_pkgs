@@ -11,14 +11,14 @@
     @refresh-active-users="fetchActiveUsers"
   >
     <!-- Custom action buttons slot -->
-    <template #actions="{ newSettings, isDirty }">
+    <template #actions="{ newSettings, isDirty, validate }">
       <div class="d-flex flex-wrap align-center" style="gap: 8px">
         <div style="min-width: 140px">
           <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
         </div>
         <v-divider vertical class="mx-4" />
         <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
-        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
       </div>
     </template>
   </captive-portal>
@@ -143,6 +143,16 @@
        */
       fetchRequiredSettings(networkRefetch) {
         this.$store.dispatch('config/getNetworkSettings', networkRefetch)
+      },
+
+      /**
+       * Emits an event to update the settings list with the provided list.
+       * @param list The new list of settings to update
+       */
+      async onSave(newSettings, validate) {
+        const isValid = await validate()
+        if (!isValid) return
+        this.saveSettings(newSettings)
       },
 
       /**
