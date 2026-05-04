@@ -31,6 +31,7 @@ import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 import BrandingManager from '@/components/settings/services/BrandingManager.vue'
 import ConfigurationBackup from '@/components/settings/services/ConfigurationBackup.vue'
 import WanFailover from '@/components/settings/services/WanFailover.vue'
+import WanBalancer from '@/components/settings/services/WanBalancer.vue'
 import Reports from '@/components/settings/services/Reports.vue'
 import LiveSupport from '@/components/settings/services/LiveSupport.vue'
 
@@ -113,6 +114,11 @@ export default [
         path: 'services/wan-failover',
         component: WanFailover,
         meta: { helpContext: 'wan_failover', requiresMetrics: true },
+      },
+      {
+        path: 'services/wan-balancer',
+        component: WanBalancer,
+        meta: { helpContext: 'wan_balancer', requiresMetrics: true },
       },
       {
         path: 'services/dynamic-blocklist',
