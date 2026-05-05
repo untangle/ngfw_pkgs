@@ -6,6 +6,7 @@
 
 import Rpc from '@/util/Rpc'
 import Util from '@/util/setupUtil'
+import { baseCategories } from '@/util/reports'
 
 const getDefaultState = () => ({
   // Raw reports array from backend
@@ -44,6 +45,35 @@ const getters = {
   loading: state => state.loading,
   error: state => state.error,
   isLoaded: state => state.allReports.length > 0 || state.lastLoaded !== null,
+
+  /**
+   * Reports keyed by category displayName, ordered by viewPosition.
+   * Merges base/system categories with RPC app categories so the card
+   * grid renders the full set Ext shows. Shape matches what
+   * vuntangle/Reports expects via its `reportsByCategory` prop:
+   *   { [displayName]: [{ uniqueId, title, type, description }] }
+   */
+  cardItems: state => {
+    const merged = new Map()
+    baseCategories.forEach(cat => merged.set(cat.displayName, cat))
+    state.categories.forEach(cat => {
+      if (!merged.has(cat.displayName)) merged.set(cat.displayName, cat)
+    })
+    const ordered = Array.from(merged.values()).sort((a, b) => (a.viewPosition || 0) - (b.viewPosition || 0))
+    const result = {}
+    ordered.forEach(cat => {
+      const reports = (state.reportsByCategory[cat.displayName] || [])
+        .slice()
+        .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+      result[cat.displayName] = reports.map(r => ({
+        uniqueId: r.uniqueId,
+        title: r.title,
+        type: r.type,
+        description: r.description,
+      }))
+    })
+    return result
+  },
 }
 
 const mutations = {
