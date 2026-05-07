@@ -200,6 +200,12 @@
       },
     },
     watch: {
+      $route(to) {
+        if (this.mini) return
+        this.settingsNavItems.forEach(item => {
+          item.active = to.path.includes(item.match)
+        })
+      },
       // opens specific submenu group to match route on expanding nav or page load
       mini: {
         immediate: true,
