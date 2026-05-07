@@ -6,6 +6,7 @@
 
 import Rpc from '@/util/Rpc'
 import Util from '@/util/setupUtil'
+import { getReportIcon } from '@/util/reports'
 
 const getDefaultState = () => ({
   // Raw reports array from backend
@@ -15,8 +16,11 @@ const getDefaultState = () => ({
   // { 'Application Control Lite': [...reports], 'Web Filter': [...reports] }
   reportsByCategory: {},
 
-  // Categories list (for future use)
+  // Categories from getCurrentApplications (app categories only)
   categories: [],
+
+  // All categories from getAllCategoriesV2 (system + app)
+  allCategories: [],
 
   // Loading state
   loading: false,
@@ -41,9 +45,46 @@ const getters = {
 
   isReportsInstalled: state => state.isReportsInstalled,
   categories: state => state.categories,
+  allCategories: state => state.allCategories,
   loading: state => state.loading,
   error: state => state.error,
   isLoaded: state => state.allReports.length > 0 || state.lastLoaded !== null,
+
+  /**
+   * Reports keyed by category displayName, ordered by viewPosition.
+   * Each entry is shaped like a vuntangle "view" so the same MFW template
+   * can render it without branching:
+   *   { [displayName]: [{ id, name, reports: [uniqueId] }] }
+   */
+  cardItems: state => {
+    const ordered = [...state.allCategories].sort((a, b) => (a.viewPosition || 0) - (b.viewPosition || 0))
+    const result = {}
+    ordered.forEach(cat => {
+      const reports = (state.reportsByCategory[cat.displayName] || [])
+        .slice()
+        .sort((a, b) => (a.displayOrder || 0) - (b.displayOrder || 0))
+      result[cat.displayName] = reports.map(r => ({
+        id: r.uniqueId,
+        name: r.title,
+        reports: [r.uniqueId],
+      }))
+    })
+    return result
+  },
+
+  /**
+   * Lookup map of report metadata keyed by uniqueId, matching the shape
+   * vuntangle/Reports expects from its `reports` prop:
+   *   { [uniqueId]: { icon, title } }
+   */
+  reportsLookup: state =>
+    state.allReports.reduce((acc, r) => {
+      acc[r.uniqueId] = {
+        icon: getReportIcon(r.type),
+        title: r.description,
+      }
+      return acc
+    }, {}),
 }
 
 const mutations = {
@@ -63,6 +104,10 @@ const mutations = {
 
   SET_CATEGORIES(state, categories) {
     state.categories = categories
+  },
+
+  SET_ALL_CATEGORIES(state, categories) {
+    state.allCategories = categories
   },
 
   SET_LOADING(state, loading) {
@@ -110,10 +155,14 @@ const actions = {
       const reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
 
       // Parallel RPC calls
-      const [reportsResult, categoriesResult] = await Promise.all([
+      const [reportsResult, categoriesResult, allCategoriesResult] = await Promise.all([
         Rpc.asyncData(reportsManager, 'getReportEntriesV2'),
         Rpc.asyncData(reportsManager, 'getCurrentApplications').catch(() => null),
+        Rpc.asyncData(reportsManager, 'getAllCategoriesV2').catch(() => null),
       ])
+      console.log('reportsResult', reportsResult)
+      console.log('categoriesResult', categoriesResult)
+      console.log('allCategoriesV2Result', allCategoriesResult)
 
       if (reportsResult) {
         commit('SET_REPORTS', reportsResult)
@@ -121,6 +170,10 @@ const actions = {
 
       if (categoriesResult && categoriesResult.list) {
         commit('SET_CATEGORIES', categoriesResult.list)
+      }
+
+      if (Array.isArray(allCategoriesResult)) {
+        commit('SET_ALL_CATEGORIES', allCategoriesResult)
       }
 
       commit('SET_LAST_LOADED', Date.now())

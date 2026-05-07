@@ -2,6 +2,17 @@
  * Report utilities - URL encoding, icons, URL generation
  */
 
+export const baseCategories = [
+  { name: 'hosts', displayName: 'Hosts', type: 'system', viewPosition: 1 },
+  { name: 'devices', displayName: 'Devices', type: 'system', viewPosition: 2 },
+  { name: 'network', displayName: 'Network', type: 'system', viewPosition: 3 },
+  { name: 'administration', displayName: 'Administration', type: 'system', viewPosition: 4 },
+  { name: 'system', displayName: 'System', type: 'system', viewPosition: 5 },
+  { name: 'shield', displayName: 'Shield', type: 'system', viewPosition: 6 },
+  { name: 'users', displayName: 'Users', type: 'system', viewPosition: 7 },
+  { name: 'events', displayName: 'Events', type: 'system', viewPosition: 8 },
+]
+
 /**
  * URL encode for report URLs
  * Spaces → dashes, lowercase, encode non-ASCII
