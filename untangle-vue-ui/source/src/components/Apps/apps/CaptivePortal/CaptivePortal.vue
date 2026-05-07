@@ -9,6 +9,7 @@
     @toggle-state="toggleAppState"
     @logout-user="logoutUser"
     @refresh-active-users="fetchActiveUsers"
+    @configure-auth-method="configureAuthMethod"
   >
     <!-- Custom action buttons slot -->
     <template #actions="{ newSettings, isDirty, validate }">
@@ -153,6 +154,32 @@
         const isValid = await validate()
         if (!isValid) return
         this.saveSettings(newSettings)
+      },
+
+      /**
+       * Navigates to the configuration page for the selected authentication method.
+       * For LOCAL_DIRECTORY, routes directly. For directory-connector types, checks if DC is installed first.
+       * @param {string} authType - The selected authentication type value
+       */
+      async configureAuthMethod(authType) {
+        if (authType === 'LOCAL_DIRECTORY') {
+          this.$router.push(`/settings/system/local-directory`)
+          return
+        }
+
+        const dc = await this.$store.dispatch('apps/getApp', { appName: 'directory-connector' })
+        if (!dc) {
+          this.$vuntangle.toast.add(this.$t('directory_connector_not_installed'), 'error')
+          return
+        }
+
+        const subRoutes = {
+          RADIUS: 'directory-connector/radius',
+          ACTIVE_DIRECTORY: 'directory-connector/active-directory',
+          ANY_DIRCON: 'directory-connector',
+        }
+        // TODO: Update the path when directory connector will be migrated to VueUI.
+        window.parent.location.href = `/admin/index.do#service/${subRoutes[authType]}`
       },
 
       /**
