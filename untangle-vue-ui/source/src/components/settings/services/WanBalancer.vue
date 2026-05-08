@@ -46,6 +46,7 @@
 <script>
   import { WanBalancer, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
+  import util from '@/util/util'
 
   export default {
     components: {
@@ -59,6 +60,7 @@
     provide() {
       return {
         $remoteData: () => ({
+          interfaces: this.interfaces,
           wanInterfaces: [
             { value: 0, text: this.$t('balance') },
             ...this.interfaceWeightList.map(i => ({ value: i.interfaceId, text: i.name })),
@@ -79,6 +81,10 @@
     },
 
     computed: {
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      interfaces: ({ networkSettings }) => util.getInterfaceList(networkSettings, true, true),
+
       interfaceWeightList() {
         return this.$store.getters['config/interfaces']
           .filter(i => i.wan && i.configType === 'ADDRESSED')
