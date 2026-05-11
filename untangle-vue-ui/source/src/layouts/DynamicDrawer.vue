@@ -95,7 +95,7 @@
             name: 'network',
             icon: 'mdi-lan',
             active: false,
-            match: '/settings/',
+            match: '/settings/network',
             items: [
               { name: 'interface', to: '/settings/network/interfaces' },
               { name: 'port_forward', to: '/settings/network/port-forward' },
@@ -184,6 +184,12 @@
       },
     },
     watch: {
+      $route(to) {
+        if (this.mini) return
+        this.settingsNavItems.forEach(item => {
+          item.active = to.path.includes(item.match)
+        })
+      },
       mini: {
         immediate: true,
         handler(value) {
