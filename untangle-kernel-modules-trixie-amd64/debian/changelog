@@ -1,0 +1,25 @@
+untangle-kernel-modules-trixie-amd64 (18.0.0..-1trixie) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
+untangle-kernel-modules-trixie-amd64 (18.0.0..-1trixie) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
+untangle-kernel-modules-trixie-amd64 (18.0.0..-1trixie) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  
+
+untangle-kernel-modules-trixie-amd64 (0-0) current; urgency=medium
+
+  * NGFW-15749: Initial trixie kernel modules metapackage
+    (mirrors untangle-kernel-modules-bookworm-amd64; targets trixie kernel
+    6.12.85+3-untangle-amd64 via linux-image-untangle-amd64 meta dep)
+
+ -- Untangle Buildbot <buildbot@untangle.com>  Fri, 08 May 2026 00:00:00 +0000
