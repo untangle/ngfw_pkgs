@@ -13,10 +13,10 @@ Depends: ${misc:Depends}, bash (>= 3.1),
          firmware-linux-nonfree,
          grub-pc | grub-efi-amd64 | grub-cloud-amd64,
          initramfs-tools,
-	 linux-image-6.1.0-44-untangle-amd64 (>= 6.1.159-1+untangle3bookworm),
-	 linux-headers-6.1.0-44-untangle-amd64 (>= 6.1.159-1+untangle3bookworm),
+	 linux-image-6.12.85+3-untangle-amd64 (>= 6.12.85-1+untangle3trixie),
+	 linux-headers-6.12.85+3-untangle-amd64 (>= 6.12.85-1+untangle3trixie),
          untangle-bootsplash,
-         untangle-kernel-modules-bookworm,
+         untangle-kernel-modules-trixie,
          uuid-runtime
 Conflicts: grub-legacy [!armel !armhf], desktop-base, linux-image-4.19.0-8-untangle-amd64-unsigned, linux-image-4.19.0-8-untangle-686-pae-unsigned, linux-headers-4.19.0-8-untangle-amd64, linux-headers-4.19.0-8-untangle-686-pae, linux-headers-4.19.0-8-untangle-arm64
 Description: The Untangle kernel config
