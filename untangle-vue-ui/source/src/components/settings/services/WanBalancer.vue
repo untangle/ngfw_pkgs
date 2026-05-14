@@ -135,6 +135,7 @@
 
       async onSave(newSettings) {
         await this.saveSettings(this.setWeights(newSettings))
+        this.$store.dispatch('config/getNetworkSettings', true)
       },
 
       onRefreshData() {
