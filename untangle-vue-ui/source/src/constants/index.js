@@ -42,20 +42,6 @@ const appDescription = {
   'firewall': 'app_firewall_description',
   'threat-prevention': 'app_threat_prevention_description',
   'ad-blocker': 'app_ad_blocker_description',
-  'reports': 'app_reports_description',
-  'policy-manager': 'app_policy_manager_description',
-  'directory-connector': 'app_directory_connector_description',
-  'wan-failover': 'app_wan_failover_description',
-  'wan-balancer': 'app_wan_balancer_description',
-  'ipsec-vpn': 'app_ipsec_vpn_description',
-  'wireguard-vpn': 'app_wireguard_vpn_description',
-  'openvpn': 'app_openvpn_description',
-  'tunnel-vpn': 'app_tunnel_vpn_description',
-  'dynamic-blocklists': 'app_dynamic_blocklist_description',
-  'intrusion-prevention': 'app_intrusion_prevention_description',
-  'configuration-backup': 'app_configuration_backup_description',
-  'branding-manager': 'app_branding_manager_description',
-  'live-support': 'app_live_support_description',
 }
 
 export {

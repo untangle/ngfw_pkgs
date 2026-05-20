@@ -30,6 +30,7 @@ import Events from '@/components/settings/system/Events.vue'
 import PolicyManager from '@/components/settings/services/PolicyManager.vue'
 import BrandingManager from '@/components/settings/services/BrandingManager.vue'
 import ConfigurationBackup from '@/components/settings/services/ConfigurationBackup.vue'
+import DirectoryConnector from '@/components/settings/services/DirectoryConnector.vue'
 import WanFailover from '@/components/settings/services/WanFailover.vue'
 import WanBalancer from '@/components/settings/services/WanBalancer.vue'
 import Reports from '@/components/settings/services/Reports.vue'
@@ -109,6 +110,11 @@ export default [
         path: 'services/configuration-backup',
         component: ConfigurationBackup,
         meta: { helpContext: 'configuration_backup' },
+      },
+      {
+        path: 'services/directory-connector',
+        component: DirectoryConnector,
+        meta: { helpContext: 'directory_connector' },
       },
       {
         path: 'services/wan-failover',
