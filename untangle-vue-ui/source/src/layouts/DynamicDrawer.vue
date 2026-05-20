@@ -152,6 +152,7 @@
             items: [
               { name: 'branding_manager', to: '/settings/services/branding-manager' },
               { name: 'configuration_backup', to: '/settings/services/configuration-backup' },
+              { name: 'directory_connector', to: '/settings/services/directory-connector' },
               { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
               { name: 'live_support', to: '/settings/services/live-support' },
               { name: 'policy_manager', to: '/settings/services/policy-manager' },
