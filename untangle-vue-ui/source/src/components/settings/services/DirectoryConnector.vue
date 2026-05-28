@@ -48,6 +48,7 @@
 <script>
   import { DirectoryConnector, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
+  import util from '@/util/util'
   import Rpc from '@/util/Rpc'
 
   export default {
@@ -84,7 +85,8 @@
           )
           cb(result)
         } catch (ex) {
-          cb(ex?.message || String(ex))
+          cb()
+          util.handleException(ex)
         }
       },
 
@@ -106,6 +108,7 @@
             error: ex?.message || String(ex),
           }
           cb(failure)
+          util.handleException(ex)
         }
       },
 
@@ -121,6 +124,7 @@
           cb(rows || empty)
         } catch (ex) {
           cb(empty)
+          util.handleException(ex)
         }
       },
 
@@ -128,6 +132,8 @@
         if (!this.appManager) return cb()
         try {
           await Rpc.asyncData(this.appManager, 'refreshGroupCache')
+        } catch (ex) {
+          util.handleException(ex)
         } finally {
           cb()
         }
