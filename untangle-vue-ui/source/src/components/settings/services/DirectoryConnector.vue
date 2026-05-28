@@ -19,6 +19,8 @@
       :is-installed="isInstalled"
       :reports="appReports"
       @toggle-state="toggleAppState"
+      @radius-test="onRadiusTest"
+      @test-active-directory="onTestActiveDirectory"
     >
       <template #actions="{ newSettings, isDirty }">
         <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
@@ -44,6 +46,7 @@
 <script>
   import { DirectoryConnector, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
+  import Rpc from '@/util/Rpc'
 
   export default {
     components: {
@@ -62,9 +65,46 @@
     },
     methods: {
       async onSave(newSettings) {
-        const isValid = await this.$refs.directoryConnector?.validate?.()
+        const isValid = await this.$refs.directoryConnector.validate()
         if (!isValid) return
         await this.saveSettings(newSettings)
+      },
+
+      async onRadiusTest({ settings, username, password, cb }) {
+        if (!this.appManager) return
+        try {
+          const result = await Rpc.asyncData(
+            this.appManager,
+            'getRadiusManager().getRadiusStatusForSettingsV2',
+            settings,
+            username,
+            password,
+          )
+          cb(result)
+        } catch (ex) {
+          cb(ex?.message || String(ex))
+        }
+      },
+
+      async onTestActiveDirectory({ server, cb }) {
+        if (!this.appManager) return
+        try {
+          const result = await Rpc.asyncData(
+            this.appManager,
+            'getActiveDirectoryManager().getStatusForSettingsV2',
+            server,
+          )
+          cb(result)
+        } catch (ex) {
+          const failure = {
+            status: 'FAIL_QUERY',
+            searchBases: [],
+            userCount: 0,
+            groupCount: 0,
+            error: ex?.message || String(ex),
+          }
+          cb(failure)
+        }
       },
     },
   }
