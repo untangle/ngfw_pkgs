@@ -11,7 +11,6 @@ dir:
 
 yarn:
 	cd ./source; \
-	#TODO: Remove --ignore-engines once NGFW is upgraded to bookworm
 	yarnpkg install --force --network-concurrency 1 --ignore-engines; \
 	yarnpkg clean; \
 	yarnpkg build
