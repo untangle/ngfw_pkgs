@@ -48,7 +48,7 @@
 <script>
   import { DirectoryConnector, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
-  import util from '@/util/util'
+  import util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
 
   export default {
@@ -73,6 +73,11 @@
         await this.saveSettings(newSettings)
       },
 
+      /**
+       * Performs a RADIUS authentication test using the provided settings and credentials.
+       * Invokes the RPC method to validate the RADIUS server connectivity and authentication,
+       * then returns the result through the callback.
+       */
       async onRadiusTest({ settings, username, password, cb }) {
         if (!this.appManager) return
         try {
@@ -90,6 +95,11 @@
         }
       },
 
+      /**
+       * Handles the Active Directory connectivity test request.
+       * Invokes the RPC method to validate the provided Active Directory settings
+       * and returns the test result through the callback.
+       */
       async onTestActiveDirectory({ server, cb }) {
         if (!this.appManager) return
         try {
@@ -112,6 +122,10 @@
         }
       },
 
+      /**
+       * Retrieves the list of Active Directory users
+       * calls cb with the results
+       */
       async onListUsers({ server, cb }) {
         const empty = []
         if (!this.appManager) return cb(empty)
@@ -128,6 +142,10 @@
         }
       },
 
+      /**
+       * Triggers a group cache refresh via RPC and invokes the callback when complete,
+       * regardless of success or failure.
+       */
       async onRefreshGroupCache({ cb }) {
         if (!this.appManager) return cb()
         try {

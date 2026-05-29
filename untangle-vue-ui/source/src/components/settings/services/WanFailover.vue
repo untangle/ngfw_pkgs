@@ -48,7 +48,7 @@
   import { WanFailover, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
   import Rpc from '@/util/Rpc'
-  import util from '@/util/util'
+  import util from '@/util/setupUtil'
   export default {
     components: {
       WanFailover,
