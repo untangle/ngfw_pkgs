@@ -111,6 +111,11 @@ const vuexPersistence = new VuexPersistence({
     // eslint-disable-next-line no-unused-vars
     const { autoInstallApps, ...appsStateWithoutAutoInstall } = state.apps || {}
 
+    // Exclude reportData from reports module — EVENT_LIST payloads can be
+    // multi-MB (thousands of rows) and overflow the localStorage quota.
+    // eslint-disable-next-line no-unused-vars
+    const { reportData, ...reportsStateWithoutData } = state.reports || {}
+
     // CRITICAL: Exclude session and metrics modules from persistence
     // - session: Must reset on every page load/hard refresh
     // - metrics: Transient polling data, should not be persisted
@@ -120,6 +125,7 @@ const vuexPersistence = new VuexPersistence({
     return {
       ...stateWithoutSessionAndMetrics,
       apps: appsStateWithoutAutoInstall,
+      reports: reportsStateWithoutData,
     }
   },
 })

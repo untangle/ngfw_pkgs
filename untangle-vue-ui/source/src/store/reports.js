@@ -6,7 +6,17 @@
 
 import Rpc from '@/util/Rpc'
 import Util from '@/util/setupUtil'
-import { getReportIcon } from '@/util/reports'
+import { getReportIcon, urlEncode } from '@/util/reports'
+
+let cachedReportsManager = null
+
+async function getReportsManager() {
+  if (cachedReportsManager) return cachedReportsManager
+  const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+  if (!reportsApp) return null
+  cachedReportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
+  return cachedReportsManager
+}
 
 const getDefaultState = () => ({
   // Raw reports array from backend
@@ -33,6 +43,9 @@ const getDefaultState = () => ({
 
   // Timestamp of last load (for cache invalidation if needed)
   lastLoaded: null,
+
+  // Per-entry fetched data, keyed by uniqueId: { [uniqueId]: { list: [...], fetchedAt, loading, error } }
+  reportData: {},
 })
 
 const getters = {
@@ -85,6 +98,12 @@ const getters = {
       }
       return acc
     }, {}),
+
+  // Resolves route slugs (/reports/:cat/:rep) back to the raw report entry
+  getReportBySlug: state => (catSlug, repSlug) =>
+    state.allReports.find(r => urlEncode(r.category) === catSlug && urlEncode(r.title) === repSlug) || null,
+
+  getReportData: state => uniqueId => state.reportData[uniqueId] || null,
 }
 
 const mutations = {
@@ -126,7 +145,12 @@ const mutations = {
     state.lastLoaded = timestamp
   },
 
+  SET_REPORT_DATA(state, { uniqueId, payload }) {
+    state.reportData = { ...state.reportData, [uniqueId]: payload }
+  },
+
   RESET(state) {
+    cachedReportsManager = null
     Object.assign(state, getDefaultState())
   },
 }
@@ -153,6 +177,7 @@ const actions = {
       commit('SET_REPORTS_INSTALLED', true)
 
       const reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
+      cachedReportsManager = reportsManager
 
       // Parallel RPC calls
       const [reportsResult, categoriesResult, allCategoriesResult] = await Promise.all([
@@ -194,6 +219,62 @@ const actions = {
 
   resetReports({ commit }) {
     commit('RESET')
+  },
+
+  /**
+   * Fetch data for a single report entry via getDataForReportEntryV2.
+   * Result is cached in state under reportData[uniqueId]. Safe to call
+   * before loadReports — resolves the reports manager on demand.
+   *
+   * @param {Object} payload
+   * @param {string} payload.uniqueId - report entry uniqueId
+   * @param {Date}   [payload.startDate]
+   * @param {Date}   [payload.endDate]
+   * @param {Array}  [payload.extraConditions]
+   * @param {number} [payload.limit=-1]
+   * @returns {Promise<{ list: Array, loading: boolean, error: ?string, fetchedAt: ?number }>}
+   */
+  async fetchReportData(
+    { commit, state },
+    { uniqueId, startDate = null, endDate = null, extraConditions = [], limit = -1 } = {},
+  ) {
+    if (!uniqueId) return null
+    const entry = state.allReports.find(r => r.uniqueId === uniqueId)
+    if (!entry) return null
+
+    commit('SET_REPORT_DATA', { uniqueId, payload: { list: [], loading: true, error: null, fetchedAt: null } })
+
+    try {
+      const reportsManager = await getReportsManager()
+      if (!reportsManager) throw new Error('Reports app not available')
+
+      // TEMP for testing: hardcode startDate to the 1st of this month if caller didn't supply one.
+      // Jabsorb auto-wraps JS Date as { javaClass: 'java.util.Date', time: <ms> }, matching the working curl.
+      const now = new Date()
+      const effectiveStart = startDate || new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
+
+      const result = await Rpc.asyncData(
+        reportsManager,
+        'getDataForReportEntryV2',
+        entry,
+        effectiveStart,
+        endDate,
+        null,
+        extraConditions,
+        null,
+        limit,
+      )
+
+      const list = Array.isArray(result?.list) ? result.list : Array.isArray(result) ? result : []
+      const payload = { list, loading: false, error: null, fetchedAt: Date.now() }
+      commit('SET_REPORT_DATA', { uniqueId, payload })
+      return payload
+    } catch (error) {
+      const payload = { list: [], loading: false, error: error.message || 'Fetch failed', fetchedAt: Date.now() }
+      commit('SET_REPORT_DATA', { uniqueId, payload })
+      Util.handleException(error, `Failed to fetch report data for ${uniqueId}`)
+      return payload
+    }
   },
 }
 
