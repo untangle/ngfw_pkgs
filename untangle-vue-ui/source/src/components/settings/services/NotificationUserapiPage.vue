@@ -6,7 +6,6 @@
 
 <script>
   import { NotificationUserapi } from 'vuntangle'
-  import { mapActions } from 'vuex'
 
   export default {
     name: 'NotificationUserapiPage',
@@ -17,21 +16,12 @@
 
     data() {
       return {
-        // Company name fetched from store
         companyName: '',
       }
     },
 
-    mounted() {
-      this.fetchCompanyName()
-    },
-
-    methods: {
-      ...mapActions('apps', ['getCompanyName']),
-
-      async fetchCompanyName() {
-        this.companyName = (await this.getCompanyName()) || ''
-      },
+    async mounted() {
+      this.companyName = (await this.$store.dispatch('apps/getCompanyName')) || ''
     },
   }
 </script>
