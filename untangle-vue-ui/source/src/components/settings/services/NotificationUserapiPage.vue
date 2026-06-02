@@ -17,9 +17,7 @@
 
     data() {
       return {
-        /**
-         * Company name fetched from store
-         */
+        // Company name fetched from store
         companyName: '',
       }
     },
@@ -32,8 +30,7 @@
       ...mapActions('apps', ['getCompanyName']),
 
       async fetchCompanyName() {
-        const name = await this.getCompanyName()
-        this.companyName = name || ''
+        this.companyName = (await this.getCompanyName()) || ''
       },
     },
   }
