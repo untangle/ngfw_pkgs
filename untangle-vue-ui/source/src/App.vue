@@ -10,14 +10,15 @@
       "
     />
     <quarantine-layout v-else-if="$route.meta.layout && $route.meta.layout.name === 'QuarantineLayout'" />
+    <user-api-layout v-else-if="$route.meta.layout && $route.meta.layout.name === 'UserApiLayout'" />
     <default-layout v-else />
   </div>
 </template>
 <script>
-  import { DynamicLayout, DefaultLayout, QuarantineLayout } from '@/layouts'
+  import { DynamicLayout, DefaultLayout, QuarantineLayout, UserApiLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, DynamicLayout, QuarantineLayout },
+    components: { DefaultLayout, DynamicLayout, QuarantineLayout, UserApiLayout },
 
     data() {
       return {
