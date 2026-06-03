@@ -5,6 +5,7 @@ import auth from './auth'
 import setting from './setting'
 import wizard from './wizard'
 import quarantine from './quarantine'
+import userapi from './userapi'
 import appRouter from './apps'
 import Dashboard from '@/components/Dashboard/Main'
 import store from '@/store'
@@ -44,7 +45,7 @@ const baseRoutes = [
   },
 ]
 
-const routes = baseRoutes.concat(auth, setting, wizard, quarantine, appRouter, {
+const routes = baseRoutes.concat(auth, setting, wizard, quarantine, userapi, appRouter, {
   path: '*',
   name: 'page-not-found',
   component: UPageNotFound,
