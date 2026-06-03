@@ -248,8 +248,6 @@ const actions = {
       const reportsManager = await getReportsManager()
       if (!reportsManager) throw new Error('Reports app not available')
 
-      // TEMP for testing: hardcode startDate to the 1st of this month if caller didn't supply one.
-      // Jabsorb auto-wraps JS Date as { javaClass: 'java.util.Date', time: <ms> }, matching the working curl.
       const now = new Date()
       const effectiveStart = startDate || new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0)
 
@@ -265,8 +263,12 @@ const actions = {
         limit,
       )
 
-      const list = Array.isArray(result?.list) ? result.list : Array.isArray(result) ? result : []
-      const payload = { list, loading: false, error: null, fetchedAt: Date.now() }
+      // Chart types return { metadata, series[] } or { metadata, slices[] }
+      // Event/Text types return { list: [...] }
+      const payload =
+        result?.series || result?.slices
+          ? { data: result, loading: false, error: null, fetchedAt: Date.now() }
+          : { list: Array.isArray(result?.list) ? result.list : [], loading: false, error: null, fetchedAt: Date.now() }
       commit('SET_REPORT_DATA', { uniqueId, payload })
       return payload
     } catch (error) {

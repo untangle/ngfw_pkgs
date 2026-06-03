@@ -211,6 +211,106 @@ export function translateEventListEntry(entry) {
 }
 
 /**
+ * Map a NGFW TimeStyle to the Highcharts chart type string.
+ * Stacked/overlapped variants share the same base chart type —
+ * stacking behaviour is handled separately via rendering.stacking.
+ */
+function timeStyleToChartType(timeStyle) {
+  switch (timeStyle) {
+    case 'LINE':
+      return 'spline'
+    case 'AREA':
+    case 'AREA_STACKED':
+      return 'areaspline'
+    case 'BAR':
+    case 'BAR_3D':
+    case 'BAR_OVERLAPPED':
+    case 'BAR_3D_OVERLAPPED':
+    case 'BAR_STACKED':
+    case 'BAR_3D_STACKED':
+      return 'column'
+    default:
+      return 'areaspline'
+  }
+}
+
+/**
+ * Map a NGFW PieStyle to the Highcharts chart type string.
+ * COLUMN variants render as a bar chart; everything else is a pie/donut.
+ */
+function pieStyleToChartType(pieStyle) {
+  return pieStyle && pieStyle.includes('COLUMN') ? 'column' : 'pie'
+}
+
+/** PIE_GRAPH → vuntangle GenericChart report config */
+export function translatePieGraphEntry(entry) {
+  const pieStyle = entry.pieStyle || 'PIE'
+  return {
+    title: entry.title,
+    query: {
+      type: 'CATEGORIES',
+      table: entry.table,
+      conditions: entry.conditions || [],
+      queryCategories: { groupColumn: entry.pieGroupColumn },
+    },
+    rendering: {
+      type: pieStyleToChartType(pieStyle),
+      units: entry.units || '',
+      slicesNumber: entry.pieNumSlices || 10,
+      donutInnerSize: pieStyle.includes('DONUT') ? 40 : 0,
+      column: entry.pieGroupColumn,
+      colors: Array.isArray(entry.colors) && entry.colors.length ? entry.colors.join(',') : undefined,
+    },
+  }
+}
+
+/** TIME_GRAPH → vuntangle GenericChart report config */
+export function translateTimeGraphEntry(entry) {
+  const timeStyle = entry.timeStyle || 'BAR'
+  return {
+    title: entry.title,
+    query: {
+      type: 'SERIES',
+      table: entry.table,
+      conditions: entry.conditions || [],
+    },
+    rendering: {
+      type: timeStyleToChartType(timeStyle),
+      units: entry.units || '',
+      stacking: timeStyle.includes('STACKED') ? 'normal' : undefined,
+      overlapped: timeStyle.includes('OVERLAPPED'),
+      dataGroupingEnabled: true,
+      dataGroupingApproximation: entry.approximation || 'sum',
+      groupPixelWidth: 8,
+      colors: Array.isArray(entry.colors) && entry.colors.length ? entry.colors.join(',') : undefined,
+    },
+  }
+}
+
+/** TIME_GRAPH_DYNAMIC → vuntangle GenericChart report config */
+export function translateTimeGraphDynamicEntry(entry) {
+  const timeStyle = entry.timeStyle || 'BAR'
+  return {
+    title: entry.title,
+    query: {
+      type: 'SERIES',
+      table: entry.table,
+      conditions: entry.conditions || [],
+      queryCategories: { groupColumn: entry.timeDataDynamicColumn },
+    },
+    rendering: {
+      type: timeStyleToChartType(timeStyle),
+      units: entry.units || '',
+      stacking: timeStyle.includes('STACKED') ? 'normal' : undefined,
+      dataGroupingEnabled: true,
+      dataGroupingApproximation: entry.approximation || 'sum',
+      groupPixelWidth: 8,
+      colors: Array.isArray(entry.colors) && entry.colors.length ? entry.colors.join(',') : undefined,
+    },
+  }
+}
+
+/**
  * Build a vuntangle view config from a NGFW `ReportEntry`.
  * Returns null for types not yet supported in the Vue UI.
  */
@@ -221,6 +321,27 @@ export function buildReportView(entry) {
       return { id: entry.uniqueId, component: 'GenericText', reports: [entry] }
     case 'EVENT_LIST':
       return { id: entry.uniqueId, component: 'GenericGrid', reports: [translateEventListEntry(entry)] }
+    case 'TIME_GRAPH':
+      return {
+        id: entry.uniqueId,
+        component: 'GenericChart',
+        verticalLayout: true,
+        reports: [translateTimeGraphEntry(entry)],
+      }
+    case 'TIME_GRAPH_DYNAMIC':
+      return {
+        id: entry.uniqueId,
+        component: 'GenericChart',
+        verticalLayout: true,
+        reports: [translateTimeGraphDynamicEntry(entry)],
+      }
+    case 'PIE_GRAPH':
+      return {
+        id: entry.uniqueId,
+        component: 'GenericChart',
+        verticalLayout: true,
+        reports: [translatePieGraphEntry(entry)],
+      }
     default:
       return null
   }
