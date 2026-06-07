@@ -1,6 +1,20 @@
 /**
- * Report utilities - URL encoding, icons, URL generation
+ * Report utilities - URL encoding, icons, URL generation, category helpers
  */
+
+/**
+ * System report categories that are always present regardless of which apps are installed.
+ */
+export const baseCategories = [
+  { name: 'hosts', type: 'system', displayName: 'Hosts', viewPosition: 1 },
+  { name: 'devices', type: 'system', displayName: 'Devices', viewPosition: 2 },
+  { name: 'users', type: 'system', displayName: 'Users', viewPosition: 3 },
+  { name: 'network', type: 'system', displayName: 'Network', viewPosition: 4 },
+  { name: 'administration', type: 'system', displayName: 'Administration', viewPosition: 5 },
+  { name: 'events', type: 'system', displayName: 'Events', viewPosition: 6 },
+  { name: 'system', type: 'system', displayName: 'System', viewPosition: 7 },
+  { name: 'shield', type: 'system', displayName: 'Shield', viewPosition: 8 },
+]
 
 /**
  * URL encode for report URLs
@@ -36,7 +50,7 @@ export function getReportUrl(category, title) {
 }
 
 /**
- * Transform backend report to UI format for UAppStatusReports component
+ * Transforms a single backend report entry into the UI display format.
  */
 export function formatReportForUI(report) {
   return {
@@ -55,4 +69,31 @@ export function formatReportsForUI(reports) {
     return []
   }
   return reports.map(formatReportForUI)
+}
+
+/**
+ * Exports report definitions for a category (or all reports) as a downloadable JSON file.
+ * Strips UI-computed fields and triggers a client-side Blob download.
+ * @param {Array}  allReports   - full reports array from the store
+ * @param {string} categoryName - category to export; if omitted exports all reports
+ */
+export function exportCategoryReports(allReports, categoryName) {
+  const COMPUTED_FIELDS = ['localizedTitle', 'localizedDescription', 'slug', 'categorySlug', 'url', 'icon', '_id']
+
+  const source = categoryName ? allReports.filter(r => r.category === categoryName) : allReports
+
+  const data = source.map(report => {
+    const rep = { ...report }
+    COMPUTED_FIELDS.forEach(field => delete rep[field])
+    return rep
+  })
+
+  const filename = `AllReports${categoryName ? '_' + categoryName.replace(/ /g, '_') : ''}.json`
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
+  const url = URL.createObjectURL(blob)
+  const a = document.createElement('a')
+  a.href = url
+  a.download = filename
+  a.click()
+  URL.revokeObjectURL(url)
 }
