@@ -2,6 +2,8 @@
  * Report utilities - URL encoding, icons, URL generation, category helpers
  */
 
+import util from '@/util/util'
+
 /**
  * System report categories that are always present regardless of which apps are installed.
  */
@@ -77,7 +79,7 @@ export function formatReportsForUI(reports) {
  * @param {Array}  allReports   - full reports array from the store
  * @param {string} categoryName - category to export; if omitted exports all reports
  */
-export function exportCategoryReports(allReports, categoryName) {
+export async function exportCategoryReports(allReports, categoryName) {
   const COMPUTED_FIELDS = ['localizedTitle', 'localizedDescription', 'slug', 'categorySlug', 'url', 'icon', '_id']
 
   const source = categoryName ? allReports.filter(r => r.category === categoryName) : allReports
@@ -88,12 +90,11 @@ export function exportCategoryReports(allReports, categoryName) {
     return rep
   })
 
-  const filename = `AllReports${categoryName ? '_' + categoryName.replace(/ /g, '_') : ''}.json`
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' })
-  const url = URL.createObjectURL(blob)
-  const a = document.createElement('a')
-  a.href = url
-  a.download = filename
-  a.click()
-  URL.revokeObjectURL(url)
+  const gridName = `AllReports${categoryName ? '_' + categoryName.replace(/ /g, '_') : ''}`
+
+  await util.downloadFile('/admin/gridSettings', {
+    gridName,
+    gridData: JSON.stringify(data),
+    type: 'export',
+  })
 }

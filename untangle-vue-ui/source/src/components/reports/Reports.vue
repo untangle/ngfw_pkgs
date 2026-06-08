@@ -43,12 +43,12 @@
         // TODO: navigate to the selected report detail view
       },
 
-      onExportCategory(categoryName) {
-        exportCategoryReports(this.allReports, categoryName)
+      async onExportCategory(categoryName) {
+        await exportCategoryReports(this.allReports, categoryName)
       },
 
-      onExportAll() {
-        exportCategoryReports(this.allReports)
+      async onExportAll() {
+        await exportCategoryReports(this.allReports)
       },
     },
   }
