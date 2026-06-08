@@ -197,6 +197,7 @@
         return [
           { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
           { name: 'apps', to: `/apps/${this.selectedPolicyId}`, icon: 'mdi-apps' },
+          { name: 'reports', to: '/reports', icon: 'mdi-chart-box-outline' },
         ]
       },
     },

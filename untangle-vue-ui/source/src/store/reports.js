@@ -6,6 +6,7 @@
 
 import Rpc from '@/util/Rpc'
 import Util from '@/util/setupUtil'
+import { baseCategories } from '@/util/reports'
 
 const getDefaultState = () => ({
   // Raw reports array from backend
@@ -37,6 +38,13 @@ const getters = {
   // O(1) lookup by category
   getReportsByCategory: state => category => {
     return state.reportsByCategory[category] || []
+  },
+
+  // Merges built-in system categories with installed app categories from the backend,
+  // then sorts the combined list by viewPosition so categories render in the correct order.
+  allCategories: state => {
+    const appCategories = state.categories.map(cat => ({ ...cat, type: 'app' }))
+    return [...baseCategories, ...appCategories].sort((a, b) => a.viewPosition - b.viewPosition)
   },
 
   isReportsInstalled: state => state.isReportsInstalled,
