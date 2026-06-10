@@ -33,6 +33,7 @@
 
     mixins: [appMixin],
 
+    // Injects WebFilter capability overrides, feature flags, and read-only state to child components.
     provide() {
       return {
         capabilities: {
@@ -43,6 +44,15 @@
             appIcon: { render: true },
             powerStatus: { render: true },
             description: { render: true, key: 'app_web_filter_description' },
+          },
+          categories: {
+            listGroup: {
+              mode: 'direct',
+              actions: [
+                { value: 'blocked', text: 'block', forceEnabledFor: [] },
+                { value: 'flagged', text: 'flag', forceEnabledFor: [] },
+              ],
+            },
           },
         },
         $features: { isExpertMode: this.isExpertMode },
@@ -64,7 +74,9 @@
     },
 
     computed: {
+      // Transforms appData into the format expected by WebFilter and its child components.
       consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData(),
+
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
     },
   }
