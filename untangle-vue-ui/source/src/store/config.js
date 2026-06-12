@@ -30,6 +30,7 @@ const getDefaultState = () => ({
   rootCertificates: null,
   serverCertificateVerification: null,
   serverCertificates: null,
+  serverClockOffsetMs: 0,
   publicUrl: null,
 })
 
@@ -50,6 +51,7 @@ const getters = {
   deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   users: state => state.users || [],
   timeZoneOffset: state => state.timeZoneOffset || 0,
+  serverClockOffsetMs: state => state.serverClockOffsetMs || 0,
   radiusLogsInfo: state => state.radiusLogsInfo || '',
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
@@ -99,6 +101,7 @@ const mutations = {
   SET_CLASS_FIELDS_DATA: (state, value) => set(state, 'classFieldsData', value),
   SET_USERS: (state, value) => set(state, 'users', value),
   SET_TIME_ZONE_OFF_SET: (state, value) => set(state, 'timeZoneOffset', value),
+  SET_SERVER_CLOCK_OFFSET_MS: (state, value) => set(state, 'serverClockOffsetMs', value),
   SET_DEVICE_TEMP_INFO: (state, value) => set(state, 'deviceTemperatureInfo', value),
   SET_RADIUS_LOGS: (state, value) => set(state, 'radiusLogsInfo', value),
   SET_SYSTEM_TIMEZONES: (state, value) => set(state, 'systemTimeZones', value),
@@ -296,6 +299,17 @@ const actions = {
       return { success: true, message: null, data } //  success
     } catch (err) {
       Util.handleException(err)
+    }
+  },
+
+  /** Compute server-vs-browser wall-clock delta (ms). Stored once at boot; used by DateTimeRangePresets for server-clock-accurate maxDate and preset times. */
+  getServerClockOffsetMs({ commit }) {
+    try {
+      const serverMs = util.getMilliseconds()
+      commit('SET_SERVER_CLOCK_OFFSET_MS', serverMs - Date.now())
+      return { success: true }
+    } catch (err) {
+      commit('SET_SERVER_CLOCK_OFFSET_MS', 0)
     }
   },
 
