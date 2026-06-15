@@ -6,7 +6,7 @@
 
 import Rpc from '@/util/Rpc'
 import Util from '@/util/setupUtil'
-import { baseCategories } from '@/util/reports'
+import { baseCategories, urlEncode } from '@/util/reports'
 
 const getDefaultState = () => ({
   // Raw reports array from backend
@@ -35,7 +35,7 @@ const getDefaultState = () => ({
 const getters = {
   allReports: state => state.allReports,
 
-  // O(1) lookup by category
+  // O(1) lookup by category name
   getReportsByCategory: state => category => {
     return state.reportsByCategory[category] || []
   },
@@ -45,6 +45,25 @@ const getters = {
   allCategories: state => {
     const appCategories = state.categories.map(cat => ({ ...cat, type: 'app' }))
     return [...baseCategories, ...appCategories].sort((a, b) => a.viewPosition - b.viewPosition)
+  },
+
+  // Normalized categories shape for the ReportsNav dropdown.
+  // Filters out empty categories and projects only the fields the dropdown needs.
+  categoriesForNav: (state, getters) => {
+    return getters.allCategories
+      .filter(cat => (state.reportsByCategory[cat.displayName] || []).length)
+      .map(cat => ({
+        id: urlEncode(cat.displayName),
+        displayName: cat.displayName,
+        reports: (state.reportsByCategory[cat.displayName] || []).map(r => ({
+          id: r.uniqueId,
+          name: r.title,
+          type: r.type,
+          timeStyle: r.timeStyle,
+          pieStyle: r.pieStyle,
+          description: r.description,
+        })),
+      }))
   },
 
   isReportsInstalled: state => state.isReportsInstalled,
