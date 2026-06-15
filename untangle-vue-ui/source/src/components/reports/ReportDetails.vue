@@ -42,8 +42,7 @@
     },
 
     methods: {
-      onFetchData({ query, resolve }) {
-        console.log('Fetching report data...', query, resolve)
+      onFetchData({ resolve }) {
         resolve([])
       },
     },
