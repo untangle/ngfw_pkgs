@@ -1,7 +1,6 @@
 <template>
   <v-container>
     <settings-interface
-      v-if="intfSetting"
       ref="component"
       :settings="intfSetting"
       :is-saving="isSaving"
