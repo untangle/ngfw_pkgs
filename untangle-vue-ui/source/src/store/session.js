@@ -40,6 +40,11 @@ const actions = {
         dispatch('apps/getAppsViews', true, { root: true }),
         dispatch('apps/loadAppData', { appName: 'policy-manager' }, { root: true }),
         dispatch('reports/loadReports', null, { root: true }),
+        // Required for server-timezone-aware date/time in Reports date picker.
+        // Must run at boot so DateTimeRangePresets receives the correct offset via $serverTimezoneOffsetMs.
+        dispatch('config/getTimeZoneOffSet', null, { root: true }),
+        // Compute server-vs-browser wall-clock delta so maxDate and presets use server time, not browser time.
+        dispatch('config/getServerClockOffsetMs', null, { root: true }),
       ])
 
       commit('SET_ADMIN_CONTEXT_INITIALIZED', true)

@@ -14,9 +14,14 @@
 <script>
   import { mapActions, mapGetters } from 'vuex'
   import { Reports } from 'vuntangle'
+  import reportsMixin from './reportsMixin'
   import { exportCategoryReports } from '@/util/reports'
+
   export default {
     components: { Reports },
+
+    mixins: [reportsMixin],
+
     data() {
       return {
         features: {
@@ -29,7 +34,7 @@
     },
 
     computed: {
-      ...mapGetters('reports', ['allReports', 'allCategories']),
+      ...mapGetters('reports', ['allCategories']),
     },
 
     created() {
@@ -38,10 +43,6 @@
 
     methods: {
       ...mapActions('reports', ['loadReports']),
-
-      onViewReport() {
-        // TODO: navigate to the selected report detail view
-      },
 
       async onExportCategory(categoryName) {
         await exportCategoryReports(this.allReports, categoryName)
