@@ -22,9 +22,10 @@
 </template>
 
 <script>
-  import { WebFilter, UAppStatusRemove, webFilterDefaultCapabilities, webFilterAllTabs } from 'vuntangle'
+  import { WebFilter, UAppStatusRemove, webFilterAllTabs } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import { ngfwCapabilities } from './capabilities'
 
   export default {
     name: 'WebFilterApp',
@@ -33,28 +34,9 @@
 
     mixins: [appMixin],
 
-    // Injects WebFilter capability overrides, feature flags, and read-only state to child components.
     provide() {
       return {
-        capabilities: {
-          ...webFilterDefaultCapabilities,
-          main: {
-            policyManagerAlert: { render: false },
-            enableToggle: { render: false },
-            appIcon: { render: true },
-            powerStatus: { render: true },
-            description: { render: true, key: 'app_web_filter_description' },
-          },
-          categories: {
-            listGroup: {
-              mode: 'direct',
-              actions: [
-                { value: 'blocked', text: 'block', forceEnabledFor: [] },
-                { value: 'flagged', text: 'flag', forceEnabledFor: [] },
-              ],
-            },
-          },
-        },
+        capabilities: ngfwCapabilities,
         $features: { isExpertMode: this.isExpertMode },
         $readOnly: false,
         $applications: {},
