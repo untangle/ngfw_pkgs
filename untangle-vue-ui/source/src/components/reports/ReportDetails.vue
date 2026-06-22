@@ -19,7 +19,7 @@
   import Util from '@/util/setupUtil'
   import { urlEncode } from '@/util/reports'
   import { buildReportView } from '@/util/reportViews'
-  import { PROTOCOL_NAME_MAP } from '@/constants'
+  import { protocolNameMap } from '@/constants'
 
   export default {
     components: { ReportDetails },
@@ -114,7 +114,7 @@
               if (entry.type === 'PIE_GRAPH' && entry.pieGroupColumn === 'protocol') {
                 slices = slices.map(s => ({
                   ...s,
-                  name: PROTOCOL_NAME_MAP[parseInt(s.name)] || s.name,
+                  name: protocolNameMap[parseInt(s.name)] || s.name,
                 }))
               }
 

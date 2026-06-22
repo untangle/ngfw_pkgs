@@ -51,7 +51,7 @@ const appDescription = {
  * where pieGroupColumn === 'protocol'. Resolution stays client-side because
  * this is static data already available in the browser — no backend round-trip needed.
  */
-const PROTOCOL_NAME_MAP = {
+const protocolNameMap = {
   0: 'HOPOPT [0]',
   1: 'ICMP [1]',
   2: 'IGMP [2]',
@@ -104,5 +104,5 @@ export {
   textOperatorOptions,
   booleanOperatorOptions,
   appDescription,
-  PROTOCOL_NAME_MAP,
+  protocolNameMap,
 }
