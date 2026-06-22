@@ -28,6 +28,9 @@ const getDefaultState = () => ({
   // Whether Reports app is installed
   isReportsInstalled: false,
 
+  // Cached reports manager instance — acquired once at boot, reused on every data fetch
+  reportsManager: null,
+
   // Timestamp of last load (for cache invalidation if needed)
   lastLoaded: null,
 })
@@ -104,6 +107,10 @@ const mutations = {
     state.isReportsInstalled = installed
   },
 
+  SET_REPORTS_MANAGER(state, manager) {
+    state.reportsManager = manager
+  },
+
   SET_LAST_LOADED(state, timestamp) {
     state.lastLoaded = timestamp
   },
@@ -135,6 +142,7 @@ const actions = {
       commit('SET_REPORTS_INSTALLED', true)
 
       const reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
+      commit('SET_REPORTS_MANAGER', reportsManager)
 
       // Parallel RPC calls
       const [reportsResult, categoriesResult] = await Promise.all([
@@ -168,6 +176,49 @@ const actions = {
 
   resetReports({ commit }) {
     commit('RESET')
+  },
+
+  /**
+   * Fetches report data from the backend for a given report entry and time range.
+   *
+   * The backend returns a type-aware JSONObject:
+   *   { series: [...] }  for TIME_GRAPH / TIME_GRAPH_DYNAMIC
+   *   { slices: [...] }  for PIE_GRAPH
+   *   { list:   [...] }  for EVENT_LIST / TEXT
+   *
+   * @param {Object} payload
+   * @param {Object} payload.entry       - full ReportEntry object
+   * @param {Array}  payload.conditions  - SQL filter conditions excluding time range entries
+   * @param {Date}   payload.startDate   - query start date
+   * @param {Date}   payload.endDate     - query end date; null means open-ended
+   * @param {Number} payload.limit       - maximum rows to return; -1 for unlimited
+   * @returns {Object} backend payload with either a `data` key (chart) or `list` key (events)
+   */
+  async fetchReportData({ state }, { entry, conditions = [], startDate, endDate, limit = -1 }) {
+    const result = await Rpc.asyncData(
+      state.reportsManager,
+      'getDataForReportEntryV2',
+      entry,
+      startDate,
+      endDate,
+      null,
+      conditions,
+      null,
+      limit,
+    )
+    if (!result) return { list: [] }
+
+    // Chart types return { series: [...] } or { slices: [...] } at the root level
+    if (result.series || result.slices) {
+      return { data: result }
+    }
+
+    // TEXT returns a pre-substituted string from the backend
+    if (result.text !== undefined) {
+      return { text: result.text }
+    }
+
+    return { list: result.list ?? [] }
   },
 }
 
