@@ -5,6 +5,7 @@
     :sessions-data="sessionsData"
     :metrics-data="formattedMetrics"
     :reports="appReports"
+    :statistics="statistics"
     @toggle-state="toggleAppState"
   >
     <!-- Custom action buttons slot -->
@@ -24,6 +25,7 @@
   import { WebCache, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import Rpc from '@/util/Rpc'
 
   export default {
     name: 'WebCacheApp',
@@ -40,11 +42,37 @@
       return {
         appName: this.appData?.appName || 'web-cache',
         defaultDisplayName: 'Web Cache',
+        statistics: null,
       }
     },
 
     computed: {
       consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData(),
+    },
+
+    watch: {
+      appManager: {
+        async handler(manager) {
+          if (!manager) return
+          await this.getStatistics()
+        },
+      },
+    },
+
+    methods: {
+      async getStatistics() {
+        if (!this.appManager) return
+        try {
+          this.statistics = await Rpc.asyncData(this.appManager, 'getStatisticsV2')
+        } catch {
+          this.statistics = null
+        }
+      },
+
+      refreshData() {
+        appMixin.methods.refreshData.call(this)
+        this.getStatistics()
+      },
     },
   }
 </script>
