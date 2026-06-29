@@ -33,6 +33,9 @@ const getDefaultState = () => ({
 
   // Timestamp of last load (for cache invalidation if needed)
   lastLoaded: null,
+
+  // Policy list from backend — populated lazily on first EVENT_LIST view
+  policiesInfo: [],
 })
 
 const getters = {
@@ -74,6 +77,21 @@ const getters = {
   loading: state => state.loading,
   error: state => state.error,
   isLoaded: state => state.allReports.length > 0 || state.lastLoaded !== null,
+
+  /**
+   * Maps policy ID (integer) → "name [id]" display string.
+   * Populated lazily by fetchPoliciesInfo when an EVENT_LIST report is opened.
+   * Returns an empty map when no policy-manager is installed.
+   */
+  policyNameMap: state => {
+    const map = {}
+    state.policiesInfo.forEach(p => {
+      if (p.policyId != null) {
+        map[p.policyId] = p.name ? `${p.name} [${p.policyId}]` : String(p.policyId)
+      }
+    })
+    return map
+  },
 }
 
 const mutations = {
@@ -113,6 +131,10 @@ const mutations = {
 
   SET_LAST_LOADED(state, timestamp) {
     state.lastLoaded = timestamp
+  },
+
+  SET_POLICIES_INFO(state, policies) {
+    state.policiesInfo = policies
   },
 
   RESET(state) {
@@ -179,6 +201,22 @@ const actions = {
   },
 
   /**
+   * Fetches policy name/ID pairs from the backend for EVENT_LIST detail rendering.
+   * Only runs once — returns immediately if policiesInfo is already populated.
+   * Returns an empty list when no policy-manager is installed.
+   */
+  async fetchPoliciesInfo({ state, commit }) {
+    if (state.policiesInfo.length) return
+    if (!state.reportsManager) return
+    try {
+      const result = await Rpc.asyncData(state.reportsManager, 'getPoliciesInfo')
+      if (result?.list) commit('SET_POLICIES_INFO', result.list)
+    } catch (error) {
+      Util.handleException(error)
+    }
+  },
+
+  /**
    * Fetches report data from the backend for a given report entry and time range.
    *
    * The backend returns a type-aware JSONObject:
@@ -194,18 +232,28 @@ const actions = {
    * @param {Number} payload.limit       - maximum rows to return; -1 for unlimited
    * @returns {Object} backend payload with either a `data` key (chart) or `list` key (events)
    */
-  async fetchReportData({ state }, { entry, conditions = [], startDate, endDate, limit = -1 }) {
-    const result = await Rpc.asyncData(
-      state.reportsManager,
-      'getDataForReportEntryV2',
-      entry,
-      startDate,
-      endDate,
-      null,
-      conditions,
-      null,
-      limit,
-    )
+  async fetchReportData({ state, dispatch }, { entry, conditions = [], startDate, endDate, limit = -1 }) {
+    const callRpc = manager =>
+      Rpc.asyncData(manager, 'getDataForReportEntryV2', entry, startDate, endDate, null, conditions, null, limit)
+
+    let result
+    try {
+      result = await callRpc(state.reportsManager)
+    } catch (error) {
+      // Jabsorb session can expire after inactivity, making the cached reportsManager
+      // proxy invalid ("No such method"). Re-acquire the manager and retry once.
+      const isStaleProxy = error?.message?.includes('No such method') || error?.message?.includes('no such object')
+
+      if (!isStaleProxy) {
+        Util.handleException(error)
+        return { list: [] }
+      }
+
+      // Re-initialise the reports manager and retry the request
+      await dispatch('loadReports')
+      result = await callRpc(state.reportsManager)
+    }
+
     if (!result) return { list: [] }
 
     // Chart types return { series: [...] } or { slices: [...] } at the root level

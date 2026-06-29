@@ -43,6 +43,15 @@ const getters = {
   interface: state => device => {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
+  interfaceNameMap: state => {
+    const map = {}
+    ;(state.networkSetting?.interfaces || []).forEach(intf => {
+      if (intf.interfaceId != null) {
+        map[intf.interfaceId] = intf.name ? `${intf.name} [${intf.interfaceId}]` : String(intf.interfaceId)
+      }
+    })
+    return map
+  },
   systemSetting: state => state.systemSetting || {},
   eventSettings: state => state.eventSettings || {},
   templateParameters: state => state.templateParameters || [],
