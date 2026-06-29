@@ -9,13 +9,14 @@
     @toggle-state="toggleAppState"
   >
     <!-- Custom action buttons slot -->
-    <template #actions>
+    <template #actions="{ newSettings, isDirty }">
       <div class="d-flex flex-wrap align-center" style="gap: 8px">
         <div style="min-width: 140px">
           <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
         </div>
         <v-divider vertical class="mx-4" />
-        <u-btn @click="refreshData">{{ $t('refresh') }}</u-btn>
+        <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
       </div>
     </template>
   </web-cache>
