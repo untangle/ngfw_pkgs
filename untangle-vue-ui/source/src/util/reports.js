@@ -74,6 +74,27 @@ export function formatReportsForUI(reports) {
 }
 
 /**
+ * Converts a client-side epoch ms to a server-local Date for backend queries.
+ *
+ * The time picker displays times in server timezone. Before sending to the backend
+ * the epoch ms must be adjusted so PostgreSQL (which stores timestamps in server
+ * local time) receives the correct moment to filter on.
+ *
+ * Formula: serverDate = clientDate - browserOffsetMs - serverOffsetMs
+ *   browserOffsetMs = new Date().getTimezoneOffset() * 60000  (positive for UTC- zones)
+ *   serverOffsetMs  = rpc.timeZoneOffset                      (positive for UTC+ zones)
+ *
+ * @param {number|null} dateMs         - epoch ms from the time range picker
+ * @param {number}      serverOffsetMs - server UTC offset in ms (from config/timeZoneOffset)
+ * @returns {Date|null}
+ */
+export function clientToServerDate(dateMs, serverOffsetMs = 0) {
+  if (!dateMs) return null
+  const browserOffsetMs = new Date().getTimezoneOffset() * 60000
+  return new Date(dateMs - browserOffsetMs - serverOffsetMs)
+}
+
+/**
  * Exports report definitions for a category (or all reports) as a downloadable JSON file.
  * Strips UI-computed fields and triggers a client-side Blob download.
  * @param {Array}  allReports   - full reports array from the store
