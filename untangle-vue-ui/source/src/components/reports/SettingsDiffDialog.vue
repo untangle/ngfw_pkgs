@@ -18,62 +18,29 @@
       </v-alert>
     </div>
 
-    <template v-else>
-      <!-- Color legend -->
-      <div class="d-flex align-center caption grey--text text--darken-1 mb-2" style="gap: 16px">
-        <span class="d-flex align-center">
-          <span class="diff-legend-swatch" style="background: #d9f5cb" />
-          {{ $t('added') }}
-        </span>
-        <span class="d-flex align-center">
-          <span class="diff-legend-swatch" style="background: #ffdfd9" />
-          {{ $t('removed') }}
-        </span>
-        <span class="d-flex align-center">
-          <span class="diff-legend-swatch" style="background: #ffff99" />
-          {{ $t('changed') }}
-        </span>
-      </div>
-
-      <!-- Diff grid — Line | Previous | Current columns.
-           d-flex flex-column is required so UGrid's inner flex-grow-1 has a flex context
-           and AG-Grid receives non-zero height from its parent. -->
-      <div class="d-flex flex-column" style="height: 60vh">
-        <u-grid
-          id="settings-diff-grid"
-          :column-defs="columnDefs"
-          :row-data="diffRows"
-          toolbar="hidden"
-          :custom-grid-options="gridOptions"
-          :custom-default-col-options="defaultColOptions"
-        />
-      </div>
-    </template>
+    <div v-else style="height: 60vh" class="d-flex">
+      <code-diff
+        language="json"
+        :old-string="prevString"
+        :new-string="currString"
+        output-format="side-by-side"
+        class="ma-0"
+      />
+    </div>
   </u-dialog>
 </template>
 
 <script>
-  import { UDialog, UGrid } from 'vuntangle'
+  import { UDialog } from 'vuntangle'
   import { VAlert, VOverlay, VProgressCircular } from 'vuetify/lib'
+  import { CodeDiff } from 'v-code-diff'
   import Rpc from '@/util/Rpc'
   import Util from '@/util/setupUtil'
-
-  // Diff action codes
-  const ACTION_ADDED = 1 // '>' line only in current  → green
-  const ACTION_REMOVED = 2 // '<' line only in previous → red
-  const ACTION_CHANGED = 3 // '|' line differs          → yellow
-
-  // Row background colors
-  const ROW_COLORS = {
-    [ACTION_ADDED]: '#d9f5cb',
-    [ACTION_REMOVED]: '#ffdfd9',
-    [ACTION_CHANGED]: '#ffff99',
-  }
 
   export default {
     name: 'SettingsDiffDialog',
 
-    components: { UDialog, UGrid, VAlert, VOverlay, VProgressCircular },
+    components: { UDialog, VAlert, VOverlay, VProgressCircular, CodeDiff },
 
     props: {
       // v-model — controls dialog open/close
@@ -86,7 +53,8 @@
       return {
         loading: false,
         errorMessage: '',
-        diffRows: [],
+        prevString: '',
+        currString: '',
       }
     },
 
@@ -100,54 +68,6 @@
       dialogTitle() {
         const stripped = this.fileName.replace(/^.*\/settings\//, '').replace(/^.*\/conf\//, '')
         return stripped ? `${this.$t('settings_difference')} — ${stripped}` : this.$t('settings_difference')
-      },
-
-      columnDefs() {
-        return [
-          {
-            field: 'line',
-            headerName: this.$t('line'),
-            width: 70,
-            flex: 0,
-            sortable: false,
-            filter: false,
-            suppressMenu: true,
-          },
-          {
-            field: 'previous',
-            headerName: this.$t('previous'),
-            flex: 1,
-            sortable: false,
-            filter: false,
-            suppressMenu: true,
-          },
-          {
-            field: 'current',
-            headerName: this.$t('current'),
-            flex: 1,
-            sortable: false,
-            filter: false,
-            suppressMenu: true,
-          },
-        ]
-      },
-
-      // Row color by action code
-      gridOptions() {
-        return {
-          getRowStyle: ({ data }) => {
-            const color = ROW_COLORS[data?.action]
-            return color ? { background: color } : null
-          },
-        }
-      },
-
-      // Monospace font + white-space: pre for diff content.
-      // AG-Grid renders text not HTML, so white-space: pre preserves indentation.
-      defaultColOptions() {
-        return {
-          cellStyle: { fontFamily: 'monospace', fontSize: '12px', whiteSpace: 'pre' },
-        }
       },
     },
 
@@ -164,7 +84,8 @@
 
     methods: {
       reset() {
-        this.diffRows = []
+        this.prevString = ''
+        this.currString = ''
         this.errorMessage = ''
         this.loading = false
       },
@@ -173,9 +94,10 @@
         this.reset()
         this.loading = true
         try {
-          // Full dot-path: rpc.settingsManager → getDiff method
           const result = await Rpc.asyncData('rpc.settingsManager.getDiff', this.fileName)
-          this.diffRows = this.parseDiff(result || '')
+          const { prevString, currString } = this.buildFileStrings(result || '')
+          this.prevString = prevString
+          this.currString = currString
         } catch (err) {
           const msg = err?.message || ''
           if (msg.includes('Could not find an earlier file')) {
@@ -192,66 +114,43 @@
       },
 
       /**
-       * Parses the raw output of: diff -y -W1024 -t <previous> <current>
+       * Reconstructs both file content strings from the raw output of:
+       *   diff -y -W1024 -t <previous> <current>
        *
-       * Side-by-side format with -W1024:
-       *   char 0:      part of previous content (unless '<' or '>')
-       *   chars 1–510: rest of previous content (510 chars)
-       *   char 511:    separator: ' '=unchanged | '|'=changed | '<'=removed | '>'=added
-       *   chars 512+:  current content
+       * Each line: chars 0–510 = previous content, char 511 = separator, chars 512+ = current content
+       * Separator: ' '=unchanged  '|'=changed  '<'=removed  '>'=added
        */
-      parseDiff(raw) {
-        const rows = []
-        const lines = raw.split('\n')
+      buildFileStrings(raw) {
+        const prevLines = []
+        const currLines = []
 
-        for (let i = 0; i < lines.length; i++) {
-          const line = lines[i]
+        for (const line of raw.split('\n')) {
           if (!line) continue
 
           const prevMarker = line.substring(0, 1)
           let prev = line.substring(1, 511)
           const sep = line.substring(511, 512)
-          let curr = line.substring(512)
+          const curr = line.substring(512)
 
-          // If char 0 is not a diff side-marker, it is part of previous content
           if (prevMarker !== '<' && prevMarker !== '>') {
             prev = prevMarker + prev
           }
 
-          let action
           if (sep === '|') {
-            action = ACTION_CHANGED
+            prevLines.push(prev.trimEnd())
+            currLines.push(curr.trimEnd())
           } else if (sep === '<') {
-            action = ACTION_REMOVED
+            prevLines.push(prev.trimEnd())
           } else if (sep === '>') {
-            action = ACTION_ADDED
+            currLines.push(curr.trimEnd())
           } else {
-            // Separator char belongs to current content (unchanged line)
-            curr = sep + curr
-            action = 0
+            prevLines.push(prev.trimEnd())
+            currLines.push(prev.trimEnd())
           }
-
-          rows.push({
-            line: i + 1,
-            previous: prev.trimEnd(),
-            current: curr.trimEnd(),
-            action,
-          })
         }
 
-        return rows
+        return { prevString: prevLines.join('\n'), currString: currLines.join('\n') }
       },
     },
   }
 </script>
-
-<style scoped>
-  .diff-legend-swatch {
-    display: inline-block;
-    width: 12px;
-    height: 12px;
-    border-radius: 2px;
-    margin-right: 4px;
-    border: 1px solid rgba(0, 0, 0, 0.15);
-  }
-</style>
