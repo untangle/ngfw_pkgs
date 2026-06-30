@@ -7,6 +7,7 @@
     :reports="appReports"
     :statistics="statistics"
     @toggle-state="toggleAppState"
+    @clear-cache="clearCache"
   >
     <!-- Custom action buttons slot -->
     <template #actions="{ newSettings, isDirty }">
@@ -26,6 +27,7 @@
   import { WebCache, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import Util from '@/util/setupUtil'
   import Rpc from '@/util/Rpc'
 
   export default {
@@ -65,14 +67,28 @@
         if (!this.appManager) return
         try {
           this.statistics = await Rpc.asyncData(this.appManager, 'getStatisticsV2')
-        } catch {
+        } catch (ex) {
           this.statistics = null
+          Util.handleException(ex)
         }
       },
 
       refreshData() {
         appMixin.methods.refreshData.call(this)
         this.getStatistics()
+      },
+
+      async clearCache(cb) {
+        if (!this.appManager) return
+        try {
+          this.$store.commit('SET_LOADER', true)
+          await Rpc.asyncData(this.appManager, 'clearSquidCache')
+          cb?.()
+        } catch (ex) {
+          Util.handleException(ex)
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
     },
   }
