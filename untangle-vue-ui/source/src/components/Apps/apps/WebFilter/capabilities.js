@@ -86,4 +86,7 @@ export const ngfwCapabilities = {
       enabled: true,
     },
   },
+  siteLookup: {
+    recategorize: { render: true },
+  },
 }
