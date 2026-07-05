@@ -251,7 +251,12 @@ const actions = {
 
       // Re-initialise the reports manager and retry the request
       await dispatch('loadReports')
-      result = await callRpc(state.reportsManager)
+      try {
+        result = await callRpc(state.reportsManager)
+      } catch (retryError) {
+        Util.handleException(retryError)
+        return { list: [] }
+      }
     }
 
     if (!result) return { list: [] }

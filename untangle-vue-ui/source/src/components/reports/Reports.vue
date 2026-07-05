@@ -29,6 +29,7 @@
           showViewMore: true,
           maximizableCards: true,
           exportable: true,
+          enableSearch: true,
         },
       }
     },
