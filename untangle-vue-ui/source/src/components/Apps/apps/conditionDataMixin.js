@@ -1,3 +1,5 @@
+import { usernameOptions, directoryConnectorGroupOptions, directoryConnectorDomainOptions } from 'vuntangle'
+
 /**
  * Factory mixin for app components that need runtime condition dropdown data.
  *
@@ -8,7 +10,7 @@
  *   mixins: [appMixin, conditionDataMixin(['directory-connector'])]
  *
  *   Then include the needed keys in provide() → $remoteData:
- *   $remoteData: () => ({ ..., directoryGroups: this.directoryGroups, directoryDomains: this.directoryDomains })
+ *   $remoteData: () => ({ ..., directoryGroups: this.directoryGroups, directoryDomains: this.directoryDomains, directoryUsers: this.directoryUsers })
  */
 export default function conditionDataMixin(appNames = []) {
   return {
@@ -16,12 +18,14 @@ export default function conditionDataMixin(appNames = []) {
       conditionData: ({ $store }) => $store.getters['apps/conditionData'],
       directoryGroups: ({ conditionData }) =>
         conditionData?.directoryGroups?.length
-          ? [{ text: 'Any Group', value: '*' }, ...conditionData.directoryGroups]
+          ? [...directoryConnectorGroupOptions, ...conditionData.directoryGroups]
           : [],
       directoryDomains: ({ conditionData }) =>
         conditionData?.directoryDomains?.length
-          ? [{ text: 'Any Domain', value: '*' }, ...conditionData.directoryDomains]
+          ? [...directoryConnectorDomainOptions, ...conditionData.directoryDomains]
           : [],
+      directoryUsers: ({ conditionData }) =>
+        conditionData?.directoryUsers?.length ? [...usernameOptions, ...conditionData.directoryUsers] : [],
     },
     created() {
       this.$store.dispatch('apps/fetchConditionData', appNames)

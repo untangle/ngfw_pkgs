@@ -46,6 +46,7 @@
   import { PolicyManager, NoLicense, UAppStatusRemove, UAppInstall, UBtn } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import util from '../../../util/util'
+  import conditionDataMixin from '../../Apps/apps/conditionDataMixin'
   import serviceMixin from './serviceMixin'
 
   export default {
@@ -57,13 +58,16 @@
       UBtn,
       VDivider,
     },
-    mixins: [serviceMixin],
+    mixins: [serviceMixin, conditionDataMixin(['directory-connector'])],
 
     provide() {
       return {
         $remoteData: () => ({
           interfaces: this.interfaces,
           policies: this.settings?.policies,
+          directoryGroups: this.directoryGroups,
+          directoryDomains: this.directoryDomains,
+          directoryUsers: this.directoryUsers,
         }),
         $features: {
           hasIpv6Support: false,
