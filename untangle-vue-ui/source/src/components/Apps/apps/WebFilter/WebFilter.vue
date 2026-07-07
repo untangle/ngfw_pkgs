@@ -27,26 +27,34 @@
   import { WebFilter, UAppStatusRemove, webFilterAllTabs } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import conditionDataMixin from '../conditionDataMixin'
   import { ngfwCapabilities } from './capabilities'
+  import util from '@/util/util'
 
   export default {
     name: 'WebFilterApp',
 
     components: { WebFilter, UAppStatusRemove, VDivider },
 
-    mixins: [appMixin],
+    mixins: [appMixin, conditionDataMixin(['directory-connector'])],
 
     provide() {
       return {
         capabilities: ngfwCapabilities,
-        $features: { isExpertMode: this.isExpertMode },
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          directoryGroups: this.directoryGroups,
+          directoryDomains: this.directoryDomains,
+          directoryUsers: this.directoryUsers,
+        }),
+        $features: { isExpertMode: this.isExpertMode, hasFlaggedAction: true },
         $readOnly: false,
         $applications: {},
       }
     },
 
     props: {
-      appData: { type: Object, default: null },
+      appData: { type: Object, default: null }, // The application data for the Web Filter app
     },
 
     data() {
@@ -66,10 +74,26 @@
     },
 
     computed: {
-      // Transforms appData into the format expected by WebFilter and its child components.
+      // Consolidated app data to pass to the WebFilter component.
       consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData(),
 
+      // Returns if the user is in expert mode from the store
       isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
+
+      // Returns the network settings from the store
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      // Returns the interfaces for condition value from network settings
+      interfaces: ({ networkSettings }) => {
+        return util.getInterfaceList(networkSettings, true, true)
+      },
+    },
+
+    /**
+     * Fetches the network settings when the component is created.
+     */
+    created() {
+      this.$store.dispatch('config/getNetworkSettings', false)
     },
 
     methods: {
