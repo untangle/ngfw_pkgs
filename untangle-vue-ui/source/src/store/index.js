@@ -117,9 +117,14 @@ const vuexPersistence = new VuexPersistence({
     // eslint-disable-next-line no-unused-vars
     const { session, metrics, ...stateWithoutSessionAndMetrics } = state
 
+    // Exclude globalConditions from reports — transient, should reset on page refresh
+    // eslint-disable-next-line no-unused-vars
+    const { globalConditions, ...reportsWithoutConditions } = state.reports || {}
+
     return {
       ...stateWithoutSessionAndMetrics,
       apps: appsStateWithoutAutoInstall,
+      reports: reportsWithoutConditions,
     }
   },
 })

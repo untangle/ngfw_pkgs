@@ -36,6 +36,10 @@ const getDefaultState = () => ({
 
   // Policy list from backend — populated lazily on first EVENT_LIST view
   policiesInfo: [],
+
+  // Global conditions applied across all reports — persists across route navigation
+  // Each condition: { column, operator, value, autoFormatValue }
+  globalConditions: [],
 })
 
 const getters = {
@@ -83,6 +87,8 @@ const getters = {
    * Populated lazily by fetchPoliciesInfo when an EVENT_LIST report is opened.
    * Returns an empty map when no policy-manager is installed.
    */
+  globalConditions: state => state.globalConditions,
+
   policyNameMap: state => {
     const map = {}
     state.policiesInfo.forEach(p => {
@@ -135,6 +141,22 @@ const mutations = {
 
   SET_POLICIES_INFO(state, policies) {
     state.policiesInfo = policies
+  },
+
+  SET_GLOBAL_CONDITIONS(state, conditions) {
+    state.globalConditions = conditions
+  },
+
+  ADD_GLOBAL_CONDITION(state, condition) {
+    state.globalConditions.push(condition)
+  },
+
+  REMOVE_GLOBAL_CONDITION(state, index) {
+    state.globalConditions.splice(index, 1)
+  },
+
+  CLEAR_GLOBAL_CONDITIONS(state) {
+    state.globalConditions = []
   },
 
   RESET(state) {

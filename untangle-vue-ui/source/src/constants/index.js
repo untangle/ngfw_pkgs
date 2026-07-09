@@ -97,6 +97,31 @@ const protocolNameMap = {
   255: 'Reserved [255]',
 }
 
+const globalConditionOperators = [
+  { value: '=', text: 'equals' },
+  { value: '!=', text: 'not_equals' },
+  { value: '>', text: 'greater_than' },
+  { value: '<', text: 'less_than' },
+  { value: '>=', text: 'greater_or_equal' },
+  { value: '<=', text: 'less_or_equal' },
+  { value: 'like', text: 'like' },
+  { value: 'not like', text: 'not_like' },
+  { value: 'is', text: 'is' },
+  { value: 'is not', text: 'is_not' },
+  { value: 'in', text: 'in' },
+  { value: 'not in', text: 'not_in' },
+]
+
+const globalConditionColumns = [
+  { value: 'username', text: 'username' },
+  { value: 'protocol', text: 'protocol' },
+  { value: 'hostname', text: 'hostname' },
+  { value: 'c_client_addr', text: 'c_client_addr' },
+  { value: 's_server_addr', text: 's_server_addr' },
+  { value: 's_server_port', text: 's_server_port' },
+  { value: 'policy_id', text: 'policy_id' },
+]
+
 export {
   booleanValueOptions,
   invertOptions,
@@ -105,4 +130,6 @@ export {
   booleanOperatorOptions,
   appDescription,
   protocolNameMap,
+  globalConditionOperators,
+  globalConditionColumns,
 }

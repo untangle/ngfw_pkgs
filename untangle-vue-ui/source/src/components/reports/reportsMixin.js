@@ -1,9 +1,59 @@
 import { mapGetters } from 'vuex'
-import { urlEncode } from '@/util/reports'
+import { urlEncode, tableContainsColumns } from '@/util/reports'
+import { globalConditionOperators, globalConditionColumns, protocolNameMap } from '@/constants'
 
 export default {
   computed: {
-    ...mapGetters('reports', ['allReports']),
+    ...mapGetters('reports', ['allReports', 'globalConditions']),
+
+    globalConditionOperators() {
+      const symbolOperators = ['=', '!=', '>', '<', '>=', '<=']
+      return globalConditionOperators.map(op => ({
+        value: op.value,
+        text: symbolOperators.includes(op.value) ? `${this.$t(op.text)} [${op.value}]` : this.$t(op.text),
+      }))
+    },
+
+    globalConditionColumns() {
+      return globalConditionColumns.map(col => ({ value: col.value, text: this.$t(col.text) }))
+    },
+
+    /** Unique column names currently used across all active global conditions. */
+    conditionColumns() {
+      return [...new Set(this.globalConditions.map(c => c.column))]
+    },
+
+    /**
+     * Report uniqueIds that should be disabled because their database table
+     * does not contain one or more columns required by the active global conditions.
+     */
+    disabledReportIds() {
+      if (!this.conditionColumns.length) return []
+      return this.allReports
+        .filter(r => r.table && !tableContainsColumns(r.table, this.conditionColumns))
+        .map(r => r.uniqueId)
+    },
+
+    /**
+     * Returns a formatter function that resolves raw column values to display names.
+     * Currently handles protocol numbers → "TCP [6]" style names.
+     */
+    conditionFormatValue() {
+      return (column, value) => {
+        if (column === 'protocol') return protocolNameMap[value] || value
+        return value
+      }
+    },
+
+    /**
+     * Provides dropdown options for columns that have a fixed set of known values.
+     * Currently supplies the protocol number → name list for the protocol column.
+     */
+    conditionValueOptions() {
+      return {
+        protocol: Object.entries(protocolNameMap).map(([value, text]) => ({ value, text })),
+      }
+    },
   },
 
   methods: {
@@ -22,6 +72,21 @@ export default {
           rep: urlEncode(report.title),
         },
       })
+    },
+
+    /** Adds a new global condition to the Vuex store. */
+    onAddCondition(condition) {
+      this.$store.commit('reports/ADD_GLOBAL_CONDITION', condition)
+    },
+
+    /** Removes a global condition by index from the Vuex store. */
+    onRemoveCondition(index) {
+      this.$store.commit('reports/REMOVE_GLOBAL_CONDITION', index)
+    },
+
+    /** Clears all active global conditions from the Vuex store. */
+    onClearConditions() {
+      this.$store.commit('reports/CLEAR_GLOBAL_CONDITIONS')
     },
   },
 }
