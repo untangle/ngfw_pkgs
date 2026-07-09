@@ -9,15 +9,16 @@
     @toggle-state="toggleAppState"
     @webfilter-lookup="handleSiteLookup"
     @webfilter:recategorize="handleRecategorize"
+    @webfilter:clear-cache="handleClearCache"
   >
-    <template #actions="{ newSettings, isDirty }">
+    <template #actions="{ newSettings, isDirty, validate }">
       <div class="d-flex flex-wrap align-center" style="gap: 8px">
         <div style="min-width: 140px">
           <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
         </div>
         <v-divider vertical class="mx-4" />
         <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
-        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
       </div>
     </template>
   </web-filter>
@@ -98,6 +99,21 @@
 
     methods: {
       /**
+       * Handles the save operation for the Web Filter settings.
+       * Validates the new settings and saves them if valid.
+       *
+       * @param {Object} newSettings - The new settings to be saved.
+       * @param {Function} validate - The validation function to check the settings.
+       * @returns {Promise<void>}
+       */
+      async onSave(newSettings, validate) {
+        const isValid = await validate()
+        console.log('onSave: isValid', isValid, 'newSettings', newSettings)
+        if (!isValid) return
+        this.saveSettings(newSettings)
+      },
+
+      /**
        * Handles the site lookup operation by invoking the appManager's lookupSite method.
        * If the appManager is not available, it resolves with an error message.
        * @param {Object} param0 - The parameters for the site lookup.
@@ -145,6 +161,29 @@
           site,
           categoryId,
         )
+      },
+
+      /**
+       * Handles the category url cache clear by invoking the appManager's clearCache method.
+       * If the appManager is not available, it resolves with an error message.
+       * @param {Object} param0 - The parameters for the recategorization.
+       * @param {Function} param0.resolve - The callback to resolve the recategorization result.
+       * @returns {void}
+       */
+      handleClearCache({ resolve }) {
+        if (!this.appManager) {
+          resolve({ error: 'unable_to_clear_cache' })
+          return
+        }
+        this.$store.commit('SET_LOADER', true)
+        this.appManager.clearCache((_res, ex) => {
+          this.$store.commit('SET_LOADER', false)
+          if (ex) {
+            resolve({ error: ex.message || 'unable_to_clear_cache' })
+            return
+          }
+          resolve({ success: true })
+        })
       },
     },
   }
