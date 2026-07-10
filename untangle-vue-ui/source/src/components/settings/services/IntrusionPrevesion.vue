@@ -51,7 +51,7 @@
   import { mapGetters } from 'vuex'
   import { IntrusionPrevention, NoLicense, UAppStatusRemove, UAppInstall, intrusionPreventionAllTabs } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
-  import { ngfwCapabilities } from './IntrusionPreventionCapabilities'
+  import { ngfwCapabilities } from './IPCapabilities'
   import serviceMixin from './serviceMixin'
 
   export default {
