@@ -45,6 +45,7 @@
           interfaces: this.interfaces,
           directoryGroups: this.directoryGroups,
           directoryDomains: this.directoryDomains,
+          directoryUsers: this.directoryUsers,
         }),
         $features: { isExpertMode: this.isExpertMode },
         $readOnly: false,

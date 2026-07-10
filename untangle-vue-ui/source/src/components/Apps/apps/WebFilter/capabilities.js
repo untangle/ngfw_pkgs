@@ -87,6 +87,10 @@ export const ngfwCapabilities = {
     },
   },
   siteLookup: {
+    ...webFilterDefaultCapabilities.siteLookup,
     recategorize: { render: true },
+  },
+  advanced: {
+    ...webFilterDefaultCapabilities.advanced,
   },
 }

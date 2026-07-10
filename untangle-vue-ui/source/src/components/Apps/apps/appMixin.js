@@ -181,6 +181,8 @@ export default {
           // TODO Remove this once all apps are migrated to Vue UI and Parent Layout is changed
           this.sendEventToParentWindow(EVENT_ACTIONS.REFRESH_APP_STATUS)
         }
+      } catch (error) {
+        Util.handleException(error)
       } finally {
         this.toggling = false
       }

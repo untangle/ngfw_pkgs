@@ -5,10 +5,12 @@
       :view-override="selectedReportView"
       :categories="categoriesForNav"
       :show-report-selector="true"
+      :show-auto-refresh="true"
       :is-local-ui="false"
       @fetch-data="onFetchData"
       @view-report="onViewReport"
       @export-all-events="onExportAllEvents"
+      @auto-refresh-change="onAutoRefreshChange"
     />
 
     <!-- Settings diff dialog — opened by the  action column on settings_changes rows -->
@@ -37,6 +39,8 @@
         $dateTimeRangeComponent: 'date-time-range-presets',
         $serverTimezoneOffsetMs: () => this.timeZoneOffset,
         $serverClockOffsetMs: () => this.serverClockOffsetMs,
+        $refreshTick: () => this.refreshTick,
+        $showTimeRangeHistory: true,
       }
     },
 
@@ -51,6 +55,11 @@
         lastEndMs: null,
         // Last-used extra conditions (non-time) — forwarded to server export
         lastConditions: [],
+
+        // Auto-refresh state
+        autoRefresh: false,
+        refreshTick: 0,
+        refreshTimer: null,
       }
     },
 
@@ -82,6 +91,10 @@
       },
     },
 
+    beforeDestroy() {
+      clearTimeout(this.refreshTimer)
+    },
+
     /**
      * Fetch policy info once when the component mounts.
      * The action is a no-op if already loaded or if policy-manager is not installed.
@@ -91,6 +104,26 @@
     },
 
     methods: {
+      onAutoRefreshChange(val) {
+        this.autoRefresh = val
+        if (val) {
+          this.refreshTick++
+        } else {
+          clearTimeout(this.refreshTimer)
+          this.refreshTimer = null
+        }
+      },
+
+      scheduleRefresh() {
+        clearTimeout(this.refreshTimer)
+        this.refreshTimer = null
+        if (this.autoRefresh) {
+          this.refreshTimer = setTimeout(() => {
+            this.refreshTick++
+          }, 5000)
+        }
+      },
+
       /**
        * Handles data fetch requests from the report display component.
        * Converts the raw epoch ms from the time picker to server-local dates before
@@ -171,6 +204,8 @@
         } catch (err) {
           Util.handleException(err)
           resolve(null)
+        } finally {
+          this.scheduleRefresh()
         }
       },
 
