@@ -1,3 +1,5 @@
+const toOptions = operators => Object.entries(operators).map(([value, text]) => ({ value, text }))
+
 const booleanValues = { 'True': 'True', 'False': 'False' }
 const booleanValueOptions = Object.entries(booleanValues).map(([k, v]) => ({ text: v, value: k }))
 
@@ -12,7 +14,7 @@ const numeric = {
   '>=': 'greater_or_equal',
   '<=': 'less_or_equal',
 }
-const numericOptions = Object.entries(numeric).map(([k, v]) => ({ text: v, value: k }))
+const numericOptions = toOptions(numeric)
 
 const textOperators = {
   '=': 'equals',
@@ -24,6 +26,18 @@ const textOperatorOptions = Object.entries(textOperators).map(([k, v]) => ({ tex
 
 const booleanOperators = { '=': 'is', '!=': 'is_not' }
 const booleanOperatorOptions = Object.entries(booleanOperators).map(([k, v]) => ({ text: v, value: k }))
+
+const globalOperators = {
+  ...numeric,
+  'like': 'like',
+  'not like': 'not_like',
+  'is': 'is',
+  'is not': 'is_not',
+  'in': 'in',
+  'not in': 'not_in',
+}
+
+const globalOperatorOptions = toOptions(globalOperators)
 
 const appDescription = {
   'web-filter': 'app_web_filter_description',
@@ -97,30 +111,20 @@ const protocolNameMap = {
   255: 'Reserved [255]',
 }
 
-const globalConditionOperators = [
-  { value: '=', text: 'equals' },
-  { value: '!=', text: 'not_equals' },
-  { value: '>', text: 'greater_than' },
-  { value: '<', text: 'less_than' },
-  { value: '>=', text: 'greater_or_equal' },
-  { value: '<=', text: 'less_or_equal' },
-  { value: 'like', text: 'like' },
-  { value: 'not like', text: 'not_like' },
-  { value: 'is', text: 'is' },
-  { value: 'is not', text: 'is_not' },
-  { value: 'in', text: 'in' },
-  { value: 'not in', text: 'not_in' },
-]
+const globalColumns = {
+  username: 'username',
+  protocol: 'protocol',
+  hostname: 'hostname',
+  c_client_addr: 'c_client_addr',
+  s_server_addr: 's_server_addr',
+  s_server_port: 's_server_port',
+  policy_id: 'policy_id',
+}
+const globalConditionColumns = toOptions(globalColumns)
 
-const globalConditionColumns = [
-  { value: 'username', text: 'username' },
-  { value: 'protocol', text: 'protocol' },
-  { value: 'hostname', text: 'hostname' },
-  { value: 'c_client_addr', text: 'c_client_addr' },
-  { value: 's_server_addr', text: 's_server_addr' },
-  { value: 's_server_port', text: 's_server_port' },
-  { value: 'policy_id', text: 'policy_id' },
-]
+const conditionValueOptions = {
+  protocol: toOptions(protocolNameMap),
+}
 
 export {
   booleanValueOptions,
@@ -130,6 +134,7 @@ export {
   booleanOperatorOptions,
   appDescription,
   protocolNameMap,
-  globalConditionOperators,
+  globalOperatorOptions,
   globalConditionColumns,
+  conditionValueOptions,
 }

@@ -1,17 +1,24 @@
 import { mapGetters } from 'vuex'
 import { urlEncode, tableContainsColumns } from '@/util/reports'
-import { globalConditionOperators, globalConditionColumns, protocolNameMap } from '@/constants'
+import { globalOperatorOptions, globalConditionColumns, protocolNameMap, conditionValueOptions } from '@/constants'
 
 export default {
+  provide() {
+    return {
+      $conditions: () => this.globalConditions,
+      $conditionOperators: () => this.globalConditionOperators,
+      $conditionColumns: () => this.globalConditionColumns,
+      $conditionFormatValue: () => this.conditionFormatValue,
+      $conditionValueOptions: () => conditionValueOptions,
+      $disabledReportIds: () => this.disabledReportIds,
+    }
+  },
+
   computed: {
     ...mapGetters('reports', ['allReports', 'globalConditions']),
 
     globalConditionOperators() {
-      const symbolOperators = ['=', '!=', '>', '<', '>=', '<=']
-      return globalConditionOperators.map(op => ({
-        value: op.value,
-        text: symbolOperators.includes(op.value) ? `${this.$t(op.text)} [${op.value}]` : this.$t(op.text),
-      }))
+      return globalOperatorOptions.map(op => ({ value: op.value, text: this.$t(op.text) }))
     },
 
     globalConditionColumns() {
@@ -42,16 +49,6 @@ export default {
       return (column, value) => {
         if (column === 'protocol') return protocolNameMap[value] || value
         return value
-      }
-    },
-
-    /**
-     * Provides dropdown options for columns that have a fixed set of known values.
-     * Currently supplies the protocol number → name list for the protocol column.
-     */
-    conditionValueOptions() {
-      return {
-        protocol: Object.entries(protocolNameMap).map(([value, text]) => ({ value, text })),
       }
     },
   },
