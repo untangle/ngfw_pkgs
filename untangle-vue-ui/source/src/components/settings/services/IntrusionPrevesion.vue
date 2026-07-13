@@ -53,6 +53,7 @@
   import { VDivider } from 'vuetify/lib'
   import { ngfwCapabilities } from './ipCapabilities'
   import serviceMixin from './serviceMixin'
+  import util from '@/util/util'
 
   export default {
     components: {
@@ -68,6 +69,10 @@
     provide() {
       return {
         capabilities: ngfwCapabilities,
+        $remoteData: () => ({ interfaces: this.interfaces }),
+        $features: { hasRuleLogs: false, hasIpv6Support: false, hasLogAction: false },
+        $readOnly: false,
+        $applications: null,
       }
     },
 
@@ -84,6 +89,10 @@
 
     computed: {
       ...mapGetters('metrics', ['getAppMetric', 'lastUpdateTime', 'systemStats']),
+
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+
+      interfaces: ({ networkSettings }) => util.getInterfaceList(networkSettings, true, true),
 
       iconPath: () => null,
 
@@ -111,6 +120,10 @@
           this.memoryHistory = Array.from({ length: 7 }, (_, i) => ({ timestamp: now + (i - 6) * 10000, memory: 0 }))
         }
       },
+    },
+
+    created() {
+      this.$store.dispatch('config/getNetworkSettings', false)
     },
 
     methods: {
