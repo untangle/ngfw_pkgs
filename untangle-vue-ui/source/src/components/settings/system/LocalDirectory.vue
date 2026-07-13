@@ -48,12 +48,21 @@
       },
     },
 
+    watch: {
+      users: {
+        immediate: true,
+        deep: true,
+        handler() {
+          this.processUsers()
+        },
+      },
+    },
+
     created() {
       this.$store.dispatch('config/getUsers', false)
       this.$store.dispatch('config/getSystemSettings', false)
       this.$store.dispatch('config/getTimeZoneOffSet')
       this.$store.dispatch('config/getRadiusLogFile')
-      this.processUsers()
     },
 
     methods: {

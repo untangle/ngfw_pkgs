@@ -121,7 +121,7 @@
 
 <script>
   import Rpc from '@/util/Rpc'
-  import Util from '@/util/util'
+  import Util from '@/util/setupUtil'
 
   export default {
     name: 'QuarantineDigestInbox',

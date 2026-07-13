@@ -12,7 +12,7 @@
     <!-- Custom action buttons slot -->
     <template #actions="{ newSettings, isDirty }">
       <div class="d-flex flex-wrap align-center" style="gap: 8px">
-        <div style="min-width: 140px">
+        <div style="min-width: 180px">
           <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
         </div>
         <v-divider vertical class="mx-4" />
