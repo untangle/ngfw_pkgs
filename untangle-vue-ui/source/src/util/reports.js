@@ -3,6 +3,7 @@
  */
 
 import util from '@/util/util'
+import { tableFields } from '@/util/eventTableColumns'
 
 /**
  * System report categories that are always present regardless of which apps are installed.
@@ -100,6 +101,20 @@ export function clientToServerDate(dateMs, serverOffsetMs = 0) {
  * @param {Array}  allReports   - full reports array from the store
  * @param {string} categoryName - category to export; if omitted exports all reports
  */
+/**
+ * Checks whether a database table contains all the given condition columns.
+ * Used to determine if a report is compatible with active global conditions.
+ *
+ * @param {string}   table            - database table name (e.g. 'sessions')
+ * @param {string[]} conditionColumns - column names from active global conditions
+ * @returns {boolean} true if every condition column exists in the table's field list
+ */
+export function tableContainsColumns(table, conditionColumns) {
+  const fields = tableFields[table]
+  if (!fields) return false
+  return conditionColumns.every(col => fields.includes(col))
+}
+
 export async function exportCategoryReports(allReports, categoryName) {
   const COMPUTED_FIELDS = ['localizedTitle', 'localizedDescription', 'slug', 'categorySlug', 'url', 'icon', '_id']
 

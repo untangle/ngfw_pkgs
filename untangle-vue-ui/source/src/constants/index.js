@@ -1,3 +1,5 @@
+const toOptions = operators => Object.entries(operators).map(([value, text]) => ({ value, text }))
+
 const booleanValues = { 'True': 'True', 'False': 'False' }
 const booleanValueOptions = Object.entries(booleanValues).map(([k, v]) => ({ text: v, value: k }))
 
@@ -12,7 +14,7 @@ const numeric = {
   '>=': 'greater_or_equal',
   '<=': 'less_or_equal',
 }
-const numericOptions = Object.entries(numeric).map(([k, v]) => ({ text: v, value: k }))
+const numericOptions = toOptions(numeric)
 
 const textOperators = {
   '=': 'equals',
@@ -24,6 +26,18 @@ const textOperatorOptions = Object.entries(textOperators).map(([k, v]) => ({ tex
 
 const booleanOperators = { '=': 'is', '!=': 'is_not' }
 const booleanOperatorOptions = Object.entries(booleanOperators).map(([k, v]) => ({ text: v, value: k }))
+
+const globalOperators = {
+  ...numeric,
+  'like': 'like',
+  'not like': 'not_like',
+  'is': 'is',
+  'is not': 'is_not',
+  'in': 'in',
+  'not in': 'not_in',
+}
+
+const globalOperatorOptions = toOptions(globalOperators)
 
 const appDescription = {
   'web-filter': 'app_web_filter_description',
@@ -97,6 +111,21 @@ const protocolNameMap = {
   255: 'Reserved [255]',
 }
 
+const globalColumns = {
+  username: 'username',
+  protocol: 'protocol',
+  hostname: 'hostname',
+  c_client_addr: 'c_client_addr',
+  s_server_addr: 's_server_addr',
+  s_server_port: 's_server_port',
+  policy_id: 'policy_id',
+}
+const globalConditionColumns = toOptions(globalColumns)
+
+const conditionValueOptions = {
+  protocol: toOptions(protocolNameMap),
+}
+
 export {
   booleanValueOptions,
   invertOptions,
@@ -105,4 +134,7 @@ export {
   booleanOperatorOptions,
   appDescription,
   protocolNameMap,
+  globalOperatorOptions,
+  globalConditionColumns,
+  conditionValueOptions,
 }

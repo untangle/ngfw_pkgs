@@ -3,6 +3,9 @@
     :features="features"
     :all-reports="allReports"
     :app-categories="allCategories"
+    @add-condition="onAddCondition"
+    @remove-condition="onRemoveCondition"
+    @clear-conditions="onClearConditions"
     @view-report="onViewReport"
     @export-category="onExportCategory"
   >
