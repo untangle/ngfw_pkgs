@@ -7,6 +7,9 @@
       :show-report-selector="true"
       :show-auto-refresh="true"
       :is-local-ui="false"
+      @add-condition="onAddCondition"
+      @remove-condition="onRemoveCondition"
+      @clear-conditions="onClearConditions"
       @fetch-data="onFetchData"
       @view-report="onViewReport"
       @export-all-events="onExportAllEvents"
@@ -64,7 +67,7 @@
     },
 
     computed: {
-      ...mapGetters('reports', ['allReports', 'categoriesForNav', 'policyNameMap']),
+      ...mapGetters('reports', ['categoriesForNav', 'policyNameMap']),
       ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
 
       selectedUniqueId() {
@@ -88,6 +91,12 @@
             this.diffDialogOpen = true
           },
         })
+      },
+    },
+
+    watch: {
+      globalConditions() {
+        this.refreshTick++
       },
     },
 
@@ -152,6 +161,16 @@
               operator: c.operator,
               value: c.value,
             }))
+
+          // Merge global conditions from Vuex store
+          const globalConds = this.globalConditions.map(gc => ({
+            javaClass: 'com.untangle.app.reports.SqlCondition',
+            column: gc.column,
+            operator: gc.operator,
+            value: String(gc.value),
+            autoFormatValue: gc.autoFormatValue !== false,
+          }))
+          conditions.push(...globalConds)
 
           // Store for use by the export handler
           this.lastStartMs = gtCond?.value ?? Date.now() - 86400000

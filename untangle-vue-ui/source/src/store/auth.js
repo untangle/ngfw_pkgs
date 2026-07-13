@@ -67,8 +67,9 @@ const actions = {
     await api.get('/auth/logout?url=/admin&realm=Administrator')
     commit('SET_IS_AUTH', false)
 
-    // Reset session state so admin context re-initializes on next login
+    // Reset session and reports state so admin context re-initializes on next login
     await dispatch('session/reset', null, { root: true })
+    commit('reports/RESET', null, { root: true })
   },
 }
 
