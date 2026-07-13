@@ -174,8 +174,13 @@
           return
         }
 
-        const tabMap = { RADIUS: 'radius', ACTIVE_DIRECTORY: 'active-directory', ANY_DIRCON: 'status' }
-        this.$router.push({ path: '/settings/services/directory-connector', query: { tab: tabMap[authType] } })
+        const subRoutes = {
+          RADIUS: 'directory-connector/radius',
+          ACTIVE_DIRECTORY: 'directory-connector/active-directory',
+          ANY_DIRCON: 'directory-connector',
+        }
+        // TODO: Update the path when directory connector will be migrated to VueUI.
+        window.parent.location.href = `/admin/index.do#service/${subRoutes[authType]}`
       },
 
       /**
