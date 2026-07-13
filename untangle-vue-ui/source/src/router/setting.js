@@ -35,6 +35,7 @@ import WanFailover from '@/components/settings/services/WanFailover.vue'
 import WanBalancer from '@/components/settings/services/WanBalancer.vue'
 import Reports from '@/components/settings/services/Reports.vue'
 import LiveSupport from '@/components/settings/services/LiveSupport.vue'
+import IntrusionPrevesion from '@/components/settings/services/IntrusionPrevesion.vue'
 
 export default [
   {
@@ -135,6 +136,11 @@ export default [
         path: 'services/live-support',
         component: LiveSupport,
         meta: { helpContext: 'live-support' },
+      },
+      {
+        path: 'services/intrusion-prevention',
+        component: IntrusionPrevesion,
+        meta: { helpContext: 'intrusion_prevention', requiresMetrics: true },
       },
       {
         path: 'services/policy-manager',

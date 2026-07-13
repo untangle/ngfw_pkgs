@@ -1,6 +1,6 @@
 import { mapGetters } from 'vuex'
 import { getReportUrl, getReportIcon } from '@/util/reports'
-import util from '@/util/util'
+import util from '@/util/setupUtil'
 import uris from '@/util/uris'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
