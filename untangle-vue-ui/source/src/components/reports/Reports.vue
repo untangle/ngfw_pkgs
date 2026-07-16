@@ -6,6 +6,7 @@
     @add-condition="onAddCondition"
     @remove-condition="onRemoveCondition"
     @clear-conditions="onClearConditions"
+    @set-conditions="onSetConditions"
     @view-report="onViewReport"
     @export-category="onExportCategory"
   >

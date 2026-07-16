@@ -10,6 +10,7 @@
       @add-condition="onAddCondition"
       @remove-condition="onRemoveCondition"
       @clear-conditions="onClearConditions"
+      @set-conditions="onSetConditions"
       @fetch-data="onFetchData"
       @view-report="onViewReport"
       @export-all-events="onExportAllEvents"

@@ -1,6 +1,7 @@
 import { mapGetters } from 'vuex'
 import { urlEncode, tableContainsColumns } from '@/util/reports'
 import { globalOperatorOptions, globalConditionColumns, protocolNameMap, conditionValueOptions } from '@/constants'
+import { tableFields } from '@/util/eventTableColumns'
 
 export default {
   provide() {
@@ -11,18 +12,30 @@ export default {
       $conditionFormatValue: () => this.conditionFormatValue,
       $conditionValueOptions: () => conditionValueOptions,
       $disabledReportIds: () => this.disabledReportIds,
+      $conditionTableFields: () => this.translatedTableFields,
     }
   },
 
   computed: {
     ...mapGetters('reports', ['allReports', 'globalConditions']),
 
+    /** Translates operator options for the global condition dropdowns. */
     globalConditionOperators() {
       return globalOperatorOptions.map(op => ({ value: op.value, text: this.$t(op.text) }))
     },
 
+    /** Translates column options for the global condition dropdowns. */
     globalConditionColumns() {
       return globalConditionColumns.map(col => ({ value: col.value, text: this.$t(col.text) }))
+    },
+
+    /** Translates per-table field lists for the condition column picker. */
+    translatedTableFields() {
+      const result = {}
+      for (const [table, fields] of Object.entries(tableFields)) {
+        result[table] = fields.map(f => ({ value: f, text: this.$t(f) }))
+      }
+      return result
     },
 
     /** Unique column names currently used across all active global conditions. */
@@ -84,6 +97,11 @@ export default {
     /** Clears all active global conditions from the Vuex store. */
     onClearConditions() {
       this.$store.commit('reports/CLEAR_GLOBAL_CONDITIONS')
+    },
+
+    /** Replaces all global conditions with the set from the "More Conditions" dialog. */
+    onSetConditions(conditions) {
+      this.$store.commit('reports/SET_GLOBAL_CONDITIONS', conditions)
     },
   },
 }
