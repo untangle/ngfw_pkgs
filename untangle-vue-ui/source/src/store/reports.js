@@ -40,6 +40,9 @@ const getDefaultState = () => ({
   // Global conditions applied across all reports — persists across route navigation
   // Each condition: { column, operator, value, autoFormatValue }
   globalConditions: [],
+
+  // Unique key per login session — used by DateTimeRangePresets to reset saved state on logout/login
+  timeRangeSessionKey: null,
 })
 
 const getters = {
@@ -88,6 +91,7 @@ const getters = {
    * Returns an empty map when no policy-manager is installed.
    */
   globalConditions: state => state.globalConditions,
+  timeRangeSessionKey: state => state.timeRangeSessionKey,
 
   policyNameMap: state => {
     const map = {}
@@ -159,6 +163,10 @@ const mutations = {
     state.globalConditions = []
   },
 
+  SET_TIME_RANGE_SESSION_KEY(state, key) {
+    state.timeRangeSessionKey = key
+  },
+
   RESET(state) {
     Object.assign(state, getDefaultState())
   },
@@ -169,7 +177,7 @@ const actions = {
    * Load all reports from backend
    * Called once at application boot via router guard
    */
-  async loadReports({ commit }) {
+  async loadReports({ commit, state }) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
 
@@ -203,6 +211,9 @@ const actions = {
       }
 
       commit('SET_LAST_LOADED', Date.now())
+      if (!state.timeRangeSessionKey) {
+        commit('SET_TIME_RANGE_SESSION_KEY', Date.now())
+      }
       commit('SET_LOADING', false)
 
       return { success: true }
