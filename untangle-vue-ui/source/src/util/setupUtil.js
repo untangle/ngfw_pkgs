@@ -128,7 +128,7 @@ const Util = {
     const adminRpc = this.setRpcJsonrpc('admin')
     if (!rpc.wizardSettings.wizardComplete) {
       rpc.wizardSettings.completedStep = step
-      if (adminRpc.jsonrpc.UvmContext) {
+      if (adminRpc?.jsonrpc?.UvmContext) {
         await adminRpc.jsonrpc.UvmContext.setWizardSettings(rpc.wizardSettings)
       }
     }

@@ -27,8 +27,14 @@ const mutations = {
 }
 
 const actions = {
-  getApp(context, appName) {
-    return window.rpc.appManager.app(appName)
+  getApp(_, appName) {
+    try {
+      const app = window.rpc.appManager.app(appName)
+      return app
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
   },
 
   async getAppSettings({ dispatch }, appName) {
