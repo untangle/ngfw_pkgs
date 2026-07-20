@@ -69,8 +69,8 @@
     provide() {
       return {
         capabilities: ngfwCapabilities,
-        $remoteData: () => ({ interfaces: this.interfaces }),
-        $features: { hasRuleLogs: false, hasIpv6Support: false, hasLogAction: false },
+        $remoteData: () => ({ interfaces: this.interfaces, networkVariables: this.networkVariables }),
+        $features: { hasRuleLogs: false, hasIpv6Support: false, hasLogAction: false, hideRuleIdColumn: true },
         $readOnly: false,
         $applications: null,
       }
