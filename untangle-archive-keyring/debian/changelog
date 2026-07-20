@@ -1,3 +1,16 @@
+untangle-archive-keyring (5.0.2-1) current; urgency=medium
+
+  * Add bookworm signing key (untangle-archive-bookworm-automatic.gpg)
+    to trusted.gpg.d (NGFW-15626).
+  * Add trixie signing key (untangle-archive-trixie-automatic.asc) to
+    trusted.gpg.d. ASCII-armored because trixie apt uses sqv (Sequoia
+    OpenPGP) which rejects keybox-format .gpg keyrings (NGFW-15749).
+  * Pre-stages trust so customers upgrading from bullseye to bookworm
+    or trixie do not need manual keyring intervention before flipping
+    apt sources.
+
+ -- Untangle Buildbot <buildbot@untangle.com>  Mon, 25 May 2026 18:30:00 +0000
+
 untangle-archive-keyring (5.0.1-1) stable; urgency=low
 
   * Initial release.

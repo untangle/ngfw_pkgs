@@ -61,16 +61,23 @@
       },
     },
 
-    created() {
-      // update current system setting from store store
-      this.$store.dispatch('settings/getSystemSettings', false)
-      this.$store.dispatch('settings/getDeviceTemperatureInfo')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'http')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp')
-      this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp')
-      // get list of all wan interfaces which is used to show in the hostname interface selection
-      this.$store.dispatch('settings/getEnabledInterfaces')
-      this.$store.dispatch('settings/getSystemTimeZones')
+    async created() {
+      await this.$store.dispatch('withLoader', {
+        needsRaf: true,
+        asyncFn: async () => {
+          // update current system setting from store
+          await Promise.all([
+            this.$store.dispatch('settings/getSystemSettings', false),
+            this.$store.dispatch('settings/getDeviceTemperatureInfo'),
+            this.$store.dispatch('apps/getAndCommitAppSettings', 'http'),
+            this.$store.dispatch('apps/getAndCommitAppSettings', 'smtp'),
+            this.$store.dispatch('apps/getAndCommitAppSettings', 'ftp'),
+            // get list of all wan interfaces which is used to show in the hostname interface selection
+            this.$store.dispatch('settings/getEnabledInterfaces'),
+            this.$store.dispatch('settings/getSystemTimeZones'),
+          ])
+        },
+      })
     },
 
     methods: {
@@ -184,14 +191,15 @@
 
       /* Handler to refresh settings */
       async onRefreshSettings() {
-        this.$store.commit('SET_LOADER', true)
-
-        const [response] = await Promise.all([
-          this.$store.dispatch('settings/getSystemSettings', true),
-          this.$store.dispatch('settings/getEnabledInterfaces'),
-          this.$store.dispatch('settings/getSystemTimeZones'),
-        ]).finally(() => {
-          this.$store.commit('SET_LOADER', false)
+        const [response] = await this.$store.dispatch('withLoader', {
+          needsRaf: true,
+          asyncFn: async () => {
+            return await Promise.all([
+              this.$store.dispatch('settings/getSystemSettings', true),
+              this.$store.dispatch('settings/getEnabledInterfaces'),
+              this.$store.dispatch('settings/getSystemTimeZones'),
+            ])
+          },
         })
         if (!response.success) {
           this.$vuntangle.toast.add(this.$vuntangle.$t('error_refresh_settings'), 'error')

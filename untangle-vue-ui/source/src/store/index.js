@@ -62,6 +62,29 @@ const actions = {
     commit('RESET')
   },
 
+  /**
+   * Wraps an async function with loader state management
+   * @param {Object} context - Vuex context
+   * @param {Object} options
+   * @param {Function} options.asyncFn - The async function to execute
+   * @param {Boolean} options.needsRaf - Whether to use RAF to ensure loader paints (default: false)
+   * @returns {Promise} - Result of the async function
+   */
+  async withLoader({ commit }, { asyncFn, needsRaf = false }) {
+    commit('SET_LOADER', true)
+
+    if (needsRaf) {
+      // Double RAF ensures browser paints the loader before blocking operations
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)))
+    }
+
+    try {
+      return await asyncFn()
+    } finally {
+      commit('SET_LOADER', false)
+    }
+  },
+
   setShowStep({ commit }, value) {
     commit('SET_SHOW_STEP', value)
   },

@@ -11,7 +11,7 @@ dir:
 
 yarn:
 	cd ./source; \
-	yarnpkg install --force --network-concurrency 1; \
+	yarnpkg install --force --network-concurrency 1 --ignore-engines; \
 	yarnpkg clean; \
 	yarnpkg build
 

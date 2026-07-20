@@ -26,7 +26,7 @@ const getters = {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
   },
   systemSetting: state => state.systemSetting || {},
-  deviceTemperatureInfo: state => state.deviceTemperatureInfo || {},
+  deviceTemperatureInfo: state => state.deviceTemperatureInfo || '',
   systemTimeZones: state => state.systemTimeZones || [],
   enabledWanInterfaces: state => state.enabledWanInterfaces || [],
   staticRoutes: state => state?.networkSetting?.staticRoutes || [],

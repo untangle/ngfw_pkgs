@@ -27,7 +27,7 @@
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
-                "uri": "http://updates.edge.arista.com/"
+                "uri": "https://updates.edge.arista.com/"
             },
             {
                 "javaClass": "com.untangle.uvm.UriTranslation",
