@@ -12,7 +12,7 @@
     components: { About, Dns, Dhcp, StaticRoutes, Settings, DynamicBlockLists },
 
     async beforeRouteEnter(to, from, next) {
-      await store.dispatch('settings/fetchNetworkSettings')
+      await store.dispatch('config/fetchNetworkSettings')
       next()
     },
 

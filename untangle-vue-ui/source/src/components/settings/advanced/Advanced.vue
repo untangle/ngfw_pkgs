@@ -38,12 +38,12 @@
 
     computed: {
       /* network settings from the store */
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
       /* Gets the expert mode status from the settings store */
-      isExpertMode: ({ $store }) => $store.getters['settings/isExpertMode'],
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
 
       /* Get list of interfaces from the settings store */
-      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      interfaces: ({ $store }) => $store.getters['config/interfaces'],
       /**
        * returns the interfaces for condition value from network settings
        * @param {Object} vm.networkSettings
@@ -64,7 +64,7 @@
        * @param {boolean} refetch - Whether to force a re-fetch of the settings.
        */
       async fetchSettings(refetch) {
-        await this.$store.dispatch('settings/getNetworkSettings', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
       },
 
       /**
@@ -77,7 +77,7 @@
         if (!isValid) return
 
         this.$store.commit('SET_LOADER', true)
-        await Promise.all([this.$store.dispatch('settings/setNetworkSettingV2', advancedSettings)]).finally(() => {
+        await Promise.all([this.$store.dispatch('config/setNetworkSettingV2', advancedSettings)]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
       },

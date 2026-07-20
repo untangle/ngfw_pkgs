@@ -39,12 +39,12 @@
     computed: {
       // interfaces filered and grouped (by category)
       interfaces({ $store }) {
-        return $store.getters['settings/networkSetting'].interfaces || []
+        return $store.getters['config/networkSetting'].interfaces || []
       },
     },
 
     created() {
-      this.$store.dispatch('settings/getNetworkSettings')
+      this.$store.dispatch('config/getNetworkSettings')
     },
 
     mounted() {
@@ -132,7 +132,7 @@
       async setRemappedInterfaces(interfaces) {
         this.$store.commit('SET_LOADER', true)
         const response = await this.$store
-          .dispatch('settings/setInterfaces', interfaces)
+          .dispatch('config/setInterfaces', interfaces)
           .finally(() => this.$store.commit('SET_LOADER', false))
         if (response?.success) {
           this.$vuntangle.toast.add(this.$t('interfaces_remapped_successfully'))
@@ -144,7 +144,7 @@
 
       async onRefresh() {
         this.$store.commit('SET_LOADER', true)
-        await this.$store.dispatch('settings/getInterfaces').finally(() => this.$store.commit('SET_LOADER', false))
+        await this.$store.dispatch('config/getInterfaces').finally(() => this.$store.commit('SET_LOADER', false))
         this.getInterfacesStatus()
       },
 
@@ -197,7 +197,7 @@
        * Fetches updated network settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getNetworkSettings', true)
+        this.$store.dispatch('config/getNetworkSettings', true)
       },
     },
   }

@@ -1,35 +1,369 @@
 import { set } from 'vue'
 import Util from '@/util/setupUtil'
+import Rpc from '@/util/Rpc'
 
-const getDefaultState = () => ({
-  settings: {}, // all app settings stored by appName
+/**
+ * Constants for app installation status
+ * @readonly
+ * @enum {string}
+ */
+export const APP_INSTALL_STATUS = Object.freeze({
+  PROGRESS: 'progress', // App is currently being installed
+  FINISH: 'finish', // App installation completed successfully
+  ERROR: 'error', // App installation failed
 })
 
+/**
+ * Why do we need a Bootstrap Registry?
+ *
+ * The Bootstrap Registry defines API calls that are automatically invoked
+ * when a screen loads or when a refresh operation is triggered, without
+ * any specific user interaction.
+ *
+ * For example:
+ * - The `smtp` app requires multiple API calls (safelists, inbox data, etc.)
+ *   to fully initialize its UI when the screen loads.
+ *   These bootstrap calls happen automatically to prepare the view.
+ *
+ * - Other apps (e.g. dynamic-blocklist) only need basic settings
+ *   and do not require additional bootstrap entries.
+ *
+ * Important:
+ * - This registry contains ONLY auto-load/refresh APIs
+ * - APIs triggered by specific user actions (button clicks, form submissions)
+ *   should NOT be added here
+ *
+ * Benefits:
+ * - Centralizes initial data loading logic per app
+ * - Keeps API logic organized and extensible
+ * - Allows different apps to have different bootstrap requirements
+ * - Clear separation between auto-load and user-triggered operations
+ */
+const APP_BOOTSTRAP_REGISTRY = {
+  smtp: [
+    {
+      key: 'globalSafeList',
+      call: app => app.getSafelistAdminView().getSafelistContents('GLOBAL'),
+    },
+    {
+      key: 'userSafeList',
+      call: app => app.getSafelistAdminView().getUserSafelistCountsV2(),
+    },
+    {
+      key: 'inboxSummary',
+      call: app => app.getQuarantineMaintenenceView().listInboxesV2(),
+    },
+  ],
+}
+
+/**
+ * Registry of per-service fetchers for condition runtime data.
+ * Each entry receives the Vuex action context and commits its results via SET_CONDITION_DATA.
+ * Add a new entry here when another service needs to supply condition dropdown values.
+ */
+const CONDITION_DATA_FETCHERS = {
+  'directory-connector': async ({ commit, dispatch }) => {
+    const app = await dispatch('getApp', { appName: 'directory-connector' })
+    if (!app) {
+      // Clear any stale data left from a previous installation so static fallback options are shown
+      commit('SET_CONDITION_DATA', { directoryGroups: [], directoryDomains: [], directoryUsers: [] })
+      return
+    }
+
+    const [groupResult, domainResult, userResult] = await Promise.all([
+      new Promise(resolve => app.getRuleConditionalGroupEntriesV2((r, ex) => resolve(ex ? null : r))),
+      new Promise(resolve => app.getRuleConditionalDomainEntriesV2((r, ex) => resolve(ex ? null : r))),
+      new Promise(resolve => app.getRuleConditionalUserEntriesV2((r, ex) => resolve(ex ? null : r))),
+    ])
+
+    commit('SET_CONDITION_DATA', {
+      directoryGroups: (groupResult || []).map(g => ({
+        text: `${g.CN} [${g.SAMAccountName}]`,
+        value: g.SAMAccountName,
+      })),
+      directoryDomains: (domainResult || []).map(d => ({ text: d, value: d })),
+      directoryUsers: (userResult || []).map(u => ({
+        text: [u.firstName, u.lastName].filter(Boolean).join(' ') || u.uid,
+        value: u.uid,
+      })),
+    })
+  },
+}
+
+/**
+ * Apps store
+ */
+const getDefaultState = () => ({
+  store: {}, // all app settings stored by appName
+  appsViews: null, // list of per-policy apps view states (kept for backward compatibility)
+  appsViewByPolicy: {}, // normalized apps view by policyId for O(1) lookup
+  installingApps: {}, // tracks apps currently being installed { appName: { policyId, status } }
+  selectedPolicyId: null, // currently selected policy ID
+  autoInstallApps: false, // tracks if recommended apps are being auto-installed on initial setup
+  conditionData: {}, // cross-app runtime data for condition dropdowns (groups, domains, etc.)
+})
+
+/**
+ * Getters
+ */
 const getters = {
   /**
    * Get settings for a given app name.
    * Usage: getters.getSettings('http')
    */
-  getSettings: state => appName => state.settings[appName] || null,
+  getSettings: state => appName => state.store[appName] || null,
+  /**
+   * Get all app views (list of per-policy app view states)
+   * Usage: getters['apps/appsViews']
+   */
+  appsViews: state => state.appsViews || [],
+  /**
+   * Get all app views normalized by policyId (O(1) lookup)
+   * Usage: getters['apps/appsViewByPolicy']
+   */
+  appsViewByPolicy: state => state.appsViewByPolicy || {},
+  /**
+   * Get app view for a specific policy (O(1) lookup)
+   * Usage: getters['apps/getAppsViewByPolicy'](policyId)
+   */
+  getAppsViewByPolicy: state => policyId => state.appsViewByPolicy[policyId] || null,
+  /**
+   * Get installing apps
+   * Usage: getters['apps/installingApps']
+   */
+  installingApps: state => state.installingApps || {},
+  /**
+   * Check if a specific app is installing
+   * Usage: getters['apps/isAppInstalling'](appName)
+   */
+  isAppInstalling: state => appName => {
+    const installing = state.installingApps[appName]
+    return installing ? installing.status === 'progress' : false
+  },
+  /**
+   * Get selected policy ID
+   * Usage: getters['apps/selectedPolicyId']
+   */
+  selectedPolicyId: state => state.selectedPolicyId,
+  /**
+   * Check if auto install is currently running
+   * Usage: getters['apps/autoInstallApps']
+   */
+  autoInstallApps: state => state.autoInstallApps,
+  /**
+   * Get runtime condition data fetched from external services (directory-connector, etc.)
+   * Usage: getters['apps/conditionData']
+   */
+  conditionData: state => state.conditionData,
+  /**
+   * Get app data for a specific policy and app combination
+   * Returns an object containing: policyId, appName, license, instance, and appProperties
+   * Usage: getters['apps/getAppData']({ policyId: 1, appName: 'web-filter' })
+   */
+  getAppData:
+    state =>
+    ({ policyId, appName }) => {
+      if (!policyId || !appName) return null
+
+      // Get the app view for this policy
+      const appsView = state.appsViewByPolicy[policyId]
+      if (!appsView) return null
+
+      // Extract license for this app
+      const license = appsView.licenseMap?.[appName] || null
+
+      // Find instance for this app (matching policyId and appName)
+      const instance = appsView.instances?.find(inst => inst.appName === appName && inst.policyId === policyId) || null
+
+      // Find appProperties for this app
+      const appProperties = appsView.appProperties?.find(prop => prop.name === appName) || null
+
+      // Get appMetrics if instance exists
+      const appMetrics = instance?.id ? appsView.appMetrics?.[instance.id] || [] : []
+
+      return {
+        policyId,
+        appName,
+        license,
+        instance,
+        appProperties,
+        appMetrics,
+      }
+    },
+  /**
+   * Get computed power state for an app
+   * Computes: enabled, running, inconsistent, expired, statusText, colorState
+   * Usage: getters['apps/getAppPowerState']({ policyId: 1, appName: 'web-filter', appRunState, appTargetState })
+   */
+  getAppPowerState:
+    (state, getters) =>
+    ({ policyId, appName, appManager }) => {
+      const appData = getters.getAppData({ policyId, appName })
+
+      if (!appData || !appData.instance) {
+        return {
+          on: false,
+          inconsistent: false,
+        }
+      }
+
+      const { appProperties, instance } = appData
+      const appsView = state.appsViewByPolicy[policyId]
+
+      const appRunState = appManager ? appManager.getRunState() : null
+      const runState = appRunState || appsView?.runStates?.[instance.id]
+      const on = runState === 'RUNNING'
+
+      const daemonRunning =
+        on && appProperties?.daemon
+          ? Rpc.directData('rpc.UvmContext.daemonManager.isRunning', appProperties.daemon)
+          : true
+      const inconsistent = on && !daemonRunning
+
+      return {
+        on,
+        inconsistent,
+      }
+    },
+
+  /**
+   * Get service app status - detects on/off state, inconsistency
+   * @param {Object} appManager - The app manager object (has getRunState, getAppProperties methods)
+   * @returns {Object} { on: boolean, inconsistent: boolean }
+   */
+  getServiceAppStatus:
+    () =>
+    ({ appManager }) => {
+      let on = false
+      let inconsistent = false
+
+      if (appManager) {
+        const runState = appManager.getRunState()
+
+        // Determine if app is running
+        on = runState === 'RUNNING'
+
+        // Get app properties to check for daemon
+        let daemon = null
+        try {
+          const appProperties = appManager.getAppProperties ? appManager.getAppProperties() : null
+          daemon = appProperties?.daemon
+        } catch (error) {
+          Util.handleException(error)
+        }
+
+        // Check daemon status if app is running and has a daemon
+        const daemonRunning =
+          on && daemon != null ? Rpc.directData('rpc.UvmContext.daemonManager.isRunning', daemon) : true
+
+        inconsistent = on && !daemonRunning
+      }
+
+      return {
+        on,
+        inconsistent,
+      }
+    },
 }
 
 const mutations = {
   /**
    * Dynamically set settings for an app
-   * Usage: commit('SET_SETTINGS', { appName: 'http', value: data })
+   * Usage: commit('SET_SETTINGS', { appKey: 'http', value: data })
    */
-  SET_SETTINGS(state, { appName, value }) {
-    if (!state.settings) {
-      set(state, 'settings', {})
+  SET_SETTINGS(state, { appKey, value }) {
+    if (!state.store) {
+      set(state, 'store', {})
     }
-    set(state.settings, appName, value)
+    set(state.store, appKey, value)
+  },
+  /**
+   * Set the list of app views for all policies
+   * Usage: commit('SET_APPS_VIEWS', appsViews)
+   */
+  SET_APPS_VIEWS: (state, appsViews) => {
+    set(state, 'appsViews', appsViews)
+    // Normalize appsViews by policyId for O(1) lookup
+    const normalized = (appsViews || []).reduce((acc, view) => {
+      acc[view.policyId] = view
+      return acc
+    }, {})
+    set(state, 'appsViewByPolicy', normalized)
+  },
+  /**
+   * Set the app view for a specific policy
+   * Usage: commit('SET_APPS_VIEW', { policyId, appsView })
+   */
+  SET_APPS_VIEW: (state, { policyId, appsView }) => {
+    // Update array (backward compatibility)
+    if (!state.appsViews) {
+      set(state, 'appsViews', [])
+    }
+    const index = state.appsViews.findIndex(av => String(av.policyId) === policyId)
+    if (index >= 0) {
+      state.appsViews.splice(index, 1, appsView)
+    } else {
+      state.appsViews.push(appsView)
+    }
+    // Update normalized object (O(1) lookup)
+    if (!state.appsViewByPolicy) {
+      set(state, 'appsViewByPolicy', {})
+    }
+    set(state.appsViewByPolicy, policyId, appsView)
+  },
+  /**
+   * Set app installation status
+   * Usage: commit('SET_APP_INSTALL_STATUS', { appName: 'web-filter', policyId: 1, status: 'progress' })
+   * Status can be: 'progress', 'finish', or null (to clear)
+   */
+  SET_APP_INSTALL_STATUS(state, { appName, policyId, status }) {
+    if (!state.installingApps) {
+      set(state, 'installingApps', {})
+    }
+    if (status === null) {
+      // Clear the installation status
+      const newInstallingApps = { ...state.installingApps }
+      delete newInstallingApps[appName]
+      set(state, 'installingApps', newInstallingApps)
+    } else {
+      set(state.installingApps, appName, { policyId, status })
+    }
+  },
+  /**
+   * Set selected policy ID
+   * Usage: commit('SET_SELECTED_POLICY_ID', policyId)
+   */
+  SET_SELECTED_POLICY_ID(state, policyId) {
+    set(state, 'selectedPolicyId', policyId)
+  },
+  /**
+   * Set auto install apps flag
+   * Usage: commit('SET_AUTO_INSTALL_APPS', true/false)
+   */
+  SET_AUTO_INSTALL_APPS(state, value) {
+    set(state, 'autoInstallApps', value)
+  },
+  /**
+   * Merge new condition data into the conditionData state slot.
+   * Usage: commit('SET_CONDITION_DATA', { directoryGroups: [...], directoryDomains: [...] })
+   */
+  SET_CONDITION_DATA(state, data) {
+    set(state, 'conditionData', { ...state.conditionData, ...data })
   },
 }
 
+/**
+ * Actions
+ */
 const actions = {
-  getApp(_, appName) {
+  async getApp(_, { appId, appName }) {
     try {
-      const app = window.rpc.appManager.app(appName)
+      let app = null
+      if (appId) {
+        app = await window.rpc.appManager.app(appId)
+      } else if (appName) {
+        app = await window.rpc.appManager.app(appName)
+      }
       return app
     } catch (err) {
       Util.handleException(err)
@@ -37,56 +371,470 @@ const actions = {
     }
   },
 
-  async getAppSettings({ dispatch }, appName) {
-    const app = await dispatch('getApp', appName)
+  /**
+   * Get app instance for a specific policy
+   * This is critical for start/stop operations - we need the policy-specific instance
+   * @param {*} _
+   * @param {Object} payload - { appName, policyId }
+   * @returns {Promise<Object|null>} App instance or null
+   */
+  async getAppForPolicy(_, { appName, policyId }) {
+    try {
+      const apps = await window.rpc.appManager.appInstances(appName, policyId, false)
+
+      // Handle both array response and { list: [...] } response
+      if (Array.isArray(apps)) {
+        return apps.length > 0 ? apps[0] : null
+      } else if (apps && apps.list && Array.isArray(apps.list)) {
+        return apps.list.length > 0 ? apps.list[0] : null
+      }
+
+      return null
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
+  },
+
+  /**
+   * Get app instance by instance ID
+   * @param {*} _
+   * @param {Object} payload - { appId }
+   * @returns {Promise<Object|null>} App instance or null
+   */
+  async getAppById(_, { appId }) {
+    try {
+      const app = await window.rpc.appManager.app(appId)
+      return app
+    } catch (err) {
+      Util.handleException(err)
+      return null
+    }
+  },
+
+  /**
+   * Get settings for a given app using getSettingsV2().
+   * @param {string} appName - The name of the app (e.g., 'smtp', 'http')
+   * @param {number} appId - Optional app instance ID (used for policy-specific apps)
+   * @param {Object|null} app - Optional app object. If not provided, it will be fetched via getApp
+   * @returns {Promise<Object|null>} The app settings object or null if app is unavailable
+   *
+   * Usage:
+   * - With app object: dispatch('getAppSettings', { appName: 'smtp', appId: 1, app: appObject })
+   * - Without app object: dispatch('getAppSettings', { appName: 'smtp', appId: 1 })
+   */
+  async getAppSettings({ dispatch }, { appName, appId, app }) {
+    if (!app) {
+      app = await dispatch('getApp', { appName, appId })
+    }
     if (app) {
       return await app.getSettingsV2()
     }
     return null
   },
-
-  /* setAppSettings will update system regarding configurations */
-  async setAppSettings({ dispatch }, { appName, settings }) {
-    if (!settings) {
-      return
+  /**
+   * Load initial/bootstrap data for an app.
+   * This includes the app's canonical settings plus any bootstrap APIs defined in APP_BOOTSTRAP_REGISTRY.
+   * Typically called when a screen loads or when refresh is triggered.
+   *
+   * @param {Object} payload - { appName, appId, app }
+   * @param {string} payload.appName - The name of the app (e.g., 'smtp')
+   * @param {number} payload.appId - Optional app instance ID
+   * @param {Object} payload.app - Optional app manager instance
+   * @returns {Promise<Object>} Object containing settings and all bootstrap data
+   */
+  async loadAppData({ commit, dispatch }, { appName, appId, app }) {
+    const registry = APP_BOOTSTRAP_REGISTRY[appName]
+    if (!app) {
+      app = await dispatch('getApp', { appName, appId })
     }
+    if (!app) return
+
+    // ALWAYS load canonical backend settings
+    const baseSettings = (await dispatch('getAppSettings', { appName, appId, app })) || {}
+
+    const result = { settings: baseSettings }
+
+    // Optionally argument with bootstrap registry data
+    if (registry) {
+      for (const item of registry) {
+        try {
+          const value = await item.call(app)
+          result[item.key] = value
+        } catch (err) {
+          result[item.key] = null
+        }
+      }
+    }
+
+    const key = appId ? `${appName}-${appId}` : appName
+    commit('SET_SETTINGS', { appKey: key, value: result })
+    return result
+  },
+
+  /**
+   * Fetch the company URL.
+   * If branding-manager settings are already available in the Vuex store,
+   *  return the companyUrl from those settings.
+   * Otherwise, fall back to fetching the value from the backend via RPC.
+   */
+  async getCompanyUrl({ state }) {
     try {
-      const app = await dispatch('getApp', appName)
-      if (!app) {
+      const brandingData = state.store['branding-manager']
+      if (brandingData) {
+        return brandingData.settings?.companyUrl
+      }
+      return await window.rpc.companyUrl
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  /**
+   * Fetch the company name.
+   * If branding-manager settings are already available in the Vuex store,
+   * return the companyName from those settings.
+   * Otherwise, fall back to fetching the value from the backend via RPC.
+   */
+  async getCompanyName({ state }) {
+    try {
+      const brandingData = state.store['branding-manager']
+      if (brandingData) {
+        return brandingData.settings?.companyName
+      }
+      return await window.rpc.companyName
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
+
+  async setAppSettings({ dispatch }, { appName, settings, appId, app }) {
+    if (!settings) return
+    if (!app) {
+      app = await dispatch('getApp', { appName, appId })
+    }
+    if (!app) return
+
+    return new Promise((resolve, reject) => {
+      app.setSettingsV2(async (ex, res) => {
+        if (ex || res?.code) {
+          Util.handleException(ex || res.message)
+          const error = new Error(ex?.message || res?.message || 'Failed to set app settings')
+          error.details = { success: false }
+          return reject(error)
+        }
+
+        await dispatch('loadAppData', { appName, appId, app })
+        resolve({ success: true })
+      }, settings)
+    })
+  },
+
+  /**
+   * Gets the app views for all policies.
+   * @param {*} param0  commit
+   * @returns Promise that resolves to the list of app views
+   */
+  getAppsViews({ state, commit }, refetch) {
+    try {
+      if (state.appsViews && !refetch) {
         return
       }
-      const result = await new Promise(resolve => {
-        app.setSettingsV2(async (ex, res) => {
-          if (ex) return resolve({ success: false, message: ex?.toString()?.slice(0, 100) || 'Unknown error' })
-          if (res?.code && res?.message) return resolve({ success: false, message: res.message.slice(0, 100) })
+      const data = window.rpc.appManager.getAppsViewsV2()
+      commit('SET_APPS_VIEWS', data || [])
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
 
-          // Fetch updated settings after successful save
-          await dispatch('getAndCommitAppSettings', appName)
+  /**
+   * Gets the app views for policy with given Id.
+   * Updates the appsViews state with the fetched data.
+   * @param {*} param0 commit
+   * @param {*} policyId
+   */
+  getAppsView({ commit }, policyId) {
+    try {
+      const data = window.rpc.appManager.getAppsViewV2(policyId)
+      commit('SET_APPS_VIEW', { policyId, appsView: data || [] })
+    } catch (err) {
+      Util.handleException(err)
+    }
+  },
 
-          return resolve({ success: true })
-        }, settings)
-      })
+  /**
+   * Install an app for a specific policy
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, policyId }
+   * @returns {Promise<Object>} - { success: boolean, instance?: Object, error?: string }
+   */
+  async installApp({ commit, dispatch }, { appName, policyId }) {
+    try {
+      // Set installing status to 'progress'
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'progress' })
 
-      // Handle RPC-level errors (optional logging)
-      if (!result.success) {
-        Util.handleException(result.message)
+      // Call RPC to instantiate app
+      const instance = await Rpc.asyncData('rpc.appManager.instantiate', appName, policyId)
+
+      // Refresh app views to get updated data
+      await dispatch('getAppsViews', true)
+      // Refresh reports to load any new reports related to the installed app
+      dispatch('reports/loadReports', null, { root: true })
+      // Set installing status to 'finish'
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: 'finish' })
+
+      return { success: true, instance }
+    } catch (error) {
+      // Clear installing status on error
+      commit('SET_APP_INSTALL_STATUS', { appName, policyId, status: null })
+      Util.handleException(error)
+      return { success: false, error: error.message || 'Installation failed' }
+    }
+  },
+
+  /**
+   * Check if auto install is currently running
+   * Fetches the isAutoInstallAppsFlag from backend and updates state
+   * @param {Object} context - Vuex context
+   * @returns {boolean} - true if auto install is running, false otherwise
+   */
+  checkAutoInstallFlag({ commit }) {
+    try {
+      const isAutoInstalling = window.rpc.appManager.isAutoInstallAppsFlag()
+      commit('SET_AUTO_INSTALL_APPS', isAutoInstalling)
+      return isAutoInstalling
+    } catch (err) {
+      Util.handleException(err)
+      commit('SET_AUTO_INSTALL_APPS', false)
+      return false
+    }
+  },
+
+  /**
+   * Make a registry API call for a specific bootstrap API by key.
+   * Looks up the registry for the given app and API key, then makes the corresponding API call.
+   * Patches the result into the store, preserving existing data for other keys.
+   *
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { appName, apiKey }
+   * @param {string} payload.appName - The name of the app (e.g., 'smtp')
+   * @param {string} payload.apiKey - The key from APP_BOOTSTRAP_REGISTRY (e.g., 'globalSafeList')
+   * @returns {Promise<any>} - The result of the API call, or null if registry entry not found
+   *
+   * Usage:
+   * dispatch('makeRegistryCall', { appName: 'smtp', apiKey: 'globalSafeList' })
+   */
+  async makeRegistryCall({ state, commit, dispatch }, { appName, apiKey }) {
+    const registry = APP_BOOTSTRAP_REGISTRY[appName]
+    if (!registry) {
+      return null
+    }
+
+    const registryEntry = registry.find(item => item.key === apiKey)
+    if (!registryEntry) {
+      return null
+    }
+
+    const app = await dispatch('getApp', { appName })
+    if (!app) return null
+
+    try {
+      const result = await registryEntry.call(app)
+
+      // Get existing settings for this app
+      const existingSettings = state.store[appName] || {}
+
+      // Merge the new result with existing settings
+      const updatedSettings = {
+        ...existingSettings,
+        [apiKey]: result,
       }
+
+      // Commit the merged settings to the store
+      commit('SET_SETTINGS', { appKey: appName, value: updatedSettings })
 
       return result
     } catch (err) {
       Util.handleException(err)
-      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+      return null
     }
   },
 
-  async getAndCommitAppSettings({ commit, dispatch }, appName) {
+  /**
+   * Destroy/remove an app instance
+   * @param {Object} context - Vuex context
+   * @param {number} instanceId - The app instance ID
+   * @returns {Promise<void>}
+   */
+  async destroyApp({ dispatch }, { instanceId, policyId }) {
     try {
-      const data = await dispatch('getAppSettings', appName)
-      commit('SET_SETTINGS', { appName, value: data })
-      return { success: true, data }
+      await Rpc.asyncData('rpc.appManager.destroy', instanceId)
+
+      // Refresh the app view after destroying, same as ExtJS getAppsView
+      await dispatch('getAppsView', policyId)
+      // Refresh reports to clear out any app-specific reports after removal
+      dispatch('reports/loadReports', null, { root: true })
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Start an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async startApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.start((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after starting, same as ExtJS getAppsView
+      await dispatch('getAppsView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Stop an app instance
+   * @param {Object} context - Vuex context
+   * @param {Object} payload - { instanceId, policyId }
+   * @returns {Promise<void>}
+   */
+  async stopApp({ dispatch }, { instanceId, policyId }) {
+    try {
+      const appManager = await window.rpc.appManager.app(instanceId)
+
+      await new Promise((resolve, reject) => {
+        appManager.stop((err, res) => {
+          if (err) {
+            reject(err)
+          } else {
+            resolve(res)
+          }
+        })
+      })
+
+      // Refresh the app view after stopping, same as ExtJS getAppsView
+      await dispatch('getAppsView', policyId)
+    } catch (error) {
+      Util.handleException(error)
+      throw error
+    }
+  },
+
+  /**
+   * Check if a specific app's license is valid
+   * @param {Object} context - Vuex context
+   * @param {String} appName - The app name to check
+   * @returns {Boolean} true if license is valid, false otherwise
+   */
+  checkAppLicense(_, appName) {
+    try {
+      const isValid = window.rpc.UvmContext.licenseManager().isLicenseValid(appName)
+      return isValid
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Check if a daemon is running
+   * @param {Object} context - Vuex context
+   * @param {String} daemonName - The daemon name to check
+   * @returns {Boolean} true if daemon is running, false otherwise
+   */
+  checkDaemonStatus(_, daemonName) {
+    try {
+      const isRunning = window.rpc.UvmContext.daemonManager().isRunning(daemonName)
+      return isRunning
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Run a fixed report for the given template and date range.
+   * @param {Object} payload - { templateId, startDate, stopDate }
+   * @returns {Promise<{ success: boolean }>}
+   */
+  async runFixedReport(_, { templateId, startDate, stopDate }) {
+    try {
+      const appManager = await Rpc.asyncData('rpc.appManager.app', 'reports')
+      await Rpc.asyncData(appManager, 'runFixedReport', templateId, startDate, stopDate)
+      return { success: true }
     } catch (err) {
       Util.handleException(err)
+      return { success: false }
     }
+  },
+
+  /**
+   * Check license status for a specific license node
+   * @param {Object} context - Vuex context
+   * @param {String} licenseNodeName - The license node name to check
+   * @returns {Promise<Boolean>} true if license is valid, false otherwise
+   */
+  async checkLicenseStatus(_, licenseNodeName) {
+    try {
+      const response = await window.rpc.UvmContext.licenseManager().getLicense(licenseNodeName).valid
+      return response || false
+    } catch (error) {
+      Util.handleException(error)
+      return false
+    }
+  },
+
+  /**
+   * Fetch the URI for license management
+   * @param {Object} context - Vuex context
+   * @param {String} uriPath - The URI path to fetch (e.g., 'subscriptions')
+   * @returns {Promise<String|null>} The manage license URI or null on error
+   */
+  async fetchManageLicenseUri(_, uriPath) {
+    try {
+      const uri = await window.rpc.uriManager.getUriWithPath(uriPath)
+      return uri
+    } catch (error) {
+      Util.handleException(error)
+      return null
+    }
+  },
+
+  /**
+   * Fetch runtime condition data from one or more services and store in conditionData.
+   * Callers pass the service name(s) they need; only the matching registry entries are invoked.
+   * @param {Object} context - Vuex context
+   * @param {string|string[]} appNames - Service name(s) to fetch data from (e.g. 'directory-connector')
+   */
+  async fetchConditionData(context, appNames) {
+    const names = Array.isArray(appNames) ? appNames : [appNames]
+    await Promise.all(
+      names.map(async name => {
+        const fetcher = CONDITION_DATA_FETCHERS[name]
+        if (!fetcher) return
+        try {
+          await fetcher(context)
+        } catch (e) {
+          // Silently degrade — static fallback options remain in the UI
+        }
+      }),
+    )
   },
 }
 

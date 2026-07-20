@@ -28,9 +28,9 @@
        * @property {Array} dnsSettings.localServers - List of local DNS servers.
        * @property {Array} dnsSettings.staticEntries - List of static DNS entries.
        */
-      dnsSettings: ({ $store }) => $store.getters['settings/dnsSettings'],
+      dnsSettings: ({ $store }) => $store.getters['config/dnsSettings'],
       // the network settings from the store
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
     },
 
     created() {
@@ -43,14 +43,14 @@
        * @param {boolean} refetch - Whether to force a re-fetch of the settings.
        */
       async fetchSettings(refetch) {
-        await this.$store.dispatch('settings/getNetworkSettings', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
       },
 
       async onSaveSettings(newDnsSettings) {
         this.$store.commit('SET_LOADER', true)
         const networkSettingsCopy = cloneDeep(this.networkSettings)
         networkSettingsCopy.dnsSettings = newDnsSettings
-        await Promise.all([this.$store.dispatch('settings/setNetworkSettingV2', networkSettingsCopy)]).finally(() => {
+        await Promise.all([this.$store.dispatch('config/setNetworkSettingV2', networkSettingsCopy)]).finally(() => {
           this.$store.commit('SET_LOADER', false)
         })
       },

@@ -16,7 +16,7 @@ export default {
       // Still added this check to prevent accidental deletion
       if (intf.type === 'NIC' || intf.type === 'WIFI') return
 
-      const interfacesCopy = cloneDeep(this.$store.getters['settings/interfaces'])
+      const interfacesCopy = cloneDeep(this.$store.getters['config/interfaces'])
       const affectedInterfaces = this.getAffectedBridgedInterfaces(intf, interfacesCopy)
       if (affectedInterfaces.length) {
         this.$vuntangle.dialog.show({

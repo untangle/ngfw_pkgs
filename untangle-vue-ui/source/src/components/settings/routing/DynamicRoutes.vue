@@ -34,8 +34,8 @@
     },
 
     computed: {
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
-      dynamicRoutingSettings: ({ $store }) => $store.getters['settings/dynamicRoutingSettings'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+      dynamicRoutingSettings: ({ $store }) => $store.getters['config/dynamicRoutingSettings'],
     },
 
     created() {
@@ -45,7 +45,7 @@
 
     methods: {
       async fetchNetworkSettings(refetch) {
-        await this.$store.dispatch('settings/getNetworkSettings', refetch)
+        await this.$store.dispatch('config/getNetworkSettings', refetch)
       },
 
       /** fetch Dynamic Routing Status */
@@ -238,7 +238,7 @@
         try {
           const networkdynamicRoutingSettings = cloneDeep(this.networkSettings)
           networkdynamicRoutingSettings.dynamicRoutingSettings = updatedSettings
-          await this.$store.dispatch('settings/setNetworkSettingV2', networkdynamicRoutingSettings)
+          await this.$store.dispatch('config/setNetworkSettingV2', networkdynamicRoutingSettings)
           await this.getDynamicRoutingOverview()
         } catch (ex) {
           Util.handleException(ex)

@@ -18,7 +18,7 @@ const actions = {
    * @param {Function} dispatch
    */
   async checkAuth({ rootState, commit, dispatch }) {
-    await dispatch('settings/getSettings', true, { root: true })
+    await dispatch('config/getSettings', true, { root: true })
     commit('SET_IS_AUTH', !!rootState.settings.settings)
 
     if (rootState.settings.settings) {
@@ -61,10 +61,15 @@ const actions = {
    * Logout the user.
    *
    * @param {Function} commit
+   * @param {Function} dispatch
    */
-  async logout({ commit }) {
-    await api.get('/account/logout')
+  async logout({ commit, dispatch }) {
+    await api.get('/auth/logout?url=/admin&realm=Administrator')
     commit('SET_IS_AUTH', false)
+
+    // Reset session and reports state so admin context re-initializes on next login
+    await dispatch('session/reset', null, { root: true })
+    commit('reports/RESET', null, { root: true })
   },
 }
 

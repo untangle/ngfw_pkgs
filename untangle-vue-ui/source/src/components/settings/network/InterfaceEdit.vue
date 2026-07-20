@@ -48,7 +48,7 @@
     computed: {
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
-      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      interfaces: ({ $store }) => $store.getters['config/interfaces'],
       intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
     },
     async mounted() {
@@ -60,17 +60,21 @@
     methods: {
       // check if network is available
       async isNetworkAvailable(network, cb) {
-        const result = await new Promise((resolve, reject) => {
-          window.rpc.UvmContext.netspaceManager().isNetworkAvailable(
-            (res, err) => (err ? reject(err) : resolve(res)),
-            'networking',
-            network,
-          )
-        })
-        if (cb) {
-          cb(result)
+        try {
+          const result = await new Promise((resolve, reject) => {
+            window.rpc.UvmContext.netspaceManager().isNetworkAvailable(
+              (res, err) => (err ? reject(err) : resolve(res)),
+              'networking',
+              network,
+            )
+          })
+          if (cb) {
+            cb(result)
+          }
+          return (this.status = result)
+        } catch (ex) {
+          Util.handleException(ex)
         }
-        return (this.status = result)
       },
 
       // get the interface status
@@ -100,37 +104,57 @@
 
       /** returns box Wi-Fi channels */
       async onGetWifiChannels(countryCode, cb) {
-        if (countryCode === '') {
-          countryCode = await window.rpc.networkManager.getWirelessRegulatoryCountryCode(this.intfSetting?.systemDev)
+        try {
+          if (countryCode === '') {
+            countryCode = await window.rpc.networkManager.getWirelessRegulatoryCountryCode(this.intfSetting?.systemDev)
+          }
+          const response = (await window.rpc.networkManager.getWirelessChannels(
+            this.intfSetting?.systemDev,
+            countryCode,
+          )) || [{ frequency: this.$t('no_channel_match'), channel: -1 }]
+          cb(response ?? null)
+        } catch (ex) {
+          Util.handleException(ex)
         }
-        const response = (await window.rpc.networkManager.getWirelessChannels(
-          this.intfSetting?.systemDev,
-          countryCode,
-        )) || [{ frequency: this.$t('no_channel_match'), channel: -1 }]
-        cb(response ?? null)
       },
 
       /** returns country codes */
       async onGetCountryItems(systemDev, cb) {
-        const response = await window.rpc.networkManager.getWirelessValidRegulatoryCountryCodes(systemDev)
-        cb(response ?? null)
+        try {
+          const response = await window.rpc.networkManager.getWirelessValidRegulatoryCountryCodes(systemDev)
+          cb(response ?? null)
+        } catch (ex) {
+          Util.handleException(ex)
+        }
       },
       /** returns wireless channels */
       async onGetWirelessChannels(systemDev, newValue, cb) {
-        const response = await window.rpc.networkManager.getWirelessChannels(systemDev, newValue)
-        cb(response ?? null)
+        try {
+          const response = await window.rpc.networkManager.getWirelessChannels(systemDev, newValue)
+          cb(response ?? null)
+        } catch (ex) {
+          Util.handleException(ex)
+        }
       },
 
       /** returns wireless regulatory compliant */
       async onWirelessRegulatoryCompliant(systemDev, cb) {
-        const response = await window.rpc.networkManager.isWirelessRegulatoryCompliant(systemDev)
-        cb(response ?? null)
+        try {
+          const response = await window.rpc.networkManager.isWirelessRegulatoryCompliant(systemDev)
+          cb(response ?? null)
+        } catch (ex) {
+          Util.handleException(ex)
+        }
       },
 
       /** fetches and returns whether the given interface is the VRRP master */
       async getVrrpMaster(interfaceId, cb) {
-        const response = await window.rpc.networkManager.isVrrpMaster(interfaceId)
-        cb(response ?? null)
+        try {
+          const response = await window.rpc.networkManager.isVrrpMaster(interfaceId)
+          cb(response ?? null)
+        } catch (ex) {
+          Util.handleException(ex)
+        }
       },
 
       async onSave(newSettings, validate) {
@@ -141,7 +165,7 @@
           this.$store.commit('SET_LOADER', true)
           this.isSaving = true
           // Save interface settings by updating the current/new interface- newSettings
-          const resultIntf = await this.$store.dispatch('settings/setInterfaces', [newSettings])
+          const resultIntf = await this.$store.dispatch('config/setInterfaces', [newSettings])
           if (resultIntf?.success) {
             this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
           } else {

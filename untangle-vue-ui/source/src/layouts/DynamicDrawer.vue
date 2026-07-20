@@ -95,7 +95,7 @@
             name: 'network',
             icon: 'mdi-lan',
             active: false,
-            match: '/settings/',
+            match: '/settings/network',
             items: [
               { name: 'interface', to: '/settings/network/interfaces' },
               { name: 'port_forward', to: '/settings/network/port-forward' },
@@ -135,16 +135,32 @@
             match: '/settings/system',
             items: [
               { name: 'settings', to: '/settings/system/settings' },
+              { name: 'administration', to: '/settings/system/administration' },
+              { name: 'events', to: '/settings/system/events' },
+              { name: 'email_menu', to: '/settings/system/email' },
               { name: 'logging', to: '/settings/system/logging' },
-              { name: 'about', to: '/settings/system/about' },
+              { name: 'Local Directory', to: '/settings/system/local-directory' },
               { name: 'upgrade', to: '/settings/system/upgrade' },
+              { name: 'about', to: '/settings/system/about' },
             ],
           },
           {
             name: 'services',
             icon: 'mdi-apps',
             active: false,
-            items: [{ name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' }],
+            match: '/settings/services',
+            items: [
+              { name: 'branding_manager', to: '/settings/services/branding-manager' },
+              { name: 'configuration_backup', to: '/settings/services/configuration-backup' },
+              { name: 'directory_connector', to: '/settings/services/directory-connector' },
+              { name: 'dynamic_blocklist', to: '/settings/services/dynamic-blocklist' },
+              { name: 'intrusion_prevention', to: '/settings/services/intrusion-prevention' },
+              { name: 'live_support', to: '/settings/services/live-support' },
+              { name: 'policy_manager', to: '/settings/services/policy-manager' },
+              { name: 'reports', to: '/settings/services/reports' },
+              { name: 'wan_balancer', to: '/settings/services/wan-balancer' },
+              { name: 'wan_failover', to: '/settings/services/wan-failover' },
+            ],
           },
         ],
       }
@@ -170,6 +186,12 @@
       },
     },
     watch: {
+      $route(to) {
+        if (this.mini) return
+        this.settingsNavItems.forEach(item => {
+          item.active = to.path.includes(item.match)
+        })
+      },
       mini: {
         immediate: true,
         handler(value) {

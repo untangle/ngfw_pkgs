@@ -1,8 +1,12 @@
 <template>
   <v-container>
     <!-- Upgrades settings section -->
+    <!-- Upgrade status alert -->
     <u-alert class="my-4">
-      <template v-if="upgradeText">
+      <div v-if="isCheckingUpgrade">
+        <v-progress-circular indeterminate size="26" color="aristaMediumBlue" />
+      </div>
+      <template v-else-if="upgradeText">
         {{ $t('system_running_latest_version') }}
       </template>
       <template v-else-if="showUpgradeIssues">
@@ -64,12 +68,13 @@
   </v-container>
 </template>
 <script>
+  import { VProgressCircular } from 'vuetify/lib'
   import { ApplianceUpgrade } from 'vuntangle'
   import store from '@/store'
   import Util from '@/util/setupUtil'
 
   export default {
-    components: { ApplianceUpgrade },
+    components: { ApplianceUpgrade, VProgressCircular },
     data: () => ({
       showUpgradeButton: false,
       isUpgradeAvailable: null,
@@ -91,11 +96,14 @@
     }),
 
     computed: {
-      settings: ({ $store }) => $store.getters['settings/systemSetting'],
+      settings: ({ $store }) => $store.getters['config/systemSetting'],
+      isCheckingUpgrade() {
+        return !this.upgradeText && !this.showUpgradeIssues && !this.showUpgradeButton
+      },
     },
 
     created() {
-      this.$store.dispatch('settings/getSystemSettings', false)
+      this.$store.dispatch('config/getSystemSettings', false)
       this.checkUpgrades()
     },
 
@@ -105,18 +113,15 @@
       },
 
       async checkUpgrades() {
-        this.$store.commit('SET_LOADER', true)
-
         this.isUpgradeAvailable = await new Promise((resolve, reject) =>
           window.rpc.systemManager.upgradesAvailable((res, err) => (err ? reject(err) : resolve(res))),
-        ).finally(() => this.$store.commit('SET_LOADER', false))
+        )
 
         if (this.isUpgradeAvailable) {
           this.canUpgrade()
         } else {
           this.upgradeText = true
         }
-        this.$store.commit('SET_LOADER', false)
       },
 
       async canUpgrade() {
@@ -168,7 +173,7 @@
           }
         }
         store.commit('SET_LOADER', true)
-        const response = await store.dispatch('settings/setSystemSettings', upgradeData)
+        const response = await store.dispatch('config/setSystemSettings', upgradeData)
         if (response.success) {
           this.$vuntangle.toast.add(this.$t('saved_successfully', [this.$t('settings')]))
         } else {
@@ -304,7 +309,7 @@
        * Fetches updated system settings and updates the store.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getSystemSettings', true)
+        this.$store.dispatch('config/getSystemSettings', true)
       },
     },
   }

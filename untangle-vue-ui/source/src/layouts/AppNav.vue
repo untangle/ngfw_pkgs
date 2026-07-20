@@ -102,18 +102,17 @@
 </template>
 <script>
   import store from '@/store'
-  import api from '@/plugins/api'
 
   export default {
     data: () => ({
-      theme: store.getters['settings/theme'],
+      theme: store.getters['config/theme'],
     }),
     computed: {
       languageSettings() {
-        return this.$store.getters['settings/languageSettings']
+        return this.$store.getters['config/languageSettings']
       },
       upgradeStatus() {
-        return store.getters['settings/upgradeStatus']
+        return store.getters['config/upgradeStatus']
       },
     },
 
@@ -122,7 +121,7 @@
       theme: {
         immediate: true,
         handler(theme) {
-          if (theme) store.dispatch('settings/setTheme', theme)
+          if (theme) store.dispatch('config/setTheme', theme)
         },
       },
       // set selection if theme changes from somewhere else
@@ -138,7 +137,7 @@
     },
 
     created() {
-      this.$store.dispatch('settings/getLanguageSettings')
+      this.$store.dispatch('config/getLanguageSettings')
     },
 
     methods: {
@@ -147,8 +146,9 @@
         store.commit('SET_MINI_DRAWER', !store.state.miniDrawer)
       },
       async logout() {
-        await api.get('/auth/logout?url=/admin&realm=Administrator')
+        await this.$store.dispatch('auth/logout')
         window.rpc = undefined
+        window.quarantineRpc = undefined
         this.$router.push({ name: 'login' })
       },
       setLanguage() {

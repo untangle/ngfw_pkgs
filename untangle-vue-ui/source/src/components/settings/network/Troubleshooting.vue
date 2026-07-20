@@ -23,10 +23,10 @@
 
     computed: {
       // uri settings from store
-      uriSettings: ({ $store }) => $store.getters['settings/uriSettings'],
+      uriSettings: ({ $store }) => $store.getters['config/uriSettings'],
 
       // network settings from the store
-      networkSettings: ({ $store }) => $store.getters['settings/networkSetting'],
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
 
       // dns test host from uri settings for Connectivity test
       dnsTestHost: ({ uriSettings }) => uriSettings?.dnsTestHost,
@@ -46,8 +46,8 @@
     },
 
     created() {
-      this.$store.dispatch('settings/getUriSettings', false)
-      this.$store.dispatch('settings/getNetworkSettings', false)
+      this.$store.dispatch('config/getUriSettings', false)
+      this.$store.dispatch('config/getNetworkSettings', false)
     },
 
     methods: {
@@ -144,7 +144,7 @@
        * Optional hook triggered on browser refresh. refetches the settings.
        */
       onBrowserRefresh() {
-        this.$store.dispatch('settings/getNetworkSettings', true)
+        this.$store.dispatch('config/getNetworkSettings', true)
       },
     },
   }
