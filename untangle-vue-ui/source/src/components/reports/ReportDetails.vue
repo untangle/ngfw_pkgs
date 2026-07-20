@@ -45,6 +45,7 @@
         $serverClockOffsetMs: () => this.serverClockOffsetMs,
         $refreshTick: () => this.refreshTick,
         $showTimeRangeHistory: true,
+        $timeRangeSessionKey: () => this.$store.getters['reports/timeRangeSessionKey'],
       }
     },
 
