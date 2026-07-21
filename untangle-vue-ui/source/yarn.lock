@@ -1142,9 +1142,9 @@
     strip-json-comments "^3.1.1"
 
 "@fontsource/metropolis@^5.2.5":
-  version "5.2.5"
-  resolved "https://registry.yarnpkg.com/@fontsource/metropolis/-/metropolis-5.2.5.tgz#093df50a064157e168227e802789c03d69febcc6"
-  integrity sha512-zAz6XS1ZXVXZadcqsOnToiePAKEiEywxOwILEaE4sRl+pVOFQI/30xMiKvjQae1NRK3TbeKxJAmt+yFkPguXJw==
+  version "5.3.0"
+  resolved "https://registry.yarnpkg.com/@fontsource/metropolis/-/metropolis-5.3.0.tgz#f534f5da37e1791a0bb3e649347e16543f6b3aba"
+  integrity sha512-s1KD3SoZdxBgzIKRYGDeIUToIkIHCuIP/t5NUIKh0z1LHU3VqrdLCGxQpNTndI4WuqD1ID+03VfzaTXcDC3MFg==
 
 "@fontsource/roboto@^4.5.5":
   version "4.5.8"
@@ -2639,9 +2639,9 @@ base@^0.11.1:
     pascalcase "^0.1.1"
 
 baseline-browser-mapping@^2.10.42:
-  version "2.10.43"
-  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.10.43.tgz#7b5d11590ce5acdbe4859443e3c940e81ce8c02d"
-  integrity sha512-AjYpR78kDWAY3Efj+cDTFH9t9SCoL7OoTp1BOb0mQV7S+6CiLwnWM3FyxhJtdPufDFKzmCSFoUncKjWgJEZTCQ==
+  version "2.10.44"
+  resolved "https://registry.yarnpkg.com/baseline-browser-mapping/-/baseline-browser-mapping-2.10.44.tgz#2e074675e640b67cb3835c54c11aa2dd9119c0f8"
+  integrity sha512-T3ghW+sl/ZJ8w1v/yQx3qvJ9040DWoLBz8JT/CILbAKcFyG9b2MRe75v6W5uXjv6uH1lumK2Kv46y2zSkcej0Q==
 
 batch-processor@1.0.0:
   version "1.0.0"
@@ -2847,9 +2847,9 @@ caniuse-lite@^1.0.30001726:
   integrity sha512-uhE1Ye5vgqju6OI71HTQqcBCZrvHugk0MjLak7Q+HfoBgoq5Bi+5YnwjP4fjDgrtYr/l8MVRBvzz9dPD4KyK0A==
 
 caniuse-lite@^1.0.30001803:
-  version "1.0.30001805"
-  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001805.tgz#78d5d5968a69b7ff81af87a96d7ddc7ea6670b1e"
-  integrity sha512-52noaS3DubycKSXaU30TwPGIp+POyQSUVa5jBEq3vkRkY0kjyb3LQgvhU6WGyCcyXqVLWO0Cw0Q6BSdD0kUfVA==
+  version "1.0.30001806"
+  resolved "https://registry.yarnpkg.com/caniuse-lite/-/caniuse-lite-1.0.30001806.tgz#1bc8e502b723fa393455dfbedd5ccec0c29bb74e"
+  integrity sha512-72Cuvd95zbSYPKq6Fhg8eDJRlzgWDf7/mtoZv6Qe/DYNCEBdNxoA3+rZAU2ZhGCpZlns3EssFavaZomckT5Uuw==
 
 case-sensitive-paths-webpack-plugin@^2.3.0:
   version "2.4.0"
@@ -3613,9 +3613,9 @@ electron-to-chromium@^1.5.173:
   integrity sha512-rFCxROw7aOe4uPTfIAx+rXv9cEcGx+buAF4npnhtTqCJk5KDFRnh3+KYj7rdVh6lsFt5/aPs+Irj9rZ33WMA7w==
 
 electron-to-chromium@^1.5.389:
-  version "1.5.392"
-  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.392.tgz#31e9f9af0d8df3d1489468a4242b173605617482"
-  integrity sha512-1yQq3VQCZRwsnYc67Oc+1fge6Lwtn0hzi6zmEVkB61Zx21kTbwJAW4dFLadl5Rc1tKhG/kSpYXnfiAhu0f0a1g==
+  version "1.5.394"
+  resolved "https://registry.yarnpkg.com/electron-to-chromium/-/electron-to-chromium-1.5.394.tgz#1b7eaf1abbeabaced7ce401705ec7cc488fd492b"
+  integrity sha512-Wmt2Gm0o8JWBuGgmc4XZ0u9s1RaCRqhxP47phplmfg04+qypTUurpeJGP45A7Fhv7jdrrVH44PLlR9qXo37cVQ==
 
 element-resize-detector@^1.2.1:
   version "1.2.4"
@@ -5596,10 +5596,15 @@ lodash.uniq@^4.5.0:
   resolved "https://registry.yarnpkg.com/lodash.uniq/-/lodash.uniq-4.5.0.tgz#d0225373aeb652adc1bc82e4945339a842754773"
   integrity sha512-xfBaXQd9ryd9dlSDvnvI0lvxfLJlYAZzXomUYzLKtUeOQvOP5piqAWuGtrhWeqaXK9hhoM/iyJc5AV+XfsX3HQ==
 
-lodash@^4.17.20, lodash@^4.17.21, lodash@^4.17.23:
+lodash@^4.17.20, lodash@^4.17.23:
   version "4.17.23"
   resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.17.23.tgz#f113b0378386103be4f6893388c73d0bde7f2c5a"
   integrity sha512-LgVTMpQtIopCi79SJeDiP0TfWi5CNEc/L/aRdTh3yIvmZXTnheWpKjSZhnvMl8iXbC1tFg9gdHHDMLoV7CnG+w==
+
+lodash@^4.17.21:
+  version "4.18.1"
+  resolved "https://registry.yarnpkg.com/lodash/-/lodash-4.18.1.tgz#ff2b66c1f6326d59513de2407bf881439812771c"
+  integrity sha512-dMInicTPVE8d1e5otfwmmjlxkZoUpiVLwyeTdUsi/Caj/gfzzblBcCE5sRHV/AsjuCmxWrte2TNGSYuCeCq+0Q==
 
 log-symbols@^4.1.0:
   version "4.1.0"
@@ -8235,9 +8240,9 @@ vuex@^3.6.2:
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
-"vuntangle@git+ssh://git@github.com/untangle/vuntangle.git#ngfw-17.5-release":
+"vuntangle@git+ssh://git@github.com/untangle/vuntangle.git#ngfw-18.0-release":
   version "1.60.10"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#e5755e8c44ead0417eb9dd814df75a1a1bf62774"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#8cbf0ac3d7b87967ecfb16c2a74333947294da20"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"
