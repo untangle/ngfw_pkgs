@@ -24,6 +24,8 @@
   import { Firewall, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import conditionDataMixin from '../conditionDataMixin'
+  import util from '@/util/util'
 
   export default {
     name: 'FirewallApp',
@@ -34,7 +36,21 @@
       VDivider,
     },
 
-    mixins: [appMixin],
+    mixins: [appMixin, conditionDataMixin(['directory-connector'])],
+
+    provide() {
+      return {
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          directoryGroups: this.directoryGroups,
+          directoryDomains: this.directoryDomains,
+          directoryUsers: this.directoryUsers,
+        }),
+        $features: { isExpertMode: this.isExpertMode, hasFlaggedAction: true },
+        $readOnly: false,
+        $applications: {},
+      }
+    },
 
     props: {
       appData: { type: Object, default: null },
@@ -48,7 +64,21 @@
     },
 
     computed: {
+      // Get the consolidated app data for the firewall app.
       consolidatedAppData: appInstance => appInstance.buildConsolidatedAppData(),
+      // Get the network settings from the store.
+      networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
+      // Get the list of interfaces from the network settings.
+      interfaces: ({ networkSettings }) => util.getInterfaceList(networkSettings, true, true),
+      // Get the expert mode status from the store.
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
+    },
+
+    /**
+     * Get the network settings when the component is created.
+     */
+    created() {
+      this.$store.dispatch('config/getNetworkSettings', false)
     },
   }
 </script>
