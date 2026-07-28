@@ -55,7 +55,7 @@
   import { ngfwCapabilities } from './ipCapabilities'
   import serviceMixin from './serviceMixin'
   import util from '@/util/util'
-  import setupUtil from '@/util/setupUtil'
+  import Util from '@/util/setupUtil'
 
   // Matches an IPv4 address with optional CIDR prefix, e.g. 192.168.1.0/24
   const ipv4NetworkRegex = /((\d{1,3}\.){3}\d{1,3})(\/(\d{1,2})|)/
@@ -202,7 +202,7 @@
           this.cachedSignatures = []
           await this.onFetchSignatures()
         } catch (err) {
-          setupUtil.handleException(err)
+          Util.handleException(err)
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
@@ -323,7 +323,7 @@
               const text = await download(setName)
               signatures.push(...this.buildSignatures(text, setName))
             } catch (err) {
-              setupUtil.handleException(err)
+              Util.handleException(err)
               signatureSkips.push(setName)
             }
           }
@@ -334,7 +334,7 @@
           this.signatureGroups = this.buildGroups(signatures)
           this.lastUpdated = this.overviewData.lastUpdate
         } catch (err) {
-          setupUtil.handleException(err)
+          Util.handleException(err)
         }
       },
 
@@ -522,10 +522,10 @@
           if (result?.updateSuccess === true) {
             await this.getSettings()
           } else {
-            setupUtil.handleException(this.$t('update_signatures_failed'))
+            Util.handleException(this.$t('update_signatures_failed'))
           }
         } catch (err) {
-          setupUtil.handleException(err)
+          Util.handleException(err)
         } finally {
           this.$store.commit('SET_LOADER', false)
         }
