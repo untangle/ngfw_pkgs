@@ -95,12 +95,13 @@
         companyName: '',
         homeNetworks: [],
         defaultNetwork: '192.168.1.0/24',
-        isExpertMode: false,
       }
     },
 
     computed: {
       ...mapGetters('metrics', ['getAppMetric', 'lastUpdateTime', 'systemStats']),
+
+      isExpertMode: ({ $store }) => $store.getters['config/isExpertMode'],
 
       networkSettings: ({ $store }) => $store.getters['config/networkSetting'],
 
@@ -187,7 +188,6 @@
           ])
 
           this.companyName = companyName
-          this.isExpertMode = window?.rpc?.isExpertMode || false
           // homeNetworks drives HOME_NET resolution in networkVariables computed
           this.homeNetworks = status?.homeNetworks ?? []
           this.defaultNetwork = status?.homeNetworks?.[0] ?? '192.168.1.0/24'
