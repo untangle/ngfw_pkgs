@@ -234,22 +234,38 @@ const actions = {
   },
 
   /**
-   * Imports report entries into the backend via the full settings path.
-   * Uses the same getSettingsV2/setSettingsV2 pattern as store/apps.js.
+   * Imports report entries in bulk by fetching the full ReportsSettings via getSettingsV2,
+   * updating its reportEntries array (replace or append), and saving back via setSettingsV2.
+   * After saving, dispatches loadReports to refresh the store from getReportEntriesV2.
+   *
+   * Reports should already be cleaned by the caller (transient fields stripped,
+   * javaClass set, uniqueIds assigned or preserved based on replaceAll).
    *
    * @param {Object} payload
-   * @param {Array}  payload.reports    - prepared ReportEntry objects to import
-   * @param {boolean} payload.replaceAll - true replaces all entries, false appends
+   * @param {Array}  payload.reports    - cleaned ReportEntry objects ready for backend
+   * @param {boolean} payload.replaceAll - if true, replaces all existing entries; if false, appends to existing
    * @returns {Object} { success: boolean, error?: Error }
    */
-  async importReports({ state, dispatch }, { reports, replaceAll }) {
-    const reportsManager = state.reportsManager
-    if (!reportsManager) {
-      return { success: false, error: new Error('Reports manager not available') }
-    }
-
+  async importReports({ dispatch }, { reports, replaceAll }) {
     try {
-      await Rpc.asyncData(reportsManager, 'importReportEntriesV2', reports, replaceAll)
+      const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+      if (!reportsApp) {
+        return { success: false, error: new Error('Reports app not available') }
+      }
+
+      const settings = await Rpc.asyncData(reportsApp, 'getSettingsV2')
+      if (!settings) {
+        return { success: false, error: new Error('Failed to load reports settings') }
+      }
+
+      if (replaceAll) {
+        settings.reportEntries = reports
+      } else {
+        settings.reportEntries = [...(settings.reportEntries || []), ...reports]
+      }
+
+      await Rpc.asyncData(reportsApp, 'setSettingsV2', settings)
+
       await dispatch('loadReports')
       return { success: true }
     } catch (error) {

@@ -116,6 +116,7 @@
           const rep = { ...r }
           COMPUTED_FIELDS.forEach(f => delete rep[f])
           delete rep._importIndex
+          rep.javaClass = 'com.untangle.app.reports.ReportEntry'
           if (!rep.uniqueId || (!replaceAll && existingIdSet.has(rep.uniqueId))) {
             rep.uniqueId = 'report-' + Math.random().toString(36).substring(2)
           }
