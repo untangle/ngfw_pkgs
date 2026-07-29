@@ -234,6 +234,31 @@ const actions = {
   },
 
   /**
+   * Imports report entries into the backend via the full settings path.
+   * Uses the same getSettingsV2/setSettingsV2 pattern as store/apps.js.
+   *
+   * @param {Object} payload
+   * @param {Array}  payload.reports    - prepared ReportEntry objects to import
+   * @param {boolean} payload.replaceAll - true replaces all entries, false appends
+   * @returns {Object} { success: boolean, error?: Error }
+   */
+  async importReports({ state, dispatch }, { reports, replaceAll }) {
+    const reportsManager = state.reportsManager
+    if (!reportsManager) {
+      return { success: false, error: new Error('Reports manager not available') }
+    }
+
+    try {
+      await Rpc.asyncData(reportsManager, 'importReportEntriesV2', reports, replaceAll)
+      await dispatch('loadReports')
+      return { success: true }
+    } catch (error) {
+      Util.handleException(error, 'Failed to import reports')
+      return { success: false, error }
+    }
+  },
+
+  /**
    * Fetches policy name/ID pairs from the backend for EVENT_LIST detail rendering.
    * Only runs once — returns immediately if policiesInfo is already populated.
    * Returns an empty list when no policy-manager is installed.
