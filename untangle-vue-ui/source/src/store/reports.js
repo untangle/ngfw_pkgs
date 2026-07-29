@@ -234,6 +234,47 @@ const actions = {
   },
 
   /**
+   * Imports report entries in bulk by fetching the full ReportsSettings via getSettingsV2,
+   * updating its reportEntries array (replace or append), and saving back via setSettingsV2.
+   * After saving, dispatches loadReports to refresh the store from getReportEntriesV2.
+   *
+   * Reports should already be cleaned by the caller (transient fields stripped,
+   * javaClass set, uniqueIds assigned or preserved based on replaceAll).
+   *
+   * @param {Object} payload
+   * @param {Array}  payload.reports    - cleaned ReportEntry objects ready for backend
+   * @param {boolean} payload.replaceAll - if true, replaces all existing entries; if false, appends to existing
+   * @returns {Object} { success: boolean, error?: Error }
+   */
+  async importReports({ dispatch }, { reports, replaceAll }) {
+    try {
+      const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+      if (!reportsApp) {
+        return { success: false, error: new Error('Reports app not available') }
+      }
+
+      const settings = await Rpc.asyncData(reportsApp, 'getSettingsV2')
+      if (!settings) {
+        return { success: false, error: new Error('Failed to load reports settings') }
+      }
+
+      if (replaceAll) {
+        settings.reportEntries = reports
+      } else {
+        settings.reportEntries = [...(settings.reportEntries || []), ...reports]
+      }
+
+      await Rpc.asyncData(reportsApp, 'setSettingsV2', settings)
+
+      await dispatch('loadReports')
+      return { success: true }
+    } catch (error) {
+      Util.handleException(error, 'Failed to import reports')
+      return { success: false, error }
+    }
+  },
+
+  /**
    * Fetches policy name/ID pairs from the backend for EVENT_LIST detail rendering.
    * Only runs once — returns immediately if policiesInfo is already populated.
    * Returns an empty list when no policy-manager is installed.
