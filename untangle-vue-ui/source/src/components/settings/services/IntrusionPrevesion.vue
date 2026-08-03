@@ -357,9 +357,9 @@
 
             const conditions = rule.conditions || []
             const allMatch = conditions.every(cond => {
-              const typeStr = (cond.typeString || '').toUpperCase()
-              if (typeStr === 'SYSTEM_MEMORY') return true
-              if (typeStr === 'CLASSTYPE') {
+              const type = (cond.type || '').toUpperCase()
+              if (type === 'SYSTEM_MEMORY') return true
+              if (type === 'CLASSTYPE') {
                 const allowed = cond.value
                   .toLowerCase()
                   .split(',')
