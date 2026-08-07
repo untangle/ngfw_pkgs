@@ -19,6 +19,7 @@
       :tabs="allTabs"
       :disabled="!isLicensed && isInstalled"
       :metrics-data="formattedMetrics"
+      :network-settings="networkSettings"
       :reports="appReports"
       :overview-data="overviewData"
       :memory-data="memoryData"
