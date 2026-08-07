@@ -64,39 +64,45 @@
         this.$store.commit('SET_LOADER', true) // Activate loader
         try {
           // Execute multiple RPC calls concurrently to get server data
-          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = await Promise.all([
-            window.rpc.adminManager.getKernelVersion(), // Kernel version
-            window.rpc.adminManager.getModificationState(), // Modification state
-            window.rpc.adminManager.getRebootCount(), // Reboot count
-            window.rpc.hostTable.getCurrentActiveSize(), // Current active device count
-            window.rpc.hostTable.getMaxActiveSize(), // Max active device count since reboot
-            window.rpc.fullVersionAndRevision, // Full version and revision
-            window.rpc.serverUID, // Server UID
-            window.rpc.serverSerialnumber, // Server serial number
-            window.rpc.regionName, // Region name
+          const results = await Promise.allSettled([
+            Promise.resolve().then(() => window.rpc.adminManager.getKernelVersion()), // Kernel version
+            Promise.resolve().then(() => window.rpc.adminManager.getModificationState()), // Modification state
+            Promise.resolve().then(() => window.rpc.adminManager.getRebootCount()), // Reboot count
+            Promise.resolve().then(() => window.rpc.hostTable.getCurrentActiveSize()), // Current active device count
+            Promise.resolve().then(() => window.rpc.hostTable.getMaxActiveSize()), // Max active device count since reboot
+            Promise.resolve().then(() => window.rpc.fullVersionAndRevision), // Full version and revision
+            Promise.resolve().then(() => window.rpc.serverUID), // Server UID
+            Promise.resolve().then(() => window.rpc.serverSerialnumber), // Server serial number
+            Promise.resolve().then(() => window.rpc.regionName), // Region name
           ])
 
+          const value = r => (r.status === 'fulfilled' ? r.value : undefined)
+          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = results.map(value)
+
           // Initialize data array with UID
-          const data = [{ name: 'uid_name', value: uid }]
+          const data = []
+          if (uid != null) data.push({ name: 'uid_name', value: uid })
           // Add serial number if available
           if (serial) data.push({ name: 'serial_number', value: serial })
 
           // Fetch account info if UID is valid
           if (uid && uid.length === 19) {
-            const account = await util.fetchAccountInfo(uid)
-            if (account && account.account) data.push({ name: 'account', value: account.account })
+            try {
+              const account = await util.fetchAccountInfo(uid)
+              if (account?.account) data.push({ name: 'account', value: account.account })
+            } catch {
+              // external store unreachable — skip Account row, keep everything else
+            }
           }
 
           // Add remaining server data to the array
-          data.push(
-            { name: 'build', value: build },
-            { name: 'kernel', value: kernel },
-            { name: 'region', value: region },
-            { name: 'history', value: history },
-            { name: 'reboots', value: reboots },
-            { name: 'current_active_device_count', value: currentActive },
-            { name: 'highest_active_device_count_since_reboot', value: maxActive },
-          )
+          if (build != null) data.push({ name: 'build', value: build })
+          if (kernel != null) data.push({ name: 'kernel', value: kernel })
+          if (region != null) data.push({ name: 'region', value: region })
+          if (history != null) data.push({ name: 'history', value: history })
+          if (reboots != null) data.push({ name: 'reboots', value: reboots })
+          if (currentActive != null) data.push({ name: 'current_active_device_count', value: currentActive })
+          if (maxActive != null) data.push({ name: 'highest_active_device_count_since_reboot', value: maxActive })
 
           // Update component's serverData
           this.serverData = data
