@@ -1,3 +1,12 @@
+untangle-linux-config (6.1.1-1) current; urgency=medium
+
+  * CVE-2026-23112: blacklist NVMe target modules (nvmet, nvmet_tcp,
+    nvmet_rdma, nvmet_fc) via /etc/modprobe.d/blacklist-nvmet.conf.
+    NGFW never uses NVMe target functionality; modules ship on disk
+    from Debian defaults but are never loaded at runtime.
+
+ -- Rohit Singh <rohit.singh@arista.com>  Sun, 01 Jun 2026 12:00:00 +0530
+
 untangle-linux-config (6.1.0~svn20090123r21556trunk-1lenny) chaos; urgency=low
 
   * auto build
