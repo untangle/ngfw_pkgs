@@ -26,6 +26,7 @@
       :max-memory="maxMemory"
       :signatures="signatures"
       :signature-groups="signatureGroups"
+      :home-networks="homeNetworks"
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
@@ -94,7 +95,7 @@
         signatures: [],
         signatureGroups: {},
         companyName: '',
-        homeNetworks: [],
+        homeNetworks: '',
         defaultNetwork: '192.168.1.0/24',
       }
     },
@@ -183,14 +184,14 @@
         try {
           const [status, companyName] = await Promise.all([
             new Promise(resolve => {
-              this.appManager.getStatus(result => resolve(result?.result ?? result))
+              this.appManager.getAppStatus(result => resolve(result?.result ?? result))
             }),
             this.$store.dispatch('apps/getCompanyName'),
           ])
 
           this.companyName = companyName
           // homeNetworks drives HOME_NET resolution in networkVariables computed
-          this.homeNetworks = status?.homeNetworks ?? []
+          this.homeNetworks = status?.homeNetworks != null ? '[' + status.homeNetworks.join(', ') + ']' : ''
           this.defaultNetwork = status?.homeNetworks?.[0] ?? '192.168.1.0/24'
 
           // buildErrors equivalent
@@ -246,7 +247,7 @@
       processVariableValue(name, value) {
         if (value !== 'default') return value
         if (name === 'HOME_NET') {
-          return this.homeNetworks.length ? `[${this.homeNetworks.join(', ')}]` : ''
+          return this.homeNetworks || ''
         }
         return 'unknown'
       },

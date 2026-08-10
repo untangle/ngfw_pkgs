@@ -38,7 +38,7 @@ const getters = {
   publicUrl: state => state.publicUrl,
   mailSender: state => state.mailSender || {},
   languageSettings: state => state.languageSettings,
-  networkSetting: state => state.networkSetting || [],
+  networkSetting: state => state.networkSetting || {},
   interfaces: state => state?.networkSetting?.interfaces || [],
   interface: state => device => {
     return state.networkSetting?.interfaces?.find(intf => intf.device === device)
