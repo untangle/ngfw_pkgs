@@ -63,40 +63,54 @@
       async getServerData() {
         this.$store.commit('SET_LOADER', true) // Activate loader
         try {
+          const safe = fn => Promise.resolve().then(fn)
+          const rpc = window.rpc
+
           // Execute multiple RPC calls concurrently to get server data
-          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = await Promise.all([
-            window.rpc.adminManager.getKernelVersion(), // Kernel version
-            window.rpc.adminManager.getModificationState(), // Modification state
-            window.rpc.adminManager.getRebootCount(), // Reboot count
-            window.rpc.hostTable.getCurrentActiveSize(), // Current active device count
-            window.rpc.hostTable.getMaxActiveSize(), // Max active device count since reboot
-            window.rpc.fullVersionAndRevision, // Full version and revision
-            window.rpc.serverUID, // Server UID
-            window.rpc.serverSerialnumber, // Server serial number
-            window.rpc.regionName, // Region name
+          const results = await Promise.allSettled([
+            safe(() => rpc.adminManager.getKernelVersion()), // Kernel version
+            safe(() => rpc.adminManager.getModificationState()), // Modification state
+            safe(() => rpc.adminManager.getRebootCount()), // Reboot count
+            safe(() => rpc.hostTable.getCurrentActiveSize()), // Current active device count
+            safe(() => rpc.hostTable.getMaxActiveSize()), // Max active device count since reboot
+            safe(() => rpc.fullVersionAndRevision), // Full version and revision
+            safe(() => rpc.serverUID), // Server UID
+            safe(() => rpc.serverSerialnumber), // Server serial number
+            safe(() => rpc.regionName), // Region name
           ])
 
+          const val = r => (r.status === 'fulfilled' ? r.value : undefined)
+          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = results.map(val)
+
           // Initialize data array with UID
-          const data = [{ name: 'uid_name', value: uid }]
+          const data = []
+          if (uid != null) data.push({ name: 'uid_name', value: uid })
           // Add serial number if available
           if (serial) data.push({ name: 'serial_number', value: serial })
 
           // Fetch account info if UID is valid
-          if (uid && uid.length === 19) {
-            const account = await util.fetchAccountInfo(uid)
-            if (account && account.account) data.push({ name: 'account', value: account.account })
+          if (uid?.length === 19) {
+            try {
+              const account = await util.fetchAccountInfo(uid)
+              if (account?.account) data.push({ name: 'account', value: account.account })
+            } catch {
+              // external store unreachable
+            }
           }
 
           // Add remaining server data to the array
-          data.push(
-            { name: 'build', value: build },
-            { name: 'kernel', value: kernel },
-            { name: 'region', value: region },
-            { name: 'history', value: history },
-            { name: 'reboots', value: reboots },
-            { name: 'current_active_device_count', value: currentActive },
-            { name: 'highest_active_device_count_since_reboot', value: maxActive },
-          )
+          const fields = [
+            ['build', build],
+            ['kernel', kernel],
+            ['region', region],
+            ['history', history],
+            ['reboots', reboots],
+            ['current_active_device_count', currentActive],
+            ['highest_active_device_count_since_reboot', maxActive],
+          ]
+          for (const [name, value] of fields) {
+            if (value != null) data.push({ name, value })
+          }
 
           // Update component's serverData
           this.serverData = data
