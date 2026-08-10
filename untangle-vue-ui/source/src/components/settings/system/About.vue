@@ -63,21 +63,24 @@
       async getServerData() {
         this.$store.commit('SET_LOADER', true) // Activate loader
         try {
+          const safe = fn => Promise.resolve().then(fn)
+          const rpc = window.rpc
+
           // Execute multiple RPC calls concurrently to get server data
           const results = await Promise.allSettled([
-            Promise.resolve().then(() => window.rpc.adminManager.getKernelVersion()), // Kernel version
-            Promise.resolve().then(() => window.rpc.adminManager.getModificationState()), // Modification state
-            Promise.resolve().then(() => window.rpc.adminManager.getRebootCount()), // Reboot count
-            Promise.resolve().then(() => window.rpc.hostTable.getCurrentActiveSize()), // Current active device count
-            Promise.resolve().then(() => window.rpc.hostTable.getMaxActiveSize()), // Max active device count since reboot
-            Promise.resolve().then(() => window.rpc.fullVersionAndRevision), // Full version and revision
-            Promise.resolve().then(() => window.rpc.serverUID), // Server UID
-            Promise.resolve().then(() => window.rpc.serverSerialnumber), // Server serial number
-            Promise.resolve().then(() => window.rpc.regionName), // Region name
+            safe(() => rpc.adminManager.getKernelVersion()), // Kernel version
+            safe(() => rpc.adminManager.getModificationState()), // Modification state
+            safe(() => rpc.adminManager.getRebootCount()), // Reboot count
+            safe(() => rpc.hostTable.getCurrentActiveSize()), // Current active device count
+            safe(() => rpc.hostTable.getMaxActiveSize()), // Max active device count since reboot
+            safe(() => rpc.fullVersionAndRevision), // Full version and revision
+            safe(() => rpc.serverUID), // Server UID
+            safe(() => rpc.serverSerialnumber), // Server serial number
+            safe(() => rpc.regionName), // Region name
           ])
 
-          const value = r => (r.status === 'fulfilled' ? r.value : undefined)
-          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = results.map(value)
+          const val = r => (r.status === 'fulfilled' ? r.value : undefined)
+          const [kernel, history, reboots, currentActive, maxActive, build, uid, serial, region] = results.map(val)
 
           // Initialize data array with UID
           const data = []
@@ -86,23 +89,28 @@
           if (serial) data.push({ name: 'serial_number', value: serial })
 
           // Fetch account info if UID is valid
-          if (uid && uid.length === 19) {
+          if (uid?.length === 19) {
             try {
               const account = await util.fetchAccountInfo(uid)
               if (account?.account) data.push({ name: 'account', value: account.account })
             } catch {
-              // external store unreachable — skip Account row, keep everything else
+              // external store unreachable
             }
           }
 
           // Add remaining server data to the array
-          if (build != null) data.push({ name: 'build', value: build })
-          if (kernel != null) data.push({ name: 'kernel', value: kernel })
-          if (region != null) data.push({ name: 'region', value: region })
-          if (history != null) data.push({ name: 'history', value: history })
-          if (reboots != null) data.push({ name: 'reboots', value: reboots })
-          if (currentActive != null) data.push({ name: 'current_active_device_count', value: currentActive })
-          if (maxActive != null) data.push({ name: 'highest_active_device_count_since_reboot', value: maxActive })
+          const fields = [
+            ['build', build],
+            ['kernel', kernel],
+            ['region', region],
+            ['history', history],
+            ['reboots', reboots],
+            ['current_active_device_count', currentActive],
+            ['highest_active_device_count_since_reboot', maxActive],
+          ]
+          for (const [name, value] of fields) {
+            if (value != null) data.push({ name, value })
+          }
 
           // Update component's serverData
           this.serverData = data
