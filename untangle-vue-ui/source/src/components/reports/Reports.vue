@@ -10,6 +10,7 @@
     @view-report="onViewReport"
     @export-category="onExportCategory"
     @import-reports="onImportReports"
+    @add-report="onAddReport"
   >
     <template #actions>
       <u-btn @click="onExportAll">{{ $t('export') }}</u-btn>
@@ -50,6 +51,10 @@
 
     methods: {
       ...mapActions('reports', ['loadReports']),
+
+      onAddReport() {
+        this.$router.push({ name: 'report-create' })
+      },
 
       async onExportCategory(categoryName) {
         await exportCategoryReports(this.allReports, categoryName)

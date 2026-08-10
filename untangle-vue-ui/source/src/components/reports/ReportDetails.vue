@@ -15,6 +15,7 @@
       @view-report="onViewReport"
       @export-all-events="onExportAllEvents"
       @auto-refresh-change="onAutoRefreshChange"
+      @edit-report="onEditReport"
     />
 
     <!-- Settings diff dialog — opened by the  action column on settings_changes rows -->
@@ -115,6 +116,18 @@
     },
 
     methods: {
+      onEditReport(uniqueId) {
+        const report = this.allReports.find(r => r.uniqueId === uniqueId)
+        if (!report) return
+        this.$router.push({
+          name: 'report-edit',
+          params: {
+            cat: urlEncode(report.category),
+            rep: urlEncode(report.title),
+          },
+        })
+      },
+
       onAutoRefreshChange(val) {
         this.autoRefresh = val
         if (val) {
