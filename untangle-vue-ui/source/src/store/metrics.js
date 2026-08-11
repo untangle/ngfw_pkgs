@@ -25,7 +25,6 @@ const state = () => ({
   isPolling: false, // Polling state flags
   lastUpdate: null,
   error: null,
-  expertMode: false, // When false, metrics with expert: true are hidden
 })
 
 const getters = {
@@ -67,14 +66,15 @@ const getters = {
    * @param {string|number} instanceId - App instance ID
    * @returns {Array} Array of {key, value, formatter} objects for UAppStatusMetrics
    */
-  getFormattedMetrics: state => instanceId => {
+  getFormattedMetrics: (state, getters, rootState, rootGetters) => instanceId => {
     if (!instanceId) return []
 
     const appMetrics = state.appMetrics[String(instanceId)]
     if (!appMetrics) return []
 
+    const isExpertMode = rootGetters['config/isExpertMode']
     return appMetrics
-      .filter(metric => !metric.expert || state.expertMode)
+      .filter(metric => !metric.expert || isExpertMode)
       .map(metric => ({
         key: metric.displayName,
         value: metric.value + (metric.displayUnits ? ' ' + metric.displayUnits : ''),
@@ -114,12 +114,6 @@ const getters = {
    * @returns {Object} System stats object
    */
   systemStats: state => state.systemStats,
-
-  /**
-   * Get expert mode state
-   * @returns {boolean} True if expert mode is enabled
-   */
-  expertMode: state => state.expertMode,
 
   /**
    * Get current error (if any)
@@ -166,15 +160,6 @@ const mutations = {
   },
 
   /**
-   * Set expert mode
-   * @param {Object} state - Vuex state
-   * @param {boolean} expertMode - True if expert mode is enabled
-   */
-  SET_EXPERT_MODE(state, expertMode) {
-    state.expertMode = expertMode
-  },
-
-  /**
    * Clear all metrics (on logout/cleanup)
    * Resets state to initial values
    */
@@ -187,23 +172,6 @@ const mutations = {
 }
 
 const actions = {
-  /**
-   * Initialize expert mode from RPC
-   *
-   * Should be called once during app initialization
-   * Fetches expert mode state from backend
-   */
-  async initExpertMode({ commit }) {
-    try {
-      const expertMode = await window.rpc.isExpertMode
-      commit('SET_EXPERT_MODE', expertMode)
-      return { success: true, expertMode }
-    } catch (err) {
-      commit('SET_EXPERT_MODE', false)
-      return { success: false, error: err }
-    }
-  },
-
   /**
    * Update metrics data (called by polling service)
    *
