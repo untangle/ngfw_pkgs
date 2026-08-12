@@ -27,6 +27,7 @@
       :signatures="signatures"
       :signature-groups="signatureGroups"
       :home-networks="homeNetworks"
+      :company-name="companyName"
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
@@ -180,7 +181,6 @@
       async getSettings() {
         if (!this.appManager) return
 
-        this.$store.commit('SET_LOADER', true)
         try {
           const [status, companyName] = await Promise.all([
             new Promise(resolve => {
@@ -194,13 +194,12 @@
           this.homeNetworks = status?.homeNetworks != null ? '[' + status.homeNetworks.join(', ') + ']' : ''
           this.defaultNetwork = status?.homeNetworks?.[0] ?? '192.168.1.0/24'
 
-          // buildErrors equivalent
+          this.$store.commit('SET_LOADER', true)
           this.overviewData = {
             lastUpdateCheck: this.formatTimestamp(status?.lastUpdateCheck),
             lastUpdate: this.formatTimestamp(status?.lastUpdate),
             daemonErrors: this.parseDaemonErrors(status?.errors),
           }
-
           this.cachedSignatures = []
           await this.onFetchSignatures()
         } catch (err) {
@@ -260,7 +259,14 @@
        */
       formatTimestamp(ts) {
         if (!ts || ts.time === 0) return this.$t('never')
-        return new Date(ts.time).toLocaleString()
+        const d = new Date(ts.time)
+        const pad = n => String(n).padStart(2, '0')
+        const hours24 = d.getHours()
+        const hours12 = hours24 % 12 || 12
+        const ampm = hours24 < 12 ? 'am' : 'pm'
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(hours12)}:${pad(
+          d.getMinutes(),
+        )}:${pad(d.getSeconds())} ${ampm}`
       },
 
       /**
