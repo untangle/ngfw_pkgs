@@ -200,8 +200,8 @@
 
           this.$store.commit('SET_LOADER', true)
           this.overviewData = {
-            lastUpdateCheck: this.formatTimestamp(status?.lastUpdateCheck),
-            lastUpdate: this.formatTimestamp(status?.lastUpdate),
+            lastUpdateCheck: util.formatTimestamp(status?.lastUpdateCheck),
+            lastUpdate: util.formatTimestamp(status?.lastUpdate),
             daemonErrors: this.parseDaemonErrors(status?.errors),
           }
           this.cachedSignatures = []
@@ -253,24 +253,6 @@
           return this.homeNetworks || ''
         }
         return 'unknown'
-      },
-
-      /**
-       * Converts a timestamp object from the app status into a locale string.
-       * Returns the i18n 'never' string when the timestamp is absent or zero.
-       * @param {{ time: number }|null} ts
-       * @returns {string}
-       */
-      formatTimestamp(ts) {
-        if (!ts || ts.time === 0) return this.$t('never')
-        const d = new Date(ts.time)
-        const pad = n => String(n).padStart(2, '0')
-        const hours24 = d.getHours()
-        const hours12 = hours24 % 12 || 12
-        const ampm = hours24 < 12 ? 'am' : 'pm'
-        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(hours12)}:${pad(
-          d.getMinutes(),
-        )}:${pad(d.getSeconds())} ${ampm}`
       },
 
       /**
