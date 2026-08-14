@@ -27,6 +27,7 @@
       :signatures="signatures"
       :signature-groups="signatureGroups"
       :home-networks="homeNetworks"
+      :company-name="companyName"
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
@@ -76,7 +77,11 @@
     provide() {
       return {
         capabilities: ngfwCapabilities,
-        $remoteData: () => ({ interfaces: this.interfaces, networkVariables: this.networkVariables }),
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          networkVariables: this.networkVariables,
+          defaultNetwork: this.defaultNetwork,
+        }),
         $features: { hasRuleLogs: false, hasIpv6Support: false, hasLogAction: false, hideRuleIdColumn: true },
         $readOnly: false,
         $applications: null,
@@ -96,7 +101,7 @@
         signatureGroups: {},
         companyName: '',
         homeNetworks: '',
-        defaultNetwork: '192.168.1.0/24',
+        defaultNetwork: '',
       }
     },
 
@@ -115,6 +120,7 @@
        * @returns {{ description: string, value: string, detail: string }[]}
        */
       networkVariables() {
+        const items = [{ description: this.$t('recommended'), value: 'recommended', detail: '' }]
         const variablesList = this.settings?.variables || []
         const resolved = variablesList
           .map(variable => ({
@@ -123,7 +129,6 @@
           }))
           .filter(variable => ipv4NetworkRegex.test(variable.detail))
 
-        const items = [{ description: this.$t('recommended'), value: 'recommended', detail: '' }]
         for (const variable of resolved) {
           items.push({
             description: `${variable.name} - ${variable.value}`,
@@ -180,7 +185,6 @@
       async getSettings() {
         if (!this.appManager) return
 
-        this.$store.commit('SET_LOADER', true)
         try {
           const [status, companyName] = await Promise.all([
             new Promise(resolve => {
@@ -194,13 +198,12 @@
           this.homeNetworks = status?.homeNetworks != null ? '[' + status.homeNetworks.join(', ') + ']' : ''
           this.defaultNetwork = status?.homeNetworks?.[0] ?? '192.168.1.0/24'
 
-          // buildErrors equivalent
+          this.$store.commit('SET_LOADER', true)
           this.overviewData = {
-            lastUpdateCheck: this.formatTimestamp(status?.lastUpdateCheck),
-            lastUpdate: this.formatTimestamp(status?.lastUpdate),
+            lastUpdateCheck: util.formatTimestamp(status?.lastUpdateCheck),
+            lastUpdate: util.formatTimestamp(status?.lastUpdate),
             daemonErrors: this.parseDaemonErrors(status?.errors),
           }
-
           this.cachedSignatures = []
           await this.onFetchSignatures()
         } catch (err) {
@@ -250,17 +253,6 @@
           return this.homeNetworks || ''
         }
         return 'unknown'
-      },
-
-      /**
-       * Converts a timestamp object from the app status into a locale string.
-       * Returns the i18n 'never' string when the timestamp is absent or zero.
-       * @param {{ time: number }|null} ts
-       * @returns {string}
-       */
-      formatTimestamp(ts) {
-        if (!ts || ts.time === 0) return this.$t('never')
-        return new Date(ts.time).toLocaleString()
       },
 
       /**
