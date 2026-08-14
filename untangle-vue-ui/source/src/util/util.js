@@ -752,6 +752,19 @@ const util = {
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('')
   },
+
+  // formats a timestamp object to a human-readable string
+  formatTimestamp(ts) {
+    if (!ts || ts.time === 0) return i18n.t('never')
+    const d = new Date(ts.time)
+    const pad = n => String(n).padStart(2, '0')
+    const hours24 = d.getHours()
+    const hours12 = hours24 % 12 || 12
+    const ampm = hours24 < 12 ? 'am' : 'pm'
+    return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(hours12)}:${pad(
+      d.getMinutes(),
+    )}:${pad(d.getSeconds())} ${ampm}`
+  },
 }
 
 export default util
