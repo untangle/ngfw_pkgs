@@ -77,7 +77,11 @@
     provide() {
       return {
         capabilities: ngfwCapabilities,
-        $remoteData: () => ({ interfaces: this.interfaces, networkVariables: this.networkVariables }),
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+          networkVariables: this.networkVariables,
+          defaultNetwork: this.defaultNetwork,
+        }),
         $features: { hasRuleLogs: false, hasIpv6Support: false, hasLogAction: false, hideRuleIdColumn: true },
         $readOnly: false,
         $applications: null,
@@ -97,7 +101,7 @@
         signatureGroups: {},
         companyName: '',
         homeNetworks: '',
-        defaultNetwork: '192.168.1.0/24',
+        defaultNetwork: '',
       }
     },
 
@@ -116,6 +120,7 @@
        * @returns {{ description: string, value: string, detail: string }[]}
        */
       networkVariables() {
+        const items = [{ description: this.$t('recommended'), value: 'recommended', detail: '' }]
         const variablesList = this.settings?.variables || []
         const resolved = variablesList
           .map(variable => ({
@@ -124,7 +129,6 @@
           }))
           .filter(variable => ipv4NetworkRegex.test(variable.detail))
 
-        const items = [{ description: this.$t('recommended'), value: 'recommended', detail: '' }]
         for (const variable of resolved) {
           items.push({
             description: `${variable.name} - ${variable.value}`,
