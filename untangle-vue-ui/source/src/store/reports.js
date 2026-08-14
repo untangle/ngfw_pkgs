@@ -41,6 +41,9 @@ const getDefaultState = () => ({
   // Each condition: { column, operator, value, autoFormatValue }
   globalConditions: [],
 
+  // Available database tables — fetched lazily via reportsManager.getTables()
+  tables: [],
+
   // Unique key per login session — used by DateTimeRangePresets to reset saved state on logout/login
   timeRangeSessionKey: null,
 })
@@ -90,6 +93,7 @@ const getters = {
    * Populated lazily by fetchPoliciesInfo when an EVENT_LIST report is opened.
    * Returns an empty map when no policy-manager is installed.
    */
+  tables: state => state.tables,
   globalConditions: state => state.globalConditions,
   timeRangeSessionKey: state => state.timeRangeSessionKey,
 
@@ -141,6 +145,10 @@ const mutations = {
 
   SET_LAST_LOADED(state, timestamp) {
     state.lastLoaded = timestamp
+  },
+
+  SET_TABLES(state, tables) {
+    state.tables = tables
   },
 
   SET_POLICIES_INFO(state, policies) {
@@ -271,6 +279,57 @@ const actions = {
     } catch (error) {
       Util.handleException(error, 'Failed to import reports')
       return { success: false, error }
+    }
+  },
+
+  /**
+   * Persists a report entry to the backend via the reportsManager RPC,
+   * then reloads the full report list to keep the store in sync.
+   *
+   * @param {Object} entry - the ReportEntry object to create or update
+   * @returns {Object} { success: boolean, error?: Error }
+   */
+  async saveReport({ state, dispatch }, entry) {
+    try {
+      await Rpc.asyncData(state.reportsManager, 'saveReportEntry', entry)
+      await dispatch('loadReports')
+      return { success: true }
+    } catch (error) {
+      Util.handleException(error, 'Failed to save report')
+      return { success: false, error }
+    }
+  },
+
+  /**
+   * Removes a report entry from the backend via the reportsManager RPC,
+   * then reloads the full report list to keep the store in sync.
+   *
+   * @param {Object} entry - the ReportEntry object to delete
+   * @returns {Object} { success: boolean, error?: Error }
+   */
+  async deleteReport({ state, dispatch }, entry) {
+    try {
+      await Rpc.asyncData(state.reportsManager, 'removeReportEntry', entry)
+      await dispatch('loadReports')
+      return { success: true }
+    } catch (error) {
+      Util.handleException(error, 'Failed to delete report')
+      return { success: false, error }
+    }
+  },
+
+  /**
+   * Fetches the list of available database tables from the reportsManager.
+   * Skips the RPC call if tables are already loaded or the manager is not initialized.
+   */
+  async fetchTables({ state, commit }) {
+    if (state.tables.length) return
+    if (!state.reportsManager) return
+    try {
+      const result = await Rpc.asyncData(state.reportsManager, 'getTables')
+      if (result) commit('SET_TABLES', result)
+    } catch (error) {
+      Util.handleException(error)
     }
   },
 

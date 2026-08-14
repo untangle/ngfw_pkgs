@@ -13,11 +13,16 @@ export default {
       $conditionValueOptions: () => conditionValueOptions,
       $disabledReportIds: () => this.disabledReportIds,
       $conditionTableFields: () => this.translatedTableFields,
+      $tables: () => this.tables,
     }
   },
 
+  created() {
+    this.$store.dispatch('reports/fetchTables')
+  },
+
   computed: {
-    ...mapGetters('reports', ['allReports', 'globalConditions']),
+    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables']),
 
     /** Translates operator options for the global condition dropdowns. */
     globalConditionOperators() {
@@ -82,6 +87,21 @@ export default {
           rep: urlEncode(report.title),
         },
       })
+    },
+
+    /**
+     * Navigates to the report editor for the given uniqueId.
+     * If no uniqueId is provided, navigates to the create-new-report route.
+     * @param {String} uniqueId - the report's uniqueId, or falsy to create a new report
+     */
+    onEditReport(uniqueId) {
+      if (!uniqueId) {
+        this.$router.push('/reports/create')
+        return
+      }
+      const report = this.allReports.find(r => r.uniqueId === uniqueId)
+      if (!report) return
+      this.$router.push(`/reports/edit/${urlEncode(report.category)}/${urlEncode(report.title)}`)
     },
 
     /** Adds a new global condition to the Vuex store. */
