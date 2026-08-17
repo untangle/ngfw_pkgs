@@ -10,6 +10,7 @@
     @view-report="onViewReport"
     @export-category="onExportCategory"
     @import-reports="onImportReports"
+    @add-report="onEditReport"
   >
     <template #actions>
       <u-btn @click="onExportAll">{{ $t('export') }}</u-btn>

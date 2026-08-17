@@ -6,6 +6,7 @@
       :categories="categoriesForNav"
       :show-report-selector="true"
       :show-auto-refresh="true"
+      :show-settings="true"
       :is-local-ui="false"
       @add-condition="onAddCondition"
       @remove-condition="onRemoveCondition"
@@ -15,6 +16,7 @@
       @view-report="onViewReport"
       @export-all-events="onExportAllEvents"
       @auto-refresh-change="onAutoRefreshChange"
+      @edit-report="onEditReport"
     />
 
     <!-- Settings diff dialog — opened by the  action column on settings_changes rows -->
