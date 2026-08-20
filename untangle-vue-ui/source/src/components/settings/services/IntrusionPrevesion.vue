@@ -1,23 +1,11 @@
 <template>
   <v-container fluid :class="`shared-cmp d-flex flex-column flex-grow-1 pa-0`">
-    <no-license v-if="isLicensed === false && isInstalled" class="mt-2">
-      {{ $t('not_licensed_service', [$t('intrusion_prevention')]) }}
-      <template #actions>
-        <u-btn class="ml-4" to="/settings/system/about">{{ $t('view_system_license') }}</u-btn>
-        <u-btn class="ml-4" :href="manageLicenseUri" target="_blank">
-          {{ $t('manage_licenses') }}
-          <v-icon right>mdi-open-in-new</v-icon>
-        </u-btn>
-      </template>
-    </no-license>
-
     <intrusion-prevention
       v-if="settings"
       ref="intrusionPrevention"
       :settings="settings"
       :app-data="consolidatedAppData"
       :tabs="allTabs"
-      :disabled="!isLicensed && isInstalled"
       :metrics-data="formattedMetrics"
       :network-settings="networkSettings"
       :reports="appReports"
@@ -31,20 +19,14 @@
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
-        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
-          <div style="min-width: 180px">
-            <u-app-status-remove class="mt-0" :app-name="$t('intrusion_prevention')" @remove="onRemoveService" />
-          </div>
+        <div class="d-flex flex-wrap align-center" style="gap: 8px">
           <v-divider vertical class="mx-4" />
           <u-btn class="mr-2" @click="refreshData">
             {{ $vuntangle.$t('refresh') }}
           </u-btn>
-          <u-btn :disabled="!isDirty" @click="saveSettings(newSettings)">
+          <u-btn :disabled="!isDirty" @click="setSettings(newSettings)">
             {{ $vuntangle.$t('save') }}
           </u-btn>
-        </div>
-        <div v-else style="min-width: 180px">
-          <u-app-install @install="onInstallService" />
         </div>
       </template>
     </intrusion-prevention>
@@ -53,7 +35,7 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { IntrusionPrevention, NoLicense, UAppStatusRemove, UAppInstall, intrusionPreventionAllTabs } from 'vuntangle'
+  import { IntrusionPrevention, intrusionPreventionAllTabs, matchCondition } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import { ngfwCapabilities } from './ipCapabilities'
   import serviceMixin from './serviceMixin'
@@ -66,9 +48,6 @@
   export default {
     components: {
       IntrusionPrevention,
-      NoLicense,
-      UAppStatusRemove,
-      UAppInstall,
       VDivider,
     },
 
@@ -168,6 +147,11 @@
       appManager(newVal, oldVal) {
         if (newVal && !oldVal) this.getSettings()
       },
+      maxMemory(val) {
+        if (val && this.cachedSignatures.length) {
+          this.signatureGroups = this.buildGroups(this.cachedSignatures)
+        }
+      },
     },
 
     created() {
@@ -175,6 +159,18 @@
     },
 
     methods: {
+      setSettings(newSettings) {
+        const prepared = {
+          ...newSettings,
+          signatures: (newSettings.signatures || []).map(sig => ({
+            javaClass: sig.javaClass,
+            signature: sig.signature,
+            category: sig.category || 'custom',
+          })),
+        }
+        this.saveSettings(prepared)
+      },
+
       /** Reloads both app settings (license/state) and IPS-specific settings (status + signatures). */
       refreshData() {
         this.loadAppSettings()
@@ -322,6 +318,17 @@
             }
           }
 
+          const customSigs = this.settings?.signatures || []
+          customSigs.forEach(sig => {
+            if (!sig.signature) return
+            const parsed = this.buildSignatures(sig.signature, sig.category || 'custom')
+            if (parsed.length) {
+              parsed[0].reserved = false
+              parsed[0].default = false
+              signatures.push(parsed[0])
+            }
+          })
+
           signatures.sort((a, b) => Number(a.sid) - Number(b.sid))
           this.cachedSignatures = signatures
           this.signatures = signatures
@@ -337,55 +344,46 @@
       buildGroups(signatures) {
         const ipRules = this.settings?.ip_rules || []
         const cache = Object.create(null)
+        const systemMemoryBytes = this.maxMemory || 0
 
-        const resolveRuleAction = sig => {
+        const resolveRuleActionKey = sig => {
           const recommendedAction = (sig.recommendedAction || sig.action || 'log').toLowerCase()
-          const cacheKey = `${sig.classtype || ''}|${recommendedAction}`
+          const cacheKey = `${sig.sid}|${sig.gid}`
           if (cacheKey in cache) return cache[cacheKey]
 
-          let result = this.recommendedActionLabel('disable')
+          let result = 'disable'
+          const ruleTrace = []
           for (const rule of ipRules) {
             if (!rule.enabled) continue
             const actionType = rule.action?.type
             if (actionType === 'IPS_WHITELIST') continue
 
             const conditions = rule.conditions || []
-            const allMatch = conditions.every(cond => {
-              const type = (cond.type || '').toUpperCase()
-              if (type === 'SYSTEM_MEMORY') return true
-              if (type === 'CLASSTYPE') {
-                const allowed = cond.value
-                  .toLowerCase()
-                  .split(',')
-                  .map(v => v.trim())
-                const sigClasstype = (sig.classtype || '').toLowerCase()
-                return cond.op === '==' ? allowed.includes(sigClasstype) : !allowed.includes(sigClasstype)
-              }
-              return true
-            })
-            if (!allMatch) continue
+            const failedConds = conditions.filter(cond => !matchCondition(cond, sig, systemMemoryBytes))
+            const allMatch = failedConds.length === 0
+            if (!allMatch) {
+              ruleTrace.push({ actionType, failedConds })
+              continue
+            }
 
             switch (actionType) {
               case 'IPS_DEFAULT':
-                result = this.recommendedActionLabel(recommendedAction)
+                result = recommendedAction
                 break
               case 'IPS_BLOCKLOG':
-                result =
-                  recommendedAction === 'log' || recommendedAction === 'block'
-                    ? this.recommendedActionLabel('block')
-                    : this.recommendedActionLabel('disable')
+                result = recommendedAction === 'log' || recommendedAction === 'block' ? 'block' : 'disable'
                 break
               case 'IPS_LOG':
-                result = this.recommendedActionLabel('log')
+                result = 'log'
                 break
               case 'IPS_BLOCK':
-                result = this.recommendedActionLabel('block')
+                result = 'block'
                 break
               case 'IPS_DISABLE':
-                result = this.recommendedActionLabel('disable')
+                result = 'disable'
                 break
               default:
-                result = actionType
+                result = recommendedAction
             }
             cache[cacheKey] = result
             return result
@@ -396,8 +394,9 @@
 
         const raw = {}
         signatures.forEach((sig, sigIdx) => {
-          const ruleAction = resolveRuleAction(sig)
-          const enriched = Object.freeze({ ...sig, ruleAction, _sigIndex: sigIdx })
+          const ruleActionKey = resolveRuleActionKey(sig)
+          const ruleAction = this.recommendedActionLabel(ruleActionKey)
+          const enriched = Object.freeze({ ...sig, ruleAction, ruleActionKey, _sigIndex: sigIdx })
           const key = sig.classtype || 'other'
           if (!raw[key]) raw[key] = []
           raw[key].push(enriched)
@@ -473,7 +472,8 @@
 
           let action
           if (prefix === '#') action = 'disable'
-          else if (rawAction === 'alert') action = 'log'
+          else if (rawAction === 'alert' || rawAction === 'log' || rawAction === 'drop' || rawAction === 'sdrop')
+            action = 'log'
           else if (rawAction === 'reject') action = 'block'
           else action = 'log'
 
@@ -491,6 +491,8 @@
             category,
             action,
             signature: trimmed,
+            reserved: true,
+            default: true,
           })
         }
 

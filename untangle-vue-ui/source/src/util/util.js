@@ -753,10 +753,12 @@ const util = {
       .join('')
   },
 
-  // formats a timestamp object to a human-readable string
+  // formats a timestamp object to a human-readable string in the server's timezone
   formatTimestamp(ts) {
     if (!ts || ts.time === 0) return i18n.t('never')
-    const d = new Date(ts.time)
+    const browserOffsetMs = new Date().getTimezoneOffset() * 60000
+    const serverOffsetMs = store.getters['config/timeZoneOffset'] || 0
+    const d = new Date(ts.time + browserOffsetMs + serverOffsetMs)
     const pad = n => String(n).padStart(2, '0')
     const hours24 = d.getHours()
     const hours12 = hours24 % 12 || 12
