@@ -5,6 +5,7 @@
       ref="intrusionPrevention"
       :settings="settings"
       :app-data="consolidatedAppData"
+      :is-installed="isInstalled"
       :tabs="allTabs"
       :metrics-data="formattedMetrics"
       :network-settings="networkSettings"
@@ -16,17 +17,25 @@
       :signature-groups="signatureGroups"
       :home-networks="homeNetworks"
       :company-name="companyName"
+      :loading-overview="loadingOverview"
       @toggle-state="toggleAppState"
     >
       <template #actions="{ newSettings, isDirty }">
-        <div class="d-flex flex-wrap align-center" style="gap: 8px">
+        <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <div style="min-width: 140px">
+            <u-app-status-remove
+              class="mt-0"
+              service-app
+              :app-name="$t('intrusion_prevention')"
+              @remove="onRemoveService"
+            />
+          </div>
           <v-divider vertical class="mx-4" />
-          <u-btn class="mr-2" @click="refreshData">
-            {{ $vuntangle.$t('refresh') }}
-          </u-btn>
-          <u-btn :disabled="!isDirty" @click="setSettings(newSettings)">
-            {{ $vuntangle.$t('save') }}
-          </u-btn>
+          <u-btn @click="refreshData">{{ $t('refresh') }}</u-btn>
+          <u-btn class="ml-2" :disabled="!isDirty" @click="setSettings(newSettings)">{{ $t('save') }}</u-btn>
+        </div>
+        <div v-else style="min-width: 180px">
+          <u-app-install @install="onInstallService" />
         </div>
       </template>
     </intrusion-prevention>
@@ -35,8 +44,13 @@
 
 <script>
   import { mapGetters } from 'vuex'
-  import { IntrusionPrevention, intrusionPreventionAllTabs, matchCondition } from 'vuntangle'
-  import { VDivider } from 'vuetify/lib'
+  import {
+    IntrusionPrevention,
+    intrusionPreventionAllTabs,
+    matchCondition,
+    UAppStatusRemove,
+    UAppInstall,
+  } from 'vuntangle'
   import { ngfwCapabilities } from './ipCapabilities'
   import serviceMixin from './serviceMixin'
   import util from '@/util/util'
@@ -48,7 +62,8 @@
   export default {
     components: {
       IntrusionPrevention,
-      VDivider,
+      UAppStatusRemove,
+      UAppInstall,
     },
 
     mixins: [serviceMixin],
@@ -74,6 +89,7 @@
         licenseNodeName: 'intrusion-prevention',
         displayNameFallback: 'Intrusion Prevention',
         overviewData: { daemonErrors: '', lastUpdate: '', lastUpdateCheck: '' },
+        loadingOverview: false,
         memoryHistory: Array.from({ length: 7 }, (_, i) => ({ timestamp: now + (i - 6) * 10000, memory: 0 })),
         cachedSignatures: [],
         signatures: [],
@@ -181,6 +197,7 @@
       async getSettings() {
         if (!this.appManager) return
 
+        this.loadingOverview = true
         try {
           const [status, companyName] = await Promise.all([
             new Promise(resolve => {
@@ -194,7 +211,6 @@
           this.homeNetworks = status?.homeNetworks != null ? '[' + status.homeNetworks.join(', ') + ']' : ''
           this.defaultNetwork = status?.homeNetworks?.[0] ?? '192.168.1.0/24'
 
-          this.$store.commit('SET_LOADER', true)
           this.overviewData = {
             lastUpdateCheck: util.formatTimestamp(status?.lastUpdateCheck),
             lastUpdate: util.formatTimestamp(status?.lastUpdate),
@@ -205,7 +221,7 @@
         } catch (err) {
           Util.handleException(err)
         } finally {
-          this.$store.commit('SET_LOADER', false)
+          this.loadingOverview = false
         }
       },
 
@@ -301,14 +317,12 @@
           }).then(r => r.text())
 
         try {
-          this.$store.commit('SET_LOADER', this.$t('loading_signatures', [0, 0, 'catalog']))
           catalog = (await download('catalog')).split('\n').filter(Boolean)
 
           for (let i = 0; i < catalog.length; i++) {
             const setName = catalog[i]
             if (!setName.trim()) continue
 
-            this.$store.commit('SET_LOADER', this.$t('loading_signatures', [i + 1, catalog.length, setName]))
             try {
               const text = await download(setName)
               signatures.push(...this.buildSignatures(text, setName))
@@ -497,34 +511,6 @@
         }
 
         return signatures
-      },
-
-      /**
-       * Triggers a manual signature update via the app manager and refreshes settings on success.
-       * Shows an error notification if the update reports failure.
-       */
-      async updateSignatureManual() {
-        if (!this.appManager) return
-
-        this.$store.commit('SET_LOADER', true)
-        try {
-          const result = await new Promise((resolve, reject) => {
-            this.appManager.updateSignatureManual((ex, res) => {
-              if (ex) reject(ex)
-              else resolve(res)
-            })
-          })
-
-          if (result?.updateSuccess === true) {
-            await this.getSettings()
-          } else {
-            Util.handleException(this.$t('update_signatures_failed'))
-          }
-        } catch (err) {
-          Util.handleException(err)
-        } finally {
-          this.$store.commit('SET_LOADER', false)
-        }
       },
     },
   }
