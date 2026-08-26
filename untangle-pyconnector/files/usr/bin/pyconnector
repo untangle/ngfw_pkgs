@@ -20,6 +20,7 @@ import datetime
 import random
 import traceback
 import base64
+import json
 import ssl
 from ssl import SSLContext, TLSVersion
 import platform
@@ -208,7 +209,7 @@ def run_cmd(cmd_str):
         run_cmd_exception_hook(cmd_str)
         debug("Exception: %s" % str(e))
         traceback.print_exc()
-        return "Error (%s)" % type(e)
+        return json.dumps({"error": type(e).__name__, "message": str(e)})
 
 def read_from_cmd():
     """Read a command from cmd and run it and send the result"""
