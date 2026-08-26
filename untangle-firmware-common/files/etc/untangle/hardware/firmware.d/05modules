@@ -10,21 +10,34 @@ modprobe xt_multiport
 modprobe xt_policy
 modprobe xt_socket
 modprobe xt_mac
-modprobe xt_IMQ
 modprobe xt_LOG
-modprobe xt_physdev
 modprobe xt_iprange
 
 modprobe ip6_tables
-modprobe nf_conntrack_ipv6
+modprobe nf_conntrack_ipv6 2>/dev/null || true
 
 modprobe ip6t_ah
 modprobe ip6table_filter
-modprobe ebt_redirect
-modprobe ebt_ip
-modprobe ebtable_broute
-modprobe ebtables
-modprobe iptable_tune
+
+# br_netfilter required for bridge iptables/ebtables rules
+modprobe br_netfilter
+
+# nf_tables modules for nftables (Bookworm)
+modprobe nf_tables 2>/dev/null || true
+modprobe nft_chain_nat 2>/dev/null || true
+
+# legacy modules - load if available (Bullseye), skip on Bookworm
+modprobe xt_IMQ 2>/dev/null || true
+modprobe xt_physdev 2>/dev/null || true
+modprobe ebt_redirect 2>/dev/null || true
+modprobe ebt_ip 2>/dev/null || true
+modprobe ebtable_broute 2>/dev/null || true
+modprobe ebtables 2>/dev/null || true
+modprobe iptable_tune 2>/dev/null || true
+
+# IFB for ingress QoS shaping (Bookworm replacement for IMQ)
+modprobe ifb 2>/dev/null || true
+modprobe act_mirred 2>/dev/null || true
 
 modprobe pppoe
 
