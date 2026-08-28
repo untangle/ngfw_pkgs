@@ -339,6 +339,7 @@
             if (!sig.signature) return
             const parsed = this.buildSignatures(sig.signature, sig.category || 'custom')
             if (parsed.length) {
+              parsed[0].javaClass = sig.javaClass
               parsed[0].reserved = false
               parsed[0].default = false
               signatures.push(parsed[0])
