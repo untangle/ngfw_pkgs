@@ -1,6 +1,6 @@
 <template>
   <report-edit
-    :report="report"
+    :settings="report"
     :categories="allCategories"
     :existing-reports="allReports"
     :table-fields="translatedTableFields"
