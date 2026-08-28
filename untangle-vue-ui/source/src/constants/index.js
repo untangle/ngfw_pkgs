@@ -126,6 +126,13 @@ const conditionValueOptions = {
   protocol: toOptions(protocolNameMap),
 }
 
+// RFC 3986 URL decomposition regex
+// Groups: [1]=authority+scheme, [2]=scheme, [3]=host, [6]=hostname, [7]=port, [8]=path, [9]=query, [10]=fragment
+const urlAddrRe =
+  /^(([^:/?#]+:)?(?:\/\/((?:([^/?#:]*):([^/?#:]*)@)?([^/?#:]*)(?::([^/?#:]*))?)))?([^?#]*)(\?[^#]*)?(#.*)?$/
+
+const ipv4Re = /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/
+
 export {
   booleanValueOptions,
   invertOptions,
@@ -137,4 +144,6 @@ export {
   globalOperatorOptions,
   globalConditionColumns,
   conditionValueOptions,
+  urlAddrRe,
+  ipv4Re,
 }
