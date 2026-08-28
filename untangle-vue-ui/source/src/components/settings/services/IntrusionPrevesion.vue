@@ -6,6 +6,7 @@
       :settings="settings"
       :app-data="consolidatedAppData"
       :is-installed="isInstalled"
+      :is-expert-mode="isExpertMode"
       :tabs="allTabs"
       :metrics-data="formattedMetrics"
       :network-settings="networkSettings"
@@ -19,6 +20,7 @@
       :company-name="companyName"
       :loading-overview="loadingOverview"
       @toggle-state="toggleAppState"
+      @update-signatures="onUpdateSignatures"
     >
       <template #actions="{ newSettings, isDirty }">
         <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
@@ -337,6 +339,7 @@
             if (!sig.signature) return
             const parsed = this.buildSignatures(sig.signature, sig.category || 'custom')
             if (parsed.length) {
+              parsed[0].javaClass = sig.javaClass
               parsed[0].reserved = false
               parsed[0].default = false
               signatures.push(parsed[0])
@@ -437,6 +440,25 @@
           default:
             return action
         }
+      },
+
+      onUpdateSignatures({ cb }) {
+        this.appManager.updateSignatureManual(result => {
+          try {
+            const updateSuccess = result?.updateSuccess === true
+            if (updateSuccess) {
+              this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_success'))
+              this.cachedSignatures = []
+              this.onFetchSignatures()
+            } else {
+              this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_fail'), 'error')
+            }
+          } catch (error) {
+            Util.handleException(error)
+          } finally {
+            cb()
+          }
+        })
       },
 
       /**

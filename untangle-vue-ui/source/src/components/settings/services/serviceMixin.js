@@ -1,6 +1,7 @@
 import { mapGetters } from 'vuex'
 import { getReportUrl, getReportIcon } from '@/util/reports'
 import util from '@/util/setupUtil'
+import Util from '@/util/util'
 import uris from '@/util/uris'
 import { EVENT_ACTIONS } from '@/constants/actions'
 import { sendEvent } from '@/utils/event'
@@ -49,7 +50,7 @@ export default {
      * @returns {Boolean} True if reports is installed, else false
      * TODO Remove Util Method Call Once Reports App and its flows are Fully Migrated
      */
-    isReportsInstalled: ({ $store }) => $store.getters['reports/isReportsInstalled'] || !!util.isReportsInstalled(),
+    isReportsInstalled: ({ $store }) => $store.getters['reports/isReportsInstalled'] || !!Util.isReportsInstalled(),
 
     /**
      * Display name sourced from the app manager; falls back to displayNameFallback set by each component.
