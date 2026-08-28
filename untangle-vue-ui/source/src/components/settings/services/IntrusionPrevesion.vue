@@ -6,7 +6,7 @@
       :settings="settings"
       :app-data="consolidatedAppData"
       :is-installed="isInstalled"
-      :is-expert-mode="isExpertMode"
+      :is-expert-mode="!isExpertMode"
       :tabs="allTabs"
       :metrics-data="formattedMetrics"
       :network-settings="networkSettings"
@@ -443,15 +443,20 @@
 
       onUpdateSignatures({ cb }) {
         this.appManager.updateSignatureManual(result => {
-          const updateSuccess = result?.updateSuccess === true
-          if (updateSuccess) {
-            this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_success'))
-            this.cachedSignatures = []
-            this.onFetchSignatures()
-          } else {
-            this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_fail'), 'error')
+          try {
+            const updateSuccess = result?.updateSuccess === true
+            if (updateSuccess) {
+              this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_success'))
+              this.cachedSignatures = []
+              this.onFetchSignatures()
+            } else {
+              this.$vuntangle.toast.add(this.$vuntangle.$t('ips_adv_update_signatures_fail'), 'error')
+            }
+          } catch (error) {
+            Util.handleException(error)
+          } finally {
+            cb()
           }
-          cb()
         })
       },
 
