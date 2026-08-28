@@ -8,14 +8,14 @@
     @toggle-state="toggleAppState"
   >
     <!-- Custom action buttons slot -->
-    <template #actions="{ newSettings, isDirty }">
+    <template #actions="{ newSettings, isDirty, validate }">
       <div class="d-flex flex-wrap align-center" style="gap: 8px">
         <div style="min-width: 180px">
           <u-app-status-remove class="mt-0" :app-name="appDisplayName" @remove="removeApp" />
         </div>
         <v-divider vertical class="mx-4" />
         <u-btn class="mr-2" @click="refreshData">{{ $t('refresh') }}</u-btn>
-        <u-btn :disabled="!isDirty || saveDisabled" @click="saveSettings(newSettings)">{{ $t('save') }}</u-btn>
+        <u-btn :disabled="!isDirty || saveDisabled" @click="onSave(newSettings, validate)">{{ $t('save') }}</u-btn>
       </div>
     </template>
   </virus-blocker>
@@ -67,6 +67,12 @@
     },
 
     methods: {
+      async onSave(newSettings, validate) {
+        const isValid = await validate()
+        if (!isValid) return
+        this.saveSettings(newSettings)
+      },
+
       /**
        * Fetches virus-blocker specific data such as file scanner availability and last signature update time from the app manager.
        * This method is called when the appManager becomes available, and updates the component's data properties accordingly.
