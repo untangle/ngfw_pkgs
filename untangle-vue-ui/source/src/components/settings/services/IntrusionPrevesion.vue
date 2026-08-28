@@ -6,7 +6,7 @@
       :settings="settings"
       :app-data="consolidatedAppData"
       :is-installed="isInstalled"
-      :is-expert-mode="!isExpertMode"
+      :is-expert-mode="isExpertMode"
       :tabs="allTabs"
       :metrics-data="formattedMetrics"
       :network-settings="networkSettings"
