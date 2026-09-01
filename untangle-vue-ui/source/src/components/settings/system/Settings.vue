@@ -35,6 +35,17 @@
     mixins: [settingsMixin],
     inject: ['embedded'],
 
+    provide() {
+      return {
+        $hostNameRules: 'required|hostname_strict',
+        $domainNameRules: 'required|hostname_safe',
+        $dynamicDnsServiceUsernameRules: 'username_or_email',
+        $dynamicDnsServicePasswordRules: 'opaque_secret',
+        $dynamicDnsServiceZoneRules: 'hostname_safe',
+        $dynamicDnsServiceHostnamesRules: 'simple_text',
+      }
+    },
+
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
       deviceTemperatureInfo: ({ $store }) => $store.getters['settings/deviceTemperatureInfo'],
