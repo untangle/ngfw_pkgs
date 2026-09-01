@@ -46,12 +46,6 @@
       }
     },
 
-    data() {
-      return {
-        companyName: '',
-      }
-    },
-
     computed: {
       systemSettings: ({ $store }) => $store.getters['settings/systemSetting'],
       deviceTemperatureInfo: ({ $store }) => $store.getters['settings/deviceTemperatureInfo'],
