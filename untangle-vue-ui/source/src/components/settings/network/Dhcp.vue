@@ -17,6 +17,13 @@
     components: { SettingsDhcp },
     mixins: [settingsMixin],
 
+    provide() {
+      return {
+        $staticEntryDescriptionRules: { simple_text: true },
+        $relayDescriptionRules: { required: true, simple_text: true },
+      }
+    },
+
     data() {
       return {
         leases: [],
