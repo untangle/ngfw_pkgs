@@ -36,6 +36,12 @@
       SettingsInterface,
     },
     mixins: [interfaceMixin],
+    provide() {
+      return {
+        $v4PPPoEUsernameRules: 'required|username_or_email',
+        $dhcpDNSOverrideRules: 'ip_or_cidr_list',
+      }
+    },
     data: () => ({
       status: null,
       isSaving: false,
