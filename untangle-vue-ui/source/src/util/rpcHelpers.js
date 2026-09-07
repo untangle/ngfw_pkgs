@@ -37,9 +37,9 @@ export function isSessionOrTransportError(error) {
  * - `handle`: call Util.handleException(), then return the fallback. This is
  *   the default for normal UI RPC calls.
  * - `propagate`: reject/throw the original application error without calling
- *   Util. Transport/session errors are always sent to Util first, then are
- *   propagated. Use this when the component needs custom backend recovery and
- *   make sure the caller catches the result.
+ *   Util. Transport/session errors are handled centrally and resolve/return
+ *   the fallback instead. Use this when the component needs custom backend
+ *   recovery and make sure the caller catches application errors.
  *
  * Invalid or missing modes use `handle` so existing callers remain safe.
  *
@@ -51,23 +51,28 @@ function normalizeMode(mode) {
 }
 
 /**
- * Applies the failure policy shared by callback-based and direct RPC calls.
- * Transport/session failures are always sent to Util.handleException() first.
- * For application/backend failures, only `handle` sends a notification.
+ * Applies the shared error policy and reports whether the original error should
+ * be propagated. Promise settlement and direct-call return/throw behavior stay
+ * in their respective public helpers.
+ *
+ * Transport/session failures are always sent to Util.handleException() and are
+ * never propagated. For application/backend failures, only `handle` sends a
+ * notification and only `propagate` returns true.
  */
-function handleFailure(error, mode, fallback, resolve, reject) {
+function handleRpcError(error, mode) {
   const normalizedMode = normalizeMode(mode)
   const isTransportError = isSessionOrTransportError(error)
-  if (isTransportError || normalizedMode === 'handle') {
+
+  if (isTransportError) {
+    Util.handleException(error)
+    return false
+  }
+
+  if (normalizedMode === 'handle') {
     Util.handleException(error)
   }
 
-  if (normalizedMode === 'propagate') {
-    reject(error)
-    return
-  }
-
-  resolve(fallback)
+  return normalizedMode === 'propagate'
 }
 
 /**
@@ -99,26 +104,30 @@ function handleFailure(error, mode, fallback, resolve, reject) {
  *   await rpcCall(method, [], { mode: 'propagate' })
  * } catch (error) {
  *   // Recover in the component; application errors are not globally notified.
- *   // Transport/session errors are still handled centrally before propagation.
+ *   // Transport/session errors are handled centrally and do not reach this catch.
  * }
  */
 export function rpcCall(rpcMethod, args = [], { mode = 'handle', fallback } = {}) {
   return new Promise((resolve, reject) => {
     if (typeof rpcMethod !== 'function') {
-      handleFailure(new Error('RPC method is not available'), mode, fallback, resolve, reject)
+      const error = new Error('RPC method is not available')
+      if (handleRpcError(error, mode)) reject(error)
+      else resolve(fallback)
       return
     }
 
     try {
       rpcMethod((result, error) => {
         if (error !== undefined && error !== null) {
-          handleFailure(error, mode, fallback, resolve, reject)
+          if (handleRpcError(error, mode)) reject(error)
+          else resolve(fallback)
           return
         }
         resolve(result)
       }, ...args)
     } catch (error) {
-      handleFailure(error, mode, fallback, resolve, reject)
+      if (handleRpcError(error, mode)) reject(error)
+      else resolve(fallback)
     }
   })
 }
@@ -126,8 +135,8 @@ export function rpcCall(rpcMethod, args = [], { mode = 'handle', fallback } = {}
 /**
  * Calls a synchronous/direct RPC method with the same three error modes as
  * rpcCall(). `ignore` and `handle` return the fallback after failure;
- * `propagate` throws the original error for the caller to catch. A
- * transport/session error is always sent to Util before that result.
+ * `propagate` throws the original application error for the caller to catch.
+ * A transport/session error is handled centrally and returns the fallback.
  *
  * @param {Function} rpcMethod - synchronous RPC method
  * @param {Array} args - RPC method arguments
@@ -143,11 +152,7 @@ export function directRpcCall(rpcMethod, args = [], { mode = 'handle', fallback 
     }
     return rpcMethod(...args)
   } catch (error) {
-    const normalizedMode = normalizeMode(mode)
-    if (isSessionOrTransportError(error) || normalizedMode === 'handle') {
-      Util.handleException(error)
-    }
-    if (normalizedMode === 'propagate') throw error
+    if (handleRpcError(error, mode)) throw error
     return fallback
   }
 }
