@@ -291,6 +291,7 @@ const boolFormatter = ({ value }) => (value == null ? 'false' : value ? 'true' :
 // All other fields get { flex: 1 } from buildEventColumnDefs.
 
 const FIELD_META = {
+  session_id: { width: 120 },
   // time_stamp and second-based timestamps have timezone-aware formatters
   // built dynamically in buildEventColumnDefs using tzOffsetMs.
   time_stamp: { width: 160, sort: 'desc' },
