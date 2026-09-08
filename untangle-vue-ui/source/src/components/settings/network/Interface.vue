@@ -17,14 +17,14 @@
   import { Interfaces } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
   import interfaceMixin from './interfaceMixin'
-  import Rpc from '@/util/Rpc'
+  import { directRpcCall, rpcCall } from '@/util/rpcHelpers'
 
   export default {
     components: { Interfaces },
     mixins: [interfaceMixin, settingsMixin],
     data: () => ({
       // all interfaces status, async fetched
-      interfacesStatus: undefined,
+      interfacesStatus: [],
       arpEntriesData: [],
       wirelessLogs: '',
       features: {
@@ -54,9 +54,13 @@
     methods: {
       async getInterfacesStatus() {
         this.$store.commit('SET_LOADER', true)
-        this.interfacesStatus = await new Promise((resolve, reject) =>
-          window.rpc.networkManager.getAllInterfacesStatusV2((res, err) => (err ? reject(err) : resolve(res))),
-        ).finally(() => this.$store.commit('SET_LOADER', false))
+        try {
+          const fallback = Array.isArray(this.interfacesStatus) ? this.interfacesStatus : []
+          const result = await rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback })
+          this.interfacesStatus = Array.isArray(result) ? result : []
+        } finally {
+          this.$store.commit('SET_LOADER', false)
+        }
       },
 
       /**
@@ -72,7 +76,10 @@
           return
         }
 
-        const result = await Rpc.asyncData('rpc.networkManager.getStatus', 'INTERFACE_ARP_TABLE', symbolicDev)
+        const result = await rpcCall(window.rpc?.networkManager?.getStatus, ['INTERFACE_ARP_TABLE', symbolicDev], {
+          fallback: '',
+        })
+        if (result == null) return
         const connections = []
         const macAddressList = []
 
@@ -104,8 +111,8 @@
 
         if (macAddressList.length > 0) {
           const list = { javaClass: 'java.util.LinkedList', list: macAddressList }
-          const lookUpResult = await Rpc.directData('rpc.networkManager.lookupMacVendorList', list)
-          const macVendorMap = lookUpResult.map || {}
+          const lookUpResult = directRpcCall(window.rpc?.networkManager?.lookupMacVendorList, [list], { fallback: {} })
+          const macVendorMap = lookUpResult?.map || {}
 
           connections.forEach(conn => {
             if (macVendorMap[conn.macAddress]) {
@@ -118,9 +125,9 @@
         callback?.(connections) // Send back result
       },
 
-      async setWirelessIntfLogs(intfc, callback) {
-        if (intfc.type === 'WIFI') {
-          this.wirelessLogs = await window.rpc.networkManager.getLogFile(intfc.device)
+      setWirelessIntfLogs(intfc, callback) {
+        if (intfc?.type === 'WIFI') {
+          this.wirelessLogs = directRpcCall(window.rpc?.networkManager?.getLogFile, [intfc.device], { fallback: '' })
         } else {
           this.wirelessLogs = ''
         }
@@ -151,9 +158,9 @@
       async onInterfaceStatusRefresh(device) {
         if (!device) return
 
-        const result = await new Promise((resolve, reject) => {
-          window.rpc.networkManager.getInterfaceStatusV2((res, err) => (err ? reject(err) : resolve(res)), device)
-        })
+        const result = await rpcCall(window.rpc?.networkManager?.getInterfaceStatusV2, [device], { fallback: null })
+        if (!result || !Array.isArray(this.interfacesStatus)) return
+
         this.interfacesStatus = this.interfacesStatus.map(intf => {
           if (intf.device === device) {
             return { ...intf, ...result }
