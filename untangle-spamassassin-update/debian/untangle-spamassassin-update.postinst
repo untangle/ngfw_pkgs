@@ -49,8 +49,16 @@ EOF
 
 /etc/untangle/startup.d/20spamassassin
 
-# disable spamassassin at startup (now started by apps when needed)
-deb-systemd-helper disable spamassassin.service
+# Bookworm split spamd into separate package with spamd.service
+# Create backwards-compat symlink so DaemonManager can use "spamassassin" name
+if [ -f /lib/systemd/system/spamd.service ] && [ ! -f /lib/systemd/system/spamassassin.service ]; then
+    ln -sf /lib/systemd/system/spamd.service /etc/systemd/system/spamassassin.service
+    systemctl daemon-reload
+fi
+
+# disable spamassassin/spamd at startup (now started by apps when needed)
+deb-systemd-helper disable spamassassin.service || true
+deb-systemd-helper disable spamd.service || true
 
 # update (commented out - don't do this on install - takes too long)
 # /etc/cron.daily/spamassassin

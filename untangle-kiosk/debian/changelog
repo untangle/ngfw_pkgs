@@ -1,3 +1,9 @@
+untangle-kiosk (18.0.0.20260416T140347Z.a0f38a364+localdiff20260511T165941-1trixie) current; urgency=medium
+
+  * auto build
+
+ -- Untangle Buildbot <buildbot@untangle.com>  Thu, 16 Apr 2026 14:03:47 +0000
+
 untangle-kiosk (5.0.1-1) mustang-1; urgency=low
 
   * auto build

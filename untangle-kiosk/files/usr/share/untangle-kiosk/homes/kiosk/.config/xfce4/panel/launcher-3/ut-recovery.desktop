@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Launch Recovery Tools
+Comment=Launch Recovery Tools
+Icon=/usr/share/untangle-kiosk/panel/recovery.png
+Exec=/home/kiosk/utils/ut-restore.sh
+StartupNotify=false
+Terminal=false

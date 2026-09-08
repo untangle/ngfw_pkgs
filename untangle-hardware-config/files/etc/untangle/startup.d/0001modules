@@ -1,0 +1,17 @@
+#!/bin/sh
+
+# Load kernel modules required for NGFW networking
+# Runs on all installs (VMs and hardware)
+
+# br_netfilter required for bridge iptables/ebtables rules
+modprobe br_netfilter 2>/dev/null || true
+
+# IFB for ingress QoS shaping (Bookworm replacement for IMQ)
+modprobe ifb 2>/dev/null || true
+modprobe act_mirred 2>/dev/null || true
+
+# nf_tables modules for nftables (Bookworm)
+modprobe nf_tables 2>/dev/null || true
+modprobe nft_chain_nat 2>/dev/null || true
+
+exit 0
