@@ -18,7 +18,7 @@
   import { cloneDeep } from 'lodash'
   import { SettingsDynamicRoutes } from 'vuntangle'
   import settingsMixin from '../settingsMixin'
-  import Rpc from '@/util/Rpc'
+  import { directRpcCall, rpcCall } from '@/util/rpcHelpers'
   import Util from '@/util/setupUtil'
   import util from '@/util/util'
 
@@ -53,11 +53,23 @@
         try {
           this.$store.commit('SET_LOADER', true)
 
-          const [tableStatus, bgpStatus, ospfStatus] = await Promise.all([
-            Rpc.asyncData('rpc.networkManager.getStatus', 'DYNAMIC_ROUTING_TABLE', null),
-            Rpc.asyncData('rpc.networkManager.getStatus', 'DYNAMIC_ROUTING_BGP', null),
-            Rpc.asyncData('rpc.networkManager.getStatus', 'DYNAMIC_ROUTING_OSPF', null),
+          const getDynamicRoutingStatus = status =>
+            rpcCall(window.rpc?.networkManager?.getStatus, [status, null], { mode: 'propagate' })
+
+          // Fetch dynamic routing statuses concurrently and keep successful results when one fails.
+          const [tableResult, bgpResult, ospfResult] = await Promise.allSettled([
+            getDynamicRoutingStatus('DYNAMIC_ROUTING_TABLE'),
+            getDynamicRoutingStatus('DYNAMIC_ROUTING_BGP'),
+            getDynamicRoutingStatus('DYNAMIC_ROUTING_OSPF'),
           ])
+          const getStatusValue = result => {
+            if (result.status === 'fulfilled') return result.value
+            this.$vuntangle.toast.add(this.$t('an_error_occurred') + ' : ' + result.reason?.message, 'error')
+            return null
+          }
+          const tableStatus = getStatusValue(tableResult)
+          const bgpStatus = getStatusValue(bgpResult)
+          const ospfStatus = getStatusValue(ospfResult)
 
           // ---- Build Dynamic Routes ----
           const routeStore = []
@@ -202,7 +214,7 @@
           // the ospfd daemon won't run there.
           let atLeastOneReachable = false
           let routes = ''
-          routes = await Rpc.asyncData('rpc.networkManager.getStatus', 'ROUTING_TABLE', null)
+          routes = await rpcCall(window.rpc?.networkManager?.getStatus, ['ROUTING_TABLE', null], { fallback: '' })
           routes?.split('\n').forEach(route => {
             if (route.includes(' via ') && !route.includes(' zebra ')) {
               const routeParts = route.match(/ via ([^\s]+) /)
@@ -227,7 +239,9 @@
 
       /** Retrieves the application settings for a given app asynchronously */
       async getAppSettings(appname, cb) {
-        const response = await window.rpc.UvmContext.appManager().app(appname)
+        const response = await directRpcCall(() => window.rpc?.UvmContext?.appManager?.().app(appname), [], {
+          fallback: null,
+        })
         cb(response ?? null)
       },
 
