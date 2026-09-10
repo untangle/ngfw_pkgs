@@ -138,34 +138,52 @@ const Util = {
     return args.some(arg => typeof arg === 'object' && arg?.$isUnmounted)
   },
 
+  isLogin(exception) {
+    return exception?.response && exception?.response.includes('loginPage')
+  },
+
+  isConnectivityIssue(exception) {
+    return (
+      exception?.code === 550 ||
+      exception?.code === 12029 ||
+      exception?.code === 12019 ||
+      exception?.code === 0 ||
+      (exception?.name === 'JSONRpcClientException' && exception?.fileName?.includes('jsonrpc')) ||
+      exception?.message?.includes('method not found') ||
+      exception?.message?.includes('Service Unavailable') ||
+      exception?.message?.includes('Service Temporarily Unavailable') ||
+      exception?.message?.includes('This application is not currently available')
+    )
+  },
+
   handleException(exception) {
-    if (Util.ignoreExceptions) return
+    if (Util.ignoreExceptions && (this.isLogin(exception) || this.isConnectivityIssue(exception))) return
     if (!exception) {
       vuntangle.toast.add(`Null Exception!`)
       return
     }
 
     let details = ''
-    if (exception.message) {
-      details += `<b>Exception Message:</b> ${exception.message.replace(/\n/g, '<br/>')}<br/><br/>`
+    if (exception?.message) {
+      details += `<b>Exception Message:</b> ${exception?.message.replace(/\n/g, '<br/>')}<br/><br/>`
     }
-    if (exception.javaStack) {
-      details += `<b>Exception Java Stack:</b> ${exception.javaStack.replace(/\n/g, '<br/>')}<br/><br/>`
+    if (exception?.javaStack) {
+      details += `<b>Exception Java Stack:</b> ${exception?.javaStack.replace(/\n/g, '<br/>')}<br/><br/>`
     }
-    if (exception.stack) {
-      details += `<b>Exception JS Stack:</b> ${exception.stack.replace(/\n/g, '<br/>')}<br/><br/>`
+    if (exception?.stack) {
+      details += `<b>Exception JS Stack:</b> ${exception?.stack.replace(/\n/g, '<br/>')}<br/><br/>`
     }
     if (window.rpc?.fullVersionAndRevision) {
       details += `<b>Build:</b> ${window.rpc.fullVersionAndRevision}<br/><br/>`
     }
     details += `<b>Timestamp:</b> ${new Date().toString()}<br/><br/>`
 
-    if (exception.response) {
-      details += `<b>Exception Response:</b> ${exception.response.replace(/\s+/g, '<br/>')}<br/><br/>`
+    if (exception?.response) {
+      details += `<b>Exception Response:</b> ${exception?.response.replace(/\s+/g, '<br/>')}<br/><br/>`
     }
 
     /** Handle Invalid Security Nonce (Session Expired) */
-    if (exception.code === 595 || exception.message?.includes('Invalid security nonce')) {
+    if (exception?.code === 595 || exception?.message?.includes('Invalid security nonce')) {
       this.showWarningMessage(
         'Your session has expired due to a security issue. Please log in again.',
         details,
@@ -176,7 +194,7 @@ const Util = {
     }
 
     /** Handle session timeout / authorization lost */
-    if (exception.response && exception.response.includes('loginPage')) {
+    if (this.isLogin(exception)) {
       Util.ignoreExceptions = true
       this.showWarningMessage(
         'Session timed out.Press OK to return to the login page.',
@@ -188,17 +206,7 @@ const Util = {
     }
 
     /** Handle connection lost */
-    if (
-      exception.code === 550 ||
-      exception.code === 12029 ||
-      exception.code === 12019 ||
-      exception.code === 0 ||
-      (exception.name === 'JSONRpcClientException' && exception.fileName?.includes('jsonrpc')) ||
-      exception.message?.includes('method not found') ||
-      exception.message?.includes('Service Unavailable') ||
-      exception.message?.includes('Service Temporarily Unavailable') ||
-      exception.message?.includes('This application is not currently available')
-    ) {
+    if (this.isConnectivityIssue(exception)) {
       Util.ignoreExceptions = true
       this.showWarningMessage(
         'The connection to the server has been lost.Press OK to return to the login page.',
@@ -211,7 +219,7 @@ const Util = {
     if (typeof exception === 'string') {
       this.showWarningMessage(exception, '', this.goToStartPage)
     } else {
-      this.showWarningMessage(exception.message || 'An unknown error occurred.', details, this.goToStartPage)
+      this.showWarningMessage(exception?.message || 'An unknown error occurred.', details, this.goToStartPage)
     }
   },
 
