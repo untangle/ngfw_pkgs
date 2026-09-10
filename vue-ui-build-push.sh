@@ -27,8 +27,11 @@ ssh-add ~/.ssh/id_ed25519
 echo ">>> Step 6: Remove existing .deb files"
 rm -f ./*.deb
 
+echo ">>> Step 6.5: Pull trixie build image"
+docker pull untangleinc/ngfw:trixie-build-multiarch
+
 echo ">>> Step 7: Run docker compose build"
-PACKAGE=untangle-vue-ui FORCE=1 VERBOSE=1 UPLOAD=local docker compose -f docker-compose-ngfw-ui-build.yml run build
+REPOSITORY=trixie NO_CLEAN=1 PACKAGE=untangle-vue-ui FORCE=1 VERBOSE=1 UPLOAD=local docker compose -f docker-compose-ngfw-ui-build.yml run build
 
 echo ">>> Step 8: Verify .deb package was created"
 DEB_FILE=$(ls untangle-vue-ui_*.deb 2>/dev/null || true)
@@ -46,5 +49,9 @@ scp "$DEB_FILE" root@ngfw.untangle.com:/tmp/
 echo ">>> Step 10: Install .deb and reboot remote server (combined)"
 ssh root@ngfw.untangle.com "dpkg -i /tmp/untangle-vue-ui_*.deb && reboot"
 
+
+echo ">>> Step 11: Clean up build artifacts"
+sudo git clean -f -d untangle-vue-ui/debian/
+git checkout -- untangle-vue-ui/debian/changelog untangle-vue-ui/source/yarn.lock
 
 echo ">>> DONE — Remote system is rebooting"
