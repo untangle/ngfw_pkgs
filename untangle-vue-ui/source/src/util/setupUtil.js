@@ -138,11 +138,11 @@ const Util = {
     return args.some(arg => typeof arg === 'object' && arg?.$isUnmounted)
   },
 
-  isLogin(exception) {
+  isLoginRedirect(exception) {
     return exception?.response && exception?.response.includes('loginPage')
   },
 
-  isConnectivityIssue(exception) {
+  isServerConnectionLost(exception) {
     return (
       exception?.code === 550 ||
       exception?.code === 12029 ||
@@ -157,7 +157,9 @@ const Util = {
   },
 
   handleException(exception) {
-    if (Util.ignoreExceptions && (this.isLogin(exception) || this.isConnectivityIssue(exception))) return
+    // Ignore exceptions if the flag is set and the exception is a login redirect or server connection lost
+    // This is to prevent showing multiple error messages for the same issue
+    if (Util.ignoreExceptions && (this.isLoginRedirect(exception) || this.isServerConnectionLost(exception))) return
     if (!exception) {
       vuntangle.toast.add(`Null Exception!`)
       return
@@ -193,8 +195,8 @@ const Util = {
       return
     }
 
-    /** Handle session timeout / authorization lost */
-    if (this.isLogin(exception)) {
+    /* handle authorization lost */
+    if (this.isLoginRedirect(exception)) {
       Util.ignoreExceptions = true
       this.showWarningMessage(
         'Session timed out.Press OK to return to the login page.',
@@ -206,7 +208,7 @@ const Util = {
     }
 
     /** Handle connection lost */
-    if (this.isConnectivityIssue(exception)) {
+    if (this.isServerConnectionLost(exception)) {
       Util.ignoreExceptions = true
       this.showWarningMessage(
         'The connection to the server has been lost.Press OK to return to the login page.',
