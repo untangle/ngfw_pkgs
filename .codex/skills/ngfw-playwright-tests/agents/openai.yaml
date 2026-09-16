@@ -1,0 +1,4 @@
+interface:
+  display_name: "NGFW Playwright Tests"
+  short_description: "Write reliable NGFW Playwright tests"
+  default_prompt: "Use $ngfw-playwright-tests to implement this NGFW Playwright scenario in the existing repository."
