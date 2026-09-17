@@ -9,14 +9,16 @@
         $route.name === 'setup'
       "
     />
+    <quarantine-layout v-else-if="$route.meta.layout && $route.meta.layout.name === 'QuarantineLayout'" />
+    <user-api-layout v-else-if="$route.meta.layout && $route.meta.layout.name === 'UserApiLayout'" />
     <default-layout v-else />
   </div>
 </template>
 <script>
-  import { DynamicLayout, DefaultLayout } from '@/layouts'
+  import { DynamicLayout, DefaultLayout, QuarantineLayout, UserApiLayout } from '@/layouts'
 
   export default {
-    components: { DefaultLayout, DynamicLayout },
+    components: { DefaultLayout, DynamicLayout, QuarantineLayout, UserApiLayout },
 
     data() {
       return {
@@ -26,7 +28,7 @@
 
     created() {
       // Use browser-level events to catch iframe destruction
-      // These fire even when ExtJS destroys the iframe abruptly
+      // These fire even when parent app destroys the iframe abruptly
       window.addEventListener('beforeunload', this.handleUnload)
       window.addEventListener('pagehide', this.handleUnload)
     },

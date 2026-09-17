@@ -51,10 +51,10 @@
       },
     },
 
-    async created() {
-      await this.getServerData()
-      await this.loadLicenses()
-      await this.getLegalUrl()
+    created() {
+      this.getServerData()
+      this.loadLicenses()
+      this.getLegalUrl()
     },
 
     // Component methods

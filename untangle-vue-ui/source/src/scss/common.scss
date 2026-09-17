@@ -3,17 +3,33 @@
 // import roboto fonts
 @import 'vuntangle/roboto-fonts.scss';
 
+// ============================================
+// Global Layout & Theme Styles
+// ============================================
+
 .ut-app-bar,
 .ut-app-menu {
   background-color: $arista-blue !important;
 }
 
-// vertically center chips on v-autocomplete
+.drawer-content-menu {
+  box-shadow: none;
+}
+
+// ============================================
+// Vuetify Component Overrides
+// ============================================
+
+// Vertically center chips on v-autocomplete
 .v-select--chips--small {
   .v-select__selections {
     padding-top: 9px !important;
   }
 }
+
+// ============================================
+// Global Loaders
+// ============================================
 
 .arista-loader {
   height: 32px;
@@ -26,6 +42,219 @@
   color: $aristaMediumBlue;
 }
 
-.drawer-content-menu {
-  box-shadow: none;
+// ============================================
+// App Management - Shared SCSS Mixins
+// ============================================
+
+// Mixin: Spinning loader overlay
+// Used in: AppCard, InstallableApps
+@mixin app-loader($size, $spinner-size) {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: block;
+  width: $size;
+  height: $size;
+  background-color: $app-loader-bg;
+  border-radius: 4px;
+
+  &::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: $spinner-size;
+    height: $spinner-size;
+    margin-top: -($spinner-size / 2);
+    margin-left: -($spinner-size / 2);
+    border: 3px solid white;
+    border-top-color: $arista-blue;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+}
+
+// Mixin: Flex grid container
+// Used in: InstalledApps, InstallableApps
+@mixin app-grid-container($gap: $app-card-gap) {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  gap: $gap;
+}
+
+// Mixin: Centered flex container
+// Used in: PowerButton, icon wrappers
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+// Mixin: Absolute centered overlay
+// Used in: Action icons, loaders
+@mixin absolute-center {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+// Mixin: Text truncation with ellipsis
+// Used in: App names, descriptions
+@mixin text-truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+// ============================================
+// App Management - Utility Classes
+// ============================================
+
+// Flex grid for app cards
+.app-grid {
+  @include app-grid-container;
+}
+
+// Flex column layout
+.app-column {
+  display: flex;
+  flex-direction: column;
+}
+
+// Centered content
+.app-center {
+  @include flex-center;
+}
+
+// Text truncation
+.app-text-truncate {
+  @include text-truncate;
+  max-width: 100%;
+}
+
+// ============================================
+// App Management - Power Button States
+// ============================================
+
+.power-button-wrapper {
+  position: absolute;
+  top: 0;
+  right: 0;
+  z-index: 2;
+}
+
+.power-button {
+  position: relative;
+  @include flex-center;
+  width: $app-power-button-size;
+  height: $app-power-button-size;
+  border-radius: 50%;
+  transform: translate(25%, -25%);
+  transition: background-color 0.3s ease;
+  background-color: $power-state-off; // Default
+
+  &--on {
+    background-color: $power-state-on;
+  }
+
+  &--off {
+    background-color: $power-state-off;
+  }
+
+  &--powering {
+    background-color: $power-state-powering;
+  }
+
+  &--inconsistent {
+    background-color: $power-state-inconsistent;
+  }
+
+  &__icon {
+    color: #fff !important;
+    font-size: $app-power-icon-size !important;
+  }
+}
+
+// ============================================
+// App Management - Shared Loader Styles
+// ============================================
+
+// Standard app loader (90px icon)
+.app-loader {
+  @include app-loader($app-icon-size, $app-loader-spinner-size);
+}
+
+// Small app loader (80px icon)
+.app-loader--small {
+  @include app-loader($app-icon-size-small, $app-loader-spinner-size);
+}
+
+// ============================================
+// App Management - Card States
+// ============================================
+
+.app-card-state {
+  &--installing {
+    opacity: 0.8;
+    pointer-events: none;
+  }
+
+  &--finished {
+    background-color: $app-success-bg;
+  }
+
+  &--disabled {
+    pointer-events: none;
+    cursor: default;
+  }
+
+  &--hover {
+    background-color: $app-card-bg-hover;
+  }
+}
+
+// ============================================
+// App Management - Icon Wrappers
+// ============================================
+
+.app-icon-wrapper {
+  position: relative;
+  display: inline-block;
+}
+
+.app-icon {
+  transition: opacity 0.2s ease, filter 0.2s ease;
+
+  &--grayscale {
+    filter: grayscale(1);
+  }
+
+  &--dimmed {
+    opacity: 0.2;
+  }
+
+  &--blurred {
+    filter: blur(2px);
+  }
+
+  &--hover {
+    opacity: 0.6;
+  }
+
+  &--installing {
+    opacity: 0.1;
+  }
+}
+
+// ============================================
+// Animations
+// ============================================
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
 }

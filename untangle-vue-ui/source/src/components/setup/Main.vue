@@ -10,7 +10,7 @@
         return store.getters['setup/steps']
       },
       setupWizard() {
-        return store.getters['settings/setupWizard']
+        return store.getters['config/setupWizard']
       },
       currentStep() {
         return this.setupWizard?.step || this.steps[0]
@@ -27,7 +27,7 @@
     },
     mounted() {
       // have to fetch interfaces to know if needed to add Lte or WiFi steps
-      store.dispatch('settings/getInterfaces')
+      store.dispatch('config/getInterfaces')
       store.dispatch('setup/getStatus')
     },
   }

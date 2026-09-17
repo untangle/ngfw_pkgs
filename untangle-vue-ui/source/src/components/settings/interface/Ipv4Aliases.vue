@@ -90,7 +90,7 @@
        */
       validateUniqueIpAddress(value) {
         // check aliases from other network interfaces
-        for (const networkInterface of this.$store.getters['settings/interfaces']) {
+        for (const networkInterface of this.$store.getters['config/interfaces']) {
           // ignore current interface, those will be checked from the current editable data
           if (networkInterface.interfaceId === this.interfaceId) {
             continue

@@ -60,7 +60,7 @@
     },
     computed: {
       device: ({ $route }) => $route.params.device,
-      // interfaceStatuses: ({ $store }) => $store.getters['settings/interfaceStatuses'],
+      // interfaceStatuses: ({ $store }) => $store.getters['config/interfaceStatuses'],
       title() {
         if (!this.device && this.type === 'VLAN') {
           return this.$t('add_x_interface', [this.$t('vlan')])

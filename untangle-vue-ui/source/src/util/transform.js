@@ -25,14 +25,14 @@ const applyJavaClass = function (items, javaClass) {
 const dns = {
   get: () => {
     /** @type {NetworkSettings} */
-    const ns = store.getters['settings/networkSettings']
+    const ns = store.getters['config/networkSettings']
     return {
       staticEntries: ns?.dnsSettings?.staticEntries.list,
       localServers: ns?.dnsSettings?.localServers.list,
     }
   },
   set: dnsSettings => {
-    const ns = cloneDeep(store.getters['settings/networkSettings'])
+    const ns = cloneDeep(store.getters['config/networkSettings'])
     ns.dnsSettings.staticEntries.list = applyJavaClass(dnsSettings.staticEntries, 'DnsStaticEntry')
     ns.dnsSettings.localServers.list = applyJavaClass(dnsSettings.localServers, 'DnsLocalServer')
 
@@ -42,14 +42,14 @@ const dns = {
 
 const dhcp = {
   get: () => {
-    const ns = store.getters['settings/networkSettings']
+    const ns = store.getters['config/networkSettings']
     return {
       dhcpAuthoritative: ns?.dhcpAuthoritative,
       staticDhcpEntries: ns?.staticDhcpEntries.list,
     }
   },
   set: dhcpSettings => {
-    const ns = cloneDeep(store.getters['settings/networkSettings'])
+    const ns = cloneDeep(store.getters['config/networkSettings'])
     ns.dhcpAuthoritative = dhcpSettings.dhcpAuthoritative
     ns.staticDhcpEntries.list = applyJavaClass(dhcpSettings.staticDhcpEntries, 'DhcpStaticEntry')
     return ns
@@ -58,11 +58,11 @@ const dhcp = {
 
 const staticRoutes = {
   get: () => {
-    const ns = store.getters['settings/networkSettings']
+    const ns = store.getters['config/networkSettings']
     return ns?.staticRoutes.list
   },
   set: staticRoutes => {
-    const ns = cloneDeep(store.getters['settings/networkSettings'])
+    const ns = cloneDeep(store.getters['config/networkSettings'])
     ns.staticRoutes.list = applyJavaClass(staticRoutes, 'StaticRoute')
     return ns
   },

@@ -16,16 +16,27 @@ import StaticRoutes from '@/components/settings/routing/StaticRoutes.vue'
 // services
 import DynamicBlockLists from '@/components/settings/services/DynamicBlockLists.vue'
 // system  \
+import Email from '@/components/settings/system/Email'
 import About from '@/components/settings/system/About'
 import Settings from '@/components/settings/system/Settings.vue'
 import Upgrade from '@/components/settings/system/Upgrade'
+import LocalDirectory from '@/components/settings/system/LocalDirectory.vue'
 import RulesList from '@/components/settings/rules/RulesList.vue'
 import Troubleshooting from '@/components/settings/network/Troubleshooting.vue'
 import DenialOfService from '@/components/settings/firewall/DenialOfService.vue'
-
-// Administration
-import Admin from '@/components/settings/administration/Admin.vue'
 import Logging from '@/components/settings/system/Logging.vue'
+import Administration from '@/components/settings/system/Administration.vue'
+import Events from '@/components/settings/system/Events.vue'
+import PolicyManager from '@/components/settings/services/PolicyManager.vue'
+import BrandingManager from '@/components/settings/services/BrandingManager.vue'
+import ConfigurationBackup from '@/components/settings/services/ConfigurationBackup.vue'
+import DirectoryConnector from '@/components/settings/services/DirectoryConnector.vue'
+import WanFailover from '@/components/settings/services/WanFailover.vue'
+import WanBalancer from '@/components/settings/services/WanBalancer.vue'
+import Reports from '@/components/settings/services/Reports.vue'
+import LiveSupport from '@/components/settings/services/LiveSupport.vue'
+import IntrusionPrevesion from '@/components/settings/services/IntrusionPrevesion.vue'
+
 export default [
   {
     name: 'settings',
@@ -92,9 +103,59 @@ export default [
         component: DenialOfService,
       },
       {
+        path: 'services/branding-manager',
+        component: BrandingManager,
+        meta: { helpContext: 'branding_manager' },
+      },
+      {
+        path: 'services/configuration-backup',
+        component: ConfigurationBackup,
+        meta: { helpContext: 'configuration_backup' },
+      },
+      {
+        path: 'services/directory-connector',
+        component: DirectoryConnector,
+        meta: { helpContext: 'directory_connector' },
+      },
+      {
+        path: 'services/wan-failover',
+        component: WanFailover,
+        meta: { helpContext: 'wan_failover', requiresMetrics: true },
+      },
+      {
+        path: 'services/wan-balancer',
+        component: WanBalancer,
+        meta: { helpContext: 'wan_balancer', requiresMetrics: true },
+      },
+      {
         path: 'services/dynamic-blocklist',
         component: DynamicBlockLists,
         meta: { helpContext: 'dynamic_lists' },
+      },
+      {
+        path: 'services/live-support',
+        component: LiveSupport,
+        meta: { helpContext: 'live-support' },
+      },
+      {
+        path: 'services/intrusion-prevention',
+        component: IntrusionPrevesion,
+        meta: { helpContext: 'intrusion_prevention', requiresMetrics: true },
+      },
+      {
+        path: 'services/policy-manager',
+        component: PolicyManager,
+        meta: { helpContext: 'policy_manager' },
+      },
+      {
+        path: 'services/reports',
+        component: Reports,
+        meta: { helpContext: 'reports' },
+      },
+      {
+        path: 'system/email',
+        component: Email,
+        meta: { helpContext: 'system_settings' },
       },
       {
         path: 'system/about',
@@ -107,14 +168,24 @@ export default [
         meta: { helpContext: 'system_settings' },
       },
       {
+        path: 'system/local-directory',
+        component: LocalDirectory,
+      },
+      {
         path: 'system/settings',
         component: Settings,
         meta: { helpContext: 'system_settings' },
       },
+
       {
-        path: 'administration/admin',
-        component: Admin,
-        meta: { helpContext: 'administration' },
+        path: 'system/administration',
+        component: Administration,
+        meta: { helpContext: 'system_settings' },
+      },
+      {
+        path: 'system/events',
+        component: Events,
+        meta: { helpContext: 'system_settings' },
       },
       {
         path: 'system/upgrade',

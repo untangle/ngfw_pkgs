@@ -3,8 +3,11 @@ import Vuex, { Store } from 'vuex'
 import VuexPersistence from 'vuex-persist'
 import setup from './setup'
 import auth from './auth'
-import settings from './settings'
+import config from './config'
 import apps from './apps'
+import reports from './reports'
+import session from './session'
+import metrics from './metrics'
 
 Vue.use(Vuex)
 
@@ -103,14 +106,38 @@ const getters = {}
 
 const vuexPersistence = new VuexPersistence({
   storage: window.localStorage,
+  reducer: state => {
+    // Destructure to exclude autoInstallApps from apps module
+    // eslint-disable-next-line no-unused-vars
+    const { autoInstallApps, ...appsStateWithoutAutoInstall } = state.apps || {}
+
+    // CRITICAL: Exclude session and metrics modules from persistence
+    // - session: Must reset on every page load/hard refresh
+    // - metrics: Transient polling data, should not be persisted
+    // eslint-disable-next-line no-unused-vars
+    const { session, metrics, ...stateWithoutSessionAndMetrics } = state
+
+    // Exclude globalConditions from reports — transient, should reset on page refresh
+    // eslint-disable-next-line no-unused-vars
+    const { globalConditions, ...reportsWithoutConditions } = state.reports || {}
+
+    return {
+      ...stateWithoutSessionAndMetrics,
+      apps: appsStateWithoutAutoInstall,
+      reports: reportsWithoutConditions,
+    }
+  },
 })
 
 export default new Store({
   modules: {
     auth,
     setup,
-    settings,
+    config,
     apps,
+    reports,
+    session,
+    metrics,
   },
   state: getDefaultState,
   getters,

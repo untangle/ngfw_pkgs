@@ -31,6 +31,7 @@
   import { SettingsInterface } from 'vuntangle'
   import interfaceMixin from './interfaceMixin'
   import { rpcCall } from '@/util/rpcHelpers'
+  import Util from '@/util/setupUtil'
   export default {
     components: {
       SettingsInterface,
@@ -54,7 +55,7 @@
     computed: {
       device: ({ $route }) => $route.params.device,
       type: ({ $route }) => $route.params.type,
-      interfaces: ({ $store }) => $store.getters['settings/interfaces'],
+      interfaces: ({ $store }) => $store.getters['config/interfaces'],
       intfSetting: ({ interfaces, device }) => interfaces.find(intf => intf.device === device),
     },
     async mounted() {
@@ -148,21 +149,27 @@
       },
 
       async onSave(newSettings, validate) {
-        const isValid = await validate()
-        if (!isValid) return
-        this.$store.commit('SET_LOADER', true)
-        this.isSaving = true
-        const resultIntf = await this.$store.dispatch('settings/setInterfaces', [newSettings]).finally(() => {
+        try {
+          const isValid = await validate()
+          if (!isValid) return
+          // push changes via store actions
+          this.$store.commit('SET_LOADER', true)
+          this.isSaving = true
+          // Save interface settings by updating the current/new interface- newSettings
+          const resultIntf = await this.$store.dispatch('config/setInterfaces', [newSettings])
+          if (resultIntf?.success) {
+            this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
+          } else {
+            this.$vuntangle.toast.add(this.$t('rolled_back_settings', [resultIntf.message]))
+          }
+          // return to main interfaces screen on success or error toast to avoid blank screen
+          this.$router.push('/settings/network/interfaces')
+        } catch (ex) {
+          Util.handleException(ex)
+        } finally {
           this.isSaving = false
           this.$store.commit('SET_LOADER', false)
-        })
-        if (resultIntf?.success) {
-          this.$vuntangle.toast.add(this.$t('network_settings_saved_successfully'))
-        } else {
-          this.$vuntangle.toast.add(this.$t('rolled_back_settings', [resultIntf.message]))
         }
-        // return to main interfaces screen on success or error toast to avoid blank screen
-        this.$router.push('/settings/network/interfaces')
       },
 
       /** onDelete should be passed for the Edit Interface component.
