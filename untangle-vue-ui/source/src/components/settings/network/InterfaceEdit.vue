@@ -29,8 +29,8 @@
 
 <script>
   import { SettingsInterface } from 'vuntangle'
-  import Util from '../../../util/setupUtil'
   import interfaceMixin from './interfaceMixin'
+  import { rpcCall } from '@/util/rpcHelpers'
   export default {
     components: {
       SettingsInterface,
@@ -66,27 +66,21 @@
     methods: {
       // check if network is available
       async isNetworkAvailable(network, cb) {
-        try {
-          const result = await new Promise((resolve, reject) => {
-            window.rpc.UvmContext.netspaceManager().isNetworkAvailable(
-              (res, err) => (err ? reject(err) : resolve(res)),
-              'networking',
-              network,
-            )
-          })
-          if (cb) {
-            cb(result)
-          }
-          return (this.status = result)
-        } catch (ex) {
-          Util.handleException(ex)
+        const result = await rpcCall(
+          window.rpc?.UvmContext?.netspaceManager?.()?.isNetworkAvailable,
+          ['networking', network],
+          { fallback: null },
+        )
+        if (cb) {
+          cb(result)
         }
+        return (this.status = result)
       },
 
       // get the interface status
       async getInterfaceStatus() {
-        const result = await new Promise((resolve, reject) => {
-          window.rpc.networkManager.getInterfaceStatusV2((res, err) => (err ? reject(err) : resolve(res)), this.device)
+        const result = await rpcCall(window.rpc?.networkManager?.getInterfaceStatusV2, [this.device], {
+          fallback: null,
         })
 
         return (this.status = result)
@@ -94,73 +88,63 @@
 
       // renews DHCP and refetches status
       async onRenewDhcp(device, cb) {
-        try {
-          let interfaceId
-          if (this.intfSetting?.device === device) interfaceId = this.intfSetting?.interfaceId
-          else interfaceId = this.interfaces?.find(intf => intf.device === device)?.interfaceId
-          if (interfaceId) {
-            await window.rpc.networkManager.renewDhcpLease(interfaceId)
-            await this.getInterfaceStatus()
-          }
-          cb()
-        } catch (ex) {
-          Util.handleException(ex)
+        let interfaceId
+        if (this.intfSetting?.device === device) interfaceId = this.intfSetting?.interfaceId
+        else interfaceId = this.interfaces?.find(intf => intf.device === device)?.interfaceId
+        if (interfaceId) {
+          await rpcCall(window.rpc?.networkManager?.renewDhcpLease, [interfaceId], { fallback: null })
+          await this.getInterfaceStatus()
         }
+        cb()
       },
 
       /** returns box Wi-Fi channels */
       async onGetWifiChannels(countryCode, cb) {
-        try {
-          if (countryCode === '') {
-            countryCode = await window.rpc.networkManager.getWirelessRegulatoryCountryCode(this.intfSetting?.systemDev)
-          }
-          const response = (await window.rpc.networkManager.getWirelessChannels(
-            this.intfSetting?.systemDev,
-            countryCode,
-          )) || [{ frequency: this.$t('no_channel_match'), channel: -1 }]
-          cb(response ?? null)
-        } catch (ex) {
-          Util.handleException(ex)
+        if (countryCode === '') {
+          countryCode = await rpcCall(
+            window.rpc?.networkManager?.getWirelessRegulatoryCountryCode,
+            [this.intfSetting?.systemDev],
+            { fallback: '' },
+          )
         }
+        const response = (await rpcCall(
+          window.rpc?.networkManager?.getWirelessChannels,
+          [this.intfSetting?.systemDev, countryCode],
+          { fallback: null },
+        )) || [{ frequency: this.$t('no_channel_match'), channel: -1 }]
+        cb(response ?? null)
       },
 
       /** returns country codes */
       async onGetCountryItems(systemDev, cb) {
-        try {
-          const response = await window.rpc.networkManager.getWirelessValidRegulatoryCountryCodes(systemDev)
-          cb(response ?? null)
-        } catch (ex) {
-          Util.handleException(ex)
-        }
+        const response = await rpcCall(
+          window.rpc?.networkManager?.getWirelessValidRegulatoryCountryCodes,
+          [systemDev],
+          { fallback: null },
+        )
+        cb(response ?? null)
       },
+
       /** returns wireless channels */
       async onGetWirelessChannels(systemDev, newValue, cb) {
-        try {
-          const response = await window.rpc.networkManager.getWirelessChannels(systemDev, newValue)
-          cb(response ?? null)
-        } catch (ex) {
-          Util.handleException(ex)
-        }
+        const response = await rpcCall(window.rpc?.networkManager?.getWirelessChannels, [systemDev, newValue], {
+          fallback: null,
+        })
+        cb(response ?? null)
       },
 
       /** returns wireless regulatory compliant */
       async onWirelessRegulatoryCompliant(systemDev, cb) {
-        try {
-          const response = await window.rpc.networkManager.isWirelessRegulatoryCompliant(systemDev)
-          cb(response ?? null)
-        } catch (ex) {
-          Util.handleException(ex)
-        }
+        const response = await rpcCall(window.rpc?.networkManager?.isWirelessRegulatoryCompliant, [systemDev], {
+          fallback: null,
+        })
+        cb(response ?? null)
       },
 
       /** fetches and returns whether the given interface is the VRRP master */
       async getVrrpMaster(interfaceId, cb) {
-        try {
-          const response = await window.rpc.networkManager.isVrrpMaster(interfaceId)
-          cb(response ?? null)
-        } catch (ex) {
-          Util.handleException(ex)
-        }
+        const response = await rpcCall(window.rpc?.networkManager?.isVrrpMaster, [interfaceId], { fallback: null })
+        cb(response ?? null)
       },
 
       async onSave(newSettings, validate) {

@@ -528,6 +528,7 @@ const util = {
    * @returns {Promise<string>} The formatted store URL.
    */
   async getStoreUrl() {
+    if (!window.rpc?.storeUrl) return null
     const url = await window.rpc.storeUrl.replace('/api/v1', '/store/open.php')
     return url
   },
@@ -566,6 +567,7 @@ const util = {
    */
   async fetchAccountInfo(uid) {
     const storeUrl = await this.getStoreUrl()
+    if (!storeUrl) throw new Error('storeUrl is not available')
 
     return new Promise((resolve, reject) => {
       const script = document.createElement('script')
