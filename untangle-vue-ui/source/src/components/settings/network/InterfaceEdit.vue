@@ -31,6 +31,7 @@
   import { SettingsInterface } from 'vuntangle'
   import interfaceMixin from './interfaceMixin'
   import { rpcCall } from '@/util/rpcHelpers'
+  import Util from '@/util/setupUtil'
   export default {
     components: {
       SettingsInterface,
