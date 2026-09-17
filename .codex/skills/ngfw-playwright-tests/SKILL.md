@@ -39,3 +39,197 @@ Turn an explicit NGFW UI scenario into maintainable Playwright Test code in the 
 ## Expected handoff
 
 When implementation is requested, return the changed files and the focused validation result. Mention any exact scenario detail that could not be verified from source/live DOM or any required appliance state. When only a design or review is requested, do not modify the repository.
+
+## NGFW UI knowledge and discovery rules
+
+This is reusable NGFW-specific knowledge, not a substitute for checking the
+current appliance DOM. Appliance builds can differ from the checked-out
+Vue/shared source; when they disagree, the rendered DOM is authoritative for
+selectors.
+
+### Application shell and routes
+
+- The Playwright base URL normally includes the appliance `/console/` base
+  path. Keep protocol, host, credentials, and storage state in runtime
+  configuration only.
+- The settings route source is
+  `untangle-vue-ui/source/src/router/setting.js`. Verified route families
+  include `settings/network/interfaces`, `settings/network/dhcp`,
+  `settings/network/dns`, `settings/network/advanced`,
+  `settings/network/troubleshooting`, `settings/routing/routes`,
+  `settings/routing/dynamicRoutes`,
+  `settings/firewall/denial-of-service`,
+  `settings/services/dynamic-blocklist`, and the generic
+  `settings/:category/:ruleType` rule route.
+- The generic rule route produces pages such as
+  `settings/firewall/access`, `settings/firewall/filter`,
+  `settings/firewall/bypass`, `settings/firewall/nat`, and
+  `settings/firewall/port-forward`. Confirm the exact route from the router;
+  never infer it only from a sidebar label.
+- The sidebar exposes expandable groups as buttons, for example
+  `getByRole('button', { name: 'Firewall', exact: true })`, and child pages
+  as links, for example `getByRole('link', { name: 'Access', exact: true })`.
+  Prefer this real user path when it is stable.
+- If the appliance does not serve deep links directly, the existing pilot has
+  verified this fallback: load the console entry, push the confirmed console
+  path, dispatch `PopStateEvent('popstate')`, then assert URL and heading.
+  Reconfirm the base path before reusing it; this is not a blanket navigation
+  bypass.
+
+### Authenticated shell areas
+
+The authenticated shell exposes Apps and Reports separately from Settings:
+
+- Apps is `apps/1`. The current appliance exposes four clickable app-card
+  names: Web Filter, Virus Blocker, Captive Portal, and Threat Prevention.
+  Their observed routes are `apps/1/web-filter`,
+  `apps/1/virus-blocker`, `apps/1/captive-portal`, and
+  `apps/1/threat-prevention`. The names currently render as
+  `.app-card__name--clickable` spans rather than links or buttons, so confirm
+  the DOM before choosing a locator. Each app page commonly has Status and
+  other section buttons plus Remove, Refresh, and Save actions; inspect those
+  sections read-only and never infer a control's accessible label from its
+  Vue source alone.
+- Captive Portal currently exposes an active-users grid
+  `#captive-portal-active-users`, a `Search here...` input, and Reset View
+  and Refresh buttons. Other app pages may render metrics and report links
+  without an AG Grid, so wait for the page heading and section content rather
+  than assuming every app has a table.
+- Reports is `reports`. It is an in-page report catalog, not a normal
+  route-per-report list in the current build. The page exposes the heading
+  Reports, a `Search reports ...` input, Add Condition, Add/Import, and
+  Export buttons, report category containers with
+  `[data-testid="report-category-title"]`, and report entries with
+  `[data-testid="report-option"]` and `role="listitem"`. Report options
+  can be lazy-rendered and selecting one may remain on `reports`; do not
+  invent a detail URL. Treat Export and Add/Import as mutating or
+  externally-effectful unless the scenario explicitly authorizes them.
+- The Settings sidebar's authenticated hrefs currently include these groups:
+  Network: `settings/network/interfaces`,
+  `settings/network/port-forward`, `settings/network/nat`,
+  `settings/network/bypass`, `settings/network/dhcp`,
+  `settings/network/dns`, `settings/network/advanced`, and
+  `settings/network/troubleshooting`; Routing:
+  `settings/routing/routes` and `settings/routing/dynamicRoutes`; Firewall:
+  `settings/firewall/filter`, `settings/firewall/access`, and
+  `settings/firewall/denial-of-service`.
+- The System menu currently exposes
+  `settings/system/settings`, `settings/system/administration`,
+  `settings/system/events`, `settings/system/email`,
+  `settings/system/logging`, `settings/system/local-directory`,
+  `settings/system/upgrade`, and `settings/system/about`. Services
+  currently exposes `settings/services/branding-manager`,
+  `configuration-backup`, `directory-connector`,
+  `dynamic-blocklist`, `intrusion-prevention`, `live-support`,
+  `policy-manager`, `reports`, `wan-balancer`, and
+  `wan-failover` under the `settings/services/` prefix.
+- These menu hrefs are a live authenticated inventory. The generic router
+  remains the source of truth for route ownership, and feature availability
+  can vary by appliance license or build. If a menu route renders an error or
+  license page, assert and report that observable state instead of fabricating
+  feature locators.
+
+### Source-to-shared trace
+
+The product rules wrapper
+`untangle-vue-ui/source/src/components/settings/rules/RulesList.vue`
+imports `RulesList` from `vuntangle`. Follow the export in
+`../vuntangle/src/shared/index.js` to
+`../vuntangle/src/shared/Rules/RulesList.vue` and
+`../vuntangle/src/shared/Rules/RulesGrid.vue`. The wrapper maps route
+`access` to appliance configuration `access-rules`.
+
+For every feature, use the wrapper for route/store/lifecycle mapping, the
+shared component for likely structure, and the live DOM for final names, roles,
+attributes, and conditional rendering.
+
+### Grid and row contract
+
+NGFW grids commonly use the shared `u-grid`/AG Grid component. After
+confirming the feature id, use a scoped row locator:
+
+```ts
+const grid = page.locator('#access-rules')
+const rows = grid.locator('.ag-center-cols-container .ag-row')
+const row = rows.filter({ hasText: expectedDescription }).first()
+await expect(grid).toBeVisible()
+await expect(row).toBeVisible()
+```
+
+Screen/grid ids observed in the current UI are:
+
+| Screen | Route | Grid id |
+| --- | --- | --- |
+| Interfaces | `settings/network/interfaces` | `appliance-interfaces` |
+| Firewall Access | `settings/firewall/access` | `access-rules` |
+| Firewall Filter | `settings/firewall/filter` | `filter-rules` |
+| DoS rules | `settings/firewall/denial-of-service` | `shield-rules` |
+| DHCP | `settings/network/dhcp` | `dhcp-reservations`, `leases`, `dhcp-relays` |
+| Static routes | `settings/routing/routes` | `static-routes` |
+| Dynamic blocklists | `settings/services/dynamic-blocklist` | `dynamic-blocklists` |
+
+- Scope rows/cells to the grid; do not use page-wide text when navigation and
+  several grids are present.
+- AG Grid headers expose `role="columnheader"`, cells expose
+  `role="gridcell"`, and rows are under
+  `.ag-center-cols-container .ag-row`. Prefer a business value over row
+  index or generated row id.
+- Use verified `col-id` cells. Rules grids may expose `description`,
+  `conditions`, and `action`, or split conditions into
+  `source-conditions`, `destination-conditions`, and
+  `other-conditions`; inspect the current DOM before choosing.
+- A grid may render `No data available`; wait for observable loading
+  completion, then assert the expected row or explicit empty state.
+- `Search here...` is common but not unique on multi-grid screens. Scope it
+  to the active grid/card. Grid checkboxes/actions may have weak names; scope
+  them to a verified row/cell and never use page-wide `nth()`.
+
+The live Access grid currently has Rule Id, Enabled, IPv6, Description,
+Source, Destination, Other, and Action columns. Its SSH row is rendered as
+`Allow SSH`, with `Destination Port == 22`, `Protocol == TCP`, and
+`Accept`. This is appliance data, not a universal constant: another build
+may use `Accept SSH on LANs`. For “SSH rule”, verify the actual description
+and assert the required port/protocol/action/scope instead of inventing a
+label.
+
+### Controls, dialogs, and waits
+
+- Assert a visible heading for route readiness, then the feature form/grid and
+  loader completion. When confirmed for the feature, wait for the Vuetify
+  global `.v-overlay--active` to have count zero; never add fixed sleeps.
+- Vuetify `u-btn` controls are generally exposed as buttons named Save,
+  Refresh, Add Rule, Add Interface, Import Settings, and Export Settings.
+  Scope repeated actions to the feature card.
+- Access `Add Rule` opens a non-persisting dialog. Confirmed labels include
+  Description, Rule Enabled, and IPv6 Support Enabled. Condition/action
+  selectors are custom Vuetify controls often rendered as
+  `[role="button"][aria-haspopup="listbox"]`, not native selects or
+  comboboxes. Open the visible control, wait for the visible list, and choose
+  a rendered option; use `selectOption` only for a verified native select.
+- The dialog exposes Cancel and Add Rule. Exploration may open and cancel it;
+  it must not click the committing Add Rule unless the scenario is a CRUD test
+  with owned data and cleanup.
+- Native text, number, checkbox, radio, and custom Vuetify controls are mixed.
+  Use `getByLabel` only after confirming the rendered association. If a
+  custom checkbox lacks an accessible name, scope to its visible label/field
+  container and use its verified input/control structure.
+- Screens can repeat controls: DHCP has Server/Relays sections and multiple
+  grids; Advanced has section buttons and checkboxes; DoS has a checkbox,
+  number field, and rules grid. Assert the active section before locating a
+  repeated search, refresh, or table.
+- A page may show Save while default rules are explicitly read-only. Do not
+  infer editability from a toolbar button or click a read-only row expecting a
+  dialog; assert the notice/absence of row actions when relevant.
+
+### Test-lane rules
+
+- Route/grid presence is smoke or data-validation: read controlled appliance
+  state and do not add, edit, delete, toggle, reorder, import, export, or save.
+- Existing rules are appliance preconditions. If name, enabled state, source
+  scope, destination port, protocol, or action matters, make each expectation
+  explicit. If the user only says “SSH rule”, report unresolved LAN/WAN or
+  exact-description ambiguity after inspecting the live row.
+- Read-only exploration may expand navigation, switch visible sections, use a
+  search field, inspect checkboxes, and open/cancel dialogs. It must not change
+  a checkbox, drag a row, choose a persistent value, or invoke a mutating
+  operation.
