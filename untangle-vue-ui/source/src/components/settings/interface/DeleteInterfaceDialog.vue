@@ -29,17 +29,19 @@
          *deleteInterface will handle for remove selected interface from all the interfaces
          * Updated Interfaces will be passed to the Network Setting
          */
-        const response = await this.$store.dispatch('settings/deleteInterface', this.intf)
-        if (response) {
-          this.$vuntangle.toast.add(this.$t('deleted_successfully', [this.$t('interface')]))
-          // notify consumer of success
-          this.$emit('update')
-        } else {
-          this.$vuntangle.toast.add(this.$t('unable_to_save', [response.message]))
+        try {
+          const response = await this.$store.dispatch('settings/deleteInterface', this.intf)
+          if (response?.success) {
+            this.$vuntangle.toast.add(this.$t('deleted_successfully', [this.$t('interface')]))
+            // notify consumer of success
+            this.$emit('update')
+          } else {
+            this.$vuntangle.toast.add(this.$t('rolled_back_settings', [response?.message]))
+          }
+        } finally {
+          this.$emit('progress-hide')
+          this.$emit('close')
         }
-
-        this.$emit('progress-hide')
-        this.$emit('close')
       },
     },
   }
