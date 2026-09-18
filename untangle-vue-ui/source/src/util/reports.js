@@ -115,9 +115,9 @@ export function tableContainsColumns(table, conditionColumns) {
   return conditionColumns.every(col => fields.includes(col))
 }
 
-export async function exportCategoryReports(allReports, categoryName) {
-  const COMPUTED_FIELDS = ['localizedTitle', 'localizedDescription', 'slug', 'categorySlug', 'url', 'icon', '_id']
+const COMPUTED_FIELDS = ['localizedTitle', 'localizedDescription', 'slug', 'categorySlug', 'url', 'icon', '_id']
 
+export async function exportCategoryReports(allReports, categoryName) {
   const source = categoryName ? allReports.filter(r => r.category === categoryName) : allReports
 
   const data = source.map(report => {
@@ -131,6 +131,18 @@ export async function exportCategoryReports(allReports, categoryName) {
   await util.downloadFile('/admin/gridSettings', {
     gridName,
     gridData: JSON.stringify(data),
+    type: 'export',
+  })
+}
+
+export async function exportReportSettings(entry) {
+  const rep = { ...entry }
+  COMPUTED_FIELDS.forEach(field => delete rep[field])
+  const gridName = 'Report-' + (rep.title || 'Untitled').replace(/ /g, '_')
+
+  await util.downloadFile('/admin/gridSettings', {
+    gridName,
+    gridData: JSON.stringify([rep]),
     type: 'export',
   })
 }

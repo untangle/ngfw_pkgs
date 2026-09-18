@@ -1,27 +1,40 @@
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import { dateTimeFormats, vuntangleEnLocale, vuntangleDeLocale, vuntangleJaLocale } from 'vuntangle'
+import { ngfwEnLocale, ngfwDeLocale, ngfwJaLocale } from 'vuntangle/ngfw-locales'
 import vuntangle from '@/plugins/vuntangle'
-import vuntangleEnLocale1 from '@/locales'
+import { vuntangleEnLocale1 } from '@/locales'
 
 Vue.use(VueI18n)
 
+// The application instance owns component $t() calls. The vuntangle instance
+// used by shared utilities and $vuntangle.$t() is separate, so every NGFW
+// locale must be registered in both instances before either entry point
+// mounts Vue.
 const i18n = new VueI18n({
   locale: 'en',
-  fallbackLocale: {
-    'en': ['vuntangleEnLocale'],
-    'de': ['vuntangleDeLocale'],
-    'ja': ['vuntangleJaLocale'],
-  },
+  fallbackLocale: 'en',
   messages: {
-    vuntangleEnLocale,
-    vuntangleDeLocale,
-    vuntangleJaLocale,
-    // vuntangleEnLocale1,
-    vuntangleEnLocale1,
+    en: { ...vuntangleEnLocale, ...vuntangleEnLocale1 },
+    de: vuntangleDeLocale,
+    ja: vuntangleJaLocale,
   },
   silentTranslationWarn: true,
   dateTimeFormats,
+})
+
+const ngfwLocales = {
+  en: ngfwEnLocale,
+  de: ngfwDeLocale,
+  ja: ngfwJaLocale,
+}
+
+// The common locale files stay in the normal locale buckets. NGFW-specific
+// messages are opt-in and merged into matching en/de/ja buckets only by the
+// NGFW host application.
+Object.entries(ngfwLocales).forEach(([locale, messages]) => {
+  i18n.mergeLocaleMessage(locale, messages)
+  vuntangle.mergeLocaleMessages(locale, messages)
 })
 
 /**

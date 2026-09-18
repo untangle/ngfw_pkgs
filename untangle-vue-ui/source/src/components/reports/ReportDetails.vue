@@ -33,7 +33,6 @@
   import util from '@/util/util'
   import { urlEncode, clientToServerDate } from '@/util/reports'
   import { buildReportView } from '@/util/reportViews'
-  import { protocolNameMap } from '@/constants'
 
   export default {
     components: { ReportDetails, SettingsDiffDialog },
@@ -42,12 +41,9 @@
 
     provide() {
       return {
+        $isPreview: () => false,
         $dateTimeRangeComponent: 'date-time-range-presets',
-        $serverTimezoneOffsetMs: () => this.timeZoneOffset,
-        $serverClockOffsetMs: () => this.serverClockOffsetMs,
         $refreshTick: () => this.refreshTick,
-        $showTimeRangeHistory: true,
-        $timeRangeSessionKey: () => this.$store.getters['reports/timeRangeSessionKey'],
       }
     },
 
@@ -134,101 +130,6 @@
           this.refreshTimer = setTimeout(() => {
             this.refreshTick++
           }, 5000)
-        }
-      },
-
-      /**
-       * Handles data fetch requests from the report display component.
-       * Converts the raw epoch ms from the time picker to server-local dates before
-       * dispatching to the store, so PostgreSQL receives the correct local time to filter on.
-       */
-      async onFetchData({ query, resolve }) {
-        try {
-          const entry = this.allReports.find(r => r.uniqueId === query.key)
-          if (!entry) {
-            resolve(null)
-            return
-          }
-
-          // Extract time range boundaries from conditions and convert to server timezone.
-          const gtCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'GT')
-          const ltCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'LT')
-          const startDate = clientToServerDate(gtCond?.value ?? Date.now() - 86400000, this.timeZoneOffset)
-          const endDate = ltCond ? clientToServerDate(ltCond.value, this.timeZoneOffset) : null
-
-          // Forward remaining conditions as SQL filter objects to the backend
-          const conditions = query.userConditions
-            .filter(c => c.column !== 'time_stamp')
-            .map(c => ({
-              javaClass: 'com.untangle.app.reports.SqlCondition',
-              column: c.column,
-              operator: c.operator,
-              value: c.value,
-            }))
-
-          // Merge global conditions from Vuex store
-          const globalConds = this.globalConditions.map(gc => ({
-            javaClass: 'com.untangle.app.reports.SqlCondition',
-            column: gc.column,
-            operator: gc.operator,
-            value: String(gc.value),
-            autoFormatValue: gc.autoFormatValue !== false,
-          }))
-          conditions.push(...globalConds)
-
-          // Store for use by the export handler
-          this.lastStartMs = gtCond?.value ?? Date.now() - 86400000
-          this.lastEndMs = ltCond?.value ?? null
-          this.lastConditions = conditions
-
-          // EVENT_LIST carries a user-selected limit from GenericEventList's limit selector.
-          // All other report types use -1 (unlimited — backend applies its own aggregation).
-          const limit = entry.type === 'EVENT_LIST' ? query.limit ?? 1000 : -1
-
-          const payload = await this.$store.dispatch('reports/fetchReportData', {
-            entry,
-            conditions,
-            startDate,
-            endDate,
-            limit,
-          })
-
-          if (payload.data) {
-            // Chart response: pre-built series or slice data
-            const backendData = payload.data
-
-            if (backendData.series) {
-              const arr = backendData.series
-              Object.defineProperty(arr, '__prebuiltType', { value: 'prebuilt_series', enumerable: false })
-              resolve(arr)
-            } else if (backendData.slices) {
-              let slices = backendData.slices
-
-              // Resolve protocol numbers to display names for reports grouped by protocol
-              if (entry.type === 'PIE_GRAPH' && entry.pieGroupColumn === 'protocol') {
-                slices = slices.map(s => ({
-                  ...s,
-                  name: protocolNameMap[parseInt(s.name)] || s.name,
-                }))
-              }
-
-              Object.defineProperty(slices, '__prebuiltType', { value: 'prebuilt_slices', enumerable: false })
-              resolve(slices)
-            } else {
-              resolve(null)
-            }
-          } else if (entry.type === 'TEXT') {
-            resolve(payload.text)
-          } else if (entry.type === 'EVENT_LIST') {
-            resolve(payload.list)
-          } else {
-            resolve(null)
-          }
-        } catch (err) {
-          Util.handleException(err)
-          resolve(null)
-        } finally {
-          this.scheduleRefresh()
         }
       },
 

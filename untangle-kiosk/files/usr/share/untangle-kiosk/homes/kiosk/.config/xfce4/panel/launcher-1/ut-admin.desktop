@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Launch Administration
+Comment=Launch Administration
+Icon=/usr/share/untangle-kiosk/panel/launch.png
+Exec=/usr/bin/untangle-client
+StartupNotify=false
+Terminal=false

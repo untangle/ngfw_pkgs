@@ -1,0 +1,29 @@
+# Local development build for Bookworm
+# Usage: docker-compose -f docker-compose-dev.yml run build
+version: '3'
+
+services:
+    build:
+      image: untangleinc/ngfw:${REPOSITORY:-bookworm}-build-multiarch
+      environment:
+        REPOSITORY: ${REPOSITORY:-bookworm}
+        GIT_CONFIG_GLOBAL: /tmp/gitconfig
+        DISTRIBUTION: ${DISTRIBUTION}
+        ARCHITECTURE: ${ARCHITECTURE}
+        VERBOSE: ${VERBOSE}
+        PACKAGE: ${PACKAGE}
+        DEBUG: ${DEBUG}
+        SSH_KEY: ${SSH_KEY}
+        NO_CLEAN: ${NO_CLEAN}
+        UPLOAD: ${UPLOAD}
+        FORCE: ${FORCE}
+        TRAVIS_BRANCH: ${TRAVIS_BRANCH:-ngfw-bookworm}
+        TRAVIS_PULL_REQUEST_BRANCH:
+        TRAVIS_REPO_SLUG:
+      privileged: ${PRIVILEGED:-false}
+      network_mode: host
+      volumes:
+        - .:/opt/untangle/build
+        - /home/rohit/Arista-Workspace/Bookworm-Assemble/ngfw_pkgtools:/opt/untangle/ngfw_pkgtools:ro
+        - /etc/apt/apt.conf.d/01proxy:/etc/apt/apt.conf.d/01proxy
+        - /tmp/docker-gitconfig:/tmp/gitconfig:ro

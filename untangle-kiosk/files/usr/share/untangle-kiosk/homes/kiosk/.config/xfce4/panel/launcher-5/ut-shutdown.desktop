@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Shutdown
+Comment=Shutdown
+Icon=/usr/share/untangle-kiosk/panel/shutdown.png
+Exec=/home/kiosk/utils/ut-off.sh
+StartupNotify=false
+Terminal=false

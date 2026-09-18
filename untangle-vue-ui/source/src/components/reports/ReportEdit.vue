@@ -5,10 +5,13 @@
     :existing-reports="allReports"
     :table-fields="translatedTableFields"
     :condition-operators="globalConditionOperators"
+    :build-report-view="buildView"
     @save="onSave"
     @delete="onDelete"
     @cancel="onCancel"
     @refresh="onRefresh"
+    @fetch-data="onFetchData"
+    @export-settings="onExportSettings"
   />
 </template>
 
@@ -16,15 +19,33 @@
   import { mapGetters } from 'vuex'
   import { ReportEdit } from 'vuntangle'
   import reportsMixin from './reportsMixin'
-  import { urlEncode } from '@/util/reports'
+  import { urlEncode, exportReportSettings } from '@/util/reports'
+  import { buildReportView } from '@/util/reportViews'
 
   export default {
     name: 'ReportEditPage',
     components: { ReportEdit },
     mixins: [reportsMixin],
 
+    provide() {
+      return {
+        $isPreview: () => true,
+        $boxSettings: null,
+        $applianceUid: () => null,
+        $totalCountReport: () => 0,
+        $paginationReport: () => ({ pageNumber: 1, pageSize: 100 }),
+        $useCursorPaginationReport: () => false,
+        $hasQosmos: () => false,
+        $actionFilter: () => null,
+        $columnFilter: () => null,
+        $refreshTick: () => 0,
+        $enableExportCsv: () => false,
+      }
+    },
+
     computed: {
-      ...mapGetters('reports', ['allCategories']),
+      ...mapGetters('reports', ['allCategories', 'policyNameMap']),
+      ...mapGetters('config', ['serverClockOffsetMs', 'interfaceNameMap']),
 
       /**
        * Resolves the report entry from the store using the current route params.
@@ -38,6 +59,10 @@
     },
 
     methods: {
+      buildView(entry) {
+        return buildReportView(entry, this.timeZoneOffset, this.interfaceNameMap || {}, this.policyNameMap || {})
+      },
+
       /**
        * Persists a new or updated report entry to the backend.
        * Generates a uniqueId for new reports, then navigates to the detail view on success.
@@ -107,6 +132,11 @@
       async onRefresh() {
         await this.$store.dispatch('reports/loadReports')
       },
+      /** Exports the current report definition as a JSON file via the GridSettingsServlet. */
+      async onExportSettings(entry) {
+        await exportReportSettings(entry)
+      },
+
       /** Navigates back to the report detail view (edit mode) or the reports list (create mode). */
       onCancel() {
         if (this.$route.name === 'report-edit') {

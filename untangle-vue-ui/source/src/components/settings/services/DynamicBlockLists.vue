@@ -96,6 +96,8 @@
         try {
           const response = await window.rpc.appManager.app('dynamic-blocklists').status()
           this.status = response || []
+        } catch {
+          this.status = []
         } finally {
           this.$store.commit('SET_LOADER', false)
         }

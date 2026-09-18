@@ -1,0 +1,14 @@
+{
+  "name": "untangle-ngfw-playwright",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:interfaces": "playwright test --project=interfaces",
+    "test:interfaces-crud": "playwright test --project=interfaces-crud"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.40.1",
+    "@types/node": "22.14.1",
+    "typescript": "5.8.3"
+  }
+}

@@ -1,7 +1,8 @@
 import { mapGetters } from 'vuex'
-import { urlEncode, tableContainsColumns } from '@/util/reports'
+import { urlEncode, tableContainsColumns, clientToServerDate } from '@/util/reports'
 import { globalOperatorOptions, globalConditionColumns, protocolNameMap, conditionValueOptions } from '@/constants'
 import { tableFields } from '@/util/eventTableColumns'
+import Util from '@/util/setupUtil'
 
 export default {
   provide() {
@@ -14,6 +15,10 @@ export default {
       $disabledReportIds: () => this.disabledReportIds,
       $conditionTableFields: () => this.translatedTableFields,
       $tables: () => this.tables,
+      $serverTimezoneOffsetMs: () => this.timeZoneOffset,
+      $serverClockOffsetMs: () => this.serverClockOffsetMs,
+      $showTimeRangeHistory: true,
+      $timeRangeSessionKey: () => this.$store.getters['reports/timeRangeSessionKey'],
     }
   },
 
@@ -23,6 +28,7 @@ export default {
 
   computed: {
     ...mapGetters('reports', ['allReports', 'globalConditions', 'tables']),
+    ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs']),
 
     /** Translates operator options for the global condition dropdowns. */
     globalConditionOperators() {
@@ -122,6 +128,92 @@ export default {
     /** Replaces all global conditions with the set from the "More Conditions" dialog. */
     onSetConditions(conditions) {
       this.$store.commit('reports/SET_GLOBAL_CONDITIONS', conditions)
+    },
+
+    async onFetchData({ query, resolve, entry: passedEntry }) {
+      try {
+        const entry = passedEntry || this.allReports.find(r => r.uniqueId === query.key)
+        if (!entry) {
+          resolve(null)
+          return
+        }
+
+        const gtCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'GT')
+        const ltCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'LT')
+        const startDate = clientToServerDate(gtCond?.value ?? Date.now() - 86400000, this.timeZoneOffset)
+        const endDate = ltCond ? clientToServerDate(ltCond.value, this.timeZoneOffset) : null
+
+        const conditions = query.userConditions
+          .filter(c => c.column !== 'time_stamp')
+          .map(c => ({
+            javaClass: 'com.untangle.app.reports.SqlCondition',
+            column: c.column,
+            operator: c.operator,
+            value: c.value,
+          }))
+
+        const globalConds = this.globalConditions.map(gc => ({
+          javaClass: 'com.untangle.app.reports.SqlCondition',
+          column: gc.column,
+          operator: gc.operator,
+          value: String(gc.value),
+          autoFormatValue: gc.autoFormatValue !== false,
+        }))
+        conditions.push(...globalConds)
+
+        if ('lastStartMs' in this.$data) {
+          this.lastStartMs = gtCond?.value ?? Date.now() - 86400000
+          this.lastEndMs = ltCond?.value ?? null
+          this.lastConditions = conditions
+        }
+
+        const limit = entry.type === 'EVENT_LIST' ? query.limit ?? 1000 : -1
+
+        const payload = await this.$store.dispatch('reports/fetchReportData', {
+          entry,
+          conditions,
+          startDate,
+          endDate,
+          limit,
+        })
+
+        if (payload.data) {
+          const backendData = payload.data
+
+          if (backendData.series) {
+            const arr = backendData.series
+            Object.defineProperty(arr, '__prebuiltType', { value: 'prebuilt_series', enumerable: false })
+            resolve(arr)
+          } else if (backendData.slices) {
+            let slices = backendData.slices
+
+            if (entry.type === 'PIE_GRAPH' && entry.pieGroupColumn === 'protocol') {
+              slices = slices.map(s => ({
+                ...s,
+                name: protocolNameMap[parseInt(s.name)] || s.name,
+              }))
+            }
+
+            Object.defineProperty(slices, '__prebuiltType', { value: 'prebuilt_slices', enumerable: false })
+            resolve(slices)
+          } else {
+            resolve(null)
+          }
+        } else if (entry.type === 'TEXT') {
+          resolve(payload.text)
+        } else if (entry.type === 'EVENT_LIST') {
+          resolve(payload.list)
+        } else {
+          resolve(null)
+        }
+      } catch (err) {
+        Util.handleException(err)
+        resolve(null)
+      } finally {
+        if (typeof this.scheduleRefresh === 'function') {
+          this.scheduleRefresh()
+        }
+      }
     },
   },
 }

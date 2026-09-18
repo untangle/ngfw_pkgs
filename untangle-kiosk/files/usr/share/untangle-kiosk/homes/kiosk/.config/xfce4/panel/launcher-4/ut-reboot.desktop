@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Reboot
+Comment=Reboot
+Icon=/usr/share/untangle-kiosk/panel/reboot.png
+Exec=/home/kiosk/utils/ut-reboot.sh
+StartupNotify=false
+Terminal=false
