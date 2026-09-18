@@ -1,5 +1,7 @@
 <template>
+  <!-- Parent Container -->
   <v-container fluid class="shared-cmp d-flex flex-column flex-grow-1 pa-0">
+    <!-- No License Component -->
     <no-license v-if="!isLicensed && isInstalled" class="mt-2">
       {{ $t('not_licensed_service', [$t('wireguard_vpn')]) }}
       <template #actions>
@@ -12,6 +14,8 @@
         </u-btn>
       </template>
     </no-license>
+
+    <!-- WireguardVPN Component -->
     <WireguardVPN
       v-if="settings"
       :settings="settings"
@@ -25,17 +29,22 @@
       @refresh-tunnel-status="fetchTunnelStatus"
     >
       <template #actions="{ newSettings, isDirty }">
+        <!-- Installed State Actions -->
         <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
+          <!-- Uninstall Service -->
           <div style="min-width: 180px">
             <u-app-status-remove class="mt-0" service-app :app-name="$t('wireguard_vpn')" @remove="onRemoveService" />
           </div>
           <v-divider vertical class="mx-4" />
+          <!-- Refresh and Save Buttons -->
           <u-btn class="mr-2" @click="refreshData">{{ $vuntangle.$t('refresh') }}</u-btn>
           <u-btn :disabled="!isDirty" @click="saveSettings(newSettings)">
             {{ $vuntangle.$t('save') }}
           </u-btn>
         </div>
+        <!-- Uninstalled State Actions -->
         <div v-else style="min-width: 180px">
+          <!-- Install Service -->
           <u-app-install @install="onInstallService" />
         </div>
       </template>
@@ -58,9 +67,20 @@
 
     mixins: [serviceMixin],
 
+    data() {
+      return {
+        serviceName: 'wireguard-vpn',
+        licenseNodeName: 'wireguard-vpn',
+        displayNameFallback: 'WireGuard VPN',
+        tunnelStatusData: [],
+      }
+    },
+
     computed: {
+      // Server timezone offset in milliseconds, used for formatting timestamps
       serverTzOffset: ({ $store }) => $store.getters['config/timeZoneOffset'],
 
+      // Enriches the tunnel status data with additional information from the settings
       enrichedTunnelStatusData() {
         const tunnelsByPublicKey = new Map(
           (Array.isArray(this.settings?.tunnels) ? this.settings.tunnels : []).map(tunnel => [
@@ -82,16 +102,8 @@
       },
     },
 
-    data() {
-      return {
-        serviceName: 'wireguard-vpn',
-        licenseNodeName: 'wireguard-vpn',
-        displayNameFallback: 'WireGuard VPN',
-        tunnelStatusData: [],
-      }
-    },
-
     watch: {
+      // Watch for changes in the app's power state to fetch or clear tunnel status data
       'powerState.on'(isOn) {
         if (isOn) {
           this.fetchTunnelStatus()
@@ -102,6 +114,11 @@
     },
 
     methods: {
+      /**
+       * Formats the latest handshake timestamp into a human-readable string
+       * @param value {number|string} The latest handshake timestamp in seconds
+       * @returns {string} Formatted date string or a message indicating no recent activity
+       */
       formatHandshake(value) {
         const timestamp = Number(value)
         if (!timestamp) return this.$vuntangle.$t('wireguard_no_recent_activity')
@@ -111,6 +128,9 @@
         return date.toLocaleString(undefined, { hour12: true })
       },
 
+      /**
+       * Fetches the current tunnel status from the backend and updates the component state
+       */
       async fetchTunnelStatus() {
         if (!this.appManager) return
 
@@ -122,7 +142,10 @@
           this.tunnelStatusData = status?.wireguard || []
         } catch (error) {
           this.tunnelStatusData = []
-          this.$vuntangle.toast.add(`Error occurred while fetching tunnel status: ${error?.message || error}`, 'error')
+          this.$vuntangle.toast.add(
+            this.$vuntangle.$t('wireguard_tunnel_status_fetch_error', [error?.message || error]),
+            'error',
+          )
         }
       },
     },
