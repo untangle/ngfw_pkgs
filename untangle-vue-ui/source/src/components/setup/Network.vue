@@ -2,8 +2,27 @@
   <v-container>
     <v-card width="1100" class="mx-auto mt-3 pa-3" flat>
       <SetupLayout />
+      <!-- Never expose an empty grid as usable data while the initial RPC snapshot is pending. -->
       <div
-        v-if="!loadingGridData && gridData.length < 2"
+        v-if="loadingGridData"
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column justify-center align-center"
+        style="width: 100%; min-height: 300px; border: 1px solid #e0e0e0 !important"
+      >
+        <p class="ma-7">Loading network interfaces...</p>
+      </div>
+      <div
+        v-else-if="loadError"
+        class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
+        style="width: 100%; min-height: 300px; border: 1px solid #e0e0e0 !important"
+      >
+        <p class="red--text text--darken-2 ma-7">Unable to load network interfaces: {{ loadError }}</p>
+        <div class="d-flex justify-space-between pa-7" style="position: relative">
+          <u-btn :small="false" @click="onClickBack">{{ `Back` }}</u-btn>
+          <u-btn :small="false" @click="retrySettings">{{ `Retry` }}</u-btn>
+        </div>
+      </div>
+      <div
+        v-else-if="gridData.length < 2"
         class="pa-3 mt-4 mx-auto grey lighten-4 border rounded d-flex flex-column"
         style="width: 100%; min-height: 300px; border: 1px solid #e0e0e0 !important; display: flex"
       >
@@ -120,6 +139,7 @@
   import { forEach } from 'lodash'
   import VueDraggable from 'vuedraggable'
   import SetupLayout from '@/layouts/SetupLayout.vue'
+  import AlertDialog from '@/components/Reusable/AlertDialog.vue'
   import Util from '@/util/setupUtil'
 
   export default {
@@ -150,6 +170,10 @@
         rpcForAdmin: null,
         interfacesForceContinue: false,
         loadingGridData: true,
+        // Set only after a failed initial snapshot; this keeps Continue-anyway unavailable on load failure.
+        loadError: null,
+        // Keyed by physical device so a drag/remap cannot move MISSING status to the wrong hardware.
+        unavailableByPhysicalDev: {},
         tableFields: [
           { text: 'Name', value: 'name', sortable: false },
           { text: 'Drag', value: 'drag', sortable: false },
@@ -163,10 +187,14 @@
     computed: {
       ...mapGetters('setup', ['wizardSteps', 'currentStep', 'previousStep']), // from Vuex
     },
-    created() {
-      this.getSettings()
-      this.enableAutoRefresh = true
-      setTimeout(this.autoRefreshInterfaces, 3000)
+    async created() {
+      // Polling must wait for a complete initial snapshot; otherwise it can run against empty state.
+      this.enableAutoRefresh = false
+      const loaded = await this.getSettings()
+      if (loaded) {
+        this.enableAutoRefresh = true
+        setTimeout(this.autoRefreshInterfaces, 3000)
+      }
     },
     destroyed() {
       this.enableAutoRefresh = false
@@ -206,69 +234,120 @@
         const duplex = deviceStatus.duplex
         const vendor = deviceStatus.vendor
         const connectedStr =
-          connected === 'CONNECTED' ? 'connected' : connected === 'DISCONNECTED' ? 'disconnected' : 'unknown'
+          connected === 'CONNECTED'
+            ? 'connected'
+            : connected === 'DISCONNECTED'
+            ? 'disconnected'
+            : connected === 'MISSING'
+            ? 'missing'
+            : 'unknown'
         const duplexStr =
           duplex === 'FULL_DUPLEX' ? 'full-duplex' : duplex === 'HALF_DUPLEX' ? 'half-duplex' : 'unknown'
         return connectedStr + ' ' + mbit + ' ' + duplexStr + ' ' + vendor
       },
       async getSettings() {
         this.loadingGridData = true
+        this.loadError = null
         this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-
-        this.networkSettings = await new Promise((resolve, reject) => {
-          this.rpcForAdmin?.networkManager?.getNetworkSettings((result, ex) => {
-            if (ex) {
-              Util.handleException('Unable to load interface')
-              reject(ex)
-            } else {
-              resolve(result)
-            }
-          })
-        })
-        const physicalDevsStore = []
-        this.intfOrderArr = []
-        this.intfListLength = this.networkSettings.interfaces.list.length
-        const interfaces = []
-        const devices = []
-
-        forEach(this.networkSettings.interfaces.list, function (intf) {
-          if (!intf.isVlanInterface) {
-            interfaces.push(intf)
-            devices.push({ physicalDev: intf.physicalDev })
+        try {
+          // Check the callback APIs before creating Promises; an absent method would otherwise never settle.
+          if (
+            typeof this.rpcForAdmin?.networkManager?.getNetworkSettings !== 'function' ||
+            typeof this.rpcForAdmin?.networkManager?.getDeviceStatus !== 'function'
+          ) {
+            throw new TypeError('Admin network methods unavailable')
           }
-        })
 
-        const deviceRecords = await new Promise((resolve, reject) => {
-          this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
-            if (ex) {
-              Util.handleException(ex)
-              reject(ex)
-            } else {
-              resolve(result)
-            }
-          })
-        })
-
-        const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
-          map[item.deviceName] = item
-          return map
-        }, {})
-
-        forEach(interfaces, intf => {
-          if (deviceStatusMap[intf.physicalDev]) {
-            Object.keys(deviceStatusMap[intf.physicalDev]).forEach(key => {
-              if (!Object.prototype.hasOwnProperty.call(intf, key)) {
-                this.$set(intf, key, deviceStatusMap[intf.physicalDev][key])
+          this.networkSettings = await new Promise((resolve, reject) => {
+            this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
+              if (ex) {
+                reject(ex)
+              } else {
+                resolve(result)
               }
             })
+          })
+
+          if (!Array.isArray(this.networkSettings?.interfaces?.list)) {
+            throw new TypeError('Network settings response is malformed')
           }
-        })
-        this.gridData = interfaces
-        forEach(interfaces, function (intf) {
-          physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
-        })
-        this.deviceStore = physicalDevsStore
-        this.loadingGridData = false
+
+          const physicalDevsStore = []
+          this.intfOrderArr = []
+          this.intfListLength = this.networkSettings.interfaces.list.length
+          const interfaces = []
+
+          forEach(this.networkSettings.interfaces.list, function (intf) {
+            if (!intf.isVlanInterface) {
+              interfaces.push(intf)
+            }
+          })
+
+          if (interfaces.length === 0) {
+            // An empty physical inventory is not safe to treat as a valid Continue-anyway configuration.
+            throw new TypeError('No physical network interfaces detected')
+          }
+
+          const deviceRecords = await new Promise((resolve, reject) => {
+            this.rpcForAdmin.networkManager.getDeviceStatus((result, ex) => {
+              if (ex) {
+                reject(ex)
+              } else {
+                resolve(result)
+              }
+            })
+          })
+
+          if (!Array.isArray(deviceRecords?.list)) {
+            throw new TypeError('Device status response is malformed')
+          }
+
+          const deviceStatusMap = deviceRecords.list.reduce((map, item) => {
+            map[item.deviceName] = item
+            return map
+          }, {})
+          const nextUnavailable = {}
+
+          // Preserve status by physical device, including devices absent from the latest status response.
+          forEach(interfaces, intf => {
+            const deviceStatus = deviceStatusMap[intf.physicalDev]
+            if (deviceStatus) {
+              Object.keys(deviceStatus).forEach(key => {
+                if (!Object.prototype.hasOwnProperty.call(intf, key)) {
+                  this.$set(intf, key, deviceStatus[key])
+                }
+              })
+            }
+            if (!deviceStatus || deviceStatus.connected === 'MISSING') {
+              nextUnavailable[intf.physicalDev] = true
+              this.$set(intf, 'connected', 'MISSING')
+            }
+          })
+
+          this.unavailableByPhysicalDev = nextUnavailable
+          this.gridData = interfaces
+          forEach(interfaces, function (intf) {
+            physicalDevsStore.push({ 'physicalDev': intf.physicalDev })
+          })
+          this.deviceStore = physicalDevsStore
+          return true
+        } catch (error) {
+          this.loadError = error?.message || String(error)
+          Util.handleException(error)
+          return false
+        } finally {
+          this.loadingGridData = false
+        }
+      },
+      async retrySettings() {
+        // Prevent a previous poll from rescheduling while this retry replaces the snapshot.
+        this.enableAutoRefresh = false
+        const loaded = await this.getSettings()
+        if (loaded) {
+          this.enableAutoRefresh = true
+          setTimeout(this.autoRefreshInterfaces, 3000)
+        }
+        return loaded
       },
       // used when mapping from comboboxes
       setInterfacesMap(row) {
@@ -310,57 +389,100 @@
         if (!this.enableAutoRefresh) {
           return
         }
-        const interfaces = []
+        let succeeded = false
 
-        if (!this.rpcForAdmin) {
-          this.rpcForAdmin = Util.setRpcJsonrpc('admin')
-        }
-        await new Promise((resolve, reject) => {
-          this.rpcForAdmin.networkManager.getNetworkSettings((result, ex) => {
-            if (ex) {
-              Util.handleException('Unable to refresh the interfaces')
-              reject(ex)
-              return
-            }
-            if (result === null) {
-              return
-            }
-            this.intfListLength = result.interfaces.list.length
-            result.interfaces.list.forEach(function (intf) {
-              if (!intf.isVlanInterface) {
-                interfaces.push(intf)
-              }
-            })
-            if (interfaces.length !== this.gridData.length) {
-              alert('There are new interfaces, please restart the wizard.')
-              return
-            }
-            this.rpcForAdmin.networkManager.getDeviceStatus((result2, ex2) => {
-              if (ex2) {
-                Util.handleException(ex2)
-                reject(ex2)
-                return
-              }
-              if (result === null) {
-                return
-              }
-              const deviceStatusMap = result2.list.reduce((map, item) => {
-                map[item.deviceName] = item
-                return map
-              }, {})
+        try {
+          if (!this.rpcForAdmin) {
+            this.rpcForAdmin = Util.setRpcJsonrpc('admin')
+          }
+          if (
+            typeof this.rpcForAdmin?.networkManager?.getNetworkSettings !== 'function' ||
+            typeof this.rpcForAdmin?.networkManager?.getDeviceStatus !== 'function'
+          ) {
+            throw new TypeError('Admin network methods unavailable')
+          }
 
-              this.gridData.forEach(function (row) {
-                const deviceStatus = deviceStatusMap[row.physicalDev]
-                if (deviceStatus !== null) {
-                  row.connected = deviceStatus.connected
-                }
-              })
-              if (this.enableAutoRefresh) {
-                setTimeout(this.autoRefreshInterfaces, 3000)
+          const result = await new Promise((resolve, reject) => {
+            this.rpcForAdmin.networkManager.getNetworkSettings((response, ex) => {
+              if (ex) {
+                reject(ex)
+              } else {
+                resolve(response)
               }
-              resolve()
             })
           })
+          if (!result || !Array.isArray(result.interfaces?.list)) {
+            throw new Error('Network settings response is malformed')
+          }
+
+          this.intfListLength = result.interfaces.list.length
+          const interfaces = result.interfaces.list.filter(intf => !intf.isVlanInterface)
+          if (interfaces.length !== this.gridData.length) {
+            // Inventory changes invalidate the current mapping; do not apply a partial refresh.
+            alert('There are new interfaces, please restart the wizard.')
+            return
+          }
+
+          const result2 = await new Promise((resolve, reject) => {
+            this.rpcForAdmin.networkManager.getDeviceStatus((response, ex) => {
+              if (ex) {
+                reject(ex)
+              } else {
+                resolve(response)
+              }
+            })
+          })
+          if (!result2 || !Array.isArray(result2.list)) {
+            throw new Error('Device status response is malformed')
+          }
+
+          const deviceStatusMap = result2.list.reduce((map, item) => {
+            map[item.deviceName] = item
+            return map
+          }, {})
+          const nextUnavailable = {}
+
+          this.gridData.forEach(row => {
+            const deviceStatus = deviceStatusMap[row.physicalDev]
+            if (deviceStatus) {
+              row.connected = deviceStatus.connected
+            } else {
+              // A missing status record is equivalent to a physically unavailable device.
+              row.connected = 'MISSING'
+            }
+            if (!deviceStatus || deviceStatus.connected === 'MISSING') {
+              nextUnavailable[row.physicalDev] = true
+            }
+          })
+          this.unavailableByPhysicalDev = nextUnavailable
+          succeeded = true
+        } catch (error) {
+          Util.handleException(error)
+        } finally {
+          if (this.enableAutoRefresh && succeeded) {
+            setTimeout(this.autoRefreshInterfaces, 3000)
+          }
+        }
+      },
+
+      alertDialog(message) {
+        // This is a recoverable wizard warning; unlike Util.handleException, it must not reload the page.
+        this.$vuntangle.dialog.show({
+          title: this.$t('Warning'),
+          component: AlertDialog,
+          componentProps: {
+            alert: { message },
+          },
+          width: 600,
+          height: 500,
+          buttons: [
+            {
+              name: this.$t('close'),
+              handler() {
+                this.onClose()
+              },
+            },
+          ],
         })
       },
 
@@ -381,6 +503,18 @@
         this.gridData.forEach(function (currentRow) {
           interfacesMap[currentRow.interfaceId] = currentRow.physicalDev
         })
+
+        // Check every mapped physical device before mutating settings or sending the save RPC.
+        const blocked = Object.values(interfacesMap).filter(device => this.unavailableByPhysicalDev[device])
+        if (blocked.length) {
+          this.$store.commit('SET_LOADER', false)
+          this.alertDialog(
+            `Cannot save: the following physical device(s) are missing: ${blocked.join(
+              ', ',
+            )}. Reconnect or remap them before continuing.`,
+          )
+          return
+        }
 
         // apply new physicalDev for each interface from initial Network Settings
         this.networkSettings.interfaces.list.forEach(function (intf) {
@@ -411,7 +545,7 @@
         this.$store.commit('SET_LOADER', false)
       },
       statusIcon(status) {
-        return status === 'CONNECTED' ? 'green' : 'grey'
+        return status === 'CONNECTED' ? 'green' : status === 'MISSING' ? 'red' : 'grey'
       },
     },
   }

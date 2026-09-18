@@ -220,9 +220,17 @@
       },
     },
     created() {
+      // Setup RPC creation can fail during startup; keep the component alive so its existing load error is visible.
       this.rpc = Util.setRpcJsonrpc('setup')
-      this.remote = this.rpc.remote
-      this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable()
+      if (!this.rpc) {
+        this.alertDialog(this.$t('Setup RPC unavailable. Please try again.'))
+      }
+      this.remote = this.rpc?.remote || false
+      try {
+        this.remoteReachable = this.rpc?.jsonrpc?.SetupContext?.getRemoteReachable?.()
+      } catch {
+        this.remoteReachable = undefined
+      }
       this.rpcForAdmin = Util.setRpcJsonrpc('admin')
     },
     mounted() {
@@ -293,55 +301,85 @@
 
       onSave(triggeredBy, cb) {
         if (!this.wan) {
-          cb()
+          if (typeof cb === 'function') cb()
           return
-        }
-
-        if (this.wan.v4ConfigType === 'AUTO' || this.wan.v4ConfigType === 'PPPOE') {
-          this.wan.v4StaticAddress = null
-          this.wan.v4StaticPrefix = null
-          this.wan.v4StaticGateway = null
-          this.wan.v4StaticDns1 = null
-          this.wan.v4StaticDns2 = null
-        }
-        if (this.wan.v4ConfigType === 'STATIC') {
-          this.wan.v4NatEgressTraffic = true
-          if (this.wan.v4StaticPrefix && this.wan.v4StaticPrefix.value) {
-            this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value
-          }
-        }
-        if (this.wan.v4ConfigType === 'PPPOE') {
-          this.wan.v4NatEgressTraffic = true
-          this.wan.v4PPPoEUsePeerDns = true
         }
 
         const mode = triggeredBy === 'testConnectivity' ? 'manual' : 'auto'
 
         try {
           this.$store.commit('SET_LOADER', true)
+          if (typeof this.rpcForAdmin?.networkManager?.getDeviceStatus !== 'function') {
+            throw new TypeError('Admin device-status RPC unavailable')
+          }
 
-          this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
-            if (ex) {
-              Util.handleException(ex)
-              this.$store.commit('SET_LOADER', false)
-              return
-            }
-
-            this.testConnectivity(mode, () => {
-              if (typeof cb === 'function') {
-                cb()
-                if (mode === 'auto') {
-                  this.nextPage()
-                }
+          const wanDev = this.wan.physicalDev
+          // Both Save and Test Connectivity must validate the live physical WAN immediately before writing.
+          this.rpcForAdmin.networkManager.getDeviceStatus((deviceRecords, statusError) => {
+            try {
+              if (statusError) {
+                Util.handleException(statusError)
+                this.$store.commit('SET_LOADER', false)
+                return
               }
 
-              this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+              const deviceStatus = Array.isArray(deviceRecords?.list)
+                ? deviceRecords.list.find(record => record.deviceName === wanDev)
+                : null
+              if (!deviceStatus || deviceStatus.connected === 'MISSING') {
+                // Missing records and explicit MISSING status are both unsafe save targets.
+                this.$store.commit('SET_LOADER', false)
+                this.alertDialog(
+                  `Cannot save: WAN physical device "${wanDev}" is missing. Reconnect the device or Back to Interfaces to remap.`,
+                )
+                return
+              }
 
+              if (this.wan.v4ConfigType === 'AUTO' || this.wan.v4ConfigType === 'PPPOE') {
+                this.wan.v4StaticAddress = null
+                this.wan.v4StaticPrefix = null
+                this.wan.v4StaticGateway = null
+                this.wan.v4StaticDns1 = null
+                this.wan.v4StaticDns2 = null
+              }
+              if (this.wan.v4ConfigType === 'STATIC') {
+                this.wan.v4NatEgressTraffic = true
+                if (this.wan.v4StaticPrefix && this.wan.v4StaticPrefix.value) {
+                  this.wan.v4StaticPrefix = this.wan.v4StaticPrefix.value
+                }
+              }
+              if (this.wan.v4ConfigType === 'PPPOE') {
+                this.wan.v4NatEgressTraffic = true
+                this.wan.v4PPPoEUsePeerDns = true
+              }
+
+              this.rpcForAdmin.networkManager.setNetworkSettings((response, ex) => {
+                if (ex) {
+                  Util.handleException(ex)
+                  this.$store.commit('SET_LOADER', false)
+                  return
+                }
+
+                this.testConnectivity(mode, () => {
+                  if (typeof cb === 'function') {
+                    cb()
+                    if (mode === 'auto') {
+                      this.nextPage()
+                    }
+                  }
+
+                  this.$vuntangle.toast.add(this.$t('Saving settings ...'))
+
+                  this.$store.commit('SET_LOADER', false)
+                })
+              }, this.networkSettings)
+            } catch (error) {
+              this.alertDialog(`Unable to save network settings. Please try again. Error: ${error.message || error}`)
               this.$store.commit('SET_LOADER', false)
-            })
-          }, this.networkSettings)
+            }
+          })
         } catch (error) {
-          this.alertDialog('Unable to save network settings. Please try again.')
+          this.alertDialog(`Unable to save network settings. Please try again. Error: ${error.message || error}`)
           this.$store.commit('SET_LOADER', false)
         }
       },
@@ -362,13 +400,15 @@
           } else if (!result.dnsWorking) {
             message = 'Warning! Internet tests succeeded, but DNS tests failed.'
           } else if (this.remote) {
+            // Local TCP/DNS success is not enough in remote mode; ETM reachability controls Next.
             const rpcSetup = Util.setRpcJsonrpc('setup')
-            this.remoteReachable = rpcSetup.jsonrpc.SetupContext.getRemoteReachable()
+            this.remoteReachable = rpcSetup?.jsonrpc?.SetupContext?.getRemoteReachable?.()
             this.rpcForAdmin = Util.setRpcJsonrpc('admin')
             if (this.remoteReachable) {
-              message = 'Unable to reach ETM Dashboard!'
-            } else {
               nextDisabled = false
+              message = null
+            } else {
+              message = 'Unable to reach ETM Dashboard!'
             }
           } else {
             message = null
