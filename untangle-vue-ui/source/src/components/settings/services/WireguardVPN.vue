@@ -26,19 +26,21 @@
       :reports="appReports"
       :tunnel-status-data="enrichedTunnelStatusData"
       @toggle-state="toggleAppState"
+      @check-network-availability="isNetworkAvailable"
       @refresh-tunnel-status="fetchTunnelStatus"
+      @request-new-address-pool="requestNewAddressPool"
     >
-      <template #actions="{ newSettings, isDirty }">
+      <template #actions="{ newSettings, isDirty, validate }">
         <!-- Installed State Actions -->
         <div v-if="isInstalled" class="d-flex flex-wrap align-center" style="gap: 8px">
           <!-- Uninstall Service -->
-          <div style="min-width: 180px">
+          <div style="min-width: 140px">
             <u-app-status-remove class="mt-0" service-app :app-name="$t('wireguard_vpn')" @remove="onRemoveService" />
           </div>
           <v-divider vertical class="mx-4" />
           <!-- Refresh and Save Buttons -->
           <u-btn class="mr-2" @click="refreshData">{{ $vuntangle.$t('refresh') }}</u-btn>
-          <u-btn :disabled="!isDirty" @click="saveSettings(newSettings)">
+          <u-btn :disabled="!isDirty" @click="saveSettingsWithValidation(newSettings, validate)">
             {{ $vuntangle.$t('save') }}
           </u-btn>
         </div>
@@ -115,6 +117,20 @@
 
     methods: {
       /**
+       * Checks a WireGuard network against NGFW's registered network spaces.
+       * @param network {string} Network in CIDR notation
+       * @param callback {Function} Receives the conflict object, or null when available
+       */
+      async isNetworkAvailable(network, callback) {
+        const conflict = await rpcCall(
+          window.rpc?.UvmContext?.netspaceManager?.()?.isNetworkAvailable,
+          ['wireguard-vpn', network],
+          { fallback: null },
+        )
+        callback(conflict)
+      },
+
+      /**
        * Formats the latest handshake timestamp into a human-readable string
        * @param value {number|string} The latest handshake timestamp in seconds
        * @returns {string} Formatted date string or a message indicating no recent activity
@@ -146,6 +162,54 @@
             this.$vuntangle.$t('wireguard_tunnel_status_fetch_error', [error?.message || error]),
             'error',
           )
+        }
+      },
+
+      /**
+       * Requests a new address pool from the backend and updates the provided setter function
+       * @param setAddressPool {Function} A function to update the address pool in the component state
+       */
+      async requestNewAddressPool(setAddressPool) {
+        try {
+          if (!this.appManager?.getNewAddressPool) return
+          const addressPool = await rpcCall(this.appManager.getNewAddressPool.bind(this.appManager), [], {
+            mode: 'propagate',
+          })
+          if (addressPool && typeof setAddressPool === 'function') setAddressPool(addressPool)
+        } catch (error) {
+          this.$vuntangle.toast.add(
+            this.$vuntangle.$t('wireguard_address_pool_fetch_error', [error?.message || error]),
+            'error',
+          )
+        }
+      },
+
+      /**
+       * Saves the new settings after optional validation
+       * @param newSettings {Object} The new settings to save
+       * @param validate {Function} Optional validation function that returns a boolean or a Promise resolving to a boolean
+       */
+      async saveSettingsWithValidation(newSettings, validate) {
+        if (validate && !(await validate())) return
+        await this.saveWireguardSettings(newSettings)
+      },
+
+      /**
+       * Saves the Wireguard settings to the backend and refreshes the app data
+       * @param newSettings {Object} The new settings to save
+       */
+      async saveWireguardSettings(newSettings) {
+        this.$store.commit('SET_LOADER', true)
+        try {
+          await rpcCall(this.appManager?.setSettingsV2?.bind(this.appManager), [newSettings, true], {
+            fallback: false,
+          })
+          await this.$store.dispatch('apps/loadAppData', {
+            appName: this.licenseNodeName,
+            app: this.appManager,
+          })
+        } finally {
+          this.$store.commit('SET_LOADER', false)
         }
       },
     },
