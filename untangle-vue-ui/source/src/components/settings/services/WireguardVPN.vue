@@ -57,6 +57,7 @@
 <script>
   import { WireguardVPN, NoLicense, UAppStatusRemove, UAppInstall } from 'vuntangle'
   import serviceMixin from './serviceMixin'
+  import util from '@/util/util'
   import { rpcCall } from '@/util/rpcHelpers'
 
   export default {
@@ -98,7 +99,9 @@
             ...status,
             'tunnel-description': tunnel?.description || '',
             'configured-endpoint': tunnel?.endpointHostname || '',
-            'latest-handshake-display': this.formatHandshake(status['latest-handshake']),
+            'latest-handshake-display':
+              util.formatUnixTimestamp(status['latest-handshake'], this.serverTzOffset) ||
+              this.$vuntangle.$t('wireguard_no_recent_activity'),
           }
         })
       },
@@ -122,26 +125,8 @@
        * @param callback {Function} Receives the conflict object, or null when available
        */
       async isNetworkAvailable(network, callback) {
-        const conflict = await rpcCall(
-          window.rpc?.UvmContext?.netspaceManager?.()?.isNetworkAvailable,
-          ['wireguard-vpn', network],
-          { fallback: null },
-        )
+        const conflict = await util.checkNetworkAvailability('wireguard-vpn', network)
         callback(conflict)
-      },
-
-      /**
-       * Formats the latest handshake timestamp into a human-readable string
-       * @param value {number|string} The latest handshake timestamp in seconds
-       * @returns {string} Formatted date string or a message indicating no recent activity
-       */
-      formatHandshake(value) {
-        const timestamp = Number(value)
-        if (!timestamp) return this.$vuntangle.$t('wireguard_no_recent_activity')
-
-        const browserOffsetMs = new Date().getTimezoneOffset() * 60000
-        const date = new Date(timestamp * 1000 + browserOffsetMs + this.serverTzOffset)
-        return date.toLocaleString(undefined, { hour12: true })
       },
 
       /**
