@@ -36,6 +36,7 @@ import WanBalancer from '@/components/settings/services/WanBalancer.vue'
 import Reports from '@/components/settings/services/Reports.vue'
 import LiveSupport from '@/components/settings/services/LiveSupport.vue'
 import IntrusionPrevesion from '@/components/settings/services/IntrusionPrevesion.vue'
+import WireguardVPN from '@/components/settings/services/WireguardVPN.vue'
 
 export default [
   {
@@ -141,6 +142,11 @@ export default [
         path: 'services/intrusion-prevention',
         component: IntrusionPrevesion,
         meta: { helpContext: 'intrusion_prevention', requiresMetrics: true },
+      },
+      {
+        path: 'services/wireguard-vpn',
+        component: WireguardVPN,
+        meta: { helpContext: 'wireguard_vpn', requiresMetrics: true },
       },
       {
         path: 'services/policy-manager',
