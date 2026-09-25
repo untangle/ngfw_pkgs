@@ -1,20 +1,26 @@
 #! /bin/bash
 
-set -xu
+set -eux
 
-PG_VERSION=$(psql --version | sed 's/^[^0-9]*\([0-9]\+\).*/\1/')
-if [ $PG_VERSION == "15" ]; then
-  PG_VERSION_OLD="13"
-elif [ $PG_VERSION == "13" ]; then
-  PG_VERSION_OLD="11"
-else
-  PG_VERSION_OLD="9.6"
+# Trixie explicitly depends on PostgreSQL 17.  The target cluster may not be
+# registered yet when PG13 is already using the default port, so do not infer
+# the target from pg_lsclusters or the default psql client.
+PG_VERSION=17
+PG_VERSION_OLD=$(pg_lsclusters -h | awk -v target="$PG_VERSION" \
+  '$1 ~ /^[0-9]+$/ && $2 == "main" && $1 < target { print $1 }' | sort -n | tail -n 1)
+
+# A package repair/reinstall after migration must not run pg_upgrade again.
+# Port 5432 is the appliance's active PostgreSQL endpoint.
+PG_ACTIVE_VERSION=$(pg_lsclusters -h | awk \
+  '$2 == "main" && $3 == "5432" && $4 == "online" { print $1; exit }')
+if [ "$PG_ACTIVE_VERSION" = "$PG_VERSION" ]; then
+  PG_VERSION_OLD=""
 fi
+
 PG_ETC_DIR="/etc/postgresql/${PG_VERSION}/main"
 PG_VAR_DIR="/var/lib/postgresql/${PG_VERSION}"
-PG_VAR_DIR_OLD="/var/lib/postgresql/${PG_VERSION_OLD}"
 PG_BIN_DIR="/usr/lib/postgresql/${PG_VERSION}/bin"
-PG_MAIN_DIR="/var/lib/postgresql/${PG_VERSION}/main"
+PG_MAIN_DIR="${PG_VAR_DIR}/main"
 PG_CONF="${PG_ETC_DIR}/postgresql.conf"
 PG_HBA="${PG_ETC_DIR}/pg_hba.conf"
 
@@ -27,25 +33,24 @@ createDB() {
   locale=${1:-"en_US.UTF-8"}
   echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
   deb-systemd-invoke stop postgresql
-  rm -fr ${PG_VAR_DIR}
-  mkdir -p ${PG_VAR_DIR}/main
-  chown -R postgres:postgres ${PG_VAR_DIR}
-  su -c "${PG_BIN_DIR}/initdb --encoding=utf8 --locale=${locale} -D ${PG_VAR_DIR}/main" postgres
+  rm -fr "$PG_VAR_DIR"
+  mkdir -p "$PG_MAIN_DIR"
+  chown -R postgres:postgres "$PG_VAR_DIR"
+  su -s /bin/sh postgres -c \
+    "\"$PG_BIN_DIR/initdb\" --encoding=utf8 --locale=\"$locale\" -D \"$PG_MAIN_DIR\""
 }
 
-if [ -z "$2" ] ; then
-    # this is a new install
-    createDB
-
-elif [ ! -d "${PG_VAR_DIR}/main/base" ] || [ -d "${PG_VAR_DIR_OLD}" ]; then 
-    # database does not exist for whatever reason, just create it
+if [ ! -d "$PG_MAIN_DIR/base" ]; then
+    # Only initialize a genuinely absent target cluster.
     createDB
 fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# conversion during Debian migration
-/usr/share/untangle/bin/postgresql-upgrade-cluster.sh $PG_VERSION_OLD $PG_VERSION
+# conversion during Debian migration; retain the old cluster for rollback
+if [ -n "$PG_VERSION_OLD" ] && [ "$PG_VERSION_OLD" != "$PG_VERSION" ]; then
+  /usr/share/untangle/bin/postgresql-upgrade-cluster.sh "$PG_VERSION_OLD" "$PG_VERSION"
+fi
 
 # disable postgres at startup (report app will start as necessary)
 deb-systemd-helper disable postgresql.service
