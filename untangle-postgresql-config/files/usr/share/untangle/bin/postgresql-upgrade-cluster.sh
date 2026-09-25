@@ -6,8 +6,14 @@ set -eux
 VERSION_OLD=$1
 VERSION_NEW=$2
 
-case "$VERSION_OLD:$VERSION_NEW" in
-  *[!0-9.:]*|:*)
+case "$VERSION_OLD" in
+  ''|*[!0-9]*)
+    echo "Usage: $0 OLD_MAJOR NEW_MAJOR" >&2
+    exit 2
+    ;;
+esac
+case "$VERSION_NEW" in
+  ''|*[!0-9]*)
     echo "Usage: $0 OLD_MAJOR NEW_MAJOR" >&2
     exit 2
     ;;
