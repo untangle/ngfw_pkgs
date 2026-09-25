@@ -34,10 +34,11 @@ createDB() {
   echo -e "\n[`date +%Y-%m-%dT%H:%m`] ... using locale '$locale'\n"
   deb-systemd-invoke stop postgresql
   rm -fr "$PG_VAR_DIR"
-  mkdir -p "$PG_MAIN_DIR"
-  chown -R postgres:postgres "$PG_VAR_DIR"
-  su -s /bin/sh postgres -c \
-    "\"$PG_BIN_DIR/initdb\" --encoding=utf8 --locale=\"$locale\" -D \"$PG_MAIN_DIR\""
+  rm -fr "$PG_ETC_DIR"
+  pg_createcluster \
+    --start-conf=auto \
+    --locale="$locale" \
+    "$PG_VERSION" main
 }
 
 if [ ! -d "$PG_MAIN_DIR/base" ]; then
@@ -47,7 +48,7 @@ fi
 
 DATE=$(date '+%Y%m%d%H%M%S')
 
-# conversion during Debian migration; retain the old cluster for rollback
+# conversion during Debian migration; retire the old cluster after success
 if [ -n "$PG_VERSION_OLD" ] && [ "$PG_VERSION_OLD" != "$PG_VERSION" ]; then
   /usr/share/untangle/bin/postgresql-upgrade-cluster.sh "$PG_VERSION_OLD" "$PG_VERSION"
 fi
