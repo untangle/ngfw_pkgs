@@ -128,7 +128,7 @@
         adminEmail: '',
         timezoneID: '',
         timezone: '',
-        timezones: '',
+        timezones: [],
         loading: false,
         typeOptions: [
           { value: 'school', text: 'School' },
@@ -184,21 +184,52 @@
       },
     },
     created() {
-      const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
-      this.adminEmail = rpcResponseForSetup?.adminEmail
-      this.timezoneID = rpcResponseForSetup?.timezoneID
       this.timezones = []
 
-      const jsonStr = rpcResponseForSetup.timezones.replace(/'/g, '"')
-      const timezonesArray = JSON.parse(jsonStr)
-      if (timezonesArray) {
-        for (let i = 0; i < timezonesArray.length; i++) {
-          const timezone = `(${timezonesArray[i][1]}) ${timezonesArray[i][0]}`
-          this.timezones.push(timezone)
-          if (this.timezoneID === timezonesArray[i][0]) {
-            this.timezone = timezone
-          }
+      try {
+        // Timezone data is a prerequisite for this step. Use the standard
+        // warning/reload path rather than leaving an unusable form in place.
+        const rpcResponseForSetup = Util.setRpcJsonrpc('setup')
+        if (!rpcResponseForSetup) {
+          throw new Error('Setup Wizard: setup RPC unavailable while loading timezone data')
         }
+
+        this.adminEmail = rpcResponseForSetup.adminEmail
+        this.timezoneID = rpcResponseForSetup.timezoneID
+
+        if (typeof rpcResponseForSetup.timezones !== 'string') {
+          throw new TypeError('Setup Wizard: timezone data unavailable')
+        }
+
+        // Validate the parsed shape before building dropdown labels so partial
+        // startup data cannot produce a broken Server Settings screen.
+        const timezonesArray = JSON.parse(rpcResponseForSetup.timezones.replace(/'/g, '"'))
+        if (
+          !Array.isArray(timezonesArray) ||
+          timezonesArray.length === 0 ||
+          timezonesArray.some(
+            timezone =>
+              !Array.isArray(timezone) ||
+              timezone.length < 2 ||
+              typeof timezone[0] !== 'string' ||
+              timezone[0].length === 0 ||
+              (typeof timezone[1] !== 'string' && typeof timezone[1] !== 'number'),
+          )
+        ) {
+          throw new Error('Setup Wizard: timezone data is malformed')
+        }
+
+        this.timezones = timezonesArray.map(([id, offset]) => `(${offset}) ${id}`)
+        const selectedTimezone = timezonesArray.find(([id]) => id === this.timezoneID)
+        if (selectedTimezone) {
+          this.timezone = `(${selectedTimezone[1]}) ${selectedTimezone[0]}`
+        }
+      } catch (error) {
+        this.timezones = []
+        this.timezone = ''
+        // Retry UI and wizard-progress changes are intentionally not part of
+        // this Jira; handle the prerequisite failure through the shared path.
+        Util.handleException(error)
       }
     },
     methods: {
