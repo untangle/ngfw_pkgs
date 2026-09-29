@@ -15,7 +15,7 @@ yarn:
 	@# keeps yarn.lock and existing build scripts working unchanged.
 	command -v yarn >/dev/null 2>&1 || npm install -g yarn@1.22.22
 	cd ./source; \
-	yarn install --force --network-concurrency 1 --ignore-engines; \
+	yarn install --force --network-concurrency 1; \
 	yarn clean; \
 	yarn build
 
