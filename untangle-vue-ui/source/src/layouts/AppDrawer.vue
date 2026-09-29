@@ -181,6 +181,7 @@
               { name: 'reports', to: '/settings/services/reports' },
               { name: 'wan_balancer', to: '/settings/services/wan-balancer' },
               { name: 'wan_failover', to: '/settings/services/wan-failover' },
+              { name: 'wireguard_vpn', to: '/settings/services/wireguard-vpn' },
             ],
           },
         ],

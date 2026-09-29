@@ -15,12 +15,30 @@ import i18n from '@/plugins/vue-i18n'
 import http from '@/plugins/http'
 import store from '@/store'
 import Rpc from '@/util/Rpc'
+import { rpcCall } from '@/util/rpcHelpers'
 import { VTypes } from '@/util/VTypes'
 import Util from '@/util/setupUtil'
 
 export const hourInMilliseconds = 60 * 60 * 1000
 
 const util = {
+  /**
+   * Checks a network against NGFW's registered network spaces.
+   * The backend returns the conflicting network registration, or null when the
+   * requested network is available.
+   *
+   * @param {string} ownerName - network-space owner requesting the check
+   * @param {string} network - network in CIDR notation
+   * @param {object} options - rpcCall error-handling options
+   * @returns {Promise<object|null>} conflicting registration, or null when available
+   */
+  checkNetworkAvailability(ownerName, network, options = {}) {
+    return rpcCall(window.rpc?.UvmContext?.netspaceManager?.()?.isNetworkAvailable, [ownerName, network], {
+      fallback: null,
+      ...options,
+    })
+  },
+
   async addressChecker(cidr) {
     let response
     try {
@@ -753,6 +771,22 @@ const util = {
       .split('-')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join('')
+  },
+
+  /**
+   * Formats a Unix timestamp in seconds in the server's timezone.
+   *
+   * @param {number|string} value - Unix timestamp in seconds
+   * @param {number} serverOffsetMs - server UTC offset in milliseconds
+   * @param {Intl.DateTimeFormatOptions} options - locale date-time formatting options
+   * @returns {string} localized timestamp, or an empty string when no timestamp is available
+   */
+  formatUnixTimestamp(value, serverOffsetMs = 0, options = { hour12: true }) {
+    const timestamp = Number(value)
+    if (!timestamp) return ''
+
+    const browserOffsetMs = new Date().getTimezoneOffset() * 60000
+    return new Date(timestamp * 1000 + browserOffsetMs + serverOffsetMs).toLocaleString(undefined, options)
   },
 
   // formats a timestamp object to a human-readable string in the server's timezone
