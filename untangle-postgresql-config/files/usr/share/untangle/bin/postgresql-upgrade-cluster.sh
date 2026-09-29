@@ -28,6 +28,7 @@ PG_CONF_OLD="/etc/postgresql/${VERSION_OLD}/main/postgresql.conf"
 PG_VAR_DIR_NEW="/var/lib/postgresql/${VERSION_NEW}/main"
 PG_BIN_DIR_NEW="/usr/lib/postgresql/${VERSION_NEW}/bin"
 PG_CONF_NEW="/etc/postgresql/${VERSION_NEW}/main/postgresql.conf"
+PG_HBA_NEW="/etc/postgresql/${VERSION_NEW}/main/pg_hba.conf"
 
 ## functions
 log() {
@@ -46,6 +47,18 @@ fi
 
 if [ ! -x "$PG_BIN_DIR_OLD/pg_ctl" ] || [ ! -x "$PG_BIN_DIR_NEW/pg_upgrade" ]; then
   log "source or target PostgreSQL binaries are missing"
+  exit 1
+fi
+
+missing_target_files=""
+for target_file in "$PG_CONF_NEW" "$PG_HBA_NEW"; do
+  if [ ! -f "$target_file" ]; then
+    missing_target_files="$missing_target_files $target_file"
+  fi
+done
+if [ -n "$missing_target_files" ]; then
+  log "target PostgreSQL cluster is incomplete; missing:$missing_target_files"
+  log "source cluster was not modified; repair the target before retrying"
   exit 1
 fi
 
