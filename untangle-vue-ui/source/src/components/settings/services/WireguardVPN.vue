@@ -24,11 +24,14 @@
       :is-installed="isInstalled"
       :metrics-data="formattedMetrics"
       :reports="appReports"
+      :remote-config="remoteConfig"
       :tunnel-status-data="enrichedTunnelStatusData"
       @toggle-state="toggleAppState"
       @check-network-availability="isNetworkAvailable"
       @refresh-tunnel-status="fetchTunnelStatus"
       @request-new-address-pool="requestNewAddressPool"
+      @remote-config="openRemoteConfig"
+      @close-remote-config="remoteConfig = null"
     >
       <template #actions="{ newSettings, isDirty, validate }">
         <!-- Installed State Actions -->
@@ -76,6 +79,7 @@
         licenseNodeName: 'wireguard-vpn',
         displayNameFallback: 'WireGuard VPN',
         tunnelStatusData: [],
+        remoteConfig: null,
       }
     },
 
@@ -119,6 +123,27 @@
     },
 
     methods: {
+      /** Fetches and displays the roaming tunnel's remote client configuration. */
+      async openRemoteConfig(tunnel) {
+        if (!tunnel?.publicKey || !this.appManager || tunnel.id === -1) return
+        try {
+          const [qrCode, config] = await Promise.all([
+            rpcCall(this.appManager.createRemoteQrCode?.bind(this.appManager), [tunnel.publicKey], {
+              mode: 'propagate',
+            }),
+            rpcCall(this.appManager.getRemoteConfig?.bind(this.appManager), [tunnel.publicKey], {
+              mode: 'propagate',
+            }),
+          ])
+          this.remoteConfig = { qrCode, config }
+        } catch (error) {
+          this.remoteConfig = null
+          this.$vuntangle.toast.add(
+            this.$vuntangle.$t('wireguard_remote_config_fetch_error', [error?.message || error]),
+            'error',
+          )
+        }
+      },
       /**
        * Checks a WireGuard network against NGFW's registered network spaces.
        * @param network {string} Network in CIDR notation
