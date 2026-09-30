@@ -28,6 +28,8 @@
   import { BandwidthControl, UAppStatusRemove } from 'vuntangle'
   import { VDivider } from 'vuetify/lib'
   import appMixin from '../appMixin'
+  import { APP_CONFIG } from '@/constants/apps'
+  import util from '@/util/util'
 
   export default {
     name: 'BandwidthControlApp',
@@ -36,14 +38,25 @@
 
     mixins: [appMixin],
 
+    provide() {
+      return {
+        $remoteData: () => ({
+          interfaces: this.interfaces,
+        }),
+        $features: {},
+        $applications: null,
+        $readOnly: false,
+      }
+    },
+
     props: {
       appData: { type: Object, default: null },
     },
 
     data() {
       return {
-        appName: this.appData?.appName || 'bandwidth-control',
-        defaultDisplayName: 'Bandwidth Control',
+        appName: this.appData?.appName || APP_CONFIG.BANDWIDTH_CONTROL.appName,
+        defaultDisplayName: APP_CONFIG.BANDWIDTH_CONTROL.defaultDisplayName,
       }
     },
 
@@ -54,6 +67,7 @@
       qosEnabled: ({ networkSettings }) => !!networkSettings?.qosSettings?.qosEnabled,
       wanInterfaces: ({ networkSettings }) =>
         (networkSettings?.interfaces || []).filter(iface => iface.wan && iface.configType === 'ADDRESSED'),
+      interfaces: ({ networkSettings }) => util.getInterfaceList(networkSettings, true, true),
     },
   }
 </script>
