@@ -68,7 +68,12 @@ if [ -f /etc/untangle/post-network-hook.d/200-vrrp ] ; then
     sed -e 's/^\s*killall keepalive.*$/\tkillall keepalived ; sleep 5/' -i /etc/untangle/post-network-hook.d/200-vrrp
 fi
 
-# Bookworm uses iptables-nft (default priority 20) — do NOT force iptables-legacy
-# Previously forced iptables-legacy for NGFW-12900, removed for bookworm migration
+# Undo NGFW-12900 iptables-legacy override from Bullseye. That postinst used
+# update-alternatives --set which creates a 'manual' mode lock that persists
+# across upgrades. Reset to 'auto' so the default iptables-nft (priority 20)
+# takes effect. Required for Trixie bridge mode — iptables-legacy and nftables
+# use separate kernel subsystems, breaking conntrack for bridge traffic.
+update-alternatives --auto iptables 2>/dev/null || true
+update-alternatives --auto ip6tables 2>/dev/null || true
 
 exit 0
