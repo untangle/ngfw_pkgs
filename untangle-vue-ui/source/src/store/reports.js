@@ -28,6 +28,9 @@ const getDefaultState = () => ({
   // Whether Reports app is installed
   isReportsInstalled: false,
 
+  // Distinguishes the initial unchecked state from a confirmed uninstalled state
+  installationChecked: false,
+
   // Cached reports manager instance — acquired once at boot, reused on every data fetch
   reportsManager: null,
 
@@ -83,6 +86,7 @@ const getters = {
   },
 
   isReportsInstalled: state => state.isReportsInstalled,
+  reportsAvailability: state => (state.installationChecked ? state.isReportsInstalled : null),
   categories: state => state.categories,
   loading: state => state.loading,
   error: state => state.error,
@@ -137,6 +141,7 @@ const mutations = {
 
   SET_REPORTS_INSTALLED(state, installed) {
     state.isReportsInstalled = installed
+    state.installationChecked = true
   },
 
   SET_REPORTS_MANAGER(state, manager) {
@@ -226,6 +231,7 @@ const actions = {
 
       return { success: true }
     } catch (error) {
+      commit('SET_REPORTS_INSTALLED', false)
       commit('SET_ERROR', error.message || 'Failed to load reports')
       commit('SET_LOADING', false)
       Util.handleException(error, 'Failed to load reports')

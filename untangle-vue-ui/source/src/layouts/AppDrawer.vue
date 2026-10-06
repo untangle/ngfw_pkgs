@@ -195,12 +195,20 @@
       selectedPolicyId() {
         return this.$store.getters['apps/selectedPolicyId'] || 1
       },
+      isReportsInstalled() {
+        return this.$store.getters['reports/isReportsInstalled']
+      },
       rootNavItems() {
-        return [
+        const items = [
           { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
           { name: 'apps', to: `/apps/${this.selectedPolicyId}`, icon: 'mdi-apps' },
-          { name: 'reports', to: '/reports', icon: 'mdi-chart-box-outline' },
         ]
+
+        if (this.isReportsInstalled) {
+          items.push({ name: 'reports', to: '/reports', icon: 'mdi-chart-box-outline' })
+        }
+
+        return items
       },
     },
     watch: {
