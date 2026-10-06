@@ -69,7 +69,7 @@ const router = new VueRouter({
  * Note: Quarantine routes are public and should NOT initialize admin RPC
  * to avoid authentication calls. They use /quarantine/JSON-RPC instead.
  */
-router.beforeEach((to, from, next) => {
+router.beforeEach(async (to, from, next) => {
   try {
     // Skip admin RPC initialization for public quarantine routes
     // These routes use /quarantine/JSON-RPC endpoint without authentication
@@ -107,10 +107,20 @@ router.beforeEach((to, from, next) => {
       segment => to.name?.includes(segment) || to.path?.startsWith(`/${segment}`),
     )
 
+    const requiresReportsApp = to.matched.some(({ meta }) => meta.requiresReportsApp)
+
     if (isAdminRoute) {
       // Initialize admin context (loads apps, policy-manager, reports)
-      // Fire and forget - don't block navigation
-      store.dispatch('session/initializeAdminContext')
+      // Only Reports routes wait for this below; other admin navigation remains non-blocking.
+      const initialization = store.dispatch('session/initializeAdminContext')
+
+      if (requiresReportsApp) {
+        await initialization
+
+        if (store.getters['reports/reportsAvailability'] === false) {
+          return next({ path: '/settings/services/reports', replace: true })
+        }
+      }
     }
 
     // Start/stop metrics polling based on whether the route requires it
