@@ -22,6 +22,17 @@ export default {
     }
   },
 
+  watch: {
+    isInvalidReportRoute: {
+      handler(invalid) {
+        if (invalid) {
+          this.$router.replace({ name: 'page-not-found' })
+        }
+      },
+      immediate: true,
+    },
+  },
+
   created() {
     this.$store.dispatch('reports/fetchTables')
   },
@@ -52,6 +63,17 @@ export default {
     /** Unique column names currently used across all active global conditions. */
     conditionColumns() {
       return [...new Set(this.globalConditions.map(c => c.column))]
+    },
+
+    /**
+     * True when the route expects a valid report (has cat/rep params),
+     * the store is loaded, but no matching report exists.
+     */
+    isInvalidReportRoute() {
+      const { cat, rep } = this.$route.params
+      if (!cat || !rep) return false
+      if (!this.allReports.length) return false
+      return !this.allReports.find(r => urlEncode(r.category) === cat && urlEncode(r.title) === rep)
     },
 
     /**
