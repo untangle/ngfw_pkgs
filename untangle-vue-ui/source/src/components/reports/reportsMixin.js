@@ -38,8 +38,8 @@ export default {
   },
 
   computed: {
-    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables']),
-    ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs']),
+    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables', 'policyNameMap']),
+    ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
 
     /** Translates operator options for the global condition dropdowns. */
     globalConditionOperators() {
@@ -152,6 +152,28 @@ export default {
       this.$store.commit('reports/SET_GLOBAL_CONDITIONS', conditions)
     },
 
+    /**
+     * Resolves a raw series/slice label using the entry's seriesRenderer
+     * and host-owned name maps (interface, policy, protocol).
+     */
+    resolveSeriesLabel(rawName, seriesRenderer) {
+      if (!seriesRenderer) return rawName
+      const id = parseInt(rawName, 10)
+      if (isNaN(id)) return rawName
+      if (seriesRenderer === 'interface') {
+        if (id <= 0) return 'None'
+        return this.interfaceNameMap[id] || rawName
+      }
+      if (seriesRenderer === 'policy_id') {
+        if (id === 0) return 'None'
+        return this.policyNameMap[id] || rawName
+      }
+      if (seriesRenderer === 'protocol') {
+        return protocolNameMap[id] || rawName
+      }
+      return rawName
+    },
+
     async onFetchData({ query, resolve, entry: passedEntry }) {
       try {
         const entry = passedEntry || this.allReports.find(r => r.uniqueId === query.key)
@@ -203,16 +225,22 @@ export default {
           const backendData = payload.data
 
           if (backendData.series) {
-            const arr = backendData.series
+            let arr = backendData.series
+            if (entry.seriesRenderer) {
+              arr = arr.map(s => ({
+                ...s,
+                label: this.resolveSeriesLabel(s.label, entry.seriesRenderer),
+              }))
+            }
             Object.defineProperty(arr, '__prebuiltType', { value: 'prebuilt_series', enumerable: false })
             resolve(arr)
           } else if (backendData.slices) {
             let slices = backendData.slices
 
-            if (entry.type === 'PIE_GRAPH' && entry.pieGroupColumn === 'protocol') {
+            if (entry.seriesRenderer) {
               slices = slices.map(s => ({
                 ...s,
-                name: protocolNameMap[parseInt(s.name)] || s.name,
+                name: this.resolveSeriesLabel(s.name, entry.seriesRenderer),
               }))
             }
 
