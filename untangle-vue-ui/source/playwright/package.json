@@ -1,0 +1,13 @@
+{
+  "name": "ngfw-vue-playwright",
+  "private": true,
+  "scripts": {
+    "test": "playwright test",
+    "test:data-validation": "playwright test tests/data-validation/network.spec.ts",
+    "typecheck": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@playwright/test": "1.40.1",
+    "typescript": "^5.0.0"
+  }
+}
