@@ -1,8 +1,11 @@
 import { mapGetters } from 'vuex'
+import Highcharts from 'highcharts'
 import { urlEncode, tableContainsColumns, clientToServerDate } from '@/util/reports'
 import { globalOperatorOptions, globalConditionColumns, protocolNameMap, conditionValueOptions } from '@/constants'
 import { tableFields } from '@/util/eventTableColumns'
 import Util from '@/util/setupUtil'
+
+const highchartsTimezoneInitialized = { done: false }
 
 export default {
   provide() {
@@ -35,6 +38,12 @@ export default {
 
   created() {
     this.$store.dispatch('reports/fetchTables')
+
+    if (!highchartsTimezoneInitialized.done) {
+      const tzOffset = this.timeZoneOffset || 0
+      Highcharts.setOptions({ time: { timezoneOffset: -(tzOffset / 60000) } })
+      highchartsTimezoneInitialized.done = true
+    }
   },
 
   computed: {
@@ -184,8 +193,10 @@ export default {
 
         const gtCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'GT')
         const ltCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'LT')
-        const startDate = clientToServerDate(gtCond?.value ?? Date.now() - 86400000, this.timeZoneOffset)
-        const endDate = ltCond ? clientToServerDate(ltCond.value, this.timeZoneOffset) : null
+        const startDate = gtCond?.value
+          ? new Date(gtCond.value)
+          : clientToServerDate(Date.now() - 86400000, this.timeZoneOffset)
+        const endDate = ltCond?.value ? new Date(ltCond.value) : null
 
         const conditions = query.userConditions
           .filter(c => c.column !== 'time_stamp')
