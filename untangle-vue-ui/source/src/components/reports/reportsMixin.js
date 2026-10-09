@@ -1,8 +1,11 @@
 import { mapGetters } from 'vuex'
+import Highcharts from 'highcharts'
 import { urlEncode, tableContainsColumns, clientToServerDate } from '@/util/reports'
 import { globalOperatorOptions, globalConditionColumns, protocolNameMap, conditionValueOptions } from '@/constants'
 import { tableFields } from '@/util/eventTableColumns'
 import Util from '@/util/setupUtil'
+
+const highchartsTimezoneInitialized = { done: false }
 
 export default {
   provide() {
@@ -22,13 +25,30 @@ export default {
     }
   },
 
+  watch: {
+    isInvalidReportRoute: {
+      handler(invalid) {
+        if (invalid) {
+          this.$router.replace({ name: 'page-not-found' })
+        }
+      },
+      immediate: true,
+    },
+  },
+
   created() {
     this.$store.dispatch('reports/fetchTables')
+
+    if (!highchartsTimezoneInitialized.done) {
+      const tzOffset = this.timeZoneOffset || 0
+      Highcharts.setOptions({ time: { timezoneOffset: -(tzOffset / 60000) } })
+      highchartsTimezoneInitialized.done = true
+    }
   },
 
   computed: {
-    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables']),
-    ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs']),
+    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables', 'policyNameMap']),
+    ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
 
     /** Translates operator options for the global condition dropdowns. */
     globalConditionOperators() {
@@ -52,6 +72,17 @@ export default {
     /** Unique column names currently used across all active global conditions. */
     conditionColumns() {
       return [...new Set(this.globalConditions.map(c => c.column))]
+    },
+
+    /**
+     * True when the route expects a valid report (has cat/rep params),
+     * the store is loaded, but no matching report exists.
+     */
+    isInvalidReportRoute() {
+      const { cat, rep } = this.$route.params
+      if (!cat || !rep) return false
+      if (!this.allReports.length) return false
+      return !this.allReports.find(r => urlEncode(r.category) === cat && urlEncode(r.title) === rep)
     },
 
     /**
@@ -130,6 +161,28 @@ export default {
       this.$store.commit('reports/SET_GLOBAL_CONDITIONS', conditions)
     },
 
+    /**
+     * Resolves a raw series/slice label using the entry's seriesRenderer
+     * and host-owned name maps (interface, policy, protocol).
+     */
+    resolveSeriesLabel(rawName, seriesRenderer) {
+      if (!seriesRenderer) return rawName
+      const id = parseInt(rawName, 10)
+      if (isNaN(id)) return rawName
+      if (seriesRenderer === 'interface') {
+        if (id <= 0) return 'None'
+        return this.interfaceNameMap[id] || rawName
+      }
+      if (seriesRenderer === 'policy_id') {
+        if (id === 0) return 'None'
+        return this.policyNameMap[id] || rawName
+      }
+      if (seriesRenderer === 'protocol') {
+        return protocolNameMap[id] || rawName
+      }
+      return rawName
+    },
+
     async onFetchData({ query, resolve, entry: passedEntry }) {
       try {
         const entry = passedEntry || this.allReports.find(r => r.uniqueId === query.key)
@@ -140,8 +193,10 @@ export default {
 
         const gtCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'GT')
         const ltCond = query.userConditions.find(c => c.column === 'time_stamp' && c.operator === 'LT')
-        const startDate = clientToServerDate(gtCond?.value ?? Date.now() - 86400000, this.timeZoneOffset)
-        const endDate = ltCond ? clientToServerDate(ltCond.value, this.timeZoneOffset) : null
+        const startDate = gtCond?.value
+          ? new Date(gtCond.value)
+          : clientToServerDate(Date.now() - 86400000, this.timeZoneOffset)
+        const endDate = ltCond?.value ? new Date(ltCond.value) : null
 
         const conditions = query.userConditions
           .filter(c => c.column !== 'time_stamp')
@@ -181,16 +236,22 @@ export default {
           const backendData = payload.data
 
           if (backendData.series) {
-            const arr = backendData.series
+            let arr = backendData.series
+            if (entry.seriesRenderer) {
+              arr = arr.map(s => ({
+                ...s,
+                label: this.resolveSeriesLabel(s.label, entry.seriesRenderer),
+              }))
+            }
             Object.defineProperty(arr, '__prebuiltType', { value: 'prebuilt_series', enumerable: false })
             resolve(arr)
           } else if (backendData.slices) {
             let slices = backendData.slices
 
-            if (entry.type === 'PIE_GRAPH' && entry.pieGroupColumn === 'protocol') {
+            if (entry.seriesRenderer) {
               slices = slices.map(s => ({
                 ...s,
-                name: protocolNameMap[parseInt(s.name)] || s.name,
+                name: this.resolveSeriesLabel(s.name, entry.seriesRenderer),
               }))
             }
 

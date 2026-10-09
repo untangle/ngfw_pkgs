@@ -31,7 +31,7 @@
   import SettingsDiffDialog from './SettingsDiffDialog.vue'
   import Util from '@/util/setupUtil'
   import util from '@/util/util'
-  import { urlEncode, clientToServerDate } from '@/util/reports'
+  import { urlEncode } from '@/util/reports'
   import { buildReportView } from '@/util/reportViews'
 
   export default {
@@ -145,8 +145,8 @@
         if (!entry) return
 
         // Convert stored epoch ms boundaries to server-local dates for the download request
-        const startDate = clientToServerDate(this.lastStartMs, this.timeZoneOffset)
-        const endDate = this.lastEndMs ? clientToServerDate(this.lastEndMs, this.timeZoneOffset) : null
+        const startDate = this.lastStartMs ? new Date(this.lastStartMs) : null
+        const endDate = this.lastEndMs ? new Date(this.lastEndMs) : null
 
         // Build filename: "Category-Title-DD.MM.YYYY-HH:mm-DD.MM.YYYY-HH:mm"
         const fmt = d => {
