@@ -4,7 +4,11 @@
   "scripts": {
     "test": "playwright test",
     "test:interfaces": "playwright test --project=interfaces",
-    "test:interfaces-crud": "playwright test --project=interfaces-crud"
+    "test:interfaces-crud": "playwright test --project=interfaces-crud",
+    "test:create-vlan": "playwright test --project=create-vlan",
+    "test:create-vlan-auto": "playwright test --project=create-vlan-auto",
+    "test:create-vlan-pppoe": "playwright test --project=create-vlan-pppoe",
+    "test:create-vlan-qos": "playwright test --project=create-vlan-qos"
   },
   "devDependencies": {
     "@playwright/test": "1.40.1",
