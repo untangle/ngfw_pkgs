@@ -63,6 +63,16 @@ export default defineConfig({
       },
     },
     {
+      name: 'create-vlan-dhcp',
+      dependencies: ['setup-auth'],
+      testMatch: /crud[\\/]interfaces-vlan[.]spec[.]ts/,
+      grep: /create-vlan-dhcp: creates a VLAN with Auto DHCP/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: authFile,
+      },
+    },
+    {
       name: 'create-vlan-pppoe',
       dependencies: ['setup-auth'],
       testMatch: /crud[\\/]interfaces-vlan[.]spec[.]ts/,
@@ -77,6 +87,16 @@ export default defineConfig({
       dependencies: ['setup-auth'],
       testMatch: /crud[\\/]interfaces-vlan[.]spec[.]ts/,
       grep: /create-vlan-qos: creates a VLAN with QoS bandwidth/,
+      use: {
+        ...devices['Desktop Chrome'],
+        storageState: authFile,
+      },
+    },
+    {
+      name: 'create-vlan-vrrp',
+      dependencies: ['setup-auth'],
+      testMatch: /crud[\\/]interfaces-vlan[.]spec[.]ts/,
+      grep: /create-vlan-vrrp: creates a VLAN with VRRP/,
       use: {
         ...devices['Desktop Chrome'],
         storageState: authFile,

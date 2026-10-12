@@ -1,5 +1,12 @@
 import { test, expect, type Locator, type Page } from '@playwright/test'
-import { createVlanAutoData, createVlanData, createVlanPppoeData, createVlanQosData } from '../data/vlan-test-data'
+import {
+  createVlanAutoData,
+  createVlanData,
+  createVlanDhcpData,
+  createVlanPppoeData,
+  createVlanQosData,
+  createVlanVrrpData,
+} from '../data/vlan-test-data'
 
 const interfaceName = 'vlanBridge'
 const parentInterfaceName = 'External'
@@ -445,6 +452,105 @@ test('create-vlan-auto: creates vlan2 on External with Auto DHCP', async ({ page
   }
 })
 
+test('create-vlan-dhcp: creates a VLAN with Auto DHCP', async ({ page }) => {
+  test.setTimeout(180_000)
+  let saveClicked = false
+
+  try {
+    const initialGrid = await openInterfaces(page)
+    const parentRow = firstRowFor(initialGrid, createVlanDhcpData.parentInterface)
+    await expect(parentRow).toBeVisible({ timeout: uiReadyTimeout })
+    await expect(parentRow.locator('[col-id="description"]')).toHaveText(createVlanDhcpData.parentInterface)
+    const parentDevice = (await parentRow.locator('[col-id="device"]').innerText()).trim()
+    const expectedDevice = `${parentDevice}.${createVlanDhcpData.vlanId}`
+
+    await test.step(`verify ${createVlanDhcpData.interfaceName} is not already present`, async () => {
+      const interfaceNameExists = (await rowsFor(initialGrid, createVlanDhcpData.interfaceName).count()) > 0
+      const vlanIdExists = (await rowsFor(initialGrid, expectedDevice).count()) > 0
+
+      if (interfaceNameExists || vlanIdExists) {
+        const conflicts = [
+          interfaceNameExists ? `interface name "${createVlanDhcpData.interfaceName}"` : '',
+          vlanIdExists ? `VLAN ID "${createVlanDhcpData.vlanId}"` : '',
+        ]
+          .filter(Boolean)
+          .join(' or ')
+
+        test.skip(true, `Interface with ${conflicts} already exists`)
+        return
+      }
+    })
+
+    await test.step('click Add Interface and select VLAN', async () => {
+      await page.getByRole('button', { name: /add interface/i }).click()
+      await page.getByText('VLAN', { exact: true }).click()
+      await expect(page).toHaveURL(/settings\/network\/interfaces\/add\/vlan(?:$|[?#])/, {
+        timeout: 30_000,
+      })
+      await expect(page.getByRole('heading', { name: /add .*vlan/i })).toBeVisible({ timeout: 30_000 })
+    })
+
+    await test.step('enter VLAN details and select the configured type', async () => {
+      await page.getByLabel('Interface Name', { exact: true }).fill(createVlanDhcpData.interfaceName)
+
+      const configTypeButton = page.getByRole('button', { name: /config type/i })
+      await configTypeButton.click()
+      await visibleMenu(page).getByRole('option', { name: createVlanDhcpData.configType, exact: true }).click()
+      await expect(configTypeButton).toContainText(createVlanDhcpData.configType)
+
+      const parentButton = page.getByRole('button', { name: /^Parent Interface$/ })
+      await parentButton.click()
+      const parentMenu = visibleMenu(page)
+      await expect(
+        parentMenu.getByRole('option', { name: createVlanDhcpData.parentInterface, exact: true }),
+      ).toBeVisible()
+      await parentMenu.getByRole('option', { name: createVlanDhcpData.parentInterface, exact: true }).click()
+
+      const vlanIdField = page.getByLabel('VLAN ID', { exact: true })
+      await vlanIdField.fill(String(createVlanDhcpData.vlanId))
+      await vlanIdField.press('Tab')
+      await expect(vlanIdField).toHaveValue(String(createVlanDhcpData.vlanId))
+    })
+
+    await test.step('enable WAN and NAT', async () => {
+      const wanSwitch = page.getByLabel('WAN Interface', { exact: true })
+      await expect(wanSwitch).toBeEnabled({ timeout: uiReadyTimeout })
+      await setLabeledControl(wanSwitch, createVlanDhcpData.wanInterface)
+
+      const natCheckbox = page.getByLabel('NAT traffic exiting this interface (and bridged peers)', { exact: true })
+      await setLabeledControl(natCheckbox, createVlanDhcpData.natTraffic)
+    })
+
+    await test.step('select Auto DHCP for IPv4 and Disabled for IPv6', async () => {
+      await page.getByRole('button', { name: 'IPv4', exact: true }).click()
+      await setLabeledControl(page.getByRole('radio', { name: createVlanDhcpData.ipv4ConfigType, exact: true }), true)
+
+      await page.getByRole('button', { name: 'IPv6', exact: true }).click()
+      await setLabeledControl(page.getByRole('radio', { name: createVlanDhcpData.ipv6ConfigType, exact: true }), true)
+    })
+
+    await test.step('save the VLAN and verify it appears in the grid', async () => {
+      const saveButton = page.getByRole('button', { name: /^save$/i })
+      await expect(saveButton).toBeEnabled({ timeout: uiReadyTimeout })
+      saveClicked = true
+      await saveButton.click()
+      await expect(page).toHaveURL(/settings\/network\/interfaces(?:$|[?#])/, {
+        timeout: createSaveNavigationTimeout,
+      })
+
+      const savedGrid = page.locator('#appliance-interfaces')
+      await waitForInterfacesReady(page, savedGrid)
+      const savedRow = firstRowFor(savedGrid, createVlanDhcpData.interfaceName)
+      await expect(savedRow).toBeVisible({ timeout: uiReadyTimeout })
+      await expect(savedRow.locator('[col-id="device"]')).toHaveText(expectedDevice)
+      await expect(savedRow.locator('[col-id="description"]')).toHaveText(createVlanDhcpData.interfaceName)
+      await expect(savedRow.locator('[col-id="config"]')).toHaveText(createVlanDhcpData.configType)
+    })
+  } finally {
+    if (saveClicked) await deleteTemporaryInterface(page, createVlanDhcpData.interfaceName)
+  }
+})
+
 test('create-vlan-qos: creates a VLAN with QoS bandwidth', async ({ page }) => {
   test.setTimeout(180_000)
   let saveClicked = false
@@ -559,6 +665,123 @@ test('create-vlan-qos: creates a VLAN with QoS bandwidth', async ({ page }) => {
     })
   } finally {
     if (saveClicked) await deleteTemporaryInterface(page, createVlanQosData.interfaceName)
+  }
+})
+
+test('create-vlan-vrrp: creates a VLAN with VRRP', async ({ page }) => {
+  test.setTimeout(180_000)
+  let saveClicked = false
+
+  try {
+    const initialGrid = await openInterfaces(page)
+    const parentRow = firstRowFor(initialGrid, createVlanVrrpData.parentInterface)
+    await expect(parentRow).toBeVisible({ timeout: uiReadyTimeout })
+    await expect(parentRow.locator('[col-id="description"]')).toHaveText(createVlanVrrpData.parentInterface)
+    const parentDevice = (await parentRow.locator('[col-id="device"]').innerText()).trim()
+    const expectedDevice = `${parentDevice}.${createVlanVrrpData.vlanId}`
+
+    await test.step(`verify ${createVlanVrrpData.interfaceName} is not already present`, async () => {
+      const interfaceNameExists = (await rowsFor(initialGrid, createVlanVrrpData.interfaceName).count()) > 0
+      const vlanIdExists = (await rowsFor(initialGrid, expectedDevice).count()) > 0
+
+      if (interfaceNameExists || vlanIdExists) {
+        const conflicts = [
+          interfaceNameExists ? `interface name "${createVlanVrrpData.interfaceName}"` : '',
+          vlanIdExists ? `VLAN ID "${createVlanVrrpData.vlanId}"` : '',
+        ]
+          .filter(Boolean)
+          .join(' or ')
+
+        test.skip(true, `Interface with ${conflicts} already exists`)
+        return
+      }
+    })
+
+    await test.step('click Add Interface and select VLAN', async () => {
+      await page.getByRole('button', { name: /add interface/i }).click()
+      await page.getByText('VLAN', { exact: true }).click()
+      await expect(page).toHaveURL(/settings\/network\/interfaces\/add\/vlan(?:$|[?#])/, {
+        timeout: 30_000,
+      })
+      await expect(page.getByRole('heading', { name: /add .*vlan/i })).toBeVisible({ timeout: 30_000 })
+    })
+
+    await test.step('enter VLAN details', async () => {
+      await page.getByLabel('Interface Name', { exact: true }).fill(createVlanVrrpData.interfaceName)
+
+      const configTypeButton = page.getByRole('button', { name: /config type/i })
+      await configTypeButton.click()
+      await visibleMenu(page).getByRole('option', { name: createVlanVrrpData.configType, exact: true }).click()
+      await expect(configTypeButton).toContainText(createVlanVrrpData.configType)
+
+      const parentButton = page.getByRole('button', { name: /^Parent Interface$/ })
+      await parentButton.click()
+      const parentMenu = visibleMenu(page)
+      await expect(
+        parentMenu.getByRole('option', { name: createVlanVrrpData.parentInterface, exact: true }),
+      ).toBeVisible()
+      await parentMenu.getByRole('option', { name: createVlanVrrpData.parentInterface, exact: true }).click()
+
+      const vlanIdField = page.getByLabel('VLAN ID', { exact: true })
+      await vlanIdField.fill(String(createVlanVrrpData.vlanId))
+      await vlanIdField.press('Tab')
+      await expect(vlanIdField).toHaveValue(String(createVlanVrrpData.vlanId))
+    })
+
+    await test.step('enable WAN and NAT', async () => {
+      const wanSwitch = page.getByLabel('WAN Interface', { exact: true })
+      await expect(wanSwitch).toBeEnabled({ timeout: uiReadyTimeout })
+      await setLabeledControl(wanSwitch, createVlanVrrpData.wanInterface)
+
+      const natCheckbox = page.getByLabel('NAT traffic exiting this interface (and bridged peers)', { exact: true })
+      await setLabeledControl(natCheckbox, createVlanVrrpData.natTraffic)
+    })
+
+    await test.step('select IPv4 Auto DHCP and IPv6 Disabled', async () => {
+      await page.getByRole('button', { name: 'IPv4', exact: true }).click()
+      await setLabeledControl(page.getByRole('radio', { name: createVlanVrrpData.ipv4ConfigType, exact: true }), true)
+
+      await page.getByRole('button', { name: 'IPv6', exact: true }).click()
+      await setLabeledControl(page.getByRole('radio', { name: createVlanVrrpData.ipv6ConfigType, exact: true }), true)
+    })
+
+    await test.step('enable VRRP and configure ID and priority', async () => {
+      const vrrpTab = page.getByRole('button', { name: /^vrrp$/i })
+      await expect(vrrpTab).toBeVisible({ timeout: uiReadyTimeout })
+      await vrrpTab.click()
+
+      const vrrpEnabled = page.getByLabel('VRRP Enabled', { exact: true })
+      await setLabeledControl(vrrpEnabled, createVlanVrrpData.vrrpEnabled)
+
+      const vrrpId = page.getByLabel('VRRP ID', { exact: true })
+      const vrrpPriority = page.getByLabel('VRRP Priority', { exact: true })
+      await expect(vrrpId).toBeEnabled({ timeout: uiReadyTimeout })
+      await expect(vrrpPriority).toBeEnabled({ timeout: uiReadyTimeout })
+      await vrrpId.fill(String(createVlanVrrpData.vrrpId))
+      await vrrpPriority.fill(String(createVlanVrrpData.vrrpPriority))
+      await expect(vrrpId).toHaveValue(String(createVlanVrrpData.vrrpId))
+      await expect(vrrpPriority).toHaveValue(String(createVlanVrrpData.vrrpPriority))
+    })
+
+    await test.step('save the VLAN and verify it appears in the grid', async () => {
+      const saveButton = page.getByRole('button', { name: /^save$/i })
+      await expect(saveButton).toBeEnabled({ timeout: uiReadyTimeout })
+      saveClicked = true
+      await saveButton.click()
+      await expect(page).toHaveURL(/settings\/network\/interfaces(?:$|[?#])/, {
+        timeout: createSaveNavigationTimeout,
+      })
+
+      const savedGrid = page.locator('#appliance-interfaces')
+      await waitForInterfacesReady(page, savedGrid)
+      const savedRow = firstRowFor(savedGrid, createVlanVrrpData.interfaceName)
+      await expect(savedRow).toBeVisible({ timeout: uiReadyTimeout })
+      await expect(savedRow.locator('[col-id="device"]')).toHaveText(expectedDevice)
+      await expect(savedRow.locator('[col-id="description"]')).toHaveText(createVlanVrrpData.interfaceName)
+      await expect(savedRow.locator('[col-id="config"]')).toHaveText(createVlanVrrpData.configType)
+    })
+  } finally {
+    if (saveClicked) await deleteTemporaryInterface(page, createVlanVrrpData.interfaceName)
   }
 })
 
