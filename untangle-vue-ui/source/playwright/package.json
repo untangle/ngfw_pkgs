@@ -1,8 +1,9 @@
 {
-  "name": "untangle-ngfw-playwright",
+  "name": "ngfw-vue-playwright",
   "private": true,
   "scripts": {
     "test": "playwright test",
+    "test:data-validation": "playwright test tests/data-validation/network.spec.ts",
     "test:interfaces": "playwright test --project=interfaces",
     "test:interfaces-crud": "playwright test --project=interfaces-crud",
     "test:create-vlan": "playwright test --project=create-vlan",
@@ -10,7 +11,8 @@
     "test:create-vlan-dhcp": "playwright test --project=create-vlan-dhcp",
     "test:create-vlan-pppoe": "playwright test --project=create-vlan-pppoe",
     "test:create-vlan-qos": "playwright test --project=create-vlan-qos",
-    "test:create-vlan-vrrp": "playwright test --project=create-vlan-vrrp"
+    "test:create-vlan-vrrp": "playwright test --project=create-vlan-vrrp",
+    "typecheck": "tsc --noEmit"
   },
   "devDependencies": {
     "@playwright/test": "1.40.1",

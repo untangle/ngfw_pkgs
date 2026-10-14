@@ -1,4 +1,4 @@
-import config from './create-vlan-json.json'
+import config from './vlan-interface-test-data.json'
 
 export const createVlanPppoeData = config['create-vlan-pppoe']
 export const createVlanAutoData = config['create-vlan-auto']
