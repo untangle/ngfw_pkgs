@@ -1,0 +1,76 @@
+{
+  "create-vlan-pppoe": {
+    "interfaceName": "vlan1",
+    "parentInterface": "Internal",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "PPPoE",
+    "pppoeUsername": "test",
+    "pppoePassword": "testing",
+    "ipv6ConfigType": "Disabled"
+  },
+  "create-vlan-auto": {
+    "interfaceName": "vlan1",
+    "parentInterface": "External",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "Auto (DHCP)",
+    "ipv6ConfigType": "Disabled"
+  },
+  "create-vlan-dhcp": {
+    "interfaceName": "vlan1",
+    "parentInterface": "External",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "Auto (DHCP)",
+    "ipv6ConfigType": "Disabled"
+  },
+  "create-vlan-vrrp": {
+    "interfaceName": "vlan1",
+    "parentInterface": "External",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "Auto (DHCP)",
+    "ipv6ConfigType": "Disabled",
+    "vrrpEnabled": true,
+    "vrrpId": 1,
+    "vrrpPriority": 1
+  },
+  "create-vlan": {
+    "interfaceName": "vlan1",
+    "parentInterface": "External",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "Auto (DHCP)",
+    "ipv6ConfigType": "Disabled",
+    "qosEnabled": true,
+    "uplinkBandwidth": 10,
+    "downlinkBandwidth": 10,
+    "vrrpEnabled": true,
+    "vrrpId": 1,
+    "vrrpPriority": 1
+  },
+  "create-vlan-qos": {
+    "interfaceName": "vlan1",
+    "parentInterface": "External",
+    "vlanId": 1,
+    "configType": "Addressed",
+    "wanInterface": true,
+    "natTraffic": true,
+    "ipv4ConfigType": "Auto (DHCP)",
+    "ipv6ConfigType": "Disabled",
+    "qosEnabled": true,
+    "uplinkBandwidth": 100,
+    "downlinkBandwidth": 100
+  }
+}
