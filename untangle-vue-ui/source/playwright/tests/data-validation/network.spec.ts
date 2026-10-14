@@ -374,7 +374,7 @@ import {
       await openInterface(page)
       await expect(page.getByLabel('Bridged To', { exact: true })).toHaveCount(0)
   
-      await page.goto(appPath('/settings/network/interfaces/add/BRIDGE'))
+      await page.goto(appPath('/settings/network/interfaces/add/bridge'))
       await expect(page.getByLabel('Interface Name', { exact: true })).toBeVisible()
       const bridgedTo = page.getByLabel('Bridged To', { exact: true })
       await expect(bridgedTo).toBeVisible()
