@@ -12,7 +12,7 @@
     @import-reports="onImportReports"
     @add-report="onEditReport"
   >
-    <template #actions>
+    <template v-if="isAdmin" #actions>
       <u-btn @click="onExportAll">{{ $t('export') }}</u-btn>
     </template>
   </reports>
@@ -28,21 +28,20 @@
 
     mixins: [reportsMixin],
 
-    data() {
-      return {
-        features: {
+    computed: {
+      ...mapGetters('reports', ['allCategories']),
+      ...mapGetters('context', ['isAdmin']),
+
+      features() {
+        return {
           maxReportsPerCard: 4,
           showViewMore: true,
           maximizableCards: true,
-          exportable: true,
-          importable: true,
+          exportable: this.isAdmin,
+          importable: this.isAdmin,
           enableSearch: true,
-        },
-      }
-    },
-
-    computed: {
-      ...mapGetters('reports', ['allCategories']),
+        }
+      },
     },
 
     created() {

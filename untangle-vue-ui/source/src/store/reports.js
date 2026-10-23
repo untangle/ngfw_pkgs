@@ -190,23 +190,36 @@ const actions = {
    * Load all reports from backend
    * Called once at application boot via router guard
    */
-  async loadReports({ commit, state }) {
+  async loadReports({ commit, state, rootGetters }) {
     commit('SET_LOADING', true)
     commit('SET_ERROR', null)
 
     try {
-      // Check if Reports app installed
-      const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+      let reportsManager
 
-      if (!reportsApp) {
-        commit('SET_REPORTS_INSTALLED', false)
-        commit('SET_LOADING', false)
-        return { success: false, reason: 'not_installed' }
+      if (rootGetters['context/isReports']) {
+        // Standalone Reports context — manager acquired via ReportsContext (synchronous)
+        reportsManager = Rpc.directData('rpc.ReportsContext.reportsManager')
+        if (!reportsManager) {
+          commit('SET_REPORTS_INSTALLED', false)
+          commit('SET_LOADING', false)
+          return { success: false, reason: 'not_available' }
+        }
+        commit('SET_REPORTS_INSTALLED', true)
+      } else {
+        // Admin context — manager acquired via appManager
+        const reportsApp = await Rpc.asyncData('rpc.appManager.app', 'reports')
+
+        if (!reportsApp) {
+          commit('SET_REPORTS_INSTALLED', false)
+          commit('SET_LOADING', false)
+          return { success: false, reason: 'not_installed' }
+        }
+
+        commit('SET_REPORTS_INSTALLED', true)
+        reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
       }
 
-      commit('SET_REPORTS_INSTALLED', true)
-
-      const reportsManager = await Rpc.asyncData(reportsApp, 'getReportsManager')
       commit('SET_REPORTS_MANAGER', reportsManager)
 
       // Parallel RPC calls
