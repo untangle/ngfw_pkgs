@@ -1,18 +1,20 @@
 <template>
-  <report-edit
-    :settings="report"
-    :categories="allCategories"
-    :existing-reports="allReports"
-    :table-fields="translatedTableFields"
-    :condition-operators="globalConditionOperators"
-    :build-report-view="buildView"
-    @save="onSave"
-    @delete="onDelete"
-    @cancel="onCancel"
-    @refresh="onRefresh"
-    @fetch-data="onFetchData"
-    @export-settings="onExportSettings"
-  />
+  <div class="d-flex flex-column fill-height">
+    <report-edit
+      :settings="report"
+      :categories="allCategories"
+      :existing-reports="allReports"
+      :table-fields="translatedTableFields"
+      :condition-operators="globalConditionOperators"
+      :build-report-view="buildView"
+      @save="onSave"
+      @delete="onDelete"
+      @cancel="onCancel"
+      @refresh="onRefresh"
+      @fetch-data="onFetchData"
+      @export-settings="onExportSettings"
+    />
+  </div>
 </template>
 
 <script>

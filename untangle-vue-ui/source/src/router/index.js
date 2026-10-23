@@ -79,58 +79,88 @@ router.beforeEach(async (to, from, next) => {
       return next()
     }
 
+    // Initialize application context from URL query string on first navigation
+    if (!store.getters['session/isAdminContextInitialized'] && !store.state.session.reportsContextInitialized) {
+      store.dispatch('context/initContext')
+    }
+
+    const isReportsContext = store.getters['context/isReports']
+    const rpcEndpoint = store.getters['context/rpcEndpoint']
+
     const rpcOwner = window.top || window.parent
 
-    // Reuse shared RPC client if available from parent
-    if (rpcOwner?.rpc && !window.rpc) {
+    // Reuse shared RPC client if available from parent (Admin iframe case)
+    if (!isReportsContext && rpcOwner?.rpc && !window.rpc) {
       window.rpc = rpcOwner.rpc
     }
 
     // Initialize RPC client if not already set
     if (!window.rpc) {
-      const rpcClient = new window.JSONRpcClient('/admin/JSON-RPC')
-      const startupInfo = rpcClient?.UvmContext?.getWebuiStartupInfo()
+      const rpcClient = new window.JSONRpcClient(rpcEndpoint)
 
-      if (startupInfo && typeof startupInfo === 'object') {
-        Object.assign(rpcClient, startupInfo)
+      if (isReportsContext) {
+        // Standalone Reports — initialize timezone from ReportsContext
+        const tzOffset = rpcClient?.ReportsContext?.getTimeZoneOffset()
+        if (tzOffset != null) {
+          rpcClient.timeZoneOffset = tzOffset
+        }
+      } else {
+        // Admin — initialize from UvmContext startup info
+        const startupInfo = rpcClient?.UvmContext?.getWebuiStartupInfo()
+        if (startupInfo && typeof startupInfo === 'object') {
+          Object.assign(rpcClient, startupInfo)
+        }
       }
 
       window.rpc = rpcClient
     }
 
-    // Initialize admin context on first admin route navigation
-    // Session module is NOT persisted, so it resets on every page load/hard refresh
-    // This ensures RPC calls run on every session start
-    // But skips re-initialization during route navigation within same session
-    const nonAdminSegments = ['setup', 'login', 'wizard']
-    const isAdminRoute = !nonAdminSegments.some(
-      segment => to.name?.includes(segment) || to.path?.startsWith(`/${segment}`),
-    )
+    // Block routes that require admin context when running in REPORTS mode
+    const requiresAdmin = to.matched.some(({ meta }) => meta.requiresAdmin)
+    if (isReportsContext && requiresAdmin) {
+      return next({ name: 'reports', replace: true })
+    }
 
     const requiresReportsApp = to.matched.some(({ meta }) => meta.requiresReportsApp)
 
-    if (isAdminRoute) {
-      // Initialize admin context (loads apps, policy-manager, reports)
-      // Only Reports routes wait for this below; other admin navigation remains non-blocking.
-      const initialization = store.dispatch('session/initializeAdminContext')
+    if (isReportsContext) {
+      // Standalone Reports context — lightweight initialization (reports + timezone only)
+      const initialization = store.dispatch('session/initializeReportsContext')
 
       if (requiresReportsApp) {
         await initialization
+      }
+    } else {
+      // Admin context
+      const nonAdminSegments = ['setup', 'login', 'wizard']
+      const isAdminRoute = !nonAdminSegments.some(
+        segment => to.name?.includes(segment) || to.path?.startsWith(`/${segment}`),
+      )
 
-        if (store.getters['reports/reportsAvailability'] === false) {
-          return next({ path: '/settings/services/reports', replace: true })
+      if (isAdminRoute) {
+        const initialization = store.dispatch('session/initializeAdminContext')
+
+        if (requiresReportsApp) {
+          await initialization
+
+          if (store.getters['reports/reportsAvailability'] === false) {
+            return next({ path: '/settings/services/reports', replace: true })
+          }
         }
       }
     }
 
     // Start/stop metrics polling based on whether the route requires it
     // /apps routes always require metrics; other routes opt-in via meta.requiresMetrics
-    const fromRequiresMetrics = from?.path?.startsWith('/apps') || from?.meta?.requiresMetrics
-    const toRequiresMetrics = to?.path?.startsWith('/apps') || to?.meta?.requiresMetrics
-    if (toRequiresMetrics && !fromRequiresMetrics) {
-      MetricsPollingService.start()
-    } else if (fromRequiresMetrics && !toRequiresMetrics) {
-      MetricsPollingService.stop()
+    // Metrics are not available in standalone Reports context
+    if (!isReportsContext) {
+      const fromRequiresMetrics = from?.path?.startsWith('/apps') || from?.meta?.requiresMetrics
+      const toRequiresMetrics = to?.path?.startsWith('/apps') || to?.meta?.requiresMetrics
+      if (toRequiresMetrics && !fromRequiresMetrics) {
+        MetricsPollingService.start()
+      } else if (fromRequiresMetrics && !toRequiresMetrics) {
+        MetricsPollingService.stop()
+      }
     }
 
     // Redirect logic

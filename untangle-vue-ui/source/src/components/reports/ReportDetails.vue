@@ -6,7 +6,8 @@
       :categories="categoriesForNav"
       :show-report-selector="true"
       :show-auto-refresh="true"
-      :show-settings="true"
+      :show-settings="isAdmin"
+      :show-back-to-reports="true"
       :is-local-ui="false"
       @add-condition="onAddCondition"
       @remove-condition="onRemoveCondition"
@@ -17,6 +18,7 @@
       @export-all-events="onExportAllEvents"
       @auto-refresh-change="onAutoRefreshChange"
       @edit-report="onEditReport"
+      @back-to-reports="onBackToReports"
     />
 
     <!-- Settings diff dialog — opened by the  action column on settings_changes rows -->
@@ -69,6 +71,7 @@
     computed: {
       ...mapGetters('reports', ['categoriesForNav', 'policyNameMap']),
       ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
+      ...mapGetters('context', ['isAdmin', 'downloadEndpoint']),
 
       selectedUniqueId() {
         return this.allReports.find(
@@ -113,6 +116,11 @@
     },
 
     methods: {
+      /** Navigates from an individual report back to the reports list. */
+      onBackToReports() {
+        this.$router.push({ name: 'reports' })
+      },
+
       onAutoRefreshChange(val) {
         this.autoRefresh = val
         if (val) {
@@ -163,7 +171,7 @@
           // util.downloadFile uses axios POST to the ABSOLUTE /admin/download URL, handles the
           // Blob response and triggers browser download — avoids the relative-URL problem where
           // form.action="download" resolved to /console/reports/.../download instead of /admin/download.
-          await util.downloadFile('/admin/download', {
+          await util.downloadFile(this.downloadEndpoint, {
             type: 'eventLogExport',
             arg1: filename,
             arg2: JSON.stringify(entry),
