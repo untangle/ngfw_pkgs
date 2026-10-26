@@ -19,12 +19,12 @@ export default [
     name: 'report-create',
     path: '/reports/create',
     component: ReportEdit,
-    meta: { helpContext: 'report-edit', requiresReportsApp: true },
+    meta: { helpContext: 'report-edit', requiresReportsApp: true, requiresAdmin: true },
   },
   {
     name: 'report-edit',
     path: '/reports/edit/:cat/:rep',
     component: ReportEdit,
-    meta: { helpContext: 'report-edit', requiresReportsApp: true },
+    meta: { helpContext: 'report-edit', requiresReportsApp: true, requiresAdmin: true },
   },
 ]

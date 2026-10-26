@@ -10,6 +10,8 @@ import Util from '@/util/setupUtil'
 const state = () => ({
   // Tracks if admin context initialized this session
   adminContextInitialized: false,
+  // Tracks if reports context initialized this session
+  reportsContextInitialized: false,
 })
 
 const getters = {
@@ -21,8 +23,13 @@ const mutations = {
     state.adminContextInitialized = value
   },
 
+  SET_REPORTS_CONTEXT_INITIALIZED(state, value) {
+    state.reportsContextInitialized = value
+  },
+
   RESET(state) {
     state.adminContextInitialized = false
+    state.reportsContextInitialized = false
   },
 }
 
@@ -51,6 +58,30 @@ const actions = {
       return { success: true }
     } catch (error) {
       Util.handleException(error, 'Failed to initialize admin context')
+      return { success: false, error }
+    }
+  },
+
+  /**
+   * Initialize standalone reports context - loads only reports, timezone, and clock offset.
+   * Skips apps and policy-manager which are not available via the Reports RPC endpoint.
+   */
+  async initializeReportsContext({ commit, state, dispatch }) {
+    if (state.reportsContextInitialized) {
+      return { success: true, cached: true }
+    }
+
+    try {
+      await Promise.all([
+        dispatch('reports/loadReports', null, { root: true }),
+        dispatch('config/getTimeZoneOffSet', null, { root: true }),
+        dispatch('config/getServerClockOffsetMs', null, { root: true }),
+      ])
+
+      commit('SET_REPORTS_CONTEXT_INITIALIZED', true)
+      return { success: true }
+    } catch (error) {
+      Util.handleException(error, 'Failed to initialize reports context')
       return { success: false, error }
     }
   },

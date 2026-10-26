@@ -21,11 +21,15 @@ module.exports = {
       '/quarantine': {
         target: `http://ngfw.untangle.com/`,
       },
+      '/reports': {
+        target: `http://ngfw.untangle.com/`,
+      },
     },
   },
   configureWebpack: {
     resolve: {
       fallback: { 'url': false, 'util': false },
+      symlinks: false,
     },
     // output: {
     //   filename: `vue-app.js`,
