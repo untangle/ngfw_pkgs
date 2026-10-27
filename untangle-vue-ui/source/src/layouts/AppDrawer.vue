@@ -200,7 +200,7 @@
       },
       rootNavItems() {
         const items = [
-          { name: 'dashboard', to: '/', icon: 'mdi-view-dashboard' },
+          { name: 'dashboard', to: '/dashboard', icon: 'mdi-view-dashboard' },
           { name: 'apps', to: `/apps/${this.selectedPolicyId}`, icon: 'mdi-apps' },
         ]
 
