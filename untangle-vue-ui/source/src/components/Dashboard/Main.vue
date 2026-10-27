@@ -200,7 +200,9 @@
           >
             <component
               :is="widget.cmp"
-              v-if="['Information', 'Resources'].includes(widget.cmp) && getLayoutWidgetDefinition(widget)"
+              v-if="
+                ['Information', 'Resources', 'NetworkLayout'].includes(widget.cmp) && getLayoutWidgetDefinition(widget)
+              "
               v-bind="getLayoutWidgetProps(widget)"
             />
             <u-widget
@@ -637,7 +639,11 @@
           [...enabledWidgetIds].every(widgetId => storedWidgetIds.has(widgetId)) &&
           storedWidgets.every(widget => {
             const definition = widgetsObject[widget.id]
-            return enabledWidgetIds.has(widget.id) && definition?.component === widget.cmp
+            return (
+              enabledWidgetIds.has(widget.id) &&
+              definition?.component === widget.cmp &&
+              widget.w === (definition?.width || 1)
+            )
           })
 
         // While editing settings, render the temporary manager order directly. Do not use or overwrite the stored
@@ -654,6 +660,12 @@
         }
 
         this.responsiveLayouts = this.$vuntangle.widgets.getLayout(Object.keys(widgetsObject), widgetsObject)
+        Object.keys(this.responsiveLayouts).forEach(bp => {
+          this.responsiveLayouts[bp].forEach(widget => {
+            const def = widgetsObject[widget.id]
+            if (def?.height) widget.h = def.height
+          })
+        })
         this.baseLayout = cloneDeep(this.responsiveLayouts[this.$vuntangle.widgets.getBreakpoint()])
 
         // Store the grid only after the settings are committed. Temporary reorder changes must not survive a refresh.
@@ -732,6 +744,8 @@
         if (widget.type === 'ReportEntry') {
           return this.getReport(widget)?.title || widget.entryId || widget.type
         }
+        const definition = widgetComponents[widget.type]
+        if (definition?.title) return this.$t(definition.title)
         const label = this.commonWidgetOptions.find(option => option.type === widget.type)?.label
         return label ? this.$t(label) : widget.type
       },

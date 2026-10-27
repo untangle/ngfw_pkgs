@@ -24,7 +24,7 @@
       type: 'pie',
       name,
       totalBytes,
-      size: 140,
+      size: 120,
       data: [
         { name: 'Used', y: usedPercent, color: usedColor, bytes: usedBytes },
         { name: 'Free', y: freePercent, color: FREE_COLOR, bytes: freeBytes },
@@ -60,7 +60,7 @@
               chart.series.forEach(series => {
                 if (!series.center) return
                 const cx = chart.plotLeft + series.center[0]
-                const labelY = chart.plotTop + series.center[1] + series.center[2] / 2 + 14
+                const labelY = chart.plotTop + series.center[1] + series.center[2] / 2 + 32
                 chart._resourceLabels.push(
                   chart.renderer
                     .text(series.name, cx, labelY)
