@@ -20,18 +20,35 @@
     methods: {
       async loadData() {
         this.fetching = true
-        const response = await rpcCall(window.rpc?.networkManager?.getNetworkSettingsV2, [], { fallback: null })
-        const interfaces = response?.interfaces || []
+
+        const [, statusList, metricsResponse] = await Promise.all([
+          this.$store.dispatch('config/getNetworkSettings', true),
+          rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback: [] }),
+          rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null }),
+        ])
+
+        const interfaces = this.$store.state.config.networkSetting?.interfaces || []
+        const systemStats = metricsResponse?.systemStats || {}
+
+        const statusMap = (Array.isArray(statusList) ? statusList : []).reduce((map, s) => {
+          if (s?.interfaceId) map[s.interfaceId] = s
+          return map
+        }, {})
 
         this.wanInterfaces = []
         this.lanInterfaces = []
 
         interfaces.forEach(iface => {
           if (iface.configType === 'DISABLED') return
-          if (iface.isWan) {
-            this.wanInterfaces.push(iface)
+          const id = iface.interfaceId
+          const merged = Object.assign({}, iface, statusMap[id], {
+            rxByteRate: systemStats[`interface_${id}_rxBps`] || 0,
+            txByteRate: systemStats[`interface_${id}_txBps`] || 0,
+          })
+          if (merged.wan) {
+            this.wanInterfaces.push(merged)
           } else {
-            this.lanInterfaces.push(iface)
+            this.lanInterfaces.push(merged)
           }
         })
 
