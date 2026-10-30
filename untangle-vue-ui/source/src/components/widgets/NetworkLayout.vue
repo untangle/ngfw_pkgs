@@ -65,14 +65,12 @@
 
           activeInterfaces.forEach(iface => {
             const id = iface.interfaceId
-            const vrrpEnabled = this.isTrue(iface.vrrpEnabled)
+            const vrrpEnabled = iface.vrrpEnabled
             const vrrpMaster = vrrpEnabled
-              ? this.isTrue(
-                  directRpcCall(window.rpc?.networkManager?.isVrrpMaster, [id], {
-                    mode: 'ignore',
-                    fallback: false,
-                  }),
-                )
+              ? directRpcCall(window.rpc?.networkManager?.isVrrpMaster, [id], {
+                  mode: 'ignore',
+                  fallback: false,
+                })
               : false
             const merged = Object.assign({}, iface, statusMap[id], {
               rxByteRate: this.getRate(systemStats, id, 'rx'),
@@ -82,7 +80,7 @@
               devicesCount: deviceCountMap[id] || 0,
             })
 
-            if (this.isTrue(iface.wan)) {
+            if (iface.wan) {
               this.wanInterfaces.push(merged)
             } else {
               this.lanInterfaces.push(merged)
@@ -98,10 +96,6 @@
         return Array.isArray(value?.list) ? value.list : []
       },
 
-      isTrue(value) {
-        return value === true || value === 'true'
-      },
-
       getRate(systemStats, interfaceId, direction) {
         const value = Number(systemStats[`interface_${interfaceId}_${direction}Bps`])
         return Number.isFinite(value) ? value : 0
@@ -115,7 +109,7 @@
       },
 
       showVrrpLabel(networkInterface) {
-        return this.isTrue(networkInterface?.vrrpEnabled) && this.isTrue(networkInterface?.vrrpMaster)
+        return Boolean(networkInterface?.vrrpEnabled && networkInterface?.vrrpMaster)
       },
     },
   }
