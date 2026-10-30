@@ -182,4 +182,11 @@ router.beforeEach(async (to, from, next) => {
   }
 })
 
+// Notify the parent window when the route changes in the embedded Reports app.
+router.afterEach(to => {
+  if (store.getters['context/isReports'] && window.parent !== window) {
+    window.parent.postMessage({ type: 'reports-route-change', path: to.fullPath }, window.location.origin)
+  }
+})
+
 export default router
