@@ -14,8 +14,8 @@
   import { rpcCall } from '@/util/rpcHelpers'
   import util from '@/util/util'
 
-  const FREE_COLOR = '#4caf50'
-  const USED_COLOR = '#1976d2'
+  const FREE_COLOR = '#90ed7d'
+  const USED_COLOR = '#7cb5ec'
   const DISK_CRITICAL_COLOR = '#f44336'
 
   function buildSeries(name, totalBytes, usedPercent, usedColor, usedBytes, freeBytes) {
@@ -190,11 +190,11 @@
     margin-right: 4px;
 
     &.used {
-      background: #1976d2;
+      background: #7cb5ec;
     }
 
     &.free {
-      background: #4caf50;
+      background: #90ed7d;
     }
   }
 </style>

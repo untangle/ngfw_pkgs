@@ -5,13 +5,15 @@
       :fetching="fetching"
       :wan-interfaces="wanInterfaces"
       :lan-interfaces="lanInterfaces"
+      :format-rate="formatRate"
+      :show-vrrp-label="showVrrpLabel"
     />
   </u-widget>
 </template>
 
 <script>
   import widgetsMixin from './widgetsMixin'
-  import { rpcCall } from '@/util/rpcHelpers'
+  import { directRpcCall, rpcCall } from '@/util/rpcHelpers'
 
   export default {
     mixins: [widgetsMixin],
@@ -26,64 +28,94 @@
       async loadData() {
         this.fetching = true
 
-        const [, statusList, metricsResponse, hostsResponse] = await Promise.all([
-          this.$store.dispatch('config/getNetworkSettings', true),
-          rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback: [] }),
-          rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null }),
-          rpcCall(window.rpc?.hostTable?.getHosts, [], { fallback: null }),
-        ])
+        try {
+          const [, statusResponse, metricsResponse, hostsResponse] = await Promise.all([
+            this.$store.dispatch('config/getNetworkSettings', true),
+            rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback: [] }),
+            rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null }),
+            rpcCall(window.rpc?.hostTable?.getHosts, [], { fallback: null }),
+          ])
 
-        const interfaces = this.$store.state.config.networkSetting?.interfaces || []
-        const systemStats = metricsResponse?.systemStats || {}
+          const networkSettings = this.$store.state.config.networkSetting || {}
+          const interfaces = this.toList(networkSettings.interfaces)
+          const statusList = this.toList(statusResponse)
+          const hostList = this.toList(hostsResponse)
+          const systemStats = metricsResponse?.systemStats || {}
 
-        const statusMap = (Array.isArray(statusList) ? statusList : []).reduce((map, s) => {
-          if (s?.interfaceId) map[s.interfaceId] = s
-          return map
-        }, {})
+          const statusMap = statusList.reduce((map, status) => {
+            if (status?.interfaceId != null) map[status.interfaceId] = status
+            return map
+          }, {})
 
-        const hostList = hostsResponse?.list || []
-        const deviceCountMap = hostList.reduce((map, host) => {
-          if (host?.active && host?.interfaceId) {
-            map[host.interfaceId] = (map[host.interfaceId] || 0) + 1
-          }
-          return map
-        }, {})
+          const deviceCountMap = hostList.reduce((map, host) => {
+            if (host?.active && host?.interfaceId != null) {
+              map[host.interfaceId] = (map[host.interfaceId] || 0) + 1
+            }
+            return map
+          }, {})
 
-        const activeInterfaces = interfaces.filter(iface => iface.enabled !== false)
+          // The V2 settings API represents disabled interfaces with enabled=false.
+          // Keep the legacy configType check as a safe compatibility guard.
+          const activeInterfaces = interfaces.filter(
+            iface => iface && iface.enabled !== false && iface.configType !== 'DISABLED',
+          )
 
-        const vrrpMasterMap = {}
-        await Promise.all(
-          activeInterfaces
-            .filter(iface => iface.vrrpEnabled)
-            .map(iface =>
-              rpcCall(window.rpc?.networkManager?.isVrrpMaster, [iface.interfaceId], { fallback: false }).then(
-                result => {
-                  vrrpMasterMap[iface.interfaceId] = result
-                },
-              ),
-            ),
-        )
+          this.wanInterfaces = []
+          this.lanInterfaces = []
 
-        this.wanInterfaces = []
-        this.lanInterfaces = []
+          activeInterfaces.forEach(iface => {
+            const id = iface.interfaceId
+            const vrrpEnabled = this.isTrue(iface.vrrpEnabled)
+            const vrrpMaster = vrrpEnabled
+              ? this.isTrue(
+                  directRpcCall(window.rpc?.networkManager?.isVrrpMaster, [id], {
+                    mode: 'ignore',
+                    fallback: false,
+                  }),
+                )
+              : false
+            const merged = Object.assign({}, iface, statusMap[id], {
+              rxByteRate: this.getRate(systemStats, id, 'rx'),
+              txByteRate: this.getRate(systemStats, id, 'tx'),
+              vrrpEnabled,
+              vrrpMaster,
+              devicesCount: deviceCountMap[id] || 0,
+            })
 
-        activeInterfaces.forEach(iface => {
-          const id = iface.interfaceId
-          const merged = Object.assign({}, iface, statusMap[id], {
-            rxByteRate: systemStats[`interface_${id}_rxBps`] || 0,
-            txByteRate: systemStats[`interface_${id}_txBps`] || 0,
-            vrrpEnabled: iface.vrrpEnabled,
-            vrrpMaster: iface.vrrpEnabled ? Boolean(vrrpMasterMap[id]) : false,
-            devicesCount: deviceCountMap[id] || 0,
+            if (this.isTrue(iface.wan)) {
+              this.wanInterfaces.push(merged)
+            } else {
+              this.lanInterfaces.push(merged)
+            }
           })
-          if (merged.wan) {
-            this.wanInterfaces.push(merged)
-          } else {
-            this.lanInterfaces.push(merged)
-          }
-        })
+        } finally {
+          this.fetching = false
+        }
+      },
 
-        this.fetching = false
+      toList(value) {
+        if (Array.isArray(value)) return value
+        return Array.isArray(value?.list) ? value.list : []
+      },
+
+      isTrue(value) {
+        return value === true || value === 'true'
+      },
+
+      getRate(systemStats, interfaceId, direction) {
+        const value = Number(systemStats[`interface_${interfaceId}_${direction}Bps`])
+        return Number.isFinite(value) ? value : 0
+      },
+
+      formatRate(bps) {
+        if (!bps) return '0 bytes/s'
+        if (bps < 1000) return `${parseFloat(bps.toFixed(2))} bytes/s`
+        if (bps < 1000000) return `${parseFloat((bps / 1000).toFixed(2))} Kbytes/s`
+        return `${parseFloat((bps / 1000000).toFixed(2))} Mbytes/s`
+      },
+
+      showVrrpLabel(networkInterface) {
+        return this.isTrue(networkInterface?.vrrpEnabled) && this.isTrue(networkInterface?.vrrpMaster)
       },
     },
   }
