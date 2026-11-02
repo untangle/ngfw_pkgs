@@ -29,10 +29,10 @@
         this.fetching = true
 
         try {
-          const [, statusResponse, metricsResponse, hostsResponse] = await Promise.all([
+          const [, statusResponse, , hostsResponse] = await Promise.all([
             this.$store.dispatch('config/getNetworkSettings', true),
             rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback: [] }),
-            rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null }),
+            this.$store.dispatch('config/getMetricsAndStats', true),
             rpcCall(window.rpc?.hostTable?.getHosts, [], { fallback: null }),
           ])
 
@@ -40,7 +40,7 @@
           const interfaces = this.toList(networkSettings.interfaces)
           const statusList = this.toList(statusResponse)
           const hostList = this.toList(hostsResponse)
-          const systemStats = metricsResponse?.systemStats || {}
+          const systemStats = this.$store.state.config.metricsAndStats?.systemStats || {}
 
           const statusMap = statusList.reduce((map, status) => {
             if (status?.interfaceId != null) map[status.interfaceId] = status

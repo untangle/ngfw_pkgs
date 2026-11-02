@@ -11,7 +11,6 @@
 
 <script>
   import widgetsMixin from './widgetsMixin'
-  import { rpcCall } from '@/util/rpcHelpers'
   import util from '@/util/util'
 
   const FREE_COLOR = '#90ed7d'
@@ -105,7 +104,8 @@
     methods: {
       async loadData() {
         this.fetching = true
-        const response = await rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null })
+        await this.$store.dispatch('config/getMetricsAndStats', true)
+        const response = this.$store.state.config.metricsAndStats
         const { MemFree, MemTotal, SwapFree, SwapTotal, freeDiskSpace, totalDiskSpace } = response?.systemStats || {}
         const series = []
 

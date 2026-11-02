@@ -18,7 +18,6 @@
 </template>
 <script>
   import widgetsMixin from './widgetsMixin'
-  import { rpcCall } from '@/util/rpcHelpers'
   import util from '@/util/util'
   export default {
     mixins: [widgetsMixin],
@@ -73,7 +72,8 @@
 
     methods: {
       async loadData() {
-        const response = await rpcCall(window.rpc?.metricManager?.getMetricsAndStatsV2, [], { fallback: null })
+        await this.$store.dispatch('config/getMetricsAndStats', true)
+        const response = this.$store.state.config.metricsAndStats
         this.stats = response?.systemStats || {}
         const uptime = Number(this.stats.uptime)
         this.uptime = Number.isFinite(uptime) ? Math.floor(uptime) : ''
