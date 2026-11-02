@@ -789,6 +789,47 @@ const util = {
     return new Date(timestamp * 1000 + browserOffsetMs + serverOffsetMs).toLocaleString(undefined, options)
   },
 
+  // formats a number of bytes into a human-readable string with appropriate units (e.g., KB, MB, GB)
+  formatBytes(value) {
+    if (value === null || value === undefined || value === '') {
+      return ''
+    }
+    const bytes = Number(value)
+    if (!Number.isFinite(bytes)) {
+      return ''
+    }
+    if (bytes === 0) {
+      return '0'
+    }
+    const units = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB']
+    const index =
+      Math.abs(bytes) < 1000 ? 0 : Math.min(Math.floor(Math.log(Math.abs(bytes)) / Math.log(1000)), units.length - 1)
+    return `${parseFloat((bytes / 1000 ** index).toFixed(2))} ${units[index]}`
+  },
+
+  // formats a number of seconds into a human-readable uptime string (e.g., "1y 2d 3h 4m")
+  formatUptime(value) {
+    if (value === '' || value === null || value === undefined) {
+      return ''
+    }
+    const seconds = Number(value)
+    if (!Number.isFinite(seconds) || seconds < 0) {
+      return ''
+    }
+    const years = Math.floor(seconds / 31536000)
+    const days = Math.floor((seconds % 31536000) / 86400)
+    const hours = Math.floor((seconds % 86400) / 3600)
+    const minutes = Math.floor((seconds % 3600) / 60)
+    return [
+      years > 0 ? `${years}y` : '',
+      days > 0 ? `${days}d` : '',
+      hours > 0 ? `${hours}h` : '',
+      minutes > 0 ? `${minutes}m` : '',
+    ]
+      .filter(Boolean)
+      .join(' ')
+  },
+
   // formats a timestamp object to a human-readable string in the server's timezone
   formatTimestamp(ts) {
     if (!ts || ts.time === 0) return i18n.t('never')

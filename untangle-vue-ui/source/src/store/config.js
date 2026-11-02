@@ -32,6 +32,8 @@ const getDefaultState = () => ({
   serverCertificates: null,
   serverClockOffsetMs: 0,
   publicUrl: null,
+  dashboardSettings: null,
+  metricsAndStats: null,
 })
 
 const getters = {
@@ -93,6 +95,22 @@ const getters = {
   serverCertificateVerification: state => state.serverCertificateVerification || [],
   /* Retrieves the server certificates from the state. */
   serverCertificates: state => state.serverCertificates || [],
+  /* Retrieves the dashboard settings returned by dashboardManager. */
+  dashboardSettings: state => state.dashboardSettings || {},
+  /* Retrieves the configured dashboard widgets */
+  dashboardWidgets: state => {
+    const settings = state.dashboardSettings
+    if (Array.isArray(settings)) {
+      return settings
+    }
+    const widgets =
+      settings?.widgets ||
+      settings?.dashboardWidgets ||
+      settings?.settings?.widgets ||
+      settings?.settings?.dashboardWidgets
+
+    return Array.isArray(widgets) ? widgets : []
+  },
 }
 
 const mutations = {
@@ -138,6 +156,8 @@ const mutations = {
   SET_ROOT_CERTIFICATES: (state, value) => set(state, 'rootCertificates', value),
   SET_SERVER_CERTIFICATE_VERIFICATION: (state, value) => set(state, 'serverCertificateVerification', value),
   SET_SERVER_CERTIFICATES: (state, value) => set(state, 'serverCertificates', value),
+  SET_DASHBOARD_SETTINGS: (state, value) => set(state, 'dashboardSettings', value),
+  SET_METRICS_AND_STATS: (state, value) => set(state, 'metricsAndStats', value),
 }
 
 const actions = {
@@ -875,6 +895,46 @@ const actions = {
     }
   },
 
+  /* Fetch dashboard widget settings. */
+  async getDashboardSettings({ state, commit }, refetch) {
+    try {
+      if (state.dashboardSettings && !refetch) {
+        return
+      }
+
+      const data = await window.rpc.dashboardManager.getSettingsV2()
+      commit('SET_DASHBOARD_SETTINGS', data || {})
+      return { success: true, message: null, data }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Save dashboard settings and refresh the V2 response in the store. */
+  async setDashboardSettings({ dispatch }, dashboardSettings) {
+    try {
+      await Rpc.asyncData('rpc.dashboardManager.setSettingsV2', dashboardSettings)
+      await dispatch('getDashboardSettings', true)
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Reset dashboard settings to the appliance defaults and reload them. */
+  async resetDashboardSettings({ dispatch }) {
+    try {
+      await Rpc.asyncData('rpc.dashboardManager.resetSettingsToDefault')
+      await dispatch('getDashboardSettings', true)
+      return { success: true }
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
   /* setShieldSettings will update system regarding configurations */
   async setShieldSettings({ dispatch }, shieldSettings) {
     try {
@@ -895,6 +955,21 @@ const actions = {
       }
 
       return result
+    } catch (err) {
+      Util.handleException(err)
+      return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
+    }
+  },
+
+  /* Fetch system metrics and stats. */
+  async getMetricsAndStats({ state, commit }, refetch) {
+    try {
+      if (state.metricsAndStats && !refetch) {
+        return
+      }
+      const data = await window.rpc.metricManager.getMetricsAndStatsV2()
+      commit('SET_METRICS_AND_STATS', data || null)
+      return { success: true, message: null, data }
     } catch (err) {
       Util.handleException(err)
       return { success: false, message: err?.toString()?.slice(0, 100) || 'Unknown error' }
