@@ -8298,9 +8298,9 @@ vuex@^3.6.2:
   resolved "https://registry.yarnpkg.com/vuex/-/vuex-3.6.2.tgz#236bc086a870c3ae79946f107f16de59d5895e71"
   integrity sha512-ETW44IqCgBpVomy520DT5jf8n0zoCac+sxWnn+hMe/CzaSejb/eVw2YToiXYX+Ex/AuHHia28vWTq4goAexFbw==
 
-vuntangle@untangle/vuntangle:
-  version "1.63.59"
-  resolved "git+ssh://git@github.com/untangle/vuntangle.git#03f9087277e1f219c0481aa9ca73d26f4f5bd9e4"
+"vuntangle@git+ssh://git@github.com/untangle/vuntangle.git#NGFW-16094-dependency-parity-verification":
+  version "1.63.62"
+  resolved "git+ssh://git@github.com/untangle/vuntangle.git#e15c4b10dbe1d8ca81a354bcae9e7ba547229587"
   dependencies:
     "@ag-grid-community/client-side-row-model" "^25.3.0"
     "@ag-grid-community/core" "^25.3.0"

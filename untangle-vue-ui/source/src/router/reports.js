@@ -1,6 +1,7 @@
 import Reports from '@/components/reports/Reports.vue'
 import ReportDetails from '@/components/reports/ReportDetails.vue'
 import ReportEdit from '@/components/reports/ReportEdit.vue'
+import ChartOnly from '@/components/reports/ChartOnly.vue'
 import store from '@/store'
 import { urlEncode } from '@/util/reports'
 
@@ -22,6 +23,12 @@ export default [
     path: '/reports/create',
     component: ReportEdit,
     meta: { helpContext: 'report-edit', requiresReportsApp: true, requiresAdmin: true },
+  },
+  {
+    name: 'report-chart-only',
+    path: '/reports/chart',
+    component: ChartOnly,
+    meta: { chartOnly: true },
   },
   {
     name: 'report-category',
