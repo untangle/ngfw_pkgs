@@ -49,7 +49,7 @@ export function getReportIcon(type) {
  * Construct report URL for given category and title
  */
 export function getReportUrl(category, title) {
-  return `https://${window.location.host}/admin/index.do#reports?cat=${urlEncode(category)}&rep=${urlEncode(title)}`
+  return `/admin/index.do#reports?cat=${urlEncode(category)}&rep=${urlEncode(title)}`
 }
 
 /**

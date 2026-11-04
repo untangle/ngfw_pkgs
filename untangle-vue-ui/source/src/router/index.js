@@ -127,7 +127,9 @@ router.beforeEach(async (to, from, next) => {
       // Standalone Reports context — lightweight initialization (reports + timezone only)
       const initialization = store.dispatch('session/initializeReportsContext')
 
-      if (requiresReportsApp) {
+      // Fixed-report PNG rendering also needs report definitions and timezone data
+      // before ChartOnly can resolve and render the requested report.
+      if (requiresReportsApp || to.meta?.chartOnly) {
         await initialization
       }
     } else {
@@ -140,10 +142,12 @@ router.beforeEach(async (to, from, next) => {
       if (isAdminRoute) {
         const initialization = store.dispatch('session/initializeAdminContext')
 
-        if (requiresReportsApp) {
+        // Fixed-report PNG rendering also needs the admin report context fully
+        // initialized before ChartOnly can resolve and render the requested report.
+        if (requiresReportsApp || to.meta?.chartOnly) {
           await initialization
 
-          if (store.getters['reports/reportsAvailability'] === false) {
+          if (requiresReportsApp && store.getters['reports/reportsAvailability'] === false) {
             return next({ path: '/settings/services/reports', replace: true })
           }
         }
@@ -179,6 +183,13 @@ router.beforeEach(async (to, from, next) => {
       return next({ name: 'wizard' })
     }
     next()
+  }
+})
+
+// Notify the parent window when the route changes in the embedded Reports app.
+router.afterEach(to => {
+  if (store.getters['context/isReports'] && window.parent !== window) {
+    window.parent.postMessage({ type: 'reports-route-change', path: to.fullPath }, window.location.origin)
   }
 })
 

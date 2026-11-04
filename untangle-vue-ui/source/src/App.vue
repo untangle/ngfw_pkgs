@@ -1,7 +1,9 @@
 <template>
   <div>
+    <!-- Fixed-report PNG screenshots render a bare chart without the normal application layout or navigation chrome. -->
+    <router-view v-if="$route.meta.chartOnly" />
     <dynamic-layout
-      v-if="
+      v-else-if="
         embedded ||
         $route.name === 'login' ||
         $route.name === 'setupwizard' ||
