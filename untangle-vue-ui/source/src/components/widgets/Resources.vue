@@ -88,6 +88,7 @@
           useHTML: true,
           // eslint-disable-next-line object-shorthand
           formatter: function () {
+            if (!this.point) return ''
             return `<b>${this.point.name}:</b> ${this.point.bytes} (${this.point.percentage.toFixed(1)}%)`
           },
         },

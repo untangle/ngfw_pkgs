@@ -22,24 +22,18 @@
         <div class="report-widget-dialog__back">
           <v-btn text small @click="clearReportSelection">
             <v-icon small class="mr-1">mdi-arrow-left</v-icon>
-            Back
+            {{ $t('back') }}
           </v-btn>
         </div>
         <div class="report-widget-dialog__chart">
-          <host-active-graph
-            v-if="selectedReportSupported && isTimeGraphReport"
-            :entry="selectedReport"
-            :time-range="previewTimeRange"
-            @fetch-data="$emit('fetch-data', $event)"
-          />
-          <preview-report v-else :view="previewView" @fetch-data="$emit('fetch-data', $event)" />
+          <preview-report :view="previewView" @fetch-data="$emit('fetch-data', $event)" />
         </div>
         <div class="report-widget-dialog__settings">
           <v-checkbox v-model="enabled" label="Enabled" dense hide-details class="mt-0" />
           <v-select
             v-model="refreshIntervalSec"
             :items="refreshOptions"
-            label="Auto Refresh"
+            :label="$vuntangle.$t('auto_refresh')"
             dense
             outlined
             hide-details
@@ -83,11 +77,10 @@
   import { UDialog } from 'vuntangle'
   import PreviewReport from '../../../node_modules/vuntangle/src/shared/Reports/components/PreviewReport.vue'
   import ReportsNav from '../../../node_modules/vuntangle/src/shared/Reports/components/ReportsNav.vue'
-  import HostActiveGraph from '../widgets/HostActiveGraph.vue'
   import { tableFields } from '@/util/eventTableColumns'
   export default {
     name: 'ReportWidgetDialog',
-    components: { HostActiveGraph, PreviewReport, ReportsNav, UDialog },
+    components: { PreviewReport, ReportsNav, UDialog },
     provide() {
       return {
         $isLocalUi: false,
@@ -149,9 +142,6 @@
       isEventReport() {
         return this.selectedReport?.type === 'EVENT_LIST'
       },
-      isTimeGraphReport() {
-        return this.selectedReport?.type === 'TIME_GRAPH' || this.selectedReport?.type === 'TIME_GRAPH_DYNAMIC'
-      },
       displayColumnOptions() {
         const fields = tableFields[this.selectedReport?.table] || []
         return fields.map(value => ({ value, text: this.$t(value) }))
@@ -168,9 +158,9 @@
       },
       dialogButtons() {
         return [
-          { name: 'Cancel', handler: 'close-dialog' },
+          { name: this.$t('cancel'), handler: 'close-dialog' },
           {
-            name: 'Add',
+            name: this.$t('add'),
             handler: 'add-report-widget',
             disabled: !this.selectedReport || !this.selectedReportSupported,
           },
