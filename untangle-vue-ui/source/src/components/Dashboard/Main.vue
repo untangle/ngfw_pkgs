@@ -201,9 +201,12 @@
             <component
               :is="widget.cmp"
               v-if="
-                ['Information', 'Resources', 'NetworkLayout'].includes(widget.cmp) && getLayoutWidgetDefinition(widget)
+                ['Information', 'Resources', 'NetworkLayout', 'CpuLoad', 'Notifications', 'ReportWidget'].includes(
+                  widget.cmp,
+                ) && getLayoutWidgetDefinition(widget)
               "
               v-bind="getLayoutWidgetProps(widget)"
+              @save-settings="onReportWidgetSaveSettings(widget, $event)"
             />
             <u-widget
               v-else-if="getLayoutWidgetDefinition(widget)"
@@ -337,7 +340,10 @@
     },
     /** Load dashboard settings, initialize the layout, and cache the route component. */
     async mounted() {
-      await this.$store.dispatch('config/getDashboardSettings', true)
+      await Promise.all([
+        this.$store.dispatch('config/getDashboardSettings', true),
+        this.$store.dispatch('reports/loadReports'),
+      ])
       this.setSinceFromSettings()
       this.setLayout()
       this.layoutReady = true
@@ -766,12 +772,12 @@
           return null
         }
 
-        const refreshInterval = Number(widget.refreshIntervalSec)
         return {
           component: 'ReportWidget',
-          interval: Number.isFinite(refreshInterval) && refreshInterval > 0 ? refreshInterval : 60,
+          interval: widget.refreshIntervalSec || 60,
           title: report.title || widget.entryId,
-          width: 1,
+          // set the width to 2 for the specific report widget with entryId 'reports-8XL9cbqQa9', otherwise set it to 1
+          width: widget.entryId === 'reports-8XL9cbqQa9' ? 2 : 1,
         }
       },
 
@@ -797,8 +803,24 @@
           props.report = widget ? this.getReport(widget) : null
           props.displayColumns = widget?.displayColumns ?? null
           props.timeframe = Number(this.dashboardSettings?.timeframe) || 1
+          props.size = widget?.size || 'MEDIUM'
         }
         return props
+      },
+
+      async onReportWidgetSaveSettings(layoutWidget, { size, interval }) {
+        const settings = cloneDeep(this.dashboardSettings)
+        const widgetsList =
+          settings.widgets ||
+          settings.dashboardWidgets ||
+          settings.settings?.widgets ||
+          settings.settings?.dashboardWidgets
+        if (!Array.isArray(widgetsList)) return
+        const widget = widgetsList.find((item, index) => this.getWidgetId(item, index, widgetsList) === layoutWidget.id)
+        if (!widget) return
+        widget.size = size
+        widget.refreshIntervalSec = interval
+        await this.$store.dispatch('config/setDashboardSettings', settings)
       },
 
       // Store the current layout in local storage for the current breakpoint. This allows the layout to persist across page reloads and browser sessions.

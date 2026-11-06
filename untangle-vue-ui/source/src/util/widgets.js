@@ -27,10 +27,11 @@ export const widgetComponents = {
     interval: 10,
     title: 'network_information',
   },
+  // interval is 0 as it is loaded automatically when the page loads and during manual refreshes.
   NetworkLayout: {
     component: 'NetworkLayout',
     width: 2,
-    interval: 30,
+    interval: 0,
     title: 'network_layout',
   },
   MapDistribution: {
@@ -45,10 +46,11 @@ export const widgetComponents = {
     interval: 10,
     title: 'policy_overview',
   },
+  // interval is 0 as it is loaded automatically when the page loads and during manual refreshes.
   Notifications: {
     component: 'Notifications',
     width: 1,
-    interval: 10,
+    interval: 0,
     title: 'notifications',
   },
 }
