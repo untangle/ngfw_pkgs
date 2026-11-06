@@ -188,7 +188,7 @@
         if (this.localInterval > 0) {
           this.refreshTimeout = setTimeout(() => {
             this.refreshTick += 1
-            this.scheduleRefresh()
+            // next schedule is set by onFetchData's finally block after fetch completes
           }, this.localInterval * 1000)
         }
       },

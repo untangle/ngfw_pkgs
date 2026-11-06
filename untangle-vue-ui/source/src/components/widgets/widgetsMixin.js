@@ -23,19 +23,13 @@ export default {
       this.refreshTimeout = null
     },
     async runRefresh() {
-      // clear any previous refresh timer
       this.clearRefreshTimeout()
-
-      // wait for all data to load
       await this.loadData()
-
       if (this._isBeingDestroyed || this._isDestroyed) {
         return
       }
-
-      // set to run the refresh again
       if (this.interval) {
-        this.refreshTimeout = setTimeout(this.runRefresh, this.interval * 1000)
+        this.refreshTimeout = setTimeout(() => this.runRefresh(), this.interval * 1000)
       }
     },
   },

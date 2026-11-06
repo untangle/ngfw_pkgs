@@ -1,5 +1,5 @@
 <template>
-  <u-widget :title="$t('network_layout')" :enable-expand="false" enable-refresh @refresh="loadData">
+  <u-widget :title="$t('network_layout')" :enable-expand="false" enable-refresh @refresh="() => loadData(true)">
     <u-network-layout
       class="dashboard-network-layout"
       :fetching="fetching"
@@ -25,14 +25,14 @@
     }),
 
     methods: {
-      async loadData() {
+      async loadData(refetch) {
         this.fetching = true
 
         try {
           const [, statusResponse, , hostsResponse] = await Promise.all([
-            this.$store.dispatch('config/getNetworkSettings', true),
+            this.$store.dispatch('config/getNetworkSettings', refetch),
             rpcCall(window.rpc?.networkManager?.getAllInterfacesStatusV2, [], { fallback: [] }),
-            this.$store.dispatch('config/getMetricsAndStats', true),
+            this.$store.dispatch('config/getMetricsAndStats', refetch),
             rpcCall(window.rpc?.hostTable?.getHosts, [], { fallback: null }),
           ])
 

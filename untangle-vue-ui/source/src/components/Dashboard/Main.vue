@@ -776,7 +776,8 @@
           component: 'ReportWidget',
           interval: widget.refreshIntervalSec || 60,
           title: report.title || widget.entryId,
-          width: 1,
+          // set the width to 2 for the specific report widget with entryId 'reports-8XL9cbqQa9', otherwise set it to 1
+          width: widget.entryId === 'reports-8XL9cbqQa9' ? 2 : 1,
         }
       },
 
