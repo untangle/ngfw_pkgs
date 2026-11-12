@@ -71,8 +71,7 @@
     },
 
     methods: {
-      async loadData() {
-        await this.$store.dispatch('config/getMetricsAndStats', true)
+      loadData() {
         const response = this.$store.state.config.metricsAndStats
         this.stats = response?.systemStats || {}
         const uptime = Number(this.stats.uptime)

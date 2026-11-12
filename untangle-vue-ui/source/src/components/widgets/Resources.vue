@@ -103,9 +103,8 @@
     }),
 
     methods: {
-      async loadData() {
+      loadData() {
         this.fetching = true
-        await this.$store.dispatch('config/getMetricsAndStats', true)
         const response = this.$store.state.config.metricsAndStats
         const { MemFree, MemTotal, SwapFree, SwapTotal, freeDiskSpace, totalDiskSpace } = response?.systemStats || {}
         const series = []
