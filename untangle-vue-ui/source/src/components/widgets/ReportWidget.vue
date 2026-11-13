@@ -114,7 +114,7 @@
         menuOpen: false,
         localInterval: this.interval,
         previewTimeRange: {
-          period: [Date.now() - this.timeframe * 3600000, null],
+          period: [Date.now() + (this.$store.state.config.serverClockOffsetMs || 0) - this.timeframe * 3600000, null],
         },
         refreshOptions: [
           { text: '10 seconds', value: 10 },
@@ -156,9 +156,26 @@
         this.localInterval = val
         this.scheduleRefresh()
       },
+      // When the report prop is first set (or changes), ensure reports are loaded
+      // and trigger a data refresh so the chart fills in even if the initial
+      // fetch-data fired before reportsManager was available.
+      report: {
+        immediate: true,
+        async handler(val) {
+          if (!val) return
+          if (!this.$store.state.reports.reportsManager) {
+            await this.$store.dispatch('reports/loadReports')
+          }
+          await this.$nextTick()
+          // Re-trigger fetchData in the child ReportChart via refreshTick.
+          // The null guard in fetchReportData ensures reportsManager is ready.
+          this.refreshTick += 1
+        },
+      },
       timeframe(value) {
+        const offset = this.$store.state.config.serverClockOffsetMs || 0
         this.previewTimeRange = {
-          period: [Date.now() - value * 3600000, null],
+          period: [Date.now() + offset - value * 3600000, null],
         }
       },
     },
