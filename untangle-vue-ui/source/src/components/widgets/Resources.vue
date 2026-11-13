@@ -64,7 +64,7 @@
       formatTotal: total => (total > 0 ? util.formatBytes(total) : null),
 
       computePercent(total, free) {
-        return total > 0 && free >= 0 ? parseFloat(((1 - free / total) * 100).toFixed(1)) : null
+        return total > 0 && free >= 0 ? Math.round((1 - free / total) * 100) : null
       },
 
       computeColor(percent, isDisk = false) {
