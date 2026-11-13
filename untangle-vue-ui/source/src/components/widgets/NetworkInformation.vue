@@ -10,15 +10,21 @@
       <div class="pa-2 pt-4">
         <div class="d-flex justify-space-around text-center">
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('currently_active') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('currently_active') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ stats.activeHosts ?? '-' }}</div>
           </div>
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('maximum_active') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('maximum_active') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ stats.maxActiveHosts ?? '-' }}</div>
           </div>
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('known_devices') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('known_devices') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ stats.knownDevices ?? '-' }}</div>
           </div>
         </div>
@@ -39,15 +45,21 @@
       <div class="pa-2 pt-4">
         <div class="d-flex justify-space-around text-center mb-2">
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('total_sessions') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('total_sessions') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ sessions.totalSessions ?? '-' }}</div>
           </div>
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('scanned_sessions') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('scanned_sessions') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ sessions.scannedSessions ?? '-' }}</div>
           </div>
           <div class="flex-grow-1">
-            <div class="body-2 black--text mb-1">{{ $t('bypassed_sessions') }}</div>
+            <div class="body-2 black--text mb-1 d-flex align-end justify-center" style="min-height: 2.5em">
+              {{ $t('bypassed_sessions') }}
+            </div>
             <div class="text-h6 font-weight-bold">{{ sessions.bypassedSessions ?? '-' }}</div>
           </div>
         </div>
