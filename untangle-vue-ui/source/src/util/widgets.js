@@ -43,7 +43,7 @@ export const widgetComponents = {
   PolicyOverview: {
     component: 'PolicyOverview',
     width: 1,
-    interval: 10,
+    interval: 30,
     title: 'policy_overview',
   },
   // interval is 0 as it is loaded automatically when the page loads and during manual refreshes.

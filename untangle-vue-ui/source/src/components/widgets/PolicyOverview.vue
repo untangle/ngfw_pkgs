@@ -120,7 +120,11 @@
         if (!this.policies.length) return []
         const tree = this.buildTree(this.policies)
         const rows = []
-        this.flattenTree(tree, rows, 0)
+        const policyNameMap = {}
+        this.policies.forEach(p => {
+          policyNameMap[p.policyId] = p.name || `Policy ${p.policyId}`
+        })
+        this.flattenTree(tree, rows, 0, policyNameMap)
         return rows
       },
 
@@ -173,12 +177,7 @@
       },
 
       // This method recursively flattens the tree structure of policies into a list of rows, including both policy and app information, while keeping track of the hierarchy level for indentation purposes.
-      flattenTree(nodes, result, level) {
-        const policyNameMap = {}
-        this.policies.forEach(p => {
-          policyNameMap[p.policyId] = p.name || `Policy ${p.policyId}`
-        })
-
+      flattenTree(nodes, result, level, policyNameMap) {
         nodes.forEach(node => {
           const view = this.appsViewByPolicy[node.policyId]
           const stats = this.policiesStats[String(node.policyId)] || {}
@@ -230,7 +229,7 @@
           })
 
           if (node.children.length) {
-            this.flattenTree(node.children, result, level + 1)
+            this.flattenTree(node.children, result, level + 1, policyNameMap)
           }
         })
       },
