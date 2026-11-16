@@ -201,9 +201,15 @@
             <component
               :is="widget.cmp"
               v-if="
-                ['Information', 'Resources', 'NetworkLayout', 'CpuLoad', 'Notifications', 'ReportWidget'].includes(
-                  widget.cmp,
-                ) && getLayoutWidgetDefinition(widget)
+                [
+                  'Information',
+                  'Resources',
+                  'NetworkLayout',
+                  'NetworkInformation',
+                  'CpuLoad',
+                  'Notifications',
+                  'ReportWidget',
+                ].includes(widget.cmp) && getLayoutWidgetDefinition(widget)
               "
               v-bind="getLayoutWidgetProps(widget)"
               @save-settings="onReportWidgetSaveSettings(widget, $event)"
@@ -597,8 +603,10 @@
 
       // Set the "since" option based on the current dashboard settings. This method retrieves the timeframe value from the dashboardSettings and finds the corresponding option in the sinceOptions array. If a matching option is found, it updates the since data property with the text of that option. If no matching option is found, it defaults to the first option in the sinceOptions array. The method does not return any value and is used to synchronize the displayed "since" label with the saved dashboard settings.
       setSinceFromSettings() {
-        const timeframe = Number(this.dashboardSettings?.timeframe) || 1
-        const option = this.sinceOptions.find(item => item.value === timeframe) || this.sinceOptions[0]
+        const savedTf = Number(this.dashboardSettings?.timeframe)
+        const timeframe = savedTf > 1 ? savedTf : 24
+        const option =
+          this.sinceOptions.find(item => item.value === timeframe) || this.sinceOptions[this.sinceOptions.length - 1]
         this.since = option.text
       },
 
@@ -802,7 +810,8 @@
           props.title = definition.title
           props.report = widget ? this.getReport(widget) : null
           props.displayColumns = widget?.displayColumns ?? null
-          props.timeframe = Number(this.dashboardSettings?.timeframe) || 1
+          const savedTf = Number(this.dashboardSettings?.timeframe)
+          props.timeframe = savedTf > 1 ? savedTf : 24
           props.size = widget?.size || 'MEDIUM'
         }
         return props

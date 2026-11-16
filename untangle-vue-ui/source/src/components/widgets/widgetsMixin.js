@@ -24,6 +24,7 @@ export default {
     },
     async runRefresh() {
       this.clearRefreshTimeout()
+      await this.$store.dispatch('config/getMetricsAndStats', true)
       await this.loadData()
       if (this._isBeingDestroyed || this._isDestroyed) {
         return

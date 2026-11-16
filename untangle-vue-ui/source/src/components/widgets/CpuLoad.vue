@@ -146,9 +146,8 @@
     },
 
     methods: {
-      async loadData() {
+      loadData() {
         this.fetching = true
-        await this.$store.dispatch('config/getMetricsAndStats', true)
         const stats = this.$store.state.config.metricsAndStats?.systemStats || {}
         const load = stats.oneMinuteLoadAvg
         this.numCpus = stats.numCpus || 1

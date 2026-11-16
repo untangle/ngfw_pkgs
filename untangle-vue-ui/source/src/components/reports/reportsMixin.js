@@ -37,6 +37,7 @@ export default {
   },
 
   created() {
+    this.$store.dispatch('reports/loadReports')
     this.$store.dispatch('reports/fetchTables')
 
     if (!highchartsTimezoneInitialized.done) {
@@ -185,7 +186,7 @@ export default {
 
     async onFetchData({ query, resolve, entry: passedEntry }) {
       try {
-        const entry = passedEntry || this.allReports.find(r => r.uniqueId === query.key)
+        const entry = passedEntry || this.reportForDisplay || this.allReports.find(r => r.uniqueId === query.key)
         if (!entry) {
           resolve(null)
           return
