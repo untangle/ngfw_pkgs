@@ -17,7 +17,11 @@
               <th class="text-center font-weight-bold black--text" style="min-width: 70px; font-size: 0.85rem">
                 {{ $t('traffic') }}
               </th>
-              <th style="width: 36px"></th>
+              <th style="width: 36px" class="text-center">
+                <v-btn icon x-medium :loading="fetching" @click="loadData()">
+                  <v-icon medium>mdi-refresh</v-icon>
+                </v-btn>
+              </th>
             </tr>
           </thead>
           <tbody>
