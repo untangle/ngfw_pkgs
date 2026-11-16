@@ -64,8 +64,8 @@
                       />
                     </span>
                     <span style="text-align: center; color: #9e9e9e">{{ row.inherited }}</span>
-                    <v-btn v-if="row.apps.length > 0" icon x-small @click="toggleExpand(row.policyId)">
-                      <v-icon x-small>{{ expanded[row.policyId] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
+                    <v-btn v-if="row.apps.length > 0" icon small @click="toggleExpand(row.policyId)">
+                      <v-icon small>{{ expanded[row.policyId] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                     </v-btn>
                   </div>
                 </td>
