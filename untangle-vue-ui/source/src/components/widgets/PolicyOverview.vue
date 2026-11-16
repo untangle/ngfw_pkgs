@@ -5,16 +5,16 @@
         <template #default>
           <thead>
             <tr>
-              <th class="text-left font-weight-bold black--text" style="font-size: 0.85rem">
+              <th class="text-left font-weight-bold black--text" style="font-size: 1rem">
                 {{ $t('policy_name_id') }}
               </th>
-              <th class="text-center font-weight-bold black--text" style="min-width: 110px; font-size: 0.85rem">
+              <th class="text-center font-weight-bold black--text" style="min-width: 110px; font-size: 1rem">
                 {{ $t('apps_installed_running_inherited') }}
               </th>
-              <th class="text-center font-weight-bold black--text" style="min-width: 70px; font-size: 0.85rem">
+              <th class="text-center font-weight-bold black--text" style="min-width: 70px; font-size: 1rem">
                 {{ $t('sessions') }}
               </th>
-              <th class="text-center font-weight-bold black--text" style="min-width: 70px; font-size: 0.85rem">
+              <th class="text-center font-weight-bold black--text" style="min-width: 70px; font-size: 1rem">
                 {{ $t('traffic') }}
               </th>
               <th style="width: 36px" class="text-center">
@@ -43,7 +43,7 @@
                     <span class="ml-1">({{ row.policyId }})</span>
                   </span>
                 </td>
-                <td class="text-center">
+                <td>
                   <div class="d-flex align-center justify-center" style="gap: 8px">
                     <span style="text-align: center">
                       <strong style="font-size: 1.1em">{{ row.installed }}</strong>
@@ -69,15 +69,15 @@
                     </v-btn>
                   </div>
                 </td>
-                <td class="text-center">
+                <td>
                   <span v-if="row.sessionCount > 0">{{ row.sessionCount }}</span>
                   <span v-else class="grey--text text--lighten-1">0</span>
                 </td>
-                <td class="text-center">
+                <td>
                   <span v-if="row.totalBps > 0">{{ formatBytes(row.totalBps) }}/s</span>
                   <span v-else class="grey--text text--lighten-1">0</span>
                 </td>
-                <td class="text-center">
+                <td>
                   <v-btn icon x-small @click="navigate(row.policyId)">
                     <v-icon small>mdi-open-in-new</v-icon>
                   </v-btn>
@@ -103,7 +103,7 @@
                     </span>
                   </div>
                 </td>
-                <td class="text-center">
+                <td>
                   <v-btn icon x-small @click="navigate(row.policyId, row.appName)">
                     <v-icon small>mdi-open-in-new</v-icon>
                   </v-btn>
@@ -286,6 +286,15 @@
 </script>
 
 <style scoped>
+  tbody td {
+    font-size: 1rem;
+    text-align: center;
+  }
+
+  tbody td:first-child {
+    text-align: left;
+  }
+
   .app-row {
     background-color: #fafafa;
   }
