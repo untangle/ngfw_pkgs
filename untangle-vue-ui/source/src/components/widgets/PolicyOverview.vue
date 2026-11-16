@@ -33,17 +33,37 @@
               <!-- Policy row -->
               <template v-if="row.type === 'policy'">
                 <td>
-                  <span :style="{ paddingLeft: row.level * 16 + 'px' }" class="d-flex align-center">
+                  <span
+                    :style="{ paddingLeft: row.level * 16 + 'px' }"
+                    class="d-flex align-center"
+                    style="white-space: nowrap"
+                  >
                     <v-icon v-if="row.level > 0" x-small class="mr-1 black--text">mdi-subdirectory-arrow-right</v-icon>
                     <span>{{ row.name }}</span>
-                    <span class="grey--text text--lighten-1 ml-1">({{ row.policyId }})</span>
+                    <span class="ml-1">({{ row.policyId }})</span>
                   </span>
                 </td>
                 <td class="text-center">
-                  <div class="d-flex align-center justify-center" style="gap: 10px">
-                    <strong style="font-size: 1.1em">{{ row.installed }}</strong>
-                    <span style="color: #4caf50">{{ row.running }}</span>
-                    <span>{{ row.inherited }}</span>
+                  <div class="d-flex align-center justify-center" style="gap: 8px">
+                    <span style="text-align: center">
+                      <strong style="font-size: 1.1em">{{ row.installed }}</strong>
+                    </span>
+                    <span class="d-flex align-center" style="color: #9e9e9e; gap: 4px">
+                      {{ row.running }}
+                      <span
+                        style="
+                          width: 9px;
+                          height: 9px;
+                          border-radius: 50%;
+                          background-color: #4caf50;
+                          display: block;
+                          flex-shrink: 0;
+                          align-self: center;
+                          margin-bottom: 1px;
+                        "
+                      />
+                    </span>
+                    <span style="text-align: center; color: #9e9e9e">{{ row.inherited }}</span>
                     <v-btn v-if="row.apps.length > 0" icon x-small @click="toggleExpand(row.policyId)">
                       <v-icon x-small>{{ expanded[row.policyId] ? 'mdi-chevron-up' : 'mdi-chevron-down' }}</v-icon>
                     </v-btn>
