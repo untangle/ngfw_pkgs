@@ -15,6 +15,7 @@
         >
           <span class="text-center text-h5 font-weight-light" v-text="res.percent + '%'" />
         </v-progress-circular>
+        <div v-if="res.used" class="mt-3 body-2 black--text">{{ res.used }} {{ $t('used') }}</div>
       </div>
     </div>
   </u-widget>
@@ -38,18 +39,21 @@
           memory: {
             name: 'memory',
             total: this.formatTotal(s.MemTotal),
+            used: this.formatTotal(s.MemTotal - s.MemFree),
             percent: this.computePercent(s.MemTotal, s.MemFree),
           },
           ...(s.SwapTotal > 0 && {
             swap: {
               name: 'swap',
               total: this.formatTotal(s.SwapTotal),
+              used: this.formatTotal(s.SwapTotal - s.SwapFree),
               percent: this.computePercent(s.SwapTotal, s.SwapFree),
             },
           }),
           disk: {
             name: 'disk',
             total: this.formatTotal(s.totalDiskSpace),
+            used: this.formatTotal(s.totalDiskSpace - s.freeDiskSpace),
             percent: this.computePercent(s.totalDiskSpace, s.freeDiskSpace),
           },
         }

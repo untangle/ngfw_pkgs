@@ -209,6 +209,8 @@
                   'CpuLoad',
                   'Notifications',
                   'ReportWidget',
+                  'PolicyOverview',
+                  'MapDistribution',
                 ].includes(widget.cmp) && getLayoutWidgetDefinition(widget)
               "
               v-bind="getLayoutWidgetProps(widget)"
