@@ -34,6 +34,7 @@
     }),
 
     computed: {
+      // options for the map chart
       options() {
         return {
           chart: {
@@ -101,6 +102,7 @@
     },
 
     mounted() {
+      // reflow the chart after it has been mounted to ensure proper sizing
       this.$nextTick(() => {
         setTimeout(() => {
           this.$refs.hc?.$refs?.hc?.chart?.reflow()
@@ -108,12 +110,14 @@
       })
     },
 
+    // destroy the chart when the component is destroyed to prevent memory leaks
     beforeDestroy() {
       const chart = this.$refs.hc?.$refs?.hc?.chart
       if (chart) chart.destroy()
     },
 
     methods: {
+      // load data for the map distribution chart
       async loadData() {
         this.fetching = true
         const result = await rpcCall(window.rpc?.UvmContext?.geographyManager?.()?.getGeoSessionStats, [], {
