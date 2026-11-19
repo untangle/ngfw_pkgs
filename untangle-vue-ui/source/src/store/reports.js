@@ -354,11 +354,11 @@ const actions = {
 
   /**
    * Fetches policy name/ID pairs from the backend for EVENT_LIST detail rendering.
-   * Only runs once — returns immediately if policiesInfo is already populated.
+   * Reuses the current-session list unless force is requested.
    * Returns an empty list when no policy-manager is installed.
    */
-  async fetchPoliciesInfo({ state, commit }) {
-    if (state.policiesInfo.length) return
+  async fetchPoliciesInfo({ state, commit }, { force = false } = {}) {
+    if (!force && state.policiesInfo.length) return
     if (!state.reportsManager) return
     try {
       const result = await Rpc.asyncData(state.reportsManager, 'getPoliciesInfo')
