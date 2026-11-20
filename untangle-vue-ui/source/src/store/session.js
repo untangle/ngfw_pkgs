@@ -46,7 +46,11 @@ const actions = {
       await Promise.all([
         dispatch('apps/getAppsViews', true, { root: true }),
         dispatch('apps/loadAppData', { appName: 'policy-manager' }, { root: true }),
-        dispatch('reports/loadReports', null, { root: true }),
+        dispatch('reports/loadReports', null, { root: true }).then(() =>
+          dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+        ),
+        // Reports uses configured interface names for EVENT_LIST cells and displayed CSV exports.
+        dispatch('config/getNetworkSettings', true, { root: true }),
         // Required for server-timezone-aware date/time in Reports date picker.
         // Must run at boot so DateTimeRangePresets receives the correct offset via $serverTimezoneOffsetMs.
         dispatch('config/getTimeZoneOffSet', null, { root: true }),
@@ -73,7 +77,9 @@ const actions = {
 
     try {
       await Promise.all([
-        dispatch('reports/loadReports', null, { root: true }),
+        dispatch('reports/loadReports', null, { root: true }).then(() =>
+          dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+        ),
         dispatch('config/getTimeZoneOffSet', null, { root: true }),
         dispatch('config/getServerClockOffsetMs', null, { root: true }),
       ])
