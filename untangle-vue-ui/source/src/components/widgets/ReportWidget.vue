@@ -139,6 +139,8 @@
           this.timeZoneOffset,
           this.interfaceNameMap || {},
           this.policyNameMap || {},
+          {},
+          this.webRuleMap || {},
         )
       },
       isConditionMasked() {

@@ -46,8 +46,13 @@ const actions = {
       await Promise.all([
         dispatch('apps/getAppsViews', true, { root: true }),
         dispatch('apps/loadAppData', { appName: 'policy-manager' }, { root: true }),
+        // Promise.all needed: both fetches require reportsManager (from loadReports) but are
+        // independent of each other — runs them in parallel and waits for both to complete.
         dispatch('reports/loadReports', null, { root: true }).then(() =>
-          dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+          Promise.all([
+            dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+            dispatch('reports/fetchWebFilterRuleInfo', { force: true }, { root: true }),
+          ]),
         ),
         // Reports uses configured interface names for EVENT_LIST cells and displayed CSV exports.
         dispatch('config/getNetworkSettings', true, { root: true }),
@@ -77,8 +82,13 @@ const actions = {
 
     try {
       await Promise.all([
+        // Promise.all needed: both fetches require reportsManager (from loadReports) but are
+        // independent of each other — runs them in parallel and waits for both to complete.
         dispatch('reports/loadReports', null, { root: true }).then(() =>
-          dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+          Promise.all([
+            dispatch('reports/fetchPoliciesInfo', { force: true }, { root: true }),
+            dispatch('reports/fetchWebFilterRuleInfo', { force: true }, { root: true }),
+          ]),
         ),
         dispatch('config/getTimeZoneOffSet', null, { root: true }),
         dispatch('config/getServerClockOffsetMs', null, { root: true }),

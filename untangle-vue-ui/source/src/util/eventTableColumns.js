@@ -1049,7 +1049,14 @@ function formatTimestamp(ms, tzOffsetMs = 0) {
  * @param {Object}   policyNameMap    - { policyId: 'name [id]' } from reports store
  * @returns {Array} AG-Grid columnDef objects
  */
-export function buildEventColumnDefs(table, defaultColumns, tzOffsetMs = 0, interfaceNameMap = {}, policyNameMap = {}) {
+export function buildEventColumnDefs(
+  table,
+  defaultColumns,
+  tzOffsetMs = 0,
+  interfaceNameMap = {},
+  policyNameMap = {},
+  webRuleMap = {},
+) {
   const fields = tableFields[table] || []
   const visible = new Set(defaultColumns || [])
 
@@ -1088,6 +1095,26 @@ export function buildEventColumnDefs(table, defaultColumns, tzOffsetMs = 0, inte
     policy_id: {
       width: 120,
       valueFormatter: ({ value }) => (value == null || value === 0 ? i18n.t('none') : policyNameMap[value] || ''),
+    },
+    // web_filter_rule_id → rule description from the web-filter app settings.
+    // Uses web_filter_reason from the same row to determine which rule source to look up.
+    web_filter_rule_id: {
+      width: 120,
+      valueFormatter: ({ value, data }) => {
+        if (value == null || value === 0) return ''
+        const reason = data?.web_filter_reason
+        if (!reason || reason === 'D' || reason === 'N' || reason === 'K') return ''
+        const sourceMap = {
+          U: 'blockedUrls',
+          I: 'passedUrls',
+          R: 'passedUrls',
+          C: 'passedClients',
+          T: 'searchTerms',
+          F: 'filterRules',
+        }
+        const source = sourceMap[reason] || 'categories'
+        return webRuleMap[source]?.[value] ?? 'Unknown'
+      },
     },
   }
 

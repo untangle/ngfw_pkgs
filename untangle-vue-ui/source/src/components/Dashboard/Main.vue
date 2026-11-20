@@ -536,7 +536,14 @@
 
       // Build the report view configuration for a specific report entry. This method takes a report entry as input and uses the buildReportViewConfig utility function to generate the corresponding report view configuration. The method passes the time zone offset, interface name map, and policy name map as additional parameters to ensure that the generated view is accurate and contextually relevant. The resulting configuration can be used to render the report widget in the dashboard.
       buildReportViewForWidget(entry) {
-        return buildReportViewConfig(entry, this.timeZoneOffset, this.interfaceNameMap || {}, this.policyNameMap || {})
+        return buildReportViewConfig(
+          entry,
+          this.timeZoneOffset,
+          this.interfaceNameMap || {},
+          this.policyNameMap || {},
+          {},
+          this.webRuleMap || {},
+        )
       },
 
       // Close the report widget creation dialog. This method sets the reportWidgetDialog data property to false, which hides the dialog from view. It is typically called after a report widget has been successfully added or when the user cancels the creation process. The method does not return any value and is used to manage the visibility state of the dialog within the dashboard component.

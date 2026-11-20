@@ -62,7 +62,14 @@
 
     methods: {
       buildView(entry) {
-        return buildReportView(entry, this.timeZoneOffset, this.interfaceNameMap || {}, this.policyNameMap || {})
+        return buildReportView(
+          entry,
+          this.timeZoneOffset,
+          this.interfaceNameMap || {},
+          this.policyNameMap || {},
+          {},
+          this.webRuleMap || {},
+        )
       },
 
       /**

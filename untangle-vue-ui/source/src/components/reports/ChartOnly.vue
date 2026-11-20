@@ -114,7 +114,14 @@
       /** Translates supported graph entries through the same view builder used by ReportDetails and ReportEdit. */
       reportConfig() {
         if (!this.entry || !GRAPH_REPORT_TYPES.includes(this.entry.type)) return null
-        const view = buildReportView(this.entry, this.timeZoneOffset, this.interfaceNameMap, this.policyNameMap)
+        const view = buildReportView(
+          this.entry,
+          this.timeZoneOffset,
+          this.interfaceNameMap,
+          this.policyNameMap,
+          {},
+          this.webRuleMap || {},
+        )
         return view?.reports?.[0] || null
       },
     },

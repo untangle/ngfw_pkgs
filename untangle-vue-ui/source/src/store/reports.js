@@ -49,6 +49,10 @@ const getDefaultState = () => ({
 
   // Unique key per login session — used by DateTimeRangePresets to reset saved state on logout/login
   timeRangeSessionKey: null,
+
+  // Web filter rule info — keyed by rule source (categories, blockedUrls, etc.)
+  // Populated lazily; used by web_filter_rule_id column formatter
+  webFilterRuleInfo: {},
 })
 
 const getters = {
@@ -108,6 +112,20 @@ const getters = {
         map[p.policyId] = p.name ? `${p.name} [${p.policyId}]` : String(p.policyId)
       }
     })
+    return map
+  },
+
+  webRuleMap: state => {
+    const info = state.webFilterRuleInfo
+    const map = {}
+    for (const source of Object.keys(info)) {
+      map[source] = {}
+      ;(info[source] || []).forEach(rule => {
+        const id = rule.id != null ? rule.id : rule.ruleId
+        const desc = rule.description || rule.string || ''
+        if (id != null) map[source][id] = desc
+      })
+    }
     return map
   },
 }
@@ -174,6 +192,10 @@ const mutations = {
 
   CLEAR_GLOBAL_CONDITIONS(state) {
     state.globalConditions = []
+  },
+
+  SET_WEB_FILTER_RULE_INFO(state, info) {
+    state.webFilterRuleInfo = info
   },
 
   SET_TIME_RANGE_SESSION_KEY(state, key) {
@@ -365,6 +387,32 @@ const actions = {
       if (result?.list) commit('SET_POLICIES_INFO', result.list)
     } catch (error) {
       Util.handleException(error)
+    }
+  },
+
+  /**
+   * Fetches web filter rule lists (categories, blockedUrls, passedUrls, etc.)
+   * from the backend for resolving web_filter_rule_id to human-readable descriptions.
+   * Tries 'web-filter' first, falls back to 'web-monitor'.
+   */
+  async fetchWebFilterRuleInfo({ state, commit }, { force = false } = {}) {
+    if (!force && Object.keys(state.webFilterRuleInfo).length) return
+    if (!state.reportsManager) return
+
+    const sources = ['categories', 'blockedUrls', 'passedUrls', 'passedClients', 'searchTerms', 'filterRules']
+    const info = {}
+
+    try {
+      for (const source of sources) {
+        let result = await Rpc.asyncData(state.reportsManager, 'getReportInfo', 'web-filter', 1, source)
+        if (result == null) {
+          result = await Rpc.asyncData(state.reportsManager, 'getReportInfo', 'web-monitor', 1, source)
+        }
+        info[source] = result?.list ?? result ?? []
+      }
+      commit('SET_WEB_FILTER_RULE_INFO', info)
+    } catch {
+      // Non-critical — raw rule IDs remain valid if web-filter is not installed
     }
   },
 
