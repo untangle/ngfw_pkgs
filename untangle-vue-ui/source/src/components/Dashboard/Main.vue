@@ -175,7 +175,16 @@
           </v-menu>
         </div>
 
+        <div
+          v-if="!layoutReady || baseLayout.length === 0"
+          class="d-flex justify-center align-center"
+          style="height: 300px"
+        >
+          <v-progress-circular indeterminate color="primary" />
+        </div>
+
         <grid-layout
+          v-else
           :key="dashboardLayoutKey"
           :layout.sync="baseLayout"
           :responsive-layouts.sync="responsiveLayouts"

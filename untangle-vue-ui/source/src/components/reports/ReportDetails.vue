@@ -19,7 +19,14 @@
       @auto-refresh-change="onAutoRefreshChange"
       @edit-report="onEditReport"
       @back-to-reports="onBackToReports"
-    />
+    >
+      <template v-if="isAdmin && selectedUniqueId" #actions>
+        <u-btn small :loading="dashboardSaving" @click="toggleDashboard">
+          <v-icon small left>{{ isOnDashboard ? 'mdi-minus-circle' : 'mdi-plus-circle' }}</v-icon>
+          {{ isOnDashboard ? $t('remove_from_dashboard') : $t('add_to_dashboard') }}
+        </u-btn>
+      </template>
+    </report-details>
 
     <!-- Settings diff dialog — opened by the  action column on settings_changes rows -->
     <settings-diff-dialog v-model="diffDialogOpen" :file-name="diffFileName" />
@@ -27,7 +34,7 @@
 </template>
 
 <script>
-  import { mapGetters } from 'vuex'
+  import { mapGetters, mapActions } from 'vuex'
   import { ReportDetails } from 'vuntangle'
   import reportsMixin from './reportsMixin'
   import SettingsDiffDialog from './SettingsDiffDialog.vue'
@@ -65,18 +72,30 @@
         autoRefresh: false,
         refreshTick: 0,
         refreshTimer: null,
+
+        dashboardSaving: false,
       }
     },
 
     computed: {
       ...mapGetters('reports', ['categoriesForNav', 'policyNameMap']),
-      ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
+      ...mapGetters('config', [
+        'timeZoneOffset',
+        'serverClockOffsetMs',
+        'interfaceNameMap',
+        'dashboardSettings',
+        'dashboardWidgets',
+      ]),
       ...mapGetters('context', ['isAdmin', 'downloadEndpoint']),
 
       selectedUniqueId() {
         return this.allReports.find(
           r => urlEncode(r.category) === this.$route.params.cat && urlEncode(r.title) === this.$route.params.rep,
         )?.uniqueId
+      },
+
+      isOnDashboard() {
+        return this.dashboardWidgets.some(w => w.entryId === this.selectedUniqueId)
       },
 
       /**
@@ -112,10 +131,46 @@
      * The action is a no-op if already loaded or if policy-manager is not installed.
      */
     async created() {
-      await this.$store.dispatch('reports/fetchPoliciesInfo')
+      await Promise.all([
+        this.$store.dispatch('reports/fetchPoliciesInfo'),
+        this.$store.dispatch('config/getDashboardSettings'),
+      ])
     },
 
     methods: {
+      ...mapActions('config', ['setDashboardSettings']),
+
+      async toggleDashboard() {
+        if (!this.selectedUniqueId) return
+        this.dashboardSaving = true
+        try {
+          const settings = { ...this.dashboardSettings }
+          if (this.isOnDashboard) {
+            settings.widgets = this.dashboardWidgets.filter(w => w.entryId !== this.selectedUniqueId)
+          } else {
+            const entry = this.allReports.find(r => r.uniqueId === this.selectedUniqueId)
+            settings.widgets = [
+              ...this.dashboardWidgets,
+              {
+                displayColumns: entry?.defaultColumns || null,
+                enabled: true,
+                entryId: this.selectedUniqueId,
+                javaClass: 'com.untangle.uvm.DashboardWidgetSettings',
+                refreshIntervalSec: 60,
+                size: 'MEDIUM',
+                timeframe: null,
+                type: 'ReportEntry',
+              },
+            ]
+          }
+          await this.setDashboardSettings(settings)
+        } catch (err) {
+          Util.handleException(err)
+        } finally {
+          this.dashboardSaving = false
+        }
+      },
+
       /** Navigates from an individual report back to the reports list. */
       onBackToReports() {
         this.$router.push({ name: 'reports' })
