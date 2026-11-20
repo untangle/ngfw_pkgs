@@ -1,6 +1,13 @@
 <template>
-  <u-widget :title="$t('map_distribution')" enable-expand :fetching="fetching" enable-refresh @refresh="loadData">
-    <u-chart ref="hc" constructor-type="mapChart" :options="options" class="map" v-on="$listeners" />
+  <u-widget :title="$t('map_distribution')" enable-expand enable-refresh @refresh="loadData">
+    <u-chart
+      ref="hc"
+      constructor-type="mapChart"
+      :options="options"
+      :fetching="fetching"
+      class="map"
+      v-on="$listeners"
+    />
   </u-widget>
 </template>
 
@@ -108,12 +115,6 @@
           this.$refs.hc?.$refs?.hc?.chart?.reflow()
         }, 100)
       })
-    },
-
-    // destroy the chart when the component is destroyed to prevent memory leaks
-    beforeDestroy() {
-      const chart = this.$refs.hc?.$refs?.hc?.chart
-      if (chart) chart.destroy()
     },
 
     methods: {
