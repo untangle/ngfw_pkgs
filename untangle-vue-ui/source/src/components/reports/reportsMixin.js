@@ -48,7 +48,7 @@ export default {
   },
 
   computed: {
-    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables', 'policyNameMap']),
+    ...mapGetters('reports', ['allReports', 'globalConditions', 'tables', 'policyNameMap', 'webRuleMap']),
     ...mapGetters('config', ['timeZoneOffset', 'serverClockOffsetMs', 'interfaceNameMap']),
 
     /** Translates operator options for the global condition dropdowns. */

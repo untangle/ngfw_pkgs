@@ -107,12 +107,19 @@
        */
       selectedReportView() {
         const entry = this.allReports.find(r => r.uniqueId === this.selectedUniqueId)
-        return buildReportView(entry, this.timeZoneOffset, this.interfaceNameMap, this.policyNameMap, {
-          onShowDiff: fileName => {
-            this.diffFileName = fileName
-            this.diffDialogOpen = true
+        return buildReportView(
+          entry,
+          this.timeZoneOffset,
+          this.interfaceNameMap,
+          this.policyNameMap,
+          {
+            onShowDiff: fileName => {
+              this.diffFileName = fileName
+              this.diffDialogOpen = true
+            },
           },
-        })
+          this.webRuleMap || {},
+        )
       },
     },
 
@@ -134,6 +141,7 @@
       await Promise.all([
         this.$store.dispatch('reports/fetchPoliciesInfo'),
         this.$store.dispatch('config/getDashboardSettings'),
+        this.$store.dispatch('reports/fetchWebFilterRuleInfo'),
       ])
     },
 

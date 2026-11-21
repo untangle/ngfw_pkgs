@@ -114,7 +114,14 @@ function translateTimeGraphDynamicEntry(entry) {
  *   callbacks.onShowDiff(fileName) — called when user clicks 🔍 on a settings_changes row
  * @returns {Object} report config for GenericEventList
  */
-function translateEventListEntry(entry, tzOffsetMs, interfaceNameMap = {}, policyNameMap = {}, callbacks = {}) {
+function translateEventListEntry(
+  entry,
+  tzOffsetMs,
+  interfaceNameMap = {},
+  policyNameMap = {},
+  callbacks = {},
+  webRuleMap = {},
+) {
   // Table-specific row actions — only injected when the host app supplies the relevant callback.
   // 'differences' is a virtual non-SQL action column for row-level diff inspection.
   const rowActions = []
@@ -130,7 +137,14 @@ function translateEventListEntry(entry, tzOffsetMs, interfaceNameMap = {}, polic
     key: entry.uniqueId,
     title: entry.title,
     category: entry.category, // needed for export filename: "{category}-{title}_date.csv"
-    columns: buildEventColumnDefs(entry.table, entry.defaultColumns, tzOffsetMs, interfaceNameMap, policyNameMap),
+    columns: buildEventColumnDefs(
+      entry.table,
+      entry.defaultColumns,
+      tzOffsetMs,
+      interfaceNameMap,
+      policyNameMap,
+      webRuleMap,
+    ),
     tzOffsetMs: tzOffsetMs || 0,
     // Row actions — undefined when empty so UGrid skips the action column setup
     rowActions: rowActions.length ? rowActions : undefined,
@@ -230,6 +244,9 @@ function translateEventListEntry(entry, tzOffsetMs, interfaceNameMap = {}, polic
       // web_filter_category_id → category name; null → '', unknown → raw ID string
       web_filter_category_id: v => (v == null ? '' : webCategoryMap[v] ?? String(v)),
 
+      // web_filter_rule_id — 0/null → ''; detail panel shows raw ID (column shows resolved description)
+      web_filter_rule_id: v => (v == null || v === 0 ? '' : String(v)),
+
       // Threat prevention reason — same lookup as web_filter_reason; null/unknown → 'No Rule Applied'
       threat_prevention_reason: v =>
         webFilterReasonMap[v] ? i18n.t(webFilterReasonMap[v]) : i18n.t('no_rule_applied'),
@@ -299,7 +316,14 @@ function translatePieGraphEntry(entry) {
  * @param {Object} callbacks        - host-app action callbacks (e.g. { onShowDiff })
  * @returns {Object|null} view config, or null if the type is not yet supported
  */
-export function buildReportView(entry, tzOffsetMs, interfaceNameMap = {}, policyNameMap = {}, callbacks = {}) {
+export function buildReportView(
+  entry,
+  tzOffsetMs,
+  interfaceNameMap = {},
+  policyNameMap = {},
+  callbacks = {},
+  webRuleMap = {},
+) {
   if (!entry) return null
   switch (entry.type) {
     case 'TIME_GRAPH':
@@ -328,7 +352,7 @@ export function buildReportView(entry, tzOffsetMs, interfaceNameMap = {}, policy
     case 'EVENT_LIST':
       return {
         component: 'GenericEventList',
-        reports: [translateEventListEntry(entry, tzOffsetMs, interfaceNameMap, policyNameMap, callbacks)],
+        reports: [translateEventListEntry(entry, tzOffsetMs, interfaceNameMap, policyNameMap, callbacks, webRuleMap)],
       }
     default:
       return null
