@@ -53,6 +53,8 @@
         $isPreview: () => false,
         $dateTimeRangeComponent: 'date-time-range-presets',
         $refreshTick: () => this.refreshTick,
+        // Open EVENT_LIST reports with their configured default columns instead of restoring browser-saved grid state.
+        $persistEventGridState: () => false,
       }
     },
 
